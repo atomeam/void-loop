@@ -1,38 +1,44 @@
 /**
- * quote skill — a random inspirational quote from zenquotes (no key)
+ * quote skill — an inspirational or random quote with attribution (new idea to grow Void).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "give me a quote", "inspire me", "random quote".
- * Empty surface stays empty.
+ * "quote of the day", "give me a quote", "inspirational quote", "random quote".
+ * Fetches from a public no-key API; falls back to a built-in if the network fails. Empty surface stays empty.
  */
 export function isQuote(text) {
-  return /^(?:give\s+me\s+(?:a\s+)?(?:random\s+)?quote|inspire\s+me|random\s+quote|quote\s+please)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:give|show|tell)\s+(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:inspirational\s+|random\s+|daily\s+)?quote|(?:quote|inspirational quote|quote of the day|random quote)(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
+
+const FALLBACKS = [
+  { content: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+  { content: 'It always seems impossible until it\'s done.', author: 'Nelson Mandela' },
+  { content: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt' }
+];
 
 async function run(text, api) {
   const { showPage, esc } = api;
+  if (!isQuote(text)) return 'none';
   const el = showPage((p) => { p.innerHTML = '<h2>A quote</h2><div class="sub">…</div>'; });
+  let q = null;
   try {
-    const j = await fetch('https://zenquotes.io/api/random').then((r) => r.json());
-    if (!api._pageStill(el)) return 'quote';
-    const q = Array.isArray(j) && j[0] ? j[0] : null;
-    if (!q || !q.q) throw 0;
-    el.innerHTML = '<h2>A quote</h2><p style="font-size:22px;line-height:1.45;font-weight:300">“' + esc(q.q) + '”</p><div class="sub">— ' + esc(q.a || '') + '</div>'
-      + '<div class="src">Source: <a href="https://zenquotes.io/" target="_blank" rel="noopener">zenquotes</a> (no key)</div>';
-    return 'quote';
-  } catch (_) {
-    if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>A quote</h2><p>The quote service did not answer just now. Here is one: The only way to do great work is to love what you do. — Steve Jobs</p>';
-    return 'quote';
-  }
+    const r = await fetch('https://api.quotable.io/random');
+    if (r.ok) {
+      const j = await r.json();
+      if (j && j.content) q = { content: j.content, author: j.author || 'Unknown' };
+    }
+  } catch (_) {}
+  if (!q) q = FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
+  if (!api._pageStill(el)) return 'quote';
+  el.innerHTML = '<h2>A quote</h2><p style="font-size:22px;line-height:1.45;font-weight:300">“' + esc(q.content) + '”</p><div class="sub">— ' + esc(q.author) + '</div><div class="src">Source: quotable.io or built-in</div>';
+  return 'quote';
 }
 
 export default {
   name: 'quote',
-  examples: ['give me a quote', 'inspire me', 'random quote'],
-  nearMisses: ['what is a quote', 'stock quote', 'quote of the day history', 'how to quote someone'],
-  match(lower, text) { return isQuote(text); },
+  examples: ['quote of the day', 'give me a quote', 'inspirational quote', 'random quote'],
+  nearMisses: ['what is a quote', 'stock quote', 'quote a price', 'define quote'],
+  match(lower, text) { return isQuote(text || lower); },
   run,
   suite() {
-    return { ok: isQuote('give me a quote') && isQuote('inspire me') && !isQuote('hello') };
+    return { ok: isQuote('give me a quote') && isQuote('quote of the day') && !isQuote('what is a quote') && !isQuote('stock quote for AAPL') };
   },
 };
