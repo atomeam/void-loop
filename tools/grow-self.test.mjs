@@ -10,7 +10,7 @@ test('the build job, the pull request job and the git add allow exactly the same
   const allow = files(/grep -vE '\^\(([^)]+)\)\$'/g);
   assert.equal(allow.length, 2, 'one allowlist in each job');
   assert.equal(allow[0], allow[1]);
-  const expected = ['tools/bench.json', 'tools/art-floor.json', 'tools/card-cycle.json', 'tools/grow-self.state.json', 'domains/void.agents.log.md', 'void-live-deploy/void.growth.json'].sort().join(',');
+  const expected = ['tools/bench.json', 'tools/art-floor.json', 'tools/card-cycle.json', 'tools/grow-lessons.json', 'tools/grow-self.state.json', 'domains/void.agents.log.md', 'void-live-deploy/void.growth.json'].sort().join(',');
   assert.equal(allow[0], expected);
   const add = /git add -- ([^\n]+)/.exec(y)[1].split(/\s+/).sort().join(',');
   assert.equal(add, allow[0]);
