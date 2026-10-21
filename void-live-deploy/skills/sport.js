@@ -16,7 +16,9 @@ async function run(text, api) {
   if (!q) return 'none';
   const el = showPage((p) => { p.innerHTML = '<h2>Team</h2><div class="sub">…</div>'; });
   try {
-    const j = await fetch('https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=' + encodeURIComponent(q)).then((r) => r.json());
+    const res = await fetch('https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=' + encodeURIComponent(q), { mode: 'cors', headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('blocked');
+    const j = await res.json();
     if (!api._pageStill(el)) return 'sport';
     const team = ((j && j.teams) || [])[0];
     if (!team) throw 0;
@@ -27,7 +29,7 @@ async function run(text, api) {
     return 'sport';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Team</h2><p>No team turned up for that name.</p>';
+    el.innerHTML = '<h2>Team</h2><p>The sports API is currently blocking the request. Try again later.</p>';
     return 'sport';
   }
 }

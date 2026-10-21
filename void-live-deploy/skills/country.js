@@ -140,7 +140,7 @@ async function run(text, api) {
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {
-    const r = await fetch('https://restcountries.com/v3.1/name/' + encodeURIComponent(q.name) + '?fields=name,capital,population,currencies,languages,area,flag,region,subregion,continents,borders,idd,car,cca3,timezones', { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+    const r = await fetch('https://restcountries.com/v3.1/name/' + encodeURIComponent(q.name) + '?fields=name,capital,population,currencies,languages,area,flag,region,subregion,continents,borders,idd,car,cca3,timezones', { mode: 'cors', headers: { 'Accept': 'application/json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
     const all = r.ok ? await r.json() : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();

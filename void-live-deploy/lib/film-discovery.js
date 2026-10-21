@@ -11,7 +11,7 @@ const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-
 
 // user words -> the iTunes genre they mean (matched against the genre the source gives each film)
 export const GENRES = [
-  [/^(?:sci-?\s?fi|science\s+fiction|scifi)$/, 'Sci-Fi & Fantasy', /sci-?fi/i], [/^fantasy$/, 'Sci-Fi & Fantasy', /fantasy/i],
+  [/^(?:sci-?\s?fi|sc-?i-?fi|science\s+fiction|scifi)$/, 'Sci-Fi & Fantasy', /sci-?i?-?fi/i], [/^fantasy$/, 'Sci-Fi & Fantasy', /fantasy/i],
   [/^horror$/, 'Horror', /horror/i], [/^(?:comedy|comedies)$/, 'Comedy', /comed/i], [/^dramas?$/, 'Drama', /drama/i],
   [/^thrillers?$/, 'Thriller', /thriller/i], [/^(?:action|adventure)$/, 'Action & Adventure', /action|adventure/i],
   [/^(?:romance|romantic)$/, 'Romance', /romance/i], [/^westerns?$/, 'Western', /western/i], [/^(?:documentary|documentaries)$/, 'Documentary', /documentar/i],
@@ -29,14 +29,14 @@ export function span(w) {
   return null;
 }
 const DEC = '(?:the\\s+)?(?:\\d{4}s|[2-9]0[\'’]?s|twenties|thirties|forties|fifties|sixties|seventies|eighties|nineties|\\d{4})';
-const GEN = '(?:sci-?\\s?fi|science\\s+fiction|scifi|fantasy|horror|comed(?:y|ies)|dramas?|thrillers?|action|adventure|romance|romantic|westerns?|documentar(?:y|ies)|animated|animation|anime|musicals?|classics?)';
+const GEN = '(?:sci-?\\s?fi|sc-?i-?fi|science\\s+fiction|scifi|fantasy|horror|comed(?:y|ies)|dramas?|thrillers?|action|adventure|romance|romantic|westerns?|documentar(?:y|ies)|animated|animation|anime|musicals?|classics?)';
 const LEAD = '^(?:please\\s+)?(?:(?:find|show|discover|search\\s+for|get|give|list|recommend)\\s+(?:me\\s+|us\\s+)?)?(?:(?:a|an|some|the|any)\\s+)?';
 const NAME = '([\\p{L}][\\p{L} .\'’-]{1,40}?)';
 const re = (s) => new RegExp(s, 'iu'); // void-review: ok (only called with the constant pattern strings above, never with user text)
 const BY = re(LEAD + '(?:(' + GEN + ')\\s+)?(?:films?|movies?)\\s+(?:by|directed\\s+by|from\\s+director)\\s+' + NAME + '(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
 const KIND = re(LEAD + '(?:(' + DEC + ')\\s+)?(?:(' + GEN + ')\\s+)?(?:films?|movies?)(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
 const KIND2 = re(LEAD + '(?:(' + DEC + ')\\s+)?(' + GEN + ')(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
-const TITLE = [re('^(?:film|movie)\\s+(?:discovery|metadata|info|search)\\s+(?:for|of|about)\\s+(.+)$'), re('^(?:json\\s+)?(?:film|movie)\\s+metadata\\s+(?:for|of)\\s+(.+)$')];
+const TITLE = [re('^(?:yo\\s+)?(?:film|movie)\\s+(?:discovery|metadata|info|search)\\s+(?:for|of|about)\\s+(.+)$'), re('^(?:yo\\s+)?(?:json\\s+)?(?:film|movie)\\s+metadata\\s+(?:for|of)\\s+(.+)$')];
 const TOPIC = re('^(?:find|discover|search)(?:\\s+me)?\\s+(?:films?|movies?)\\s+(?:about|for)\\s+(.+)$');
 
 /**

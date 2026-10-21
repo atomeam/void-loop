@@ -55,8 +55,8 @@ async function run(text, api) {
 export default {
   name: 'film-metadata',
   examples: ['find me a sci-fi film from the 80s', 'films by Kurosawa', 'film metadata for Ikiru', 'find films about space'],
-  nearMisses: ['films', 'voids fillms', 'best films of 2025', 'how do I film a video', 'find me a film', 'pick a movie to watch with me', 'film me a video'],
-  match(lower, text) { return !!parseDiscoveryAsk(text); },
+  nearMisses: ['films', 'voids fillms', 'best films of 2025', 'how do I film a video', 'find me a film', 'pick a movie to watch with me', 'film me a video', 'yo film metadata'],
+  match(lower, text) { return !!parseDiscoveryAsk(text || lower); },
   run,
   suite() {
     const q = parseDiscoveryAsk('find me a sci-fi film from the 80s');
