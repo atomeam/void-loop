@@ -2,7 +2,7 @@
 // Run: node --test tools/stage-camera.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { HOME, MIN_Z, MAX_Z, SPEED, camera, toStage, toScreen, zoomAt, pan, heading, fly, ease, atHome, transformOf, wheelFactor, toStored, fromStored } from '../void-live-deploy/lib/stage-camera.js';
+import { HOME, MIN_Z, MAX_Z, SPEED, WARP, THROTTLE, camera, toStage, toScreen, zoomAt, pan, heading, fly, ease, atHome, transformOf, wheelFactor, toStored, fromStored } from '../void-live-deploy/lib/stage-camera.js';
 
 const near = (a, b, eps = 1e-6) => Math.abs(a - b) < eps;
 
@@ -35,7 +35,7 @@ test('held keys fly the eye: D moves the view right (the stage passes leftwards)
   for (let i = 0; i < 120; i++) ({ cam, vel } = fly(cam, vel, {}, 1 / 60));
   assert.deepEqual(vel, { x: 0, y: 0 }, 'two seconds after letting go it has come to rest');
   const stillStep = fly(camera(), { x: 0, y: 0 }, { w: true }, 1 / 60, { still: true });
-  assert.ok(near(stillStep.vel.y, -SPEED) && near(stillStep.cam.y, SPEED / 60), 'reduced motion: full speed at once, no easing');
+  assert.ok(near(stillStep.vel.y, -SPEED * THROTTLE) && near(stillStep.cam.y, SPEED * THROTTLE / 60), 'reduced motion: full forward throttle at once, no easing');
   const asleep = fly(camera(), { x: 0, y: 0 }, { d: true }, 5, { still: true });
   assert.ok(asleep.cam.x >= -SPEED * 0.25 - 1e-6, 'a frame that slept for seconds moves a quarter second at most');
 });
@@ -72,4 +72,13 @@ test('dynamic scale (asked by Verse): a picture swells to 8% at the screen centr
   assert.ok(nearLook(1).scale > nearLook(0.5).scale && nearLook(0.5).scale > 1);
   assert.match(nearLook(0.5).shadow, /^drop-shadow\(0 \d+px \d+px rgba\(0,0,0,0\.\d\d\)\)$/);
   assert.equal(nearLook(7).scale, NEAR_SCALE); assert.equal(nearLook('x').scale, 1);
+});
+
+test('warp and forward throttle are more extreme than normal flight or the scroll', () => {
+  const normal = fly(camera(), { x: 0, y: 0 }, { w: true }, 1, { still: true });
+  const warp = fly(camera(), { x: 0, y: 0 }, { w: true }, 1, { still: true, warp: true });
+  assert.ok(Math.abs(normal.vel.y) > SPEED * 0.9, 'forward throttle is stronger than base speed');
+  assert.ok(Math.abs(warp.vel.y) > Math.abs(normal.vel.y) * (WARP * 0.9), 'warp is far faster than normal forward: ' + Math.abs(warp.vel.y));
+  const scroll = Math.abs(1 - wheelFactor(120));
+  assert.ok(Math.abs(warp.vel.y) > scroll * 1000, 'warp forward is more extreme than a full scroll tick');
 });

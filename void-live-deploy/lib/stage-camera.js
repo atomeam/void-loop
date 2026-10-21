@@ -13,6 +13,8 @@
 export const HOME = Object.freeze({ x: 0, y: 0, z: 1 });
 export const MIN_Z = 0.25, MAX_Z = 4; // a quarter to four times: far enough to see a whole stage, close enough to read a sticky
 export const SPEED = 900; // px/s at full speed, in screen pixels (the eye moves at the same pace however far it is zoomed)
+export const WARP = 6; // warp mode multiplier (Shift): far more extreme than normal flight or the scroll zoom
+export const THROTTLE = 2.4; // forward (W / ArrowUp) is stronger than lateral, more aggressive than wheel zoom
 export const ACCEL = 6; // how quickly held keys reach full speed and let go come to rest (per second, exponential)
 export const LAND = 8; // how quickly landing glides home (per second, exponential)
 export const EPS = 0.5; // nearer home than this, in pixels or hundredths of zoom, counts as home
@@ -50,8 +52,12 @@ export function heading(keys) {
  * leftwards). Speed eases in while a key is held and out when it is let go (ACCEL), unless `still` (reduced motion): then
  * full speed at once and a dead stop. Returns the new camera and velocity (screen px/s). Pure.
  */
-export function fly(cam, vel, keys, dt, { still = false, speed = SPEED } = {}) {
-  const h = heading(keys), len = Math.hypot(h.x, h.y) || 1, want = { x: (h.x / len) * speed, y: (h.y / len) * speed };
+export function fly(cam, vel, keys, dt, { still = false, speed = SPEED, warp = false } = {}) {
+  const h = heading(keys), len = Math.hypot(h.x, h.y) || 1;
+  // forward throttle is stronger than strafe; warp multiplies everything far past the scroll
+  const fwd = (keys && (keys.w || keys.arrowup)) ? THROTTLE : 1;
+  const mult = (warp ? WARP : 1) * fwd;
+  const want = { x: (h.x / len) * speed * mult, y: (h.y / len) * speed * mult };
   const t = Math.min(0.25, Math.max(0, num(dt))); // a tab that slept does not leap on waking
   const v = vel || { x: 0, y: 0 };
   const k = still ? 1 : 1 - Math.exp(-ACCEL * t);

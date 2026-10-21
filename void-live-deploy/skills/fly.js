@@ -21,7 +21,8 @@ const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '')
 export function flyAskOf(text) {
   const t = CLEAN(text);
   if (/^(?:(?:let(?:'s| me| us)|i want to|can i|could i)\s+)?(?:fly|float|look|wander|roam|move|zoom)\s+(?:around|about)(?:\s+(?:in|on|the|my)?\s*(?:the\s+)?(?:void|stage|(?:verse|v01d)|here))?(?:\s+please)?$/.test(t)) return 'fly';
-  if (/^(?:(?:enter|start|turn on|open|go to)\s+)?(?:fly|flying|flight|explore|explorer|camera|free[- ]?look|look[- ]around)\s+mode(?:\s+on)?$/.test(t)) return 'fly';
+  if (/^(?:(?:enter|start|turn on|open|go to)\s+)?(?:fly|flying|flight|explore|explorer|camera|free[- ]?look|look[- ]around|warp)\s+mode(?:\s+on)?$/.test(t)) return 'fly';
+  if (/^(?:warp|engage warp|warp speed|go to warp)$/.test(t)) return 'fly';
   if (/^(?:(?:let(?:'s| me)\s+)?explore|fly (?:around|over|through)|look (?:around|over|at))\s+(?:the\s+|my\s+)?(?:whole\s+)?(?:void|stage|(?:verse|v01d)|cards|things)$/.test(t)) return 'fly';
   if (/^(?:land|stop flying|stop (?:the )?(?:flight|camera|flying)|(?:fly|flying|flight|camera) mode off|exit (?:fly|flying|camera) mode|back to (?:the )?normal view|reset (?:the )?(?:view|camera)|land (?:the )?camera)$/.test(t)) return 'land';
   return null;
@@ -61,7 +62,7 @@ function loop(t) {
   S.raf = 0;
   const dt = S.last ? (t - S.last) / 1000 : 1 / 60; S.last = t;
   const idle = !Object.keys(S.keys).length && !S.vel.x && !S.vel.y;
-  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still() }));
+  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still(), warp: !!S.keys.shift }));
   if (S.landing) S.cam = ease(S.cam, HOME, dt, { still: still() });
   apply();
   if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; depth(st); } tell(); keep(); return; }
@@ -182,9 +183,9 @@ async function run(text, api) {
   const what = flyAskOf(text);
   if (!what) return 'none';
   if (what === 'fly') {
-    if (!takeOff()) { api.say(S.flying ? 'already flying · WASD or the arrows to move · scroll to zoom · Esc to land' : 'no stage to fly over'); return 'fly'; }
+    if (!takeOff()) { api.say(S.flying ? 'already flying · WASD · Shift for warp · W is the strong throttle · scroll to zoom · Esc to land' : 'no stage to fly over'); return 'fly'; }
     const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · WASD or the arrows to move · drag to look around · scroll to zoom · Esc to land');
+    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · WASD · Shift warp (extreme) · W throttle stronger than scroll · drag to look · scroll to zoom · Esc to land');
     return 'fly';
   }
   api.say(land() ? 'landed' : 'already on the ground · "fly around" to take off');
