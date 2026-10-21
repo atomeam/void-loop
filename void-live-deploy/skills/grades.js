@@ -4,7 +4,9 @@
  * "what is my gpa A B B+ A-", "gpa with A 4 credits, B+ 3 credits, C 3 credits", "weighted gpa A in AP, B+ honors, A-",
  * "what's my gpa if i got 3 A's and 2 B's", "gpa calculator", "i have an 85 and my final is worth 20% what do i need to get a 90",
  * "what grade do i need on my final", "my gpa is 3.2 with 60 credits and i got a 3.8 this semester with 15 credits",
- * "what gpa do i need next semester with 15 credits to raise my 3.2 with 60 credits to 3.4", "what letter grade is an 87".
+ * "what gpa do i need next semester with 15 credits to raise my 3.2 with 60 credits to 3.4", "what letter grade is an 87",
+ * "homework 95 worth 20%, tests 78 worth 50%, quizzes 88 worth 30%" (category-weighted class grade),
+ * "i had an 85 and got a 92 on my final worth 20%, what is my grade now" (the grade a final left you with).
  * Built the way the most-used tools do it (the credit-weighted GPA of the big GPA calculators, RogerHub's final-grade
  * formula) and better than them: one plain ask instead of a form, letters, percents, credits and AP/honors in any mix,
  * every answer shows its working, and the scale it used is on the card.
@@ -122,6 +124,21 @@ function gradesOf(text) {
       || t.match(/^what\s+(letter\s+grade|percent(?:age)?)\s+is\s+(?:an?\s+)?([0-4](?:\.\d{1,2})?)\s+gpa$/);
     if (m) { const g = /^[0-4]/.test(m[1]) ? +m[1] : +m[2]; const want = /^[0-4]/.test(m[1]) ? m[2] : m[1]; if (g <= 4) return { kind: 'gpaLetter', gpa: g, want: /perc|%/.test(want) ? 'percent' : 'letter' }; }
   }
+  // a class grade from weighted categories: "homework 90 worth 20%, tests 80 worth 50%, quizzes 85 worth 30%"
+  const cats = categoriesOf(t);
+  if (cats) return { kind: 'cats', cats };
+  // the grade a final left you with: "i had an 85 and got a 92 on my final worth 20%, what is my grade now"
+  if (/\b(?:final|exam)\b/.test(t) && !/\b(?:need|needs|have\s+to|must|lowest|minimum|remind|calendar|schedule|when\s+is|study)\b/.test(t)) {
+    const fs = t.match(/(?:got|scored|score|made|received|earned|get|getting)\s+(?:an?\s+)?(\d{1,3}(?:\.\d+)?)\s*(?:%|percent)?\s+on\s+(?:my|the)\s+(?:final|exam|final\s+exam)/)
+      || t.match(/(?:final|exam)\s+(?:score|grade|mark)\s+(?:is|was|of)\s+(?:an?\s+)?(\d{1,3}(?:\.\d+)?)/);
+    const cur = t.match(/(?:i\s+(?:had|have|was\s+at|am\s+at)|i'm\s+at|i\s+was\s+at|my\s+(?:class\s+)?grade\s+(?:is|was)|going\s+in\s+with|with)\s+(?:an?\s+)?(\d{1,3}(?:\.\d+)?)\s*(?:%|percent)?(?!\s*(?:%|percent)?\s+on\s)/);
+    const w = t.match(/(?:final|exam)\s+(?:exam\s+)?(?:is\s+|was\s+)?(?:worth|counts?\s+(?:for|as)|counted\s+(?:for|as)|weighs?|weighted(?:\s+at)?|=)\s+(\d{1,2}(?:\.\d+)?)\s*(?:%|percent)/)
+      || t.match(/\bworth\s+(\d{1,2}(?:\.\d+)?)\s*(?:%|percent)/) || t.match(/(\d{1,2}(?:\.\d+)?)\s*(?:%|percent)\s+(?:final|exam)/);
+    if (fs && cur && w && /\b(?:grade|what|where|how|overall|end\s+up|finish|now)\b/.test(t)) {
+      const current = +cur[1], final = +fs[1], weight = +w[1];
+      if (current <= 120 && final <= 120 && weight > 0 && weight < 100) return { kind: 'finalResult', current, final, weight };
+    }
+  }
   // the score needed on a final
   if (/\b(?:final|exam|finals)\b/.test(t) && /\b(?:need|needs|have\s+to|must|lowest|minimum|least|get|make|score)\b/.test(t) && !/\b(?:remind|calendar|schedule|when\s+is|study)\b/.test(t)) {
     const cur = t.match(/(?:i\s+(?:have|got|am\s+at|'m\s+at|currently\s+have)|i'm\s+at|my\s+(?:current\s+|class\s+)?grade\s+is|current(?:ly)?\s+(?:grade\s+)?(?:is\s+|of\s+|at\s+)?|sitting\s+at|with)\s+(?:an?\s+)?(\d{1,3}(?:\.\d+)?)\s*(?:%|percent)?(?!\s*(?:%|percent)?\s*(?:of|on)\s)/);
@@ -160,6 +177,62 @@ function gradesOf(text) {
     return { kind: 'gpa', courses, weighted: /\bweighted\b/.test(t) && !/unweighted/.test(t) };
   }
   return null;
+}
+
+
+// ---- weighted categories: "homework 90 worth 20%, tests 80 worth 50%", "tests are 50% and i have a 78", "hw 20% 95"
+const CAT = '(homework|hw|home\\s*work|tests?|exams?|quizz?(?:es)?|quiz|labs?|lab\\s+reports?|participation|attendance|midterms?|mid-terms?|final(?:\\s+exam)?|projects?|essays?|papers?|classwork|class\\s*work|assignments?|discussions?|presentations?|reading|readings|in-class|warm-?ups?|notebooks?|journals?|practice|portfolio)';
+function categoriesOf(t) {
+  if (/\b(?:gpa|credits?|need|needs|remind|calendar|schedule|due|study\s+plan)\b/.test(t)) return null;
+  const segs = t.split(/\s*(?:,|;|\band\b|\bplus\b|\n)\s*/).filter(Boolean);
+  const out = []; const re = new RegExp('^(?:(?:my|the|i\\s+have\\s+(?:an?\\s+)?|i\\s+got\\s+(?:an?\\s+)?|what\\s+is\\s+my\\s+grade\\s+(?:with|if)\\s+)\\s*)?' + CAT + '\\b(.*)$');
+  for (const sg of segs) {
+    const m = sg.replace(/^(?:what(?:'s|\s+is)\s+my\s+(?:class\s+|overall\s+|final\s+)?grade\s+(?:with|if|when)?\s*|calculate\s+my\s+grade\s*:?\s*|my\s+grade\s+(?:with|if)\s+)/, '').match(re);
+    if (!m) continue;
+    const rest = m[2];
+    let score = null, weight = null, x;
+    if ((x = rest.match(/(\d{1,3}(?:\.\d+)?)\s*%?\s*(?:worth|weighted(?:\s+at)?|counts?\s+(?:for|as)|at|weight|=|@|\()\s*(\d{1,2}(?:\.\d+)?)\s*%/))) { score = +x[1]; weight = +x[2]; }
+    else if ((x = rest.match(/(?:is|are|=|worth|counts?\s+(?:for|as)|weighted(?:\s+at)?|weight)?\s*(\d{1,2}(?:\.\d+)?)\s*%\s*(?:of\s+(?:my|the)\s+(?:grade|class)\s*)?(?:\)|:|-|and\s+i\s+have|and\s+i\s+got|with|i\s+have|i\s+got|at|score|grade)?\s*(?:an?\s+)?(\d{1,3}(?:\.\d+)?)\s*%?\s*$/))) { weight = +x[1]; score = +x[2]; }
+    else if ((x = rest.match(/(?:average|avg|grade|score)?\s*(?:is|of|:)?\s*(?:an?\s+)?(\d{1,3}(?:\.\d+)?)\s*%?\s*\(\s*(\d{1,2}(?:\.\d+)?)\s*%\s*\)/))) { score = +x[1]; weight = +x[2]; }
+    if (score == null || weight == null || score > 150 || weight <= 0 || weight > 100) continue;
+    const name = m[1].replace(/\s+/g, ' ');
+    out.push({ name: name === 'hw' ? 'homework' : name, score, weight });
+  }
+  if (out.length < 2) return null;
+  const sum = out.reduce((a, c) => a + c.weight, 0);
+  if (sum > 100.5 && sum !== 0) return null;
+  return out;
+}
+function catsMath(cats) {
+  const sum = cats.reduce((a, c) => a + c.weight, 0);
+  const pts = cats.reduce((a, c) => a + c.score * c.weight, 0);
+  return { sum, grade: pts / sum, pts };
+}
+function catsCard(q, api) {
+  const { showPage, esc } = api; const cats = q.cats; const r = catsMath(cats); const L = letterOf(r.grade);
+  const full = Math.abs(r.sum - 100) < 0.5;
+  // which category moves the grade most: 10 more points there adds weight/sum x 10
+  const best = cats.filter((c) => c.score < 100).sort((a, b) => b.weight - a.weight || a.score - b.score)[0];
+  const rows = cats.map((c) => '<li><b>' + esc(c.name) + '</b> ' + esc(pctTxt(c.score)) + ' \u00d7 ' + esc(pctTxt(c.weight)) + ' = ' + esc(fmt(c.score * c.weight / 100, 1)) + ' points</li>').join('');
+  const left = 100 - r.sum;
+  showPage((el) => { el.innerHTML = '<h2>Class grade</h2><div class="sub">' + cats.length + ' weighted categories' + (full ? '' : ', ' + esc(pctTxt(r.sum)) + ' of the grade so far') + '</div>'
+    + BIG(esc(pctTxt(r2(r.grade)))) + '<div class="sub">' + esc((/^[AEF]/.test(L.l) ? 'an ' : 'a ') + L.l + ' (' + L.p.toFixed(1) + ' on a 4.0 scale)') + '</div>'
+    + '<ul>' + rows + '</ul>'
+    + GREY('grade = each score \u00d7 its weight, added up, \u00f7 the weights (' + fmt(r.pts / 100, 1) + ' \u00f7 ' + fmt(r.sum / 100) + ').'
+      + (full ? '' : ' The weights add to ' + pctTxt(r.sum) + ', so this is your grade on what is graded so far; the other ' + pctTxt(left) + ' is still to come.')
+      + (best ? ' Raising ' + esc(best.name) + ' by 10 points lifts the class ' + fmt(best.weight / r.sum * 10, 1) + ' points, more than any other category.' : ''))
+    + (!full && left > 0 ? GREY('To finish with a 90 (an A), the last ' + pctTxt(left) + ' needs ' + esc(pctTxt(Math.max(0, r2((90 * 100 - r.pts) / left)))) + '; for an 80, ' + esc(pctTxt(Math.max(0, r2((80 * 100 - r.pts) / left)))) + '.') : '')
+    + '<div class="src">Weighted average as on a school syllabus (Canvas and Google Classroom weight grading categories this way)</div>'; });
+  return 'grades';
+}
+function finalResultCard(q, api) {
+  const { showPage, esc } = api; const w = q.weight / 100; const g = q.current * (1 - w) + q.final * w; const L = letterOf(g);
+  const move = g - q.current;
+  showPage((el) => { el.innerHTML = '<h2>Your grade after the final</h2><div class="sub">' + esc('you had ' + pctTxt(q.current) + ', got ' + pctTxt(q.final) + ' on a final worth ' + pctTxt(q.weight)) + '</div>'
+    + BIG(esc(pctTxt(r2(g)))) + '<div class="sub">' + esc((/^[AEF]/.test(L.l) ? 'an ' : 'a ') + L.l + ' \u00b7 ' + (Math.abs(move) < 0.05 ? 'no change' : (move > 0 ? 'up ' : 'down ') + fmt(Math.abs(move), 1) + ' points')) + '</div>'
+    + GREY('grade = current \u00d7 (1 \u2212 weight) + final \u00d7 weight = ' + q.current + ' \u00d7 ' + fmt(1 - w) + ' + ' + q.final + ' \u00d7 ' + fmt(w) + '. If your teacher counts the final inside the tests category instead, ask with the categories ("tests 80 worth 50%, homework 95 worth 20%, ...").')
+    + '<div class="src">Formula as in <a href="https://rogerhub.com/final-grade-calculator/" target="_blank" rel="noopener">RogerHub\u2019s final grade calculator</a>, run the other way</div>'; });
+  return 'grades';
 }
 
 // ---- cards
@@ -257,6 +330,8 @@ async function run(text, api) {
   if (q.kind === 'finalForm') return finalForm(api);
   if (q.kind === 'gpa') return gpaCard(q, api);
   if (q.kind === 'final') return finalCard(q, api);
+  if (q.kind === 'cats') return catsCard(q, api);
+  if (q.kind === 'finalResult') return finalResultCard(q, api);
   if (q.kind === 'letter') {
     const s = letterOf(q.pct);
     showPage((el) => { el.innerHTML = '<h2>Letter grade</h2><div class="sub">' + esc(pctTxt(q.pct)) + '</div>' + BIG(esc(s.l)) + '<div class="sub">' + s.p.toFixed(1) + ' grade points on a 4.0 scale</div>'
@@ -288,7 +363,7 @@ async function run(text, api) {
   return 'none';
 }
 
-export { gradesOf, coursesOf, gpaOf, neededOf, letterOf };
+export { gradesOf, coursesOf, gpaOf, neededOf, letterOf, categoriesOf, catsMath };
 export default {
   name: 'grades',
   examples: [
@@ -300,7 +375,9 @@ export default {
     'i have an 85 and my final is worth 20% what do i need to get a 90',
     'what grade do i need on my final',
     'my gpa is 3.2 with 60 credits and i got a 3.8 this semester with 15 credits',
-    'what letter grade is an 87'
+    'what letter grade is an 87',
+    'homework 95 worth 20%, tests 78 worth 50%, quizzes 88 worth 30%',
+    'i had an 85 and got a 92 on my final worth 20%, what is my grade now'
   ],
   nearMisses: [
     'what is the gpa of 3.5 and 4.0',
