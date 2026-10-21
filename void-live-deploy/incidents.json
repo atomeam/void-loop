@@ -2,6 +2,25 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-21T02:57:43.173Z",
+   "sha": "693ed54a06828f44bd859c5da7121d95c659af07",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39535694878",
+   "suite": "browser suite on main",
+   "checks": [
+    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
+    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
+    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
+    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
+    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
+    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/grow-clock.test.mjs",
+    "void-live-deploy/skills/film-metadata.js"
+   ]
+  },
+  {
    "at": "2026-10-21T02:47:11.716Z",
    "sha": "2c824eb75c052b0ab40b28addc34d027a8c4e9a9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39534521130",
@@ -791,32 +810,6 @@
     "void-live-deploy/self.json",
     "void-live-deploy/skills/deps.json",
     "void-live-deploy/skills/dim-void.js"
-   ]
-  },
-  {
-   "at": "2026-10-19T04:04:48.857Z",
-   "sha": "a4f85965441c5fe67e1528a7324970b2e3e7b814",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39197389214",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".githooks/pre-commit",
-    ".github/workflows/bench.yml",
-    ".github/workflows/deploy.yml",
-    ".github/workflows/grow-self.yml",
-    "AGENTS.md",
-    "docs/MAP.md",
-    "docs/playbooks/grow-self.md",
-    "domains/void.agents.log.md",
-    "domains/void.game-catalog.md",
-    "domains/void.game-research.md",
-    "domains/void.game-studio.md",
-    "tools/art-floor.json",
-    "tools/art-pixels.mjs",
-    "tools/art-pixels.test.mjs",
-    "tools/art-score.mjs"
    ]
   }
  ]
