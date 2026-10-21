@@ -1,7 +1,18 @@
 {
-  "at": "2026-10-20T12:18:30.019Z",
+  "at": "2026-10-21T12:28:20.564Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261020-2131-2",
+      "ask": "Implement a 'memory-preview' UI component to allow users to see memory snippets.",
+      "target": "voice:ask-20261020-2131-2"
+    },
+    {
+      "id": "ask-20261020-2131-3",
+      "ask": "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage.",
+      "target": "voice:ask-20261020-2131-3"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
