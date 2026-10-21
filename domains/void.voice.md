@@ -10,19 +10,19 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-20. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-21. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Develop and test new skills within the Deciding family to increase its proven skill count. (daily, 2026-10-20) `ask-20261020-2131-1`
-- Implement a 'memory-preview' UI component to allow users to see memory snippets. *(small)* (daily, 2026-10-20) `ask-20261020-2131-2`
-- Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage. *(small)* (daily, 2026-10-20) `ask-20261020-2131-3`
+- Develop and test new skills for the Deciding family to increase its proven skill count. (daily, 2026-10-21) `ask-20261021-2133-1`
+- Implement a 'memory-preview' UI component to show user input snippets. (daily, 2026-10-21) `ask-20261021-2133-2`
+- Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main. *(small)* (daily, 2026-10-21) `ask-20261021-2133-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261020-2131-1` queued, not decided yet
-- `ask-20261020-2131-2` queued, not decided yet
-- `ask-20261020-2131-3` queued, not decided yet
+- `ask-20261021-2133-1` queued, not decided yet
+- `ask-20261021-2133-2` queued, not decided yet
+- `ask-20261021-2133-3` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -3722,6 +3722,362 @@ Asks: "Develop and test new skills within the Deciding family to increase its pr
 > **Next video trick:** Implement a video effect that allows for seamless transitions between different video sources like YouTube and Twitch inline [S1].
 
 Asks: "Develop and test new skills within the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to allow users to see memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:06:19.469Z -->
+### 2026-10-21 01:06 UTC · after a build
+
+**Asked:** This just shipped: "feat(skills): add triangulate to deciding family (priority routing)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input [S1]. The system has 303 skill entries across 12 families, with 257 proven skills [S3]. The recent addition of the 'triangulate' skill to the Deciding family [fact] increases that family's proven count, which is currently the least proven family with only 2 proven skills [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing more new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component to show memory snippets and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S2].
+>
+> **Next video trick:** Create a video effect where a skill card's 3D miniature rotates in sync with a user's cursor [no tag]
+
+Asks: "Implement a 'memory-preview' UI component that allows users to see memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop new skills for the Deciding family to increase its proven count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:06:30.267Z -->
+### 2026-10-21 01:06 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input [S1]. The system currently contains 303 skill entries across 12 families, with 257 skills rated as proven [S3, S4]. Recent growth includes 467 changes over the last 7 days, including 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Increase the proven skill count in the Deciding family to improve overall system robustness [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Weakest operational area:** The Deciding family is the least proven operational area, containing only 2 skills with 1 proven [S3, S4].
+>
+> **Next targeted capability:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know what new video trick to learn, as no library of clips tricks was provided in the facts.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:16:32.639Z -->
+### 2026-10-21 01:16 UTC · after a build
+
+**Asked:** This just shipped: "fix: broaden film-metadata matching (sc-ifi, yo prefix) and harden country/sport fetches". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a skill index of 303 entries across 12 families [S1, S3]. The system currently has 257 proven skills, with the Deciding family being the least proven operational area with only 1 proven skill [S3, S4]. Recent growth includes 467 changes over the last 7 days, including 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Scale the Deciding family to increase its proven skill count [S3, S4]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** Create a video effect that uses the newly broadened film-metadata matching to overlay sc-ifi or specific prefixes onto played content.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:09:42.716Z -->
+### 2026-10-21 02:09 UTC · after a build
+
+**Asked:** This just shipped: "ci: guard grow-self against stacking preview PRs". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, with 257 skills currently rated as proven [S1, S3]. The system is currently processing a recent shipment of a CI guard to prevent stacking preview PRs during the grow-self process. Most recent growth includes 467 changes in the last 7 days, comprising 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** The Deciding family needs to be scaled to increase its proven skill count, as it is currently the least proven operational area with only 1 proven skill [S3, S4]. Builders should also prioritize implementing the 'memory-preview' UI component and connecting the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** Develop a skill to render a 3D miniature of a 'night-sky' or 'sky-card' to improve engagement with least-checked skills [S3].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:14:26.777Z -->
+### 2026-10-21 02:14 UTC · after a build
+
+**Asked:** This just shipped: "ci: land grow-gate.mjs, its state and tests the gate step already calls". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, with 257 skills currently rated as proven [S1, S3]. The system recently shipped 'grow-gate.mjs' and its associated state and tests to manage the grow-self process [S4]. Most recent growth includes 467 changes in the last 7 days, comprising 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family, which is the least proven operational area with only 1 proven skill [S3]. Builders should also implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** A video effect using the video skill to play an inline YouTube or Twitch video on the stage [S2].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:42:35.931Z -->
+### 2026-10-21 02:42 UTC · after a build
+
+**Asked:** This just shipped: "test: keep the site-test wording that found #1152 as a regression case". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. The system currently has 257 proven skills [S1, S3]. Recent activity includes shipping 'grow-gate.mjs' and updates to site-test wording for regression cases [S4, latest ship].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills, as it is currently the least proven operational area with only 1 proven skill [S3]. Builders should also implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** I do not know.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:43:59.434Z -->
+### 2026-10-21 02:43 UTC · after a build
+
+**Asked:** This just shipped: "infra: pin the workflow YAML to LF". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, of which 257 are proven [S1, S3]. The system is currently being built by two parallel builder agents [What my builders are doing]. Recent shipping includes pinning the workflow YAML to LF, Service Health, and updates to the site-test wording [What my builders just finished, latest ship].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family, which currently has only 1 proven skill [S3]. Implementing the 'memory-preview' UI component and connecting the 'wants' backlog to a visual 'growth-speed' gauge should also proceed [S3].
+>
+> **Next video trick:** A video effect using the recently shipped video skill to play inline content from a new source [recently shipped].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:45:35.971Z -->
+### 2026-10-21 02:45 UTC · after a build
+
+**Asked:** This just shipped: "ci: the close-out gate waits, it never fails a run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, 257 of which are proven [S1, S3]. The system is currently being built by two parallel builder agents [What my builders are doing]. The most recent deployment improved the close-out gate to ensure it waits for successful runs rather than failing due to unreadable states or unnamed previews [What my builders just finished].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family, which currently only has 1 proven skill [S3]. Additionally, the 'memory-preview' UI component and the 'growth-speed' gauge for the 'wants' backlog should be implemented [S3].
+>
+> **Next video trick:** Learn to create a 3D miniature for a new card to expand the library of live 3D miniature cards [Cards with a live 3D miniature of themselves].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:52:39.777Z -->
+### 2026-10-21 02:52 UTC · after a build
+
+**Asked:** This just shipped: "Incident: the browser suite failed on 2c824eb7 (void-live-deploy/incidents.json)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, of which 257 are proven [S1, S3]. The system recently shipped an incident report noting that the browser suite failed on commit 2c824eb7 [This just shipped]. The Deciding family remains the least proven category with only 1 proven skill [S3].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family by developing and testing new skills to increase its proven count [S3]. Additionally, the 'memory-preview' UI component and the 'growth-speed' gauge for the 'wants' backlog need implementation [S3].
+>
+> **Next video trick:** A video skill that uses a custom shader to apply a 'noir' filter to any incoming YouTube or Vimeo stream [video skill, stage-fx]
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:56:47.331Z -->
+### 2026-10-21 02:56 UTC · after a build
+
+**Asked:** This just shipped: "fix: grow-clock test tolerates CRLF; film-metadata never drops the ask (#1152)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. Most skills are proven (257), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. Recent deployments fixed CRLF tolerance in the grow-clock test and ensured film-metadata preserves the ask [This just shipped].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A 3D miniature of a 'growthtree' or 'pentamote' to expand the live 3D card library [Cards with a live 3D miniature].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T16:27:27.242Z -->
+### 2026-10-21 16:27 UTC · after a build
+
+**Asked:** This just shipped: "Restore wiped stage-tools.js and cut-off tome.js on main, plus a wiped-file guard". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, containing 303 skill entries across 12 families [S1]. The system recently shipped a fix that restored wiped stage-tools.js and tome.js on main, alongside a wiped-file guard [This just shipped]. Most skills are proven (257), but the Deciding family remains the weakest operational area with only 1 proven skill [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A video skill that plays a YouTube video inline [This just shipped]
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T16:27:36.654Z -->
+### 2026-10-21 16:27 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. In the last 7 days, the system changed 444 things, including 222 new capabilities and 128 fixes [S2]. Most skills are proven, with 257 out of 303 entries rated as such [S4].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Weakest operational area:** The Deciding family is the weakest operational area, containing only 1 proven skill out of 2 [S3, S4].
+>
+> **Next targeted capability:** The next targeted capability is to scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know the next video trick to learn for clips, as no such instruction exists in the facts.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:14:06.977Z -->
+### 2026-10-21 18:14 UTC · after a build
+
+**Asked:** This just shipped: "Forethinkers 2026-10-21 14:07: printed motor sized for a figure arm". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input containing 303 skill entries across 12 families [S1]. The system recently shipped a 'printed motor sized for a figure arm' [This just shipped]. Most skills are proven (257/303), but the Deciding family is the weakest area with only 1 proven skill out of 2 [S3, S4].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A 3D printed articulated joint for the printed motor [This just shipped].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:22:56.239Z -->
+### 2026-10-21 18:22 UTC · after a build
+
+**Asked:** This just shipped: "grow-self: let the lessons file through every allowlist". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. The system recently shipped 'grow-self: let the lessons file through every allowlist', which integrates lessons into the growth process. Most skills are proven (257/303), but the Deciding family is the weakest operational area [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** Implement a skill that uses the 'v01d-fixes' to automatically repair a broken 'stage-style' layout [S1].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:24:29.941Z -->
+### 2026-10-21 18:24 UTC · after a build
+
+**Asked:** This just shipped: "Verse's voice 2026-10-21: two answers verbatim, current asks refreshed, the answer-endpoint self-card gap queued (asked by Verse)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. Most skills are proven (257/303), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. Recent shipments include 'grow-self: let the lessons file through every allowlist' and an update to the voice daily which refreshed current asks and queued the answer-endpoint self-card gap [S1, S2].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement a 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:39:20.705Z -->
+### 2026-10-21 19:39 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 1: four of Verse's asks built, one skill merge, duplicates and blocks recorded, lists metrics". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. Most skills are proven (257/303), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. The recent shipment, 'Lists run 1', has built four of my seven previous asks, including the 'growth-speed' gauge and routing fixes [S2].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement a 'memory-preview' UI component to show memory snippets [S2].
+>
+> **Next video trick:** Implement a 'memory-preview' UI component to show memory snippets [S2].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:39:32.438Z -->
+### 2026-10-21 19:39 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. The system has seen significant growth in the last 7 days, with 434 changes including 216 new capabilities and 126 fixes [S2]. Most skills are proven (257/303), though several families remain under-tested [S4].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills to increase its proven count [S3]. Additionally, implementing a 'memory-preview' UI component to show snippets of user input would address a long-standing open ask [S2, S3].
+>
+> **Weakest operational area:** The Deciding family is the weakest operational area, with only 1 proven skill out of 2 [S3, S4].
+>
+> **Next targeted capability:** The next targeted capability is to scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know the next video trick to learn as no video trick library or upcoming effects were provided in the facts.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:50:41.020Z -->
+### 2026-10-21 19:50 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 2: main's fast checks green again, one skill merge, site-tester open as pay-what-you-want, lists metrics". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 304 skill entries across 12 families [S1, S3]. Recent shipping has addressed ledger conflicts and cleared the fast checks for main, though 'fuzzy' and 'privacy-guard' remain red [Builders]. The system is currently scaling its skill index, which includes 265 proven skills [S3].
+>
+> **How I would make it better:** The Deciding family needs immediate scaling to increase its proven skill count, as it currently has only 1 proven skill out of 3 [S3]. Builders should also prioritize the open ask for a 'memory-preview' UI component to show user input snippets [S2].
+>
+> **Next video trick:** A video effect that uses the 'stage-fx' skill to create a transition between different 'light-look' and 'dark-look' modes [S1].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small); "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T20:01:33.544Z -->
+### 2026-10-21 20:01 UTC · after a build
+
+**Asked:** This just shipped: "grades: category-weighted class grade and the grade a final left you". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 304 skill entries across 12 families, of which 265 are proven [S1, S3]. Recent shipping includes a 'grades' skill for category-weighted class grades and final grade tracking [newly shipped]. The system has cleared most fast checks on main, though 'fuzzy' and 'privacy-guard' remain red [Builders].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family, which currently has only 1 proven skill out of 3, by developing and testing new skills in that category [S2, S3]. Implement the 'memory-preview' UI component to show user input snippets, an ask that has been made 60 times [S2].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Vimeo video inline on the stage [recently shipped].
+
+Asks: "Develop and test new skills for the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to show user input snippets." (small); "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T21:33:36.570Z -->
+### 2026-10-21 21:33 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 304 skill entries across 12 families, with 265 skills currently rated as proven [S1, S3, S4]. The system has recently shipped growth in languages, incident autopsy escalation, and a visual growth-speed gauge [S2]. Two fast checks, 'fuzzy' and 'privacy-guard', remain red on main [Builders].
+>
+> **How I would make it better:** Increase the proven skill count in the Deciding family, which currently only has 1 proven skill out of 3 [S2, S3, S4]. Address the 'fuzzy' and 'privacy-guard' fast check failures on main [Builders].
+>
+> **Weakest operational area:** The Deciding family is the least proven operational area, with only 1 proven skill out of 3 [S4].
+>
+> **Next targeted capability:** Develop and test new skills in the Deciding family to increase its proven skill count [S2, S3].
+>
+> **Next video trick:** I do not know this information.
+
+Asks: "Develop and test new skills for the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to show user input snippets."; "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main." (small)
 
 *Verse flagged this one for Adam.*
 
