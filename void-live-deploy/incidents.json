@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-21T15:36:11.930Z",
-   "sha": "e3b7f18a8cfaad6c45ffec409aaec26f237740f0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39626528141",
+   "at": "2026-10-21T15:37:10.383Z",
+   "sha": "8381453df8eea456e3701ddac8fefa631309fa39",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39626627202",
    "suite": "browser suite on main",
    "checks": [
     "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
