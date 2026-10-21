@@ -34,9 +34,10 @@ jobs:
           start() { gh workflow run "$1" --repo "$GITHUB_REPOSITORY" --ref main && echo "$(date -u +%H:%M) started $1" || echo "::warning title=Not started::$1"; }
           for i in $(seq 0 32); do
             # six ticks an hour: probe at :00, then grow-self and propose-fix take turns (each skips quietly when it has nothing to do)
-            case $((i % 6)) in
+            # grow-self on most ticks so hardenings happen faster (owner, 2026-10-21: upgrade the loop)
+            case $((i % 4)) in
               0) start probe-asks.yml ;;
-              1|3|5) start propose-fix.yml ;;
+              1) start propose-fix.yml ;;
               *) start grow-self.yml ;;
             esac
             if [ "$i" -lt 32 ]; then sleep 600; fi
