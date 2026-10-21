@@ -2,31 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-21T20:17:10.673Z",
+   "at": "2026-10-21T20:20:23.118Z",
+   "sha": "d18f925d3eb3a1742ed618fde7da89231a3b3801",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39666414728",
+   "suite": "browser suite on main",
+   "checks": [
+    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.growth.md",
+    "tools/checks.mjs",
+    "tools/grades.test.mjs",
+    "void-live-deploy/skills/grades.js"
+   ]
+  },
+  {
+   "at": "2026-10-21T19:53:54.313Z",
    "sha": "12211721c333099f09afe6dc579b974ef7370a25",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39664930344",
    "suite": "browser suite on main",
    "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "remember me on a device that already has your passkey signs in (no second Verse)"
+    "suite ran to the end"
    ],
    "touched": [
     "docs/MAP.md",
@@ -793,41 +792,6 @@
     "breathing: \"box breathing\" opens a guide whose dot climbs the square as \"Breathe in\" counts down; 4-7-8 switches the pattern and names its source; Stop pauses it"
    ],
    "touched": [
-    "tools/propose-fix.mjs",
-    "tools/propose-fix.test.mjs",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-19T12:34:54.179Z",
-   "sha": "0bbdbcf3bfd3cb874c0c97b85074f8d7aa115ba0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39250314516",
-   "suite": "browser suite on main",
-   "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "field minds: the attention field mind (Grok's attention drafts) turns a typed word into an attractor its look-alikes fall toward, clusters like with like, Law cycles affinity, two heads (F-032), lattice (F-029, its mind evolves) and causal (F-047), the morph touches the card only, Seal keeps no typed word, and with Worker and Web Audio deleted the mind thinks on the page and Sound says it is unavailable",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse",
-    "splat: \"view a gaussian splat\" opens a viewer with a file chooser, a demo, a described canvas and a status line; the demo draws a scene; a file that is not a splat says why (as an alert); a real .splat loads and draws; the keys do not break it; nothing is fetched from outside",
-    "splat: with reduced motion the scene holds still (it does not turn by itself)",
-    "coral: the heat card shows the reef watch reading for the Florida Keys (level, degree heating weeks, date) under \"Right now\", with what 4 and 8 mean, and keeps its sourced story",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "offering a routine: \"offer my morning\" asks for a name and sends nothing; \"offer my morning as Sam\" sends only the name, Sam and the two asks, and says the owner reviews it; \"routines from others\" lists the approved one with its author",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed, a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go, with a quiet \"calming the field\" pill showing while it is held back and gone after (asked by Verse)",
-    "stage pack b: \"turn on family gravity\" draws the sticky and the notepad (one family) together until they settle (saved by the stage), leaves the clock where it was, and \"family gravity off\" stops it"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml",
-    ".github/workflows/propose-fix.yml",
     "tools/propose-fix.mjs",
     "tools/propose-fix.test.mjs",
     "void-live-deploy/void.growth.json"
