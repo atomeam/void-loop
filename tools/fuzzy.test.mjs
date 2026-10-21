@@ -100,7 +100,8 @@ assert.ok(rv.own.size > 500, 'the skills carry a vocabulary: ' + rv.own.size);
 let untouched = 0;
 for (const sk of real) for (const ex of [...(sk.examples || []), ...(sk.nearMisses || [])]) { const c = correct(ex, rv); if (c.text === ex) untouched++; else assert.fail(sk.name + ': ' + JSON.stringify(ex) + ' -> ' + JSON.stringify(c.text)); }
 assert.ok(untouched > 500, 'every example and near miss of every skill reads as typed: ' + untouched);
-for (const [typed, want, owner] of [['tranlsate hello to spanish', 'translate hello to spanish', 'translate'], ['recipie for pancakes', 'recipe for pancakes', 'recipe'],
+// translate lives in the languages family since lists run 1 (2026-10-21): the corrected ask reaches languages, which answers as translate
+for (const [typed, want, owner] of [['tranlsate hello to spanish', 'translate hello to spanish', 'languages'], ['recipie for pancakes', 'recipe for pancakes', 'recipe'],
   ['distnace from london to paris', 'distance from london to paris', 'distance'], ['what rhymes with ornage', 'what rhymes with orange', 'words'], ['open a notpad', 'open a notepad', 'notepad']]) {
   const c = correct(typed, rv); assert.equal(c.text, want, typed);
   const sk = real.find((s) => s.match(c.text.toLowerCase(), c.text)); assert.equal(sk && sk.name, owner, typed + ' reaches ' + owner);

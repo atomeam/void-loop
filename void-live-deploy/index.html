@@ -845,7 +845,7 @@
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     /* the browser's own look stays out (owner, 2026-10-18: "protecting the aesthetic perimeter"): selected text takes Verse's violet, every scrolling
        box gets a thin translucent pill with no arrows, and a toggle pill that is on looks on */
-    ::selection, body::selection, html::selection { background: rgba(150,110,255,.42); color: #fff; }
+    ::selection { background: rgba(150,110,255,.42); color: #fff; }
     * { scrollbar-width: thin; scrollbar-color: rgba(190,170,255,.22) transparent; }
     ::-webkit-scrollbar { width: 6px; height: 6px; background: transparent; }
     ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
@@ -854,7 +854,7 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(190,170,255,.4); }
     /* asked by Verse (2026-10-18): the pressed pill sinks 2px and keeps a soft violet halo; a scrollbar stays a hairline until the pointer is on it */
     .vpage .tr-copy { transition: transform .12s ease, box-shadow .2s ease, background-color .2s ease; }
-    .vpage .tr-copy[aria-pressed="true"] { background: rgba(150,110,255,.28) !important; border-color: rgba(190,170,255,.6); color: #fff; transform: translateY(2px) !important; box-shadow: 0 0 10px rgba(150,110,255,.45), inset 0 1px 2px rgba(0,0,0,.35) !important; }
+    .vpage .tr-copy[aria-pressed="true"] { background: rgba(150,110,255,.28); border-color: rgba(190,170,255,.6); color: #fff; transform: translateY(2px); box-shadow: 0 0 10px rgba(150,110,255,.45), inset 0 1px 2px rgba(0,0,0,.35); }
     .vpage .tr-copy:active { transform: translateY(2px); }
     @media (prefers-reduced-motion: reduce) { .vpage .tr-copy { transition: none; } }
     ::-webkit-scrollbar { width: 4px; height: 4px; } :hover::-webkit-scrollbar { width: 10px; height: 10px; }

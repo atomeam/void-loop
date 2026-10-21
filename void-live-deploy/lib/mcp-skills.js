@@ -57,6 +57,17 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "pick-for-me",
+  "tool": "skill_pick_for_me",
+  "family": "words",
+  "familyName": "Words and the world",
+  "examples": [
+   "surprise me",
+   "pick something cozy",
+   "pick for me"
+  ]
+ },
+ {
   "skill": "recipe",
   "tool": "skill_recipe",
   "family": "words",
@@ -76,17 +87,6 @@ export const SKILL_TOOLS = [
    "what can i swap for buttermilk",
    "substitute for eggs in baking",
    "baking powder substitute"
-  ]
- },
- {
-  "skill": "technical-context",
-  "tool": "skill_technical_context",
-  "family": "words",
-  "familyName": "Words and the world",
-  "examples": [
-   "why is rust unwrap a risk",
-   "is unwrap risky in rust",
-   "technical context for unwrap"
   ]
  },
  {

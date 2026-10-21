@@ -52,6 +52,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Lists caught up, run 2 (Grok Bot, 2026-10-21)**: run 1's lists PR (https://github.com/atomeam/void-loop/pull/1195) was stuck on a ledger conflict and is merged. The fast checks that were red on main are green except two: fuzzy, privacy-guard (a standard's section number like "section 4.25.7.2" is no longer read as an address), map-coverage, star-parallax (D turns now; the test strafes with E), overlap (suntimes owns the bare sunrise ask, worldtime the named place; decision-matrix needs the words), and the generated files. Left: showcase (its files are in PR https://github.com/atomeam/void-loop/pull/1187) and claude-brain (needs the @anthropic-ai/sdk package installed where it runs). Site-tester is open in the store as pay-what-you-want until a paid rail is live; the alt-pay tests have their own fixture.
 - **Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/void-loop/pull/1194 and the lists PR)**: main had two wiped page scripts (`lib/stage-tools.js` was the word PLACEHOLDER_REPLACE_ME, `lib/tome.js` cut off mid-comment) and both are whole again with their intended changes, plus `tools/wiped-files.test.mjs` in the fast checks. Built from Verse's asks: backlog digest velocity, the autopsy's stall threshold (3 repeats), 'growth speed' opens the wants card's meter, 5 built-but-unlinked asks linked; spanish + translate are the `languages` family. Metrics in `domains/lists.metrics.json`.
 - **The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)**: the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is waiting for. The gate’s own tests run inside the workflow, the queueing job waits for the gate’s verdict, and `tools/grow-clock.test.mjs` follows the pull request path grow-self.yml now takes (it opens a pull request, so the deploy starts by the merge). Up for grabs: the fast checks are still red on main for reasons that are not the gate: `fuzzy`, `word-math`, `launch-fixes`, `privacy-guard`, and `map-coverage` (the committed `skills/index.json` lists `decision-log` and `memory-preview` while their skill files are not in the repo).
 
@@ -141,6 +142,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-10-21 run 1 · site tester (issues labelled site-test): 11 open
 - 2026-10-21 run 1 · frontier (domains/void.frontier.md): 20 open
 - 2026-10-21 run 1 · metrics: 7 closed, 12.5% blocked (top reason: no live payment rail for a paid store item), duplicate rate 33%, median 3.3 days from ask to built
+- 2026-10-21 run 2 · Verse's asks (void.asks.json): 23 open
+- 2026-10-21 run 2 · handoff Up for grabs: 25 open (the red fast checks item is done but two checks remain, so it stays listed)
+- 2026-10-21 run 2 · store queue (store.queue.jsonl): 1 open (creative-kit queued); site-tester open as pay-what-you-want
+- 2026-10-21 run 2 · wishlist (docs/wishlist.md): 11 rows
+- 2026-10-21 run 2 · convergence stages (docs/convergence.md): steps 2 to 10 open (9); one pair merged this run (suntimes and worldtime)
+- 2026-10-21 run 2 · site tester (issues labelled site-test): 12 open
+- 2026-10-21 run 2 · frontier (domains/void.frontier.md): 21 open
+- 2026-10-21 run 2 · metrics: 5 closed, 0% blocked (no block this run), duplicate rate 0%, median 0.9 days from queue to built
 
 ## Ladders
 

@@ -14,6 +14,9 @@ test('privacy scan flags personal data by kind, never the value, and passes plac
   assert.deepEqual(hits.map((h) => h.kind + h.line), ['email1', 'phone2', 'ipv43']);
   assert.ok(!JSON.stringify(hits).includes('jane'));
   assert.equal(scanText('mail jane.doe@gmail.com <!-- privacy:ok -->').length, 0);
+  // a standard's section number is not an address; a bare address after other words still is (lists run 2, 2026-10-21)
+  assert.equal(scanText('section 4.25.7.2 requires it; see clause 5.1.2.3 and § 1.2.3.4', 'domains/x.md').length, 0);
+  assert.equal(scanText('the reach was 81.2.69.160 today', 'domains/x.md').length, 1);
   assert.ok(GUARDED.test('domains/void.voice.md') && GUARDED.test('tools/fixtures/a.json') && !GUARDED.test('void-live-deploy/lib/x.js'));
 });
 test('the repo passes the privacy scan and the runtime guard', () => {

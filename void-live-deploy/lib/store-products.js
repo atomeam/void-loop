@@ -198,25 +198,21 @@ export default [
  },
  {
   "id": "site-tester",
-  "special": [
-   "cashapp",
-   "usdc-base"
-  ],
   "name": "Verse Site Tester",
-  "cents": 2400,
+  "cents": 0,
   "kind": "download",
   "pack": "sdk",
-  "pwyw": false,
+  "pwyw": true,
   "files": [
    {
     "key": "store/site-tester-v1.zip"
    }
   ],
-  "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything.",
+  "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything. Free while its checkout is set up; tip if it saves you a bug hunt.",
   "license": "Personal and commercial use on sites you own or may test",
   "tier": "commercial",
   "origin": "v01d",
-  "status": "needs-gumroad",
+  "status": "live",
   "published": "2026-10-15",
   "bytes": 26836,
   "contents": [
@@ -225,6 +221,7 @@ export default [
    "README.txt",
    "steps.json"
   ],
+  "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)",
   "wouldBe": "$24.00"
  }
 ];

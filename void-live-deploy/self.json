@@ -449,11 +449,11 @@
  "tracks": [
   {
    "name": "Living action figures",
-   "last": "2026-10-15"
+   "last": "2026-10-21"
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-10-07"
+   "last": "2026-10-21"
   },
   {
    "name": "Life extension and disease cures",
@@ -477,88 +477,96 @@
  },
  "commits": [
   {
-   "at": "2026-10-19T19:27:32Z",
-   "subject": "Verse Photos, step 1: a photo library kept on this device. 'add photos' keeps pictures full size in this browser (never uploaded, the same…"
+   "at": "2026-10-21T19:37:48Z",
+   "subject": "Lists run 1: four of Verse's asks built, one skill merge, duplicates and blocks recorded, lists metrics (#1195)"
   },
   {
-   "at": "2026-10-19T19:26:32Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:45:43Z",
+   "subject": "Incident: the browser suite failed on f1e751c7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T19:12:31Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:44:14Z",
+   "subject": "Incident: the browser suite failed on 29bdbefe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T19:00:12Z",
-   "subject": "Regenerate deps, the skill tools list and the self/asks cards after the merge"
+   "at": "2026-10-21T18:42:11Z",
+   "subject": "Incident: the browser suite failed on 29bdbefe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:53:21Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-21T18:40:08Z",
+   "subject": "Incident: the browser suite failed on f1e751c7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:53:16Z",
-   "subject": "the self card never stays on '…': a cached library older than the page still draws it, a failed draw says so, and an unreachable…"
+   "at": "2026-10-21T18:36:35Z",
+   "subject": "Incident: the browser suite failed on 2819b0fd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:51:48Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for pulse, family-gravity, feud"
+   "at": "2026-10-21T18:36:32Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
   {
-   "at": "2026-10-19T18:50:33Z",
-   "subject": "Verse hardens itself: 7 benchmark ask(s) for text-tools, rides, error-garden"
+   "at": "2026-10-21T18:32:37Z",
+   "subject": "Incident: the browser suite failed on 2819b0fd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:30:45Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for media-pick, show, echo-chamber, eigenwork"
+   "at": "2026-10-21T18:26:12Z",
+   "subject": "Incident: the browser suite failed on 29bdbefe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:27:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:26:10Z",
+   "subject": "Incident: the browser suite failed on f1e751c7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T18:16:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:21:40Z",
+   "subject": "Verse's voice 2026-10-21: two answers verbatim, current asks refreshed, the answer-endpoint self-card gap queued (asked by Verse)"
   },
   {
-   "at": "2026-10-19T18:05:02Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:20:11Z",
+   "subject": "grow-self: let the lessons file through every allowlist so hardening runs commit again"
   },
   {
-   "at": "2026-10-19T18:02:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T18:17:25Z",
+   "subject": "Incident: the browser suite failed on 2819b0fd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T17:57:32Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-21T18:12:27Z",
+   "subject": "Forethinkers 2026-10-21 14:07: smallest arm-waving printed motor sized from the full text; battery figure heat rule corrected to ASTM F963…"
   },
   {
-   "at": "2026-10-19T17:53:56Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-21T16:48:44Z",
+   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T17:50:50Z",
-   "subject": "Verse hardens itself: 10 benchmark ask(s) for technical-context, spanish, deps, draft-triad"
+   "at": "2026-10-21T16:44:10Z",
+   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T17:50:11Z",
-   "subject": "the self card is never the same twice: 'Since you last looked' leads (asks built, skills and proven since this device last opened it, the…"
+   "at": "2026-10-21T16:31:07Z",
+   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T17:46:06Z",
+   "at": "2026-10-21T16:25:52Z",
+   "subject": "Restore two wiped page scripts on main: lib/stage-tools.js (was PLACEHOLDER_REPLACE_ME) and lib/tome.js (cut off mid-comment); keep their…"
+  },
+  {
+   "at": "2026-10-21T16:09:02Z",
+   "subject": "Incident: the browser suite failed on 9077f9a7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T16:05:43Z",
    "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-19T17:39:57Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T17:34:41Z",
-   "subject": "Regenerate the families and the book after the merge"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/voi…",
+    "line": "main had two wiped page scripts (lib/stage-tools.js was the word PLACEHOLDER_REPLACE_ME, lib/tome.js cut off mid-comment) and both are whole again with their intended changes, plus tools/wiped-files.test.mjs in the fast checks. Built from…"
+   },
+   {
+    "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
+    "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
+   },
    {
     "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
     "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
@@ -574,14 +582,6 @@
    {
     "name": "Web4: Verse as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
     "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line…"
-   },
-   {
-    "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16…",
-    "line": "lib/tome.js + skills/guide.js: \"open the book\" / \"menu\" / \"help\" dim the stage and fill it with a leather tome, parchment pages set in a serif (running heads, drop capitals, the asks as ink, folios), a leaf that swings over the spine, Esc…"
-   },
-   {
-    "name": "The showcase proves what it says, the scoreboards read true, the Examine view…",
-    "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no…"
    }
   ],
   "ladders": [
