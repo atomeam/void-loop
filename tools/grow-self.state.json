@@ -1,0 +1,10 @@
+{
+  "status": "open",
+  "run": "backfill-2026-10-20",
+  "at": "2026-10-20T21:53:27Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable",
+  "try": "something unkeepable",
+  "closedAt": null,
+  "proof": null,
+  "note": "the last preview from before the close-out gate existed; the next run verifies it live before starting"
+}

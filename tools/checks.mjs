@@ -233,6 +233,7 @@ for (const [name, file] of [
   ['word-sweep', 'word-sweep.test.mjs'],
   ['telemetry-live', 'telemetry-live.test.mjs'],
   ['deploy-smoke', 'deploy-smoke.test.mjs'],
+  ['grow-gate', 'grow-gate.test.mjs'],
   ['grow-self', 'grow-self.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
   ['what-skills', 'what-skills.test.mjs'],
