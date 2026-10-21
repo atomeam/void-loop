@@ -2,12 +2,38 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-21T15:53:45.504Z",
+   "at": "2026-10-21T15:54:43.745Z",
+   "sha": "c9ba80fb5810d86ddcbe61e765646c882a8e8af6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39629560612",
+   "suite": "browser suite on main",
+   "checks": [
+    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
+    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
+    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
+    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
+    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
+    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/self-blocks.js",
+    "void-live-deploy/void.html"
+   ]
+  },
+  {
+   "at": "2026-10-21T15:51:07.292Z",
    "sha": "9b59a618579e29892f70cf74e35eb07ec695795e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39629092166",
    "suite": "browser suite on main",
    "checks": [
-    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
+    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
+    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
+    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
+    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
+    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
+    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
     "suite ran to the end"
    ],
    "touched": [
@@ -758,27 +784,6 @@
     "void-live-deploy/self.json",
     "void-live-deploy/skills/deps.json",
     "void-live-deploy/skills/telemetry-route.js",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-19T05:54:03.188Z",
-   "sha": "4a6edd73970f8566bb43d224cf80476dfb3c5df6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39206530201",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/actions.test.mjs",
-    "tools/telemetry-route.test.mjs",
-    "tools/test_void.mjs",
-    "tools/will-guard.test.mjs",
-    "tools/will.py",
-    "void-live-deploy/functions/api/will.js",
-    "void-live-deploy/lib/telemetry.js",
-    "void-live-deploy/lib/will-guard.js",
     "void-live-deploy/incidents.json"
    ]
   }
