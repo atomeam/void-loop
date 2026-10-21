@@ -3,15 +3,17 @@
 # nothing. This is the lane that thinks the work up from Verse's own files: tools/lacks.mjs ranks the skills by how little is proven about
 # them (no benchmark ask, a weak evidence tier, failed runs that name them), takes the example asks the top few already claim, and the
 # real page decides: tools/bench.mjs --probe types each into the page and only the asks that routed to the claiming skill become benchmark
-# rows (tools/append.mjs). The ones that did not are listed in the pull request as routing gaps for a builder. No model, no secret, no
-# network in the build job; the second job holds the write token and only moves the patch's bytes into a branch, after checking it touches
-# nothing but tools/bench.json and the agent log. The pull request is labelled "made by Verse" and "automerge": Verse's own review
-# (void-review.yml) is the gate, verify.yml takes it back if main's suite goes red, and at most one of these is open at a time.
+# rows (tools/append.mjs). The ones that did not are listed in the report as routing gaps for a builder. No model, no secret, no
+# network in the build job; the write job holds the token and only moves the patch's bytes onto main, after checking it touches
+# nothing but the benchmark, the art floors, the cycle, the gate's state, the log and the ledger. One preview is in flight at a time
+# (owner, 2026-10-20: "close out before next preview starts"): tools/grow-gate.mjs keeps the last preview's ask in
+# tools/grow-self.state.json, the next run types that ask into the live site and closes it only when it answers, and a run that cannot
+# close it stops with exit 0 instead of stacking another preview.
 name: Verse hardens itself
 
 on:
   schedule:
-    - cron: '41 */3 * * *' # every 3 hours (owner, 2026-10-19: "it upgrades extremely often and I dont have to babysit"); one hardening PR open at a time
+    - cron: '41 */3 * * *' # every 3 hours (owner, 2026-10-19: "it upgrades extremely often and I dont have to babysit"); one preview in flight, closed before the next starts
   workflow_dispatch:
     inputs:
       n:
@@ -34,6 +36,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read # the one-preview-at-a-time gate reads the labels of open pull requests
     outputs:
       passed: ${{ steps.settle.outputs.passed }}
       added: ${{ steps.settle.outputs.added }}
@@ -51,15 +56,29 @@ jobs:
       - name: Checks (no dependencies needed)
         run: node --test tools/lacks.test.mjs
 
-      # never pile up: one open hardening pull request at a time, so a failing one cannot be followed by ten more
-      - name: Is one already open?
+      # Never pile up (owner, 2026-10-20: "close out before next preview starts"). The old guard read a "verse hardens"
+      # label that nothing ever creates, so it passed on every run while the loop pushed preview after preview. This one
+      # reads the labels that are actually used, and it ends the job here: while a preview of Verse's own is open, this
+      # run stops with exit 0 and nothing later in it can generate another. A pull request list that cannot be read is
+      # treated the same way, so a failed call never lets the loop through. The open preview on the site is closed
+      # (verified live) further down, before anything new is probed; if it cannot be closed, that step also stops with
+      # exit 0 and says it is waiting.
+      - name: One preview at a time (open pull requests)
         id: open
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          n=$(gh pr list --repo "${{ github.repository }}" --label "verse hardens" --state open --json number --jq 'length' || echo 0)
-          echo "open=$n" >> "$GITHUB_OUTPUT"
-          [ "$n" = "0" ] || echo "::notice title=Nothing started::a hardening pull request is still open"
+          echo "open=1" >> "$GITHUB_OUTPUT"
+          state=$(node tools/grow-gate.mjs status)
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          [ "$state" = "closed" ] || echo "::notice title=Closing first::the last preview is still open; this run verifies it live before it starts another"
+          if ! prs=$(gh pr list --repo "${{ github.repository }}" --state open --json number,labels --jq '[.[] | select(any(.labels[]; .name == "made by Verse" or .name == "verse hardens"))] | length'); then
+            echo "::notice title=Waiting::this repository's open pull requests could not be read, so nothing new starts this cycle"
+            exit 0
+          fi
+          echo "prs=$prs" >> "$GITHUB_OUTPUT"
+          [ "$prs" = "0" ] || { echo "::notice title=Nothing started::$prs of Verse's own pull request(s) are still open; close or merge them before the next preview"; exit 0; }
+          echo "open=0" >> "$GITHUB_OUTPUT"
 
       - name: Think it up (what Verse lacks most)
         id: plan
@@ -71,8 +90,9 @@ jobs:
           echo "planned=0" >> "$GITHUB_OUTPUT"
           n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
           code=0; node tools/lacks.mjs plan --cycle --out "$RUNNER_TEMP/grow/cand.json" --n "$n" || code=$?
-          # the card cycle: every card gets a turn (tools/card-cycle.mjs); what the next cards lack and the smartest thing to build for each, then the cursor moves on
-          node tools/card-cycle.mjs --n "$n" --advance | tee -a "$GITHUB_STEP_SUMMARY" || true
+          # the card cycle: every card gets a turn (tools/card-cycle.mjs). Show the next cards here; the cursor moves only in
+          # the settle step, once this run has a patch. A run that stops (or cannot close the last preview) consumes no turn.
+          node tools/card-cycle.mjs --n "$n" | tee -a "$GITHUB_STEP_SUMMARY" || true
           case $code in
             0) echo "planned=1" >> "$GITHUB_OUTPUT"; node tools/lacks.mjs --n "$n" | tee -a "$GITHUB_STEP_SUMMARY" ;;
             3) echo "::notice title=Nothing lacking::every skill already has what it needs" ;;
@@ -97,20 +117,43 @@ jobs:
         run: |
           npx playwright-core install --with-deps chromium
           echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
-      - name: Sync void.html copies (what the probe serves)
+      # Close out before the next preview starts (owner, 2026-10-20). The last run's preview is typed into the live site;
+      # only when it answers is it marked closed. If it does not answer, nothing new is probed and this job stops with
+      # exit 0: the next run waits instead of stacking another preview on top of the last one.
+      - name: Close out the previous preview
+        id: closeout
         if: steps.plan.outputs.planned == '1'
+        run: |
+          echo "blocked=0" >> "$GITHUB_OUTPUT"
+          if [ "$(node tools/grow-gate.mjs status)" != "open" ]; then echo "no preview is waiting"; exit 0; fi
+          ask=$(node tools/grow-gate.mjs try)
+          [ -n "$ask" ] || { echo "::error title=No ask to close::the open preview has no ask, so it cannot be verified"; exit 1; }
+          echo "previous preview: $ask"
+          regex=$(node -e 'const s = process.argv[1]; console.log(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))' "$ask")
+          if VOID_SITE=https://a-to-mind.com VOID_CLAIMS_ONLY="^${regex}$" node tools/claims-verify.mjs --live --check; then
+            node tools/grow-gate.mjs close --proof "answered live on a-to-mind.com"
+            echo "closed: $ask answered live"
+          else
+            echo "blocked=1" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Waiting::the previous preview ('$ask') did not answer live; nothing new starts until it is closed (node tools/grow-gate.mjs close --proof \"...\")"
+          fi
+
+      - name: Sync void.html copies (what the probe serves)
+        if: steps.plan.outputs.planned == '1' && steps.closeout.outputs.blocked != '1'
         run: |
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
 
       # the real page decides: each candidate typed in, outside services blocked, who answered read from the page's own log
       - name: Probe the candidates in the page
-        if: steps.plan.outputs.planned == '1'
+        if: steps.plan.outputs.planned == '1' && steps.closeout.outputs.blocked != '1'
         run: node tools/bench.mjs --probe "$RUNNER_TEMP/grow/cand.json" | tee "$RUNNER_TEMP/grow/probe.log"
 
       - name: Settle and write the patch
         id: settle
-        if: steps.plan.outputs.planned == '1'
+        if: steps.plan.outputs.planned == '1' && steps.closeout.outputs.blocked != '1'
+        env:
+          N: ${{ inputs.n || '6' }}
         run: |
           echo "passed=0" >> "$GITHUB_OUTPUT"
           g="$RUNNER_TEMP/grow"
@@ -139,15 +182,20 @@ jobs:
           # "bring back the I made this for upgrades"; Verse's own builds never reached the ledger, so they never popped up)
           try=$(node -p "const c = JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')); (c[0] && c[0].ask) || ''" "$g/passing.json" 2>/dev/null || true)
           node tools/grow.mjs grow "Verse hardened itself: $title" --by verse ${try:+--try "$try"}
-          git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch"
-          # only the benchmark, the art floors and the log may change; anything else means a tool misbehaved and nothing is opened
-          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors, the logs and the ledger may change"; exit 1; } || true
-          node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8"))'
+          # the card cycle moves only now that this run has a patch: a run that stopped earlier consumed no turn
+          n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
+          node tools/card-cycle.mjs --n "$n" --advance >> "$GITHUB_STEP_SUMMARY" || true
+          # one preview in flight: the next run must verify this ask live and close it before it starts anything
+          if [ -n "$try" ]; then node tools/grow-gate.mjs open --run "${{ github.run_id }}" --try "$try" --what "Verse hardened itself: $title"; fi
+          git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch"
+          # only the benchmark, the art floors, the cycle, the gate, the log and the ledger may change; anything else means a tool misbehaved and nothing is opened
+          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors, the cycle, the gate, the logs and the ledger may change"; exit 1; } || true
+          node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/grow-self.state.json", "utf8"))'
           echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"; echo "title=$title" >> "$GITHUB_OUTPUT"
 
       # the patch (when anything routed) and the asks that did not: both leave this job, nothing else does
       - uses: actions/upload-artifact@v4
-        if: steps.plan.outputs.planned == '1' && !inputs.dry && always()
+        if: steps.plan.outputs.planned == '1' && steps.closeout.outputs.blocked != '1' && !inputs.dry && always()
         with:
           name: verse-hardens
           path: |
@@ -189,7 +237,8 @@ jobs:
           [ -n "$VOID_OWNER_TOKEN" ] || { echo "::warning title=Gaps not queued::Repo secret VOID_OWNER_TOKEN is not set"; exit 0; }
           node tools/lacks.mjs queue "$f" | tee -a "$GITHUB_STEP_SUMMARY" || echo "::warning title=Gaps not queued::the queue could not be reached; they are in the report"
 
-  # the passing patch goes onto main: this job can write, and it only moves bytes (it never runs anything a probe produced)
+  # the passing patch goes onto a branch and opens a PR labelled "made by Verse", "verse hardens", "automerge".
+  # automerge.yml merges it when Verse's review is clean; verify.yml runs the suite on main after the merge and reverts if red.
   pull-request:
     needs: build
     if: needs.build.outputs.passed == '1' && !inputs.dry
@@ -197,37 +246,44 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
-      actions: write # start the deploy: a push this token makes starts no other workflow, a workflow_dispatch is the one start it can make
+      pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           name: verse-hardens
           path: ${{ runner.temp }}/grow
-      # straight onto main, like the site tester's commits (2026-10-19: "GitHub Actions is not permitted to create or approve pull requests" in
-      # this repo, so not one hardening pull request ever opened). Only data moves: benchmark rows each proven on the real page, art floors that
-      # only rise, the card cycle's place and the log lines. A push by this token starts no workflow (2026-10-19: Verse's commits showed "no checks
-      # reported" and waited for the next human merge to reach the site), so it starts the deploy itself; deploys run one at a time and only the
-      # newest waiting one runs, so a burst of growth steps is one deploy.
-      - name: Commit what Verse added to main
+      - name: Check for existing preview PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OPEN_PRS=$(gh pr list --state open --author "@me" --json number --jq 'length')
+          if [ "$OPEN_PRS" -gt 0 ]; then
+            echo "An automated preview PR is already open. Halting loop to prevent stacking."
+            exit 0
+          fi
+
+      - name: Create branch and open PR
         shell: bash
         env:
           WHAT: ${{ needs.build.outputs.title }}
           GH_TOKEN: ${{ github.token }}
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
-          # the patch touches exactly the benchmark, the art floors, the cycle's place, the log and the ledger
-          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Not committed::the patch touches more than the benchmark, the art floors, the cycle, the log and the ledger"; exit 1; } || true
+          # the patch touches exactly the benchmark, the art floors, the cycle's place, the gate's state, the log and the ledger
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Not committed::the patch touches more than the benchmark, the art floors, the cycle, the gate, the log and the ledger"; exit 1; } || true
           git apply "$patch"
           [ -n "$(git status --porcelain)" ] || { echo "nothing to add"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md void-live-deploy/void.growth.json
+          branch="verse/harden-$(date -u +%Y%m%d-%H%M%S)-${GITHUB_RUN_ID}"
+          git checkout -b "$branch"
+          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json
           git commit -q -m "Verse hardens itself: $WHAT" -m "Verse found its least proven skills in its own files (tools/lacks.mjs, tools/card-cycle.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them (.github/workflows/grow-self.yml)."
-          for i in 1 2 3 4; do
-            git push -q origin HEAD:main && { echo "### Verse hardened itself: $WHAT" >> "$GITHUB_STEP_SUMMARY"; gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"; exit 0; }
-            sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not committed::main moved and the rows no longer apply"; exit 1; }
-          done
-          exit 1
+          git push -q origin "$branch"
+          gh pr create --repo "${{ github.repository }}" --base main --head "$branch" --title "Verse hardens itself: $WHAT" --body "Verse found its least proven skills in its own files, tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them." --label "made by Verse" --label "verse hardens" --label "automerge"
+          echo "### Verse hardened itself: $WHAT (PR opened)" >> "$GITHUB_STEP_SUMMARY"
