@@ -1398,5 +1398,46 @@
   "of": 74,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"arcade games\" (skill:arcade)"
+ },
+ {
+  "at": "2026-10-20T22:41:16Z",
+  "passed": 67,
+  "of": 75,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "arcade games",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   }
+  ],
+  "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)"
  }
 ]

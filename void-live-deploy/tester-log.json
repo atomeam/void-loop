@@ -1,15 +1,56 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 72,
- "runsTotal": 189,
+ "cases": 73,
+ "runsTotal": 190,
  "kinds": {
-  "grow": 65,
+  "grow": 66,
   "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-20T22:41:16Z",
+   "passed": 67,
+   "of": 75,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "set a timer for 5 minutes",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "what is 17 times 23",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "show the days until a date",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "arcade games",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    }
+   ]
+  },
   {
    "at": "2026-10-19T10:59:48Z",
    "passed": 73,
@@ -142,13 +183,6 @@
    "of": 60,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
-  },
-  {
-   "at": "2026-10-18T06:45:07Z",
-   "passed": 59,
-   "of": 59,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"fly around\" (skill:fly)"
   }
  ],
  "seen": {
@@ -416,6 +450,9 @@
   "skill:term-orbits": "2026-10-19T04:58:40Z",
   "skill:arcade": "2026-10-19T10:59:48Z",
   "skill:terminal": "2026-10-19T10:59:48Z",
-  "skill:text-tools": "2026-10-19T10:59:48Z"
+  "skill:text-tools": "2026-10-19T10:59:48Z",
+  "skill:photos": "2026-10-20T22:41:16Z",
+  "skill:time-capsule": "2026-10-20T22:41:16Z",
+  "skill:time-math": "2026-10-20T22:41:16Z"
  }
 }
