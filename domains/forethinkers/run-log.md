@@ -2,6 +2,15 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-21 14:07 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `run-log.md` and the frontier. No earlier `forethinkers/*` branch or open think-tank PR was left to fold in. Printing was the least recently advanced track (2026-10-07), and its open question 6 was closest to an answer because the paper's full text is now readable.
+
+- Established: the smallest printed motor that waves an arm is a 25 mm by 42 mm printed radial stator in a 12-pole outer rotor, 1.45 N mm/A, 5.2% at 2.2 W, driving a gearless crank-and-slot arm 160 mm at 2 Hz on 9 V (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, [doi 10.1002/admt.70994](https://doi.org/10.1002/admt.70994), full text read 2026-10-21).
+- Derived: a 120 mm figure arm needs about 1 A from it with no gearbox; normal waving settles near 37 C; a stalled arm could pass 120 C without a current limit.
+- Corrected: a battery figure answers to ASTM F963 section 4.25 (battery 71 C, section 8.17 stalled-motor test), not section 4.4, which covers 120 V toys through 16 CFR 1505.
+- Frontier: one `next:` line for the printed-motor card (the fourth step and a new Next line). The old growth board is frozen, so the row went to the one build order.
+
 ## 2026-10-15 02:12 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `toy-problems.md`, `run-log.md` and the frontier. Folded `forethinkers/cycle-2026-10-14-2014`: its PR #700 squash-merged before the last fix (one batched `Promise.all` for the four NOAA fetches in `experiments/heat-dose.mjs`), so that fix comes in here and the branch is deleted. Picked living figures: least recently advanced (2026-10-07 20:14), and open question 2 (kid memory in a tiny context) could be moved from live vendor pages.
