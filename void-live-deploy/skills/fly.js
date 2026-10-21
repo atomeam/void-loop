@@ -14,7 +14,7 @@ import { HOME, camera, zoomAt, pan, fly, ease, atHome, transformOf, wheelFactor,
 
 export const KEY = 'a2m.void.camera.v1';
 const HUD_ID = 'void-fly-hud', CLASS = 'void-flying';
-const KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
+const KEYS = new Set(['w', 'a', 's', 'd', 'q', 'e', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 
 /** 'fly' for an ask to take off, 'land' for one to come back, else null. Pure. */
@@ -62,7 +62,7 @@ function loop(t) {
   S.raf = 0;
   const dt = S.last ? (t - S.last) / 1000 : 1 / 60; S.last = t;
   const idle = !Object.keys(S.keys).length && !S.vel.x && !S.vel.y;
-  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still(), warp: !!S.keys.shift }));
+  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still(), warp: !!S.keys.shift, look: S.look || 0 })); S.look = 0;
   if (S.landing) S.cam = ease(S.cam, HOME, dt, { still: still() });
   apply();
   if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; depth(st); } tell(); keep(); return; }
@@ -84,7 +84,7 @@ function hud(on) {
   }
   el = document.createElement('div'); el.id = HUD_ID; el.setAttribute('role', 'status');
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to look · pinch to zoom · tap land' : 'flying · WASD to move · scroll to zoom · Esc to land';
+  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to turn · pinch to zoom · tap land' : 'flying · drag to turn · WASD move · QE strafe · Shift warp · scroll zoom · Esc land';
   const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'land'; btn.setAttribute('aria-label', 'land: back to the normal view');
   btn.addEventListener('click', () => land());
   el.append(words, btn);
@@ -114,12 +114,15 @@ function onWheel(e) {
 }
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y), mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
 function onPointerDown(e) {
-  if (!S.flying || e.button > 0 || theirs(e.target)) return;
+  if (!S.flying || (e.button > 0 && e.button !== 2) || theirs(e.target)) return;
   e.stopPropagation(); // the stage's own drag (bindDrag) never sees it: while flying, a drag moves the eye, not the card
   if (!S.pointers.size) { S.moved = false; window.addEventListener('pointermove', onPointerMove); window.addEventListener('pointerup', onPointerUp); window.addEventListener('pointercancel', onPointerUp); document.documentElement.classList.add('void-fly-drag'); }
   S.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 }
 function onPointerMove(e) {
+  if (S.flying && S.pointers && S.pointers.size === 1 && e.buttons === 2) {
+    const prev = S.pointers.get(e.pointerId); if (prev) S.look = (S.look || 0) + (e.clientX - prev.x) * 0.4;
+  }
   const was = S.pointers.get(e.pointerId); if (!was) return;
   const now = { x: e.clientX, y: e.clientY };
   if (Math.hypot(now.x - was.x, now.y - was.y) > 4) S.moved = true;
@@ -128,7 +131,12 @@ function onPointerMove(e) {
     const o = others[0][1], d0 = dist(was, o), d1 = dist(now, o), m0 = mid(was, o), m1 = mid(now, o);
     if (d0 > 0) S.cam = zoomAt(S.cam, d1 / d0, m0.x, m0.y);
     S.cam = pan(S.cam, m1.x - m0.x, m1.y - m0.y);
-  } else S.cam = pan(S.cam, now.x - was.x, now.y - was.y);
+  } else {
+    // modern look: horizontal drag turns the view; vertical drag still pans
+    const dx = now.x - was.x, dy = now.y - was.y;
+    S.look = (S.look || 0) + dx * 0.35;
+    if (Math.abs(dy) > 2) S.cam = pan(S.cam, 0, dy);
+  }
   S.pointers.set(e.pointerId, now);
   apply();
 }
@@ -150,7 +158,7 @@ function bind(on) {
 /** take off: the stage gets its camera, the HUD chip shows, keys and the pointer move the eye */
 export function takeOff() {
   const st = stageEl(); if (!st || S.flying) return false;
-  S.flying = true; S.landing = false; S.keys = {}; S.vel = { x: 0, y: 0 };
+  S.flying = true; S.landing = false; S.keys = {}; S.vel = { x: 0, y: 0 }; S.look = 0;
   document.documentElement.classList.add(CLASS);
   st.style.willChange = 'transform';
   hud(true); bind(true); apply(); keep();
@@ -183,9 +191,9 @@ async function run(text, api) {
   const what = flyAskOf(text);
   if (!what) return 'none';
   if (what === 'fly') {
-    if (!takeOff()) { api.say(S.flying ? 'already flying · WASD · Shift for warp · W is the strong throttle · scroll to zoom · Esc to land' : 'no stage to fly over'); return 'fly'; }
+    if (!takeOff()) { api.say(S.flying ? 'already flying · drag to turn · WASD move · QE strafe · Shift warp · W throttle · scroll zoom · Esc land' : 'no stage to fly over'); return 'fly'; }
     const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · WASD · Shift warp (extreme) · W throttle stronger than scroll · drag to look · scroll to zoom · Esc to land');
+    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · drag to turn around · WASD move relative to facing · QE strafe · Shift warp · W strong throttle · scroll zoom · Esc land');
     return 'fly';
   }
   api.say(land() ? 'landed' : 'already on the ground · "fly around" to take off');

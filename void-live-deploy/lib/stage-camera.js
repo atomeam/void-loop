@@ -10,7 +10,7 @@
 //   fromStored(text) / toStored(cam, flying)  what localStorage keeps, validated (a bad value is home)
 // Run its tests: node --test tools/stage-camera.test.mjs
 
-export const HOME = Object.freeze({ x: 0, y: 0, z: 1 });
+export const HOME = Object.freeze({ x: 0, y: 0, z: 1, rot: 0 }); // rot in degrees; 0 is upright
 export const MIN_Z = 0.25, MAX_Z = 4; // a quarter to four times: far enough to see a whole stage, close enough to read a sticky
 export const SPEED = 900; // px/s at full speed, in screen pixels (the eye moves at the same pace however far it is zoomed)
 export const WARP = 6; // warp mode multiplier (Shift): far more extreme than normal flight or the scroll zoom
@@ -23,7 +23,7 @@ const num = (v, d = 0) => (Number.isFinite(+v) ? +v : d);
 const clampZ = (z) => Math.min(MAX_Z, Math.max(MIN_Z, num(z, 1)));
 
 /** a camera from loose parts, every field finite and the zoom within its limits. Pure. */
-export function camera(x = 0, y = 0, z = 1) { return { x: num(x), y: num(y), z: clampZ(z) }; }
+export function camera(x = 0, y = 0, z = 1, rot = 0) { return { x: num(x), y: num(y), z: clampZ(z), rot: num(rot) }; }
 
 /** the stage point under a screen point. Pure. */
 export function toStage(cam, px, py) { return { x: (num(px) - cam.x) / cam.z, y: (num(py) - cam.y) / cam.z }; }
@@ -33,18 +33,20 @@ export function toScreen(cam, sx, sy) { return { x: num(sx) * cam.z + cam.x, y: 
 /** zoom by `factor` (1.1 = closer) keeping the stage point under screen (px, py) exactly where it is. Pure. */
 export function zoomAt(cam, factor, px, py) {
   const z = clampZ(cam.z * num(factor, 1)), s = toStage(cam, px, py);
-  return { x: num(px) - s.x * z, y: num(py) - s.y * z, z };
+  return { x: num(px) - s.x * z, y: num(py) - s.y * z, z, rot: num(cam.rot) };
 }
 
 /** slide the view by screen pixels (dragging the stage to the right moves the view right with it). Pure. */
-export function pan(cam, dx, dy) { return { x: cam.x + num(dx), y: cam.y + num(dy), z: cam.z }; }
+export function pan(cam, dx, dy) { return { x: cam.x + num(dx), y: cam.y + num(dy), z: cam.z, rot: num(cam.rot) }; }
 
 /** the direction the held keys ask for: { x, y } each -1, 0 or 1 (right and down positive). Pure. */
+/** keys: turn (A/D or arrows), strafe (Q/E), forward/back (W/S). Pure. */
 export function heading(keys) {
   const k = keys || {}, on = (n) => !!k[n];
-  const x = (on('d') || on('arrowright') ? 1 : 0) - (on('a') || on('arrowleft') ? 1 : 0);
-  const y = (on('s') || on('arrowdown') ? 1 : 0) - (on('w') || on('arrowup') ? 1 : 0);
-  return { x, y };
+  const turn = (on('d') || on('arrowright') ? 1 : 0) - (on('a') || on('arrowleft') ? 1 : 0);
+  const strafe = (on('e') ? 1 : 0) - (on('q') ? 1 : 0);
+  const fwd = (on('w') || on('arrowup') ? 1 : 0) - (on('s') || on('arrowdown') ? 1 : 0);
+  return { turn, strafe, fwd };
 }
 
 /**
@@ -52,33 +54,43 @@ export function heading(keys) {
  * leftwards). Speed eases in while a key is held and out when it is let go (ACCEL), unless `still` (reduced motion): then
  * full speed at once and a dead stop. Returns the new camera and velocity (screen px/s). Pure.
  */
-export function fly(cam, vel, keys, dt, { still = false, speed = SPEED, warp = false } = {}) {
-  const h = heading(keys), len = Math.hypot(h.x, h.y) || 1;
-  // forward throttle is stronger than strafe; warp multiplies everything far past the scroll
-  const fwd = (keys && (keys.w || keys.arrowup)) ? THROTTLE : 1;
-  const mult = (warp ? WARP : 1) * fwd;
-  const want = { x: (h.x / len) * speed * mult, y: (h.y / len) * speed * mult };
-  const t = Math.min(0.25, Math.max(0, num(dt))); // a tab that slept does not leap on waking
+export const TURN = 140; // degrees per second at full turn
+export function fly(cam, vel, keys, dt, { still = false, speed = SPEED, warp = false, look = 0 } = {}) {
+  const h = heading(keys);
+  const t = Math.min(0.25, Math.max(0, num(dt)));
+  // turn: keys + mouse look
+  const turnRate = (h.turn * TURN + num(look)) * (warp ? 1.4 : 1);
+  let rot = num(cam.rot) + turnRate * t;
+  rot = ((rot % 360) + 360) % 360;
+  // movement relative to facing (W is forward in the direction you're looking)
+  const rad = rot * Math.PI / 180;
+  const sx = h.strafe, sy = -h.fwd; // screen: right positive, up negative for forward
+  const wx = sx * Math.cos(rad) - sy * Math.sin(rad);
+  const wy = sx * Math.sin(rad) + sy * Math.cos(rad);
+  const len = Math.hypot(wx, wy) || 1;
+  const throttle = h.fwd > 0 ? THROTTLE : 1; // forward is stronger than strafe or reverse
+  const mult = (warp ? WARP : 1) * throttle;
+  const want = { x: (wx / len) * speed * mult * (Math.hypot(wx, wy) ? 1 : 0), y: (wy / len) * speed * mult * (Math.hypot(wx, wy) ? 1 : 0) };
   const v = vel || { x: 0, y: 0 };
   const k = still ? 1 : 1 - Math.exp(-ACCEL * t);
   let nv = { x: v.x + (want.x - v.x) * k, y: v.y + (want.y - v.y) * k };
-  if (Math.hypot(nv.x, nv.y) < 1 && !h.x && !h.y) nv = { x: 0, y: 0 };
-  return { cam: { x: cam.x - nv.x * t, y: cam.y - nv.y * t, z: cam.z }, vel: nv };
+  if (Math.hypot(nv.x, nv.y) < 1 && !h.fwd && !h.strafe) nv = { x: 0, y: 0 };
+  return { cam: { x: cam.x - nv.x * t, y: cam.y - nv.y * t, z: cam.z, rot }, vel: nv };
 }
 
 /** true at (or within EPS of) `target`, HOME by default. Pure. */
-export function atHome(cam, target = HOME) { return Math.abs(cam.x - target.x) < EPS && Math.abs(cam.y - target.y) < EPS && Math.abs(cam.z - target.z) < EPS / 100; }
+export function atHome(cam, target = HOME) { return Math.abs(cam.x - target.x) < EPS && Math.abs(cam.y - target.y) < EPS && Math.abs(cam.z - target.z) < EPS / 100 && Math.abs(num(cam.rot) - num(target.rot)) < 0.5; }
 
 /** one frame of the landing glide towards `target` (HOME by default); `still` snaps there at once. Pure. */
 export function ease(cam, target = HOME, dt = 0.016, { still = false } = {}) {
   if (still) return { ...target };
   const t = Math.min(0.25, Math.max(0, num(dt))), k = 1 - Math.exp(-LAND * t);
-  const next = { x: cam.x + (target.x - cam.x) * k, y: cam.y + (target.y - cam.y) * k, z: cam.z + (target.z - cam.z) * k };
+  const next = { x: cam.x + (target.x - cam.x) * k, y: cam.y + (target.y - cam.y) * k, z: cam.z + (target.z - cam.z) * k, rot: num(cam.rot) + (num(target.rot) - num(cam.rot)) * k };
   return atHome(next, target) ? { ...target } : next;
 }
 
 /** the CSS transform for the stage: '' at home, so a landed stage is exactly the page as it always was. Pure. */
-export function transformOf(cam) { return atHome(cam) ? '' : 'translate(' + r(cam.x) + 'px, ' + r(cam.y) + 'px) scale(' + r(cam.z, 4) + ')'; }
+export function transformOf(cam) { if (atHome(cam) && !num(cam.rot)) return ''; const rot = num(cam.rot) ? ' rotate(' + r(cam.rot, 2) + 'deg)' : ''; return 'translate(' + r(cam.x) + 'px, ' + r(cam.y) + 'px) scale(' + r(cam.z, 4) + ')' + rot; }
 const r = (n, d = 2) => { const p = 10 ** d; return String(Math.round(n * p) / p); };
 
 /** the wheel's zoom factor from a wheel delta (lines or pixels): small steps, never a jump. Pure. */
@@ -88,13 +100,13 @@ export function wheelFactor(deltaY, deltaMode = 0) {
 }
 
 /** what is kept in localStorage: { x, y, z, flying }. Pure. */
-export function toStored(cam, flying) { return JSON.stringify({ x: Math.round(cam.x * 100) / 100, y: Math.round(cam.y * 100) / 100, z: Math.round(cam.z * 1000) / 1000, flying: !!flying }); }
+export function toStored(cam, flying) { return JSON.stringify({ x: Math.round(cam.x * 100) / 100, y: Math.round(cam.y * 100) / 100, z: Math.round(cam.z * 1000) / 1000, rot: Math.round(num(cam.rot) * 10) / 10, flying: !!flying }); }
 /** the kept camera, or home when there is none or it is not a camera: { cam, flying }. Pure. */
 export function fromStored(text) {
   try {
     const o = JSON.parse(String(text || 'null'));
     if (!o || typeof o !== 'object' || ![o.x, o.y, o.z].every((v) => Number.isFinite(v))) return { cam: { ...HOME }, flying: false };
-    return { cam: camera(o.x, o.y, o.z), flying: !!o.flying };
+    return { cam: camera(o.x, o.y, o.z, o.rot || 0), flying: !!o.flying };
   } catch (_) { return { cam: { ...HOME }, flying: false }; }
 }
 
