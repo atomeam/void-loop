@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-21T03:01:01.167Z",
-   "sha": "8db2beb1e65e1b7392923bf73e8b33bdc3b0be31",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39534423957",
+   "at": "2026-10-21T03:02:30.090Z",
+   "sha": "2c824eb75c052b0ab40b28addc34d027a8c4e9a9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39534521130",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
@@ -15,9 +15,15 @@
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
+    ".github/workflows/grow-self.yml",
+    "docs/playbooks/grow-self.md",
+    "domains/handoff.md",
+    "tools/grow-clock.test.mjs",
+    "tools/grow-self.test.mjs",
     ".gitattributes",
     "tools/film-discovery.test.mjs",
-    "tools/site-test.json"
+    "tools/site-test.json",
+    "void-live-deploy/incidents.json"
    ]
   },
   {
