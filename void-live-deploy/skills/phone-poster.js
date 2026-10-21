@@ -1,54 +1,44 @@
 /**
- * phone-poster skill — auto-generates promotional posters for phone-cut films.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "phone poster for the film", "generate promotional poster for phone-cut", "auto poster for newest film".
- * Uses film metadata and draws a simple poster card. Empty surface stays empty (page only).
+ * phone-poster skill — auto-generates promotional phone-cut (phone-story) posters for Verse films.
+ * Asks: "phone cut film poster", "auto generate promotional poster", "phone story for newest film".
+ * Uses the existing poster skill (which already supports film posters and the 9:16 phone story size) and films metadata.
+ * Empty stage stays empty until asked.
  */
-import { filmMeta } from './films.js';
+import poster from './poster.js';
 
-export function posterOf(text) {
+export function phonePosterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/phone(?:\s*-?\s*cut)?\s+(?:film\s+)?poster|promotional\s+poster\s+for\s+(?:the\s+)?phone|auto(?:\s*-?\s*)?generat(?:e|es)\s+(?:a\s+)?promotional\s+poster/.test(t)) return { which: 'newest' };
-  const m = t.match(/phone(?:\s*-?\s*cut)?\s+poster\s+for\s+(?:the\s+)?film\s+([a-z0-9-]+)/);
-  return m ? { which: m[1] } : null;
+  return /^(?:auto[- ]?generate|make|create|show|give me)\s+(?:a\s+)?(?:promotional\s+)?(?:phone[- ]?cut\s+|phone[- ]?story\s+)?(?:poster|promo)(?:\s+for\s+(?:the\s+)?(?:newest\s+|latest\s+)?film)?$|^phone[- ]?cut\s+films?\s+(?:skill\s+)?poster|promotional\s+poster\s+for\s+(?:the\s+)?film$/.test(t);
 }
 
-function drawPoster(meta) {
-  // simple canvas poster description; real draw would use canvas like poster.js
-  return { title: meta.title || 'V01D FILM', subtitle: 'Phone-cut promo · ' + (meta.day || ''), text: 'Watch free at a-to-mind.com/films' };
+function run(text, api) {
+  // Delegate to the poster skill's film poster path, which already draws the phone-story size first.
+  return poster.run('make a poster for the newest film', api);
 }
 
-async function run(text, api) {
-  const { showPage, esc } = api;
-  const q = posterOf(text);
-  if (!q) return 'none';
-  const el = showPage((p) => { p.innerHTML = '<h2>Phone-cut film poster</h2><div class="sub">generating…</div>'; });
-  try {
-    const j = await fetch('/api/films').then((r) => r.json());
-    if (!api._pageStill || !api._pageStill(el)) return 'phone-poster';
-    const all = (j.films || []).map(filmMeta);
-    const meta = q.which === 'newest' ? all[0] : all.find((f) => f.experiment === q.which || f.id === q.which);
-    if (!meta) {
-      el.innerHTML = '<h2>Phone-cut film poster</h2><p>No matching film found. Try "film metadata" to list them.</p>';
-      return 'phone-poster';
-    }
-    const p = drawPoster(meta);
-    el.innerHTML = '<h2>Phone-cut promotional poster</h2><div class="sub">' + esc(p.subtitle) + '</div><h3>' + esc(p.title) + '</h3><p>' + esc(p.text) + '</p><div class="src">Generated from V01D film metadata · empty stage stays empty</div>';
-    return 'phone-poster';
-  } catch (_) {
-    el.innerHTML = '<h2>Phone-cut film poster</h2><p>Could not load films just now.</p>';
-    return 'none';
-  }
+/** one suite check: the ask matches, near-misses do not */
+export function suite() {
+  const yes = phonePosterOf('phone cut film poster') && phonePosterOf('auto generate promotional poster');
+  const no = !phonePosterOf('what is a poster') && !phonePosterOf('make this a poster');
+  return yes && no;
 }
 
 export default {
   name: 'phone-poster',
-  examples: ['phone poster for the film', 'generate promotional poster for phone-cut', 'auto poster for newest film', 'phone-cut films promotional poster'],
-  nearMisses: ['film poster', 'make this a poster', 'films', 'movie poster for inception'],
-  match(lower, text) { return !!posterOf(text || lower); },
+  examples: [
+    'phone cut film poster',
+    'auto generate promotional poster',
+    'phone story for newest film',
+    'promotional poster for the film',
+    'phone-cut films skill poster',
+  ],
+  nearMisses: [
+    'what is a poster',
+    'make this a poster',
+    'film metadata',
+    'show the films',
+  ],
+  match(lower, text) { return phonePosterOf(text); },
   run,
-  suite() {
-    const ok = !!posterOf('phone poster for the film') && posterOf('hello') === null && posterOf('make this a poster') === null;
-    return { ok, got: 'phone-poster match' };
-  },
+  suite,
 };
