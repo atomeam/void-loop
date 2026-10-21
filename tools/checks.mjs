@@ -37,6 +37,7 @@ for (const [name, file] of [
   ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
+  ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],

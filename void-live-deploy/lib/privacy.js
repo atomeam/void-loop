@@ -33,6 +33,8 @@ export function findPersonal(text) {
       if (kind === 'card' && (!luhn(v) || /[a-z]-$/i.test(s.slice(Math.max(0, m.index - 5), m.index)) || /^\d{8}-?\d{4}/.test(v.replace(/ /g, '')))) continue;
       if (/\bask-$/.test(s.slice(Math.max(0, m.index - 4), m.index))) continue;
       if (kind === 'ipv4' && /^\d+\.\d+\.\d+\.\d+$/.test(v) && /\d+\.\d+\.\d+\.\d+\.\d/.test(s.slice(m.index, m.index + v.length + 3))) continue;
+      // a standard's clause ("section 4.25.7.2", "§ 1.2.3.4", "clause 5.1.2.3") is a section number, not an address (lists run 2, 2026-10-21)
+      if (kind === 'ipv4' && /(?:\bsections?|\bclauses?|\bsec\.|\bpara(?:graph)?|§)\s*$/i.test(s.slice(Math.max(0, m.index - 12), m.index))) continue;
       out.push({ kind, at: m.index });
     }
   }

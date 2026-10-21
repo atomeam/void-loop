@@ -4,7 +4,11 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { railsOf, specialRails, memoUnits, usdcUnits, usdcText, verifyUsdcTx, USDC_BASE, TRANSFER_TOPIC } from '../void-live-deploy/lib/alt-pay.js';
 import { onRequest } from '../void-live-deploy/functions/api/store/[[path]].js';
-import { productOf } from '../void-live-deploy/lib/store.js';
+import { productOf, STORE_PRODUCTS } from '../void-live-deploy/lib/store.js';
+// a paid special item of the test's own (lists run 2, 2026-10-21): site-tester, the old fixture, is open as pay-what-you-want until a rail is live
+const FIX = 'alt-pay-fixture';
+STORE_PRODUCTS.push({ id: FIX, name: 'Alt-pay fixture', cents: 2400, kind: 'download', special: ['cashapp', 'usdc-base'], files: [{ key: 'store/site-tester-v1.zip' }], status: 'live', soon: false });
+assert.ok(productOf('site-tester').pwyw && productOf('site-tester').cents === 0 && !productOf('site-tester').soon, 'site-tester is open as pay-what-you-want until a paid rail is live');
 
 const sql = new DatabaseSync(':memory:');
 const stmt = (q, a = []) => ({ bind: (...b) => stmt(q, b), run: async () => { const r = sql.prepare(q).run(...a); return { meta: { changes: r.changes } }; }, first: async () => sql.prepare(q).get(...a) || null, all: async () => ({ results: sql.prepare(q).all(...a) }) });
@@ -17,7 +21,7 @@ const call = async (path, body, auth) => { const r = await onRequest({ request: 
 // config: rails exist only when Adam sets them; bad values are ignored
 assert.deepEqual(railsOf({}), {});
 assert.deepEqual(Object.keys(railsOf({ CASHAPP_CASHTAG: '$bad tag', CRYPTO_USDC_BASE_ADDR: '0x12' })), []);
-const p = productOf('site-tester'); assert.ok(p && p.cents > 0);
+const p = productOf(FIX); assert.ok(p && p.cents > 0);
 assert.deepEqual(specialRails(p, {}), []); assert.deepEqual(specialRails(p, env), ['cashapp', 'usdc-base']);
 assert.deepEqual(specialRails(productOf('void-monthly'), env), [], 'subscriptions and non-special items have no special rails');
 // memo: 1..9999 millionths, stable per order
@@ -25,12 +29,12 @@ assert.equal(memoUnits('ord_a'), memoUnits('ord_a')); assert.ok(memoUnits('ord_a
 assert.equal(usdcText(24000123n), '24.000123');
 
 // catalog shows the rails; the client cannot pick a price
-const cat = await call('catalog'); assert.deepEqual(cat.j.products.find((x) => x.id === 'site-tester').special, ['cashapp', 'usdc-base']);
-assert.equal((await call('special/start', { id: 'site-tester', rail: 'paypal', email: 'a@b.co' })).s, 400, 'unsupported rail');
+const cat = await call('catalog'); assert.deepEqual(cat.j.products.find((x) => x.id === FIX).special, ['cashapp', 'usdc-base']);
+assert.equal((await call('special/start', { id: FIX, rail: 'paypal', email: 'a@b.co' })).s, 400, 'unsupported rail');
 assert.equal((await call('special/start', { id: 'void-monthly', rail: 'cashapp', email: 'a@b.co' })).s, 400, 'item not special');
 
 // Cash App: manual queue, never unlocked by the buyer
-const ca = (await call('special/start', { id: 'site-tester', rail: 'cashapp', email: 'a@b.co', cents: 1, price: 0 })).j;
+const ca = (await call('special/start', { id: FIX, rail: 'cashapp', email: 'a@b.co', cents: 1, price: 0 })).j;
 assert.equal(ca.pay, '$24.00', 'price from the catalog, never the body'); assert.ok(ca.link.startsWith('https://cash.app/$' + TAG + '/24.00'));
 assert.equal((await call('special/confirm', { code: ca.code, email: 'a@b.co', ref: 'x' })).s, 400, 'reference required');
 const c1 = await call('special/confirm', { code: ca.code, email: 'a@b.co', ref: 'ABCD1234' }); assert.equal(c1.s, 202); assert.equal(c1.j.status, 'awaiting');
@@ -41,7 +45,7 @@ assert.equal((await call('special/approve', { order: ca.order }, 'owner-secret')
 assert.equal((await call('lookup', { code: ca.code, email: 'a@b.co' })).j.status, 'paid');
 
 // USDC on Base: exact amount, right token, right address, confirmed, once
-const co = (await call('special/start', { id: 'site-tester', rail: 'usdc-base', email: 'c@d.co' })).j;
+const co = (await call('special/start', { id: FIX, rail: 'usdc-base', email: 'c@d.co' })).j;
 const units = usdcUnits(2400, co.order); assert.equal(co.exact_units, units.toString()); assert.equal(co.to, ADDR);
 const pad = (a) => '0x' + a.slice(2).padStart(64, '0'), hx = (n) => '0x' + BigInt(n).toString(16);
 const rc = (o = {}) => ({ status: '0x1', blockNumber: hx(90), logs: [{ address: o.token || USDC_BASE, topics: [TRANSFER_TOPIC, pad('0x' + '11'.repeat(20)), pad(o.to || ADDR)], data: hx(o.units ?? units) }] });
@@ -53,7 +57,7 @@ assert.match((await conf(T(1))).j.error, /amount/); assert.match((await conf(T(2
 assert.equal((await conf(T(4))).j.retry, true, 'too few confirmations'); assert.match((await conf(T(5))).j.error, /failed/);
 assert.equal((await conf(T(7))).j.retry, true, 'unknown tx: wait');
 const ok = await conf(T(6)); assert.equal(ok.j.status, 'paid'); assert.equal(ok.j.items[0].downloads.length, 1);
-const co2 = (await call('special/start', { id: 'site-tester', rail: 'usdc-base', email: 'c@d.co' })).j;
+const co2 = (await call('special/start', { id: FIX, rail: 'usdc-base', email: 'c@d.co' })).j;
 chain.receipts[T(6)] = rc({ units: usdcUnits(2400, co2.order) });
 assert.equal((await call('special/confirm', { code: co2.code, email: 'c@d.co', ref: T(6) })).s, 409, 'a tx pays one order only');
 assert.equal((await call('special/approve', { order: co2.order }, 'owner-secret')).j.ok, false, 'crypto is never hand-approved');
@@ -61,7 +65,7 @@ assert.equal((await verifyUsdcTx({ BASE_RPC_URL: 'x' }, T(6), ADDR, units, async
 console.log('alt-pay ok');
 
 // x402-style resource: off by default; 402 with exact requirements; unlocks only on a verified tx for that order
-const xr = (h) => onRequest({ request: new Request('https://a-to-mind.com/api/store/x402/site-tester', { headers: h || {} }), env, params: { path: ['x402', 'site-tester'] } });
+const xr = (h) => onRequest({ request: new Request('https://a-to-mind.com/api/store/x402/' + FIX, { headers: h || {} }), env, params: { path: ['x402', FIX] } });
 assert.equal((await xr()).status, 404, 'x402 off without the flag');
 env.X402_ENABLED = 'on';
 const q = await xr(); assert.equal(q.status, 402); const req = (await q.json()).accepts[0];

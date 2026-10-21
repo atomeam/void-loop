@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 694,
+ "counted": 696,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -409,6 +409,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-math.js",
    "skills": 4,
    "direct": 4,
@@ -512,13 +519,6 @@
    "direct": 3,
    "dependants": 3,
    "tests": 3
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 3,
-   "direct": 3,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/stage-tools-dom.js",
@@ -4791,6 +4791,7 @@
    "importedBy": [
     "skills/dates.js",
     "skills/games.js",
+    "skills/languages.js",
     "skills/time.js"
    ]
   },
@@ -6784,6 +6785,14 @@
     "skills/whisper-network.js"
    ]
   },
+  "skills/languages.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/spanish.js",
+    "skills/translate.js"
+   ],
+   "importedBy": []
+  },
   "skills/layer.js": {
    "imports": [
     "lib/ask-text.js"
@@ -8112,7 +8121,9 @@
   },
   "skills/spanish.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/languages.js"
+   ]
   },
   "skills/spectators.js": {
    "imports": [
@@ -8446,12 +8457,18 @@
   },
   "skills/translate.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/languages.js"
+   ]
   },
   "skills/trialwatch.js": {
    "imports": [
     "lib/ask-text.js"
    ],
+   "importedBy": []
+  },
+  "skills/triangulate.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/type-filter.js": {
