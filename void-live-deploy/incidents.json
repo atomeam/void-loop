@@ -2,6 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-21T18:17:24.952Z",
+   "sha": "2819b0fdba2d797ff0148f3cb388d12428c64359",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39650627543",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/forethinkers/index.md",
+    "domains/forethinkers/run-log.md",
+    "domains/forethinkers/tracks/living-figures.md",
+    "domains/forethinkers/tracks/printing-working-machines.md",
+    "domains/void.frontier.md"
+   ]
+  },
+  {
    "at": "2026-10-21T16:48:44.069Z",
    "sha": "5f4a9d6ac883dda6a73004482aa1916c34ac7558",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39634706210",
@@ -769,29 +785,6 @@
     "tools/lacks.mjs",
     "tools/refresh.mjs",
     "tools/refresh.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-19T06:32:17.145Z",
-   "sha": "de5e2cc15fa566454b25bc2dfcec4cd399166c33",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39208712310",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "tools/arcade-rack.test.mjs",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "void-live-deploy/lib/ladder.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/rack.js",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]
