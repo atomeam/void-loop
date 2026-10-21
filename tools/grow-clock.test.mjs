@@ -3,7 +3,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
-const y = readFileSync(new URL('../.github/workflows/grow-clock.yml', import.meta.url), 'utf8');
+// a Windows checkout can hand this back with CRLF; the workflow's own bash sees LF, so the assertions read it the same way
+const y = readFileSync(new URL('../.github/workflows/grow-clock.yml', import.meta.url), 'utf8').replace(/\r\n?/g, '\n');
 
 test('a step every 10 minutes for under the job timeout, then the next run starts; it starts only the growth workflows and holds no secret', () => {
   const ticks = +/seq 0 (\d+)/.exec(y)[1] + 1, sleep = +/sleep (\d+)/.exec(y)[1], timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
@@ -17,11 +18,15 @@ test('a step every 10 minutes for under the job timeout, then the next run start
   assert.match(y, /group: grow-clock\n  cancel-in-progress: false/);
 });
 
-test('Verse\'s own commits reach the site: each workflow that pushes to main with the Actions token starts the deploy itself (a token push starts no workflow; 2026-10-19 its commits showed "no checks reported")', () => {
-  for (const f of ['grow-self.yml', 'propose-fix.yml']) {
-    const wf = readFileSync(new URL('../.github/workflows/' + f, import.meta.url), 'utf8');
-    const job = wf.slice(wf.lastIndexOf('permissions:'));
-    assert.match(job, /actions: write/, f + ': the committing job may start a workflow');
-    assert.match(wf, /git push -q origin HEAD:main[\s\S]{0,900}gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/, f + ': the deploy starts right after the push to main');
-  }
+test("Verse's own changes reach the site: a workflow that pushes to main with the Actions token starts the deploy itself, and the one that opens a pull request is merged instead", () => {
+  // a token push starts no workflow (2026-10-19 its commits showed "no checks reported"), so the deploy is started by hand
+  const pf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  const job = pf.slice(pf.lastIndexOf('permissions:'));
+  assert.match(job, /actions: write/, 'propose-fix.yml: the committing job may start a workflow');
+  assert.match(pf, /git push -q origin HEAD:main[\s\S]{0,900}gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/, 'propose-fix.yml: the deploy starts right after the push to main');
+  // grow-self.yml no longer pushes to main: it opens a pull request (one at a time, labelled), and that is merged like any other
+  const gs = readFileSync(new URL('../.github/workflows/grow-self.yml', import.meta.url), 'utf8');
+  assert.match(gs, /gh pr create --repo "\$\{\{ github\.repository \}\}" --base main --head "\$branch"/, 'grow-self.yml opens a pull request');
+  assert.match(gs, /--label "made by Verse"/, 'the pull request says who made it');
+  assert.match(gs, /An automated preview PR is already open\. Halting loop to prevent stacking\./, 'one preview at a time');
 });
