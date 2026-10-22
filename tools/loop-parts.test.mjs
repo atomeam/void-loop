@@ -35,3 +35,12 @@ console.log('loop-reach: ok');
 // revenue weight only boosts (owner, 2026-10-21): reach is never below 1, whatever the tags say
 assert.equal(reach('gift-store', { bad: { weight: -5, patterns: ['store'] } }) >= 1, true);
 console.log('loop-reach-boost: ok');
+import { refine } from './loop-refine.mjs';
+import { retryable } from './grow-lessons.mjs';
+assert.equal(refine('weather shows the forecast...').text, 'weather shows the forecast.');
+const rr = refine('Verse hardened itself: 2 benchmark ask(s)', { asks: [{ ask: 'rain today', want: 'skill:weather' }, 'moon now'] });
+assert.equal(rr.text, "Verse hardened itself: 'rain today' opens weather, 'moon now'"); assert.deepEqual(rr.left, []);
+assert.deepEqual(refine('I feel alive').left, ['roleplay']);
+const vm = { skills: { w: { wins: 3, misses: 1 }, z: { wins: 0, misses: 4 } }, variants: [{ ask: 'a', skill: 'w', at: '2' }, { ask: 'b', skill: 'z', at: '3' }] };
+assert.deepEqual(retryable(vm).map((v) => v.ask), ['a']);
+console.log('loop-refine: ok');
