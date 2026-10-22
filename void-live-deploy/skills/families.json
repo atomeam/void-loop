@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 24,
-  "checked": 11,
-  "proven": 271
+  "checked": 13,
+  "proven": 270
  },
  "families": [
   {
@@ -1292,8 +1292,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 0,
-    "proven": 21
+    "checked": 1,
+    "proven": 20
    },
    "sources": {
     "read": 20,
@@ -1302,6 +1302,7 @@
     "answered": 0,
     "points": 1.4,
     "one_live_from_proven": [
+     "digest",
      "news",
      "joke",
      "book",
@@ -1309,7 +1310,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 6 more proven: news, joke, book, show, sport, senolytic."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 7 more proven: digest, news, joke, book, show, sport and 1 more."
    },
    "skills": [
     {
@@ -1334,12 +1335,12 @@
     },
     {
      "name": "digest",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
-     "last_tested": "2026-10-22",
-     "last_tested_by": "its tests",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-22",
+     "promoted": "2026-10-19",
      "streak": 4,
      "source": {
       "sites": [
@@ -1351,7 +1352,8 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet"
+      "next": "live",
+      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
      }
     },
     {
@@ -2832,7 +2834,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 2,
+    "checked": 3,
     "proven": 39
    },
    "skills": [
@@ -2849,9 +2851,9 @@
     {
      "name": "backlog-digest",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-22",
-     "last_tested_by": "its tests",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-10-21",
      "streak": 3
@@ -3125,6 +3127,13 @@
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 4
+    },
+    {
+     "name": "fix-audit",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "deps",

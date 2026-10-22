@@ -31,6 +31,12 @@ export function record(failed, at = new Date().toISOString(), passed = []) {
     s.last = at;
     if (f.ask && !s.examples.includes(f.ask)) s.examples.push(f.ask);
     const why = String(f.got || f.why || f.answered || '').slice(0, 80);
+    // the failed-variant archive (Darwin Godel Machine, AlphaEvolve keep stepping stones): every missed candidate is kept with
+    // what answered and how often it missed, so a later plan can retry it once the skill's chance rises
+    data.variants = data.variants || [];
+    const v = data.variants.find((x) => x.ask === f.ask && x.skill === name);
+    if (v) { v.tries += 1; v.at = at; v.got = why || v.got; } else if (f.ask) data.variants.push({ ask: f.ask, skill: name, got: why, at, tries: 1 });
+    if (data.variants.length > 200) data.variants = data.variants.slice(-200);
     if (why) s.why = [...(s.why || []).filter((w) => w !== why), why].slice(-4);
     if (s.examples.length > 8) s.examples = s.examples.slice(-8);
     data.skills[name] = s;
@@ -60,4 +66,9 @@ export function familyScores(data = load(), famOf = () => 'other') {
   }
   for (const o of Object.values(out)) o.chance = +((o.wins + 1) / (o.wins + o.misses + 2)).toFixed(3);
   return out;
+}
+
+/** archived variants worth another try: the skill's chance is at least `min` now, newest first, at most n. Pure. */
+export function retryable(data = load(), min = 0.5, n = 3) {
+  return (data.variants || []).filter((v) => chance(v.skill, data) >= min).sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, n);
 }

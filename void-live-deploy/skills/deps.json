@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 703,
+ "counted": 705,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -53,23 +53,23 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 15,
+   "skills": 16,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 15,
+   "skills": 16,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 15,
+   "skills": 16,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 3
   },
   {
@@ -109,23 +109,23 @@
   },
   {
    "file": "lib/corrections.js",
-   "skills": 10,
+   "skills": 11,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 30,
    "tests": 2
   },
   {
    "file": "lib/reactions.js",
-   "skills": 10,
+   "skills": 11,
    "direct": 1,
-   "dependants": 28,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/autopsy.js",
-   "skills": 10,
+   "skills": 11,
    "direct": 5,
-   "dependants": 25,
+   "dependants": 27,
    "tests": 5
   },
   {
@@ -963,6 +963,13 @@
   },
   {
    "file": "lib/field-swarm.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/fix-audit.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2363,12 +2370,14 @@
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/fix-audit.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
+    "skills/fix-audit.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2569,6 +2578,7 @@
     "lib/reactions.js"
    ],
    "importedBy": [
+    "lib/fix-audit.js",
     "skills/error-garden.js",
     "skills/growth.js",
     "skills/incident-autopsy.js",
@@ -2591,6 +2601,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/mini/growthtree.js",
@@ -3038,10 +3049,12 @@
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
+    "lib/fix-audit.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/error-garden.js",
+    "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -3359,6 +3372,14 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/fix-audit.js": {
+   "imports": [
+    "lib/autopsy.js"
+   ],
+   "importedBy": [
+    "skills/fix-audit.js"
+   ]
+  },
   "lib/forge-makes.js": {
    "imports": [],
    "importedBy": [
@@ -3639,12 +3660,14 @@
     "lib/card-look.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/fix-audit.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
+    "skills/fix-audit.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -3887,12 +3910,14 @@
     "lib/card-look.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/fix-audit.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
+    "skills/fix-audit.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -4530,10 +4555,12 @@
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
+    "lib/fix-audit.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/error-garden.js",
+    "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -6458,6 +6485,12 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/fix-audit.js": {
+   "imports": [
+    "lib/fix-audit.js"
+   ],
+   "importedBy": []
   },
   "skills/flow-canvas.js": {
    "imports": [

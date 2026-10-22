@@ -230,6 +230,7 @@ jobs:
           node tools/grow.mjs grow "$what" --by verse ${try:+--try "$try"}
           # the line carries its phrases as data too, so every card and preview lists them (owner, 2026-10-21; tools/backfill-hardened.mjs)
           [ -s "$g/passing.json" ] && node tools/backfill-hardened.mjs --last "$g/passing.json" || true
+          node tools/loop-refine.mjs --write || true # Self-Refine: rewrite the newest ledger lines until the critic is quiet (docs/LOOP-GAPS.md)
           # the card cycle moves only now that this run has a patch: a run that stopped earlier consumed no turn
           n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
           node tools/card-cycle.mjs --n "$n" --advance >> "$GITHUB_STEP_SUMMARY" || true
