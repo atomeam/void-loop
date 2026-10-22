@@ -1,43 +1,49 @@
 /**
- * dice skill — roll dice: "roll a dice", "roll 2d6", "roll the dice".
- * Shows the result on a page. Empty surface stays empty.
+ * dice skill — "roll a d6", "roll 2d20", "dice", "roll the dice".
+ * Pure parser + local RNG; nothing leaves the browser. Empty stage stays empty.
  */
-export function parseRoll(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
-  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?)?(?:dice|die)(?:\s+(\d+)d(\d+))?$/);
+export function diceOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:roll\s+)?(?:(\d+)d(\d+)|a\s+d(\d+)|the\s+dice|dice)$/);
   if (!m) return null;
-  const n = m[1] ? +m[1] : 1;
-  const sides = m[2] ? +m[2] : 6;
-  if (n < 1 || n > 100 || sides < 2 || sides > 100) return null;
-  return { n, sides };
+  if (m[1] && m[2]) return { n: Math.min(100, +m[1] || 1), sides: Math.min(100, +m[2] || 6) };
+  if (m[3]) return { n: 1, sides: Math.min(100, +m[3] || 6) };
+  return { n: 1, sides: 6 };
 }
 
-export function roll(n, sides) {
-  let total = 0, faces = [];
-  for (let i = 0; i < n; i++) {
-    const f = 1 + Math.floor(Math.random() * sides);
-    faces.push(f);
-    total += f;
-  }
-  return { faces, total };
+export function roll(spec) {
+  if (!spec) return null;
+  const rolls = [];
+  for (let i = 0; i < spec.n; i++) rolls.push(1 + Math.floor(Math.random() * spec.sides));
+  return { ...spec, rolls, total: rolls.reduce((a, b) => a + b, 0) };
 }
 
 function run(text, api) {
-  const p = parseRoll(text);
-  if (!p) return 'none';
   const { showPage, esc } = api;
-  const r = roll(p.n, p.sides);
-  const desc = p.n === 1 ? `a d${p.sides}` : `${p.n}d${p.sides}`;
-  showPage((el) => {
-    el.innerHTML = `<h2>Dice roll</h2><p style="font-size:28px;font-weight:300">${esc(r.faces.join(' + '))}${p.n > 1 ? ' = ' + r.total : ''}</p><div class="sub">rolled ${esc(desc)} · say “roll 2d6” for another</div>`;
+  const spec = diceOf(text);
+  if (!spec) return 'none';
+  const r = roll(spec);
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Dice</h2><div class="sub">' + esc(spec.n + 'd' + spec.sides) + '</div>'
+      + '<div style="font-size:28px;margin:12px 0">' + r.rolls.map(esc).join(' + ') + ' = <b>' + r.total + '</b></div>'
+      + '<button type="button" class="g-btn">Roll again</button>';
   });
+  const btn = el && el.querySelector('button');
+  if (btn) btn.addEventListener('click', () => run(text, api));
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a dice', 'roll the dice', 'roll 2d6', 'roll 3d8'],
-  nearMisses: ['what is a dice', 'dice game', 'yahtzee'],
-  match(lower, text) { return !!parseRoll(text || lower); },
+  examples: ['roll a d6', 'roll 2d20', 'dice', 'roll the dice'],
+  nearMisses: ['what is a dice', 'dice games', 'how do I roll dice'],
+  match(lower, text) { return !!diceOf(text || lower); },
   run,
+  suite() {
+    const a = diceOf('roll 2d6');
+    const b = diceOf('roll a d20');
+    const c = diceOf('hello');
+    const r = roll({ n: 1, sides: 6 });
+    return { ok: a && a.n === 2 && a.sides === 6 && b && b.n === 1 && b.sides === 20 && c === null && r && r.rolls.length === 1 && r.total >= 1 && r.total <= 6 };
+  },
 };
