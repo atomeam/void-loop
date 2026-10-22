@@ -38,6 +38,7 @@ for (const [name, file] of [
   ['about-skill', 'about-skill.test.mjs'],
   ['grades', 'grades.test.mjs'],
   ['ritual', 'ritual.test.mjs'],
+  ['podcast', 'podcast.test.mjs'],
   ['live-revert', 'live-revert.test.mjs'],
   ['progress-chart', 'progress-chart.test.mjs'],
   ['loop-parts', 'loop-parts.test.mjs'],
