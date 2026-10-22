@@ -38,6 +38,7 @@ for (const [name, file] of [
   ['about-skill', 'about-skill.test.mjs'],
   ['grades', 'grades.test.mjs'],
   ['ritual', 'ritual.test.mjs'],
+  ['loop-parts', 'loop-parts.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
   ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['memory-preview', 'memory-preview.test.mjs'],
