@@ -1,0 +1,25 @@
+{
+  "name": "adventure-lab",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Atari 2600 Adventure native reimplementation with agent play capabilities",
+  "main": "extract-assets.js",
+  "scripts": {
+    "extract": "node extract-assets.js",
+    "pixellab:test": "node integrations/test-pixellab.js"
+  },
+  "keywords": [
+    "atari",
+    "2600",
+    "adventure",
+    "agent",
+    "reimplementation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@pixellab-code/pixellab": "^1.0.2",
+    "dotenv": "^17.4.2",
+    "pngjs": "^7.0.0"
+  }
+}
