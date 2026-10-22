@@ -31,6 +31,7 @@ const server = http.createServer((req, res) => {
 }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 
+const EXP_N = (() => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')).families.reduce((n, f) => n + (f.skills || []).filter((x) => x.tier === 'experiment').length, 0); } catch (_) { return 1; } })();
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 // --only "<words>": run just the sections whose heading has all those words (and the short opening section every run shares),
 // so a builder tests the flow it touched in a minute instead of the whole suite (owner, 2026-10-11: the full suite runs on
@@ -5774,7 +5775,7 @@ try {
       const cs2 = await import('/lib/card-share.js'), ci = await import('/lib/card-image.js'), d = cs2.readCard(pg), img = cs2.imageData(pg, d), svg = ci.cardSvg(img);
       return { heads: heads.map((h) => h.textContent), hw: +cs(hd).fontWeight, hs: parseFloat(cs(hd).fontSize), ps: parseFloat(cs(body).fontSize), inSummary: heads.filter((h) => h.tagName === 'H3').every((h) => h.parentElement.tagName === 'SUMMARY'), before, after, back, inset,
         len: d.b.length, note: cs2.fullNote(d.b.length), allAsks: recentCount(d.b), detailNew: /built ask number 0[\s\S]*what the builder shipped/.test(d.b), detailOld: (d.b.match(/what the builder shipped/g) || []).length, tail: d.b.slice(-80),
-        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350"/g) || []).length, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
+        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350" height="\d+" rx="\d+" fill="rgba\(/g) || []).length /* the track of each family bar; a full bar (share 1) draws a second 350-wide rect */, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
         redesign: { evolved: pg.querySelectorAll('.vc-evolved-note').length, art: [...pg.querySelectorAll(':scope > .vc-art > img, :scope > .vc-art > svg')].filter((n) => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden' && n.getBoundingClientRect().width > 40).length,
           smallOverArt: [...pg.querySelectorAll(':scope > .vc-art *')].filter((n) => n.tagName !== 'svg' && n.closest('svg') === null && n.getBoundingClientRect().width > 0 && n.getBoundingClientRect().width < pg.querySelector(':scope > .vc-art').getBoundingClientRect().width * 0.6 && getComputedStyle(n).display !== 'none').map((n) => n.className && String(n.className)),
           open: [...pg.querySelectorAll('details.vs-sec')].filter((d) => d.open).map((d) => d.dataset.sec), quote: !!pg.querySelector('section[data-sec=words] > blockquote.vs-voice'), quoteBar: getComputedStyle(pg.querySelector('blockquote.vs-voice')).borderLeftWidth,
@@ -5789,7 +5790,7 @@ try {
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 13 && !S.errors.length, // 10 older builds' details and the 3 the lead shows
+        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
@@ -5877,7 +5878,7 @@ try {
       return { tiers: [...new Set([...pg.querySelectorAll('li[data-skill]')].filter(vis).map((li) => li.dataset.tier))], skills: [...pg.querySelectorAll('li[data-skill]')].filter(vis).length, fams: [...pg.querySelectorAll('.fh-family')].filter((f) => !f.hidden).length, pressed: pg.querySelector('[data-fh-filter][aria-pressed="true"]').dataset.fhFilter }; }, k);
     const exp = await pick('experiment'), pro = await pick('proven'), all = await pick('all');
     check('void asks batch 4: the family-health card\'s quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)',
-      exp.tiers.join() === 'experiment' && exp.skills > 0 && pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
+      (EXP_N ? exp.tiers.join() === 'experiment' && exp.skills > 0 : exp.skills === 0 && exp.pressed === 'experiment') && /* every experiment skill can be promoted (2026-10-21: none left) */ pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
       JSON.stringify({ exp, pro, all, errors: F.errors }));
     await F.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
