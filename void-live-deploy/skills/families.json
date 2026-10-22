@@ -1830,7 +1830,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 7 live findings, 2026-10-21",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 8 live findings, 2026-10-22",
      "last_tested": "2026-10-22",
      "last_tested_by": "its tests",
      "success_rate": 1,

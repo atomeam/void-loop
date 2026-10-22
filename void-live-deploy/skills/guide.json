@@ -3448,7 +3448,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 7 live findings, 2026-10-21",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 8 live findings, 2026-10-22",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 182
@@ -3991,11 +3991,11 @@
    "chapter": "stage",
    "name": "showcase",
    "title": "Showcase",
-   "line": "\"look what I made\": verse puts what it built since you were last here on the real stage, one thing at a time, instead of a changelog to read",
+   "line": "\"look what I made\": verse puts what it built since you were last here on the right, as a carousel",
    "examples": [
+    "look what I made",
     "show me what you made",
-    "what's new",
-    "what's new pussycat"
+    "what's new"
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
@@ -8084,7 +8084,7 @@
     {
      "rank": 163,
      "name": "showcase",
-     "catches": "show me what you made"
+     "catches": "look what I made"
     },
     {
      "rank": 164,
