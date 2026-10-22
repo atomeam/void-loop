@@ -2,18 +2,18 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T02:07:10.982Z",
-   "sha": "965a8a1b6316c6a8cf1dca3fb3da5551a080d8de",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39707829470",
+   "at": "2026-10-22T02:10:24.214Z",
+   "sha": "a72557b30d433747dd28bab7e119083557c87a28",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39707963750",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
     "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
+    "tools/stage-camera.test.mjs",
+    "void-live-deploy/lib/stage-camera.js",
     "void-live-deploy/skills/fly.js"
    ]
   },
