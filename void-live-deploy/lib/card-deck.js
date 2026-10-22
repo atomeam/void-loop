@@ -8,7 +8,7 @@ import { seedOf } from './game-kit.js';
 import { cardFrom } from './rally-rules.js';
 
 export const KEY = 'verse.cards.v1', MAX_SEEN = 600, BODY = 8000;
-export const KINDS = ['answer', 'skill', 'game', 'board', 'store'];
+export const KINDS = ['answer', 'skill', 'collectible', 'game', 'board', 'store'];
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const NOT_A_CARD = /^(?:…|\.\.\.|thinking|looking up|loading|searching|working on it|asking verse)/i;
 /** a clean record from anything card-shaped, or null when it is still loading or has no title. Pure. */
@@ -45,3 +45,15 @@ export function note(c) { const r = recordOf(c, Date.now()); if (r) put(noteIn(a
 export function setSaved(c, on = true) { const r = recordOf(c, Date.now()); if (!r) return false; r.saved = !!on; const list = noteIn(all(), r).map((x) => (x.id === r.id ? { ...x, saved: !!on } : x)); put(list); return !!on; }
 export const isSaved = (c) => { const r = recordOf(c, 0); return !!(r && all().some((x) => x.id === r.id && x.saved)); };
 export const remove = (id) => put(all().filter((x) => x.id !== id));
+
+/** the one record from any card shape Verse has (folded in, nothing removed): a share code's data ({ t, k, b, src }), a duel card
+ *  ({ name, power, resistance, income, arrows, abilities }, lib/duel-rules.js), a framed card's numbers (el._vcard from lib/card-frame.js:
+ *  { key, typeLine, adds, rarity }), a Rally card ({ name, type, power, ability }), or a game's card ({ title, text, game, kind }). Pure. */
+export function fromAny(x = {}, now = 0) {
+  if (!x || typeof x !== 'object') return null;
+  if (x.t || x.title) return recordOf({ ...x, b: x.b || x.body || x.text || '' }, now);
+  if (x.name && Number.isFinite(+x.resistance)) return recordOf({ kind: 'game', game: 'Verse Duel', t: x.name, k: 'Duel card', b: 'Power ' + x.power + ', Resistance ' + x.resistance + ', Income ' + (x.income || 0) + ', ' + (x.arrows || 0) + ' arrow' + (x.arrows === 1 ? '' : 's') + ((x.abilities || []).length ? '. ' + x.abilities.join(', ') + '.' : '.') }, now);
+  if (x.key && (x.typeLine || x.adds)) return recordOf({ kind: x.isSkill ? 'skill' : 'answer', t: x.name || x.key, k: x.typeLine || '', b: x.adds || '', rarity: x.rarity && x.rarity.name }, now);
+  if (x.name && x.type) return recordOf({ kind: 'game', game: 'Verse Rally', t: x.name, k: x.type, b: x.ability ? x.ability : 'no ability' }, now);
+  return null;
+}

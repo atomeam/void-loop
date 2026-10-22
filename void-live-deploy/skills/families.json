@@ -544,9 +544,9 @@
     {
      "name": "quiz",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 4 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 4
     },
@@ -640,9 +640,9 @@
     {
      "name": "merge",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-19",
      "streak": 4

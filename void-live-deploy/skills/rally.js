@@ -10,6 +10,7 @@
 import * as R from '../lib/rally-rules.js';
 import * as D from '../lib/card-deck.js';
 import { rng, seedOf } from '../lib/game-kit.js';
+import { artSvg } from '../lib/card-art.js';
 
 const BINDER = /^(?:show |open |see )?(?:my |the )?(?:saved |collected |kept )?(?:cards?|deck|card binder|binder|card collection|collection of cards)(?: binder| collection)?$/;
 const PLAY = /^(?:(?:let'?s |lets |i want to |wanna |can we )?play (?:my cards|my deck|rally|verse rally|a card battle|with my cards)|card battle|(?:verse )?rally|battle (?:my cards|with my cards)|card battle (?:with|against) (?:verse|you))$/;
@@ -33,7 +34,7 @@ const CSS = [
   '.rally .r-hand,.rally .r-row{display:flex;flex-wrap:wrap;gap:6px;min-height:64px;align-items:flex-start}.rally .r-lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b9b4a6;margin-top:8px;display:flex;justify-content:space-between;gap:8px}',
   '.rally .r-card{width:118px;min-height:92px;text-align:left;padding:6px 7px;border-radius:9px;border:1px solid hsl(var(--h) 60% 60%);background:linear-gradient(160deg,hsl(var(--h) 40% 20%),hsl(var(--h) 30% 10%));display:flex;flex-direction:column;gap:3px;position:relative;will-change:transform}',
   '.rally .r-card .n{font-size:12px;line-height:1.25;overflow-wrap:anywhere;color:#f3efe2}.rally .r-card .p{position:absolute;right:6px;top:4px;font-size:16px;font-weight:700;color:var(--gold)}.rally .r-card .t{font-size:11px;color:hsl(var(--h) 70% 80%)}.rally .r-card .a{font-size:10.5px;color:#d8d2c2}',
-  '.rally .r-card .n{padding-right:22px}.rally .r-card.edge::after{content:"▲ +3";position:absolute;right:5px;bottom:4px;font-size:10px;color:#9be59b}.rally .r-card.in{animation:r-in .28s ease-out}@keyframes r-in{from{transform:translateY(24px) scale(.92);opacity:0}to{transform:none;opacity:1}}',
+  '.rally .r-art{display:block;height:34px;margin:-2px -3px 2px;border-radius:6px;overflow:hidden;pointer-events:none}.rally .r-art svg{width:100%;height:100%;display:block}.rally .r-card .p{z-index:1;text-shadow:0 1px 3px #000}.rally .r-card .n{padding-right:4px}.rally .r-card.edge::after{content:"▲ +3";position:absolute;right:5px;bottom:4px;font-size:10px;color:#9be59b}.rally .r-card.in{animation:r-in .28s ease-out}@keyframes r-in{from{transform:translateY(24px) scale(.92);opacity:0}to{transform:none;opacity:1}}',
   '.rally .r-hand .r-card:hover{transform:translateY(-3px)}.rally .r-hand .r-card[disabled]{opacity:.55}.rally .r-score{font-size:22px;font-weight:700;color:var(--gold)}.rally .r-score.bump{animation:r-bump .3s}@keyframes r-bump{50%{transform:scale(1.25)}}',
   '.rally .r-hint{border:1px solid var(--gold);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:14px;line-height:1.45;background:rgba(255,210,122,.08)}.rally .r-wheel{font-size:12.5px;color:#d8d2c2;margin:4px 0}',
   '.rally .r-log{font-size:12.5px;color:#c4bfb0;margin:6px 0;padding-left:18px}.rally .r-win{font-size:18px;font-weight:700;color:var(--gold);margin:8px 0}',
@@ -49,7 +50,10 @@ let bookP = null;
 const exs = (e) => (Array.isArray(e) ? e : String(e || '').match(/'([^']+)'|"([^"]+)"/g) || []).map((x) => String(x).replace(/^['"]|['"]$/g, ''));
 const TIER = { proven: 'rare', checked: 'uncommon', tested: 'common', experiment: 'common' }; // a Book skill's evidence rating, one step under an answer's own rarity scale
 const bookCards = () => (bookP = bookP || fetch('/skills/guide.json').then((r) => (r.ok ? r.json() : null)).then((g) => (g && Array.isArray(g.pages) ? g.pages : []).filter((p) => p.kind === 'skill' && p.title && p.line).map((p) => R.cardFrom({ t: p.title, b: [p.line, ...exs(p.examples).map((e) => '- ' + e), p.flavor || ''].filter(Boolean).join('\n'), src: 0, rarity: TIER[p.tier] || '' }))).catch(() => []));
-const tile = (c, extra = '') => '<span class="n">' + esc(c.name) + '</span><span class="p">' + (c.now != null ? c.now : c.power) + '</span><span class="t">' + GLYPH[c.type] + ' ' + R.TYPE_NAME[c.type] + (c.rarity && c.rarity !== 'common' ? ' · ' + esc(c.rarity) : '') + '</span>' + (c.ability ? '<span class="a">' + esc(R.ABILITIES[c.ability].split(':')[0]) + '</span>' : '') + extra;
+// the card's own art in the match (the same plate its answer card draws, lib/card-art.js), drawn once per card and kept
+const ARTS = new Map();
+const artOf = (c) => { if (!ARTS.has(c.id)) { let svg = ''; try { svg = artSvg({ key: c.name, name: c.name, hue: HUE[c.type] }, { w: 120, h: 40 }); } catch (_) {} if (ARTS.size > 400) ARTS.clear(); ARTS.set(c.id, svg); } return ARTS.get(c.id); };
+const tile = (c, extra = '') => '<span class="r-art" aria-hidden="true">' + artOf(c) + '</span><span class="n">' + esc(c.name) + '</span><span class="p">' + (c.now != null ? c.now : c.power) + '</span><span class="t">' + GLYPH[c.type] + ' ' + R.TYPE_NAME[c.type] + (c.rarity && c.rarity !== 'common' ? ' · ' + esc(c.rarity) : '') + '</span>' + (c.ability ? '<span class="a">' + esc(R.ABILITIES[c.ability].split(':')[0]) + '</span>' : '') + extra;
 
 function mountPage(el, mode, api) {
   if (!document.getElementById('rally-style')) { const st = document.createElement('style'); st.id = 'rally-style'; st.textContent = CSS; document.head.appendChild(st); }
@@ -86,11 +90,11 @@ function mountPage(el, mode, api) {
     tut = m === 'tutorial'; main.innerHTML = '<div class="r-note">shuffling…</div>';
     const book = await bookCards(), mine = D.all().map(D.playOf), pool = book.length ? book : [R.cardFrom({ t: 'Verse', b: 'Answers anything.' })];
     const today = new Date().toISOString().slice(0, 10), seed = m === 'daily' ? R.dailySeed(today) : tut ? 7 : (Date.now() >>> 0);
-    const r = rng(seed), pickN = (list, n) => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, n); };
-    let you = mine.length >= 12 && !tut ? mine : mine.concat(pickN(pool, 12 - Math.min(12, mine.length))); // a new collection is topped up with starter cards from the Book
+    const r = rng(seed);
+    let you = mine.length >= 12 && !tut ? mine : mine.concat(R.balancedPick(pool, 12 - Math.min(12, mine.length), r)); // a new collection is topped up with starter cards from the Book
     if (pinned) { const pc = D.all().find((x) => x.id === pinned); if (pc) { const c = D.playOf(pc); you = [c, ...you.filter((x) => x.id !== c.id)]; } }
-    if (m === 'daily') you = pickN(pool, 12); // the daily challenge: everyone gets the same two decks today
-    const verse = pickN(pool.filter((c) => !you.some((y) => y.id === c.id)), 12);
+    if (m === 'daily') you = R.balancedPick(pool, 12, r); // the daily challenge: everyone gets the same two decks today
+    const verse = R.balancedPick(pool.filter((c) => !you.some((y) => y.id === c.id)), 12, r);
     const level = tut ? 1 : m === 'daily' ? 3 : +(ui('level') || 2);
     s = R.newMatch(you, verse, seed, level);
     if (pinned) { const i = s.hand.you.findIndex((c) => c.id === you[0].id); if (i < 0) s.hand.you[0] = you[0]; pinned = null; }

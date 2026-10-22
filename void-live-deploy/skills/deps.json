@@ -81,30 +81,30 @@
   },
   {
    "file": "lib/rule-registry.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
-   "skills": 11,
-   "direct": 0,
-   "dependants": 32,
+   "skills": 12,
+   "direct": 1,
+   "dependants": 33,
    "tests": 4
   },
   {
@@ -236,7 +236,7 @@
   {
    "file": "lib/card-deck.js",
    "skills": 7,
-   "direct": 1,
+   "direct": 2,
    "dependants": 10,
    "tests": 1
   },
@@ -2756,7 +2756,8 @@
     "lib/card-frame.js",
     "lib/card-image.js",
     "lib/skill-confidence.js",
-    "lib/tome.js"
+    "lib/tome.js",
+    "skills/rally.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -2796,6 +2797,7 @@
    ],
    "importedBy": [
     "lib/card-share.js",
+    "skills/duel.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -2803,7 +2805,6 @@
     "lib/duel-rules.js",
     "skills/about-skill.js",
     "skills/collectible.js",
-    "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
     "skills/oracle.js"
@@ -2967,6 +2968,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -3643,6 +3645,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -4903,6 +4906,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -6510,7 +6514,8 @@
    "imports": [
     "lib/duel-rules.js",
     "lib/card-frame.js",
-    "lib/rules-play.js"
+    "lib/rules-play.js",
+    "lib/card-deck.js"
    ],
    "importedBy": []
   },
@@ -8088,7 +8093,8 @@
    "imports": [
     "lib/rally-rules.js",
     "lib/card-deck.js",
-    "lib/game-kit.js"
+    "lib/game-kit.js",
+    "lib/card-art.js"
    ],
    "importedBy": []
   },

@@ -102,7 +102,7 @@ async function run(text, api) {
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
         + nextLine
-        + '<div class="wx-hours" style="display:grid;grid-template-columns:repeat(8,minmax(46px,1fr));overflow-x:auto;gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
+        + '<div class="wx-hours" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(42px,1fr));gap:8px 2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
         + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     };
     await draw();

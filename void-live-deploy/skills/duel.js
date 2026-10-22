@@ -129,6 +129,12 @@ function mount(th, stageApi) {
   q('.d-pass').addEventListener('click', (e) => { e.stopPropagation(); step({ type: 'pass' }); });
   q('.d-new').addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(busy); pending = null; mode = null; th.state = D.newState(); seedPool(); save(); paint(); });
   input.addEventListener('input', () => { if (mode === 'summon') paint(); });
+  // my saved cards (lib/card-deck.js, the one card record) are offered as ideas to summon: a tap fills the box, the duel earns its stats as before
+  import('../lib/card-deck.js').then((K) => { const mineSaved = K.view(K.all(), { saved: true }).slice(0, 8); if (!mineSaved.length) return;
+    const row = document.createElement('div'); row.className = 'd-mine'; row.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin:4px 0;font-size:12px';
+    row.append('my cards: ');
+    for (const r of mineSaved) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn'; b.textContent = r.t.slice(0, 40); b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', (e) => { e.stopPropagation(); input.value = r.t.slice(0, 40); mode = 'summon'; slot = slot || D.openArrows(th.state, 'you')[0] || null; paint(); }); row.appendChild(b); }
+    q('.d-ctl').after(row); }).catch(() => {});
   input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { mode = 'summon'; slot = slot || D.openArrows(th.state, 'you')[0] || null; paint(); const d = defOf(input.value.trim() || 'Idea'); if (slot && !D.whyIllegal(th.state, { type: 'summon', card: d, parent: slot.parent, slot: slot.slot })) doSummon(d); } });
   ctl = {
     th,
