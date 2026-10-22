@@ -58,6 +58,11 @@
     } catch (e) {}
   </script>
   <style>
+    /* home polish: never cut words, fit phones, no sideways scroll */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body { overflow-x: hidden; }
+    h1, h2, h3, p, li, label, button, a, figcaption { overflow-wrap: anywhere; }
+    img, video, canvas, iframe { max-width: 100%; }
     :root {
       color-scheme: dark;
       --bg: #050505;

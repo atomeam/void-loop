@@ -1,0 +1,19 @@
+# NEXT — every open track, in priority order (2026-10-22)
+
+For Claude and the daily routines. Each line: status · open PRs · exact next step. Nothing is ever finished; each track keeps upgrading in the lap loop.
+
+1. **Films: cut-off words in shorts + "make this a film" for anything** — status: glitch rarer/slower merged (#1257, #1263, #1268); cut-off-word fix and film-anything in progress (worktree `films-fix`, F-236 in `f236`) · open PRs: none yet · next: captions/titles wrap inside safe areas, add a frame-sampling check on rendered shorts that fails on clipped text; then a "make this a film" action on every card/creation (games, comics via Panel Play, music via Loop Grid). Add the films score (cut words, caption size, shot variety, pacing, loudness, load time) + films chart on the self card; a film that scores below the best old film doesn't ship.
+2. **F-236 Scene Blocker → into Films** — status: not dispatched · next: fold shots/storyboard blocking into the film-anything flow (item 1); no separate surface.
+3. **Cards: throw away + minimize into miniatures** — status: forge/play/share merged (#1245, #1251, #1255, #1261, #1262, #1266) · open: none · next: verify throw-away and minimize-to-miniature on desktop + 390px phone; fix and add a browser check.
+4. **Game Box (games + dice/coins/cards/number picks, binder with deeds)** — open PR **#1273** · next: rebase on main, get checks green, merge.
+5. **Lap loop + real-site tower** — lap 1 overhaul merged (#1269); tower open PR **#1271** · next: merge #1271; each floor needs "N of M aspects beaten" evidence before it passes; each lap records a measurable before/after (include films, business plans, Forethinkers).
+6. **Completeness + Monopoly/VoidQuest panels** — basics merged (#1254) · next: confirm property + money panels in the Monopoly-style game and VoidQuest; add a check that every game has its basic panels.
+7. **Book repagination** (min font size, index.html copy sync, emoji row) · next: finish in worktree `bookfix`; check no cut-off text at 390px–1920px and 50–200% zoom.
+8. **Mind Field + Tilt Arena** — Mind Field merged (#1252, #1267, #1270) · next: Tilt Arena stage, then phrases + book page + "what can you do" spot.
+9. **Podcast "Verse Out Loud"** — open PR **#1260** · next: rebase, green, merge.
+10. **Main browser suite** — green fixes merged (#1258, #1272) · next: keep green on two consecutive runs; owners fix their own failures.
+11. **Duplicate IDs F-225 and F-232** · next: give the second of each a new number (internal only) and update references; check drift test.
+12. **Cloudflare reconnect, budget guard, cache TTL** — blocked on owner reconnecting Cloudflare (never ask for tokens in chat) · next: after reconnect, add budget guard, optionally set Browser Cache TTL to "Respect Existing Headers".
+13. **Other open PRs**: #1259 (lists run 5), #1189, #1188, #1187 — rebase or close with a note.
+
+Rules stay: don't edit Claude's files (lib/models.js, lib/guard.js, lib/clef.js, router/limits, functions/api/gumroad.js); no force-push; paraphrased commits; automerge label.
