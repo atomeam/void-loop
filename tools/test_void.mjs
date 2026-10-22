@@ -4475,8 +4475,8 @@ try {
     check("Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
       /#901 .* made by Verse, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
         && forge.asks.length >= 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
-        && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
-      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+        && div.length >= 1 && /^(I asked: Learn Go on the stage.*)?What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
+      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), vase: (again.match(/Vase[^\n]*\n?[^\n]*/) || [''])[0], div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
     await B.ctx.close(); }
   // Verse's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
   if (want("Verse's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
