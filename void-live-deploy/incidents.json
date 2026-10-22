@@ -2,33 +2,47 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T03:39:57.313Z",
-   "sha": "b959542fd5ed3054ffe880e1e8fd751d297aab00",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39715806911",
+   "at": "2026-10-22T03:42:41.895Z",
+   "sha": "1245c38f992b5bab232941a93ee1b289a512a4bd",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39716203258",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
     "look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it",
     "look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor's first move brings \"I made 3 new things while you were away · show me\"; \"show me\" puts the newest (a paper sticky) on the stage with \"1 of 3\", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; \"what's new\" afterwards replays nothing and says so with the count; \"show me everything you made\" walks all 4 by name",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
     "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "docs/LOOP-GAPS.md",
     "docs/STRATEGY.md",
-    "docs/TAGTEAM.md",
-    "domains/handoff.md",
     "tools/lacks.mjs",
-    "tools/loop-parts.test.mjs",
-    "tools/revenue-tags.json"
+    "tools/loop-parts.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T03:17:47.145Z",
+   "sha": "9f07317661f95cae3b4046186d157072a0769038",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39715660602",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/grow.mjs",
+    "tools/star-parallax.test.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/void.growth.json",
+    "domains/handoff.md",
+    "tools/everything.test.mjs",
+    "void-live-deploy/functions/api/markets.js"
    ]
   },
   {
@@ -724,34 +738,6 @@
     "void-live-deploy/lib/duel-rules.js",
     "void-live-deploy/lib/merge-rules.js",
     "void-live-deploy/skills/duel.js",
-    "void-live-deploy/void.html",
-    "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-20T08:56:03.475Z",
-   "sha": "0758305cba7251586f05814c9c4eb99dab7dafc2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39394733131",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/lacks.mjs",
-    "tools/private.mjs",
-    "tools/showcase.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/growth-tree.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/showcase.js",
-    "void-live-deploy/skills/spectral-review.js",
-    "void-live-deploy/void.growth.json",
     "void-live-deploy/void.html",
     "void.html"
    ]
