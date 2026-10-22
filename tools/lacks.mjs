@@ -100,6 +100,14 @@ export function usable(ask) {
   return a.length >= 2 && a.length <= MAX_ASK && !/[\n\r]/.test(a) && !/https?:|www\.|@\S+\.\S+|[A-Za-z0-9_-]{32,}/.test(a) && /[a-z]/i.test(a);
 }
 
+/** market reach (docs/STRATEGY.md, monetization first): 1 + the weight of each tag group (money, parity) whose pattern the skill's
+ * name matches, from tools/revenue-tags.json. Pure. */
+export function reach(name, tags = {}) {
+  let w = 1;
+  for (const g of Object.values(tags || {})) if (g && Array.isArray(g.patterns) && g.patterns.some((p) => new RegExp('(^|-)' + p + '($|-)').test(name))) w += +g.weight || 0;
+  return w;
+}
+
 /** the plan: the top n skills and, for each, up to PER_SKILL of its own examples not already in the benchmark, as candidate rows. Pure. */
 export function plan(data, { n = 6, first = [] } = {}) {
   const have = new Set((Array.isArray(data.bench) ? data.bench : (data.bench && (data.bench.asks || data.bench.items)) || []).map((r) => String(r && r.ask || '').trim().toLowerCase()));
@@ -109,7 +117,7 @@ export function plan(data, { n = 6, first = [] } = {}) {
   const heavy = new Set(heavyLessons());
   // expected value (docs/LOOP-GAPS.md): how much proof a skill lacks times the chance a try at it lands, from the result memory
   // in tools/grow-lessons.json. A skill never tried scores its lack x 0.5, so fresh skills and proven-weak ones both get turns.
-  const mem = data.lessons || loadLessons(), ev = (r) => r.score * chance(r.name, mem);
+  const mem = data.lessons || loadLessons(), tags = data.revenue || readJson('tools/revenue-tags.json', {}), ev = (r) => r.score * chance(r.name, mem) * reach(r.name, tags);
   const byEv = (a, b) => ev(b) - ev(a);
   const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name)).sort(byEv)).concat(ranked.filter((r) => heavy.has(r.name)).sort(byEv));
   // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
