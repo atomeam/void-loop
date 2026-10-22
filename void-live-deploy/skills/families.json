@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 6,
-  "tested": 30,
+  "tested": 29,
   "checked": 12,
-  "proven": 271
+  "proven": 273
  },
  "families": [
   {
@@ -27,7 +27,7 @@
     "experiment": 6,
     "tested": 5,
     "checked": 1,
-    "proven": 31
+    "proven": 32
    },
    "skills": [
     {
@@ -325,10 +325,12 @@
     },
     {
      "name": "doodle-mind",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-22",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-22"
     },
     {
      "name": "echo-field",
@@ -337,6 +339,13 @@
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "since": "2026-10-22"
+    },
+    {
+     "name": "resonant-membrane",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "mind-field-mode",
@@ -420,9 +429,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 0,
-    "proven": 27
+    "proven": 28
    },
    "skills": [
     {
@@ -644,10 +653,12 @@
     },
     {
      "name": "rally",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-22",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-22"
     },
     {
      "name": "merge",
@@ -1276,7 +1287,7 @@
     {
      "name": "feelings",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-22",
      "last_tested_by": "its tests",
      "success_rate": 1,

@@ -1,5 +1,5 @@
 /**
- * mind-field-mode skill — Mind Field: one living field you can draw on, talk to and steer, in eight modes (Doodle Mind, Echo Field, Swarm,
+ * mind-field-mode skill — Mind Field: one living field you can draw on, talk to and steer, in nine modes (Doodle Mind, Echo Field, Resonant Membrane, Swarm,
  * Flow, Listen, Grow, Attention and Living cards); "mind field modes" lists them and every card has a Mode switcher. These are the words
  * that reach Mind Field's modes by name (owner, 2026-10-21: "make them all easier to find"):
  * "mind field swarm", "listen field", "swarm field", "mind field in flow mode", "show me a mind", "mind field modes", "save this mind".
@@ -16,8 +16,9 @@ import nca from './nca-mind.js';
 import attention from './attention-field-mind.js';
 import livingCards from './living-cards-mind.js';
 import echo from './echo-field.js';
+import membrane from './resonant-membrane.js';
 
-const SKILLS = { 'doodle-mind': doodle, 'echo-field': echo, 'swarm-mind': swarmMind, 'vector-field-mind': vectorField, 'resonance-mind': resonance, 'nca-mind': nca, 'attention-field-mind': attention, 'living-cards-mind': livingCards };
+const SKILLS = { 'doodle-mind': doodle, 'echo-field': echo, 'resonant-membrane': membrane, 'swarm-mind': swarmMind, 'vector-field-mind': vectorField, 'resonance-mind': resonance, 'nca-mind': nca, 'attention-field-mind': attention, 'living-cards-mind': livingCards };
 const CLEAN = (t) => String(t || '').toLowerCase().trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const SHOW_A_MIND = /^(?:show|give|make) me (?:a|the|your) mind$/;
 
