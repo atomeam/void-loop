@@ -1,6 +1,7 @@
 /**
- * gamebox skill: the Game Box (owner, 2026-10-22: "dice, coins, random numbers, the magic 8-ball and cards should all live in the same box as the
- * games"). "game box", "games", "table tools", "all games", "open the game box" open one page with two halves:
+ * gamebox skill: the Game Box, every game and the table tools in one place.
+ * Asked 2026-10-22 (owner: "dice, coins, random numbers, the magic 8-ball and cards should all live in the same box as the games"). "game box",
+ * "games", "table tools", "all games" open one page with two halves:
  *   Games: every game Verse has, read from the Book (skills/guide.json, the games chapter, plus VoidQuest and the card games), each with the words
  *   that open it, so a new game appears here by itself.
  *   Table tools (lib/table-tools.js): dice of any count and sides with a 3D roll, a coin flip, a number picker, an answer orb (8-ball style,

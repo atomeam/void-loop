@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T05:35:27Z",
+   "subject": "Game Box: every game and the table tools in one box (dice of any size with a 3D roll, coin, number picker, answer orb, card deck, timer…"
+  },
+  {
    "at": "2026-10-22T05:17:47Z",
    "subject": "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T04:44:49Z",
    "subject": "Films title: keep the glitching word in one box so card title rows can't spread its letters; add a frame-sampling check for glitch titles"
-  },
-  {
-   "at": "2026-10-22T04:40:45Z",
-   "subject": "File sorter: a short whole-sentence book line"
   }
  ],
  "builders": {
