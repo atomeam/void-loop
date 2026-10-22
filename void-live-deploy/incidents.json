@@ -2,28 +2,16 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T02:47:56.362Z",
-   "sha": "96c8914b181799c24bdf1134d1d537da2b442433",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39712898523",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml",
-    "tools/backfill-hardened.mjs",
-    "void-live-deploy/lib/built-detail.js",
-    "void-live-deploy/skills/showcase.js",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:37:43.337Z",
+   "at": "2026-10-22T02:52:50.710Z",
    "sha": "2395085be48e769794c9a81c5ec1898c9a7cf539",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39711958842",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+    "look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it",
+    "look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor's first move brings \"I made 3 new things while you were away · show me\"; \"show me\" puts the newest (a paper sticky) on the stage with \"1 of 3\", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; \"what's new\" afterwards replays nothing and says so with the count; \"show me everything you made\" walks all 4 by name",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "docs/MAP.md",
@@ -744,6 +732,23 @@
     "void-live-deploy/skills/telemetry-route.js",
     "void-live-deploy/void.growth.json",
     "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-19T22:02:55.553Z",
+   "sha": "c1857d934b3ea30cfb0cbaa5ac499b72d576de19",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39331588560",
+   "suite": "browser suite on main",
+   "checks": [
+    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/grow-self.yml",
+    ".github/workflows/propose-fix.yml",
+    "domains/void.agents.log.md",
+    "tools/grow-clock.test.mjs",
+    "void-live-deploy/void.growth.json"
    ]
   }
  ]

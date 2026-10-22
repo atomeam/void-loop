@@ -31,7 +31,7 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Automatic curriculum (next task from what is weakest) | Voyager | have | `tools/lacks.mjs` ranks skills by how little is proven |
 | Skill library, retrieved by similarity before a new task | Voyager | **built here** | `tools/loop-library.mjs`: past builds retrieved for a want (was missing: the ledger was written, never read back) |
 | Environment feedback + self-verification before keeping a skill | Voyager | have | `bench.mjs --probe` in the real page; only routed asks become rows |
-| Verbal reflection memory of failures, read on the next try | Reflexion | partial | `grow-lessons.json` keeps skill + count, not the reason; reasons live only in run reports |
+| Verbal reflection memory of failures, read on the next try | Reflexion | **built** | `grow-lessons.json` keeps wins, misses and why each miss happened (what answered instead); `lacks.mjs` reads it |
 | Evaluator step on each output | Reflexion, Self-Refine | **built here** | `tools/loop-critic.mjs` + `loop-critic.yml` critique visitor-facing lines before merge (annotate-only for now) |
 | Iterative refine until the critic is quiet | Self-Refine | missing | the critic reports; nothing rewrites the line and re-checks yet |
 | Memory retrieval by recency + importance + relevance | Generative Agents | **built here** | scoring in `tools/loop-library.mjs` (0.995^hours decay, importance from kind/try/revert, word overlap) |
@@ -45,11 +45,12 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Prompt/program optimisation against a metric | DSPy/MIPRO | missing | Verse's prompts are hand-edited; no metric-driven search |
 | Eval-driven development (benchmark gates merges) | eval practice | have | `bench.json`, `bench.best.json`, bench floors |
 | Canary + automatic rollback | SRE | partial | auto-revert on a red browser suite (`revert-target.mjs`); no staged canary, live-watch failure does not revert |
-| Expected-value / bandit want picking | bandits | in progress | another worker (562e838a) is building EV picking, per-family scores and progress charts; not duplicated here |
+| Expected-value / bandit want picking | bandits | **built** | `lacks.mjs` orders by lack x chance (Beta(1,1) mean of wins/misses, `grow-lessons.chance`); `familyScores` gives per-family outcomes |
+| Progress over time (proven, miss rate, speed) | eval practice | missing | no time series on the self card yet |
 
 ## Left, highest value first
 
-1. Reflexion reasons in `grow-lessons.json` (why each probe missed), read by `lacks.mjs`.
+1. Self-card charts over time: skills proven, miss rate, answer speed.
 2. Critic gates (drop `|| true`) once hardening lines list their phrases.
 3. Variant archive: failed candidates kept with their score so a later run can retry from them.
 4. Live-watch failure → revert, through the same `revert-target.mjs` safety checks.

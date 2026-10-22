@@ -177,7 +177,7 @@ jobs:
           grep -qE '^[0-9]+ of [0-9]+ answered' "$g/probe.log" || { echo "::error title=The probe did not finish::no result line in the probe log"; exit 1; }
           node tools/lacks.mjs settle "$g/cand.json" "$g/probe.log" --out "$g/passing.json" --failed "$g/failed.json" --report "$g/report.md"
           # record which skills' examples missed so the next plan deprioritizes them
-          node -e "import('./tools/grow-lessons.mjs').then(m => m.record(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))))" "$g/failed.json" || true
+          node -e "import('./tools/grow-lessons.mjs').then(m => m.record(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')), undefined, JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'))))" "$g/failed.json" "$g/passing.json" || true
           cat "$g/report.md" >> "$GITHUB_STEP_SUMMARY"
           count=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).length" "$g/passing.json")
           # the card art: the weakest properties go in the summary, and each floor rises when the art got better (it never lowers: a drop fails checks.mjs)
