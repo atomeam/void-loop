@@ -16,7 +16,7 @@
 //   node tools/lacks.mjs queue failed.json [--dry]         the asks that did not route become `probe:` jobs for propose-fix.yml (owner token; at most PROBE_OPEN_MAX open)
 // Nothing here writes into the repo but the files named by --out/--report; adding rows is tools/append.mjs, opening the PR is the workflow.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { heavy as heavyLessons } from './grow-lessons.mjs';
+import { heavy as heavyLessons, chance, load as loadLessons } from './grow-lessons.mjs';
 import { resolve, dirname } from 'node:path';
 import { plan as probePlan, PROBE_OPEN_MAX } from './probe-asks.mjs';
 import { fileURLToPath } from 'node:url';
@@ -107,7 +107,11 @@ export function plan(data, { n = 6, first = [] } = {}) {
   const ranked = rank(data), on = new Set(first);
   // skills whose examples keep routing elsewhere are deprioritized so the plan tries fresher candidates (owner 2026-10-21)
   const heavy = new Set(heavyLessons());
-  const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name))).concat(ranked.filter((r) => heavy.has(r.name)));
+  // expected value (docs/LOOP-GAPS.md): how much proof a skill lacks times the chance a try at it lands, from the result memory
+  // in tools/grow-lessons.json. A skill never tried scores its lack x 0.5, so fresh skills and proven-weak ones both get turns.
+  const mem = data.lessons || loadLessons(), ev = (r) => r.score * chance(r.name, mem);
+  const byEv = (a, b) => ev(b) - ev(a);
+  const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name)).sort(byEv)).concat(ranked.filter((r) => heavy.has(r.name)).sort(byEv));
   // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
   // the weakest skills that can still be hardened (2026-10-20: the top six were all done, the plan came back empty and grow-self stopped)
   const want = Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6)), picks = [], candidates = [], seen = new Set();

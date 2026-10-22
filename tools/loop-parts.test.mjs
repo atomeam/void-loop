@@ -22,3 +22,9 @@ const diff = ['+++ b/void-live-deploy/void.growth.json',
 const ids = critique(diff).map((x) => x.id).sort();
 assert.deepEqual(ids, ['cut-off', 'roleplay', 'vague-count']);
 console.log('loop-parts: ok');
+import { chance, familyScores } from './grow-lessons.mjs';
+const mem = { skills: { a: { wins: 3, misses: 0 }, b: { wins: 0, misses: 3 }, c: { wins: 1, misses: 1 } } };
+assert.equal(chance('a', mem), 0.8); assert.equal(chance('b', mem), 0.2); assert.equal(chance('zz', mem), 0.5);
+const fs2 = familyScores(mem, (n) => (n === 'c' ? 'g' : 'f'));
+assert.deepEqual(fs2.f, { wins: 3, misses: 3, chance: 0.5 }); assert.equal(fs2.g.chance, 0.5);
+console.log('loop-ev: ok');
