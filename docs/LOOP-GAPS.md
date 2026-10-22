@@ -32,11 +32,11 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Skill library, retrieved by similarity before a new task | Voyager | **built here** | `tools/loop-library.mjs`: past builds retrieved for a want (was missing: the ledger was written, never read back) |
 | Environment feedback + self-verification before keeping a skill | Voyager | have | `bench.mjs --probe` in the real page; only routed asks become rows |
 | Verbal reflection memory of failures, read on the next try | Reflexion | **built** | `grow-lessons.json` keeps wins, misses and why each miss happened (what answered instead); `lacks.mjs` reads it |
-| Evaluator step on each output | Reflexion, Self-Refine | **built here** | `tools/loop-critic.mjs` + `loop-critic.yml` critique visitor-facing lines before merge (annotate-only for now) |
-| Iterative refine until the critic is quiet | Self-Refine | missing | the critic reports; nothing rewrites the line and re-checks yet |
+| Evaluator step on each output | Reflexion, Self-Refine | **built here** | `tools/loop-critic.mjs` + `loop-critic.yml` critique visitor-facing lines before merge (fails the PR on a finding) |
+| Iterative refine until the critic is quiet | Self-Refine | **built** | `tools/loop-refine.mjs` rewrites by rule (ellipsis to full stop, counts to listed phrases), re-critiques, max 3 passes; grow-self runs it |
 | Memory retrieval by recency + importance + relevance | Generative Agents | **built here** | scoring in `tools/loop-library.mjs` (0.995^hours decay, importance from kind/try/revert, word overlap) |
 | Periodic reflection that writes higher-level insights | Generative Agents | have | `reflect.mjs --daily`; `#1207` drops asks already built |
-| Archive of variants, keep stepping stones, select by benchmark | DGM, AlphaEvolve | missing | one preview at a time; failed variants are discarded, not archived |
+| Archive of variants, keep stepping stones, select by benchmark | DGM, AlphaEvolve | **built** | `grow-lessons.json` `variants`: every missed candidate kept with what answered; `retryable()` returns them once the skill's chance rises |
 | Population / evolutionary search over many candidates | AlphaEvolve, ADAS | missing | one candidate per cycle by design (owner rule: close out before next preview) |
 | Improver that improves the improver | STOP, DGM | partial | grow-self can only add benchmark rows, never edit its own code (deliberate safety limit) |
 | Meta search over agent designs | ADAS | missing | out of scope while the loop is model-free in CI |
