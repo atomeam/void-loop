@@ -83,7 +83,7 @@ function hud(on) {
   }
   el = document.createElement('div'); el.id = HUD_ID; el.setAttribute('role', 'status');
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to look · pinch to zoom · tap land' : 'flying · WASD to move · hold Shift for warp · scroll to zoom · Esc to land';
+  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to look · pinch to zoom · tap land' : 'flying · WASD to move · hold Shift to fly forward · scroll to zoom · Esc to land';
   const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'land'; btn.setAttribute('aria-label', 'land: back to the normal view');
   btn.addEventListener('click', () => land());
   el.append(words, btn);
