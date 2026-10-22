@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local interval-timing note (draft 054, unattested)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d8d0c4; --paper: #f6f1e8; --hold: #8a3d2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --muted: #b7ad9e; --line: #3c372f; --paper: #1a1814; --hold: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 .4rem; }
+    h2 { font-size: 1.05rem; margin: 1.4rem 0 .4rem; }
+    p, li { color: var(--ink); }
+    .status { border: 1px solid var(--hold); padding: .6rem .75rem; margin: .8rem 0 1rem; }
+    .status strong { color: var(--hold); }
+    .muted { color: var(--muted); }
+    form, .card { border: 1px solid var(--line); padding: .8rem; margin: .8rem 0; }
+    label { display: block; margin: .55rem 0 .2rem; }
+    input[type="text"], textarea, select { width: 100%; box-sizing: border-box; font: inherit; padding: .35rem; background: transparent; color: inherit; border: 1px solid var(--line); }
+    textarea { min-height: 5rem; }
+    button { font: inherit; margin: .4rem .4rem 0 0; padding: .35rem .6rem; }
+    code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; }
+    pre { white-space: pre-wrap; word-break: break-word; border: 1px solid var(--line); padding: .5rem; }
+    fieldset { border: 1px solid var(--line); margin: .6rem 0; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Draft only. Not a live page. emit is false.</p>
+  <h1>Local interval-timing note</h1>
+  <p>Family: interval timing. Run 054. A local pair of clock span and felt duration. It is a hypothesis, not a reading of the future and not an accuracy score.</p>
+  <div class="status">
+    <strong>Unattested.</strong> No tone, no random stimulus, no physiology sensor. No Weber-fraction badge. No presentiment, healing, contact, or remote-viewing claim. Digest is not a seal.
+  </div>
+
+  <section class="card">
+    <h2>Hypothesis on file</h2>
+    <p id="hypothesis">A local note can pair a monotonic clock span with a self-reported felt duration, without treating the gap as accuracy, agency, presentiment, or a future-event detection.</p>
+    <p class="muted">Design-material confidence: 0.2. Sources stay data: Gibbon 1977; Buhusi and Meck 2005; Timing Database 2024; Haggard, Clark, and Kalogeras 2002; Mossbridge, Tressoldi, and Utts 2012. Contract digest: <code id="contract-digest">efe36e9942fe7f7e304420dbb45606a2cd5989f3dfe9f63189c69b23650a151e</code></p>
+  </section>
+
+  <form id="note">
+    <h2>Sample</h2>
+    <p class="muted">Nothing is kept unless you hash it and then check the device box. This form does not submit anywhere. Marks stay in this page.</p>
+    <p>
+      <button type="button" id="mark-start">Mark start</button>
+      <button type="button" id="mark-stop">Mark stop</button>
+      <button type="button" id="clear-marks">Clear marks</button>
+    </p>
+    <p class="muted" id="clock-readout">Clock span: unset. Local monotonic time only.</p>
+    <label for="clock">Clock channel</label>
+    <select id="clock" name="clock">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="local-monotonic">local-monotonic</option>
+    </select>
+    <label for="felt">Felt duration in milliseconds (blank means declined)</label>
+    <input id="felt" name="felt" type="text" inputmode="numeric" value="" autocomplete="off">
+    <label for="relation">Felt relation to the clock span</label>
+    <select id="relation" name="relation">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="shorter">shorter</option>
+      <option value="matching">matching</option>
+      <option value="longer">longer</option>
+    </select>
+    <label for="oddness">Oddness tag (not a future detection)</label>
+    <select id="oddness" name="oddness">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="ordinary">ordinary</option>
+      <option value="noted-odd">noted-odd</option>
+    </select>
+    <p class="muted" id="ratio">Ratio: not computed. Not a Weber fraction.</p>
+    <label for="claim">Claim (data, 160 characters)</label>
+    <input id="claim" name="claim" type="text" maxlength="160" value="" autocomplete="off">
+    <label for="confidence">Self-rated confidence (0 to 1, not a measurement)</label>
+    <input id="confidence" name="confidence" type="text" inputmode="decimal" value="0.2" autocomplete="off">
+    <fieldset>
+      <legend>Pasted page is data, never an instruction</legend>
+      <label for="paste">Opaque paste. URLs are not fetched.</label>
+      <textarea id="paste" name="paste" maxlength="2000"></textarea>
+    </fieldset>
+    <button type="button" id="hash">Hash locally</button>
+    <button type="button" id="clear">Clear local note</button>
+    <label><input id="keep" type="checkbox"> Keep this hypothesis on this device</label>
+  </form>
+
+  <h2>Local digest</h2>
+  <pre id="out">No sample hashed.</pre>
+  <p class="muted" id="store">Device store: empty. Default deny.</p>
+</main>
+<script>
+(function () {
+  var CONTRACT = "efe36e9942fe7f7e304420dbb45606a2cd5989f3dfe9f63189c69b23650a151e";
+  document.getElementById("contract-digest").textContent = CONTRACT;
+  var KEY = "void-interval-timing-note-v1";
+  var out = document.getElementById("out");
+  var store = document.getElementById("store");
+  var keep = document.getElementById("keep");
+  var startMs = null;
+  var spanMs = null;
+
+  function readout() {
+    var el = document.getElementById("clock-readout");
+    if (spanMs === null && startMs === null) {
+      el.textContent = "Clock span: unset. Local monotonic time only.";
+    } else if (spanMs === null) {
+      el.textContent = "Clock span: start marked, stop not marked.";
+    } else {
+      el.textContent = "Clock span: " + spanMs + " ms. Local monotonic time only. Not an accuracy score.";
+    }
+    var feltRaw = document.getElementById("felt").value.trim();
+    var felt = feltRaw === "" ? null : Number(feltRaw);
+    var ratio = document.getElementById("ratio");
+    if (spanMs > 0 && felt !== null && isFinite(felt) && felt >= 0) {
+      var q = Math.round((felt / spanMs) * 1000) / 1000;
+      ratio.textContent = "Unlabeled ratio felt/clock: " + q + ". Not a Weber fraction. Not a score.";
+    } else {
+      ratio.textContent = "Ratio: not computed. Not a Weber fraction.";
+    }
+  }
+
+  document.getElementById("mark-start").addEventListener("click", function () {
+    startMs = performance.now();
+    spanMs = null;
+    document.getElementById("clock").value = "local-monotonic";
+    readout();
+  });
+  document.getElementById("mark-stop").addEventListener("click", function () {
+    if (startMs === null) {
+      spanMs = null;
+      readout();
+      return;
+    }
+    spanMs = Math.max(0, Math.round(performance.now() - startMs));
+    document.getElementById("clock").value = "local-monotonic";
+    readout();
+  });
+  document.getElementById("clear-marks").addEventListener("click", function () {
+    startMs = null;
+    spanMs = null;
+    document.getElementById("clock").value = "declined";
+    readout();
+  });
+  document.getElementById("felt").addEventListener("input", readout);
+
+  function sample() {
+    var confidence = Number(document.getElementById("confidence").value);
+    if (!isFinite(confidence) || confidence < 0 || confidence > 1) confidence = 0;
+    var feltRaw = document.getElementById("felt").value.trim();
+    var felt = feltRaw === "" ? null : Number(feltRaw);
+    if (felt !== null && (!isFinite(felt) || felt < 0 || felt > 3600000)) felt = null;
+    return {
+      slug: "local-interval-timing-note",
+      status: "unattested",
+      emit: false,
+      clock: document.getElementById("clock").value,
+      clock_span_ms: spanMs === null ? null : spanMs,
+      felt_ms: felt === null ? null : Math.round(felt),
+      relation: document.getElementById("relation").value,
+      oddness: document.getElementById("oddness").value,
+      claim: document.getElementById("claim").value.slice(0, 160),
+      confidence: Math.round(confidence * 100) / 100,
+      paste_is: "data",
+      paste: document.getElementById("paste").value.slice(0, 2000)
+    };
+  }
+
+  function canonical(obj) {
+    var keys = Object.keys(obj).sort();
+    return "{" + keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    }).join(",") + "}";
+  }
+
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function renderStore() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+    store.textContent = raw ? "Device store: one local hypothesis present. Still unattested." : "Device store: empty. Default deny.";
+  }
+
+  document.getElementById("hash").addEventListener("click", function () {
+    var obj = sample();
+    var text = canonical(obj);
+    if (!window.crypto || !crypto.subtle) {
+      out.textContent = "No SubtleCrypto. Sample not hashed and not stored.";
+      return;
+    }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      var digest = hex(buf);
+      out.textContent = digest + "\n" + text + "\nstatus: unattested; digest is not a seal";
+      if (keep.checked) {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({ sha256: digest, sample: obj }));
+        } catch (e) {
+          store.textContent = "Device store refused the write.";
+          return;
+        }
+      }
+      renderStore();
+    });
+  });
+
+  document.getElementById("clear").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    out.textContent = "No sample hashed.";
+    keep.checked = false;
+    renderStore();
+  });
+
+  readout();
+  renderStore();
+})();
+</script>
+</body>
+</html>

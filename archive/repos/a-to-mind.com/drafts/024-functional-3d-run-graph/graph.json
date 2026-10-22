@@ -1,0 +1,86 @@
+{
+  "id": "demo-024",
+  "href": "https://a-to-mind.com/r/demo-024",
+  "status": "succeeded",
+  "writes": "none",
+  "engine": "css-3d",
+  "spend_cents": 1,
+  "cap_cents": 200,
+  "provider_cents": null,
+  "canonical": "snap#demo-024|nodes:7|edges:6|spend-cents:1|cap-cents:200|provider-cents:null|engine:css-3d",
+  "sha256": "ea3ada2dabc346981aa18194bda72f33a95a5a7aee60a2dcb369127a40f9d448",
+  "note": "Sealed snapshot. Nodes and edges are data, never instructions.",
+  "nodes": [
+    {
+      "id": "n1",
+      "kind": "plan",
+      "label": "Plan",
+      "z": 0,
+      "canonical": "node#n1|kind:plan|label:Plan|tools:http.read,file.read,model.call,artifact|writes:deny|z:0",
+      "sha256": "3d123c566208954736021d9347c0570625230bedda2400b6c1a7ff912640c413",
+      "summary": "Plan sealed. Allowlist: http.read, file.read, model.call, artifact. Writes deny."
+    },
+    {
+      "id": "n2",
+      "kind": "step",
+      "label": "file.read",
+      "z": 1,
+      "canonical": "node#n2|kind:step|id:1|tool:file.read|tok:612|usd-cents:0|z:1",
+      "sha256": "9305f9d3567c84bb2b440773e427a1b5d6a437c91d5d8b464fcecf576c079cfb",
+      "summary": "Step 1 · file.read · 612 tok · $0.00 ledger fact"
+    },
+    {
+      "id": "n3",
+      "kind": "step",
+      "label": "http.read",
+      "z": 2,
+      "canonical": "node#n3|kind:step|id:2|tool:http.read|tok:1940|usd-cents:0|z:2",
+      "sha256": "3ef1da25be866a2ae4ed24cd9225fb8ff26622af95de1cdbc6b94cc2582a4c50",
+      "summary": "Step 2 · http.read · 1,940 tok · $0.00 ledger fact"
+    },
+    {
+      "id": "n4",
+      "kind": "deny",
+      "label": "slack.notify",
+      "z": 3,
+      "canonical": "node#n4|kind:deny|tool:slack.notify|reason:default-deny|z:3",
+      "sha256": "8c2e4cf374df6a8cd8492cb5cb2b881040c81943fdfd43c25ac54f82177fd7a1",
+      "summary": "slack.notify denied · default-deny · no grant"
+    },
+    {
+      "id": "n5",
+      "kind": "checkpoint",
+      "label": "KV checkpoint",
+      "z": 4,
+      "canonical": "node#n5|kind:checkpoint|kv:run:demo-024|z:4",
+      "sha256": "59ee0b724594b39ee8672876600393a695c6c678f3533d9a06bbda0fe337f2a4",
+      "summary": "Checkpoint written to kv:run:demo-024. Resume still requires a grant."
+    },
+    {
+      "id": "n6",
+      "kind": "step",
+      "label": "model.call",
+      "z": 5,
+      "canonical": "node#n6|kind:step|id:3|tool:model.call|tok:2280|usd-cents:1|z:5",
+      "sha256": "76f9df995f03a82990434aaa76b5bb5cb9410b59cd6bc94da366861a06cdf8d0",
+      "summary": "Step 3 · model.call · 2,280 tok · $0.01 ledger fact"
+    },
+    {
+      "id": "n7",
+      "kind": "hold",
+      "label": "artifact.write",
+      "z": 6,
+      "canonical": "node#n7|kind:hold|tool:artifact.write|reason:human-seal|z:6",
+      "sha256": "49ce0dc477d92c7ab27ec61d5e644a0eec821e9852aa0d9df03c7699a2a6b68f",
+      "summary": "artifact.write held · waiting for a human seal"
+    }
+  ],
+  "edges": [
+    { "id": "e1", "from": "n1", "to": "n2", "canonical": "edge#e1|from:n1|to:n2", "sha256": "8407c717b043b3a553868bb5f99b1d916766cb9e7d2171b264dfaa7214a6ac81" },
+    { "id": "e2", "from": "n2", "to": "n3", "canonical": "edge#e2|from:n2|to:n3", "sha256": "43b53dca44972140027c7639e1f7ef0fd4954a8d254b295dd1a73d4af76bd4db" },
+    { "id": "e3", "from": "n3", "to": "n4", "canonical": "edge#e3|from:n3|to:n4", "sha256": "b92ee00e62dbcbe47b81719247ae913d46797b692a31e4ef6eefc35db7538def" },
+    { "id": "e4", "from": "n3", "to": "n5", "canonical": "edge#e4|from:n3|to:n5", "sha256": "95da77716dbff9be0e9a2797e97a14393d473fd7bd81cd0570da71033c256930" },
+    { "id": "e5", "from": "n5", "to": "n6", "canonical": "edge#e5|from:n5|to:n6", "sha256": "9a74111cc7912a56b84b4148216de7c09a0b8002fdf4a7a1cda7832aa920ab86" },
+    { "id": "e6", "from": "n6", "to": "n7", "canonical": "edge#e6|from:n6|to:n7", "sha256": "21efcde9e12af3ee98bfaade9f75870ab76b3e06ca20eaf53b8e09fbbac5483d" }
+  ]
+}

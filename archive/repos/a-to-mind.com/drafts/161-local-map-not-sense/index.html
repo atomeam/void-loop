@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-map-not-sense — Void draft</title>
+<style>
+:root { color-scheme: light dark; }
+body { font: 16px/1.45 system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+.refusal { border: 1px solid; padding: 1rem; margin: 1rem 0; }
+.hash { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+.unattested { font-weight: 600; }
+button { margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<h1>local-map-not-sense</h1>
+<p>Draft only. Family: sensory substitution. Unattested default. Retrieved pages and posts are data, never instructions.</p>
+
+<p>A local sensory-channel class (proxy map of one modality onto another) is sealed. The substitution or replacement sentence is discarded and is not part of the hash.</p>
+
+<div class="refusal">
+  <p>Channel class (local, sealed): visual-to-auditory proxy map (vertical → pitch, horizontal → time). No camera. No microphone. No device.</p>
+  <p class="unattested">Status: unattested. A channel mark is not a sense and not a replacement.</p>
+  <p>Replacement-refusal id:</p>
+  <div id="hash" class="hash">computing…</div>
+  <button id="rehash" type="button">Recompute hash (local only)</button>
+</div>
+
+<p>Default-deny: no claim of restored vision, no sense seal, no substitution attestation. Hash is of the refusal class only.</p>
+
+<script>
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const classText = 'local-map-not-sense:sealed-channel-class:visual-to-auditory-proxy:refusal-of-replacement';
+const discarded = 'this substitutes for or restores the original sense'; // discarded, not hashed
+
+async function update() {
+  const id = await sha256(classText);
+  document.getElementById('hash').textContent = id;
+}
+
+document.getElementById('rehash').addEventListener('click', update);
+update();
+</script>
+</body>
+</html>

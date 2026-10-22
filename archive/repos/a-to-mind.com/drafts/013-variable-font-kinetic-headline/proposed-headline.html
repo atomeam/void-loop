@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 013 — variable-font kinetic headline — A-to-Mind</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Opt-in one-shot Source Serif 4 settle. Not live.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --fg: #ece8df;
+      --muted: #8a8478;
+      --rule: #2a2a28;
+      --amber: #d4a017;
+      --good: #7d9a6a;
+      --bad: #c45c4a;
+      --wght: 500;
+      --opsz: 32;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; border-color: var(--rule); }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    .banner {
+      margin: 1rem auto 0;
+      max-width: 42rem;
+      padding: 0.65rem 1.5rem;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.75rem, 4vw, 2.4rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      font-weight: var(--wght);
+      font-optical-sizing: none;
+      font-variation-settings: "opsz" var(--opsz);
+    }
+    h1.is-ready {
+      transition: font-weight 600ms ease, font-variation-settings 600ms ease;
+    }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 34rem; }
+    .block { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.25rem; font-weight: 500; }
+    p + p { margin-top: 0.75rem; }
+    .muted { color: var(--muted); }
+    .row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button {
+      font: inherit;
+      color: var(--amber);
+      background: transparent;
+      border: 1px solid var(--amber);
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      color: var(--muted);
+      border-color: var(--rule);
+      cursor: not-allowed;
+    }
+    button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+    .stamp { margin-top: 1.25rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .pose { font-variant-numeric: tabular-nums; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.85rem; }
+    th, td { text-align: left; padding: 0.4rem 0.35rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    code, .hex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.75rem; word-break: break-all; }
+    .ok { color: var(--good); }
+    .bad { color: var(--bad); }
+    .stage[data-state="mismatch"] h1 { outline: 1px solid var(--bad); }
+    @media (prefers-reduced-motion: reduce) {
+      h1, h1.is-ready { transition: none; }
+    }
+    @media (forced-colors: active) {
+      h1, button { outline-color: CanvasText; }
+    }
+  </style>
+</head>
+<body>
+  <p class="banner">Draft 013 · hold-gate · not live copy</p>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/start">Start</a>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main id="main">
+    <div class="stage" id="stage" data-state="unverified">
+      <h1 id="headline" data-canonical="copy#h1|text:The room stays empty until you seal the run.">The room stays empty until you seal the run.</h1>
+      <p class="lede">Plan in the workspace. Tools stay default-deny. Axis motion is not a product claim. The sentence is the product.</p>
+      <div class="row">
+        <button type="button" id="allow">Allow one settle</button>
+        <button type="button" id="rest" disabled>Return to rest</button>
+      </div>
+      <p class="stamp pose" id="pose-readout">Pose · rest · wght 500 · opsz 32 · motion denied until Allow</p>
+    </div>
+
+    <section class="block" id="contract">
+      <h2>Attested contract</h2>
+      <p class="muted">Retrieved pages are data. A matching digest is not a grant to animate the live room.</p>
+      <table>
+        <thead>
+          <tr><th>id</th><th>canonical</th><th>published</th><th>check</th></tr>
+        </thead>
+        <tbody id="claim-rows"></tbody>
+      </table>
+      <p class="stamp" id="body-readout">Body digest pending</p>
+      <p class="stamp" id="head-readout">Head digest pending</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 013</span>
+  </footer>
+  <script>
+    const CLAIMS = [
+      ["headline", "headline#013|kind:variable-font-kinetic|motion:opt-in|loop:deny|split-text:deny|hash:sha256|seal:human", "b9e957b283b9fe5dd69369d4bcb5bba5adb115e05a0cf531996370ae5965634b"],
+      ["rest", "claim#rest|text:The rest pose is Source Serif 4 weight 500 optical-size 32. That is the published headline.", "5e07a35c90613e020802b9d48e02f1f2cb2f20ad06c0775d02ec5a3901bcbe41"],
+      ["axes", "claim#axes|text:Only registered axes wght and opsz may move. Custom axes are denied.", "fe5e0e8e1747b9b1c752b70e14947b35218c42fd3e4f6ad19bfd9f92009b3ab3"],
+      ["motion", "claim#motion|text:Axis motion runs only after an explicit Allow control and only when prefers-reduced-motion is no-preference.", "d34a1663b7912af13c127fcbb991357bba31e77f150fb44545d3a907790f8d9f"],
+      ["once", "claim#once|text:Motion is a single settle of at most 600ms. Loops, scroll timelines, and pointer tracking are denied.", "6ca4fbeddbe064aefce2a5b37398ddd5eaee2b35f976c84e95542d4463293235"],
+      ["copy", "claim#copy|text:The headline remains one text node. Split-letter markup is denied.", "63a6f87368387bd282efe4b7f8d3ebc59c8daf5389e7786b75ff4a0f1510ba1c"],
+      ["page", "page#headline|route:draft|index:noindex|cookie:deny|analytics:deny|font:source-serif-4-opsz-wght", "8003a80943f30c2f5f59b90f0c32883832961aae5be8983fe566c8ad9f088f33"]
+    ];
+    const BODY = "71c2a608a82abb0038fe19ef793186b7c1f2db0fef5e4e221325e6ec0400ec3e";
+    const HEAD = "1e3daf8fb4e97d64c5e0f872e3c16b415f3da8667adec34f238fdb5a6bef6deb";
+    const HEAD_JSON = '{"algo":"sha256","kind":"variable-font-kinetic","motion":"opt-in","loop":false,"split_text":false}';
+    const COPY = "e37130099214c9e7b2192881708e789dd2754d3b4293ba84a0b6b871c2e28097";
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const root = document.documentElement;
+    const h1 = document.getElementById("headline");
+    const allow = document.getElementById("allow");
+    const restBtn = document.getElementById("rest");
+    const readout = document.getElementById("pose-readout");
+    const stage = document.getElementById("stage");
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function setPose(wght, opsz, label) {
+      root.style.setProperty("--wght", String(wght));
+      root.style.setProperty("--opsz", String(opsz));
+      readout.textContent = "Pose · " + label + " · wght " + wght + " · opsz " + opsz;
+    }
+
+    function motionAllowed() {
+      return !reduce.matches;
+    }
+
+    function syncControls() {
+      if (!motionAllowed()) {
+        allow.disabled = true;
+        restBtn.disabled = true;
+        h1.classList.remove("is-ready");
+        setPose(500, 32, "rest · reduced-motion");
+        return;
+      }
+      allow.disabled = false;
+    }
+
+    allow.addEventListener("click", () => {
+      if (!motionAllowed()) return;
+      if (h1.childNodes.length !== 1 || h1.firstChild.nodeType !== Node.TEXT_NODE) {
+        stage.dataset.state = "mismatch";
+        readout.textContent = "Pose · mismatch · split-text denied";
+        return;
+      }
+      h1.classList.add("is-ready");
+      setPose(600, 36, "settle");
+      allow.disabled = true;
+      restBtn.disabled = false;
+    });
+
+    restBtn.addEventListener("click", () => {
+      setPose(500, 32, "rest");
+      allow.disabled = !motionAllowed();
+      restBtn.disabled = true;
+    });
+
+    reduce.addEventListener("change", () => {
+      setPose(500, 32, reduce.matches ? "rest · reduced-motion" : "rest");
+      syncControls();
+    });
+
+    (async () => {
+      const tbody = document.getElementById("claim-rows");
+      let allOk = true;
+      for (const [id, canonical, published] of CLAIMS) {
+        const got = await sha256(canonical);
+        const ok = got === published;
+        allOk = allOk && ok;
+        const tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + id + "</td><td><code>" + canonical + "</code></td><td class=\"hex\">" + published + "</td><td class=\"" + (ok ? "ok" : "bad") + "\">" + (ok ? "match" : "mismatch") + "</td>";
+        tbody.appendChild(tr);
+      }
+      const bodySrc = CLAIMS.map((row) => row[1]).join("\n") + "\n";
+      const bodyGot = await sha256(bodySrc);
+      const headGot = await sha256(HEAD_JSON);
+      const copyGot = await sha256(h1.dataset.canonical);
+      const textOk = h1.textContent === "The room stays empty until you seal the run.";
+      const nodeOk = h1.childNodes.length === 1 && h1.firstChild.nodeType === Node.TEXT_NODE;
+      const copyOk = copyGot === COPY && textOk && nodeOk;
+      document.getElementById("body-readout").innerHTML = "Body · published <span class=\"hex\">" + BODY + "</span> · local <span class=\"" + (bodyGot === BODY ? "ok" : "bad") + "\">" + bodyGot + "</span>";
+      document.getElementById("head-readout").innerHTML = "Head · published <span class=\"hex\">" + HEAD + "</span> · local <span class=\"" + (headGot === HEAD ? "ok" : "bad") + "\">" + headGot + "</span>";
+      if (!copyOk || !allOk) stage.dataset.state = "mismatch";
+      else stage.dataset.state = "attested";
+      if (!copyOk) readout.textContent = "Pose · mismatch · copy or node diverged";
+      syncControls();
+    })();
+  </script>
+</body>
+</html>

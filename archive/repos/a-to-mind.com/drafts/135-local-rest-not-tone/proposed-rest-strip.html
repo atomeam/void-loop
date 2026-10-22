@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-rest-not-tone — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c8bfb0;
+      --hold: #8a3d2f;
+      --quiet: #5e584f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --paper: #1b1916; --line: #3c3832; --hold: #e0a090; --quiet: #b7b0a4; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .rest {
+      height: 0.45rem;
+      border-bottom: 2px solid var(--ink);
+      margin: 0.7rem 0 0.2rem;
+    }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-rest-not-tone</h1>
+    <p>Draft only. A rest mark is not a tone and not a carrier lock. Status stays unattested. The tone sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="rest-form">
+      <fieldset>
+        <legend>Rest class</legend>
+        <label><input type="radio" name="rest-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="rest-class" value="below-floor"> below-floor</label>
+        <label><input type="radio" name="rest-class" value="gate-closed"> gate-closed</label>
+        <label><input type="radio" name="rest-class" value="no-repeat"> no-repeat</label>
+        <label><input type="radio" name="rest-class" value="rest-empty"> rest-empty</label>
+        <label><input type="radio" name="rest-class" value="abstain"> abstain</label>
+      </fieldset>
+      <fieldset>
+        <legend>Rest seat</legend>
+        <div class="rest" aria-hidden="true"></div>
+        <p>One flat mark. No frequency field. Not a level. Not hashed as a detection.</p>
+      </fieldset>
+      <div class="seat" aria-label="Empty tone seat">Tone seat stays empty. No carrier. No open gate.</div>
+      <p class="ids">Inert scan ids, not seats: 2108483240420086214, 2108411513333534860, 2108280968641720426, 2108202630153478499.</p>
+      <label for="tone">Tone sentence (cleared on seal, not hashed)</label>
+      <textarea id="tone" name="tone" autocomplete="off"></textarea>
+      <button type="submit">Seal rest class</button>
+    </form>
+    <p>Tone-refusal id</p>
+    <output id="refusal" for="rest-form">none</output>
+  </main>
+  <script>
+    const form = document.getElementById("rest-form");
+    const tone = document.getElementById("tone");
+    const refusal = document.getElementById("refusal");
+    const status = document.getElementById("status");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=rest-class]:checked");
+      if (!picked) {
+        refusal.textContent = "default-deny: no class";
+        return;
+      }
+      const preimage = "rest-not-tone|v1|" + picked.value + "|tone-refusal|status=unattested";
+      tone.value = "";
+      const bytes = new TextEncoder().encode(preimage);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal.textContent = hex;
+      status.textContent = "status: unattested";
+    });
+  </script>
+</body>
+</html>

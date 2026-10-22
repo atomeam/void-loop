@@ -2708,6 +2708,7 @@ say('nothing selected to remove');
       let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
       // what's built and improved, skill by skill, from the ledger itself (owner, 2026-10-21: "i need to see in better detail what is built or improved for everything in Verse")
       try { const [BD, led] = await Promise.all([import('/lib/built-detail.js'), fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null))]); if (vpageEl !== el) return; if (BD && led) h += BD.builtDetailHtml(BD.builtByFamily(led, fam0), esc); } catch (_) {}
+      try { const PC = await import('/lib/progress-chart.js'); if (vpageEl !== el) return; const led2 = await fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null)); if (led2) h += PC.progressHtml(PC.weekly(led2), esc); } catch (_) {}
       if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup

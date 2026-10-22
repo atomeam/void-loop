@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F174 WebXR Hand MLP Swarm</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:12px; border-radius:8px; z-index:10; }
+button { margin:4px; padding:6px 12px; background:#223; color:#fff; border:1px solid #44a; cursor:pointer; }
+#status { font-size:12px; margin-top:8px; opacity:0.8; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="enter">Enter XR</button>
+  <button id="reward">Reward</button>
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <div id="status">Pointer mode. Move mouse. WebXR hand if available.</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+let w, h;
+function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+// Tiny MLP: 8 inputs -> 6 hidden -> 3 outputs
+class TinyMLP {
+  constructor() {
+    this.w1 = Array.from({length:8*6}, () => (Math.random()-0.5)*0.2);
+    this.b1 = Array(6).fill(0);
+    this.w2 = Array.from({length:6*3}, () => (Math.random()-0.5)*0.2);
+    this.b2 = Array(3).fill(0);
+  }
+  forward(x) {
+    const h = Array(6).fill(0);
+    for (let i=0;i<6;i++) {
+      let s = this.b1[i];
+      for (let j=0;j<8;j++) s += x[j] * this.w1[i*8+j];
+      h[i] = Math.tanh(s);
+    }
+    const o = Array(3).fill(0);
+    for (let i=0;i<3;i++) {
+      let s = this.b2[i];
+      for (let j=0;j<6;j++) s += h[j] * this.w2[i*6+j];
+      o[i] = Math.tanh(s);
+    }
+    return o;
+  }
+  nudge(lr=0.01) {
+    for (let i=0;i<this.w1.length;i++) this.w1[i] += (Math.random()-0.5)*lr;
+    for (let i=0;i<this.w2.length;i++) this.w2[i] += (Math.random()-0.5)*lr;
+  }
+  serialize() { return {w1:this.w1, b1:this.b1, w2:this.w2, b2:this.b2}; }
+  load(d) { if(d) { this.w1=d.w1; this.b1=d.b1; this.w2=d.w2; this.b2=d.b2; } }
+}
+const mlp = new TinyMLP();
+
+// Particles
+const N = 180;
+const parts = Array.from({length:N}, () => ({
+  x: Math.random()*w, y: Math.random()*h,
+  vx:0, vy:0, life:1
+}));
+
+// Hand / pointer state
+let hand = {x: w/2, y: h/2, vx:0, vy:0, present:false};
+let lastHand = {...hand};
+let xrSession = null;
+let xrFrameId = null;
+
+function updateHandFromPointer(e) {
+  const rect = canvas.getBoundingClientRect();
+  const nx = (e.clientX - rect.left) / rect.width;
+  const ny = (e.clientY - rect.top) / rect.height;
+  hand.vx = (nx - hand.x/w) * 2;
+  hand.vy = (ny - hand.y/h) * 2;
+  hand.x = nx * w; hand.y = ny * h;
+  hand.present = true;
+}
+canvas.addEventListener('pointermove', updateHandFromPointer);
+canvas.addEventListener('pointerdown', updateHandFromPointer);
+
+// DeviceOrientation fallback
+window.addEventListener('deviceorientation', e => {
+  if (!hand.present && e.gamma != null) {
+    hand.x = w/2 + (e.gamma/45)*w*0.3;
+    hand.y = h/2 + (e.beta/45)*h*0.3;
+  }
+});
+
+// IndexedDB
+let db;
+const DB_NAME = 'f174-mlp';
+function openDB() {
+  return new Promise(r => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('weights');
+    req.onsuccess = () => { db = req.result; r(); };
+    req.onerror = () => r();
+  });
+}
+async function loadWeights() {
+  if (!db) return;
+  return new Promise(r => {
+    const tx = db.transaction('weights','readonly');
+    const req = tx.objectStore('weights').get('mlp');
+    req.onsuccess = () => { if (req.result) mlp.load(req.result); r(); };
+    req.onerror = () => r();
+  });
+}
+function seal() {
+  if (!db) { status.textContent = 'No IDB'; return; }
+  const tx = db.transaction('weights','readwrite');
+  tx.objectStore('weights').put(mlp.serialize(), 'mlp');
+  status.textContent = 'Sealed weights';
+}
+
+// WebXR
+async function enterXR() {
+  if (!navigator.xr) { status.textContent = 'No WebXR'; return; }
+  try {
+    xrSession = await navigator.xr.requestSession('immersive-vr', {
+      optionalFeatures: ['hand-tracking']
+    });
+    status.textContent = 'XR session active. Use hands.';
+    xrSession.addEventListener('end', () => { xrSession = null; status.textContent = 'XR ended. Pointer mode.'; });
+    const ref = await xrSession.requestReferenceSpace('local');
+    function onXRFrame(t, frame) {
+      if (!xrSession) return;
+      const pose = frame.getViewerPose(ref);
+      if (pose) {
+        for (const src of xrSession.inputSources) {
+          if (src.hand) {
+            const wrist = src.hand.get('wrist');
+            const index = src.hand.get('index-finger-tip');
+            if (wrist && index) {
+              const wp = frame.getJointPose(wrist, ref);
+              const ip = frame.getJointPose(index, ref);
+              if (wp && ip) {
+                hand.x = w/2 + wp.transform.position.x * 200;
+                hand.y = h/2 - wp.transform.position.y * 200;
+                hand.vx = (hand.x - lastHand.x)*0.1;
+                hand.vy = (hand.y - lastHand.y)*0.1;
+                hand.present = true;
+                lastHand = {...hand};
+              }
+            }
+          }
+        }
+      }
+      xrFrameId = xrSession.requestAnimationFrame(onXRFrame);
+    }
+    xrFrameId = xrSession.requestAnimationFrame(onXRFrame);
+  } catch (e) {
+    status.textContent = 'XR failed: ' + e.message;
+  }
+}
+document.getElementById('enter').onclick = enterXR;
+document.getElementById('seal').onclick = seal;
+document.getElementById('reward').onclick = () => { mlp.nudge(0.05); status.textContent = 'Rewarded (nudged)'; };
+document.getElementById('reset').onclick = () => { parts.forEach(p => { p.x=Math.random()*w; p.y=Math.random()*h; }); };
+
+// Main loop
+function step() {
+  const t = performance.now() * 0.001;
+  const hx = (hand.x / w - 0.5) * 2;
+  const hy = (hand.y / h - 0.5) * 2;
+  const inputs = [hx, hy, hand.vx, hand.vy, Math.sin(t), Math.cos(t*0.7), hand.present?1:0, 0.5];
+  const out = mlp.forward(inputs);
+  const fx = out[0] * 0.4;
+  const fy = out[1] * 0.4;
+  const scale = 0.8 + out[2]*0.3;
+
+  ctx.fillStyle = 'rgba(10,10,20,0.25)';
+  ctx.fillRect(0,0,w,h);
+
+  for (const p of parts) {
+    const dx = hand.x - p.x;
+    const dy = hand.y - p.y;
+    const dist = Math.hypot(dx,dy) + 1;
+    p.vx += (dx/dist) * fx * 0.8 + (Math.random()-0.5)*0.02;
+    p.vy += (dy/dist) * fy * 0.8 + (Math.random()-0.5)*0.02;
+    p.vx *= 0.96; p.vy *= 0.96;
+    p.x += p.vx * scale; p.y += p.vy * scale;
+    if (p.x<0||p.x>w) p.vx*=-1;
+    if (p.y<0||p.y>h) p.vy*=-1;
+    ctx.fillStyle = `hsl(${(dist/5 + t*40)%360}, 80%, 65%)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2);
+    ctx.fill();
+  }
+  if (hand.present) {
+    ctx.strokeStyle = '#4af';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(hand.x, hand.y, 18, 0, Math.PI*2);
+    ctx.stroke();
+  }
+  requestAnimationFrame(step);
+}
+
+openDB().then(loadWeights).then(() => {
+  status.textContent += ' | weights loaded';
+  step();
+});
+</script>
+</body>
+</html>

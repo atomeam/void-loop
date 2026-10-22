@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Print contract (candidate, not sealed)</title>
+  <link rel="stylesheet" href="print.css" media="print">
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0;
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+      background: #f4f1ea;
+      color: #1c1915;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #16140f; color: #f4f1ea; }
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem; }
+    .hold {
+      border: 1px solid #8a5a12;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+    }
+    code, pre { font: 0.85em/1.4 ui-monospace, monospace; }
+    pre {
+      overflow: auto;
+      padding: 0.75rem;
+      background: #efeae0;
+    }
+    @media (prefers-color-scheme: dark) {
+      pre { background: #241f18; }
+    }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    .print-banner { display: none; }
+    .print-suffix { display: none; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #cfc6b8; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="print-banner">Print contract unattested. emit is false. No URL suffix is authorized. This page is a draft, not a citation.</p>
+    <p class="hold noprint">Hold-gate. Candidate slug <code>attested-print-contract</code>, run 052. Not in Used. Do not ship this link or stylesheet to the live site.</p>
+    <h1>Print contract</h1>
+    <p>Existing print sheets append <code>attr(href)</code> after every link and sometimes invent an origin for relative paths. This draft does neither.</p>
+    <h2>Examples, not sealed destinations</h2>
+    <ul>
+      <li><a href="https://a-to-mind.com/llms.txt">llms.txt</a><span class="print-suffix" data-for="https://a-to-mind.com/llms.txt"></span> — absolute, still not allowlisted, so print shows no suffix.</li>
+      <li><a href="/ledger">ledger</a><span class="print-suffix" data-for="/ledger"></span> — relative. Not expanded to an absolute URL.</li>
+      <li><a href="#hold">fragment</a> — no suffix.</li>
+      <li><a href="javascript:void(0)">script link</a> — no suffix.</li>
+      <li><a href="https://a-to-mind.com/pricing?utm_source=print&utm_medium=pdf">pricing with utm</a><span class="print-suffix" data-for="https://a-to-mind.com/pricing"></span> — tracking keys would be stripped only after that exact href is sealed.</li>
+    </ul>
+    <h2>Contract digest</h2>
+    <p>SHA-256 of the canonical contract: <code id="expect">aeab725b2b859b0d01f5701a1e3f10947b745f204a5211b5f9a9e224fbce2b62</code></p>
+    <p class="noprint"><button type="button" id="verify">Verify draft digest locally</button> <span id="verdict" role="status"></span></p>
+    <pre id="canonical"></pre>
+    <p class="noprint"><button type="button" id="ask-print">Preview print of this draft</button></p>
+  </main>
+  <dialog id="hold-print" class="noprint">
+    <p>This prints the draft page only. It does not seal the contract, write to the server, or authorize URL suffixes.</p>
+    <form method="dialog">
+      <button value="cancel">Hold</button>
+      <button id="confirm-print" value="print">Print draft</button>
+    </form>
+  </dialog>
+  <script type="application/json" id="contract">{"badge":false,"contract_id":"print-contract-v0","emit":false,"fragment_only":"suppress","generated_url_suffix":"allowlist-only","href_allowlist":[],"javascript_href":"suppress","mailto_tel":"suppress","origin":"https://a-to-mind.com","print_color_adjust":"economy","query_strip":["utm_source","utm_medium","utm_campaign","utm_term","utm_content","utm_id","fbclid","gclid","mc_cid","mc_eid"],"regions":[{"id":"main","printable":true,"selector":"main"}],"relative_href_expansion":false,"remote_import":false,"slug":"attested-print-contract","window_print_on_load":false}</script>
+  <script>
+    (function () {
+      var raw = document.getElementById("contract").textContent;
+      document.getElementById("canonical").textContent = raw;
+      var allow = [];
+      document.querySelectorAll(".print-suffix").forEach(function (node) {
+        if (allow.indexOf(node.getAttribute("data-for")) === -1) node.textContent = "";
+      });
+      document.getElementById("verify").addEventListener("click", function () {
+        var verdict = document.getElementById("verdict");
+        if (!crypto.subtle) { verdict.textContent = "No SubtleCrypto. Digest not checked."; return; }
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)).then(function (buf) {
+          var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          var expect = document.getElementById("expect").textContent;
+          verdict.textContent = hex === expect ? "Draft digest matches. Still unattested." : "Mismatch. Do not treat as sealed.";
+        });
+      });
+      var dialog = document.getElementById("hold-print");
+      document.getElementById("ask-print").addEventListener("click", function () {
+        dialog.showModal();
+      });
+      document.getElementById("confirm-print").addEventListener("click", function () {
+        setTimeout(function () { window.print(); }, 0);
+      });
+    }());
+  </script>
+</body>
+</html>

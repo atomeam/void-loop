@@ -1,0 +1,27 @@
+{
+  "slug": "attested-breadcrumb-trail",
+  "run": 48,
+  "emit": false,
+  "reviewed_at": null,
+  "note": "Draft catalog only. These hrefs are not a claim that the live site has this trail.",
+  "contract_sha256": "e9907c0ae8a91bb79cb6b8d474d210054b77705dadfbca5455ba6b0d216286e0",
+  "trails": [
+    {
+      "id": "draft-048-preview",
+      "page": "/drafts/048-attested-breadcrumb-trail/proposed-breadcrumbs.html",
+      "items": [
+        {
+          "position": 1,
+          "name": "Drafts",
+          "href": "/drafts/"
+        },
+        {
+          "position": 2,
+          "name": "048 breadcrumb trail",
+          "href": null,
+          "current": true
+        }
+      ]
+    }
+  ]
+}

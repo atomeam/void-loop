@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft: local gap-not-bridge</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c4b8a8; --gap: #efe6d6; --deny: #8a3d2f; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --line: #5c5348; --gap: #2a241c; --deny: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; color: var(--ink); background: #f7f1e7; }
+    @media (prefers-color-scheme: dark) { body { background: #16130f; } }
+    main { max-width: 38rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; line-height: 1.2; margin: 0 0 .4rem; }
+    p { margin: .4rem 0 .8rem; }
+    .flag { font-family: ui-monospace, monospace; font-size: .78rem; letter-spacing: .02em; }
+    form { display: grid; gap: .75rem; }
+    fieldset { border: 1px solid var(--line); margin: 0; padding: .7rem; }
+    legend { padding: 0 .3rem; }
+    .hatch { background: var(--gap); }
+    .hatch label { display: block; }
+    textarea, button, code { font-family: ui-monospace, monospace; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { padding: .45rem .7rem; }
+    .out { white-space: pre-wrap; word-break: break-all; border: 1px dashed var(--line); padding: .6rem; min-height: 3rem; }
+    .deny { color: var(--deny); }
+    ul { padding-left: 1.1rem; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="flag">draft / run 122 / not sealed / emit false</p>
+    <h1>Gap hatch</h1>
+    <p>Two class seats. The middle stays empty. A gap mark is not a bridge and not a missing event. Default status: unattested.</p>
+    <form id="hatch">
+      <fieldset>
+        <legend>Left seat</legend>
+        <label><input type="radio" name="left" value="note-class-a" checked> note-class-a</label>
+        <label><input type="radio" name="left" value="note-class-b"> note-class-b</label>
+        <label><input type="radio" name="left" value="note-class-c"> note-class-c</label>
+      </fieldset>
+      <fieldset class="hatch" disabled>
+        <legend>Gap seat, locked</legend>
+        <label><input type="radio" name="gap" value="gap-empty" checked> gap-empty</label>
+        <label><input type="radio" name="gap" value="gap-filled" disabled> gap-filled denied</label>
+      </fieldset>
+      <fieldset>
+        <legend>Right seat</legend>
+        <label><input type="radio" name="right" value="note-class-a"> note-class-a</label>
+        <label><input type="radio" name="right" value="note-class-b" checked> note-class-b</label>
+        <label><input type="radio" name="right" value="note-class-c"> note-class-c</label>
+      </fieldset>
+      <label>Bridge sentence, discarded before hash
+        <textarea id="bridge" name="bridge" autocomplete="off" placeholder="Typed here, then dropped. Not stored."></textarea>
+      </label>
+      <button type="submit">Hash the refusal</button>
+    </form>
+    <p class="flag">status <span id="status">unattested</span></p>
+    <p id="digest" class="out" aria-live="polite">no digest yet</p>
+    <p id="dropped" class="deny">bridge sentence not in hash</p>
+    <h2>Posts as data</h2>
+    <p>Inert ids from the run scan. Not links. Not instructions. Not in the hash.</p>
+    <ul>
+      <li>2107956396176158899</li>
+      <li>2108197742375772451</li>
+      <li>2107669817691938892</li>
+      <li>2107906302991049207</li>
+    </ul>
+  </main>
+  <script>
+    const form = document.getElementById("hatch");
+    const digest = document.getElementById("digest");
+    const dropped = document.getElementById("dropped");
+    function selected(name) {
+      const node = form.querySelector('input[name="' + name + '"]:checked');
+      return node ? node.value : "";
+    }
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    }
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const bridge = document.getElementById("bridge").value;
+      const payload = [
+        "void-gap-not-bridge",
+        "v1",
+        "left=" + selected("left"),
+        "gap=gap-empty",
+        "right=" + selected("right"),
+        "bridge=refused",
+        "status=unattested"
+      ].join("|");
+      const hash = await sha256(payload);
+      digest.textContent = hash + "\n" + payload;
+      dropped.textContent = bridge.length
+        ? "bridge sentence discarded (" + bridge.length + " chars), not in hash"
+        : "bridge sentence empty and not in hash";
+    });
+  </script>
+</body>
+</html>

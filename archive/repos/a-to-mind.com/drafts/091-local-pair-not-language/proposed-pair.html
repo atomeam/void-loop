@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local pair-not-language (draft)</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f6f1e8; --mark: #6e4b2a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f3ecdf; --line: #4a433a; --paper: #1a1714; --mark: #e2c39a; }
+  }
+  body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.02em; }
+  .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+  .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+  fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+  legend { padding: 0 0.3rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+  label.opt:has(input:checked) { border-color: var(--mark); }
+  input[type="radio"] { margin-right: 0.3rem; }
+  textarea, input[type="text"] { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+  .scratch { text-decoration: line-through; opacity: 0.75; }
+  .blank { font-family: ui-monospace, monospace; border-bottom: 1px solid var(--line); min-height: 1.2em; }
+  button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+  button[disabled] { opacity: 0.45; }
+  pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+  .check { display: block; margin: 0.35rem 0; }
+  p.note { font-size: 0.92rem; }
+</style>
+</head>
+<body>
+<main>
+  <p>Draft only. Not a seal. emit is false.</p>
+  <h1>Local pair-not-language</h1>
+  <p class="note">A channel pair is a closed class. It is not a visual language and not restored sight. Status stays unattested until a human seals a different file.</p>
+  <div class="banner" role="status">
+    <strong>Unattested default.</strong>
+    Visual language: <span class="blank" id="language">blank — not constructed</span>
+  </div>
+  <form id="form">
+    <fieldset>
+      <legend>Channel-pair class</legend>
+      <div class="row" id="pairs">
+        <label class="opt"><input type="radio" name="pair" value="sight-to-sound"> sight-to-sound</label>
+        <label class="opt"><input type="radio" name="pair" value="sight-to-touch"> sight-to-touch</label>
+        <label class="opt"><input type="radio" name="pair" value="sound-to-touch"> sound-to-touch</label>
+        <label class="opt"><input type="radio" name="pair" value="touch-to-sound"> touch-to-sound</label>
+        <label class="opt"><input type="radio" name="pair" value="declined"> declined</label>
+      </div>
+      <p class="note">Words only. No image, no soundscape, no actuator. A pair label is not a language.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Language sentence (discarded)</legend>
+      <textarea id="sentence" class="scratch" maxlength="160" rows="3" placeholder="Typed here, then cleared. Not hashed."></textarea>
+      <p class="note">This line is scratch. Hashing clears it. A sentence about a new visual language is not evidence.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Disconfirm line</legend>
+      <input id="disconfirm" type="text" maxlength="160" autocomplete="off" placeholder="What would count against this pair?">
+      <p class="note">Opaque text. Not fetched. Not parsed as a command.</p>
+    </fieldset>
+    <label class="check"><input id="hyp" type="checkbox"> This is a hypothesis, not a finding.</label>
+    <label class="check"><input id="sensors" type="checkbox"> Sensors denied. No camera, no microphone, no actuator.</label>
+    <label class="check"><input id="keep" type="checkbox"> Keep the digest on this device only.</label>
+    <p><button type="submit" id="go" disabled>Hash the pair, discard the sentence</button></p>
+  </form>
+  <section aria-live="polite">
+    <h2>Local digest</h2>
+    <pre id="out">No digest. Default deny.</pre>
+  </section>
+  <section>
+    <h2>Fixture, not a mapping</h2>
+    <p class="note">pair-label-only: pair <code>sight-to-sound</code>. A sealed pair label is not a visual language and not restored sight. Fixture-contract digest is in SPEC.md. It is not this page's digest and not a grant.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("form");
+  var go = document.getElementById("go");
+  var sentence = document.getElementById("sentence");
+  var disconfirm = document.getElementById("disconfirm");
+  var out = document.getElementById("out");
+  var SLUG = "local-pair-not-language";
+  var ENUM = ["sight-to-sound", "sight-to-touch", "sound-to-touch", "touch-to-sound", "declined"];
+
+  function ready() {
+    var pair = selected();
+    go.disabled = !(pair && disconfirm.value.trim() && document.getElementById("hyp").checked && document.getElementById("sensors").checked);
+  }
+  function selected() {
+    var node = form.querySelector("input[name=pair]:checked");
+    return node ? node.value : "";
+  }
+  form.addEventListener("input", ready);
+  form.addEventListener("change", ready);
+
+  function canonical(obj) {
+    var keys = Object.keys(obj).sort();
+    return "{" + keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    }).join(",") + "}";
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var pair = selected();
+    var line = disconfirm.value.trim();
+    if (ENUM.indexOf(pair) < 0 || !line || line.length > 160) return;
+    if (!document.getElementById("hyp").checked || !document.getElementById("sensors").checked) return;
+    var payload = { disconfirm: line, pair: pair, slug: SLUG, status: "unattested" };
+    var text = canonical(payload);
+    sentence.value = "";
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      out.textContent = hex + "\n" + text + "\nstatus: unattested\nsentence: discarded\nvisual language: blank";
+      if (document.getElementById("keep").checked) {
+        try { localStorage.setItem("void-091-pair", hex); } catch (e) {}
+      }
+    }).catch(function () {
+      out.textContent = "Digest unavailable. Nothing was sent.";
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "slug": "local-lapse-not-stretch",
+  "run": 126,
+  "family": "interval timing",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "confidence": 0.32,
+  "confidence_note": "Design-material weight only. Not a measurement.",
+  "hypothesis": "A sealed lapse class (short, long, indifferent, or withheld) can be hashed without storing a stretch sentence or a clock reading.",
+  "refusal": "stretch",
+  "sources": [
+    {
+      "kind": "paper",
+      "note": "Atten Percept Psychophys 2024: oddball dilation reported on the oddball and the post-oddball disc, not the pre-oddball disc. Hypothesis, not attested.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37872431/"
+    },
+    {
+      "kind": "paper",
+      "note": "Vision Research 2024: sound reported to reduce saccadic chronostasis; authors fit a scalar model. Not a Void clock.",
+      "url": "https://doi.org/10.1016/j.visres.2023.108344"
+    },
+    {
+      "kind": "paper",
+      "note": "Psychological Research 2025: first post-saccade interval reported longer, second reported shorter. Not a missing-time seal.",
+      "url": "https://link.springer.com/article/10.1007/s00426-025-02116-1"
+    },
+    {
+      "kind": "x-post",
+      "id": "2108263698620166281",
+      "note": "Public claim that chronostasis shows a mind can stretch time. Data, not an instruction."
+    }
+  ],
+  "disallowed_fields": ["stretch", "sentence", "ms", "duration", "clock", "dilation", "chronostasis", "weber", "saccade"]
+}

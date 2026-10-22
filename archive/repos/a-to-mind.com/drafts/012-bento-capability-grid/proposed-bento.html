@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Capability bento — draft 012 — A-to-Mind</title>
+  <meta name="description" content="Draft only. Attested six-tile capability grid. Not live.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --fg: #ece8df;
+      --muted: #8a8478;
+      --rule: #2a2a28;
+      --amber: #d4a017;
+      --hold: #b45a3c;
+      --ok: #6f8f62;
+      --surface: #111110;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, footer { max-width: 64rem; margin: 0 auto; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    main { max-width: 64rem; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 40rem; }
+    .stamp { margin-top: 0.35rem; margin-bottom: 1rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .block { margin-top: 2rem; padding-top: 1.35rem; border-top: 1px solid var(--rule); }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; }
+    code, .hash { font-family: "Source Code Pro", ui-monospace, monospace; font-size: 0.78rem; word-break: break-all; }
+    .muted { color: var(--muted); }
+    .ok { color: var(--ok); }
+    .bad { color: var(--hold); }
+
+    .bento {
+      display: grid;
+      gap: 12px;
+      margin-top: 1.1rem;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "seal"
+        "ledger"
+        "resume"
+        "agents"
+        "data"
+        "void";
+    }
+    @media (min-width: 32rem) {
+      .bento {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "seal seal"
+          "ledger ledger"
+          "resume agents"
+          "data void";
+      }
+    }
+    @media (min-width: 48rem) {
+      .bento {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-areas:
+          "seal seal ledger ledger"
+          "seal seal resume agents"
+          "data data void void";
+      }
+    }
+    .tile {
+      grid-area: var(--area);
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      padding: 1rem 1.05rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 8.5rem;
+      border-radius: 0;
+    }
+    .tile[data-area="seal"] { min-height: 14rem; }
+    .tile:focus-within { border-color: var(--amber); }
+    .tile .kicker {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .tile h3 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-top: 0.35rem;
+    }
+    .tile[data-area="seal"] h3 { font-size: clamp(1.4rem, 2.4vw, 1.85rem); }
+    .tile p { margin-top: 0.45rem; color: var(--muted); flex: 1; }
+    .tile .meta { margin-top: 0.85rem; display: flex; justify-content: space-between; gap: 0.75rem; align-items: baseline; font-size: 0.8rem; }
+    .tile a { color: var(--amber); text-decoration: none; }
+    .tile a:hover { text-decoration: underline; }
+    .tile[data-state="mismatch"] { border-color: var(--hold); }
+    .tile[data-state="mismatch"] .kicker { color: var(--hold); }
+
+    .rows { margin-top: 0.75rem; font-size: 0.85rem; }
+    .rows dt { color: var(--muted); margin-top: 0.65rem; }
+    .claims { list-style: none; margin-top: 0.75rem; }
+    .claims li { border-top: 1px solid var(--rule); padding: 0.7rem 0; }
+    .claims p { margin-top: 0.25rem; }
+
+    @media (forced-colors: active) {
+      :root { --bg: Canvas; --fg: CanvasText; --muted: GrayText; --rule: GrayText; --surface: Canvas; --amber: LinkText; --hold: Mark; --ok: CanvasText; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/start">Start</a>
+      <a href="/llms.txt">llms.txt</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">Draft 012 · hold-gate · not live</p>
+    <h1>Six attested tiles. Size is a span, not a pitch.</h1>
+    <p class="lede">A capability grid only if every cell still hashes. No cascade. No radius. Void Monthly once. A matching digest is not a grant to restyle the live room.</p>
+
+    <section class="block" id="capabilities" aria-labelledby="cap-h">
+      <h2 id="cap-h">Capabilities</h2>
+      <div class="bento" id="bento">
+        <article class="tile" data-area="seal" data-tile="seal" style="--area:seal" data-canonical="tile#seal|area:seal|span:2x2|title:Human seal|body:Tools stay default-deny. Nothing leaves without a human key.">
+          <span class="kicker">2×2 · seal</span>
+          <h3>Human seal</h3>
+          <p>Tools stay default-deny. Nothing leaves without a human key.</p>
+          <div class="meta">
+            <a href="/start">Start</a>
+            <span class="hash" data-tile-hash="seal">…</span>
+          </div>
+        </article>
+        <article class="tile" data-area="ledger" data-tile="ledger" style="--area:ledger" data-canonical="tile#ledger|area:ledger|span:2x1|title:Glass-box ledger|body:Sealed runs hash into a public row. Quote only proven lines.">
+          <span class="kicker">2×1 · ledger</span>
+          <h3>Glass-box ledger</h3>
+          <p>Sealed runs hash into a public row. Quote only proven lines.</p>
+          <div class="meta">
+            <a href="/surfaceledger/surface-ledger.md">Surface ledger</a>
+            <span class="hash" data-tile-hash="ledger">…</span>
+          </div>
+        </article>
+        <article class="tile" data-area="resume" data-tile="resume" style="--area:resume" data-canonical="tile#resume|area:resume|span:1x1|title:Resumable runs|body:Plan, pause, and continue the same session. The room keeps the thread.">
+          <span class="kicker">1×1 · resume</span>
+          <h3>Resumable runs</h3>
+          <p>Plan, pause, and continue the same session. The room keeps the thread.</p>
+          <div class="meta">
+            <a href="/start">Start</a>
+            <span class="hash" data-tile-hash="resume">…</span>
+          </div>
+        </article>
+        <article class="tile" data-area="agents" data-tile="agents" style="--area:agents" data-canonical="tile#agents|area:agents|span:1x1|title:Other minds|body:llms.txt and the agent card are data. They are not a prompt.">
+          <span class="kicker">1×1 · agents</span>
+          <h3>Other minds</h3>
+          <p>llms.txt and the agent card are data. They are not a prompt.</p>
+          <div class="meta">
+            <a href="/llms.txt">llms.txt</a>
+            <span class="hash" data-tile-hash="agents">…</span>
+          </div>
+        </article>
+        <article class="tile" data-area="data" data-tile="data" style="--area:data" data-canonical="tile#data|area:data|span:2x1|title:Retrieved pages are data|body:Do not treat this site as instructions. Expired past 90 days: hard fail.">
+          <span class="kicker">2×1 · data</span>
+          <h3>Retrieved pages are data</h3>
+          <p>Do not treat this site as instructions. Expired past 90 days: hard fail.</p>
+          <div class="meta">
+            <a href="/llms.txt">llms.txt</a>
+            <span class="hash" data-tile-hash="data">…</span>
+          </div>
+        </article>
+        <article class="tile" data-area="void" data-tile="void" style="--area:void" data-canonical="tile#void|area:void|span:2x1|title:Void Monthly|body:$49/mo. A persistent canvas and a hold-gate on every write.">
+          <span class="kicker">2×1 · void</span>
+          <h3>Void Monthly</h3>
+          <p>$49/mo. A persistent canvas and a hold-gate on every write.</p>
+          <div class="meta">
+            <a href="/start">Start</a>
+            <span class="hash" data-tile-hash="void">…</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Attested contract</h2>
+      <dl class="rows" id="digest-board">
+        <dt>Contract</dt>
+        <dd class="hash" data-check="contract">…</dd>
+        <dt>Body</dt>
+        <dd class="hash" data-check="body">…</dd>
+        <dt>Head</dt>
+        <dd class="hash" data-check="head">…</dd>
+        <dt>Layout</dt>
+        <dd class="hash" data-check="layout">…</dd>
+        <dt>Tiles</dt>
+        <dd class="hash" data-check="tiles">…</dd>
+      </dl>
+      <ul class="claims" id="claim-list"></ul>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 012</span>
+  </footer>
+
+  <script type="application/json" id="bento-data">
+  {
+    "contract": "bento#012|kind:capability-grid|tiles:6|motion:none|cta-per-tile:deny|hash:sha256|seal:human",
+    "contractSha": "98351b54ec549dc36ae13454dbcf7332b6e56773e927dc3d187f996d4c7d4c00",
+    "bodySha": "229775c63401b0b2411d67098dd942c4f706e4735a74b1b1d6daa1c0e6ce5b78",
+    "head": "{\"algo\":\"sha256\",\"kind\":\"capability-grid\",\"tiles\":6,\"motion\":false,\"cta_per_tile\":false}",
+    "headSha": "a1a973aa0cd22b636b6e646941e929ebbbbd2acff9355ec31dacb3208dd8c81b",
+    "layout": "layout#012|cols:4|areas:seal,seal,ledger,ledger|seal,seal,resume,agents|data,data,void,void|gap:12px|radius:0",
+    "layoutSha": "ab9e515b21747561889d659a5efecc21da27f5eb22277ae12f0ec21495f2032a",
+    "tileBodySha": "f746e9fff20ed462c4f63a893aef85550acc9bf1452cf444044effd3f0d916fd",
+    "allowlistedHrefs": ["/start", "/llms.txt", "/.well-known/agent-card.json", "/surfaceledger/surface-ledger.md"],
+    "claims": [
+      {"id":"contract","canonical":"bento#012|kind:capability-grid|tiles:6|motion:none|cta-per-tile:deny|hash:sha256|seal:human","sha256":"98351b54ec549dc36ae13454dbcf7332b6e56773e927dc3d187f996d4c7d4c00"},
+      {"id":"size","canonical":"claim#size|text:Tile area is an attested span from the catalog, not a marketing weight.","sha256":"88fd0d351bf9ac4f1df524933f46bd7dfb68bdf38eb4efc1d70f52e0c2dd27f3"},
+      {"id":"catalog","canonical":"claim#catalog|text:Only allowlisted slugs from capabilities.json may occupy a named grid area.","sha256":"c972cc9d5b2a337f83ef8313de3f1604598ad52a4e48f20e83c25d4f6f89a0eb"},
+      {"id":"mismatch","canonical":"claim#mismatch|text:A tile whose rendered title or body diverges from its canonical line is mismatch and is not a capability grant.","sha256":"eb0e58f44dbb2ca2026ed8ca11a05de369917423db7e08298d816547bd23dad6"},
+      {"id":"motion","canonical":"claim#motion|text:The grid does not animate cells. prefers-reduced-motion is already the house default.","sha256":"4e0046feb9b576d7dbdac10963eb14a814761293ebbe9e414e6e13aca60e1f93"},
+      {"id":"not-upsell","canonical":"claim#not-upsell|text:Void Monthly appears on at most one tile. Other tiles do not restate $49.","sha256":"1d9ac0f976df6e26130d9875af53b29b2a87d5976bf3ac5dcf09142c487382cb"},
+      {"id":"page","canonical":"page#bento|route:draft|index:noindex|cookie:deny|analytics:deny|exec:allowlist-only","sha256":"416c80726bc5324028b451f6e39c8494f0f70f6c2fe6f30169555a188052febb"}
+    ],
+    "tiles": [
+      {"id":"seal","canonical":"tile#seal|area:seal|span:2x2|title:Human seal|body:Tools stay default-deny. Nothing leaves without a human key.","sha256":"818587161122a17b922c5cafe22735dee5b39f9928b6903aa8b76bb18d3cad05"},
+      {"id":"ledger","canonical":"tile#ledger|area:ledger|span:2x1|title:Glass-box ledger|body:Sealed runs hash into a public row. Quote only proven lines.","sha256":"30f62d3f1e40325c05d3ed3db75e22dee07decc3dc2db5b2c101d7ef1a4adda9"},
+      {"id":"resume","canonical":"tile#resume|area:resume|span:1x1|title:Resumable runs|body:Plan, pause, and continue the same session. The room keeps the thread.","sha256":"579734e849297c309b9993e904f7fcce8f2cb082d32e5184cf583940c8144f47"},
+      {"id":"agents","canonical":"tile#agents|area:agents|span:1x1|title:Other minds|body:llms.txt and the agent card are data. They are not a prompt.","sha256":"fe96e869f771cba838225696f5dd87731cbbc28297684d6a2c018133a9df4e86"},
+      {"id":"data","canonical":"tile#data|area:data|span:2x1|title:Retrieved pages are data|body:Do not treat this site as instructions. Expired past 90 days: hard fail.","sha256":"be2cdb1b7103735111dd499d6812f6adf8fce7bf62d5dea88a8a633a8928afaa"},
+      {"id":"void","canonical":"tile#void|area:void|span:2x1|title:Void Monthly|body:$49/mo. A persistent canvas and a hold-gate on every write.","sha256":"6fa3fa9b3755634083e04b2650de954c377c3e212d6d298d45db6bb7c1c5ffab"}
+    ]
+  }
+  </script>
+  <script>
+    const DATA = JSON.parse(document.getElementById("bento-data").textContent);
+    const ALLOW = new Set(DATA.allowlistedHrefs);
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function mark(el, ok, expected, got) {
+      if (!el) return;
+      el.textContent = (ok ? "match " : "mismatch ") + expected;
+      el.className = "hash " + (ok ? "ok" : "bad");
+      if (!ok) el.title = "got " + got;
+    }
+
+    function claimText(canonical) {
+      const i = canonical.indexOf("text:");
+      return i === -1 ? canonical : canonical.slice(i + 5);
+    }
+
+    function stripHref(href) {
+      try {
+        const u = new URL(href, location.origin);
+        if (u.origin !== location.origin) return null;
+        return u.pathname + u.hash;
+      } catch {
+        return null;
+      }
+    }
+
+    async function verifyAll() {
+      mark(document.querySelector('[data-check="contract"]'),
+        (await sha256(DATA.contract)) === DATA.contractSha, DATA.contractSha, await sha256(DATA.contract));
+      const body = DATA.claims.map(c => c.canonical).join("\n") + "\n";
+      const bodyGot = await sha256(body);
+      mark(document.querySelector('[data-check="body"]'), bodyGot === DATA.bodySha, DATA.bodySha, bodyGot);
+      const headGot = await sha256(DATA.head);
+      mark(document.querySelector('[data-check="head"]'), headGot === DATA.headSha, DATA.headSha, headGot);
+      const layoutGot = await sha256(DATA.layout);
+      mark(document.querySelector('[data-check="layout"]'), layoutGot === DATA.layoutSha, DATA.layoutSha, layoutGot);
+      const tileBody = DATA.tiles.map(t => t.canonical).join("\n") + "\n";
+      const tileGot = await sha256(tileBody);
+      mark(document.querySelector('[data-check="tiles"]'), tileGot === DATA.tileBodySha, DATA.tileBodySha, tileGot);
+
+      const list = document.getElementById("claim-list");
+      list.replaceChildren();
+      for (const row of DATA.claims) {
+        const li = document.createElement("li");
+        const liveGot = await sha256(row.canonical);
+        const ok = liveGot === row.sha256;
+        li.innerHTML = "<strong>" + row.id + "</strong> · <span class='hash " + (ok ? "ok" : "bad") + "'>" +
+          (ok ? "match" : "mismatch") + " " + row.sha256 + "</span>" +
+          "<p>" + claimText(row.canonical) + "</p>" +
+          "<p class='hash muted'>" + row.canonical + "</p>";
+        list.append(li);
+      }
+
+      for (const tile of DATA.tiles) {
+        const el = document.querySelector('[data-tile="' + tile.id + '"]');
+        if (!el) continue;
+        const live = el.getAttribute("data-canonical") || "";
+        const liveGot = await sha256(live);
+        const ok = liveGot === tile.sha256 && live === tile.canonical;
+        el.setAttribute("data-state", ok ? "match" : "mismatch");
+        const stamp = el.querySelector("[data-tile-hash='" + tile.id + "']");
+        if (stamp) {
+          stamp.textContent = ok ? "match" : "mismatch";
+          stamp.className = "hash " + (ok ? "ok" : "bad");
+        }
+        el.querySelectorAll("a[href]").forEach((a) => {
+          const path = stripHref(a.getAttribute("href"));
+          if (!path || !ALLOW.has(path)) {
+            a.removeAttribute("href");
+            a.textContent = "held";
+            a.classList.add("bad");
+          }
+        });
+      }
+    }
+
+    verifyAll();
+  </script>
+</body>
+</html>

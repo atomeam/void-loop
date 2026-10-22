@@ -1,0 +1,24 @@
+{
+  "slug": "local-schema-not-miss",
+  "family": "collective-memory miss board",
+  "run": 96,
+  "emit": false,
+  "status": "unattested",
+  "canonical": "void.schema-not-miss.v1|schema=accessory-intrusion|disconfirm=no-chorus-count|weight=0.280|status=unattested",
+  "fixture_sha256": "5597b7b0c1111b08da3251ef975a66ac52c99de07739ffa95c95b9377f770888",
+  "href_allowlist": [],
+  "schema_catalog": [
+    "accessory-intrusion",
+    "name-intrusion",
+    "line-intrusion",
+    "date-intrusion"
+  ],
+  "disconfirm_catalog": [
+    "no-chorus-count",
+    "archival-token-matches",
+    "sentence-hashed",
+    "correction-filled",
+    "vote-posted"
+  ],
+  "note": "Fixture only. Digest is not a seal. Chorus sentence is not in the hash. A schema intrusion is not a collective miss and not a logo correction."
+}

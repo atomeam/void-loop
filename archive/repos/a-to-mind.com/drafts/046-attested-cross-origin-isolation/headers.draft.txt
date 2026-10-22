@@ -1,0 +1,12 @@
+# Draft only. Do not rename to _headers. Do not copy to the site root.
+# Cloudflare Pages would apply a real _headers file. This one must stay inert.
+# Seal emit=false is valid: publish none of the lines below.
+#
+# /index.html
+#   # Cross-Origin-Opener-Policy: absent-until-seal
+#   # Cross-Origin-Embedder-Policy: absent-until-seal
+#   # Cross-Origin-Resource-Policy: absent-until-seal
+#
+# Denied until a later seal names the breakage:
+#   same-origin, same-origin-allow-popups, require-corp, credentialless,
+#   CORP same-origin, CORP same-site, report-to, Reporting-Endpoints

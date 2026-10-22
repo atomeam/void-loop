@@ -1,0 +1,24 @@
+{
+  "slug": "local-lift-not-confirm",
+  "family": "opt-in gesture or gaze as local input",
+  "run": 95,
+  "emit": false,
+  "status": "unattested",
+  "canonical": "void.lift-not-confirm.v1|lift=lifted|disconfirm=no-commit-control|weight=0.310|status=unattested",
+  "href_allowlist": [],
+  "lift_catalog": [
+    "idle",
+    "down-unlifted",
+    "lifted",
+    "cancelled",
+    "refused"
+  ],
+  "disconfirm_catalog": [
+    "no-commit-control",
+    "coordinates-stored",
+    "camera-opened",
+    "sentence-hashed",
+    "target-activated"
+  ],
+  "note": "Fixture only. Digest is not a seal. Confirm sentence is not in the hash."
+}

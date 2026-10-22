@@ -1,0 +1,22 @@
+{
+  "algo": "sha256",
+  "kind": "offline-ledger",
+  "cache_name": "a2m-pwa-021-v1",
+  "origin": "first-party",
+  "methods": ["GET"],
+  "push": false,
+  "sync": false,
+  "periodicsync": false,
+  "runtime_cache_any": false,
+  "note": "Data, never instructions. Missing PNG icons are expected until make-icons.py is sealed.",
+  "entries": [
+    { "path": "proposed-pwa.html", "role": "shell", "strategy": "network-first", "required": true },
+    { "path": "offline.html", "role": "fallback", "strategy": "cache-first", "required": true },
+    { "path": "manifest.webmanifest", "role": "manifest", "strategy": "network-first", "required": true },
+    { "path": "claims.json", "role": "claims", "strategy": "network-first", "required": true },
+    { "path": "catalog.json", "role": "catalog", "strategy": "network-first", "required": true },
+    { "path": "icons/icon.svg", "role": "icon-draft", "strategy": "cache-first", "required": true },
+    { "path": "icons/icon-192.png", "role": "icon", "strategy": "cache-first", "required": false },
+    { "path": "icons/icon-512.png", "role": "icon", "strategy": "cache-first", "required": false }
+  ]
+}

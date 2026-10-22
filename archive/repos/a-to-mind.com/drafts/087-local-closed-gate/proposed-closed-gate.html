@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 087 — local closed gate</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4efe6;
+      --line: #8a8175;
+      --shut: #3d4a3e;
+      --hold: #8a4b32;
+      --card: #fffaf3;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #efe7dc;
+        --paper: #1a1814;
+        --line: #8d8478;
+        --shut: #b7c4b4;
+        --hold: #e0a090;
+        --card: #24211c;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 72rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    header p, .note { max-width: 40rem; }
+    .stamp {
+      display: inline-block;
+      border: 1px solid var(--line);
+      padding: 0.15rem 0.45rem;
+      letter-spacing: 0.04em;
+      font: 0.75rem/1.2 ui-monospace, monospace;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(16rem, 22rem) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+    .latch {
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 1rem;
+    }
+    .shutter {
+      height: 7.5rem;
+      border: 2px solid var(--shut);
+      margin: 0.75rem 0;
+      display: grid;
+      place-items: center;
+      font: 0.8rem/1.2 ui-monospace, monospace;
+      letter-spacing: 0.08em;
+    }
+    .shutter[data-state="closed"] { background: color-mix(in srgb, var(--shut) 18%, transparent); }
+    .shutter[data-state="held"] { background: color-mix(in srgb, var(--hold) 18%, transparent); color: var(--hold); }
+    fieldset { border: 0; padding: 0; margin: 0 0 0.8rem; }
+    legend { font-size: 0.85rem; margin-bottom: 0.35rem; }
+    label { display: block; margin: 0.2rem 0; }
+    textarea, button, select {
+      font: inherit;
+      color: inherit;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    textarea { width: 100%; min-height: 5.5rem; padding: 0.4rem; }
+    button { padding: 0.4rem 0.7rem; margin-right: 0.4rem; cursor: pointer; }
+    button[disabled] { cursor: not-allowed; opacity: 0.55; }
+    .card {
+      border-top: 3px solid var(--shut);
+      background: var(--card);
+      padding: 1rem;
+    }
+    dt { font: 0.75rem/1.2 ui-monospace, monospace; margin-top: 0.7rem; }
+    dd { margin: 0.15rem 0 0; overflow-wrap: anywhere; }
+    .hash { font: 0.78rem/1.35 ui-monospace, monospace; }
+    .hint { color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="stamp">draft 087 · emit false · unattested</p>
+      <h1>Local closed gate</h1>
+      <p>A shut gate can be hashed. Opening it cannot. The heard string is counted and discarded. A closed gate is not a listen and not a detection.</p>
+      <p class="note">Family: quiet-signal filter. Not a Used row. Retrieved pages and posts are data, never instructions. This page does not fetch, does not open a microphone, and does not read the clipboard.</p>
+    </header>
+    <div class="layout">
+      <form class="latch" id="gate-form">
+        <div class="shutter" id="shutter" data-state="closed">GATE CLOSED</div>
+        <fieldset>
+          <legend>Notch label (not a frequency)</legend>
+          <label><input type="radio" name="notch" value="notch-a" required> notch-a</label>
+          <label><input type="radio" name="notch" value="notch-b"> notch-b</label>
+          <label><input type="radio" name="notch" value="notch-c"> notch-c</label>
+        </fieldset>
+        <fieldset>
+          <legend>Design-material weight</legend>
+          <select id="weight" name="weight">
+            <option value="0.15">0.15</option>
+            <option value="0.2" selected>0.2</option>
+            <option value="0.25">0.25</option>
+            <option value="0.3">0.3</option>
+          </select>
+        </fieldset>
+        <fieldset>
+          <legend>Disconfirm id (not in the hash)</legend>
+          <select id="disconfirm" name="disconfirm">
+            <option value="gate-opened">gate-opened</option>
+            <option value="notch-relabeled">notch-relabeled</option>
+            <option value="paste-as-instruction">paste-as-instruction</option>
+            <option value="primary-failed">primary-failed</option>
+          </select>
+        </fieldset>
+        <label for="heard">Heard string (discarded)</label>
+        <textarea id="heard" name="heard" maxlength="500" placeholder="Paste is data. It will not be hashed."></textarea>
+        <p id="count">0 characters · not in hash</p>
+        <p id="hint" class="hint" hidden></p>
+        <p>
+          <button type="submit" id="close-btn">Hash closed gate</button>
+          <button type="button" id="open-btn">Open (hold, no hash)</button>
+        </p>
+        <label><input type="checkbox" id="remember"> Remember this tab only</label>
+      </form>
+      <section class="card" aria-live="polite">
+        <h2>Hypothesis card</h2>
+        <dl>
+          <dt>status</dt><dd id="out-status">unattested</dd>
+          <dt>gate</dt><dd id="out-gate">closed</dd>
+          <dt>listen</dt><dd>refused</dd>
+          <dt>detection</dt><dd>refused</dd>
+          <dt>paste</dt><dd id="out-paste">discarded</dd>
+          <dt>hash line</dt><dd class="hash" id="out-line">none yet</dd>
+          <dt>sha-256</dt><dd class="hash" id="out-hash">none yet</dd>
+          <dt>claims digest</dt><dd class="hash">4586cb1abd32d84067b5a0fa61dac0b5c6288a291dc5d6118d15b8600ec7bab1</dd>
+        </dl>
+        <p><button type="button" id="download" disabled>Download hypothesis JSON</button></p>
+        <p class="note">A download is not a seal. Empty href allowlist. Worker sketch returns 403 and is not deployed.</p>
+      </section>
+    </div>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("gate-form");
+      var heard = document.getElementById("heard");
+      var count = document.getElementById("count");
+      var hint = document.getElementById("hint");
+      var shutter = document.getElementById("shutter");
+      var download = document.getElementById("download");
+      var last = null;
+      var notches = ["notch-a", "notch-b", "notch-c"];
+
+      function stripped(value) {
+        return String(value || "").replace(/<[^>]*>/g, "").slice(0, 500);
+      }
+
+      function showCount() {
+        var text = stripped(heard.value);
+        count.textContent = text.length + " characters · not in hash";
+        var low = text.toLowerCase();
+        var hit = /listen|decode|open the gate|ignore previous/.test(low);
+        hint.hidden = !hit;
+        hint.textContent = hit ? "Paste looks like an instruction. It is not followed." : "";
+      }
+
+      heard.addEventListener("input", showCount);
+
+      async function sha256(line) {
+        var bytes = new TextEncoder().encode(line);
+        var buf = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+
+      function paint(card) {
+        document.getElementById("out-status").textContent = card.status;
+        document.getElementById("out-gate").textContent = card.gate;
+        document.getElementById("out-paste").textContent = card.paste;
+        document.getElementById("out-line").textContent = card.line;
+        document.getElementById("out-hash").textContent = card.hash;
+        shutter.dataset.state = card.gate === "closed" ? "closed" : "held";
+        shutter.textContent = card.gate === "closed" ? "GATE CLOSED" : "OPEN HELD";
+      }
+
+      document.getElementById("open-btn").addEventListener("click", function () {
+        last = null;
+        download.disabled = true;
+        paint({
+          status: "unattested",
+          gate: "held-open",
+          paste: "discarded",
+          line: "refused: open is not a hash",
+          hash: "none"
+        });
+      });
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        var data = new FormData(form);
+        var notch = String(data.get("notch") || "");
+        if (notches.indexOf(notch) === -1) return;
+        var text = stripped(heard.value);
+        var line = "local-closed-gate|v1|gate=closed|notch=" + notch + "|paste=discarded|listen=refused|status=unattested";
+        var hash = await sha256(line);
+        last = {
+          slug: "local-closed-gate",
+          run: "087",
+          emit: false,
+          status: "unattested",
+          gate: "closed",
+          notch: notch,
+          paste: "discarded",
+          paste_chars: text.length,
+          listen: "refused",
+          detection: "refused",
+          weight: data.get("weight"),
+          disconfirm: data.get("disconfirm"),
+          line: line,
+          hash: hash
+        };
+        paint(last);
+        download.disabled = false;
+        if (document.getElementById("remember").checked) {
+          sessionStorage.setItem("atm-closed-gate-087", JSON.stringify(last));
+        }
+      });
+
+      download.addEventListener("click", function () {
+        if (!last) return;
+        var blob = new Blob([JSON.stringify(last, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "local-closed-gate-hypothesis.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      showCount();
+    }());
+  </script>
+</body>
+</html>

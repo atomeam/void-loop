@@ -1,0 +1,36 @@
+{
+  "slug": "local-unfilled-span",
+  "bin_min": 15,
+  "max_span_min": [
+    60,
+    120,
+    240
+  ],
+  "default_max_span_min": 120,
+  "fill": "denied",
+  "fixtures": [
+    {
+      "id": "span-60",
+      "max_span_min": 60,
+      "bins": 4,
+      "label": "Sixty-minute cap. Four empty fifteen-minute bins. Empty is not an event."
+    },
+    {
+      "id": "span-120",
+      "max_span_min": 120,
+      "bins": 8,
+      "label": "One-hundred-twenty-minute cap. Default. Interior stays unfilled."
+    },
+    {
+      "id": "span-240",
+      "max_span_min": 240,
+      "bins": 16,
+      "label": "Two-hundred-forty-minute cap. A longer empty rail is still not a story."
+    },
+    {
+      "id": "coarse-hold",
+      "precision": "month",
+      "label": "Month-only bound. Held. Not expanded into invented hours."
+    }
+  ]
+}

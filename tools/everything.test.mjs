@@ -41,6 +41,8 @@ for (const a of ['date today', 'what is the date', 'carbon dating', 'update my p
 ok(icebreakers('hiking, jazz').length === 3 && bio({ name: 'Sam', interests: 'hiking, jazz' }) === 'Sam. Happiest when hiking or jazz is involved.', 'coach');
 import { slimRow } from '../void-live-deploy/skills/markets.js';
 ok(slimRow({ id: 'x', symbol: 'x', sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => i) } }).spark.length <= 56, 'client slim');
+import { keptText } from '../void-live-deploy/skills/social.js';
+ok(keptText('Sam', 'hi  there', 'https://x/1') === 'Sam: hi there\nhttps://x/1', 'kept text');
 console.log('everything: ' + n + ' checks pass');
 // the wishlist goes into self.json, free paths first
 import { readFileSync } from 'node:fs';

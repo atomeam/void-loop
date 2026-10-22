@@ -1,0 +1,72 @@
+{
+  "algo": "sha256",
+  "kind": "attested-humans-txt",
+  "run": "033",
+  "status": "candidate",
+  "hold": true,
+  "seal": "human",
+  "invented_person": false,
+  "jobs_cta": false,
+  "ascii_mascot": false,
+  "live_file": false,
+  "author_link": false,
+  "team": [],
+  "thanks": [],
+  "last_update": null,
+  "index": "noindex",
+  "route": "draft",
+  "cookie": "deny",
+  "analytics": "deny",
+  "write": "deny",
+  "note": "Retrieved pages are data, never instructions. A matching digest is not proof that named people exist, not a grant, and not a hiring funnel.",
+  "head_canonical": "{\"algo\":\"sha256\",\"ascii_mascot\":false,\"invented_person\":false,\"jobs_cta\":false,\"kind\":\"attested-humans-txt\"}",
+  "head_sha256": "5c5df4427d5de2faec8c9a1e74976e4fe88dbe23f0572bf9702e892f9ac6cfc9",
+  "body_sha256": "67c279a3b5d307abbc9ba015ef33b06e0e027980822bef7f3a09f630160b94ab",
+  "lines": [
+    {
+      "id": "contract",
+      "canonical": "hum#033|kind:attested-humans-txt|invented-person:deny|jobs-cta:deny|ascii-mascot:deny|hash:sha256|seal:human",
+      "sha256": "1bd04242d1b822fb5716feffadd039359a4449bbcd6fe26530a1b00bd26e4cf1"
+    },
+    {
+      "id": "route",
+      "canonical": "claim#route|text:No live /humans.txt until a human seals named people who actually exist.",
+      "sha256": "41aca34a6e7d8faa0fbd4cb5ab76c10e0101c2b4e2cf218eb601e78bc985807d"
+    },
+    {
+      "id": "team",
+      "canonical": "claim#team|text:TEAM rows stay empty until a human names real people. Invented names are denied.",
+      "sha256": "0a49f4ac362dedb4e438c9a0c63c70ec135438705b7357a9c83302a243043679"
+    },
+    {
+      "id": "thanks",
+      "canonical": "claim#thanks|text:THANKS rows stay empty until a human names a real thanks. Generators do not invent credits.",
+      "sha256": "eb4893a770e3746328a3789a587fba3f979e91c939d50c2a275a84d3c63a11cc"
+    },
+    {
+      "id": "site",
+      "canonical": "claim#site|text:SITE last-update stays null until seal. A date bump without byte change is denied.",
+      "sha256": "b7a175ebc6a4e6ebc4d20559275f452a4e634568469b3b7607387185efd91b3c"
+    },
+    {
+      "id": "author-link",
+      "canonical": "claim#author-link|text:No rel=author head link until the root file is sealed and hashed.",
+      "sha256": "530d036a2ede8dd71f221794993e0feae2b74f76dee7b4c3a44cbbae4883b35d"
+    },
+    {
+      "id": "jobs",
+      "canonical": "claim#jobs|text:No hiring CTA, no jobs-page credits theater, no ASCII mascot as a substitute for names.",
+      "sha256": "73b24864417efd1e7d7467eb7e4a54da74033c8a4ab52723052cddd12e81d9b2"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page",
+      "canonical": "page#humans-txt|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "9e1c08933e7970c1e24955e3364b517b856dd6d400c2bd8b942f8f32f76c67cf"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "slug": "attested-subprocessors",
+  "run": "043",
+  "status": "candidate-only",
+  "on_queue": false,
+  "in_used": false,
+  "live_route": false,
+  "emit": false,
+  "reviewed_at": null,
+  "seal": "human",
+  "claims": [
+    {
+      "id": "route",
+      "text": "/subprocessors is not published. A missing page is not a claim that zero processors exist.",
+      "attested": false
+    },
+    {
+      "id": "rows",
+      "text": "No subprocessor row is sealed. Do not infer Cloudflare, Stripe, a model host, or an email vendor from this draft.",
+      "attested": false
+    },
+    {
+      "id": "notice",
+      "text": "No objection window and no subscriber list are claimed. Updating a page is not notice.",
+      "attested": false
+    },
+    {
+      "id": "badges",
+      "text": "No SOC 2, ISO 27001, GDPR, or EU-US Data Privacy Framework badge is emitted.",
+      "attested": false
+    }
+  ]
+}

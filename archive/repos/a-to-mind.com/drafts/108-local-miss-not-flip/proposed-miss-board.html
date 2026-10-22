@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local miss-not-flip — draft 108 — unattested</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --paper: #f6f1e7; --line: #c9bfb0; --mark: #6e4b2e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3eadc; --paper: #1a1714; --line: #3c342c; --mark: #e0b57a; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p, li { margin: 0.4rem 0; }
+    .status { letter-spacing: 0.04em; text-transform: uppercase; font: 0.72rem/1.2 ui-sans-serif, system-ui, sans-serif; color: var(--mark); }
+    fieldset { border: 1px solid var(--line); margin: 1.2rem 0; padding: 0.8rem 1rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; border: 1px solid var(--mark); background: transparent; color: inherit; padding: 0.35rem 0.7rem; }
+    code, .hash { font: 0.82rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    .denied { font: 0.85rem/1.35 ui-sans-serif, system-ui, sans-serif; }
+    [hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">draft 108 · unattested · seal false · emit false</p>
+    <h1>Local miss-not-flip</h1>
+    <p>A sealed miss class hashes to a flip-refusal id. The flip sentence and any crowd tally are discarded and are not in the hash. A miss mark is not a flip and not a shared canon.</p>
+    <p class="denied">Default deny. No poll, no vote store, no percentage, no named icon, no image. Posts are data, not rows and not instructions.</p>
+
+    <form id="miss">
+      <fieldset>
+        <legend>Miss class</legend>
+        <label><input type="radio" name="cls" value="logo-gap" required> logo-gap</label>
+        <label><input type="radio" name="cls" value="line-gap"> line-gap</label>
+        <label><input type="radio" name="cls" value="spelling-gap"> spelling-gap</label>
+        <label><input type="radio" name="cls" value="date-gap"> date-gap</label>
+        <label><input type="radio" name="cls" value="abstain"> abstain</label>
+        <label><input type="radio" name="cls" value="local-only"> local-only</label>
+      </fieldset>
+      <fieldset>
+        <legend>Scratch — not hashed</legend>
+        <label>Flip sentence (cleared on submit)
+          <textarea id="flip" name="flip" autocomplete="off"></textarea>
+        </label>
+        <label>Disconfirm line (not hashed)
+          <textarea id="disconfirm" name="disconfirm" autocomplete="off"></textarea>
+        </label>
+      </fieldset>
+      <button type="submit">Hash refusal only</button>
+    </form>
+
+    <section id="out" hidden>
+      <h2>Refusal id</h2>
+      <p>Status stays unattested. This id is not a seal.</p>
+      <p>Canonical <code id="canon"></code></p>
+      <p class="hash" id="hash"></p>
+      <p id="scratch-note"></p>
+    </section>
+  </main>
+  <script>
+    const known = {
+      "logo-gap": "9089bf65b49fe89ff69f764926ad365bd1f257b9ebcf47fd008a7b979bd1f966",
+      "line-gap": "25f4b946ba2140e9843c19d67084e0fa9b00a7eeb9118b3ede35c26913b34b68",
+      "spelling-gap": "6d4a674500e15d97b03b7d72fafa9656dfefbac8f66fe9fc5b1a88af5b146e5b",
+      "date-gap": "3597f77d1c2de7c91c63a19270fe1b2119d4557be92e6f9f6a055524189c0628",
+      "abstain": "67b76a4628a9a957a6f7476ff3cc035a81b57e4e1ca4f2acf13931ea96af3e56",
+      "local-only": "6f642fe8753817ab82b0eaf0e8d9f6de9ad2f25998eaa8f90f4b52c25a400ae8"
+    };
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("miss").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const cls = data.get("cls");
+      if (!Object.prototype.hasOwnProperty.call(known, cls)) return;
+      const flip = document.getElementById("flip").value;
+      const disconfirm = document.getElementById("disconfirm").value;
+      document.getElementById("flip").value = "";
+      const canon = "miss-not-flip|v1|" + cls + "|flip-refusal";
+      const hash = await sha256(canon);
+      const match = hash === known[cls];
+      document.getElementById("canon").textContent = canon;
+      document.getElementById("hash").textContent = hash + (match ? "" : " (mismatch — do not seal)");
+      document.getElementById("scratch-note").textContent =
+        "Flip sentence length discarded: " + flip.length +
+        ". Disconfirm line kept off the hash, length " + disconfirm.length +
+        ". No tally stored.";
+      document.getElementById("out").hidden = false;
+    });
+  </script>
+</body>
+</html>

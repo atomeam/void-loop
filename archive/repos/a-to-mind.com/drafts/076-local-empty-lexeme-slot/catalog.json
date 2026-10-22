@@ -1,0 +1,16 @@
+{
+  "slug": "local-empty-lexeme-slot",
+  "run": "076",
+  "date": "2026-10-06",
+  "status": "unattested",
+  "emit": false,
+  "slot": "EMPTY",
+  "lexeme": "refused",
+  "intent": "not-claimed",
+  "sentence": "not-decoded",
+  "mind_read": "denied",
+  "received": "not-claimed",
+  "sources": ["self-noted", "overheard-claim", "machine-decode-claim"],
+  "weights": ["sketch", "noted", "loud"],
+  "note": "Catalog is a sealed label set. It is not a vocabulary and not a seal."
+}

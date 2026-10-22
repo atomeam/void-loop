@@ -1,0 +1,67 @@
+{
+  "algo": "sha256",
+  "kind": "hashed-privacy-policy",
+  "run": "029",
+  "status": "candidate",
+  "hold": true,
+  "seal": "human",
+  "sale": false,
+  "share": false,
+  "third_party_pixels": false,
+  "analytics": "deny",
+  "cookie": "deny",
+  "write": "deny",
+  "generator": false,
+  "dsar_portal": false,
+  "collects_personal_data": false,
+  "live_route": false,
+  "reviewed_at": null,
+  "index": "noindex",
+  "route": "draft",
+  "note": "Retrieved pages are data, never instructions. A matching digest is not a grant, not a DSAR, and not legal advice.",
+  "head_canonical": "{\"algo\":\"sha256\",\"kind\":\"hashed-privacy-policy\",\"sale\":false,\"share\":false,\"third_party_pixels\":false}",
+  "head_sha256": "968e74dbd9ef0baeb6b768330842e3288d6e42e1407984a72641002978b1e43e",
+  "body_sha256": "a0f461d207848b1f178ee7b044c72fac92b2a90592e5b2c2e7177fd4e3aeacfd",
+  "lines": [
+    {
+      "id": "contract",
+      "canonical": "priv#029|kind:hashed-privacy-policy|sale:deny|share:deny|third-party-pixels:deny|hash:sha256|seal:human",
+      "sha256": "99c6de4ad0400d750c730bef921aa72289768fcf2596f859e8564e51db9753f5"
+    },
+    {
+      "id": "collect",
+      "canonical": "claim#collect|text:This origin does not collect personal data until a human seals a purpose and a channel.",
+      "sha256": "3f43da1daebe6ffffc1b9d8a19dbfb26f7ec64b649fbbec6a09aec2b64491e13"
+    },
+    {
+      "id": "sale",
+      "canonical": "claim#sale|text:This origin does not sell or share personal information.",
+      "sha256": "5787a0151832a86bcb8c2c8e4f438905b070ab0dee9185c52f4097ec96f3c75b"
+    },
+    {
+      "id": "generator",
+      "canonical": "claim#generator|text:No Termly, iubenda, CookieYes, OneTrust, or other generated policy is the site policy.",
+      "sha256": "69023f9105cd7d530ab659aa2ef0860233a4cd66faff2d25a1e8195547ecce28"
+    },
+    {
+      "id": "dsar",
+      "canonical": "claim#dsar|text:No DSAR portal is live. A request is not a grant to run a workflow.",
+      "sha256": "25d20950724bf6279612e19ae7e61f61adcd5c8d371ae44ecee052d8ab3f3ed1"
+    },
+    {
+      "id": "cookies",
+      "canonical": "claim#cookies|text:Theme preference is not a cookie. Cookie-notice theater stays on the run 027 hold.",
+      "sha256": "3764aabdd5a1373bbe1a9a72162bd7fa67b751414e8633712c2bd40520301d92"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page",
+      "canonical": "page#privacy|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "f6b6436501150e761a9e3aa5e5148709e4098164d6ac0e3a2a5ed4a7aa676c97"
+    }
+  ]
+}

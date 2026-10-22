@@ -1,0 +1,104 @@
+{
+ "shared": [
+  {
+   "mode": "shared-worker",
+   "id": "w1",
+   "rooms": 4,
+   "tick": 1520,
+   "eaten": 1,
+   "doors": [
+    "w1|w2",
+    "w2|w3",
+    "w3|w4"
+   ],
+   "belief": {
+    "glyph": "○",
+    "text": "3 doors away",
+    "hops": 3
+   },
+   "title": "○ 3 doors away · Void",
+   "favUpdates": 100,
+   "fav": "Wm6OMI42AAAAAElFTkSuQmCC",
+   "titlesSeen": 5
+  },
+  {
+   "mode": "shared-worker",
+   "id": "w2",
+   "rooms": 4,
+   "tick": 1522,
+   "eaten": 1,
+   "doors": [
+    "w1|w2",
+    "w2|w3",
+    "w3|w4"
+   ],
+   "belief": {
+    "glyph": "○",
+    "text": "2 doors away",
+    "hops": 2
+   },
+   "title": "○ 2 doors away · Void",
+   "favUpdates": 100,
+   "fav": "5241bQAAAABJRU5ErkJggg==",
+   "titlesSeen": 5
+  },
+  {
+   "mode": "shared-worker",
+   "id": "w3",
+   "rooms": 4,
+   "tick": 1522,
+   "eaten": 1,
+   "doors": [
+    "w1|w2",
+    "w2|w3",
+    "w3|w4"
+   ],
+   "belief": {
+    "glyph": "◐",
+    "text": "1 door away",
+    "hops": 1
+   },
+   "title": "◐ 1 door away · Void",
+   "favUpdates": 100,
+   "fav": "X8bs8dsAAAAASUVORK5CYII=",
+   "titlesSeen": 4
+  },
+  {
+   "mode": "shared-worker",
+   "id": "w4",
+   "rooms": 4,
+   "tick": 1522,
+   "eaten": 1,
+   "doors": [
+    "w1|w2",
+    "w2|w3",
+    "w3|w4"
+   ],
+   "belief": {
+    "glyph": "◉",
+    "text": "eat",
+    "hops": 0
+   },
+   "title": "◉ eat · Void",
+   "favUpdates": 100,
+   "fav": "QYnz9YMAAAAASUVORK5CYII=",
+   "titlesSeen": 2
+  }
+ ],
+ "sameWorld": true,
+ "afterClose": {
+  "rooms": 3,
+  "doors": [
+   "w1|w2",
+   "w2|w3"
+  ]
+ },
+ "desk": {
+  "mode": "desk",
+  "rooms": 4,
+  "eaten": 2,
+  "doors": 2,
+  "title": "◉ explore · Void"
+ },
+ "errs": []
+}

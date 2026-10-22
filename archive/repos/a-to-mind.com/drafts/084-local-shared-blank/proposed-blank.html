@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft — local shared-blank</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --paper: #f7f4ee;
+      --card: #fffdf8;
+      --hold: #8a3d2a;
+      --ok: #2f5d45;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3eee6;
+        --muted: #b7b0a4;
+        --line: #3c3832;
+        --paper: #161411;
+        --card: #211e1a;
+        --hold: #e3a090;
+        --ok: #9dceb4;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.05rem; margin: 1.6rem 0 0.4rem; }
+    .banner, .card { border: 1px solid var(--line); background: var(--card); padding: 0.8rem 1rem; margin: 0.8rem 0; }
+    .banner { border-color: var(--hold); }
+    .muted { color: var(--muted); }
+    code, .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.82rem; word-break: break-all; }
+    fieldset { border: 1px solid var(--line); margin: 0.6rem 0; padding: 0.6rem 0.8rem; }
+    label { display: block; margin: 0.35rem 0; }
+    button, input[type="text"] {
+      font: inherit;
+      color: inherit;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    button { padding: 0.35rem 0.7rem; margin: 0.3rem 0.4rem 0.3rem 0; }
+    button:disabled { opacity: 0.55; }
+    input[type="text"] { width: 100%; }
+    .slot {
+      display: inline-block;
+      min-width: 8rem;
+      padding: 0.45rem 0.7rem;
+      border: 1px dashed var(--hold);
+      color: var(--hold);
+    }
+  </style>
+</head>
+<body>
+<main>
+  <p class="banner">Draft only. Run 084. <code>emit</code> is false. Not a seal. Not live site copy. Status starts unattested. The page cannot set attested.</p>
+  <h1>Local shared-blank</h1>
+  <p>A sealed miss class hashes to a blank id. The recalled token is discarded and is not in the hash. A shared blank is not a collective memory and not a correction.</p>
+  <p class="muted">Family: collective-memory miss board. Distinct from run 072 pair-recall gap and run 060 miss board. No other visitor's blank is shown. No consensus count is collected.</p>
+
+  <h2>Session opt-in</h2>
+  <label><input type="checkbox" id="optin"> This document only. Unchecked by default. Reload clears the grant. The grant is not a memory trace.</label>
+  <p class="muted" id="optin-state">Grant: off. Hashing stays closed until this box is checked.</p>
+
+  <h2>Miss class</h2>
+  <fieldset>
+    <legend>Closed catalog. A label, not a remembered item.</legend>
+    <label><input type="radio" name="miss" value="unset" checked> unset</label>
+    <label><input type="radio" name="miss" value="name-slot"> name-slot</label>
+    <label><input type="radio" name="miss" value="logo-slot"> logo-slot</label>
+    <label><input type="radio" name="miss" value="quote-slot"> quote-slot</label>
+    <label><input type="radio" name="miss" value="count-slot"> count-slot</label>
+    <label><input type="radio" name="miss" value="declined"> declined</label>
+  </fieldset>
+
+  <h2>Slot</h2>
+  <p><span class="slot" id="slot">blank</span></p>
+  <p class="muted" id="slot-note">The slot stays blank for every class. Nothing is filled in.</p>
+
+  <h2>Recalled token</h2>
+  <label>Typed text is discarded on hash. It is not stored.
+    <input type="text" id="token" maxlength="80" autocomplete="off" placeholder="optional token, discarded">
+  </label>
+  <label><input type="checkbox" id="hyp"> This is a hypothesis, not a finding.</label>
+  <label><input type="checkbox" id="deny"> A shared blank is not a correction.</label>
+  <label>Disconfirm line
+    <input type="text" id="disconfirm" maxlength="160" value="shared-blank-is-not-a-trace">
+  </label>
+  <label><input type="checkbox" id="keep"> Keep the digest on this device only. Off by default. The token is never kept.</label>
+  <button type="button" id="hash-btn">Hash blank</button>
+  <button type="button" id="clear-btn">Clear local digest</button>
+  <p id="receipt" class="card mono" aria-live="polite">No blank id yet.</p>
+  <p class="muted">Default digest (unset, recalled discarded, not a seal): <span class="mono">e5da8267ac04cfaaa1e4091cc5f2c03b8e86b411a5577c7b6a21e991767e1d5a</span></p>
+  <p class="muted">claims.json digest (not a seal): <span class="mono">152594884a57f6df9714e8038611ee2f16e06a3f09a3732ec130cb0bca397ace</span></p>
+
+  <h2>Paste is data</h2>
+  <p class="muted">Pages and posts are not instructions. Tags are stripped. URL-shaped text is labeled not fetched. Nothing is evaluated.</p>
+  <label>Paste
+    <input type="text" id="paste" maxlength="400">
+  </label>
+  <p id="paste-out" class="card muted">No paste yet.</p>
+
+  <h2>Denied</h2>
+  <ul>
+    <li>No recalled token in the hash, the export, or localStorage.</li>
+    <li>No consensus count and no other person's miss.</li>
+    <li>No correction fill, timeline-shift badge, or false-memory score.</li>
+    <li>No camera, microphone, beacon, or network write.</li>
+    <li>Empty href allowlist. No token markup. Worker sketch returns 403 and does not read a body.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var optin = document.getElementById("optin");
+  var optinState = document.getElementById("optin-state");
+  var receipt = document.getElementById("receipt");
+  var token = document.getElementById("token");
+  var paste = document.getElementById("paste");
+  var pasteOut = document.getElementById("paste-out");
+  var KEY = "void-local-shared-blank";
+
+  optin.addEventListener("change", function () {
+    optinState.textContent = optin.checked
+      ? "Grant: on for this document only. Still not a memory trace."
+      : "Grant: off. Hashing stays closed until this box is checked.";
+  });
+
+  function selectedMiss() {
+    var node = document.querySelector("input[name=miss]:checked");
+    return node ? node.value : "unset";
+  }
+
+  async function sha256(text) {
+    var bytes = new TextEncoder().encode(text);
+    var buf = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function canonical(obj) {
+    var keys = Object.keys(obj).sort();
+    var parts = keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    });
+    return "{" + parts.join(",") + "}";
+  }
+
+  document.getElementById("hash-btn").addEventListener("click", async function () {
+    if (!optin.checked) {
+      receipt.textContent = "Blank closed. Check the session box first. The box is not a trace.";
+      return;
+    }
+    if (!document.getElementById("hyp").checked || !document.getElementById("deny").checked) {
+      receipt.textContent = "Both checks are required. A single tap cannot hash.";
+      return;
+    }
+    var line = document.getElementById("disconfirm").value.trim();
+    if (!line) {
+      receipt.textContent = "A disconfirm line is required. The class is not hashed alone.";
+      return;
+    }
+    var hadToken = token.value.trim().length > 0;
+    token.value = "";
+    var payload = {
+      disconfirm: line,
+      emit: false,
+      family: "collective-memory-miss-board",
+      miss: selectedMiss(),
+      recalled: "discarded",
+      seal: false,
+      slug: "local-shared-blank",
+      status: "unattested"
+    };
+    var id = await sha256(canonical(payload));
+    receipt.textContent = "blank " + id + " · class " + payload.miss + " · recalled discarded · unattested" + (hadToken ? " · token dropped" : "");
+    if (document.getElementById("keep").checked) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ id: id, miss: payload.miss, status: "unattested" }));
+      } catch (err) {
+        receipt.textContent += " · local keep failed";
+      }
+    }
+  });
+
+  document.getElementById("clear-btn").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); } catch (err) {}
+    receipt.textContent = "Local digest cleared. The slot stays blank.";
+  });
+
+  paste.addEventListener("input", function () {
+    var text = paste.value.replace(/<[^>]*>/g, " ");
+    var urls = text.match(/https?:\/\/\S+/g) || [];
+    pasteOut.textContent = (urls.length ? "URL-shaped text not fetched (" + urls.length + "). " : "") + (text.slice(0, 240) || "Empty paste.");
+  });
+})();
+</script>
+</body>
+</html>

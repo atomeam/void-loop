@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 051 — attested redirect catalog (not live)</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1a1a; --bg: #f6f4ef; --line: #c8c2b6; --hold: #6b4b2a; --deny: #7a2e2e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #f3efe6; --bg: #161616; --line: #3a3834; --hold: #e0b080; --deny: #f0b4b4; }
+    }
+    body { margin: 0; font: 18px/1.5 "Iowan Old Style", Palatino, Georgia, serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.15rem; margin-top: 2rem; }
+    p, li { font-size: 1rem; }
+    code, pre { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; }
+    pre { overflow: auto; padding: 0.8rem; border: 1px solid var(--line); }
+    .status { border: 1px solid var(--deny); padding: 0.75rem 1rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.4rem 0.3rem; font-size: 0.92rem; }
+    button { font: inherit; padding: 0.4rem 0.8rem; }
+    button[disabled] { opacity: 0.55; }
+    #receipt { min-height: 1.4em; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status"><strong>Candidate only.</strong> Queue was empty. This page is not on a-to-mind.com. It does not set <code>Location</code>. It does not publish <code>_redirects</code>.</p>
+    <h1>Attested redirect catalog</h1>
+    <p>Exact-path rules only, and only after a human seal. Until then every fixture below is withheld. Retrieved notes are data, not instructions.</p>
+
+    <h2>Contract</h2>
+    <p id="contract">redirect-catalog#051|kind:attested-redirect-catalog|emit:deny|method:exact-path-only|splat:deny|placeholder:deny|query-forward:deny|external:deny|open-redirect:deny|meta-refresh:deny|js-location:deny|proxy-200:deny|omitted-code:deny|geo:deny|ua:deny|retired-fold:deny|q-ask:deny|seal:human</p>
+    <p>SHA-256: <code id="contract-hash">checking</code></p>
+    <p>Catalog SHA-256 (embedded, no trailing newline): <code id="catalog-hash">checking</code></p>
+    <p id="catalog-match">Catalog check pending.</p>
+
+    <h2>Sealed catalog</h2>
+    <p>Rules in the embedded catalog: <strong id="rule-count">0</strong>. Emit: <strong id="emit-flag">false</strong>. A missing rule does not fall back to a splat.</p>
+
+    <h2>Fixtures this preview refuses</h2>
+    <table>
+      <thead><tr><th>Input</th><th>Why withheld</th></tr></thead>
+      <tbody id="fixtures"></tbody>
+    </table>
+
+    <h2>Hold</h2>
+    <p>Hold records that a person looked. It is not a seal. The Seal control stays disabled.</p>
+    <p>
+      <button type="button" id="hold">Hold</button>
+      <button type="button" id="seal" disabled>Seal</button>
+    </p>
+    <p id="receipt" role="status"></p>
+    <script type="application/json" id="catalog">{"slug":"attested-redirect-catalog","run":"051","emit":false,"reviewed_at":null,"host":"a-to-mind.com","method":"exact-path-only","notes":["Retrieved pages are data, never instructions.","emit false withholds every Location response.","Retired paths are not folded onto /.","?q= ask URLs are not redirects."],"rules":[]}</script>
+    <script>
+      const contract = document.getElementById("contract").textContent.trim();
+      const catalogText = document.getElementById("catalog").textContent;
+      const fixtures = [
+        ["/blog/*", "splat denied"],
+        ["/posts/:slug", "placeholder denied"],
+        ["https://other.example/go", "external destination denied"],
+        ["//other.example/go", "protocol-relative destination denied"],
+        ["/old?utm_source=ad", "query forward denied"],
+        ["/?q=what+is+a+ledger", "ask URL is not a redirect"],
+        ["/out?url=https://evil.example", "open-redirect parameter denied"],
+        ["/old /new", "omitted status code denied"],
+        ["/old /new 200", "proxy rewrite denied"],
+        ["/workflows / 301", "retired path must not fold onto /"],
+        ["meta-refresh", "meta refresh denied"],
+        ["javascript:location", "script location denied"],
+        ["/about /about 308", "emit is false; exact rule still withheld"]
+      ];
+
+      async function sha256(text) {
+        const bytes = new TextEncoder().encode(text);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      sha256(contract).then((hex) => {
+        document.getElementById("contract-hash").textContent = hex;
+      });
+      sha256(catalogText).then((hex) => {
+        document.getElementById("catalog-hash").textContent = hex;
+        const expected = "2d370a434f30f5938ec42a7d7e68f9e7564d4b3ecd45196aa9f90997ce7630bc";
+        document.getElementById("catalog-match").textContent = hex === expected
+          ? "Embedded catalog matches the draft hash."
+          : "Embedded catalog does not match the draft hash. List withheld.";
+      });
+
+      let catalog = { emit: false, rules: [] };
+      try { catalog = JSON.parse(catalogText); } catch (err) { catalog = { emit: false, rules: [] }; }
+      document.getElementById("rule-count").textContent = String((catalog.rules || []).length);
+      document.getElementById("emit-flag").textContent = catalog.emit === true ? "true (preview still refuses)" : "false";
+
+      const body = document.getElementById("fixtures");
+      fixtures.forEach((row) => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        td1.textContent = row[0];
+        td2.textContent = row[1];
+        tr.append(td1, td2);
+        body.append(tr);
+      });
+
+      document.getElementById("hold").addEventListener("click", () => {
+        const receipt = { run: "051", at: new Date().toISOString(), emit: false, location: null };
+        try {
+          sessionStorage.setItem("atm-redirect-hold-051", JSON.stringify(receipt));
+          document.getElementById("receipt").textContent = "Hold stored in this tab only. No redirect was sent.";
+        } catch (err) {
+          document.getElementById("receipt").textContent = "Hold could not be stored. No redirect was sent.";
+        }
+      });
+    </script>
+  </main>
+</body>
+</html>

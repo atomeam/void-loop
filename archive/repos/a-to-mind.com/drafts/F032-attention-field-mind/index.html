@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-032 Attention Field Mind — The Void</title>
+<style>
+  :root {
+    --entropy: 0.4;
+    --hue: 220;
+    --blur: 0px;
+    --scale: 1;
+  }
+  body {
+    margin: 0;
+    background: #0a0a12;
+    color: #e0e0ff;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur));
+    transform: scale(var(--scale));
+    transition: filter 0.3s, transform 0.3s;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+  #hud {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    pointer-events: none;
+    transform: translateX(calc(var(--entropy) * 20px));
+  }
+  #seal {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(20,20,40,0.8);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  button {
+    background: #222;
+    color: #eee;
+    border: 1px solid #444;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin: 4px;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  Entropy: <span id="ent">0.00</span> · Heads: <span id="heads">2</span> · Clusters: <span id="clu">0</span><br>
+  <button id="audioBtn">Enable Audio</button>
+  <button id="orientBtn">Enable Orientation</button>
+</div>
+<div id="seal">Seal state</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const hud = {
+  ent: document.getElementById('ent'),
+  heads: document.getElementById('heads'),
+  clu: document.getElementById('clu')
+};
+let W, H, particles = [], edges = [], metrics = { entropy: 0.4, clusters: 0 };
+let worker, audioCtx, oscillators = [], orient = { x: 0, y: 0 };
+
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+function initParticles(n = 180) {
+  particles = [];
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      dens: 0
+    });
+  }
+}
+initParticles();
+
+// Simplified attention worker via blob
+const workerCode = `
+let particles = [];
+let N = 180;
+let W = 800, H = 600;
+let heads = 2;
+let temp = 1.0;
+
+self.onmessage = (e) => {
+  const { type, data } = e.data;
+  if (type === 'init') {
+    particles = data.particles;
+    W = data.W; H = data.H;
+    return;
+  }
+  if (type === 'step') {
+    // Compute simple density
+    for (let i = 0; i < particles.length; i++) {
+      let d = 0;
+      for (let j = 0; j < particles.length; j++) if (i !== j) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.hypot(dx, dy) + 1;
+        if (dist < 80) d += 1 / dist;
+      }
+      particles[i].dens = d;
+    }
+    // Simplified multi-head attention forces
+    const forces = particles.map(() => ({ fx: 0, fy: 0 }));
+    const edges = [];
+    let entropySum = 0;
+    for (let h = 0; h < heads; h++) {
+      for (let i = 0; i < particles.length; i++) {
+        let scores = [];
+        let sumExp = 0;
+        for (let j = 0; j < particles.length; j++) if (i !== j) {
+          const dx = particles[j].x - particles[i].x;
+          const dy = particles[j].y - particles[i].y;
+          // Embedding-like: pos + vel + dens + head bias
+          const score = (dx * particles[i].vx + dy * particles[i].vy + particles[j].dens * 10 + h * 0.5) / temp;
+          scores.push({ j, score, exp: 0 });
+        }
+        for (const s of scores) {
+          s.exp = Math.exp(Math.max(-20, Math.min(20, s.score)));
+          sumExp += s.exp;
+        }
+        for (const s of scores) {
+          const attn = s.exp / (sumExp + 1e-8);
+          entropySum -= attn * Math.log(attn + 1e-8);
+          const j = s.j;
+          const dx = particles[j].x - particles[i].x;
+          const dy = particles[j].y - particles[i].y;
+          const dist = Math.hypot(dx, dy) + 1;
+          const force = attn * 40 / dist;
+          forces[i].fx += dx * force / dist;
+          forces[i].fy += dy * force / dist;
+          if (attn > 0.08) edges.push({ a: i, b: j, w: attn });
+        }
+      }
+    }
+    // Integrate
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].vx = (particles[i].vx + forces[i].fx * 0.05) * 0.98;
+      particles[i].vy = (particles[i].vy + forces[i].fy * 0.05) * 0.98;
+      particles[i].x += particles[i].vx;
+      particles[i].y += particles[i].vy;
+      // Bounds
+      if (particles[i].x < 0 || particles[i].x > W) particles[i].vx *= -0.8;
+      if (particles[i].y < 0 || particles[i].y > H) particles[i].vy *= -0.8;
+      particles[i].x = Math.max(0, Math.min(W, particles[i].x));
+      particles[i].y = Math.max(0, Math.min(H, particles[i].y));
+    }
+    // Light temp adaptation toward mid entropy
+    const avgEnt = entropySum / (particles.length * heads);
+    temp += (0.6 - Math.min(1, avgEnt / 2)) * 0.01;
+    temp = Math.max(0.3, Math.min(3, temp));
+    // Rough clusters: count high-density
+    let clusters = 0;
+    for (const p of particles) if (p.dens > 2) clusters++;
+    self.postMessage({
+      particles: particles.map(p => ({ x: p.x, y: p.y, vx: p.vx, vy: p.vy })),
+      edges: edges.slice(0, 400),
+      metrics: { entropy: Math.min(1, avgEnt / 3), clusters: Math.floor(clusters / 8), temp }
+    });
+  }
+};
+`;
+
+function startWorker() {
+  const blob = new Blob([workerCode], { type: 'application/javascript' });
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.onmessage = (e) => {
+    particles = e.data.particles;
+    edges = e.data.edges;
+    metrics = e.data.metrics;
+    updateMorph();
+  };
+  worker.postMessage({ type: 'init', data: { particles, W, H } });
+  setInterval(() => {
+    if (worker) worker.postMessage({ type: 'step' });
+  }, 50);
+}
+startWorker();
+
+function updateMorph() {
+  const e = metrics.entropy || 0.4;
+  document.documentElement.style.setProperty('--entropy', e);
+  document.documentElement.style.setProperty('--hue', 180 + e * 140);
+  document.documentElement.style.setProperty('--blur', (e * 4) + 'px');
+  document.documentElement.style.setProperty('--scale', 1 + (e - 0.5) * 0.04);
+  hud.ent.textContent = e.toFixed(2);
+  hud.clu.textContent = metrics.clusters || 0;
+  if (audioCtx && oscillators.length) {
+    oscillators.forEach((o, i) => {
+      o.frequency.value = 80 + e * 200 + i * 40 + (metrics.temp || 1) * 20;
+      o.gain.value = 0.02 + e * 0.03;
+    });
+  }
+}
+
+function render() {
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0, 0, W, H);
+  // Edges
+  ctx.lineWidth = 1;
+  for (const ed of edges) {
+    const a = particles[ed.a], b = particles[ed.b];
+    if (!a || !b) continue;
+    ctx.strokeStyle = `rgba(180,200,255,${ed.w * 0.6})`;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+  // Particles
+  for (const p of particles) {
+    ctx.fillStyle = `hsl(${200 + metrics.entropy * 60}, 70%, 60%)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3 + (p.dens || 0) * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  requestAnimationFrame(render);
+}
+render();
+
+// Pointer injects query bias by adding temporary force via re-init or message (simplified: just move a particle)
+canvas.addEventListener('pointermove', (ev) => {
+  if (!particles.length) return;
+  particles[0].x = ev.clientX;
+  particles[0].y = ev.clientY;
+  particles[0].vx = 0;
+  particles[0].vy = 0;
+  if (worker) worker.postMessage({ type: 'init', data: { particles, W, H } });
+});
+
+document.getElementById('audioBtn').onclick = async () => {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  for (let i = 0; i < 4; i++) {
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    g.gain.value = 0.03;
+    osc.connect(g).connect(audioCtx.destination);
+    osc.start();
+    oscillators.push({ frequency: osc.frequency, gain: g.gain });
+  }
+};
+
+document.getElementById('orientBtn').onclick = () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+    DeviceOrientationEvent.requestPermission().then(p => {
+      if (p === 'granted') addEventListener('deviceorientation', (e) => {
+        orient.x = (e.gamma || 0) / 90;
+        orient.y = (e.beta || 0) / 90;
+      });
+    });
+  } else {
+    addEventListener('deviceorientation', (e) => {
+      orient.x = (e.gamma || 0) / 90;
+      orient.y = (e.beta || 0) / 90;
+    });
+  }
+};
+
+document.getElementById('seal').onclick = async () => {
+  const data = JSON.stringify({ metrics, temp: metrics.temp, t: Date.now() });
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+  const dbReq = indexedDB.open('void-attention', 1);
+  dbReq.onupgradeneeded = () => dbReq.result.createObjectStore('seals');
+  dbReq.onsuccess = () => {
+    const tx = dbReq.result.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({ hash, data, ts: Date.now() }, hash);
+    alert('Sealed: ' + hash);
+  };
+};
+</script>
+</body>
+</html>

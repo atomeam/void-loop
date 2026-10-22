@@ -1,0 +1,3 @@
+# Halt note — run 123 — local-bin-not-spike
+
+Queue was still empty on 2026-10-08. Run 123 did not invent a Used row and did not promote the run 027–122 candidates. Family: quiet-signal filter, after the six-run cooldown (last family use run 111, `local-squelch-not-lift`). Candidate draft only. One-line: a sealed bin class hashes to a spike-refusal id; the spike sentence is discarded and is not in the hash; a bin mark is not a spike and not a candidate; unattested default. No hold-gate issue. Live site copy was not changed. X scan is not a seal.

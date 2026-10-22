@@ -5,6 +5,7 @@
  * (public.api.bsky.app, app.bsky.feed.getAuthorFeed) for a handle. Mastodon: the server's own /embed for a post link;
  * /api/v1/accounts/lookup + statuses for @user@server. Contract: { name, examples, nearMisses, match, run }.
  */
+import { ensure as stickyNote } from './sticky.js';
 /** what to show: { net, kind: 'post'|'handle', ... } | { open: true } | null. Pure. */
 export function socialAsk(text) {
   const raw = String(text || '').trim().replace(/[?!.]+$/, ''), t = raw.toLowerCase();
@@ -23,11 +24,17 @@ export function socialAsk(text) {
 }
 const ago = (d) => { const s = (Date.now() - new Date(d)) / 1000; return s < 3600 ? Math.max(1, Math.round(s / 60)) + 'm' : s < 86400 ? Math.round(s / 3600) + 'h' : Math.round(s / 86400) + 'd'; };
 export const strip = (h) => String(h || '').replace(/<br\s*\/?>/g, '\n').replace(/<\/p>/g, '\n\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
-const post = (esc, who, when, body, link) => '<div class="sc-post" style="border-top:1px solid rgba(255,255,255,.1);padding:8px 0;white-space:pre-line"><b>' + esc(who) + '</b> <span class="g-sub">' + esc(when) + '</span><br>' + esc(String(body || '').slice(0, 600)) + (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">open ↗</a>' : '') + '</div>';
+const post = (esc, who, when, body, link) => '<div class="sc-post" data-text="' + esc(String(body || '').slice(0, 280)) + '" style="border-top:1px solid rgba(255,255,255,.1);padding:8px 0;white-space:pre-line"><b>' + esc(who) + '</b> <span class="g-sub">' + esc(when) + '</span><br>' + esc(String(body || '').slice(0, 600)) + (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">open ↗</a>' : '') + ' <button type="button" class="g-btn sc-keep" style="font-size:11px;padding:2px 8px">keep on stage</button></div>';
+/** the sticky-note text for a kept post: who, the words, the link. Pure. */
+export const keptText = (who, body, link) => (String(who || '') + ': ' + String(body || '').replace(/\s+/g, ' ').trim()).slice(0, 280) + (link ? '\n' + link : '');
 async function run(text, api) {
   const { showPage, esc } = api; const q = socialAsk(text);
   if (!q) return 'none';
   const el = showPage((p) => { p.className += ' social-card'; p.innerHTML = '<h2>Social</h2><div class="sc-body"><p class="g-sub">loading…</p></div>'; });
+  // asked by Verse (2026-10-22): a post becomes a stage thing, kept as a sticky note you can drag, link or turn into a task
+  el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.sc-keep'); if (!b || !api.stage) return; e.stopPropagation();
+    const row = b.closest('.sc-post'), a = row.querySelector('a[href]');
+    stickyNote(api.stage, keptText(row.querySelector('b').textContent, row.dataset.text || '', a && a.href), true); api.stage.save(); api.stage.render(); b.textContent = 'kept ✓'; b.disabled = true; });
   const body = el.querySelector('.sc-body'), src = (s) => el.insertAdjacentHTML('beforeend', '<div class="src">' + s + ' · public posts only · nothing stored</div>');
   try {
     if (q.open) { body.innerHTML = '<p>Paste a post link from X, Bluesky or Mastodon, or ask for a handle:</p><ul><li><a data-ask="bsky.app.bsky.social feed" href="#">bsky.app on Bluesky</a></li><li><a data-ask="@Mastodon@mastodon.social" href="#">@Mastodon@mastodon.social</a></li></ul><p class="g-sub" style="font-size:12px">The start of Verse social: read-only public feeds. Posting, DMs and your own timeline need sign-in to each network (docs/everything-app.md).</p>'; return 'social'; }

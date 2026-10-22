@@ -1,0 +1,25 @@
+{
+  "denied": ["camera", "microphone", "geolocation", "ntp", "performance_now_as_phenomenon", "abduction_seal", "time_dilation_seal", "network_write"],
+  "emit": false,
+  "enums": {
+    "kind": ["wall", "phone", "car", "wrist", "other", "declined"],
+    "label": ["unset", "clocks-agree", "clocks-disagree", "one-blank", "declined"]
+  },
+  "family": "interval timing",
+  "fixture": {
+    "clock_a": "21:45",
+    "clock_b": "21:47",
+    "gap_minutes": 2,
+    "id": "ordinary-quartz-drift",
+    "kind_a": "wall",
+    "kind_b": "phone",
+    "label": "ordinary-disagreement",
+    "note": "Consumer quartz clocks can disagree by minutes without an anomaly. This fixture is not a calibration and not a missing-time finding."
+  },
+  "gates": ["kind_a", "kind_b", "label", "hypothesis_checked", "sensor_denied_checked"],
+  "href_allowlist": [],
+  "run": "066",
+  "seal": null,
+  "slug": "local-two-clock-gap-card",
+  "status": "unattested"
+}

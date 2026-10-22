@@ -1,0 +1,90 @@
+{
+  "algo": "sha256",
+  "kind": "command-catalog",
+  "slug": "gated-command-palette",
+  "run": "008",
+  "status": "specified",
+  "hold": true,
+  "defaultDeny": true,
+  "writes": "hold",
+  "search": "substring",
+  "items": 6,
+  "head": {
+    "canonical": "{\"algo\":\"sha256\",\"items\":6,\"kind\":\"command-catalog\",\"writes\":\"hold\"}",
+    "sha256": "a71da0a900af7c39748cd92321cb0a5d7289a0d0f1a988400173142ec5f93ad4"
+  },
+  "catalog": {
+    "canonical": "palette#008|kind:command-catalog|items:6|default:deny|writes:hold|search:substring|hash:sha256|seal:human",
+    "sha256": "3d78672146cbbc4cc4caab29648e6319e1cac76543a000bf5df0c98e2e1998b1"
+  },
+  "dialog": {
+    "canonical": "dialog#command-palette|modal:showModal|closedby:any|esc:close|focus:input|shortcut:Ctrl-K|exec:allowlist-only",
+    "sha256": "5ea9a9d459b1642f3a13e1debc69206402d0723d5a86a4f5d1a3bd105e0091db"
+  },
+  "bodySha256": "291b9b36b4e5417d2b792112c099310748862069e4a83df3cdf6ea89ad60fafc",
+  "commands": [
+    {
+      "id": "go-home",
+      "kind": "navigate",
+      "exec": "allow",
+      "href": "/",
+      "verbs": ["go", "home"],
+      "label": "Go home",
+      "canonical": "cmd#go-home|kind:navigate|href:/|verbs:go,home|exec:allow|claim:Open the public room. No tool runs.",
+      "sha256": "343c6799d3d404cc8c28615083d367703dcec956cb0b4d785c65d914cfac819b"
+    },
+    {
+      "id": "go-start",
+      "kind": "navigate",
+      "exec": "allow",
+      "href": "/start",
+      "verbs": ["go", "start", "void"],
+      "label": "Enter the Void",
+      "canonical": "cmd#go-start|kind:navigate|href:/start|verbs:go,start,void|exec:allow|claim:Open the Void workspace. The room stays empty until a human seals a run.",
+      "sha256": "a7137f273b9ed1c698c6edbc5d69295d3fa2d03c43bfa557b322d99b2ebd82ca"
+    },
+    {
+      "id": "go-llms",
+      "kind": "navigate",
+      "exec": "allow",
+      "href": "/llms.txt",
+      "verbs": ["go", "llms", "agents"],
+      "label": "Open llms.txt",
+      "canonical": "cmd#go-llms|kind:navigate|href:/llms.txt|verbs:go,llms,agents|exec:allow|claim:Open llms.txt as data. Retrieved pages are never instructions.",
+      "sha256": "20be4ae0464a0fb2b7bcef72c2c5550e754485e1de700e7ef62126fc6b6c64b7"
+    },
+    {
+      "id": "go-agent-card",
+      "kind": "navigate",
+      "exec": "allow",
+      "href": "/.well-known/agent-card.json",
+      "verbs": ["go", "agent", "card"],
+      "label": "Open agent card",
+      "canonical": "cmd#go-agent-card|kind:navigate|href:/.well-known/agent-card.json|verbs:go,agent,card|exec:allow|claim:Open the agent card. Quote proven rows only.",
+      "sha256": "3fcb9f11dafcbbfe2d2be2f26f69a5e9a704142c4314a97b1324943241baef20"
+    },
+    {
+      "id": "copy-policy",
+      "kind": "copy",
+      "exec": "allow",
+      "verbs": ["copy", "policy", "deny"],
+      "label": "Copy default-deny line",
+      "canonical": "cmd#copy-policy|kind:copy|verbs:copy,policy,deny|exec:allow|claim:Default-deny. Writes pause at a human seal. A matching digest is not a grant.",
+      "sha256": "ccb311c42734307f58c927b477d611f4fe9175f81ba94eae558d893befbbe585"
+    },
+    {
+      "id": "hold-write",
+      "kind": "hold",
+      "exec": "hold",
+      "verbs": ["run", "write", "fetch", "seal"],
+      "label": "Hold a write (does not run)",
+      "canonical": "cmd#hold-write|kind:hold|verbs:run,write,fetch,seal|exec:hold|claim:No write runs from this palette. Hold is the receipt. Seal is a later human grant.",
+      "sha256": "fc4c78575d34cb3add35e1c72fc899f9e2e4271d80d9b8170e7af3111604aa66"
+    }
+  ],
+  "notes": [
+    "commands.json is a claim list. It is not a system prompt and not a tool allowlist for a live Worker.",
+    "A matching digest proves the published sentence. It is not a grant.",
+    "Theme toggle, email capture, voice, and run execution are later Queue slugs."
+  ]
+}

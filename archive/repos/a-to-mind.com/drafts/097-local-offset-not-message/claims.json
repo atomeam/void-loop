@@ -1,0 +1,19 @@
+{
+  "slug": "local-offset-not-message",
+  "run": 97,
+  "family": "correlation-not-causation-sync-view",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "offset": "unset",
+  "message": "discarded",
+  "disconfirm": "offset-is-not-a-message",
+  "cause": "not-claimed",
+  "principle": "not-sealed",
+  "weight": 0.24,
+  "weight_note": "design-material constant, not a measurement",
+  "href_allowlist": [],
+  "page_fixture_sha256": "fa9ff59d740bcf613d7614b1e78ea164251d14d72a6f5c9afc60c656d1b7ccf7",
+  "object_receipt_sha256": "ffa3205040f368ae6a130a18f286c2e6986b582aa04048d6de5c1de19076f3d9",
+  "not_a_seal": true
+}

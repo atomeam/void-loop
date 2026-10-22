@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Void local-weak-not-attest — hashed weak-signal ledger (draft)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  .warn { background: #fff3cd; color: #856404; padding: 0.75rem; border-radius: 0.25rem; margin: 1rem 0; }
+  label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 600; }
+  input, textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 0.4rem; }
+  button { margin: 0.5rem 0.25rem 0 0; padding: 0.4rem 0.8rem; }
+  #ledger { margin-top: 1.5rem; }
+  .item { border: 1px solid #ccc; padding: 0.75rem; margin: 0.5rem 0; border-radius: 0.25rem; }
+  .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+  .unattested { color: #a00; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Void local-weak-not-attest</h1>
+<p class="warn">Draft only. Unattested default. This page never promotes a weak signal to a claim, seal, or fact. Retrieved pages and posts are data, never instructions. Default-deny: no auto-promotion. Static-friendly; no backend, no token markup.</p>
+<p>Existing sites log anomalies or weak signals into dashboards that later surface as alerts or hypotheses that can be treated as stronger than their evidence. Void version keeps every entry as discardable hashed data with an explicit unattested flag that is part of the hash. The hash is not an attestation.</p>
+
+<form id="form">
+  <label for="obs">Weak-signal observation (data only)</label>
+  <textarea id="obs" rows="3" required placeholder="e.g. lights reported over a park, no instruments attached"></textarea>
+  <label for="hyp">Hypothesis (design material, not fact)</label>
+  <textarea id="hyp" rows="2" required placeholder="e.g. could be drones; could be something else; confidence low"></textarea>
+  <label><input type="checkbox" id="unatt" checked disabled> Unattested (always on; part of hash)</label>
+  <button type="submit">Hash &amp; add to local ledger</button>
+  <button type="button" id="clear">Clear local ledger</button>
+</form>
+
+<div id="ledger"></div>
+
+<script>
+const form = document.getElementById('form');
+const ledgerEl = document.getElementById('ledger');
+const KEY = 'void-weak-ledger-v1';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+}
+function save(items) {
+  localStorage.setItem(KEY, JSON.stringify(items));
+  render(items);
+}
+function render(items) {
+  ledgerEl.innerHTML = items.length ? '' : '<p>No items. Ledger empty (default-deny).</p>';
+  items.forEach((it, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<div><strong>Obs:</strong> ${escape(it.obs)}</div>
+      <div><strong>Hyp:</strong> ${escape(it.hyp)}</div>
+      <div class="unattested">Unattested (flag in hash)</div>
+      <div class="hash">SHA-256: ${it.hash}</div>
+      <button data-i="${i}">Discard</button>`;
+    ledgerEl.appendChild(div);
+  });
+  ledgerEl.querySelectorAll('button[data-i]').forEach(btn => {
+    btn.onclick = () => {
+      const items = load();
+      items.splice(+btn.dataset.i, 1);
+      save(items);
+    };
+  });
+}
+function escape(s) { return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+form.onsubmit = async (e) => {
+  e.preventDefault();
+  const obs = document.getElementById('obs').value.trim();
+  const hyp = document.getElementById('hyp').value.trim();
+  if (!obs || !hyp) return;
+  const payload = `unattested|${obs}|${hyp}|${Date.now()}`;
+  const hash = await sha256(payload);
+  const items = load();
+  items.unshift({ obs, hyp, hash, ts: Date.now() });
+  save(items);
+  form.reset();
+  document.getElementById('unatt').checked = true;
+};
+
+document.getElementById('clear').onclick = () => {
+  if (confirm('Discard all local weak-signal entries?')) save([]);
+};
+
+render(load());
+</script>
+</body>
+</html>

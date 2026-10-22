@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 016 — share run link · A-to-Mind</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Attested Web Share + copy of one run URL. Social rows and location.href are denied.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --fg: #ece8df;
+      --muted: #8a8478;
+      --rule: #2a2a28;
+      --amber: #d4a017;
+      --ok: #7d9a6a;
+      --bad: #c45c4a;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    header, main, footer {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+    }
+    header, footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-color: var(--rule);
+    }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem;
+      text-decoration: none;
+    }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    button {
+      font: inherit;
+      color: var(--fg);
+      background: transparent;
+      border: 1px solid var(--rule);
+      padding: 0.45rem 0.8rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+    }
+    h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    .lede { margin-top: 0.75rem; color: var(--muted); max-width: 36rem; }
+    .hold {
+      margin-top: 1rem;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .card {
+      margin-top: 1.5rem;
+      border: 1px solid var(--rule);
+      padding: 1rem;
+    }
+    .card h2 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+    .url { margin-top: 0.5rem; font-size: 0.85rem; word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+    .actions .primary { border-color: var(--amber); color: var(--amber); }
+    .deny-row { margin-top: 0.85rem; }
+    .deny-row button { font-size: 0.8rem; color: var(--muted); }
+    .receipt { margin-top: 0.85rem; min-height: 1.4em; font-size: 0.85rem; }
+    .receipt.ok { color: var(--ok); }
+    .receipt.bad { color: var(--bad); }
+    .receipt.warn { color: var(--amber); }
+    .meta { margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+    .meta code { color: var(--fg); font-size: 0.75rem; word-break: break-all; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.78rem; }
+    th, td { text-align: left; padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    .stamp { margin-top: 1rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/start">Start</a>
+      <a href="/llms.txt">llms.txt</a>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1">
+    <p class="hold">Hold-gate · run 016 · not live copy</p>
+    <h1>Hand the attested run URL. Do not guess the reader’s apps.</h1>
+    <p class="lede">Share is offered only when <code>canShare</code> accepts this exact payload. Copy writes the same href and must not claim a share. Facebook / X / WhatsApp rows, UTM, <code>location.href</code>, and files are denied.</p>
+    <article class="card" id="run-card"
+      data-canonical="run#demo-016|id:demo-016|href:https://a-to-mind.com/r/demo-016|title:A-to-Mind run demo-016|text:Open the attested run record. Tools stay default-deny."
+      data-href="https://a-to-mind.com/r/demo-016"
+      data-title="A-to-Mind run demo-016"
+      data-text="Open the attested run record. Tools stay default-deny.">
+      <h2>Run demo-016</h2>
+      <p class="muted">Open the attested run record. Tools stay default-deny.</p>
+      <p class="url"><code>https://a-to-mind.com/r/demo-016</code></p>
+      <div class="actions">
+        <button type="button" class="primary" id="share-run" disabled>Share run link</button>
+        <button type="button" id="copy-run">Copy run link</button>
+      </div>
+      <div class="deny-row">
+        <button type="button" id="share-page">Share current page</button>
+        <button type="button" id="copy-unsigned">Copy unsigned URL</button>
+      </div>
+      <p class="receipt" id="receipt" role="status" aria-live="polite">No receipt yet.</p>
+    </article>
+    <p class="meta" id="support">Checking Web Share support…</p>
+    <section class="meta" aria-labelledby="claims-h">
+      <h2 id="claims-h" style="font-size:0.95rem;font-weight:500;color:var(--fg);">Attested claims</h2>
+      <table>
+        <thead>
+          <tr><th>id</th><th>status</th><th>sha-256</th></tr>
+        </thead>
+        <tbody id="claim-rows"></tbody>
+      </table>
+      <p class="stamp">Draft 016 · 2026-09-30 · source: atomeam/a-to-mind.com</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">A to Z</span>
+  </footer>
+  <script>
+    const CLAIMS = [
+      ["share", "share#016|kind:run-link|api:web-share|copy:writeText|files:deny|utm:deny|social-row:deny|hash:sha256|seal:human", "39203d0af8e9f39dec039812da2f3a3912f2e075b375b4d07bc76bdd59da85d8"],
+      ["payload", "claim#payload|text:Only allowlisted title, text, and https URL may be shared. location.href is never the source.", "e78aff27183fcdf434c5fdb7209f953426c391293c9b1045628cb2d8ce20cc5c"],
+      ["detect", "claim#detect|text:Share is offered only when navigator.canShare accepts the exact payload. Guessing is denied.", "7311ae436ecc60adf81ea53c670be9dd7ad670a5cfdf934cfd1e2cc24cadc5c5"],
+      ["abort", "claim#abort|text:AbortError is cancelled, not shared. No success receipt on dismiss.", "f607cf41d443d1ea84910d8d823689e1447262ebe105ddbfafa450a93cc520d1"],
+      ["copy", "claim#copy|text:Copy writes the attested URL only. Clipboard read is denied. Copy is not a share.", "dd2d1348df8e4b8786f94b790b512cc2ab361ace8186e2bc3b7542762c187470"],
+      ["files", "claim#files|text:Files, blobs, and generated images are denied on this control.", "104dde80df122ab01164bb756de0e7c5959abb6a8d5384769b5ceaf1ef7f0af7"],
+      ["targets", "claim#targets|text:No Facebook, X, WhatsApp, or mailto row. The OS sheet chooses the target.", "e47ec687fe05e308f1a5a887ceefc3873a93428564411854db507fc935c522ec"],
+      ["page", "page#share|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny", "6be94ce58e42d5ad955a838a36b521862cab78ec70596f6895d6cb15a8387052"]
+    ];
+    const RUN = {
+      line: "run#demo-016|id:demo-016|href:https://a-to-mind.com/r/demo-016|title:A-to-Mind run demo-016|text:Open the attested run record. Tools stay default-deny.",
+      sha: "09717939b509f57c67c8464596e0dcc91392fe30797fbbf1cac9ef98ac9026dc",
+      hrefLine: "href#demo-016|https://a-to-mind.com/r/demo-016",
+      hrefSha: "e865307a25207c01f338a0b3c5381106fb2f600b5f07197e30695b9153d53503",
+      href: "https://a-to-mind.com/r/demo-016",
+      title: "A-to-Mind run demo-016",
+      text: "Open the attested run record. Tools stay default-deny."
+    };
+    const BODY = "a93066fdadae96f889260e1bd9171f0241b525f19c38569ed1c6e04cec3608af";
+    const HEAD = "d473838c91728bbddb77e36c6a866eb6fd61f6bddf8ccb1cbf20824c18537f80";
+    const ALLOWED = new Set(["shared", "copied", "cancelled", "mismatch", "denied", "unavailable", "failed"]);
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha = async (s) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+    const card = document.getElementById("run-card");
+    const shareBtn = document.getElementById("share-run");
+    const copyBtn = document.getElementById("copy-run");
+    const receiptEl = document.getElementById("receipt");
+    const support = document.getElementById("support");
+    const rows = document.getElementById("claim-rows");
+    let attested = false;
+    let canNativeShare = false;
+    function emit(status, detail, kind) {
+      if (!ALLOWED.has(status)) status = "failed";
+      receiptEl.className = "receipt " + (kind || (status === "shared" || status === "copied" ? "ok" : status === "cancelled" ? "warn" : "bad"));
+      receiptEl.textContent = status + (detail ? " \u00b7 " + detail : "");
+    }
+    function payloadFromCard() {
+      return {
+        title: card.getAttribute("data-title") || "",
+        text: card.getAttribute("data-text") || "",
+        url: card.getAttribute("data-href") || ""
+      };
+    }
+    async function runMatches() {
+      const canonical = card.getAttribute("data-canonical") || "";
+      const data = payloadFromCard();
+      const got = await sha(canonical);
+      const hrefGot = await sha("href#demo-016|" + data.url);
+      return canonical === RUN.line
+        && got === RUN.sha
+        && data.url === RUN.href
+        && data.title === RUN.title
+        && data.text === RUN.text
+        && hrefGot === RUN.hrefSha;
+    }
+    document.getElementById("share-page").addEventListener("click", () => {
+      emit("denied", "location.href is not an attested payload", "bad");
+    });
+    document.getElementById("copy-unsigned").addEventListener("click", () => {
+      emit("denied", "unsigned URL is not on the allowlist", "bad");
+    });
+    shareBtn.addEventListener("click", async () => {
+      if (!attested) { emit("mismatch", "run line no longer hashes"); return; }
+      if (!canNativeShare) { emit("unavailable", "canShare rejected this payload"); return; }
+      const data = { title: RUN.title, text: RUN.text, url: RUN.href };
+      try {
+        await navigator.share(data);
+        const again = await sha(RUN.line);
+        if (again !== RUN.sha) { emit("mismatch", "payload changed after the sheet opened"); return; }
+        emit("shared", RUN.hrefSha.slice(0, 8) + "\u2026 " + RUN.href, "ok");
+      } catch (err) {
+        if (err && err.name === "AbortError") { emit("cancelled", "sheet dismissed", "warn"); return; }
+        emit("failed", err && err.name ? err.name : "share rejected", "bad");
+      }
+    });
+    copyBtn.addEventListener("click", async () => {
+      if (!attested) { emit("mismatch", "run line no longer hashes"); return; }
+      if (!navigator.clipboard || !navigator.clipboard.writeText) { emit("unavailable", "select the URL and copy"); return; }
+      try {
+        await navigator.clipboard.writeText(RUN.href);
+        const got = await sha(RUN.hrefLine);
+        if (got !== RUN.hrefSha) { emit("mismatch", "href line diverged after write"); return; }
+        emit("copied", RUN.hrefSha.slice(0, 8) + "\u2026 " + RUN.href, "ok");
+      } catch (err) {
+        emit("unavailable", "writeText denied; select the URL");
+      }
+    });
+    (async () => {
+      for (const [id, line, expect] of CLAIMS) {
+        const got = await sha(line);
+        const ok = got === expect;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${id}</td><td class="${ok ? "ok" : "bad"}">${ok ? "match" : "mismatch"}</td><td><code>${got}</code></td>`;
+        rows.appendChild(tr);
+      }
+      const bodyGot = await sha(CLAIMS.map((c) => c[1]).join("\n") + "\n");
+      const bodyOk = bodyGot === BODY;
+      const bodyRow = document.createElement("tr");
+      bodyRow.innerHTML = `<td>body</td><td class="${bodyOk ? "ok" : "bad"}">${bodyOk ? "match" : "mismatch"}</td><td><code>${bodyGot}</code></td>`;
+      rows.appendChild(bodyRow);
+      const headJson = '{"algo":"sha256","kind":"run-link","files":false,"utm":false,"social_row":false}';
+      const headGot = await sha(headJson);
+      const headOk = headGot === HEAD;
+      const headRow = document.createElement("tr");
+      headRow.innerHTML = `<td>head</td><td class="${headOk ? "ok" : "bad"}">${headOk ? "match" : "mismatch"}</td><td><code>${headGot}</code></td>`;
+      rows.appendChild(headRow);
+      attested = await runMatches();
+      const runRow = document.createElement("tr");
+      runRow.innerHTML = `<td>run</td><td class="${attested ? "ok" : "bad"}">${attested ? "match" : "mismatch"}</td><td><code>${await sha(card.getAttribute("data-canonical") || "")}</code></td>`;
+      rows.appendChild(runRow);
+      const data = { title: RUN.title, text: RUN.text, url: RUN.href };
+      const hasShare = typeof navigator.share === "function";
+      const hasCan = typeof navigator.canShare === "function";
+      canNativeShare = attested && hasShare && hasCan && navigator.canShare(data);
+      shareBtn.disabled = !canNativeShare;
+      if (!attested) {
+        shareBtn.disabled = true;
+        copyBtn.disabled = true;
+        support.textContent = "Run payload mismatch. Share and Copy are dead until the catalog hashes.";
+        emit("mismatch", "card attributes diverged from the published run line", "bad");
+      } else if (canNativeShare) {
+        support.textContent = "navigator.canShare accepted the attested title, text, and URL. No files. No social row.";
+      } else if (hasShare && hasCan) {
+        support.textContent = "Web Share exists, but canShare rejected this payload. Copy is the honest path.";
+      } else if (hasShare) {
+        support.textContent = "navigator.share exists without canShare. Share stays disabled. Copy is the honest path.";
+      } else {
+        support.textContent = "Web Share API is absent. Copy writes the attested URL. That is not a share.";
+      }
+    })();
+  </script>
+</body>
+</html>
