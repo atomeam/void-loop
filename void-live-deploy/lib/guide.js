@@ -193,7 +193,10 @@ export function compose({ names = [], read = () => '', families = { families: []
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
   page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
-  page({ kind: 'how', chapter: 'front', title: 'How to ask', core: core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })) });
+  // the first asks over two pages (owner, 2026-10-21: the book cut the bottom of this page): the welcome and the first half, then the rest and the store
+  const coreAll = core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })), half = Math.ceil(coreAll.length / 2);
+  if (coreAll.length > 3) { page({ kind: 'how', chapter: 'front', title: 'How to ask', part: 1, core: coreAll.slice(0, half) }); page({ kind: 'how', chapter: 'front', title: 'More to ask', part: 2, core: coreAll.slice(half) }); }
+  else page({ kind: 'how', chapter: 'front', title: 'How to ask', core: coreAll });
   page({ kind: 'legend', chapter: 'front', title: 'How to read a page' });
   page({ kind: 'toc', chapter: 'front', title: 'Contents' });
   front.to = pages.length;

@@ -134,11 +134,24 @@ function mount(book, api, startAt, text) {
   const tome = root.querySelector('.tome'), left = root.querySelector('.tome-page.left'), right = root.querySelector('.tome-page.right'), live = root.querySelector('[aria-live]');
   const stackL = root.querySelector('.tome-stack.left'), stackR = root.querySelector('.tome-stack.right');
 
+  // scale a sheet's words down until the last line ends above its footer (a browser zoom or a short window shrinks the book; the
+  // words scale with it, so the fit only depends on the page). Nothing is cut and nothing scrolls; the words are never shortened.
+  const fitSheet = (sec, again) => {
+    const f = sec && sec.querySelector(':scope > .tome-fit'); if (!f) return;
+    f.style.zoom = ''; const floor = () => sec.getBoundingClientRect().bottom - parseFloat(getComputedStyle(sec).paddingBottom);
+    const over = () => f.getBoundingClientRect().bottom > floor() + 0.5;
+    if (!over()) return;
+    let lo = 0.3, hi = 1; for (let i = 0; i < 9; i++) { const z = (lo + hi) / 2; f.style.zoom = z; if (over()) hi = z; else lo = z; }
+    f.style.zoom = Math.max(0.3, lo - 0.01); // a hair of room, so a late reflow never pushes the last line over
+    if (!again) setTimeout(() => { if (sec.isConnected && over()) fitSheet(sec, true); }, 300); // art and faces that land late: measured again
+  };
   const shown = () => (onePage() ? [cur] : pagesOfSpread(spreadOf(cur), total));
   const lay = (ns) => { // the two sheets (one on a phone) and the stacks beside them
     const [l, r] = onePage() ? [0, ns[0]] : ns;
+    left.classList.toggle('has-tier', !!(l && book.pages[l - 1].tier)); right.classList.toggle('has-tier', !!(r && book.pages[r - 1].tier));
     left.innerHTML = l ? sheetHtml(book.pages[l - 1], book, 'left', esc) : ''; left.dataset.page = l || ''; left.style.visibility = l || !onePage() ? '' : 'hidden'; // no page on the left (the title spread): the blank endpaper shows
     right.innerHTML = r ? sheetHtml(book.pages[r - 1], book, 'right', esc) : ''; right.dataset.page = r || ''; right.style.visibility = r ? '' : 'hidden';
+    fitSheet(left); fitSheet(right);
     const s = stacks(cur, total); stackL.style.setProperty('--k', s.left.toFixed(3)); stackR.style.setProperty('--k', s.right.toFixed(3));
     live.textContent = (l && r ? 'pages ' + l + ' and ' + r : 'page ' + (r || l)) + ' of ' + total;
   };
@@ -157,7 +170,10 @@ function mount(book, api, startAt, text) {
     leaf.innerHTML = '<div class="tome-face ' + (fwd ? 'right' : 'left') + '">' + sheetHtml(book.pages[face - 1], book, fwd ? 'right' : 'left', esc) + '</div><div class="tome-face under ' + (fwd ? 'left' : 'right') + '">' + sheetHtml(book.pages[under - 1], book, fwd ? 'left' : 'right', esc) + '</div>';
     if (fwd) { right.innerHTML = now[1] ? sheetHtml(book.pages[now[1] - 1], book, 'right', esc) : ''; right.dataset.page = now[1] || ''; right.style.visibility = now[1] ? '' : 'hidden'; }
     else { left.innerHTML = now[0] ? sheetHtml(book.pages[now[0] - 1], book, 'left', esc) : ''; left.dataset.page = now[0] || ''; left.style.visibility = now[0] ? '' : 'hidden'; }
+    for (const f of leaf.querySelectorAll('.tome-face')) { const pg = book.pages[(f.classList.contains('under') ? under : face) - 1]; f.classList.toggle('has-tier', !!(pg && pg.tier)); }
+    if (fwd) right.classList.toggle('has-tier', !!(now[1] && book.pages[now[1] - 1].tier)); else left.classList.toggle('has-tier', !!(now[0] && book.pages[now[0] - 1].tier));
     tome.appendChild(leaf);
+    leaf.querySelectorAll('.tome-face').forEach(fitSheet); fitSheet(fwd ? right : left);
     leaf.getBoundingClientRect(); // laid out flat before it moves
     leaf.classList.add('going'); leaf.style.transform = 'rotateY(' + (fwd ? -180 : 180) + 'deg)';
     rustle();
@@ -226,10 +242,17 @@ function mount(book, api, startAt, text) {
   tome.addEventListener('touchend', (e) => end(e.changedTouches[0].clientX), { passive: true });
   tome.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch') start(e.clientX); });
   tome.addEventListener('pointerup', (e) => { if (e.pointerType !== 'touch') end(e.clientX); });
-  const onResize = () => { if (current()) draw(); };
+  // a resize, a browser zoom (devicePixelRatio), a phone's address bar (visualViewport) or the tome's own box changing all refit the open pages
+  let refit = 0; const onResize = () => { cancelAnimationFrame(refit); refit = requestAnimationFrame(() => { if (current()) draw(); }); };
   window.addEventListener('resize', onResize);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+  let dpr = null; const watchDpr = () => { if (!window.matchMedia) return; dpr = matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)'); dpr.addEventListener('change', onDpr, { once: true }); };
+  const onDpr = () => { onResize(); watchDpr(); }; watchDpr();
+  let ro = null; if (window.ResizeObserver) { let last = ''; ro = new ResizeObserver((es) => { const r = es[0].contentRect, k = Math.round(r.width) + 'x' + Math.round(r.height); if (k !== last) { last = k; onResize(); } }); ro.observe(tome); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(onResize, () => {});
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', onResize); // a face first used on this page (italic, bold) lands after the fit
   document.documentElement.classList.add('vtome-open');
-  root._cleanup = () => { document.documentElement.classList.remove('vtome-open'); document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', onResize); };
+  root._cleanup = () => { document.documentElement.classList.remove('vtome-open'); document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', onResize); if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize); if (dpr) dpr.removeEventListener('change', onDpr); if (ro) ro.disconnect(); if (document.fonts && document.fonts.removeEventListener) document.fonts.removeEventListener('loadingdone', onResize); };
 
   window.__voidBook = { open: true, totals: book.totals, index: book.index, chapters: book.chapters, go, turn, close: () => closeTome('api'), get cur() { return cur; }, set cur(v) {}, get turning() { return turning; }, ask: text, news: book.news ? { from: book.news.from, to: book.news.to, count: book.news.count, unseen: book.news.unseen } : null }; // tools/test_void.mjs reads it
   // ---- the opening: the shut tome comes up, the cover swings open on the spine, the pages are there

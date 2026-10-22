@@ -44,3 +44,12 @@ assert.deepEqual(toFile([{ name: 'calendar' }, { name: 'map' }], { calendar: 'ht
 const sm = studiesAsMemories([{ name: 'Study: how does it do calendar', summary: 'studied x: 3 scripts', updated: '2026-10-21T00:00:00Z' }]);
 assert.equal(importance(sm[0]), 1); assert.ok(retrieve(sm, 'calendar invites', { now })[0]);
 console.log('loop-study: ok');
+import { refine } from './loop-refine.mjs';
+import { retryable } from './grow-lessons.mjs';
+assert.equal(refine('weather shows the forecast...').text, 'weather shows the forecast.');
+const rr = refine('Verse hardened itself: 2 benchmark ask(s)', { asks: [{ ask: 'rain today', want: 'skill:weather' }, 'moon now'] });
+assert.equal(rr.text, "Verse hardened itself: 'rain today' opens weather, 'moon now'"); assert.deepEqual(rr.left, []);
+assert.deepEqual(refine('I feel alive').left, ['roleplay']);
+const vm = { skills: { w: { wins: 3, misses: 1 }, z: { wins: 0, misses: 4 } }, variants: [{ ask: 'a', skill: 'w', at: '2' }, { ask: 'b', skill: 'z', at: '3' }] };
+assert.deepEqual(retryable(vm).map((v) => v.ask), ['a']);
+console.log('loop-refine: ok');
