@@ -49,6 +49,7 @@ for (const [name, file] of [
   ['stage-out-family', 'stage-out-family.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
+  ['social', 'social.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
   ['error-garden-incidents', 'error-garden-incidents.test.mjs'],
   ['everything', 'everything.test.mjs'],
