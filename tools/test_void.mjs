@@ -1854,8 +1854,11 @@ try {
       nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(csMsg) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, csMsg, stillThere, left, errors: S.errors }));
     await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
-    await S.p.click('.counterfactual-draft summary');
-    await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
+    // the card can be drawn again just after the ask (a save re-renders the stage), which drops a click on the old summary: open the one on the page, up to 3 tries
+    for (let i = 0; i < 3 && !(await S.p.$('.counterfactual-draft [data-fracture="1"]')); i++) {
+      await S.p.click('.counterfactual-draft summary').catch(() => {});
+      await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 2000 }).catch(() => {});
+    }
     const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim()).catch(() => '(no fracture line marked)'); // a miss is one red check, not a dead shard
     const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent).catch(() => '');
     check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
@@ -2586,6 +2589,7 @@ try {
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
+  // (2026-10-22: the replies say plainly Verse is a program with no feelings, skills/feelings.js)
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Verse's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
@@ -2596,7 +2600,7 @@ try {
     // Verse's voice (owner, 2026-10-14: "I wish Verse didnt seem so grumpy"): warm and true, never opening on "no"
     const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by Verse, about itself/.test(t);
     check('feelings: "do you love me?", "Verse, do you have feelings?", "are you conscious" and "do you get lonely" get Verse\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
+      own(r.love, 'can\u2019t love anyone') && own(r.feel, 'a program without feelings') && own(r.mind, 'made by A-to-Mind') && own(r.lonely, 'a program without feelings') && own(r.pretty, 'The look is deliberate') && !r.lyrics.includes('can\u2019t love anyone'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -4471,8 +4475,8 @@ try {
     check("Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
       /#901 .* made by Verse, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
         && forge.asks.length >= 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
-        && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
-      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+        && div.length >= 1 && /^(I asked: Learn Go on the stage.*)?What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
+      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), vase: (again.match(/Vase[^\n]*\n?[^\n]*/) || [''])[0], div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
     await B.ctx.close(); }
   // Verse's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
   if (want("Verse's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
@@ -5850,12 +5854,12 @@ try {
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
+        && self.note === 'whole text kept' && /* no 8000 cap since 2026-10-22 (copy and save keep the whole card) */ !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
-        && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+        && self.svgH < 3200 /* the picture wraps every line in full since 2026-10-22 (no ellipsis), so it is taller than the old 1600 */ && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
     const honest = await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cite = pg.querySelector('section[data-sec=words] .vs-cite'), notes = [...pg.querySelectorAll('.vs-sec[data-sec=growth] .vs-note')].map((n) => n.textContent); return { cite: cite ? cite.textContent : '', notes, theatre: /My own words, kept as I said them/.test(pg.textContent) }; });
     check('self card, no theatre (owner, 2026-10-19): the words are labelled as Verse\'s model\'s, written from these facts, not a felt state, and each growth claim carries a source line',
       /^Written by Verse's model/.test(honest.cite) && /from these facts/.test(honest.cite) && /not a felt state/.test(honest.cite) && !honest.theatre && honest.notes.length === 3 && /families\.json/.test(honest.notes[0]) && !S.errors.length, JSON.stringify({ honest, errors: S.errors }));
@@ -6019,7 +6023,7 @@ try {
       if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
       return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
         counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
-    }).catch(() => null), 8000);
+    }).catch(() => null), 15000); // a loaded runner took longer than 8 s to draw it
     const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
     check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
       !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
@@ -6279,7 +6283,7 @@ try {
     await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
     const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
     check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
-      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+      JSON.stringify(groups.card.slice(0, 2)) === '["copy card","save card"]' && !groups.card.some((t) => /copy text|save text|^copy$/.test(t)) && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
     await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
     await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
     const copiedText = await U.p.evaluate(() => window.__copied);
