@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 28,
+  "tested": 29,
   "checked": 12,
   "proven": 271
  },
@@ -1889,7 +1889,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 6,
     "proven": 87
    },
@@ -1902,6 +1902,13 @@
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-18",
      "streak": 3
+    },
+    {
+     "name": "file-sorter",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "sticky",
