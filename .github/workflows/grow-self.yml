@@ -215,8 +215,8 @@ jobs:
             if [ -n "$reasons" ]; then detail="$detail Why these: $reasons."; fi
           fi
           if [ -s "$g/passing.json" ]; then
-            asks=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).slice(0,6).map(c => c.ask).join('; ')" "$g/passing.json" 2>/dev/null || true)
-            if [ -n "$asks" ]; then detail="$detail Added: $asks."; fi
+            asks=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).map(c => '\u201c' + c.ask + '\u201d now opens ' + c.want.replace('skill:', '')).join('; ')" "$g/passing.json" 2>/dev/null || true)
+            if [ -n "$asks" ]; then detail="$detail New phrases: $asks."; fi
           fi
           if [ -s "$g/failed.json" ]; then
             fails=$(node -p "const f = JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); f.slice(0,4).map(x => x.ask).join('; ')" "$g/failed.json" 2>/dev/null || true)
@@ -328,7 +328,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           branch="verse/harden-$(date -u +%Y%m%d-%H%M%S)-${GITHUB_RUN_ID}"
           git checkout -b "$branch"
-          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json tools/grow-lessons.json
+          for f in tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json tools/grow-lessons.json; do [ -e "$f" ] && git add -- "$f"; done; true
           git commit -q -m "Verse hardens itself: $WHAT" -m "Verse found its least proven skills in its own files (tools/lacks.mjs, tools/card-cycle.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them (.github/workflows/grow-self.yml)."
           git push -q origin "$branch"
           gh pr create --repo "${{ github.repository }}" --base main --head "$branch" --title "Verse hardens itself: $WHAT" --body "Verse found its least proven skills in its own files, tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them." --label "made by Verse" --label "verse hardens" --label "automerge"
