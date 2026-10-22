@@ -100,3 +100,14 @@ games, finance, sports, recipes, calculator, timer and clock, learning, podcasts
 cover each. Status from facts only: missing (no skill), partial (one skill, or none tested), replaced (two or more skills, one tested).
 Each category is a lap item (`site:<category>`) weighted right after the most-used surfaces, so every lap shrinks missing and upgrades
 partial. 2026-10-22: 7 replaced, 12 partial, 5 missing (email, chat, podcasts, travel, jobs). Public at `GET /api/will?lap=1` (`onlySite`).
+
+**The tower** (owner, 2026-10-22): the only-site-you-need list as a fighting-game ladder ("the tower", "verse tower", "which sites have you
+beaten"; `skills/tower.js`, `lib/tower.js`). Each of 24 floors is one real site, named in plain text only as a comparison (no logos, brand
+art or styling, no affiliation implied; Verse's skills keep their own names). Hard gate: a floor is beaten only when every aspect on its
+checklist (9 common: speed, accuracy, completeness, mobile, accessibility, offline, sharing, design polish, reliability, plus the site's own)
+is verified better in an automated head-to-head against the live site (`tools/tower-gate.mjs` writes `tower.evidence.json`: verdicts and
+numbers; screenshots stay private outside the repo). A pass that turns worse keeps `was` and un-beats the floor. The marker never passes a
+floor whose gate fails. Floors with evidence sort easiest to hardest by measured gap. Automated today: speed, reliability, mobile,
+accessibility; every other aspect is unverified until its check exists, so it never counts. First real run (2026-10-22, calculator floor):
+accessibility better, reliability and mobile equal (not a win), speed worse (Verse 3341 ms vs 908 ms). 0 of 11 aspects beaten.
+The detailed per-site checklists come from passive study (loop-study / rea-study) and stay in private memory.

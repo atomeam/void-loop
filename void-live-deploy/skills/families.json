@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 6,
-  "tested": 29,
+  "tested": 30,
   "checked": 12,
   "proven": 271
  },
@@ -2743,11 +2743,18 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 3,
     "proven": 39
    },
    "skills": [
+    {
+     "name": "tower",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "dependency-health",
      "tier": "proven",
