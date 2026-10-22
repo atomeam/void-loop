@@ -46,7 +46,7 @@ export function familyMapHtml(esc, fam) {
     const bad = f.skills.filter((s) => (Array.isArray(s.smoke) && s.smoke.length) || (Array.isArray(s.failing) && s.failing.length)).length;
     const label = f.name + ': ' + TIERS.map((t) => cnt[t] + ' ' + t).join(', ') + (bad ? ', ' + bad + ' failing' : '');
     return '<div class="gi-fam" data-fam="' + esc(f.id || f.name) + '" style="display:flex;gap:8px;align-items:center;margin:3px 0">'
-      + '<span style="flex:0 0 38%;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(f.name) + '</span>'
+      + '<span style="flex:0 0 38%;min-width:0;font-size:12px;overflow-wrap:anywhere">' + esc(f.name) + '</span>'
       + '<span role="img" aria-label="' + esc(label) + '" style="flex:1;display:flex;height:9px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.04);box-shadow:0 0 0 1px rgba(255,255,255,.06) inset">'
       + TIERS.filter((t) => cnt[t]).map((t) => '<i data-tier="' + t + '" style="width:' + Math.round(cnt[t] / n * 1000) / 10 + '%;background:' + SHADE[t] + '"></i>').join('') + '</span>'
       + '<span style="flex:0 0 auto;font-size:12px;font-variant-numeric:tabular-nums;color:' + (bad ? '#e06a5a' : '#8a8a92') + '">' + (bad ? bad + ' failing' : cnt.proven + '/' + n) + '</span></div>';
@@ -106,5 +106,5 @@ export function divergenceHtml(esc, recent, total) {
   if (!n) return '';
   if (!rows.length) return '<div class="sub growth-diverge" data-diverge="0" style="line-height:1.45">Divergence: the last ' + n + ' built asks are each echoed in the line that built them.</div>';
   return '<div class="sub growth-diverge" data-diverge="' + rows.length + '" style="line-height:1.45">Divergence: ' + rows.length + ' of the last ' + n + ' built asks leave out half or more of my words: '
-    + rows.slice(0, 3).map((r) => '“' + esc(r.ask.length > 90 ? r.ask.slice(0, 89) + '…' : r.ask) + '” built as “' + esc(String(r.what || '').slice(0, 90)) + '”, not in it: <mark style="background:rgba(224,162,74,.25);color:inherit">' + r.left.slice(0, 6).map(esc).join(', ') + '</mark>').join('; ') + '.</div>';
+    + rows.slice(0, 3).map((r) => '“' + esc(r.ask) + '” built as “' + esc(String(r.what || '')) + '”, not in it: <mark style="background:rgba(224,162,74,.25);color:inherit">' + r.left.slice(0, 6).map(esc).join(', ') + '</mark>').join('; ') + '.</div>';
 }

@@ -21,12 +21,12 @@ export function wrap(text, cols, max) {
   for (const para of String(text || '').replace(/\r/g, '').split(/\n+/)) {
     let line = '';
     for (const word of para.trim().split(/\s+/).filter(Boolean)) {
-      const w = word.length > cols ? word.slice(0, cols - 1) + '\u2026' : word;
+      const w = word.length > cols ? word.slice(0, cols - 1) + '\u2026' : word; // ellipsis-ok: drawn picture or short label, the full text is on the card
       if ((line + ' ' + w).trim().length > cols) { lines.push(line); line = w; } else line = (line + ' ' + w).trim();
     }
     if (line) lines.push(line);
   }
-  if (lines.length > max) { const cut = lines.slice(0, max); cut[max - 1] = cut[max - 1].replace(/[\s.,;:…]*$/, '').slice(0, cols - 1) + '…'; return cut; }
+  if (lines.length > max) { const cut = lines.slice(0, max); cut[max - 1] = cut[max - 1].replace(/[\s.,;:…]*$/, '').slice(0, cols - 1) + '…'; return cut; } // ellipsis-ok: drawn picture or short label, the full text is on the card
   return lines;
 }
 

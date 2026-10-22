@@ -75,7 +75,7 @@ function paint(reloadPlayer) {
 }
 
 async function search(query, platform, api, { autoplay = false, quiet = false } = {}) {
-  load(); S.query = query; S.platform = platform || S.platform || 'youtube'; S.tab = 'results'; S.note = 'searching ' + PLATFORMS[S.platform].label + '…'; S.results = []; S.searchUrl = ''; paint();
+  load(); S.query = query; S.platform = platform || S.platform || 'youtube'; S.tab = 'results'; S.note = 'searching ' + PLATFORMS[S.platform].label + '…'; S.results = []; S.searchUrl = ''; paint(); // ellipsis-ok: progress text, not a cut
   let j = null; try { j = await fetch('/api/video?p=' + S.platform + '&q=' + encodeURIComponent(query)).then((r) => r.json()); } catch (_) {}
   if (j && j.ok && !j.hits.length && j.need && !platform) { // no YouTube key on this server: the free platforms answer instead
     const yt = j.searchUrl; for (const p of OPEN_SEARCH) { let k = null; try { k = await fetch('/api/video?p=' + p + '&q=' + encodeURIComponent(query)).then((r) => r.json()); } catch (_) {} if (k && k.ok && k.hits.length) { j = Object.assign(k, { note: 'YouTube search is not switched on yet, so these are from ' + PLATFORMS[p].label + ' · paste any YouTube link to play it here', searchUrl: yt }); S.platform = p; break; } }

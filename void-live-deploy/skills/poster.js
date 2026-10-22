@@ -49,7 +49,7 @@ export function layoutPoster({ title, text }, w, h, measure) {
       if (measure(next, size) <= inner || !cur) cur = next; else { out.push(cur); cur = word; }
     }
     if (cur) out.push(cur);
-    return out.map((l) => { while (l.length > 1 && measure(l, size) > inner) l = l.slice(0, -2) + '…'; return l; });
+    return out.map((l) => { while (l.length > 1 && measure(l, size) > inner) l = l.slice(0, -2) + '…'; return l; }); // ellipsis-ok: drawn picture or short label, the full text is on the card
   };
   const titleSize = Math.round(w * 0.07), bodySize = Math.round(w * 0.028), markSize = Math.round(w * 0.016);
   let y = margin + titleSize, cut = false;

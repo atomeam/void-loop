@@ -146,7 +146,7 @@ function run(text, api) {
   $('[data-splat-file]').addEventListener('change', (e) => { const f = e.target.files && e.target.files[0]; if (f) readFile(f); });
   async function readFile(f) {
     if (f.size > MAX_BYTES) { say2('That file is larger than ' + Math.round(MAX_BYTES / 1048576) + ' MB; try a smaller or thinned-out scan.', true); return; }
-    say2('Reading ' + f.name + '…');
+    say2('Reading ' + f.name + '…'); // ellipsis-ok: progress text, not a cut
     try { useBuffer(await f.arrayBuffer(), f.name); } catch (_) { say2('I could not read that file.', true); }
   }
   el.addEventListener('dragover', (e) => { e.preventDefault(); });

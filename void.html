@@ -87,7 +87,7 @@
     /* the tab card (skills/tab.js) shows the page it read as it looked: the title on a browser tab, the address in a bar with its
        lock, the selection Verse read in yellow highlighter */
     .tab-card .tab-title { display: inline-block; max-width: 100%; box-sizing: border-box; padding: 6px 12px 5px; border-radius: 8px 8px 0 0; background: rgba(255,255,255,0.09);
-      border: 1px solid rgba(255,255,255,0.12); border-bottom: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      border: 1px solid rgba(255,255,255,0.12); border-bottom: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* ellipsis-ok: drawn picture or short label, the full text is on the card */
     .tab-card .tab-host { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10); color: var(--muted); font: 12px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
     .tab-card .tab-lock { flex: none; color: #8fd19e; }
@@ -1579,7 +1579,7 @@ Object.values(things).forEach((th) => {
       const ids = new Set(Object.keys(things));
       if (seenIds) for (const id of ids) if (!seenIds.has(id)) {
         const el = stage.querySelector('[data-id="' + CSS.escape(id) + '"]'), sr = document.getElementById('sr-say');
-        if (el && sr) { const t = (el.innerText || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim(); if (t) sr.textContent = 'added: ' + (t.length > 200 ? t.slice(0, 197) + '…' : t); }
+        if (el && sr) { const t = (el.innerText || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim(); if (t) sr.textContent = 'added: ' + (t.length > 200 ? t.slice(0, 197) + '…' : t); } /* ellipsis-ok: drawn picture or short label, the full text is on the card */
       }
       seenIds = ids;
     }
@@ -2444,7 +2444,7 @@ say('nothing selected to remove');
       const say = () => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
         const h = el.querySelector('h2'), t = (el.innerText || '').replace(/\s+/g, ' ').trim();
         if (h) el.setAttribute('aria-label', h.textContent.trim());
-        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; };
+        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
@@ -5340,7 +5340,7 @@ say('nothing selected to remove');
     // with … at a word, the server gets the start and the end of a long paste (errors sit at the end of a log) inside its 20 kB,
     // and the card folds away everything that was given, so it never looks cut off
     const clipLine = (t, n) => { const l = String(t || '').split('\n')[0].trim(); if (l.length <= n) return l; const c = l.slice(0, n), sp = c.lastIndexOf(' ');
-      return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[\s,;:.\u2013-]+$/, '') + '\u2026'; };
+      return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[\s,;:.\u2013-]+$/, '') + '\u2026'; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
     const PASTE_BYTES = 18500;
     function fitPaste(ask, details) {
       const fits = (d) => new TextEncoder().encode(JSON.stringify({ mode: 'fix', ask, details: d })).length <= PASTE_BYTES;

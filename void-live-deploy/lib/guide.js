@@ -69,7 +69,7 @@ export function oneLine(src, name) {
   if ((line.split(/\s+/).length < 5 || /^"[^"]*"\.?$/.test(line.trim())) && rest && !/^(?:Contract|api):/.test(rest)) line = line ? line.replace(/[.;:,]+$/, '') + ': ' + rest.charAt(0).toLowerCase() + rest.slice(1) : rest;
   line = line.replace(/:\s*frontier #\d+'s (?:first|second|third) piece\.?$/, '');
   if (line.length > 170) { const semi = line.indexOf(';', 60); if (semi > 0 && semi < 170) line = line.slice(0, semi); }
-  if (line.length > 170) { const sp = line.lastIndexOf(' ', 160); line = line.slice(0, sp > 80 ? sp : 160).replace(/[,;:(\s]+$/, '') + '…'; }
+  // the whole line, never cut (owner, 2026-10-21)
   if ((line.match(/\(/g) || []).length > (line.match(/\)/g) || []).length) line = line.slice(0, line.lastIndexOf('(')); // a note cut in half
   line = line.trim().replace(/\s+[-–—]\s*$/, '').replace(/[.;:,]+$/, '');
   return line.charAt(0).toUpperCase() + line.slice(1);

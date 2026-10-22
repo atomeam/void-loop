@@ -306,7 +306,7 @@ export function decorate(st) {
     tag.className = 'void-annot void-tag';
     tag.dataset.for = t.id;
     tag.textContent = (t.label || '') + (t.locked ? (t.label ? ' · ' : '') + 'locked' : '');
-    tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis';
+    tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis'; // ellipsis-ok: drawn picture or short label, the full text is on the card
     root.appendChild(tag);
   }
   ghost(root);

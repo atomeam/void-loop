@@ -111,7 +111,7 @@ export function whatsNew(entries, { shown = new Set(), verified = null, n = Infi
 export const TRAY = 6;
 export function trayOf(steps, i, max = TRAY) {
   const out = [];
-  for (let j = i + 1; j < (steps || []).length && out.length < max; j++) { const l = String(steps[j].line || ''); out.push({ j, line: l.length > 38 ? l.slice(0, 37).replace(/\s+\S*$/, '') + '…' : l }); }
+  for (let j = i + 1; j < (steps || []).length && out.length < max; j++) { const l = String(steps[j].line || ''); out.push({ j, line: l }); }
   return out;
 }
 /** where a chip dropped at (x, y) puts its things: the delta that brings the first new thing's corner to the drop point, kept inside

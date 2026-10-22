@@ -520,7 +520,7 @@ function bubbleTexture(line) {
     if (lines.length <= 3) break;
   }
   let shown = lines.slice(0, 3);
-  if (lines.length > 3) shown[2] = shown[2].replace(/\s*\S*$/, '') + '…';
+  if (lines.length > 3) shown[2] = shown[2].replace(/\s*\S*$/, '') + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   const lh = size * 1.18, midY = (Tp + B) / 2, startY = midY - (shown.length - 1) * lh / 2;
   shown.forEach((ln, i) => g.fillText(ln, W / 2, startY + i * lh));
   const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4; return tex;
