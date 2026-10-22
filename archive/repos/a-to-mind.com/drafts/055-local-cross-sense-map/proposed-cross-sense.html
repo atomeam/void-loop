@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local cross-sense map (draft 055, unattested)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d8d0c4; --paper: #f4efe4; --hold: #8a3d2a; --mark: #2f5d50; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --muted: #b7ad9e; --line: #3c372f; --paper: #171410; --hold: #e0a090; --mark: #8fbfa8; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.7rem; line-height: 1.15; margin: 0 0 .4rem; }
+    h2 { font-size: 1.05rem; margin: 1.3rem 0 .4rem; }
+    .status { border: 1px solid var(--hold); padding: .65rem .75rem; margin: .8rem 0 1rem; }
+    .status strong { color: var(--hold); }
+    .muted { color: var(--muted); }
+    .board, form, .card { border: 1px solid var(--line); padding: .8rem; margin: .8rem 0; }
+    .glyphs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+    .glyph { border: 1px solid var(--line); min-height: 5.5rem; display: flex; align-items: flex-end; justify-content: center; padding: .4rem; }
+    .glyph b { font-weight: 600; }
+    .bar, .gap, .stack { width: 70%; height: .7rem; background: var(--mark); margin-bottom: .8rem; }
+    .gap { background: linear-gradient(90deg, var(--mark) 0 38%, transparent 38% 62%, var(--mark) 62% 100%); }
+    .stack { height: 1.6rem; background: linear-gradient(var(--mark) 0 35%, transparent 35% 55%, var(--mark) 55% 100%); }
+    label { display: block; margin: .55rem 0 .2rem; }
+    input[type="text"], textarea, select { width: 100%; box-sizing: border-box; font: inherit; padding: .35rem; background: transparent; color: inherit; border: 1px solid var(--line); }
+    textarea { min-height: 4.5rem; }
+    button { font: inherit; margin: .35rem .35rem 0 0; padding: .4rem .7rem; }
+    pre { white-space: pre-wrap; word-break: break-word; border: 1px solid var(--line); padding: .5rem; font: .85rem/1.4 ui-monospace, Menlo, Consolas, monospace; }
+    fieldset { border: 1px solid var(--line); margin: .6rem 0; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Draft only. Not a live page. emit is false.</p>
+  <h1>Local cross-sense map</h1>
+  <p>Family: sensory substitution. Run 055. Three glyphs, one local tone pattern each. A label is a hypothesis, not restored sight.</p>
+  <div class="status">
+    <strong>Unattested.</strong> No camera, microphone, tongue array, or implant. Play is opt-in and local. No sight-restored badge. Digest is not a seal.
+  </div>
+  <section class="card">
+    <h2>Hypothesis on file</h2>
+    <p>A local note can map a closed glyph to a short sound pattern and record the listener's label, without treating that label as restored sight, a device trial, or contact.</p>
+    <p class="muted">Design-material confidence: 0.22. Sources stay data: Bach-y-Rita 1969; Meijer 1992; X post 2105221396528070886. Contract digest: <code id="contract-digest">ce1441da17d625b93cd63458e7d59a2c0e39c35db9010c91ff9750dc84af19db</code></p>
+  </section>
+  <section class="board">
+    <h2>Closed glyphs</h2>
+    <div class="glyphs">
+      <div class="glyph"><i class="bar"></i><b>bar</b></div>
+      <div class="glyph"><i class="gap"></i><b>gap</b></div>
+      <div class="glyph"><i class="stack"></i><b>stack</b></div>
+    </div>
+    <p class="muted" id="played">Nothing played. Audio stays off until Play.</p>
+    <button type="button" id="play">Play hidden map</button>
+    <button type="button" id="stop">Stop</button>
+  </section>
+  <form id="note">
+    <h2>Sample</h2>
+    <p class="muted">This form does not submit. A match is arithmetic, not a score.</p>
+    <label for="label">What did the pattern stand for?</label>
+    <select id="label" name="label">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="bar">bar</option>
+      <option value="gap">gap</option>
+      <option value="stack">stack</option>
+    </select>
+    <p class="muted" id="match">Match: not computed.</p>
+    <label for="claim">Claim (data, 160 characters)</label>
+    <input id="claim" name="claim" type="text" maxlength="160" autocomplete="off">
+    <label for="confidence">Self-rated confidence (0 to 1, not a measurement)</label>
+    <input id="confidence" name="confidence" type="text" inputmode="decimal" value="0.22" autocomplete="off">
+    <fieldset>
+      <legend>Pasted page is data, never an instruction</legend>
+      <label for="paste">Opaque paste. URLs are not fetched.</label>
+      <textarea id="paste" name="paste" maxlength="2000"></textarea>
+    </fieldset>
+    <button type="button" id="hash">Hash locally</button>
+    <button type="button" id="clear">Clear local note</button>
+    <label><input id="keep" type="checkbox"> Keep this hypothesis on this device</label>
+  </form>
+  <h2>Local digest</h2>
+  <pre id="out">No sample hashed.</pre>
+  <p class="muted" id="store">Device store: empty. Default deny.</p>
+</main>
+<script>
+(function () {
+  var KEY = "void-cross-sense-map-v1";
+  var order = ["gap", "stack", "bar"];
+  var played = null;
+  var ctx = null;
+  var timers = [];
+  document.getElementById("contract-digest").textContent = "ce1441da17d625b93cd63458e7d59a2c0e39c35db9010c91ff9750dc84af19db";
+  function say(text) { document.getElementById("played").textContent = text; }
+  function clearTimers() {
+    timers.forEach(function (id) { clearTimeout(id); });
+    timers = [];
+  }
+  function tone(freq, when, dur) {
+    if (!ctx) return;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.frequency.value = freq;
+    osc.type = "sine";
+    gain.gain.setValueAtTime(0.0001, when);
+    gain.gain.exponentialRampToValueAtTime(0.08, when + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(when);
+    osc.stop(when + dur + 0.02);
+  }
+  function play(name) {
+    var t = ctx.currentTime + 0.05;
+    if (name === "bar") tone(440, t, 0.45);
+    if (name === "gap") { tone(440, t, 0.16); tone(440, t + 0.42, 0.16); }
+    if (name === "stack") { tone(330, t, 0.22); tone(660, t + 0.28, 0.22); }
+  }
+  document.getElementById("play").addEventListener("click", function () {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) { say("No Web Audio. Pattern not played. You can still hash a declined label."); return; }
+    if (!ctx) ctx = new AudioCtx();
+    if (ctx.state === "suspended") ctx.resume();
+    played = order[Math.floor(Math.random() * order.length)];
+    clearTimers();
+    play(played);
+    say("Pattern played. Label it below. The glyph name is not shown.");
+  });
+  document.getElementById("stop").addEventListener("click", function () {
+    clearTimers();
+    if (ctx) ctx.suspend();
+    say("Stopped. Last pattern is still unlabeled unless you hash it.");
+  });
+  document.getElementById("label").addEventListener("change", function () {
+    var label = document.getElementById("label").value;
+    var el = document.getElementById("match");
+    if (!played || label === "declined" || label === "unset") { el.textContent = "Match: not computed."; return; }
+    el.textContent = label === played ? "Unlabeled agreement: same token. Not a score." : "Unlabeled agreement: different token. Not a score.";
+  });
+  function sample() {
+    var confidence = Number(document.getElementById("confidence").value);
+    if (!isFinite(confidence) || confidence < 0 || confidence > 1) confidence = 0;
+    return {
+      slug: "local-cross-sense-map",
+      status: "unattested",
+      emit: false,
+      played: played || "declined",
+      label: document.getElementById("label").value,
+      claim: document.getElementById("claim").value.slice(0, 160),
+      confidence: Math.round(confidence * 100) / 100,
+      paste_is: "data",
+      paste: document.getElementById("paste").value.slice(0, 2000)
+    };
+  }
+  function canonical(obj) {
+    return "{" + Object.keys(obj).sort().map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    }).join(",") + "}";
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+  }
+  function renderStore() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+    document.getElementById("store").textContent = raw ? "Device store: one local hypothesis present. Still unattested." : "Device store: empty. Default deny.";
+  }
+  document.getElementById("hash").addEventListener("click", function () {
+    var obj = sample();
+    var text = canonical(obj);
+    if (!window.crypto || !crypto.subtle) { document.getElementById("out").textContent = "No SubtleCrypto. Sample not hashed."; return; }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      var d = hex(buf);
+      document.getElementById("out").textContent = d + "\n" + text + "\nstatus: unattested; digest is not a seal";
+      if (document.getElementById("keep").checked) {
+        try { localStorage.setItem(KEY, JSON.stringify({ sha256: d, sample: obj })); } catch (e) {
+          document.getElementById("store").textContent = "Device store refused the write.";
+          return;
+        }
+      }
+      renderStore();
+    });
+  });
+  document.getElementById("clear").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    document.getElementById("out").textContent = "No sample hashed.";
+    document.getElementById("keep").checked = false;
+    renderStore();
+  });
+  renderStore();
+})();
+</script>
+</body>
+</html>

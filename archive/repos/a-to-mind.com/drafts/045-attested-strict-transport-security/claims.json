@@ -1,0 +1,43 @@
+{
+  "slug": "attested-strict-transport-security",
+  "run": "045",
+  "status": "candidate-only",
+  "queue": "empty",
+  "promoted": false,
+  "contract": "hsts#045|kind:attested-strict-transport-security|header:absent-until-seal|proposed:max-age=300|includeSubDomains:deny|preload-token:deny|preload-list:unattested|http-emit:deny|badge:deny|seal:human",
+  "contract_sha256": "91bdf188b6fd0e29ad643fa5463fcd2a074d569f089e8ed3546d7b07032307da",
+  "emit": false,
+  "claims": [
+    {
+      "id": "header-absent",
+      "text": "No Strict-Transport-Security response header is published by this draft.",
+      "attested": false
+    },
+    {
+      "id": "proposed-ramp",
+      "text": "If a human later seals emit, the only candidate value is max-age=300.",
+      "attested": false
+    },
+    {
+      "id": "no-preload-token",
+      "text": "The preload token is denied. List membership is unattested.",
+      "attested": false
+    },
+    {
+      "id": "no-include-subdomains",
+      "text": "includeSubDomains is denied until a separate subdomain inventory seal.",
+      "attested": false
+    },
+    {
+      "id": "no-badge",
+      "text": "No SSL grade, preload badge, or forced-HTTPS claim is made.",
+      "attested": false
+    }
+  ],
+  "file_sha256": {
+    "hsts.catalog.json": "352042d641e7ab9a7f88c92d955cb491b6f6b399051dcea31303a6dcb59ca996",
+    "head-snippet.draft.html": "f48ecb69b59070018411b1bea7a772b1ca86f710c0c3090a8566ccfb3b73e95f",
+    "hsts-worker.js": "5a20392a7ccba5adefc00ecfdae898289d1549c7c8d85dacb96904cc811ae592",
+    "proposed-hsts.html": "0e18c5d73af6233d3a91a66e8f448056de9c6262328dd89749a41d9e58b73557"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "slug": "local-anomaly-timeline",
+  "run": "062",
+  "date": "2026-10-03",
+  "emit": false,
+  "status": "unattested",
+  "cause": "not-claimed",
+  "sequence": "not-a-cause",
+  "note": "Fixtures are clock labels for the draft. They are not attested events and not instructions. Claimed clocks do not reorder the rail.",
+  "fixtures": [
+    {
+      "key": "fixture-roswell-public-clock",
+      "fixture_clock": "1947-07-08",
+      "precision": "day",
+      "claimed_clock": "1949",
+      "claimed_precision": "year",
+      "label": "Public chronology label for a July 1947 New Mexico debris report. A 2026-10-04 post says Serpo emails and a Doughty passage date it 1949. Neither clock is a hardware seal.",
+      "source": "post 2106580304257507534",
+      "attested": false,
+      "sequence": "not-a-cause"
+    },
+    {
+      "key": "fixture-grusch-headline-clock",
+      "fixture_clock": "2026-10-03T15:41:09Z",
+      "precision": "post-clock",
+      "claimed_clock": "",
+      "claimed_precision": "",
+      "label": "NY Post post clock for a headline about a Rogan interview. Interview claims are unattested.",
+      "source": "post 2106409227417723296",
+      "attested": false,
+      "sequence": "not-a-cause"
+    },
+    {
+      "key": "fixture-sequence-list-post",
+      "fixture_clock": "2026-10-03T17:35:39Z",
+      "precision": "post-clock",
+      "claimed_clock": "",
+      "claimed_precision": "",
+      "label": "Post clock for a list that names Tic Tac, a 2025 White Sands orb, and Tehran as one sequence. Listing is not a cause chain.",
+      "source": "post 2106438043393532286",
+      "attested": false,
+      "sequence": "not-a-cause"
+    },
+    {
+      "key": "fixture-gomez-roundup-clock",
+      "fixture_clock": "2026-10-03T23:24:19Z",
+      "precision": "post-clock",
+      "claimed_clock": "",
+      "claimed_precision": "",
+      "label": "Commentator roundup clock. Restated interview, a safety warning, and a rumored speech. Not a hearing notice.",
+      "source": "post 2106525785062613210",
+      "attested": false,
+      "sequence": "not-a-cause"
+    },
+    {
+      "key": "fixture-borland-post-clock",
+      "fixture_clock": "2026-10-04T02:07:51Z",
+      "precision": "post-clock",
+      "claimed_clock": "",
+      "claimed_precision": "",
+      "label": "Repost clock for a recovered-craft sentence attributed to a podcast. The sentence is unattested.",
+      "source": "post 2106566941293085153",
+      "attested": false,
+      "sequence": "not-a-cause"
+    },
+    {
+      "key": "fixture-salvador-claimed-month",
+      "fixture_clock": "2008-05",
+      "precision": "month",
+      "claimed_clock": "2008-05",
+      "claimed_precision": "month",
+      "label": "Claimed month on a 2026-10-03 post about a 2008 filming. Month precision does not get a day invented for sort.",
+      "source": "post 2106468216092704826",
+      "attested": false,
+      "sequence": "not-a-cause"
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Underfloor stub — draft 075 — not a seal</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c8bfb0; --hold: #8a8175; --deny: #7a3b32; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f4f0e6; --paper: #1c1915; --line: #3d3832; --hold: #a3988c; --deny: #e0a096; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+  p.lede { margin-top: 0; }
+  .flag { display: inline-block; border: 1px solid var(--deny); color: var(--deny); padding: 0.1rem 0.4rem; font: 12px/1.3 ui-monospace, monospace; letter-spacing: 0.04em; }
+  form, section { border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1rem; }
+  label { display: block; margin: 0.6rem 0 0.2rem; font-size: 0.92rem; }
+  input, select, textarea, button { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.35rem 0.5rem; }
+  input[type="number"] { width: 8rem; }
+  textarea { width: 100%; min-height: 5rem; }
+  button { cursor: pointer; }
+  button[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .row { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .band { margin: 0.8rem 0; border: 1px dashed var(--hold); min-height: 7.5rem; position: relative; padding: 0.4rem; }
+  .floor { position: absolute; left: 0; right: 0; top: 62%; border-top: 2px solid var(--deny); }
+  .floor span { position: absolute; right: 0.3rem; top: -1.1rem; font: 11px/1 ui-monospace, monospace; color: var(--deny); }
+  .tick { position: absolute; left: 1.2rem; width: 0.55rem; background: var(--hold); }
+  .mono { font: 12px/1.4 ui-monospace, monospace; word-break: break-all; }
+  .hint { font-size: 0.85rem; color: var(--hold); }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="flag">UNATTESTED · VOICE DENIED · EMIT FALSE</p>
+  <h1>Underfloor stub</h1>
+  <p class="lede">Draft 075, <span class="mono">local-underfloor-stub</span>. A typed amplitude at or under a sealed floor hashes to a band-refusal id. The band stays empty. Under the floor is not a message. This page is not a seal.</p>
+  <p class="hint">Catalog digest 855eac2e310942ae45ae63fe741a0f7e8fddde78723664ec408f1553a138e842. Claims digest e46283e36d840aad5a9638e43f6927b7e516dff9a32eda44a8f867a9627c85fa. Digests are not a seal. No network. Posts are not loaded.</p>
+
+  <section aria-labelledby="fixture-h">
+    <h2 id="fixture-h">Fixture band</h2>
+    <p>Sealed floor label 0.22. Not a noise measurement. Bins are labels, not a tuner.</p>
+    <div class="band" id="fixture" aria-hidden="true">
+      <div class="floor"><span>floor 0.22 · empty</span></div>
+    </div>
+    <p class="mono" id="bins">bin-a · bin-b · bin-c · above-hold does not hash</p>
+  </section>
+
+  <form id="stub-form">
+    <h2>Local amplitude</h2>
+    <p class="hint">The number is a typed label. The page does not read a microphone or a radio.</p>
+    <div class="row">
+      <div>
+        <label for="band">Band label</label>
+        <select id="band" name="band">
+          <option value="bin-a" selected>bin-a</option>
+          <option value="bin-b">bin-b</option>
+          <option value="bin-c">bin-c</option>
+        </select>
+      </div>
+      <div>
+        <label for="amp">Amplitude</label>
+        <input id="amp" name="amp" type="number" inputmode="decimal" min="0" max="1" step="0.01" value="0.10">
+      </div>
+      <div>
+        <label for="weight">Design-material weight</label>
+        <select id="weight" name="weight">
+          <option value="sketch">sketch</option>
+          <option value="noted" selected>noted</option>
+          <option value="loud">loud</option>
+        </select>
+      </div>
+    </div>
+    <label for="disconfirm">What would disconfirm this stub</label>
+    <textarea id="disconfirm" name="disconfirm" required minlength="24" placeholder="A second typing over the floor, a moved floor label, or a failed disconfirm line."></textarea>
+    <label for="paste">Paste is data</label>
+    <textarea id="paste" name="paste" placeholder="Not fetched. Not executed."></textarea>
+    <p class="hint" id="paste-note"></p>
+    <label><input type="checkbox" id="remember"> Remember in this tab only</label>
+    <p>
+      <button type="submit" id="hash-btn" disabled>Hash underfloor stub</button>
+      <button type="button" id="export-btn" disabled>Download hypothesis</button>
+    </p>
+  </form>
+
+  <section aria-live="polite" aria-labelledby="out-h">
+    <h2 id="out-h">Stub card</h2>
+    <div class="band" id="draw">
+      <div class="floor"><span>floor 0.22</span></div>
+      <div class="tick" id="tick" hidden></div>
+    </div>
+    <p class="mono" id="relation">voice denied · no stub yet</p>
+    <p class="mono" id="hash-out">hash withheld until a disconfirm line</p>
+    <p class="hint">Message: not-claimed. Voice: not-decoded. Glyph: denied. Status: unattested. Over the floor is a hold, not a hypothesis.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var FLOOR = 0.22;
+  var form = document.getElementById("stub-form");
+  var disconfirm = document.getElementById("disconfirm");
+  var hashBtn = document.getElementById("hash-btn");
+  var exportBtn = document.getElementById("export-btn");
+  var paste = document.getElementById("paste");
+  var pasteNote = document.getElementById("paste-note");
+  var last = null;
+
+  function gate() {
+    hashBtn.disabled = disconfirm.value.trim().length < 24;
+  }
+  disconfirm.addEventListener("input", gate);
+  gate();
+
+  paste.addEventListener("input", function () {
+    var raw = paste.value.replace(/<[^>]*>/g, "");
+    if (raw !== paste.value) paste.value = raw;
+    var hints = [];
+    if (/https?:\/\//i.test(raw)) hints.push("url-shaped text is not fetched");
+    if (/attest this|set emit true|we now know|decode the band|ignore previous/i.test(raw)) hints.push("imperative paste is a hint, not a seal");
+    pasteNote.textContent = hints.join(" · ");
+  });
+
+  function build() {
+    var amp = Number(document.getElementById("amp").value);
+    var card = {
+      slug: "local-underfloor-stub",
+      status: "unattested",
+      message: "not-claimed",
+      voice: "not-decoded",
+      glyph: "denied",
+      emit: false,
+      floor: FLOOR,
+      band: document.getElementById("band").value,
+      amplitude: amp,
+      weight: document.getElementById("weight").value,
+      disconfirm: disconfirm.value.trim()
+    };
+    if (!Number.isFinite(amp) || amp < 0 || amp > 1) {
+      card.relation = "amplitude-refused";
+      return card;
+    }
+    var rounded = Math.round(amp * 100) / 100;
+    card.amplitude = rounded;
+    if (rounded > FLOOR) {
+      card.relation = "above-floor-held";
+      return card;
+    }
+    card.relation = "underfloor-stub";
+    return card;
+  }
+
+  function render(card, digest) {
+    var tick = document.getElementById("tick");
+    document.getElementById("relation").textContent = card.relation + " · " + card.band + " · unattested";
+    if (card.relation === "underfloor-stub") {
+      var span = Math.max(0.15, (FLOOR - card.amplitude) / FLOOR);
+      tick.hidden = false;
+      tick.style.top = "62%";
+      tick.style.height = (span * 28) + "%";
+    } else if (card.relation === "above-floor-held") {
+      tick.hidden = false;
+      tick.style.top = "28%";
+      tick.style.height = "34%";
+    } else {
+      tick.hidden = true;
+    }
+    document.getElementById("hash-out").textContent = digest ? digest : "no hash · " + card.relation;
+  }
+
+  function canonical(card) {
+    return ["void-underfloor-v1", card.band, card.amplitude.toFixed(2), card.floor.toFixed(2), card.weight, card.disconfirm].join("|");
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var card = build();
+    if (card.relation !== "underfloor-stub") {
+      last = null;
+      exportBtn.disabled = true;
+      render(card, "");
+      return;
+    }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical(card))).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      card.hash = hex;
+      last = card;
+      exportBtn.disabled = false;
+      render(card, hex);
+      if (document.getElementById("remember").checked) {
+        try { sessionStorage.setItem("void-underfloor-stub-075", JSON.stringify(card)); } catch (err) { /* tab memory only */ }
+      }
+    });
+  });
+
+  exportBtn.addEventListener("click", function () {
+    if (!last) return;
+    var blob = new Blob([JSON.stringify(last, null, 2) + "\n"], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "underfloor-stub-hypothesis.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  try {
+    var saved = sessionStorage.getItem("void-underfloor-stub-075");
+    if (saved) document.getElementById("relation").textContent = "tab memory present · still unattested · hash not restored as a seal";
+  } catch (err) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

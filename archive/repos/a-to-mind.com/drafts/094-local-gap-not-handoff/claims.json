@@ -1,0 +1,21 @@
+{
+  "slug": "local-gap-not-handoff",
+  "run": "094",
+  "family": "human-machine co-agency",
+  "emit": false,
+  "status": "unattested",
+  "human_lane": "marked",
+  "instrument_lane": "marked",
+  "overlap": "refused",
+  "disconfirm_allowlist": [
+    "separate-tasks",
+    "no-shared-artifact",
+    "instrument-idle",
+    "human-did-not-yield",
+    "retraction"
+  ],
+  "canonical_fixture": "void.gap-not-handoff.v1|human=marked|instrument=marked|overlap=refused|disconfirm=no-shared-artifact|weight=0.250|status=unattested",
+  "href_allowlist": [],
+  "sentence_in_hash": false,
+  "note": "Fixture digest is not a seal. The handoff sentence is discarded and is not in the hash. A gap is not a handoff and not shared control."
+}

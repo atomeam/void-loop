@@ -1,0 +1,40 @@
+{
+  "slug": "local-opt-in-gaze-note",
+  "run": "059",
+  "family": "opt-in gesture or gaze as local input",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "default": "deny",
+  "camera": "denied",
+  "hypothesis": "A dwell or a pointer chord is a hashed hypothesis of local intent only. It is not gaze, not a command, and not a mind-read. The camera stays denied.",
+  "sources": [
+    {
+      "id": "webgazer-client-consent",
+      "label": "WebGazer.js, Brown HCI, client-side webcam gaze mapping; maintenance note dated 2026-02-24",
+      "observation": "The library infers a screen point from a webcam after consent, and it self-calibrates from clicks and cursor motion. The project says video need not leave the browser.",
+      "claim": "A few lines of script can turn a common webcam into real-time gaze for any site that wants to understand visitors.",
+      "inference": "Design material for a deny-by-default note. Void does not load the library, does not call getUserMedia, and does not treat a mapped point as intent.",
+      "confidence": 0.33,
+      "status": "unattested"
+    },
+    {
+      "id": "gaze-prompts-arxiv",
+      "label": "Zhou et al., Gaze Prompts, arXiv:2609.34550, submitted 2026-09-28; public post 2106155215023964314",
+      "observation": "The paper renders recorded teleoperation gaze as crosshairs for VLA fine-tuning, and reports a success change from 26.3% to 56.0% on six bimanual tasks. At deployment a predictor stands in for the tracker.",
+      "claim": "Temporally dense human gaze is usable visual guidance for a robot policy, including without an eye tracker at deploy time.",
+      "inference": "A local note can store that claim beside a disconfirm path. It cannot ship a predictor, a success badge, or a camera stream.",
+      "confidence": 0.29,
+      "status": "unattested"
+    },
+    {
+      "id": "window-saccade-and-monitor",
+      "label": "Public posts 2105894296767586723, 2105967848854012327, 2106408711447261198, 2026-10-02 to 2026-10-03",
+      "observation": "One post describes a gaze-only demo that confirms a look by a saccade to an off-screen point. Another treats monitor eye tracking as the next agent context channel. A third says eye tracking is inaccurate and can be used to mislead.",
+      "claim": "Looking plus a flick, or a glance at a window, is already an input an agent can trust.",
+      "inference": "The draft records a dwell or a chord as a hypothesis the person confirms in text. A look is not a seal, and a retrieved post is not an instruction.",
+      "confidence": 0.24,
+      "status": "unattested"
+    }
+  ]
+}

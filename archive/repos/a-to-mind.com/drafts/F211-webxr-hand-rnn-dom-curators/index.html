@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-211 WebXR Hand RNN DOM Curators</title>
+<style>
+body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+#stage { position: relative; width: 100vw; height: 100vh; perspective: 800px; }
+.curator {
+  position: absolute; width: 140px; height: 90px; background: rgba(30,40,70,0.85);
+  border: 1px solid #4af; border-radius: 8px; padding: 8px; box-shadow: 0 4px 20px rgba(0,200,255,0.3);
+  transition: transform 0.15s ease, background 0.3s; user-select: none; cursor: grab;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+}
+.curator.leader { border-color: #fa4; box-shadow: 0 4px 24px rgba(255,180,0,0.5); }
+.curator h3 { margin: 0 0 4px; font-size: 14px; }
+.curator p { margin: 0; font-size: 11px; opacity: 0.8; }
+#hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 13px; z-index: 10; }
+#hud button { margin-right: 8px; background: #224; color: #cdf; border: 1px solid #46a; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Leader</button>
+  <span id="status">Flat mode · pointer as hand proxy</span>
+</div>
+<div id="stage"></div>
+<script>
+const stage = document.getElementById('stage');
+const status = document.getElementById('status');
+const N = 5;
+let agents = [];
+let hand = { x: 0.5, y: 0.5, pinch: 0, joints: null };
+let frame = 0;
+let xrSession = null;
+
+// Tiny RNN: hidden state + simple recurrent update from input
+class TinyRNN {
+  constructor(seed) {
+    this.h = Array(4).fill(0);
+    this.w = Array(12).fill(0).map((_,i) => ((seed * (i+1) * 0.17) % 1 - 0.5) * 1.4);
+  }
+  step(input) { // input: [x, y, pinch, orientBias]
+    const [x,y,p,o] = input;
+    const nh = [0,0,0,0];
+    for (let i=0;i<4;i++) {
+      let s = this.w[i]*x + this.w[i+4]*y + this.w[i+8]*p + this.w[(i+2)%4]*o + this.h[i]*0.6;
+      nh[i] = Math.tanh(s);
+    }
+    this.h = nh;
+    // output: target offset x,y, scale, hue shift
+    return [nh[0]*0.3, nh[1]*0.3, 0.8 + Math.abs(nh[2])*0.4, nh[3]];
+  }
+  genome() { return [...this.w]; }
+  load(g) { this.w = g.slice(); }
+}
+
+function initAgents() {
+  stage.innerHTML = '';
+  agents = [];
+  for (let i=0;i<N;i++) {
+    const a = {
+      id: i,
+      rnn: new TinyRNN(i*7 + 13),
+      x: 0.2 + (i%3)*0.3,
+      y: 0.25 + Math.floor(i/3)*0.35,
+      fitness: 0,
+      el: null
+    };
+    const el = document.createElement('div');
+    el.className = 'curator';
+    el.innerHTML = `<h3>Curator ${i}</h3><p>fitness: 0</p>`;
+    stage.appendChild(el);
+    a.el = el;
+    agents.push(a);
+  }
+}
+
+function updateDOM() {
+  agents.forEach((a, i) => {
+    const input = [hand.x - a.x, hand.y - a.y, hand.pinch, Math.sin(frame*0.01 + i)];
+    const [dx, dy, sc, hue] = a.rnn.step(input);
+    a.x = Math.max(0.05, Math.min(0.95, a.x + dx * 0.08));
+    a.y = Math.max(0.05, Math.min(0.9, a.y + dy * 0.08));
+    const dist = Math.hypot(hand.x - a.x, hand.y - a.y);
+    if (dist < 0.12 && hand.pinch > 0.4) a.fitness += 0.3;
+    a.fitness *= 0.995;
+    const px = a.x * window.innerWidth - 70;
+    const py = a.y * window.innerHeight - 45;
+    a.el.style.transform = `translate(${px}px, ${py}px) scale(${sc}) rotate(${hue*8}deg)`;
+    a.el.style.background = `hsla(${200 + hue*40}, 60%, 25%, 0.85)`;
+    a.el.querySelector('p').textContent = `fitness: ${a.fitness.toFixed(1)}`;
+  });
+  // competition
+  if (frame % 180 === 0) {
+    agents.sort((a,b) => b.fitness - a.fitness);
+    const leader = agents[0];
+    agents.forEach(a => a.el.classList.toggle('leader', a === leader));
+    // cull weakest, mutate leader
+    const weak = agents[agents.length-1];
+    weak.rnn.load(leader.rnn.genome().map(w => w + (Math.random()-0.5)*0.15));
+    weak.fitness = 0;
+    weak.x = Math.random()*0.8 + 0.1;
+    weak.y = Math.random()*0.7 + 0.1;
+  }
+}
+
+function loop() {
+  frame++;
+  updateDOM();
+  requestAnimationFrame(loop);
+}
+
+// Pointer as hand proxy
+stage.addEventListener('pointermove', e => {
+  hand.x = e.clientX / window.innerWidth;
+  hand.y = e.clientY / window.innerHeight;
+});
+stage.addEventListener('pointerdown', () => { hand.pinch = 0.8; });
+stage.addEventListener('pointerup', () => { hand.pinch = 0; });
+
+// DeviceOrientation bias
+window.addEventListener('deviceorientation', e => {
+  if (e.beta != null) hand.x = Math.max(0, Math.min(1, 0.5 + e.gamma/90));
+  if (e.gamma != null) hand.y = Math.max(0, Math.min(1, 0.5 + (e.beta-45)/90));
+});
+
+// WebXR hand attempt
+document.getElementById('xrBtn').onclick = async () => {
+  if (!navigator.xr) { status.textContent = 'WebXR not available'; return; }
+  try {
+    const supported = await navigator.xr.isSessionSupported('immersive-vr');
+    if (!supported) { status.textContent = 'immersive-vr not supported'; return; }
+    xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['hand-tracking'] });
+    status.textContent = 'XR session active (hand tracking if available)';
+    // Minimal XR loop would go here; for prototype, session presence is the branch
+    xrSession.addEventListener('end', () => { status.textContent = 'XR ended · flat mode'; xrSession = null; });
+  } catch (err) {
+    status.textContent = 'XR request failed: ' + err.message;
+  }
+};
+
+// Seal leader to IndexedDB + BroadcastChannel
+const bc = new BroadcastChannel('f211-genomes');
+document.getElementById('sealBtn').onclick = async () => {
+  if (!agents.length) return;
+  const leader = agents.reduce((a,b) => a.fitness > b.fitness ? a : b);
+  const genome = leader.rnn.genome();
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('f211', 1);
+      r.onupgradeneeded = e => e.target.result.createObjectStore('genomes');
+      r.onsuccess = e => res(e.target.result);
+      r.onerror = rej;
+    });
+    await new Promise((res, rej) => {
+      const tx = db.transaction('genomes', 'readwrite');
+      tx.objectStore('genomes').put({ genome, fitness: leader.fitness, t: Date.now() }, 'leader');
+      tx.oncomplete = res;
+      tx.onerror = rej;
+    });
+    bc.postMessage({ type: 'genome', genome, fitness: leader.fitness });
+    status.textContent = 'Leader sealed + broadcast';
+  } catch (e) {
+    status.textContent = 'Seal failed (IDB blocked?)';
+  }
+};
+bc.onmessage = e => {
+  if (e.data.type === 'genome' && agents.length) {
+    const weak = agents[agents.length-1];
+    weak.rnn.load(e.data.genome);
+    weak.fitness = e.data.fitness * 0.7;
+    status.textContent = 'Received remote genome';
+  }
+};
+
+initAgents();
+loop();
+window.__f211 = { agents, hand };
+</script>
+</body>
+</html>

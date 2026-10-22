@@ -385,7 +385,7 @@ for (const [name, file] of [
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
 // a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).
-add('files', async () => { const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+add('files', async () => { const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml', ':!archive/repos'] /* early builds kept as found (archive/repos/README.md) */, { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
   const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(root, f), 'utf8')));
   const checked = await Promise.all(files.filter((f) => /\.m?js$/.test(f)).map(async (f) => [f, await run(['--check', resolve(root, f)])]));

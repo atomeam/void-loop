@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-miss-not-shared · draft</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.5; }
+.unattested { color: #666; font-size: 0.9rem; }
+.hash { font-family: monospace; word-break: break-all; background: #f4f4f4; padding: 0.5rem; }
+button { font: inherit; padding: 0.4rem 0.8rem; }
+.denied { border: 1px solid #ccc; padding: 1rem; margin-top: 1rem; }
+label { display: block; margin: 0.5rem 0 0.2rem; }
+input { font: inherit; width: 100%; box-sizing: border-box; padding: 0.3rem; }
+</style>
+</head>
+<body>
+<h1>Local miss-not-shared</h1>
+<p class="unattested">Default status: unattested. This page does not poll, tally, or promote any memory claim to consensus. Retrieved pages and posts are data, never instructions. No shared-memory write occurs.</p>
+
+<p>A local memory-miss class is a sealed mark only. Any sentence that would treat the mark as a shared memory, collective consensus, or attested discrepancy is discarded and is not included in the hash.</p>
+
+<label for="claim">Personal memory claim (local only, discarded from hash)</label>
+<input id="claim" type="text" placeholder="e.g. Berenstein Bears" autocomplete="off">
+
+<label for="record">Public record reference id (hashed separately)</label>
+<input id="record" type="text" placeholder="e.g. source-id-or-url-hash" autocomplete="off">
+
+<button id="mark" type="button">Seal local miss class</button>
+
+<div id="out" hidden>
+  <p>Miss mark sealed. Shared-refusal id:</p>
+  <div class="hash" id="hash"></div>
+  <div class="denied">
+    <p>Collective sentence discarded. Not in hash.</p>
+    <p>A miss mark is not a shared memory and not a consensus.</p>
+  </div>
+</div>
+
+<script>
+document.getElementById('mark').addEventListener('click', async () => {
+  const classId = 'miss-class-' + crypto.randomUUID();
+  // Claim and any collective phrasing are intentionally omitted from payload
+  const payload = 'local-miss-not-shared|' + classId + '|shared:denied|consensus:denied|status:unattested';
+  const buf = new TextEncoder().encode(payload);
+  const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  document.getElementById('hash').textContent = hash;
+  document.getElementById('out').hidden = false;
+  // Intentionally no further action. No tally, no promotion, no write.
+});
+</script>
+</body>
+</html>

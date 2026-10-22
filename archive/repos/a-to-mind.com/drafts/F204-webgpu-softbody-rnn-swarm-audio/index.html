@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F204 · Softbody RNN Swarm Audio</title>
+<style>
+  body { margin: 0; background: #050510; color: #c0c8ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #c { display: block; width: 100vw; height: 100vh; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 20; background: rgba(0,0,20,0.75); padding: 10px 14px; border-radius: 10px; font-size: 13px; max-width: 280px; }
+  button { margin: 4px 2px; padding: 5px 10px; background: #1a2040; color: #a0b0ff; border: 1px solid #334; border-radius: 4px; cursor: pointer; }
+  .portal { position: absolute; width: 90px; height: 60px; background: rgba(30,40,80,0.65); border: 2px solid #668; border-radius: 12px; font-size: 11px; padding: 6px; pointer-events: none; transition: all 0.15s ease; text-align: center; }
+  #status { font-size: 11px; color: #8af; margin-top: 6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F204 · Softbody RNN Swarm</div>
+  <button id="pulse">Pulse Energy</button>
+  <button id="mute">Toggle Audio</button>
+  <div id="status">Click canvas or Pulse to start. Drag to influence.</div>
+</div>
+<div class="portal" id="p0">Portal 0</div>
+<div class="portal" id="p1">Portal 1</div>
+<div class="portal" id="p2">Portal 2</div>
+<div class="portal" id="p3">Portal 3</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 32;
+const NODES = N * N;
+let pos = new Float32Array(NODES * 2);
+let vel = new Float32Array(NODES * 2);
+let rest = new Float32Array(NODES * 2);
+function initLattice() {
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = (y * N + x) * 2;
+    pos[i] = (x / (N-1)) * 0.8 + 0.1;
+    pos[i+1] = (y / (N-1)) * 0.8 + 0.1;
+    rest[i] = pos[i]; rest[i+1] = pos[i+1];
+    vel[i] = vel[i+1] = 0;
+  }
+}
+initLattice();
+
+// Trajectory memory
+const TRAJ = 32;
+let traj = new Float32Array(TRAJ * 2);
+let trajIdx = 0;
+function pushTraj(x, y) {
+  traj[trajIdx * 2] = x; traj[trajIdx * 2 + 1] = y;
+  trajIdx = (trajIdx + 1) % TRAJ;
+}
+
+// Worker RNN swarm
+let worker;
+let forces = new Float32Array(NODES * 2);
+let agentActivity = 0;
+function startWorker() {
+  const code = `
+    const N = 32; const NODES = N*N;
+    // Simple RNN: hidden 8, input 6 (local pos delta, vel, traj avg, activity), output 2 force
+    let h = new Float32Array(NODES * 8);
+    let wIn = new Float32Array(6 * 8);
+    let wH = new Float32Array(8 * 8);
+    let wOut = new Float32Array(8 * 2);
+    for (let i = 0; i < wIn.length; i++) wIn[i] = (Math.random()-0.5)*0.3;
+    for (let i = 0; i < wH.length; i++) wH[i] = (Math.random()-0.5)*0.2;
+    for (let i = 0; i < wOut.length; i++) wOut[i] = (Math.random()-0.5)*0.4;
+    function rnnStep(i, input) {
+      const base = i * 8;
+      const newH = new Float32Array(8);
+      for (let j = 0; j < 8; j++) {
+        let s = 0;
+        for (let k = 0; k < 6; k++) s += input[k] * wIn[k*8 + j];
+        for (let k = 0; k < 8; k++) s += h[base + k] * wH[k*8 + j];
+        newH[j] = Math.tanh(s);
+      }
+      h.set(newH, base);
+      const out = [0,0];
+      for (let j = 0; j < 2; j++) {
+        for (let k = 0; k < 8; k++) out[j] += newH[k] * wOut[k*2 + j];
+        out[j] = Math.tanh(out[j]) * 0.02;
+      }
+      return out;
+    }
+    self.onmessage = e => {
+      const { pos, vel, traj, activity } = e.data;
+      const forces = new Float32Array(NODES * 2);
+      let act = 0;
+      const trajAvg = [0,0];
+      for (let t = 0; t < 32; t++) { trajAvg[0] += traj[t*2]; trajAvg[1] += traj[t*2+1]; }
+      trajAvg[0] /= 32; trajAvg[1] /= 32;
+      for (let i = 0; i < NODES; i++) {
+        const px = pos[i*2], py = pos[i*2+1];
+        const vx = vel[i*2], vy = vel[i*2+1];
+        const input = [
+          px - 0.5, py - 0.5,
+          vx * 10, vy * 10,
+          trajAvg[0] - px, trajAvg[1] - py
+        ];
+        const f = rnnStep(i, input);
+        forces[i*2] = f[0]; forces[i*2+1] = f[1];
+        act += Math.abs(f[0]) + Math.abs(f[1]);
+      }
+      self.postMessage({ forces, activity: act / NODES }, [forces.buffer]);
+    };
+  `;
+  const blob = new Blob([code], { type: 'application/javascript' });
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.onmessage = e => {
+    forces.set(e.data.forces);
+    agentActivity = e.data.activity;
+  };
+}
+try { startWorker(); statusEl.textContent = 'Worker RNN swarm active'; } catch(e) { statusEl.textContent = 'Worker fail, inline fallback'; }
+
+// Softbody step (CPU; WebGPU stub for novelty)
+function stepSoftbody() {
+  const damping = 0.92;
+  const stiffness = 0.15;
+  const kRest = 1.0 / (N-1);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = y * N + x;
+    const ix = i * 2;
+    // spring to rest
+    let fx = (rest[ix] - pos[ix]) * stiffness;
+    let fy = (rest[ix+1] - pos[ix+1]) * stiffness;
+    // neighbors
+    const neigh = [[1,0],[-1,0],[0,1],[0,-1]];
+    for (const [dx,dy] of neigh) {
+      const nx = x + dx, ny = y + dy;
+      if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+      const ni = (ny * N + nx) * 2;
+      const dist = Math.hypot(pos[ix]-pos[ni], pos[ix+1]-pos[ni+1]);
+      const target = Math.hypot(dx, dy) * kRest;
+      const force = (dist - target) * 0.08;
+      const ang = Math.atan2(pos[ni+1]-pos[ix+1], pos[ni]-pos[ix]);
+      fx += Math.cos(ang) * force;
+      fy += Math.sin(ang) * force;
+    }
+    // agent force
+    fx += forces[ix] || 0;
+    fy += forces[ix+1] || 0;
+    vel[ix] = (vel[ix] + fx) * damping;
+    vel[ix+1] = (vel[ix+1] + fy) * damping;
+    pos[ix] += vel[ix];
+    pos[ix+1] += vel[ix+1];
+    // bounds
+    pos[ix] = Math.max(0.02, Math.min(0.98, pos[ix]));
+    pos[ix+1] = Math.max(0.02, Math.min(0.98, pos[ix+1]));
+  }
+}
+
+// Audio
+let audioCtx, oscillators = [], panners = [];
+let audioOn = false;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i = 0; i < 3; i++) {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 180 + i * 40;
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0;
+    const pan = audioCtx.createPanner();
+    pan.panningModel = 'HRTF';
+    osc.connect(gain); gain.connect(pan); pan.connect(audioCtx.destination);
+    osc.start();
+    oscillators.push({ osc, gain });
+    panners.push(pan);
+  }
+  audioOn = true;
+  statusEl.textContent += ' · Audio live';
+}
+
+function updateAudio() {
+  if (!audioOn || !audioCtx) return;
+  const peaks = [];
+  for (let i = 0; i < NODES; i += 40) {
+    const ke = vel[i*2]**2 + vel[i*2+1]**2;
+    peaks.push({ ke, x: pos[i*2], y: pos[i*2+1] });
+  }
+  peaks.sort((a,b) => b.ke - a.ke);
+  for (let i = 0; i < 3; i++) {
+    const p = peaks[i] || { ke: 0, x: 0.5, y: 0.5 };
+    oscillators[i].gain.gain.setTargetAtTime(Math.min(0.15, p.ke * 8 + agentActivity * 2), audioCtx.currentTime, 0.05);
+    oscillators[i].osc.frequency.setTargetAtTime(160 + p.ke * 400, audioCtx.currentTime, 0.05);
+    if (panners[i].positionX) {
+      panners[i].positionX.setValueAtTime((p.x - 0.5) * 4, audioCtx.currentTime);
+      panners[i].positionZ.setValueAtTime((p.y - 0.5) * 2, audioCtx.currentTime);
+    }
+  }
+}
+
+// Portals
+const portals = [0,1,2,3].map(i => ({
+  el: document.getElementById('p'+i),
+  tx: 0.25 + (i%2)*0.5,
+  ty: 0.25 + Math.floor(i/2)*0.5
+}));
+
+function sampleStrain(tx, ty) {
+  const x = Math.floor(tx * (N-1)), y = Math.floor(ty * (N-1));
+  const i = (y * N + x) * 2;
+  const dx = pos[i] - rest[i], dy = pos[i+1] - rest[i+1];
+  return Math.hypot(dx, dy);
+}
+
+function render() {
+  ctx.fillStyle = '#050510';
+  ctx.fillRect(0, 0, W, H);
+  // draw lattice
+  ctx.strokeStyle = 'rgba(100,120,200,0.35)';
+  ctx.lineWidth = 1;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = (y * N + x) * 2;
+    const px = pos[i] * W, py = pos[i+1] * H;
+    if (x < N-1) {
+      const ni = (y * N + x + 1) * 2;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(pos[ni]*W, pos[ni+1]*H); ctx.stroke();
+    }
+    if (y < N-1) {
+      const ni = ((y+1) * N + x) * 2;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(pos[ni]*W, pos[ni+1]*H); ctx.stroke();
+    }
+    const ke = vel[i]**2 + vel[i+1]**2;
+    if (ke > 0.0001) {
+      ctx.fillStyle = `hsla(${200 + ke*2000}, 70%, 60%, 0.6)`;
+      ctx.beginPath(); ctx.arc(px, py, 1.5 + ke*40, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  // portals
+  portals.forEach((p, i) => {
+    const strain = sampleStrain(p.tx, p.ty);
+    const px = p.tx * W, py = p.ty * H;
+    p.el.style.left = (px - 45) + 'px';
+    p.el.style.top = (py - 30) + 'px';
+    p.el.style.transform = `scale(${0.7 + strain * 3})`;
+    p.el.style.borderRadius = (8 + strain * 20) + 'px';
+    p.el.style.borderColor = `hsl(${220 + strain * 100}, 70%, 60%)`;
+    p.el.style.opacity = 0.5 + Math.min(0.5, agentActivity * 5);
+    p.el.textContent = `P${i} s:${strain.toFixed(3)}`;
+  });
+}
+
+let lastWorker = 0;
+function loop(t) {
+  if (worker && t - lastWorker > 33) {
+    worker.postMessage({ pos: pos.slice(), vel: vel.slice(), traj: traj.slice(), activity: agentActivity });
+    lastWorker = t;
+  }
+  stepSoftbody();
+  updateAudio();
+  render();
+  requestAnimationFrame(loop);
+}
+
+// Input
+let dragging = false;
+canvas.addEventListener('pointerdown', e => {
+  dragging = true;
+  initAudio();
+  const x = e.clientX / W, y = e.clientY / H;
+  pushTraj(x, y);
+  // pulse nearby
+  const gx = Math.floor(x * (N-1)), gy = Math.floor(y * (N-1));
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+    const nx = gx+dx, ny = gy+dy;
+    if (nx>=0 && nx<N && ny>=0 && ny<N) {
+      const i = (ny*N + nx)*2;
+      vel[i] += (Math.random()-0.5)*0.02;
+      vel[i+1] += (Math.random()-0.5)*0.02;
+    }
+  }
+});
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const x = e.clientX / W, y = e.clientY / H;
+  pushTraj(x, y);
+});
+canvas.addEventListener('pointerup', () => dragging = false);
+
+document.getElementById('pulse').onclick = () => {
+  initAudio();
+  for (let i = 0; i < NODES; i += 3) {
+    vel[i*2] += (Math.random()-0.5)*0.015;
+    vel[i*2+1] += (Math.random()-0.5)*0.015;
+  }
+};
+document.getElementById('mute').onclick = () => {
+  if (audioCtx) audioCtx.suspend().then(() => audioCtx.resume());
+};
+
+requestAnimationFrame(loop);
+statusEl.textContent = worker ? 'Worker ready · Click to start audio' : 'Inline mode · Click to start';
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blanked prompt card — draft 068</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4efe6;
+      --line: #c9bfb0;
+      --hold: #8a3d2b;
+      --quiet: #5e584f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3ecdf;
+        --paper: #1b1916;
+        --line: #3d3832;
+        --hold: #e0a090;
+        --quiet: #b7ad9f;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
+    p.note { color: var(--quiet); font-size: 0.92rem; }
+    .hold { color: var(--hold); font-weight: 600; }
+    form, section { border: 1px solid var(--line); padding: 1rem; margin: 1rem 0; }
+    label { display: block; margin: 0.6rem 0 0.25rem; }
+    textarea, select, input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.4rem;
+    }
+    button { font: inherit; margin: 0.4rem 0.4rem 0 0; }
+    button:disabled { opacity: 0.45; }
+    #blank-well {
+      min-height: 4.5rem;
+      border: 1px dashed var(--line);
+      padding: 0.6rem;
+    }
+    #receipt { white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.82rem; }
+    .denied { font-size: 0.88rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="hold">Draft only. Status unattested. Not a seal. emit false.</p>
+    <h1>Blanked prompt card</h1>
+    <p class="note">Run 068. Family: private incubation log. A prompt is hashed and removed. A later residue is a hypothesis that something was set aside. The card does not score the residue, does not play a cue, and does not claim a dream.</p>
+
+    <form id="card" action="javascript:void(0)">
+      <div id="blank-well">
+        <label for="prompt">Prompt to set aside</label>
+        <textarea id="prompt" name="prompt" maxlength="280" rows="3" placeholder="One theme. Not an instruction to the page."></textarea>
+      </div>
+      <label for="window">Closed window</label>
+      <select id="window" name="window">
+        <option value="5">5 minutes</option>
+        <option value="10" selected>10 minutes</option>
+        <option value="15">15 minutes</option>
+      </select>
+      <p class="denied" id="clock">Device clock. Not a sleep stage. No audio at the end.</p>
+      <button type="button" id="seal">Seal and blank</button>
+      <button type="button" id="reveal" disabled>Reveal prompt (breaks the blank)</button>
+    </form>
+
+    <section>
+      <label for="residue">Residue after the window</label>
+      <textarea id="residue" maxlength="280" rows="4" disabled placeholder="Stays closed until the window ends."></textarea>
+      <label for="weight">Design-material weight (0 to 1)</label>
+      <input id="weight" type="number" min="0" max="1" step="0.01" value="0.28">
+      <p class="denied">Match scoring denied. Paste is data, never an instruction.</p>
+      <button type="button" id="hash" disabled>Hash residue</button>
+      <button type="button" id="export" disabled>Download local receipt</button>
+      <label><input id="keep" type="checkbox"> Keep this card on this device only</label>
+      <button type="button" id="clear">Clear on-device copy</button>
+      <p id="receipt" aria-live="polite">No receipt yet. Status remains unattested.</p>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var CATALOG = { "5": 5, "10": 10, "15": 15 };
+      var promptHash = "";
+      var promptPlain = "";
+      var blankBroken = false;
+      var windowMinutes = 0;
+      var endsAt = 0;
+      var timer = 0;
+      var residueSealed = false;
+
+      function strip(value) {
+        return String(value || "").replace(/<[^>]*>/g, "").slice(0, 280);
+      }
+
+      function sha256(text) {
+        var bytes = new TextEncoder().encode(text);
+        return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+          return Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+        });
+      }
+
+      function removePromptNode() {
+        var node = document.getElementById("prompt");
+        if (node && node.parentNode) node.parentNode.removeChild(node);
+      }
+
+      function tick() {
+        var left = Math.max(0, endsAt - Date.now());
+        var clock = document.getElementById("clock");
+        if (left === 0) {
+          clearInterval(timer);
+          clock.textContent = "Window ended on the device clock. Not a sleep stage.";
+          document.getElementById("residue").disabled = false;
+          document.getElementById("hash").disabled = false;
+          return;
+        }
+        var mins = Math.floor(left / 60000);
+        var secs = Math.floor((left % 60000) / 1000);
+        clock.textContent = "Device clock " + mins + "m " + secs + "s left. Not a sleep stage. No cue will play.";
+      }
+
+      document.getElementById("seal").addEventListener("click", function () {
+        var node = document.getElementById("prompt");
+        if (!node || promptHash) return;
+        var text = strip(node.value).trim();
+        if (!text) return;
+        windowMinutes = CATALOG[document.getElementById("window").value] || 10;
+        sha256(text).then(function (digest) {
+          promptHash = digest;
+          promptPlain = text;
+          node.value = "";
+          removePromptNode();
+          document.getElementById("seal").disabled = true;
+          document.getElementById("window").disabled = true;
+          document.getElementById("reveal").disabled = false;
+          endsAt = Date.now() + windowMinutes * 60000;
+          tick();
+          timer = setInterval(tick, 1000);
+        });
+      });
+
+      document.getElementById("reveal").addEventListener("click", function () {
+        if (!promptPlain) return;
+        blankBroken = true;
+        var well = document.getElementById("blank-well");
+        var shown = document.createElement("p");
+        shown.textContent = "Blank broken. Prompt was: " + promptPlain;
+        well.appendChild(shown);
+        document.getElementById("reveal").disabled = true;
+        document.getElementById("receipt").textContent = "Blank broken. Status remains unattested. Reveal is not a score.";
+      });
+
+      document.getElementById("residue").addEventListener("paste", function (event) {
+        event.preventDefault();
+        var data = strip((event.clipboardData || window.clipboardData).getData("text"));
+        document.execCommand("insertText", false, data);
+      });
+
+      document.getElementById("hash").addEventListener("click", function () {
+        if (!promptHash || document.getElementById("residue").disabled) return;
+        var residue = strip(document.getElementById("residue").value).trim();
+        var weight = Number(document.getElementById("weight").value);
+        if (!(weight >= 0 && weight <= 1)) weight = 0.28;
+        var body = [
+          "slug=local-blanked-prompt-card",
+          "prompt_sha256=" + promptHash,
+          "window_min=" + windowMinutes,
+          "blank_broken=" + blankBroken,
+          "residue=" + residue,
+          "weight=" + weight,
+          "status=unattested"
+        ].join("\n");
+        sha256(body).then(function (digest) {
+          residueSealed = true;
+          var line = [
+            "status: unattested",
+            "blank_broken: " + blankBroken,
+            "residue_empty: " + (residue.length === 0),
+            "match_score: denied",
+            "card_sha256: " + digest
+          ].join("\n");
+          document.getElementById("receipt").textContent = line;
+          document.getElementById("export").disabled = false;
+          if (document.getElementById("keep").checked) {
+            try {
+              localStorage.setItem("void-blanked-prompt-068", JSON.stringify({
+                card_sha256: digest,
+                status: "unattested",
+                blank_broken: blankBroken
+              }));
+            } catch (err) {}
+          }
+        });
+      });
+
+      document.getElementById("export").addEventListener("click", function () {
+        var blob = new Blob([document.getElementById("receipt").textContent], { type: "text/plain" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "blanked-prompt-receipt.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById("clear").addEventListener("click", function () {
+        try { localStorage.removeItem("void-blanked-prompt-068"); } catch (err) {}
+      });
+    }());
+  </script>
+</body>
+</html>

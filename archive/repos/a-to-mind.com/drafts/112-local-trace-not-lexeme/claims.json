@@ -1,0 +1,38 @@
+{
+  "slug": "local-trace-not-lexeme",
+  "run": 112,
+  "family": "non-lexical intent capture",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": 0.2,
+  "one_line": "A sealed trace class hashes to a lexeme-refusal id. The lexeme sentence is discarded and is not in the hash. A trace is not a lexeme and not a decoded intention.",
+  "canonical": "trace-not-lexeme|v1|<contour>|<name-floor>|<hold>|lexeme-refusal",
+  "catalog": [
+    ["arc", "unlabeled", "held"],
+    ["break", "unlabeled", "held"],
+    ["loop", "untimed", "held"],
+    ["gap", "below-name", "held"],
+    ["abstain", "abstain", "abstain"],
+    ["local-only", "unnamed", "held"]
+  ],
+  "discarded_fields": ["lexeme_sentence"],
+  "allowlist": [],
+  "denied": [
+    "word-field",
+    "decoder",
+    "letter-board",
+    "facilitator",
+    "inner-speech-decoder",
+    "wpm-score",
+    "vocabulary-size",
+    "mind-read-badge",
+    "microphone",
+    "camera",
+    "implant",
+    "contact",
+    "healing",
+    "crash-retrieval",
+    "extraterrestrial-hardware"
+  ]
+}

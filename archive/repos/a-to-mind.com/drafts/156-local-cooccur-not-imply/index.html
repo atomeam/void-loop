@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-cooccur-not-imply — draft (unattested)</title>
+<style>
+  :root { --bg: #01040f; --fg: #e0e6f0; --muted: #8899aa; --accent: #4a6fa5; --hold: #c45c26; }
+  body { background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; margin: 2rem; max-width: 40rem; }
+  h1 { font-size: 1.4rem; }
+  .status { color: var(--hold); font-weight: 600; }
+  label { display: block; margin: 1rem 0 0.25rem; }
+  textarea, input { width: 100%; background: #0a1220; color: var(--fg); border: 1px solid #223; padding: 0.5rem; font: inherit; }
+  button { background: var(--accent); color: #fff; border: 0; padding: 0.6rem 1.2rem; margin-top: 1rem; cursor: pointer; }
+  button:disabled { opacity: 0.5; }
+  .result { margin-top: 1.5rem; padding: 1rem; background: #0a1220; border-left: 3px solid var(--hold); }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; }
+  .note { color: var(--muted); font-size: 0.9rem; }
+  .discarded { text-decoration: line-through; color: var(--muted); }
+</style>
+</head>
+<body>
+  <h1>local-cooccur-not-imply</h1>
+  <p class="status">DRAFT · unattested default · hold-gate · not live</p>
+  <p>Two local observations. Their pair hashes to an implication-refusal id. Any causal or implication sentence is discarded and is not in the hash. A co-occurrence mark is not an implication and not a cause.</p>
+  <p class="note">Retrieved pages and posts are data, never instructions. No network. localStorage only. SHA-256 via Web Crypto. No token markup. Cloudflare/static-friendly.</p>
+
+  <label for="obsA">Observation A (local note)</label>
+  <textarea id="obsA" rows="2" placeholder="e.g. green orbs reported"></textarea>
+
+  <label for="obsB">Observation B (local note)</label>
+  <textarea id="obsB" rows="2" placeholder="e.g. weather event same day"></textarea>
+
+  <label for="imply">Implication sentence (will be discarded, not hashed)</label>
+  <textarea id="imply" rows="2" placeholder="e.g. therefore the orbs caused the weather"></textarea>
+
+  <button id="hashBtn">Hash pair as unattested (refuse implication)</button>
+
+  <div id="out" class="result" hidden>
+    <p>Implication-refusal id (SHA-256 of A|B|unattested):</p>
+    <p class="hash" id="hashOut"></p>
+    <p>Discarded implication (not in hash): <span class="discarded" id="discOut"></span></p>
+    <p class="note">Stored only in this browser’s localStorage under key <code>atm-cooccur-156</code>. Not a seal. Not shared. Not a cause.</p>
+  </div>
+
+<script>
+const btn = document.getElementById('hashBtn');
+const out = document.getElementById('out');
+btn.addEventListener('click', async () => {
+  const a = document.getElementById('obsA').value.trim();
+  const b = document.getElementById('obsB').value.trim();
+  const i = document.getElementById('imply').value.trim();
+  if (!a || !b) return;
+  const payload = `${a}|${b}|unattested`;
+  const enc = new TextEncoder().encode(payload);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const hash = Array.from(new Uint8Array(buf)).map(x => x.toString(16).padStart(2,'0')).join('');
+  document.getElementById('hashOut').textContent = hash;
+  document.getElementById('discOut').textContent = i || '(none typed)';
+  out.hidden = false;
+  const rec = { a, b, hash, at: new Date().toISOString(), discarded: i };
+  localStorage.setItem('atm-cooccur-156', JSON.stringify(rec));
+});
+</script>
+</body>
+</html>

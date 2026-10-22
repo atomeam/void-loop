@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glass-box view source · A-to-Mind draft 019</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. First-party attested source catalog. Not a proxy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 36rem; }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"] { color: var(--bad); }
+    .receipt[data-status="match"], .receipt[data-status="unattested"] { color: var(--amber); }
+    .receipt[data-status="denied"], .receipt[data-status="hold"] { color: var(--amber); }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    ol.arts { list-style: none; margin-top: 1rem; padding: 0; border: 1px solid var(--rule); }
+    ol.arts li { padding: 0.85rem 1rem; border-top: 1px solid var(--rule); }
+    ol.arts li:first-child { border-top: 0; }
+    ol.arts .role { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    ol.arts a { color: var(--fg); }
+    .bytes { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .bytes[data-bytes="unattested"] { color: var(--amber); }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 019 · hold-gate · not on the live room</p>
+    <h1>Glass-box view source</h1>
+    <p class="lede">First-party public artifacts only. This page does not fetch other origins, does not serialize the live DOM, and does not dump the Worker. A git blob is not what Cloudflare served.</p>
+
+    <h2>Allowlisted artifacts</h2>
+    <ol class="arts" id="art-list">
+      <li data-canonical="art#llms.txt|href:https://a-to-mind.com/llms.txt|kind:text|role:agent-notes|bytes:unattested" data-sha="3444e99d4f80c1cd8fb05f0aeea7540dbab76c569cc4ae6b76312593e4c574f3">
+        <div class="role">agent-notes</div>
+        <a href="https://a-to-mind.com/llms.txt" data-listed="1">https://a-to-mind.com/llms.txt</a>
+        <div class="bytes" data-bytes="unattested">bytes: unattested · claim <span class="hash-flag">…</span></div>
+      </li>
+      <li data-canonical="art#agent-card|href:https://a-to-mind.com/.well-known/agent-card.json|kind:json|role:agent-card|bytes:git-blob" data-sha="6c0e61b79d6ea97ba62a607b518cc0b3cef991878001c613eaaa28c595201ec7">
+        <div class="role">agent-card</div>
+        <a href="https://a-to-mind.com/.well-known/agent-card.json" data-listed="1">https://a-to-mind.com/.well-known/agent-card.json</a>
+        <div class="bytes" data-bytes="git-blob">bytes: git-blob 005cf262… · content fd5cba3f… · not served · claim <span class="hash-flag">…</span></div>
+      </li>
+      <li data-canonical="art#ledger|href:https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md|kind:markdown|role:feature-ledger|bytes:unattested" data-sha="822276c39b09a27716401f9d60a56c2fcb52cab52e1b5830c078e489b5e9af3f">
+        <div class="role">feature-ledger</div>
+        <a href="https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md" data-listed="1">FEATURE_LEDGER.md (raw)</a>
+        <div class="bytes" data-bytes="unattested">bytes: unattested · this file changes every run · claim <span class="hash-flag">…</span></div>
+      </li>
+      <li data-canonical="art#repo|href:https://github.com/atomeam/a-to-mind.com|kind:html|role:public-repo|bytes:unattested" data-sha="92a1a289243dfe921d2509325116aeaaf0a70ac70a31833bb35005ea2a1e416d">
+        <div class="role">public-repo</div>
+        <a href="https://github.com/atomeam/a-to-mind.com" data-listed="1">https://github.com/atomeam/a-to-mind.com</a>
+        <div class="bytes" data-bytes="unattested">bytes: unattested · GitHub HTML is not our edge · claim <span class="hash-flag">…</span></div>
+      </li>
+      <li data-canonical="art#index|href:https://a-to-mind.com/|kind:html|role:homepage|bytes:unattested" data-sha="baa1e3a29bbe7ca22778063bc09ca91d554fa453b77778f58ba5d1b588b6f7ec">
+        <div class="role">homepage</div>
+        <a href="https://a-to-mind.com/" data-listed="1">https://a-to-mind.com/</a>
+        <div class="bytes" data-bytes="unattested">bytes: unattested · no dated snapshot sealed · claim <span class="hash-flag">…</span></div>
+      </li>
+    </ol>
+
+    <div class="actions">
+      <button type="button" class="primary" id="verify-catalog" data-canonical="invoker#verify|id:verify-catalog|transport:local|network:deny" data-sha="a18ae7b7c9ad666c1d5b353296aa1fef3854441eae872a72a80fca4b38f7f504">Verify catalog</button>
+      <button type="button" id="fetch-any" data-canonical="invoker#fetch-any|id:fetch-any|write:deny|network:deny" data-sha="18c77b6f1c0e1c5f20b59f711271b1ef7a65a6ef2ea7f1fc3fdf80f3ae5e8863">Fetch any URL</button>
+      <button type="button" id="show-dom" data-canonical="invoker#show-dom|id:show-dom|write:deny|network:deny" data-sha="69e278553f8f9e2c48b119ea1c2dc31c38147a3cb930bfd721d6151195a6460c">Show live DOM</button>
+      <button type="button" id="dump-worker" data-canonical="invoker#dump-worker|id:dump-worker|write:deny|network:deny" data-sha="7c8c573af5ad5a3c5ef4ba08c317c0fca6c7de092d7d957197dca26d0111f843">Dump Worker</button>
+    </div>
+    <p class="receipt" id="receipt" data-status="idle" role="status">idle · catalog unverified</p>
+
+    <section class="claims" id="claims">
+      <h2>Attested lines</h2>
+      <ul>
+        <li data-canonical="source#019|kind:glassbox-view-source|scope:first-party-allowlist|fetch-any:deny|dom:deny|hash:sha256|seal:human" data-sha="dfec097a3bd895c8c087fe3c47a6bcf2d3c30da8746250f4069a5af3c4f83a70">
+          <span class="hash-flag">…</span>
+          Contract. First-party allowlist. Fetch-any deny. DOM deny.
+        </li>
+        <li data-canonical="claim#scope|text:This page lists attested first-party public artifacts. It does not fetch other origins." data-sha="fe103313d5acfa8beaf649e29366d8c62bb68ebbf7efabd0e5e3a99f2a343b65">
+          <span class="hash-flag">…</span>
+          This page lists attested first-party public artifacts. It does not fetch other origins.
+        </li>
+        <li data-canonical="claim#bytes|text:A hash is of a published claim or git blob. It is not the live DOM after scripts run." data-sha="8c2ae5f3d54e04b8e9b3958a2b4e8c06e216cbdc5690526b04d98316b64cbffd">
+          <span class="hash-flag">…</span>
+          A hash is of a published claim or git blob. It is not the live DOM after scripts run.
+        </li>
+        <li data-canonical="claim#git|text:A GitHub blob SHA is not a grant and is not proof of what Cloudflare served." data-sha="9493826dc7beee3cad9f2b2ddb38a1a6881ce11e5f3337d5788f54a9d9c81877">
+          <span class="hash-flag">…</span>
+          A GitHub blob SHA is not a grant and is not proof of what Cloudflare served.
+        </li>
+        <li data-canonical="claim#deny|text:View-source of an arbitrary URL is denied. This page is not a proxy." data-sha="1051341ac36d811cf306f594074648c02f0eba85f825c7fe943e68205d0daeec">
+          <span class="hash-flag">…</span>
+          View-source of an arbitrary URL is denied. This page is not a proxy.
+        </li>
+        <li data-canonical="claim#secrets|text:Grants, KV, Worker internals, and unsealed drafts are not listed." data-sha="2c276904f76c5910b1014175258207f9b4e0c86db9cbab0e305d587e5f42ced4">
+          <span class="hash-flag">…</span>
+          Grants, KV, Worker internals, and unsealed drafts are not listed.
+        </li>
+        <li data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+          <span class="hash-flag">…</span>
+          This page does not price tokens and does not pitch Void Monthly.
+        </li>
+        <li data-canonical="page#source|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="baffef5b80d78017b66d5ffaff0dfeea3148330a18db3cf32f000514a63c98e2">
+          <span class="hash-flag">…</span>
+          Draft route. noindex. No cookie. No write.
+        </li>
+      </ul>
+      <p class="mono" id="verify">verifying…</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 019</span>
+  </footer>
+  <script>
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha256 = async (text) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+    let attested = false;
+
+    async function checkNode(el) {
+      const line = el.getAttribute("data-canonical");
+      const expect = el.getAttribute("data-sha");
+      if (!line || !expect) return false;
+      const got = await sha256(line);
+      const ok = got === expect;
+      const flags = el.querySelectorAll(".hash-flag");
+      flags.forEach((flag) => {
+        flag.textContent = ok ? "ok " + got.slice(0, 8) : "mismatch";
+        flag.className = "hash-flag " + (ok ? "ok" : "bad");
+      });
+      return ok;
+    }
+
+    function setReceipt(status, text) {
+      const node = document.getElementById("receipt");
+      node.dataset.status = status;
+      node.textContent = text;
+    }
+
+    async function verifyAll() {
+      const nodes = [...document.querySelectorAll("[data-canonical][data-sha]")];
+      const flags = await Promise.all(nodes.map(checkNode));
+      attested = flags.every(Boolean);
+      const bodyLines = [
+        "source#019|kind:glassbox-view-source|scope:first-party-allowlist|fetch-any:deny|dom:deny|hash:sha256|seal:human",
+        "claim#scope|text:This page lists attested first-party public artifacts. It does not fetch other origins.",
+        "claim#bytes|text:A hash is of a published claim or git blob. It is not the live DOM after scripts run.",
+        "claim#git|text:A GitHub blob SHA is not a grant and is not proof of what Cloudflare served.",
+        "claim#deny|text:View-source of an arbitrary URL is denied. This page is not a proxy.",
+        "claim#secrets|text:Grants, KV, Worker internals, and unsealed drafts are not listed.",
+        "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+        "page#source|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      ];
+      const bodySha = await sha256(bodyLines.join("\n") + "\n");
+      const headSha = await sha256('{"algo":"sha256","kind":"glassbox-view-source","scope":"first-party-allowlist","fetch_any":false,"dom":false}');
+      const bodyOk = bodySha === "09022326bfa0c385cc96d1528e923ad8fac639b057171fe18085042292046864";
+      const headOk = headSha === "ee96e7468f7cb8941869bec68a9c6a7d0b59d6d327610b5f38049989df2eaf8a";
+      attested = attested && bodyOk && headOk;
+      document.getElementById("verify").textContent =
+        "body " + bodySha.slice(0, 12) + (bodyOk ? " ok" : " mismatch") +
+        " · head " + headSha.slice(0, 12) + (headOk ? " ok" : " mismatch");
+      if (!attested) setReceipt("mismatch", "mismatch · refuse to call this catalog attested");
+      else setReceipt("match", "match · claims ok · served bytes still unattested · contract dfec097a…");
+      return attested;
+    }
+
+    document.getElementById("verify-catalog").addEventListener("click", () => {
+      verifyAll();
+    });
+
+    document.getElementById("fetch-any").addEventListener("click", () => {
+      setReceipt("denied", "denied · this page is not a proxy · no fetch");
+    });
+
+    document.getElementById("show-dom").addEventListener("click", () => {
+      setReceipt("denied", "denied · live DOM is not view-source · nothing serialized");
+    });
+
+    document.getElementById("dump-worker").addEventListener("click", () => {
+      setReceipt("denied", "denied · Worker internals stay off the catalog");
+    });
+
+    verifyAll();
+  </script>
+</body>
+</html>

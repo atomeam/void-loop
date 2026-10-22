@@ -1,0 +1,40 @@
+{
+  "slug": "local-bin-not-spike",
+  "run": 123,
+  "family": "quiet-signal filter",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": "low",
+  "hypothesis": "A sealed bin class hashes to a spike-refusal id. The spike sentence is discarded and is not in the hash. A bin mark is not a spike and not a candidate.",
+  "canonical": "bin-not-spike|v1|<source>|<occupancy>|<hold>|spike-refusal",
+  "catalog": [
+    "empty|unlabeled|held",
+    "residue|unlabeled|held",
+    "neighbor|unlabeled|held",
+    "counterclaim|below-label|held",
+    "abstain|abstain|abstain",
+    "local-only|untimed|held"
+  ],
+  "discarded_not_hashed": ["spike sentence"],
+  "denied": [
+    "spike",
+    "candidate",
+    "power ratio",
+    "24-times-mean threshold",
+    "SNR number",
+    "FFT",
+    "microphone",
+    "AudioContext",
+    "promote control",
+    "contact",
+    "healing",
+    "crash retrieval",
+    "extraterrestrial hardware"
+  ],
+  "sources_as_data": [
+    "SETI@home spike definition, Astronomical Journal 2025, 24x mean power is a detection not a message",
+    "ITU-R RA.769 detrimental interference near 10 percent of system noise; flagged bins are ignored",
+    "x-scan.md post ids, not rows"
+  ]
+}

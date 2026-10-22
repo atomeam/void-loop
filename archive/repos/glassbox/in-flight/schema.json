@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InFlightClaimBatch",
+  "type": "object",
+  "required": ["target", "promote", "approval", "claims"],
+  "properties": {
+    "target": { "type": "string", "const": "github:atomeam/glassbox" },
+    "promote": { "type": "boolean", "const": false },
+    "approval": { "type": "string", "const": "required" },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "persona",
+          "text",
+          "status",
+          "kind",
+          "source_url",
+          "proof_quote",
+          "attested_at",
+          "expires_at",
+          "content_hash",
+          "prior_claim_ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^mem-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[a-z0-9-]+$"
+          },
+          "persona": { "type": "string" },
+          "text": { "type": "string", "maxLength": 280 },
+          "status": { "type": "string", "const": "UNVERIFIED" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "market_signal",
+              "tool_capability",
+              "monetization",
+              "architecture_lesson"
+            ]
+          },
+          "source_url": { "type": "string", "format": "uri" },
+          "proof_quote": { "type": "string" },
+          "attested_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "prior_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "corroborations": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": [
+          "action",
+          "existing_claim_id",
+          "source_url",
+          "tick",
+          "attested_at"
+        ],
+        "properties": {
+          "action": { "type": "string", "const": "corroborate" },
+          "existing_claim_id": { "type": "string" },
+          "source_url": { "type": "string", "format": "uri" },
+          "tick": { "type": "string" },
+          "metric_update": { "type": "string" },
+          "attested_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "proposed_files": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": ["repo", "path", "action"],
+        "properties": {
+          "repo": { "type": "string" },
+          "path": { "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": ["create", "replace", "patch"]
+          },
+          "content": { "type": "string" },
+          "diff": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

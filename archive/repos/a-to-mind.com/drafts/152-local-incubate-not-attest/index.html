@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Local incubate-not-attest — draft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.5; }
+.unattested { border: 1px solid #ccc; padding: 1rem; background: #fafafa; }
+.hash { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+.refusal { color: #666; font-style: italic; }
+button { margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<h1>Local incubate-not-attest</h1>
+<p>Draft only. Private incubation observation. Default unattested. Not a seal. Not a shared log. Not an attested experience.</p>
+<div class="unattested">
+<label>Local observation (discarded after hash; never stored or sent):<br>
+<textarea id="obs" rows="4" cols="50" placeholder="Describe a transitional state only. Claim sentences will be refused."></textarea>
+</label>
+<br>
+<button id="hashBtn" type="button">Hash local class (client-side)</button>
+<p id="out" class="hash"></p>
+<p class="refusal">An incubation mark is not an attested experience and not a shared log. Claim sentence discarded. Unattested default.</p>
+</div>
+<script>
+document.getElementById('hashBtn').addEventListener('click', async () => {
+  const text = document.getElementById('obs').value.trim();
+  if (!text) { document.getElementById('out').textContent = 'Empty. Nothing hashed.'; return; }
+  const encoder = new TextEncoder();
+  const data = encoder.encode('incubate-not-attest|' + text + '|unattested');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  document.getElementById('out').textContent = 'SHA-256: ' + hashHex + '\nStatus: unattested local class. Refusal id generated. No storage. No share. No claim.';
+  document.getElementById('obs').value = ''; // discard
+});
+</script>
+</body>
+</html>

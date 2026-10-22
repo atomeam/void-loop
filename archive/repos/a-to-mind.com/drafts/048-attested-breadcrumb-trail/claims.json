@@ -1,0 +1,22 @@
+{
+  "slug": "attested-breadcrumb-trail",
+  "run": 48,
+  "status": "candidate",
+  "emit": false,
+  "reviewed_at": null,
+  "contract": "breadcrumbs#048|kind:attested-breadcrumb-trail|crumbs:catalog-only|url-infer:deny|current-page:text|wrap:yes|truncate:deny|jsonld:deny-until-seal|microdata:deny|home-icon:deny|rich-result-badge:deny|seal:human",
+  "contract_sha256": "e9907c0ae8a91bb79cb6b8d474d210054b77705dadfbca5455ba6b0d216286e0",
+  "catalog_sha256": "4eca76030ea3c6d5002a1018f1e4353d65429162917beb2115c82fe433b5f954",
+  "catalog_embed_sha256": "ad03f09fe85f07a651180ed737b62116f7a68533b3f6c61007462b46d1cd51e0",
+  "denies": [
+    "url-path-inference",
+    "house-icon",
+    "ellipsis-truncation",
+    "current-page-as-link",
+    "jsonld-until-human-seal",
+    "microdata",
+    "multiple-seo-trails",
+    "rich-result-badge",
+    "live-site-publish"
+  ]
+}

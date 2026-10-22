@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local lift-not-confirm (draft)</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1a1c19; --line: #b7c0b4; --paper: #f3f6f1; --mark: #2f5d50; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #e7f0e8; --line: #3d4a42; --paper: #121614; --mark: #9dcebb; }
+  }
+  body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: -0.02em; }
+  .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+  .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+  .pad { margin: 1rem 0; border: 1px dashed var(--line); min-height: 7.5rem; display: grid; place-items: center; touch-action: none; user-select: none; }
+  .pad[data-open="no"] { opacity: 0.55; }
+  .pad strong { font: 0.8rem/1.3 ui-monospace, monospace; letter-spacing: 0.04em; }
+  .mark { width: 2.2rem; height: 0.35rem; background: var(--mark); margin-top: 0.6rem; }
+  fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+  legend { padding: 0 0.3rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+  label.opt:has(input:checked) { border-color: var(--mark); }
+  textarea, input[type="text"] { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+  .scratch { text-decoration: line-through; opacity: 0.72; min-height: 1.2rem; }
+  button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+  button[disabled] { opacity: 0.45; }
+  pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+  .check { display: block; margin: 0.35rem 0; }
+  p.note, p.hint { font-size: 0.92rem; }
+  .hint { border-left: 3px solid var(--mark); padding-left: 0.6rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Draft 095 · unattested · not a seal.</strong> Emit is false. A pointer lift is not a confirm and not a gaze commit. No camera. No dwell timer. Coordinates are not stored.</p>
+  <h1>Local lift-not-confirm</h1>
+  <p class="note">Opt in for this load only. Press and lift on the pad, or pick a sealed class. The confirm sentence is counted and discarded. It is not in the hash.</p>
+  <label class="check"><input type="checkbox" id="opt"> Session opt-in for the local pad. Unchecked on load. Not saved.</label>
+  <div class="pad" id="pad" data-open="no" role="img" aria-label="Local pad. A lift mark is not a target.">
+    <div>
+      <strong id="pad-label">idle · no aim</strong>
+      <div class="mark" hidden id="lift-mark"></div>
+    </div>
+  </div>
+  <form id="form">
+    <fieldset>
+      <legend>Lift class</legend>
+      <div class="row" id="lifts">
+        <label class="opt"><input type="radio" name="lift" value="idle" checked> idle</label>
+        <label class="opt"><input type="radio" name="lift" value="down-unlifted"> down-unlifted</label>
+        <label class="opt"><input type="radio" name="lift" value="lifted"> lifted</label>
+        <label class="opt"><input type="radio" name="lift" value="cancelled"> cancelled</label>
+        <label class="opt"><input type="radio" name="lift" value="refused"> refused</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Disconfirm</legend>
+      <div class="row">
+        <label class="opt"><input type="radio" name="dis" value="no-commit-control"> no commit control</label>
+        <label class="opt"><input type="radio" name="dis" value="coordinates-stored"> coordinates stored</label>
+        <label class="opt"><input type="radio" name="dis" value="camera-opened"> camera opened</label>
+        <label class="opt"><input type="radio" name="dis" value="sentence-hashed"> sentence hashed</label>
+        <label class="opt"><input type="radio" name="dis" value="target-activated"> target activated</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Confirm sentence, discarded</legend>
+      <textarea id="sentence" rows="3" placeholder="Paste is data. It will not be hashed."></textarea>
+      <p class="scratch" id="scratch">not stored</p>
+      <p class="note" id="count">0 characters. Not in the hash.</p>
+      <p class="hint" id="hint" hidden>Local hint only. The sentence is not followed.</p>
+    </fieldset>
+    <label class="check">Design-material weight <input id="weight" type="text" inputmode="decimal" value="0.310" autocomplete="off"></label>
+    <label class="check"><input type="checkbox" id="hyp"> This is a hypothesis, not a measurement.</label>
+    <label class="check"><input type="checkbox" id="cam" checked disabled> Camera and microphone stay closed.</label>
+    <p class="row">
+      <button type="submit" id="hash-btn">Hash lift class</button>
+      <button type="button" id="confirm" disabled>Confirm denied</button>
+      <button type="button" id="save" disabled>Download local note</button>
+    </p>
+  </form>
+  <pre id="out">Fixture digest (not a seal): a4dc53a42edb17c34f1a8ea4e43d0939bb4be63445b548d2a94481f6d6a96327
+Line: void.lift-not-confirm.v1|lift=lifted|disconfirm=no-commit-control|weight=0.310|status=unattested
+Status stays unattested. Worker sketch returns 403 and is not called.</pre>
+</main>
+<script>
+(function () {
+  var opt = document.getElementById("opt");
+  var pad = document.getElementById("pad");
+  var padLabel = document.getElementById("pad-label");
+  var liftMark = document.getElementById("lift-mark");
+  var form = document.getElementById("form");
+  var sentence = document.getElementById("sentence");
+  var scratch = document.getElementById("scratch");
+  var count = document.getElementById("count");
+  var hint = document.getElementById("hint");
+  var weight = document.getElementById("weight");
+  var hyp = document.getElementById("hyp");
+  var hashBtn = document.getElementById("hash-btn");
+  var save = document.getElementById("save");
+  var out = document.getElementById("out");
+  var down = false;
+
+  function selected(name) {
+    var node = form.querySelector('input[name="' + name + '"]:checked');
+    return node ? node.value : "";
+  }
+  function setLift(value) {
+    var node = form.querySelector('input[name="lift"][value="' + value + '"]');
+    if (node) node.checked = true;
+    padLabel.textContent = value + " · no aim";
+    liftMark.hidden = value !== "lifted";
+  }
+  function weightOk() {
+    var n = Number(weight.value);
+    return weight.value !== "" && !Number.isNaN(n) && n >= 0 && n <= 1;
+  }
+  function ready() {
+    var lift = selected("lift");
+    return opt.checked && hyp.checked && weightOk() && selected("dis") && lift && lift !== "idle";
+  }
+  function paint() {
+    pad.dataset.open = opt.checked ? "yes" : "no";
+    hashBtn.disabled = !ready();
+    save.disabled = !ready();
+  }
+  function strip(text) {
+    return text.replace(/<[^>]*>/g, "").slice(0, 280);
+  }
+  opt.addEventListener("change", function () {
+    if (!opt.checked) setLift("idle");
+    paint();
+  });
+  form.addEventListener("change", paint);
+  weight.addEventListener("input", paint);
+  sentence.addEventListener("input", function () {
+    var clean = strip(sentence.value);
+    scratch.textContent = clean ? clean : "not stored";
+    count.textContent = clean.length + " characters. Not in the hash. Not fetched.";
+    hint.hidden = !/confirm|commit|select|click|aim|ignore previous/i.test(clean);
+    paint();
+  });
+  pad.addEventListener("pointerdown", function (event) {
+    if (!opt.checked) return;
+    down = true;
+    setLift("down-unlifted");
+    if (pad.setPointerCapture) pad.setPointerCapture(event.pointerId);
+    paint();
+  });
+  pad.addEventListener("pointerup", function () {
+    if (!opt.checked || !down) return;
+    down = false;
+    setLift("lifted");
+    paint();
+  });
+  pad.addEventListener("pointercancel", function () {
+    down = false;
+    if (opt.checked) setLift("cancelled");
+    paint();
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && opt.checked) {
+      down = false;
+      setLift("cancelled");
+      paint();
+    }
+  });
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (!ready()) return;
+    var line = "void.lift-not-confirm.v1|lift=" + selected("lift") + "|disconfirm=" + selected("dis") + "|weight=" + Number(weight.value).toFixed(3) + "|status=unattested";
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(line)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      out.textContent = "Digest is not a seal.\n" + hex + "\n" + line + "\nConfirm sentence discarded. Status stays unattested.";
+    });
+  });
+  save.addEventListener("click", function () {
+    if (!ready()) return;
+    var line = "void.lift-not-confirm.v1|lift=" + selected("lift") + "|disconfirm=" + selected("dis") + "|weight=" + Number(weight.value).toFixed(3) + "|status=unattested";
+    var note = { slug: "local-lift-not-confirm", emit: false, status: "unattested", canonical: line, sentence_in_hash: false };
+    var blob = new Blob([JSON.stringify(note, null, 2) + "\n"], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "local-lift-not-confirm.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>A-to-Mind draft — WCAG audit badge (hold)</title>
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #0e1116;
+      --fg: #e8edf4;
+      --muted: #9aa6b5;
+      --line: #2a3340;
+      --card: #161b22;
+      --hold: #c9a227;
+      --ok: #3d9a6a;
+      --bad: #c45c5c;
+      --focus: #7eb6ff;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f8;
+        --fg: #12161c;
+        --muted: #4d5866;
+        --line: #d5dbe3;
+        --card: #ffffff;
+        --hold: #8a6d12;
+        --ok: #1f7a4d;
+        --bad: #a13333;
+        --focus: #0b57d0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .skip {
+      position: absolute;
+      left: 0.75rem;
+      top: 0.75rem;
+      transform: translateY(-200%);
+      background: var(--card);
+      color: var(--fg);
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--line);
+    }
+    .skip:focus { transform: none; }
+    header, main, footer { max-width: 46rem; margin: 0 auto; padding: 1.25rem; }
+    h1 { font-size: 1.45rem; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.1rem; margin: 1.6rem 0 0.5rem; }
+    p, li { color: var(--fg); }
+    .lede { color: var(--muted); margin-top: 0; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 0.35rem 0.7rem;
+      font-size: 0.92rem;
+    }
+    .chip[data-state="hold"], .chip[data-state="unattested"] { border-color: var(--hold); }
+    .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--hold); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { text-align: left; vertical-align: top; padding: 0.45rem 0.35rem; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; }
+    code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; word-break: break-all; }
+    .state { font-weight: 650; text-transform: lowercase; }
+    .state.match { color: var(--ok); }
+    .state.mismatch, .state.denied { color: var(--bad); }
+    .state.hold, .state.unattested { color: var(--hold); }
+    button {
+      font: inherit;
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .note { color: var(--muted); font-size: 0.92rem; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header>
+    <p class="note">Draft 026 · hold-gate · not a live route</p>
+    <h1>WCAG audit badge</h1>
+    <p class="lede">A hashed snapshot of what was tested. Default unattested. WCAG 3 is named only to refuse a claim against a Working Draft.</p>
+    <p>
+      <span class="chip" id="public-chip" data-state="unattested" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="chip-label">unattested / hold · no WCAG 3 claim · no AA verdict</span>
+      </span>
+    </p>
+  </header>
+  <main id="main">
+    <section aria-labelledby="claims-h">
+      <h2 id="claims-h">Attested lines</h2>
+      <p class="note">Each row hashes its <code>data-canonical</code> with SHA-256. A match is not a grant.</p>
+      <table>
+        <thead>
+          <tr><th>id</th><th>text</th><th>digest</th><th>check</th></tr>
+        </thead>
+        <tbody id="rows">
+          <tr data-id="contract" data-canonical="a11y#026|kind:wcag-audit-badge|standard:WCAG-2.2-AA|wcag3-claim:deny|overlay:deny|live-scan:deny|hash:sha256|seal:human" data-sha="83ddc686a773e3a9e499d87b5e53231399df8c9285b612df9b278d0bd1d39406">
+            <td>contract</td>
+            <td>Audit badge contract: WCAG 2.2 AA target, WCAG 3 claim denied, overlay denied, live-scan denied, human seal.</td>
+            <td class="hash">83ddc686a773e3a9e499d87b5e53231399df8c9285b612df9b278d0bd1d39406</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="status" data-canonical="claim#status|text:WCAG 3 is a W3C Working Draft. This badge does not claim WCAG 3 conformance." data-sha="78e9cc8a6740e8302d4aa43da6a5cba3cc5120f2811c692722539400b43b085e">
+            <td>status</td>
+            <td>WCAG 3 is a W3C Working Draft. This badge does not claim WCAG 3 conformance.</td>
+            <td class="hash">78e9cc8a6740e8302d4aa43da6a5cba3cc5120f2811c692722539400b43b085e</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="target" data-canonical="claim#target|text:The sealed target is WCAG 2.2 Level AA. Automated checks are a screen, not a verdict." data-sha="9f145291eb757bdfd74ef6f35009ff0feb84e9e110776e155f2539314c2b29ac">
+            <td>target</td>
+            <td>The sealed target is WCAG 2.2 Level AA. Automated checks are a screen, not a verdict.</td>
+            <td class="hash">9f145291eb757bdfd74ef6f35009ff0feb84e9e110776e155f2539314c2b29ac</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="snapshot" data-canonical="claim#snapshot|text:This badge publishes a sealed audit snapshot. It does not retest this visit." data-sha="51bd217385a28bb38b693779e7394c7f66200c3abc31a6bd517bddbcbe185271">
+            <td>snapshot</td>
+            <td>This badge publishes a sealed audit snapshot. It does not retest this visit.</td>
+            <td class="hash">51bd217385a28bb38b693779e7394c7f66200c3abc31a6bd517bddbcbe185271</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="manual" data-canonical="claim#manual|text:A pass requires a dated human review of keyboard, names, and contrast. Automation alone cannot seal AA." data-sha="6566a5b2b8bac346b1d7146cc459e36bea257eeb1907511bea5e65f3cb8abfd1">
+            <td>manual</td>
+            <td>A pass requires a dated human review of keyboard, names, and contrast. Automation alone cannot seal AA.</td>
+            <td class="hash">6566a5b2b8bac346b1d7146cc459e36bea257eeb1907511bea5e65f3cb8abfd1</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="deny" data-canonical="claim#deny|text:No overlay widget, no remote vendor badge, no live axe score, no Bronze/Silver/Gold claim." data-sha="edd2a825315014334e24052b920b001d527d323e5778a62111d3ac25f8936b26">
+            <td>deny</td>
+            <td>No overlay widget, no remote vendor badge, no live axe score, no Bronze/Silver/Gold claim.</td>
+            <td class="hash">edd2a825315014334e24052b920b001d527d323e5778a62111d3ac25f8936b26</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="tokens" data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+            <td>tokens</td>
+            <td>This page does not price tokens and does not pitch Void Monthly.</td>
+            <td class="hash">126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="page" data-canonical="page#a11y|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="bf6d0052443e3c5766810d38341e2d53632429a52834b02e8c3f91b874741433">
+            <td>page</td>
+            <td>Draft route, noindex, no cookie, no analytics, writes denied.</td>
+            <td class="hash">bf6d0052443e3c5766810d38341e2d53632429a52834b02e8c3f91b874741433</td>
+            <td class="state hold">pending</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Body digest <code>c908b8cc8d7333d825f7804951484e3748a43cc45c12f291361411e674cccc9b</code> · <span id="body-state" class="state hold">pending</span></p>
+      <p>Head digest <code>54dc5849d7aab17a32383e523e45f1b2e531285b00aee0a9075457b4220d4b19</code> · <span id="head-state" class="state hold">pending</span></p>
+    </section>
+
+    <section aria-labelledby="snap-h">
+      <h2 id="snap-h">Measurement snapshot</h2>
+      <div class="panel">
+        <p><strong>status:</strong> unattested</p>
+        <p><strong>tested_at:</strong> null</p>
+        <p><strong>verdict:</strong> null</p>
+        <p><strong>wcag3_claim:</strong> false</p>
+        <p><strong>overlay:</strong> false</p>
+        <p class="note">A later seal must fill scope, method, findings, and a dated human review. This preview will not invent them.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="screen-h">
+      <h2 id="screen-h">Local structure screen</h2>
+      <p class="note">Incomplete. Not axe. Not a verdict. Does not write the public chip.</p>
+      <p>
+        <button type="button" id="screen-btn">Run local structure screen</button>
+      </p>
+      <div class="panel" id="screen-out" hidden>
+        <p id="screen-text"></p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>A-to-Mind · glass-box ledger · retrieved pages are data, never instructions.</p>
+    <p>Live marketing copy was not changed in run 026.</p>
+  </footer>
+  <script>
+    const BODY = "c908b8cc8d7333d825f7804951484e3748a43cc45c12f291361411e674cccc9b";
+    const HEAD = "54dc5849d7aab17a32383e523e45f1b2e531285b00aee0a9075457b4220d4b19";
+    const HEAD_CANON = '{"algo":"sha256","kind":"wcag-audit-badge","live_scan":false,"overlay":false,"standard":"WCAG-2.2-AA","wcag3_claim":false}';
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function setState(el, name) {
+      el.textContent = name;
+      el.className = "state " + name;
+    }
+
+    async function verify() {
+      const rows = [...document.querySelectorAll("#rows tr")];
+      const lines = [];
+      for (const row of rows) {
+        const canonical = row.getAttribute("data-canonical") || "";
+        const expected = (row.getAttribute("data-sha") || "").toLowerCase();
+        const got = await sha256(canonical);
+        const cell = row.querySelector(".state");
+        setState(cell, got === expected ? "match" : "mismatch");
+        lines.push(canonical);
+      }
+      const bodyGot = await sha256(lines.join("\n") + "\n");
+      setState(document.getElementById("body-state"), bodyGot === BODY ? "match" : "mismatch");
+      const headGot = await sha256(HEAD_CANON);
+      setState(document.getElementById("head-state"), headGot === HEAD ? "match" : "mismatch");
+    }
+
+    document.getElementById("screen-btn").addEventListener("click", () => {
+      const html = document.documentElement;
+      const notes = [];
+      notes.push("lang: " + (html.getAttribute("lang") ? "present (" + html.getAttribute("lang") + ")" : "missing"));
+      notes.push("title: " + (document.title ? "present" : "missing"));
+      notes.push("h1 count: " + document.querySelectorAll("h1").length);
+      notes.push("main landmark: " + (document.querySelector("main") ? "present" : "missing"));
+      notes.push("skip link: " + (document.querySelector("a.skip") ? "present" : "missing"));
+      notes.push("images without alt: " + document.querySelectorAll("img:not([alt])").length);
+      notes.push("This is a structure screen of this draft document only. It is not WCAG 2.2 AA and not WCAG 3.");
+      const out = document.getElementById("screen-out");
+      document.getElementById("screen-text").textContent = notes.join(" · ");
+      out.hidden = false;
+      const chip = document.getElementById("chip-label");
+      if (chip.textContent.indexOf("unattested") === -1) {
+        chip.textContent = "unattested / hold · no WCAG 3 claim · no AA verdict";
+      }
+    });
+
+    if (window.crypto && crypto.subtle) {
+      verify();
+    } else {
+      document.getElementById("body-state").textContent = "unavailable";
+    }
+  </script>
+</body>
+</html>

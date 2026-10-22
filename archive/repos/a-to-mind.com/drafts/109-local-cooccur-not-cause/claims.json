@@ -1,0 +1,35 @@
+{
+  "slug": "local-cooccur-not-cause",
+  "run": 109,
+  "family": "correlation-not-causation sync view",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical": "cooccur-not-cause|v1|<left>|<right>|<window>|cause-refusal",
+  "classes": {
+    "thought|number|same-day": "243ad5dcc664f81d5d55a2e9b9e9ae196c4203598ab3b70f1b992c5a49bea63d",
+    "thought|name|same-hour": "55398b075d8f241a7283a6fb80689d7b29339c437c63af6275a7c306d35e1e59",
+    "number|symbol|same-day": "1e6f96ea36b3101b5f07f289bbb6628d74e65a5a219bc9160fac80a24fc5f176",
+    "name|symbol|untimed": "77332b40a83d0887ddfa808f683461a09873b7b38b5ff710c2c40a1648a613c1",
+    "abstain|abstain|abstain": "0d1f58f9992d21e94c4267975f33323a58728fbd3ae2ac27fd7c6c700a3515ae",
+    "local-only|local-only|untimed": "1c78b6bb3990a67db32b3df2ef314382a63497c6f5e2d470f5e249738715c32d"
+  },
+  "not_in_hash": ["cause sentence", "meaning gloss", "coefficient", "post id", "arrow"],
+  "href_allowlist": [],
+  "hypotheses": [
+    {
+      "id": "uap-window-109",
+      "one_line": "Public posts in this window recap an older AARO sphere release and carry independent eclipse, orb, and Varginha-file claims; none is a sealed sensor log.",
+      "confidence": 0.16,
+      "status": "unattested",
+      "source": "drafts/109-local-cooccur-not-cause/x-scan.md"
+    },
+    {
+      "id": "cooccur-window-109",
+      "one_line": "Public posts treat a mental event beside an external event as meaning, psychosis, or a collective signal; a pair mark can refuse the cause sentence without a score.",
+      "confidence": 0.22,
+      "status": "unattested",
+      "source": "drafts/109-local-cooccur-not-cause/x-scan.md"
+    }
+  ]
+}

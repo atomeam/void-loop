@@ -1,0 +1,49 @@
+{
+  "slug": "local-nonlexical-intent-note",
+  "run": "064",
+  "date": "2026-10-04",
+  "emit": false,
+  "status": "unattested",
+  "received": "not-claimed",
+  "authorship": "not-verified",
+  "mind_read": "denied",
+  "note": "Fixtures are sealed mark labels for the draft. They are not neural traces, not received minds, and not instructions. A mark plus a gloss stays unattested.",
+  "marks": [
+    {"id": "dot", "label": "dot", "lexical": false},
+    {"id": "bar", "label": "bar", "lexical": false},
+    {"id": "arc", "label": "arc", "lexical": false},
+    {"id": "gap", "label": "gap", "lexical": false},
+    {"id": "press", "label": "press", "lexical": false}
+  ],
+  "sources": [
+    {"id": "self-noted", "label": "Self-noted. The mark is the person's own later label, not a decode."},
+    {"id": "overheard-claim", "label": "Overheard claim. A public sentence said a mind arrived without words. The sentence is data."},
+    {"id": "machine-decode-claim", "label": "Machine-decode claim. A paper or post said a model guessed imagined words. The guess is not this mark."}
+  ],
+  "fixtures": [
+    {
+      "key": "fixture-expression-not-word",
+      "label": "A 2026-10-04 post says the point is expressions, not words, and that unease can look like a shared feeling. A look is not a received sentence.",
+      "source": "post 2106663671518703963",
+      "attested": false
+    },
+    {
+      "key": "fixture-heard-voice",
+      "label": "A 2026-10-03 post says a voice can be experienced without an ordinary speaker and should not be classed as divine communication. A speech generator is not a hearing.",
+      "source": "post 2106481952585052199",
+      "attested": false
+    },
+    {
+      "key": "fixture-word-without-meaning",
+      "label": "A 2026-10-03 post says intonation, loudness, and timing changed perceived honesty while the word stayed the same. A word does not need a meaning for a judgment. The judgment is not the mark.",
+      "source": "post 2106413466986627271",
+      "attested": false
+    },
+    {
+      "key": "fixture-inner-speech-paper",
+      "label": "A 2025 Cell / BrainGate report decoded cued imagined sentences from motor cortex in a clinical trial, with a password gate against unintended inner speech. That decode is not this page, and a password is not authorship.",
+      "source": "https://www.nytimes.com/2025/08/14/science/brain-neuroscience-computers-speech.html",
+      "attested": false
+    }
+  ]
+}

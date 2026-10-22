@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Permissions-Policy candidate — unattested</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1a1a; --bg: #f6f5f2; --line: #c8c4bc; --hold: #8a3d2f; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #eeeae4; --bg: #161614; --line: #3a3834; --hold: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { max-width: 68ch; }
+    .state { font-family: ui-monospace, monospace; font-size: 0.92rem; border: 1px solid var(--line); padding: 0.4rem 0.6rem; display: inline-block; }
+    pre { white-space: pre-wrap; word-break: break-all; border: 1px solid var(--line); padding: 0.75rem; font-size: 0.78rem; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.35rem 0.4rem; }
+    code { font-family: ui-monospace, monospace; font-size: 0.86em; }
+    button { font: inherit; padding: 0.4rem 0.7rem; border: 1px solid var(--hold); background: transparent; color: inherit; }
+    button:focus-visible { outline: 2px solid var(--hold); outline-offset: 2px; }
+    .note { font-size: 0.9rem; }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p>A-to-Mind draft · run 039 · not a live header</p>
+    <h1>Permissions-Policy, default deny</h1>
+    <p class="state" id="state" role="status">unattested</p>
+    <p class="note">This page does not set a response header. A meta tag would not be that header. Absence on the live origin is the true state until a human seals <a href="https://github.com/atomeam/a-to-mind.com/issues/39">issue 39</a>.</p>
+    <h2>Candidate header bytes</h2>
+    <p>Empty allowlist on 40 named directives. No <code>self</code>, no wildcard, no <code>report-to</code>. Digest must match or the state is <code>mismatch</code>.</p>
+    <pre id="policy"></pre>
+    <p>Policy SHA-256: <code id="policy-hash">checking</code></p>
+    <h2>Claims</h2>
+    <table>
+      <thead><tr><th>Id</th><th>Check</th><th>Line</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p>Body SHA-256: <code id="body-hash">checking</code></p>
+    <h2>Hold</h2>
+    <p class="note">Hold writes only <code>sessionStorage['atm-permissions-hold-039']</code>. It does not emit a header, open a mic, start Payment Request, or call <code>navigator.share</code>.</p>
+    <button type="button" id="hold">Hold this draft</button>
+    <p id="hold-out" class="note"></p>
+  </main>
+  <script type="module">
+    const EXPECT_POLICY = "cbf6dd54442bb654c4a83a85a258c5e64e13944b7559681b9587159f148087e1";
+    const EXPECT_BODY = "e84f1e50b11a5d16e77de79fd2c0c42c5a2db76fb528ada8620b1c7d6887b901";
+    const POLICY = "accelerometer=(),attribution-reporting=(),autoplay=(),bluetooth=(),browsing-topics=(),camera=(),captured-surface-control=(),compute-pressure=(),display-capture=(),encrypted-media=(),fullscreen=(),gamepad=(),geolocation=(),gyroscope=(),hid=(),identity-credentials-get=(),idle-detection=(),language-detector=(),language-model=(),local-fonts=(),local-network-access=(),magnetometer=(),microphone=(),midi=(),on-device-speech-recognition=(),otp-credentials=(),payment=(),picture-in-picture=(),publickey-credentials-create=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),speaker-selection=(),storage-access=(),summarizer=(),translator=(),usb=(),web-share=(),window-management=(),xr-spatial-tracking=()";
+    const LINES = [
+      ["perm#039", "1404308b4cb5aee8d8156b36f7169b3130a4956e2a8eb373f6459bb4ecaecc24", "perm#039|kind:attested-permissions-policy|header:absent-until-seal|allowlist:empty|report-to:deny|iframe-allow:none|hash:sha256|seal:human"],
+      ["claim#absent", "a9cb19332963704dcdcbfe7aa7cb926ced83e5e655cd2a4cbf681cf653921195", "claim#absent|text:No Permissions-Policy response header until a human seals the exact header bytes."],
+      ["claim#empty", "e6fcd87cac3f1e637608ac743413ef497de9dd06bc3c023912154a75c3ebe133", "claim#empty|text:An empty allowlist disables that named feature in this document and nested frames. It is not a grant."],
+      ["claim#unlisted", "0e975fb550636d3f91d3b343b8f650b5d58b458a8924ec0c4ed250b2a674ab8f", "claim#unlisted|text:Unlisted directives keep the browser default. This draft does not claim every feature is off."],
+      ["claim#report", "5643a46281454663ff022f1929e91ebc77178fad459ea489f906277370912f17", "claim#report|text:report-to and Reporting-Endpoints are denied. Violation reports are not sent."],
+      ["claim#iframe", "b12eb7140cbd6aa085a06f446fbc73a9ec55b5059ab9f22698dc74d4f7ad33e8", "claim#iframe|text:iframe allow lists are denied. allow star and camera or microphone tokens are not emitted."],
+      ["claim#mic", "cb73e6caaa045719c5c926b56b7e90aa4745ebe805082418c1d38153e4dfc1cc", "claim#mic|text:microphone is denied. The voice draft is not a grant to open getUserMedia."],
+      ["claim#pay", "47b5cac1f4032309d648d94df59f2085ba81f235ddce98e1b53ab68a3dc02524", "claim#pay|text:payment is denied. Void Monthly checkout is not a Payment Request grant."],
+      ["claim#share", "a74455132afeee487d1aabcdc592512ad05a5ac2318fe74223f9949e8a0390a7", "claim#share|text:web-share is denied. The share draft is not a grant to call navigator.share."],
+      ["claim#webauthn", "6c1100403cf4819b952e039b1958f453868e47dc4b3e1de86bd2d6b305dd8f8a", "claim#webauthn|text:publickey-credentials create and get are denied until a human names a passkey document."],
+      ["claim#topics", "a2f64a107a75bc14a500b1b620d47f293e8176185ccf0fa1a4c3e0dd9fa18b74", "claim#topics|text:browsing-topics and attribution-reporting are denied. interest-cohort is omitted because it is not a current MDN directive."],
+      ["claim#model", "32e41f3a9d62b3998dce61d3c56331ea6ccedd3b5a7d96579663a043f955e305", "claim#model|text:language-model, summarizer, translator, and on-device-speech-recognition are denied."],
+      ["claim#lan", "49f18148c09faabb90e2d93f850e7da1a5039ea1262e8562fc25ad7d848375a4", "claim#lan|text:local-network-access is denied. This origin does not probe the local network."],
+      ["claim#meta", "c59271efe5bf115b6fc71f228f8f4007b28e170c50dbacde3d6f7db79ade40cf", "claim#meta|text:A meta tag is not this header. The preview does not pretend to set a response header."],
+      ["claim#tokens", "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50", "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly."],
+      ["page#permissions", "93f266178f5e7fa6493ee921adb70e6f802f84dfcefbc1cb476b064214ae3d6b", "page#permissions|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny"]
+    ];
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    const policyEl = document.getElementById("policy");
+    policyEl.textContent = POLICY;
+    const rows = document.getElementById("rows");
+    let mismatch = false;
+    const policyHash = await sha256(POLICY);
+    document.getElementById("policy-hash").textContent = policyHash;
+    if (policyHash !== EXPECT_POLICY) mismatch = true;
+    let body = "";
+    for (const [id, expect, line] of LINES) {
+      const got = await sha256(line);
+      body += line + "\n";
+      const tr = document.createElement("tr");
+      const ok = got === expect;
+      if (!ok) mismatch = true;
+      tr.innerHTML = "<td></td><td></td><td></td>";
+      tr.children[0].textContent = id;
+      tr.children[1].textContent = ok ? "match" : "mismatch";
+      tr.children[2].textContent = line;
+      rows.appendChild(tr);
+    }
+    const bodyHash = await sha256(body);
+    document.getElementById("body-hash").textContent = bodyHash;
+    if (bodyHash !== EXPECT_BODY) mismatch = true;
+    const state = document.getElementById("state");
+    state.textContent = mismatch ? "mismatch" : "unattested";
+    document.getElementById("hold").addEventListener("click", () => {
+      const receipt = JSON.stringify({
+        status: "hold",
+        key: "atm-permissions-hold-039",
+        header: "absent",
+        policy: policyHash,
+      });
+      sessionStorage.setItem("atm-permissions-hold-039", receipt);
+      document.getElementById("hold-out").textContent = "hold. sessionStorage only. header still absent.";
+      state.textContent = mismatch ? "mismatch" : "hold";
+    });
+  </script>
+</body>
+</html>
