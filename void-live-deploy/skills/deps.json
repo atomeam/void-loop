@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 729,
+ "counted": 733,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -157,11 +157,32 @@
    "tests": 2
   },
   {
+   "file": "lib/game-kit.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
    "file": "lib/qr.js",
    "skills": 9,
    "direct": 2,
    "dependants": 13,
    "tests": 2
+  },
+  {
+   "file": "lib/rally-rules.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-deck.js",
+   "skills": 9,
+   "direct": 3,
+   "dependants": 12,
+   "tests": 1
   },
   {
    "file": "lib/skyfacts.js",
@@ -231,27 +252,6 @@
    "skills": 7,
    "direct": 0,
    "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/game-kit.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/rally-rules.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
-   "file": "lib/card-deck.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 10,
    "tests": 1
   },
   {
@@ -636,6 +636,13 @@
    "file": "lib/studio-card.js",
    "skills": 3,
    "direct": 3,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/table-tools.js",
+   "skills": 3,
+   "direct": 2,
    "dependants": 3,
    "tests": 1
   },
@@ -1093,6 +1100,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/page-fit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/pdf-qa.js",
@@ -1555,6 +1569,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/misskey.js",
@@ -2254,6 +2275,7 @@
     "lib/shortfall.js",
     "lib/models.js",
     "lib/honest.js",
+    "lib/lap.js",
     "lib/will-guard.js"
    ],
    "importedBy": []
@@ -2828,6 +2850,7 @@
    "importedBy": [
     "lib/card-share.js",
     "skills/duel.js",
+    "skills/monopoly.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -2836,6 +2859,7 @@
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
     "skills/oracle.js"
    ]
@@ -3591,7 +3615,9 @@
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
+    "skills/monopoly.js",
     "skills/oracle.js"
    ]
   },
@@ -3910,6 +3936,12 @@
     "skills/own-parts.js",
     "skills/rebuild-map.js",
     "skills/showcase.js"
+   ]
+  },
+  "lib/lap.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js"
    ]
   },
   "lib/learn.js": {
@@ -4319,6 +4351,12 @@
    ],
    "reachedBy": [
     "skills/stage-out.js"
+   ]
+  },
+  "lib/page-fit.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gamebox.js"
    ]
   },
   "lib/page-picture.js": {
@@ -4757,7 +4795,9 @@
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
+    "skills/monopoly.js",
     "skills/oracle.js"
    ]
   },
@@ -5637,6 +5677,16 @@
     "lib/about-skill.js",
     "skills/about-skill.js",
     "skills/own-parts.js"
+   ]
+  },
+  "lib/table-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gamebox.js",
+    "skills/monopoly.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
    ]
   },
   "lib/tasks.js": {
@@ -6931,6 +6981,13 @@
     "skills/games.js"
    ]
   },
+  "skills/gamebox.js": {
+   "imports": [
+    "lib/table-tools.js",
+    "lib/page-fit.js"
+   ],
+   "importedBy": []
+  },
   "skills/games.js": {
    "imports": [
     "lib/skill-family.js",
@@ -7851,7 +7908,9 @@
   "skills/monopoly.js": {
    "imports": [
     "skills/monopoly-rules.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "lib/table-tools.js",
+    "lib/card-deck.js"
    ],
    "importedBy": [
     "skills/games.js"

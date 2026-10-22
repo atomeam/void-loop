@@ -483,6 +483,66 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T05:17:47Z",
+   "subject": "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:16:53Z",
+   "subject": "Spotter: 8 check(s) healed with no revert after ad53c59aef5394d39cecb602c54345bb10420ab0 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-22T05:15:48Z",
+   "subject": "Deeds and drawn chance cards join the saved-cards record; the lap loop goes around every item (skills, surfaces, docs, archives, tools…"
+  },
+  {
+   "at": "2026-10-22T05:15:18Z",
+   "subject": "Mind Field gets a sound mode and a book page; Tilt Arena joins as a four-mode learning-agent game"
+  },
+  {
+   "at": "2026-10-22T05:15:11Z",
+   "subject": "Glitch check: fetch the deployed files together"
+  },
+  {
+   "at": "2026-10-22T05:15:06Z",
+   "subject": "Incident: the browser suite failed on 39637b30 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:10:56Z",
+   "subject": "Incident: the browser suite failed on 3479ba40 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:09:56Z",
+   "subject": "Incident: the browser suite failed on a242f6e8 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:07:19Z",
+   "subject": "3D tests take the heavy-job lock only when run on their own; imported by the browser suite (which already holds it) they waited on their…"
+  },
+  {
+   "at": "2026-10-22T05:06:29Z",
+   "subject": "Incident: the browser suite failed on a012b6c7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:01:43Z",
+   "subject": "Films card: fetch skill and card code fresh through the service worker, keep mixed card titles in one box, and make the glitch rare, slow…"
+  },
+  {
+   "at": "2026-10-22T05:01:30Z",
+   "subject": "Incident: the browser suite failed on 1526b0d6 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:00:17Z",
+   "subject": "forge duel: the pride starter stays a Feeling card"
+  },
+  {
+   "at": "2026-10-22T05:00:06Z",
+   "subject": "forge duel: one starter text no longer reads as Verse speaking about its feelings"
+  },
+  {
+   "at": "2026-10-22T04:59:55Z",
+   "subject": "forge duel: built-in card texts state plain facts, never claims about Verse"
+  },
+  {
    "at": "2026-10-22T04:58:04Z",
    "subject": "rally: the pager is numbers and fixed words"
   },
@@ -491,76 +551,16 @@
    "subject": "cards: Forge Duel joins Verse Rally (forge any text into a card, three lanes, a planning opponent, undo, resume, record, keep a won card…"
   },
   {
-   "at": "2026-10-22T04:40:33Z",
-   "subject": "verify: one incident per red head of main (an incident job after all three shards, checks merged per sha), a green head closes open…"
+   "at": "2026-10-22T04:48:54Z",
+   "subject": "rubber band: a band drag no longer selects the cards' text, so the next drag is not taken over by a native text drag (the second band…"
   },
   {
-   "at": "2026-10-22T04:37:15Z",
-   "subject": "cards: art on every Rally card, balanced starter and Verse decks, older card shapes fold into the one record, saved cards summonable in…"
+   "at": "2026-10-22T04:44:49Z",
+   "subject": "Films title: keep the glitching word in one box so card title rows can't spread its letters; add a frame-sampling check for glitch titles"
   },
   {
-   "at": "2026-10-22T04:36:04Z",
-   "subject": "Incident: the browser suite failed on a3f93ab0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:28:13Z",
-   "subject": "Mind Field: seven field minds in one skill with modes, a new Draw mode, and 'what's similar'"
-  },
-  {
-   "at": "2026-10-22T04:26:45Z",
-   "subject": "cards: the share link reopens its card, now in the page's source file so deploys keep it"
-  },
-  {
-   "at": "2026-10-22T04:26:20Z",
-   "subject": "browser suite: Verse merge works out Forge's plate from the served stats (they moved from R 6 to R 3); the kept quiz is read once the…"
-  },
-  {
-   "at": "2026-10-22T04:25:33Z",
-   "subject": "void.html: ?open=all survives the ?q= cleanup (the page source; index.html is its deploy copy) so the full self card link opens every block"
-  },
-  {
-   "at": "2026-10-22T04:25:01Z",
-   "subject": "rally: mark the fixed page heading as reviewed"
-  },
-  {
-   "at": "2026-10-22T04:23:08Z",
-   "subject": "Incident: the browser suite failed on 545d9729 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:23:00Z",
-   "subject": "browser suite: a whispered answer counts as answered (the 4 s slack outwaited the whisper's 3.5 s: 'hello'/'sup' read empty in top misses…"
-  },
-  {
-   "at": "2026-10-22T04:22:25Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:21:57Z",
-   "subject": "Incident: the browser suite failed on 53c2a60a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:21:24Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:21:05Z",
-   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:15:57Z",
-   "subject": "card-image test: the self picture holds every word (owner, 2026-10-22: no cut-off), grows instead of '…'"
-  },
-  {
-   "at": "2026-10-22T04:15:26Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:09:52Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:09:26Z",
-   "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:40:45Z",
+   "subject": "File sorter: a short whole-sentence book line"
   }
  ],
  "builders": {
