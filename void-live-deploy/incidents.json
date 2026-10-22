@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T01:31:59.992Z",
+   "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/families.mjs",
+    "tools/heavy.mjs",
+    "tools/memory-graph.test.mjs",
+    "tools/memory-preview.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/memory-preview.js",
+    "void-live-deploy/skills/order/0476-memory-preview"
+   ]
+  },
+  {
    "at": "2026-10-22T00:44:29.131Z",
    "sha": "7143ee3e50701500e8e3a44964136c34b7f0c0ba",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39698813750",
@@ -795,35 +821,6 @@
     "void-live-deploy/void.growth.json",
     "void-live-deploy/void.html",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-19T17:53:56.071Z",
-   "sha": "7930edd22cd6dd4885afb8c790a89261e60709c8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39295479075",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/miss-robot.test.mjs",
-    "tools/test_void.mjs",
-    "tools/v01d-fixes.test.mjs",
-    "tools/voice.test.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/functions/api/miss.js",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/voice.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html"
    ]
   }
  ]
