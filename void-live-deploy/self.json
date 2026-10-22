@@ -483,6 +483,74 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T02:52:30Z",
+   "subject": "deps.json"
+  },
+  {
+   "at": "2026-10-22T02:49:50Z",
+   "subject": "wants: reasoning trace under each want and ask (asked by Verse)"
+  },
+  {
+   "at": "2026-10-22T02:48:43Z",
+   "subject": "loop gaps: docs/LOOP-GAPS.md (Verse vs Voyager, Reflexion, Self-Refine, Generative Agents, DGM, AlphaEvolve...); skill library retrieval…"
+  },
+  {
+   "at": "2026-10-22T02:47:56Z",
+   "subject": "Incident: the browser suite failed on 96c8914b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:45:03Z",
+   "subject": "no-clip: the book and the self card at three window sizes on the live site, in site-test (#1218)"
+  },
+  {
+   "at": "2026-10-22T02:43:31Z",
+   "subject": "Incident: the browser suite failed on 17e3d26a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:43:18Z",
+   "subject": "MAP: name tools/backfill-hardened.mjs (map-coverage) (#1217)"
+  },
+  {
+   "at": "2026-10-22T02:43:07Z",
+   "subject": "Incident: the browser suite failed on bc59a260 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:42:55Z",
+   "subject": "built detail: hardening lines list their actual phrases and the skill each opens (68 backfilled from the benchmark diffs; grow-self writes…"
+  },
+  {
+   "at": "2026-10-22T02:38:21Z",
+   "subject": "no ellipsis, everywhere: 19 sentence cuts and CSS ellipses removed from cards, book, previews and chips; the rest are progress lines…"
+  },
+  {
+   "at": "2026-10-22T02:37:43Z",
+   "subject": "Incident: the browser suite failed on 2395085b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:37:28Z",
+   "subject": "wants card: built wants move to 'Got it' (same ledger match as reflections), each want its own block (#1213)"
+  },
+  {
+   "at": "2026-10-22T02:32:07Z",
+   "subject": "Incident: the browser suite failed on 77fab71b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:31:11Z",
+   "subject": "Incident: the browser suite failed on d89a5b21 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:31:08Z",
+   "subject": "Incident: the browser suite failed on 2c37c935 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:29:23Z",
+   "subject": "Incident: the browser suite failed on f0fde96b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T02:28:48Z",
+   "subject": "refresh: deps and what for ritual-template"
+  },
+  {
    "at": "2026-10-22T02:26:25Z",
    "subject": "ritual-template: a habit sequence as one calendar file (asked by Verse)"
   },
@@ -493,74 +561,6 @@
   {
    "at": "2026-10-22T02:24:40Z",
    "subject": "Incident: the browser suite failed on 9b83e5d9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:22:21Z",
-   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:21:23Z",
-   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:19:44Z",
-   "subject": "Incident: the browser suite failed on c28ae7a4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:19:26Z",
-   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:18:09Z",
-   "subject": "Incident: the browser suite failed on 2c37c935 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:17:56Z",
-   "subject": "Incident: the browser suite failed on 965a8a1b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:17:10Z",
-   "subject": "no ellipsis: the book's What's new keeps whole sentences, the book fits the window (dvh, room for the bar), and a check stops new ellipsis…"
-  },
-  {
-   "at": "2026-10-22T02:15:10Z",
-   "subject": "Incident: the browser suite failed on e8d870a4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:14:56Z",
-   "subject": "Incident: the browser suite failed on 77fab71b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:13:22Z",
-   "subject": "Incident: the browser suite failed on f0fde96b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:13:12Z",
-   "subject": "showcase: 'I built this' names the newest build, and a preview is used up only when you open it (it was marked shown the moment it flashed…"
-  },
-  {
-   "at": "2026-10-22T02:13:03Z",
-   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:12:36Z",
-   "subject": "self card: whole sentences (no ellipsis), what's built and improved skill by skill from the ledger, new phrases named in previews, a check…"
-  },
-  {
-   "at": "2026-10-22T02:12:24Z",
-   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:10:24Z",
-   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T02:10:19Z",
-   "subject": "reflect: drop asks the ledger already names as built and ask once more, so Verse comes up with new wants (every reflection repeated three…"
-  },
-  {
-   "at": "2026-10-22T02:09:06Z",
-   "subject": "grow-self: add only the files that exist (a missing tools/grow-lessons.json failed every hardening run since 15:43 UTC Oct 21); ledger…"
   }
  ],
  "builders": {
