@@ -5071,7 +5071,7 @@ try {
     await Z.p.reload(); await Z.p.waitForTimeout(900);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in
     const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
@@ -6478,7 +6478,10 @@ try {
     check('Verse merge: the numbers are earned from the parents (1 / 1 / 0 each gives P 1 R 1 I 0, depth 1, uncommon), whatever numbers the route sends', !!mc && mc.plate === 'P 1 R 1 I 0' && /IDEA . MERGED, DEPTH 1$/i.test(mc.type) && mc.rarity === 'uncommon' && /named once by Verse/i.test(mc.src), JSON.stringify(mc));
     await M.ask('close', 400); await M.ask('what do you get if you merge forge with a pizza', 900);
     const sk = await until(async () => { const c = await cardOfMerge(M); return c && c.parents[0] === 'Forge' ? c : null; }, 8000);
-    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && /^P 9 R 6 I \d+$/.test(sk.plate) && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, errors: M.errors }));
+    // Forge's real stats come from the served families/guide data and move as Forge is used (P 9 R 6 on 2026-10-16, R 3 on 2026-10-22), so the
+    // expected plate is worked out from that same data by the same rules (skills/merge.js), not written down once
+    const want = await M.p.evaluate(async () => { const m = await import('/skills/merge.js'), cf = await import('/lib/card-frame.js'); const st = await cf.loadStats(); const pa = m.parentCard('forge', st), pb = m.parentCard('pizza', st), c = m.mergedCard(pa, pb); return { plate: 'P ' + c.power + ' R ' + c.resistance + ' I ' + c.income, real: pa.power !== pb.power || pa.resistance !== pb.resistance }; }).catch((e) => ({ plate: 'ERR ' + e }));
+    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && sk.plate === want.plate && want.real && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, want, errors: M.errors }));
     await M.ctx.close();
     const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.abort());
     await D.ask('merge a pizza and a black hole', 900);
