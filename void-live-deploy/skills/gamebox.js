@@ -108,7 +108,7 @@ function run(text, api) { const f = boxOf(text) || 'all'; api.showPage((el) => m
 export default {
   name: 'gamebox',
   boxOf,
-  examples: ['game box', 'games', 'table tools', 'open the game box', 'all games', 'dice roller', 'score keeper', 'shuffle a deck'],
+  examples: ['game box', 'games', 'show me the games', 'table tools', 'open the game box', 'all games', 'dice roller', 'score keeper', 'shuffle a deck'],
   nearMisses: ['games on tv tonight', 'olympic games', 'box office', 'play a game', 'what games can you play'],
   match(lower, text) { return !!boxOf(text || lower); },
   run,

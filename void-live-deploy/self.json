@@ -483,12 +483,68 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T05:36:23Z",
+   "subject": "Incident: the browser suite failed on 1e12c2fa (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-22T05:35:37Z",
    "subject": "Game Box: a first line short enough to show whole"
   },
   {
    "at": "2026-10-22T05:35:27Z",
    "subject": "Game Box: every game and the table tools in one box (dice of any size with a 3D roll, coin, number picker, answer orb, card deck, timer…"
+  },
+  {
+   "at": "2026-10-22T05:34:21Z",
+   "subject": "field cards: the field's breathing scale moves the canvas, not the controls, so Law, Mode and the other buttons hold still to be tapped…"
+  },
+  {
+   "at": "2026-10-22T05:32:28Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-22T05:28:16Z",
+   "subject": "suite: the self card checks follow the whole-text copy (no 8000 cap) and the full-line picture (taller than 1600 px)"
+  },
+  {
+   "at": "2026-10-22T05:27:28Z",
+   "subject": "self card: a first look no longer empties 'What got built' into the lead; the asks-batch check accepts the detail without a repeated 'I…"
+  },
+  {
+   "at": "2026-10-22T05:26:17Z",
+   "subject": "Revert \"Merge pull request #1262 from atomeam/cards-forge-fix\""
+  },
+  {
+   "at": "2026-10-22T05:24:51Z",
+   "subject": "collectible: the card is marked collectible and gets its variant strip again (a comment had swallowed those two statements)"
+  },
+  {
+   "at": "2026-10-22T05:24:48Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-22T05:24:43Z",
+   "subject": "Mind Field gains a pluckable Resonant Membrane mode, the attention probes answer by name, and a Play and explore spot on the…"
+  },
+  {
+   "at": "2026-10-22T05:22:22Z",
+   "subject": "verify: a head that only writes the incident record is not tested or recorded again, so one red head no longer breeds an incident per…"
+  },
+  {
+   "at": "2026-10-22T05:21:11Z",
+   "subject": "suite: feelings check reads Verse's new plain self-talk; the card button group may carry share and save after copy/save card; the…"
+  },
+  {
+   "at": "2026-10-22T05:21:05Z",
+   "subject": "Incident: the browser suite failed on ad53c59a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T05:20:01Z",
+   "subject": "Lap 1 is a full overhaul: playtest and best-site comparison per item, most used first (home, ask, cards, book, games)"
+  },
+  {
+   "at": "2026-10-22T05:18:39Z",
+   "subject": "Glitch swap: widen the eased window so it lasts 300-500 ms at every cycle length; check both ends of the 8-12 s range"
   },
   {
    "at": "2026-10-22T05:17:47Z",
@@ -505,62 +561,6 @@
   {
    "at": "2026-10-22T05:15:18Z",
    "subject": "Mind Field gets a sound mode and a book page; Tilt Arena joins as a four-mode learning-agent game"
-  },
-  {
-   "at": "2026-10-22T05:15:11Z",
-   "subject": "Glitch check: fetch the deployed files together"
-  },
-  {
-   "at": "2026-10-22T05:15:06Z",
-   "subject": "Incident: the browser suite failed on 39637b30 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T05:10:56Z",
-   "subject": "Incident: the browser suite failed on 3479ba40 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T05:09:56Z",
-   "subject": "Incident: the browser suite failed on a242f6e8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T05:07:19Z",
-   "subject": "3D tests take the heavy-job lock only when run on their own; imported by the browser suite (which already holds it) they waited on their…"
-  },
-  {
-   "at": "2026-10-22T05:06:29Z",
-   "subject": "Incident: the browser suite failed on a012b6c7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T05:01:43Z",
-   "subject": "Films card: fetch skill and card code fresh through the service worker, keep mixed card titles in one box, and make the glitch rare, slow…"
-  },
-  {
-   "at": "2026-10-22T05:01:30Z",
-   "subject": "Incident: the browser suite failed on 1526b0d6 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T05:00:17Z",
-   "subject": "forge duel: the pride starter stays a Feeling card"
-  },
-  {
-   "at": "2026-10-22T05:00:06Z",
-   "subject": "forge duel: one starter text no longer reads as Verse speaking about its feelings"
-  },
-  {
-   "at": "2026-10-22T04:59:55Z",
-   "subject": "forge duel: built-in card texts state plain facts, never claims about Verse"
-  },
-  {
-   "at": "2026-10-22T04:58:04Z",
-   "subject": "rally: the pager is numbers and fixed words"
-  },
-  {
-   "at": "2026-10-22T04:57:52Z",
-   "subject": "cards: Forge Duel joins Verse Rally (forge any text into a card, three lanes, a planning opponent, undo, resume, record, keep a won card…"
-  },
-  {
-   "at": "2026-10-22T04:48:54Z",
-   "subject": "rubber band: a band drag no longer selects the cards' text, so the next drag is not taken over by a native text drag (the second band…"
   }
  ],
  "builders": {

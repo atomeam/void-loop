@@ -164,7 +164,8 @@ export default {
   rackOf,
   parodyOf,
   GAMES,
-  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
+  // "games" and "show me the games" open the Game Box now (skills/gamebox.js, 2026-10-22), which lists this shelf as "play a game"
+  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,
