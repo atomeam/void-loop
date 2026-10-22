@@ -2,6 +2,43 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T06:19:34.048Z",
+   "sha": "92ceefb6a8e7c6c6c238069cc8543206ecd36566",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39729694985",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "tools/record.mjs",
+    "tools/record.test.mjs",
+    ".github/workflows/verify.yml",
+    "docs/LOOP-GAPS.md",
+    "docs/NEXT.md",
+    "docs/TAGTEAM.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/grow-self.state.json",
+    "tools/lap-items.mjs",
+    "tools/lap.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-22T06:14:50.385Z",
    "sha": "541c37c75c654110d52a962fe72237622f9b7575",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39729561247",
@@ -835,32 +872,6 @@
     "tools/checks.mjs",
     "tools/grades.test.mjs",
     "void-live-deploy/skills/grades.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T19:53:54.313Z",
-   "sha": "12211721c333099f09afe6dc579b974ef7370a25",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39664930344",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/store.queue.jsonl",
-    "tools/alt-pay.test.mjs",
-    "tools/checks.mjs",
-    "tools/decision-matrix-narrow.test.mjs",
-    "tools/families.mjs",
-    "tools/fuzzy.test.mjs",
-    "tools/privacy-guard.test.mjs",
-    "tools/star-parallax.test.mjs",
-    "void-live-deploy/code-review/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/mcp-skills.js"
    ]
   }
  ]
