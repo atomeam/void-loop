@@ -2,6 +2,39 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T05:09:56.284Z",
+   "sha": "a242f6e8fe66da33680a641ab79017ea84932505",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39724392862",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "docs/COMPLETENESS.md",
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/completeness-rules.json",
+    "tools/completeness.mjs",
+    "tools/completeness.test.mjs",
+    "tools/expectations.mjs",
+    "tools/persona-playtest.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/battleship.js",
+    "void-live-deploy/skills/connect4.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/duel.js",
+    "void-live-deploy/skills/game-rules-line.js",
+    "void-live-deploy/skills/monopoly-rules.js"
+   ]
+  },
+  {
    "at": "2026-10-22T05:06:28.918Z",
    "sha": "a012b6c7282bf8ba927a65d9f4d90b88e021a1b4",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39724184564",
@@ -717,19 +750,6 @@
     "tools/grow-gate.test.mjs",
     "tools/grow-self.state.json",
     "tools/grow-self.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-21T02:12:41.248Z",
-   "sha": "b6d1565de0c870c93f99a6370a9d9ff1b56aed22",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39531310247",
-   "suite": "browser suite on main",
-   "checks": [
-    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml"
    ]
   }
  ]
