@@ -49,6 +49,7 @@ for (const [name, file] of [
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
   ['mind-field', 'mind-field.test.mjs'],
+  ['tilt-arena', 'tilt-arena.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['fix-audit', 'fix-audit.test.mjs'],

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 716,
+ "counted": 726,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -24,6 +24,13 @@
    "tests": 4
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 29,
+   "direct": 2,
+   "dependants": 46,
+   "tests": 4
+  },
+  {
    "file": "lib/placement.js",
    "skills": 28,
    "direct": 1,
@@ -38,11 +45,11 @@
    "tests": 1
   },
   {
-   "file": "lib/field-kit.js",
-   "skills": 22,
-   "direct": 2,
-   "dependants": 37,
-   "tests": 4
+   "file": "lib/motion-throttle.js",
+   "skills": 18,
+   "direct": 1,
+   "dependants": 19,
+   "tests": 1
   },
   {
    "file": "lib/ladder.js",
@@ -50,6 +57,20 @@
    "direct": 10,
    "dependants": 33,
    "tests": 2
+  },
+  {
+   "file": "lib/mind-field-modes.js",
+   "skills": 17,
+   "direct": 1,
+   "dependants": 18,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 17,
+   "direct": 13,
+   "dependants": 17,
+   "tests": 0
   },
   {
    "file": "lib/keeper.js",
@@ -129,32 +150,11 @@
    "tests": 5
   },
   {
-   "file": "lib/motion-throttle.js",
-   "skills": 11,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
    "dependants": 11,
    "tests": 2
-  },
-  {
-   "file": "lib/mind-field-modes.js",
-   "skills": 10,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-stage.js",
-   "skills": 10,
-   "direct": 8,
-   "dependants": 10,
-   "tests": 0
   },
   {
    "file": "lib/skyfacts.js",
@@ -188,6 +188,13 @@
    "file": "lib/field-worker.js",
    "skills": 8,
    "direct": 6,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-family.js",
+   "skills": 8,
+   "direct": 8,
    "dependants": 8,
    "tests": 1
   },
@@ -248,13 +255,6 @@
    "tests": 1
   },
   {
-   "file": "lib/skill-family.js",
-   "skills": 7,
-   "direct": 7,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/probe-log.js",
    "skills": 6,
    "direct": 1,
@@ -311,9 +311,30 @@
    "tests": 3
   },
   {
+   "file": "lib/tilt-arena-modes.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/tilt-arena.js",
+   "skills": 6,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/pack5-ui.js",
    "skills": 6,
    "direct": 5,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tilt-arena-idea.js",
+   "skills": 6,
+   "direct": 4,
    "dependants": 6,
    "tests": 1
   },
@@ -451,6 +472,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-doodle.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/note-tools.js",
    "skills": 4,
    "direct": 4,
@@ -543,13 +571,6 @@
   },
   {
    "file": "lib/field-attention.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-doodle.js",
    "skills": 3,
    "direct": 1,
    "dependants": 3,
@@ -3311,7 +3332,8 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
-    "skills/doodle-mind.js"
+    "skills/doodle-mind.js",
+    "skills/echo-field.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
@@ -3342,17 +3364,23 @@
     "lib/opposite-era.js",
     "lib/stigmergy-law.js",
     "lib/term-orbits-law.js",
+    "lib/tilt-arena.js",
     "lib/zorbleflux.js",
     "skills/crowd.js",
     "skills/feud.js"
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
+    "lib/tilt-arena-idea.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
+    "skills/echo-field.js",
     "skills/extinction.js",
     "skills/family-gravity.js",
     "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
     "skills/living-cards-mind.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js",
@@ -3365,6 +3393,9 @@
     "skills/sudden-death.js",
     "skills/swarm-mind.js",
     "skills/term-orbits.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
     "skills/vector-field-mind.js",
     "skills/veto-council.js",
     "skills/zorbleflux.js"
@@ -3403,16 +3434,23 @@
    "importedBy": [
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
+    "skills/echo-field.js",
     "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js",
+    "skills/tilt-mode.js",
     "skills/vector-field-mind.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
-    "skills/mind-field.js"
+    "skills/mind-field.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
    ]
   },
   "lib/field-swarm.js": {
@@ -4070,12 +4108,19 @@
    "reachedBy": [
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
+    "skills/echo-field.js",
     "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
     "skills/living-cards-mind.js",
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
     "skills/vector-field-mind.js"
    ]
   },
@@ -4135,13 +4180,20 @@
    "reachedBy": [
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
+    "skills/echo-field.js",
     "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
     "skills/living-cards-mind.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
     "skills/vector-field-mind.js"
    ]
   },
@@ -5082,6 +5134,7 @@
     "skills/list-starters.js",
     "skills/mind-field.js",
     "skills/stage-out.js",
+    "skills/tilt-arena.js",
     "skills/time.js"
    ]
   },
@@ -5675,6 +5728,52 @@
    "imports": [],
    "importedBy": [
     "skills/text-tools.js"
+   ]
+  },
+  "lib/tilt-arena-idea.js": {
+   "imports": [
+    "lib/tilt-arena.js",
+    "lib/tilt-arena-modes.js"
+   ],
+   "importedBy": [
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/tilt-mode.js"
+   ],
+   "reachedBy": [
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
+   ]
+  },
+  "lib/tilt-arena-modes.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tilt-arena-idea.js",
+    "skills/tilt-arena-mode.js"
+   ],
+   "reachedBy": [
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js"
+   ]
+  },
+  "lib/tilt-arena.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "lib/tilt-arena-idea.js"
+   ],
+   "reachedBy": [
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js"
    ]
   },
   "lib/time-math.js": {
@@ -6484,6 +6583,7 @@
     "lib/field-doodle.js"
    ],
    "importedBy": [
+    "skills/echo-field.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
@@ -6525,6 +6625,17 @@
     "lib/stage-pack-h.js"
    ],
    "importedBy": []
+  },
+  "skills/echo-field.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "skills/doodle-mind.js",
+    "lib/field-doodle.js"
+   ],
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/eclipse.js": {
    "imports": [
@@ -6800,6 +6911,16 @@
    ],
    "importedBy": []
   },
+  "skills/gaze-chase.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/tilt-arena-idea.js"
+   ],
+   "importedBy": [
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
+   ]
+  },
   "skills/gear-pair-rules.js": {
    "imports": [],
    "importedBy": [
@@ -6835,6 +6956,16 @@
     "skills/quiz.js"
    ],
    "importedBy": []
+  },
+  "skills/gpu-swarm.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/tilt-arena-idea.js"
+   ],
+   "importedBy": [
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
+   ]
   },
   "skills/grades.js": {
    "imports": [],
@@ -6964,6 +7095,16 @@
     "lib/stage-pack.js"
    ],
    "importedBy": []
+  },
+  "skills/hand-arena.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/tilt-arena-idea.js"
+   ],
+   "importedBy": [
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
+   ]
   },
   "skills/health-habits.js": {
    "imports": [
@@ -7386,7 +7527,8 @@
     "skills/resonance-mind.js",
     "skills/nca-mind.js",
     "skills/attention-field-mind.js",
-    "skills/living-cards-mind.js"
+    "skills/living-cards-mind.js",
+    "skills/echo-field.js"
    ],
    "importedBy": [
     "skills/mind-field.js"
@@ -7397,6 +7539,7 @@
     "lib/skill-family.js",
     "skills/mind-field-mode.js",
     "skills/doodle-mind.js",
+    "skills/echo-field.js",
     "skills/vector-field-mind.js",
     "skills/living-cards-mind.js",
     "skills/attention-field-mind.js",
@@ -8822,6 +8965,39 @@
    ],
    "importedBy": [
     "skills/games.js"
+   ]
+  },
+  "skills/tilt-arena-mode.js": {
+   "imports": [
+    "lib/tilt-arena-modes.js",
+    "skills/tilt-mode.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js"
+   ],
+   "importedBy": [
+    "skills/tilt-arena.js"
+   ]
+  },
+  "skills/tilt-arena.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-mode.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js"
+   ],
+   "importedBy": []
+  },
+  "skills/tilt-mode.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/tilt-arena-idea.js"
+   ],
+   "importedBy": [
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js"
    ]
   },
   "skills/time-capsule.js": {
