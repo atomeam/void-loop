@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T20:36:03.776Z",
+   "sha": "04aa214782a49ecbab362ca56ddd823c5e210f97",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39849069730",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+   ],
+   "touched": [
+    "void-live-deploy/skills/showcase.js"
+   ]
+  },
+  {
    "at": "2026-10-22T06:19:34.048Z",
    "sha": "92ceefb6a8e7c6c6c238069cc8543206ecd36566",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39729694985",
@@ -838,40 +853,6 @@
     "tools/checks.mjs",
     "tools/decide-cards.test.mjs",
     "tools/list-starters-family.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-21T20:29:01.694Z",
-   "sha": "d18f925d3eb3a1742ed618fde7da89231a3b3801",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39666414728",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    "domains/void.growth.md",
-    "tools/checks.mjs",
-    "tools/grades.test.mjs",
-    "void-live-deploy/skills/grades.js"
    ]
   }
  ]
