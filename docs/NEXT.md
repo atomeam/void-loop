@@ -2,6 +2,19 @@
 
 For Claude and the daily routines. Each line: status · open PRs · exact next step. Nothing is ever finished; each track keeps upgrading in the lap loop.
 
+0. **TOP: Verse does everything Grok Bot and Claude do, and better (a tower floor)** — status: not passed. This floor passes only with evidence for every item: the same task, run head to head, with Verse at least equal. Honest checklist (estimates until a head-to-head run proves them):
+   - Answering: **partial**. Skills answer many asks, but free-form ones fall back. Next: log asks that fall back (topics only) and turn the most common into skills each lap.
+   - Research: **partial**. Wikipedia/Wikidata lookups and passive REA studies. Next: a cited multi-source research card.
+   - Writing: **partial**. Next: a draft, revise and tone flow, scored against a reference.
+   - Coding and building features: **can't** on its own; builders do it. Next: Verse files a scoped build ask and a routine opens the PR; track asks turned into merged features.
+   - Routines and automations: **partial**. Lap loop and daily routines run, but builders drive them. Next: Verse schedules its own checks from the self card.
+   - Browsing: **can't** directly. Next: link cards plus a fetch-and-summarize skill via owner-gated APIs.
+   - Files and images: **partial**. Next: upload, transform and export for common types.
+   - Films: **partial**. Cut-off-word fix pending (item 1). Next: film-anything plus a films score.
+   - Memory: **partial**. Private owner memory only. Next: Verse recalls owner notes in answers (owner-gated, never committed).
+   - Running its own lap loop: **partial**. Next: Verse proposes the lap's ~100 upgrades and records the before and after itself.
+   Next step: add the floor to the tower (#1271) with these items as "N of M aspects beaten"; it starts at 0 of 10.
+
 1. **Films: cut-off words in shorts + "make this a film" for anything** — status: glitch rarer/slower merged (#1257, #1263, #1268); cut-off-word fix and film-anything in progress (worktree `films-fix`, F-236 in `f236`) · open PRs: none yet · next: captions/titles wrap inside safe areas, add a frame-sampling check on rendered shorts that fails on clipped text; then a "make this a film" action on every card/creation (games, comics via Panel Play, music via Loop Grid). Add the films score (cut words, caption size, shot variety, pacing, loudness, load time) + films chart on the self card; a film that scores below the best old film doesn't ship.
 2. **F-236 Scene Blocker → into Films** — status: not dispatched · next: fold shots/storyboard blocking into the film-anything flow (item 1); no separate surface.
 3. **Cards: throw away + minimize into miniatures** — status: forge/play/share merged (#1245, #1251, #1255, #1261, #1262, #1266) · open: none · next: verify throw-away and minimize-to-miniature on desktop + 390px phone; fix and add a browser check.
