@@ -27,7 +27,7 @@ export const RULES = [
 export const EXTRA_GAMES = ['pong', 'snake', 'quiz', 'duel'];
 // rules Verse learned from mined gaps (tools/expectations.mjs --learn) join the built-in ones, so each miss is checked on every game
 const learnedFile = path.join(here, 'completeness-rules.json');
-if (fs.existsSync(learnedFile)) for (const r of JSON.parse(fs.readFileSync(learnedFile, 'utf8'))) if (!RULES.some((x) => x.id === r.id)) RULES.push({ ...r, applies: r.applies ? new RegExp(r.applies, 'i') : null, has: new RegExp(r.has, 'i') });
+if (fs.existsSync(learnedFile)) for (const r of JSON.parse(fs.readFileSync(learnedFile, 'utf8'))) if (!RULES.some((x) => x.id === r.id)) RULES.push({ ...r, applies: r.applies ? new RegExp(r.applies, 'i') : null, has: new RegExp(r.has, 'i') }); // void-review: ok (the patterns are Verse's own, written by tools/expectations.mjs from its fixed VOCAB, never a visitor's)
 export function isGame(src) { return /game-card/.test(src) && /stageKinds/.test(src); }
 export function audit(name, src) {
   const rows = [];

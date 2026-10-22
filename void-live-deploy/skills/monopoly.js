@@ -110,7 +110,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space or a deed in a panel to read its card; tap one of Verse’s to make an offer, one of yours to mortgage it, or one of your full sets to build.';
   let picked = -1;
   // a deed goes to the shared card store (the card binder reads verse.cards; a verse:card-save event tells it at once)
-  function saveCard(card) { try { const all = JSON.parse(localStorage.getItem('verse.cards') || '[]'); if (!all.some((c) => c.id === card.id && c.game === card.game)) all.push({ ...card, savedAt: Date.now() }); localStorage.setItem('verse.cards', JSON.stringify(all)); } catch {} dispatchEvent(new CustomEvent('verse:card-save', { detail: card })); offerOut.textContent = card.title + ' is saved to your cards.'; }
+  function saveCard(card) { try { const all = JSON.parse(localStorage.getItem('verse.cards') || '[]'); if (!all.some((c) => c.id === card.id && c.game === card.game)) all.push({ ...card, savedAt: Date.now() }); localStorage.setItem('verse.cards', JSON.stringify(all)); } catch (e) { console.warn('card store unavailable', e && e.message); } dispatchEvent(new CustomEvent('verse:card-save', { detail: card })); offerOut.textContent = card.title + ' is saved to your cards.'; }
   const save = () => stageApi.save && stageApi.save();
   function act(next) { if (next !== th.state) { th.state = next; save(); } paint(); voidPlays(); }
   function pick(i) { picked = picked === i ? -1 : i; offerOut.textContent = ''; paint(); }
