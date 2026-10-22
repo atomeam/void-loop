@@ -30,6 +30,10 @@ export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
   return [x.t, x.k, '', x.b, x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nVerse card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
+/** a link that reopens the card on the site: the short code rides in the #fragment, so it never reaches a server log. Pure. */
+export const linkOf = (d, origin = 'https://a-to-mind.com') => origin.replace(/\/+$/, '') + '/#vc=' + codeOf(d).slice(MARK.length);
+/** the card a #vc= link carries, or null. Pure. */
+export const fromHash = (hash) => { const m = /(?:^#|&)vc=([A-Za-z0-9_-]{8,12000})/.exec(String(hash || '')); return m ? parse(MARK + m[1]) : null; };
 /** the card inside a pasted text, or null: any text holding a code line, or a bare code. Pure. */
 export function parse(text) {
   const m = CODE_RE.exec(String(text || '')); if (!m) return null;
@@ -143,6 +147,13 @@ export function bar(el) {
     try { await navigator.clipboard.writeText(text); return 'copied text'; } catch (_) { return 'select and copy'; }
   });
   mk(gCard, 'save card', async () => { const d = readCard(el); try { download(await png(d), fileName({ t: d.t }, 'png')); return 'saved'; } catch (_) { try { download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved text'; } catch (_2) { return 'could not save'; } } });
+  // share (asked 2026-10-22: every card has copy, save text, save picture and share): the system share sheet with the card's text and a link
+  // that reopens it; with no share sheet the link is copied. The link carries what the card shows, never who made it.
+  mk(gCard, 'share', async () => {
+    const d = readCard(el), url = linkOf(d, typeof location !== 'undefined' && /^https:/.test(location.origin) ? location.origin : undefined);
+    try { if (navigator.share) { await navigator.share({ title: d.t.slice(0, 120), text: d.t + (d.b ? '\n\n' + d.b : ''), url }); return 'shared'; } } catch (e) { if (e && e.name === 'AbortError') return 'share'; }
+    try { await navigator.clipboard.writeText(url); return 'link copied'; } catch (_) { return 'select and copy'; }
+  });
   mk(gText, 'copy text', async () => { // what the answer's own "copy" pill did: the heading and the answer's words, no sources, no frame
     try { const d = readCard(el); await navigator.clipboard.writeText(d.t + (d.b ? '\n\n' + d.b : '')); return 'copied'; } catch (_) { return 'select and copy'; }
   });

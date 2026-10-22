@@ -131,3 +131,10 @@ test('a card shared before the rename (V01D-CARD:) still pastes, and new copies 
   assert.equal(parse(old)?.t, 'Old card');
   assert.equal(parse(code)?.t, 'Old card');
 });
+
+test('a share link reopens the card it was made from, and nothing else', async () => {
+  const { linkOf, fromHash } = await import('../void-live-deploy/lib/card-share.js');
+  const url = linkOf(card); assert.match(url, /^https:\/\/a-to-mind\.com\/#vc=[A-Za-z0-9_-]+$/);
+  assert.equal(fromHash(new URL(url).hash)?.t, card.t);
+  assert.equal(fromHash('#other=1'), null); assert.equal(fromHash('#vc=!!'), null);
+});
