@@ -51,6 +51,7 @@ for (const [name, file] of [
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['fix-audit', 'fix-audit.test.mjs'],
+  ['social', 'social.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
   ['error-garden-incidents', 'error-garden-incidents.test.mjs'],
   ['everything', 'everything.test.mjs'],
