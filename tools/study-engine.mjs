@@ -128,7 +128,120 @@ export function buildBrief(study, feature) {
 
 /** the whole engine over captured scripts: [{name, text}] -> a study object. Pure. */
 export function studyScripts(scripts, meta = {}) {
-  const analyses = (scripts || []).map((s) => analyzeScript(s.text, s.name));
-  return { ...meta, modules: analyses.map((a) => a.script), ranked: rankFindings(analyses), unknowns: unknownsOf(analyses),
+  const analyses = (scripts || []).map((s) => { const a = analyzeScript(s.text, s.name); a.findings.push(...rpcOf(s.text, s.name)); return a; });
+  return { ...meta, modules: analyses.map((a) => a.script), ranked: rankFindings(analyses), unknowns: unknownsOf(analyses), trace: meta.word ? traceFeature(scripts, meta.word) : [],
     minified: analyses.filter((a) => a.minified).length, sourceMaps: analyses.filter((a) => a.sourceMap).length };
+}
+
+// ---- source maps (own decoder of the public Source Map v3 format: base64 VLQ "mappings") ----
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+/** one VLQ segment string -> numbers. Pure. */
+export function vlq(seg) {
+  const out = []; let v = 0, shift = 0;
+  for (const ch of seg) {
+    const d = B64.indexOf(ch); if (d < 0) return null;
+    v += (d & 31) << shift;
+    if (d & 32) { shift += 5; continue; }
+    out.push(v & 1 ? -(v >>> 1) : v >>> 1); v = 0; shift = 0;
+  }
+  return shift ? null : out;
+}
+/** a parsed source map -> lines of [genCol, srcIdx, srcLine, srcCol, nameIdx?] (all 0-based). Pure; null when not v3. */
+export function decodeSourceMap(map) {
+  const m = typeof map === 'string' ? (() => { try { return JSON.parse(map); } catch (_) { return null; } })() : map;
+  if (!m || m.version !== 3 || typeof m.mappings !== 'string') return null;
+  const lines = []; let src = 0, sl = 0, sc = 0, nm = 0;
+  for (const l of m.mappings.split(';')) {
+    let gc = 0; const segs = [];
+    for (const s of l.split(',')) {
+      if (!s) continue; const n = vlq(s); if (!n) return null;
+      gc += n[0];
+      if (n.length >= 4) { src += n[1]; sl += n[2]; sc += n[3]; const seg = [gc, src, sl, sc]; if (n.length >= 5) { nm += n[4]; seg.push(nm); } segs.push(seg); } else segs.push([gc]);
+    }
+    lines.push(segs);
+  }
+  return { sources: (m.sources || []).map((s) => (m.sourceRoot || '') + s), names: m.names || [], lines, hasContent: Array.isArray(m.sourcesContent) && m.sourcesContent.some(Boolean) };
+}
+/** generated 1-based line and 0-based column -> the original source, line (1-based), column and name. Pure. */
+export function originalPosition(decoded, line, column = 0) {
+  const segs = decoded && decoded.lines[line - 1]; if (!segs) return null;
+  let best = null; for (const s of segs) { if (s[0] > column) break; if (s.length >= 4) best = s; }
+  if (!best) return null;
+  return { source: decoded.sources[best[1]] || '', line: best[2] + 1, column: best[3], name: best.length > 4 ? decoded.names[best[4]] || '' : '' };
+}
+
+// ---- readable un-minify (own formatter: strings, template literals, comments and regex literals kept intact) ----
+/** minified JavaScript -> indented lines, plus short names restored where a source map names them. Pure. */
+export function readable(js, { indent = '  ', names = null } = {}) {
+  const t = String(js || ''); let out = '', depth = 0, i = 0, paren = 0, prev = '';
+  const nl = () => { out = out.replace(/[ \t]+$/, ''); out += '\n' + indent.repeat(Math.max(0, depth)); };
+  while (i < t.length) {
+    const c = t[i];
+    if (c === '"' || c === "'" || c === '`') { let j = i + 1; while (j < t.length && t[j] !== c) j += t[j] === '\\' ? 2 : 1; out += t.slice(i, j + 1); i = j + 1; prev = c; continue; }
+    if (c === '/' && t[i + 1] === '/') { const j = t.indexOf('\n', i); const e = j < 0 ? t.length : j; out += t.slice(i, e); i = e; continue; }
+    if (c === '/' && t[i + 1] === '*') { const j = t.indexOf('*/', i + 2); const e = j < 0 ? t.length : j + 2; out += t.slice(i, e); i = e; continue; }
+    if (c === '/' && /[=(,:;!&|?{}[\n]|^$/.test(prev || '')) { let j = i + 1, cls = false; while (j < t.length && (t[j] !== '/' || cls)) { if (t[j] === '\\') j++; else if (t[j] === '[') cls = true; else if (t[j] === ']') cls = false; j++; } out += t.slice(i, j + 1); i = j + 1; prev = 'r'; continue; }
+    if (c === '\n' || c === '\r') { i++; continue; }
+    if (c === '(') paren++; if (c === ')') paren--;
+    if (c === '{') { out += ' {'; depth++; nl(); }
+    else if (c === '}') { depth--; nl(); out += '}'; if (t[i + 1] && !/[;,)\]]/.test(t[i + 1])) nl(); }
+    else if (c === ';' && paren <= 0) { out += ';'; if (t[i + 1] !== '}') nl(); }
+    else out += c;
+    if (!/\s/.test(c)) prev = c; i++;
+  }
+  let s = out.replace(/\n\s*\n/g, '\n').replace(/^ /, '').trim() + '\n';
+  if (names) for (const [short, long] of Object.entries(names)) if (/^[A-Za-z_$][\w$]{0,2}$/.test(short) && /^[A-Za-z_$][\w$]*$/.test(long)) s = s.replace(new RegExp('(?<![\\w$.\'"`])' + short.replace(/\$/g, '\\$') + '(?![\\w$])', 'g'), long);
+  return s;
+}
+
+// ---- RPC endpoints: tRPC, JSON-RPC, gRPC-web (own patterns) ----
+const RPC = [
+  ['rpc:trpc', /(['"`])(\/(?:api\/)?trpc\/[\w.,\-]+)\1/g, 0.8],
+  ['rpc:json-rpc', /jsonrpc\s*:\s*['"]2\.0['"][^}]{0,120}?method\s*:\s*(['"])([\w.\-/]{1,80})\1/g, 0.8],
+  ['rpc:json-rpc', /method\s*:\s*(['"])([\w.\-/]{1,80})\1[^}]{0,120}?jsonrpc\s*:\s*['"]2\.0['"]/g, 0.8],
+  ['rpc:grpc-web', /(['"`])(\/[a-z][\w]*(?:\.[\w]+)+\/[A-Z]\w+)\1/g, 0.75],
+];
+/** RPC calls in one script, with line evidence. Pure. */
+export function rpcOf(text, name = 'script') {
+  const t = String(text || ''), out = [];
+  for (const [mechanism, re, strength] of RPC) { re.lastIndex = 0; for (let m; (m = re.exec(t));) out.push({ kind: 'rpc', value: m[2], mechanism, strength, built: false, script: name, line: LINE(t, m.index) }); }
+  return out;
+}
+
+// ---- feature trace from a starting word ----
+/** scripts + a word from the question -> where the feature lives: each hit's line, the function around it, and the calls near it. Pure. */
+export function traceFeature(scripts, word, { near = 12 } = {}) {
+  const w = String(word || '').trim(); if (w.length < 3) return [];
+  const re = new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), hits = [];
+  for (const s of scripts || []) {
+    const lines = String(s.text || '').split('\n');
+    const calls = [...analyzeScript(s.text, s.name).findings, ...rpcOf(s.text, s.name)];
+    lines.forEach((l, i) => {
+      if (!re.test(l)) return;
+      let fn = ''; for (let k = i; k >= Math.max(0, i - 60) && !fn; k--) { const m = /(?:function\s+([\w$]+)|([\w$]+)\s*[:=]\s*(?:async\s*)?(?:function\b|\([^)]*\)\s*=>|[\w$]+\s*=>))/.exec(lines[k]); if (m) fn = m[1] || m[2]; }
+      const nearCalls = calls.filter((f) => Math.abs(f.line - (i + 1)) <= near).map((f) => f.value + ' (' + f.mechanism + ', line ' + f.line + ')');
+      hits.push({ script: s.name, line: i + 1, fn, nearCalls, score: (nearCalls.length ? 2 : 1) + (fn ? 1 : 0) - (/locale|i18n|lang|translation/i.test(s.name) ? 2 : 0) });
+    });
+  }
+  return hits.sort((a, b) => b.score - a.score || a.line - b.line).slice(0, 40);
+}
+
+// ---- visual compare (own, over raw RGBA pixels of two same-size captures) ----
+/** {width,height,data} x2 -> share of changed pixels and the box around the change. Pure. */
+export function visualDiff(a, b, threshold = 0) {
+  if (!a || !b || a.width !== b.width || a.height !== b.height) return { comparable: false };
+  let changed = 0, x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+  for (let p = 0, n = a.width * a.height; p < n; p++) {
+    const o = p * 4; let d = 0; for (let c = 0; c < 4; c++) d = Math.max(d, Math.abs(a.data[o + c] - b.data[o + c]));
+    if (d > threshold) { changed++; const x = p % a.width, y = (p / a.width) | 0; if (x < x0) x0 = x; if (y < y0) y0 = y; if (x > x1) x1 = x; if (y > y1) y1 = y; }
+  }
+  return { comparable: true, changed, share: Math.round(changed / Math.max(1, a.width * a.height) * 10000) / 10000, box: changed ? { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 } : null };
+}
+
+// ---- the build loop: a finished study raises its skill's pick ----
+/** finished studies -> {skill: boost}: strong evidence makes a parity want go first (1 to 1.5). Pure. */
+export function studyBoosts(studies) {
+  const out = {};
+  for (const s of studies || []) { if (!s || !s.skill) continue; const strong = (s.ranked || []).filter((f) => f.confidence === 'exact' || f.confidence === 'high').length; out[s.skill] = Math.max(out[s.skill] || 1, 1 + Math.min(0.5, strong * 0.1)); }
+  return out;
 }

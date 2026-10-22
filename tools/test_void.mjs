@@ -435,6 +435,7 @@ async function fresh(...inits) {
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
   for (const init of inits) await ctx.addInitScript(init);
+  await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const w = document.getElementById('whisper'); if (w) new MutationObserver(() => { if (w.textContent) window.__whisperN = (window.__whisperN || 0) + 1; }).observe(w, { childList: true, characterData: true, subtree: true }); }); }); // ask() below: a whispered answer counts
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
   // asks below miss their fixed waits. tools/test_3d.mjs turns them on with fresh({ mini3d: true }).
@@ -489,8 +490,11 @@ async function fresh(...inits) {
   // empty cards in a dozen checks because the first answer took longer than 450-500 ms; each passed alone). An ask the page answered in
   // time costs nothing more; the page logs every answer in its loop log (LOOP_KEY), the same signal tools/bench.mjs waits on.
   const logged = (t, since) => p.evaluate(([q, s]) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim() === q.trim() && String(x.t) >= s); } catch (_) { return false; } }, [t, since]).catch(() => false);
-  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
-    if (!(await logged(t, since))) { await until(() => logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
+  // an ask answered by a whispered line (a greeting, "test") is not in the loop log: it counts as answered once the whisper spoke, so the slack
+  // below never outwaits the whisper's own 3.5 s and a check reading it finds it still there (2026-10-22: "hello" read "" after 4 s more)
+  const saidN = () => p.evaluate(() => window.__whisperN || 0).catch(() => 0);
+  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); const n0 = await saidN(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
+    if (!(await logged(t, since)) && (await saidN()) === n0) { await until(async () => (await saidN()) !== n0 || logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -4247,6 +4251,35 @@ try {
     check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
   }
+  if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
+    const out = {};
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
+      const F = await fresh(); await F.p.setViewportSize(vp);
+      await F.ask('mind field', 700); await until(async () => !!(await F.p.$('.ff-doodle-mind canvas')), 8000);
+      const card = '.ff-doodle-mind', box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 40, box.y + 40); await F.p.mouse.down();
+      for (let i = 0; i < 24; i++) { const a = i / 6; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 4, box.y + box.height / 2 + Math.sin(a) * box.height / 4); }
+      const drawn = await F.p.$eval(card, (e) => ({ oracles: +e.dataset.oracles, latent: e.dataset.latent }));
+      await F.p.mouse.up();
+      const orb = await (await F.p.$(card + ' .mf-orb')).boundingBox();
+      await F.p.mouse.move(orb.x + orb.width / 2, orb.y + orb.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 6 }); await F.p.mouse.up();
+      await F.p.waitForTimeout(1200);
+      const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className);
+        return { dragged: +(e.dataset.dragged || 0), modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
+      await F.ask('save this mind', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
+      const swapped = { swarm: !!(await F.p.$('.ff-swarm-mind')), doodle: !!(await F.p.$('.ff-doodle-mind')), sel: await F.p.$eval('.ff-swarm-mind select.mf-mode', (s) => s.value).catch(() => '') };
+      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      await F.ask('mind field modes', 700); const list = await F.p.$$eval('.mf-modes li', (l) => l.length).catch(() => 0);
+      await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
+      out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
+    }
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 7 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 7 && o.sim === 8 && !o.errors.length;
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all seven, and "what\'s similar" lists all eight parts',
+      good(out[1280]) && good(out[390]), JSON.stringify(out));
+  }
   if (want("operating laws: veto council keeps mass at 100 and names who delayed or blocked, stigmergy board grows returning trails, term orbits merge overused words")) { // asked by the owner, 2026-10-18
     const F = await fresh();
     await F.ask('convene a council on whether to rewrite the app', 700); await until(async () => !!(await F.p.$('.veto-council .vc-p')), 8000);
@@ -4893,7 +4926,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO Verse')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split(/ADDS TO V(OID|ERSE)/i)[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
@@ -5038,7 +5071,7 @@ try {
     await Z.p.reload(); await Z.p.waitForTimeout(900);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in
     const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
@@ -6445,7 +6478,10 @@ try {
     check('Verse merge: the numbers are earned from the parents (1 / 1 / 0 each gives P 1 R 1 I 0, depth 1, uncommon), whatever numbers the route sends', !!mc && mc.plate === 'P 1 R 1 I 0' && /IDEA . MERGED, DEPTH 1$/i.test(mc.type) && mc.rarity === 'uncommon' && /named once by Verse/i.test(mc.src), JSON.stringify(mc));
     await M.ask('close', 400); await M.ask('what do you get if you merge forge with a pizza', 900);
     const sk = await until(async () => { const c = await cardOfMerge(M); return c && c.parents[0] === 'Forge' ? c : null; }, 8000);
-    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && /^P 9 R 6 I \d+$/.test(sk.plate) && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, errors: M.errors }));
+    // Forge's real stats come from the served families/guide data and move as Forge is used (P 9 R 6 on 2026-10-16, R 3 on 2026-10-22), so the
+    // expected plate is worked out from that same data by the same rules (skills/merge.js), not written down once
+    const want = await M.p.evaluate(async () => { const m = await import('/skills/merge.js'), cf = await import('/lib/card-frame.js'); const st = await cf.loadStats(); const pa = m.parentCard('forge', st), pb = m.parentCard('pizza', st), c = m.mergedCard(pa, pb); return { plate: 'P ' + c.power + ' R ' + c.resistance + ' I ' + c.income, real: pa.power !== pb.power || pa.resistance !== pb.resistance }; }).catch((e) => ({ plate: 'ERR ' + e }));
+    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && sk.plate === want.plate && want.real && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, want, errors: M.errors }));
     await M.ctx.close();
     const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.abort());
     await D.ask('merge a pizza and a black hole', 900);

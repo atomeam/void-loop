@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:31:37Z",
+   "subject": "Games show every basic: property game gets player panels, sets, mortgages and deed cards; how-to-play lines and a take-back; completeness…"
+  },
+  {
    "at": "2026-10-22T03:59:38Z",
    "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T03:33:23Z",
    "subject": "no-clip: spill check is for the walkthrough panel (the tome's boards sit outside its box by design)"
-  },
-  {
-   "at": "2026-10-22T03:33:12Z",
-   "subject": "showcase: the reaction row wraps instead of cutting its last emoji; no-clip checks the walkthrough panel for anything poking out"
   }
  ],
  "builders": {

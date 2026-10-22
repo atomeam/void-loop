@@ -4610,6 +4610,8 @@ say('nothing selected to remove');
       say('');
       return el;
     }
+    // a shared card link (#vc=..., the share button in lib/card-share.js) opens that card on arrival
+    if (/[#&]vc=/.test(location.hash)) shareReady.then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
     import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
       // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
@@ -5960,7 +5962,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
+      if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
