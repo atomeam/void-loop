@@ -3294,6 +3294,29 @@ try {
       !noKey && auth === 'Bearer owner-k' && !!d && /^v01d-kept-\d{4}-\d{2}-\d{2}\.json$/.test(d.suggestedFilename()) && body && body.count === 2 && body.records[1].name === 'my dog is Rex' && /saved: 2 lines/.test(said) && !X.errors.length,
       JSON.stringify({ noKey: !!noKey, auth, file: d && d.suggestedFilename(), said, e: X.errors }));
     await X.ctx.close(); }
+  // Memory snippets, both stores on one card (asked by Verse, 2026-10-20: "a 'memory-preview' UI component to allow users to
+  // see memory snippets"). It must not take memory-graph's export look: "preview my memory" still opens that card.
+  if (want("memory preview: local patterns and the server records on one card")) { const M = await fresh();
+    await M.ctx.route(/\/api\/memory\?view=export/, (r) => r.fulfill(json({ v01d_memory: 1, exported: '2026-10-21T00:00:00Z', count: 1, capped: false, records: [{ id: 'note-1', name: 'project <react>', kind: 'project', updated: '2026-10-19T00:00:00Z' }] })));
+    await M.ask('make a clock', 700);
+    await M.p.evaluate(() => { const g = JSON.parse(localStorage.getItem('a2m.void.graph.v1') || '{"nodes":{},"edges":{}}'); g.on = true; const now = new Date().toISOString(); g.nodes['fact:tea'] = { kind: 'fact', label: 'I like tea', n: 1, days: 1, first: now, last: now }; g.asks = (g.asks || 0) + 1; g.first = g.first || now; localStorage.setItem('a2m.void.graph.v1', JSON.stringify(g)); localStorage.setItem('a2m.void.owner.v1', 'owner-k'); });
+    await M.ask('memory preview', 1100);
+    const read = () => M.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null;
+      return { t: pg.innerText, html: pg.innerHTML, items: [...pg.querySelectorAll('.mp-item .mp-fact')].map((e) => e.textContent), meta: [...pg.querySelectorAll('.mp-item .mp-meta')].map((e) => e.textContent), refresh: !!pg.querySelector('.mp-refresh .g-btn[data-action="refresh"]'), src: (pg.querySelector('.src') || { textContent: '' }).textContent }; });
+    const card = await read();
+    check('memory preview: "memory preview" opens one card holding both stores - the local patterns (an interest from this browser and a "you told me" line) and the server record drawn as text (never as markup) with its kind and day - plus a Refresh and the two stores named under it',
+      !!card && /Memory preview/.test(card.t) && /Local patterns/.test(card.t) && /Server memory/.test(card.t)
+        && card.items.some((s) => /clock/i.test(s)) && card.items.some((s) => /I like tea/.test(s))
+        && card.items.some((s) => s === 'project <react>') && /&lt;react&gt;/.test(card.html)
+        && card.meta.some((m) => /project/.test(m) && /2026-10-19/.test(m)) && card.refresh && /a2m\.void\.graph\.v1/.test(card.src) && /view=export/.test(card.src)
+        && !/don't know this yet/.test(card.t) && !M.errors.length,
+      JSON.stringify({ card: card && { t: card.t.slice(0, 200), items: card.items, meta: card.meta, refresh: card.refresh }, e: M.errors }));
+    await M.p.keyboard.press('Escape');
+    await M.ask('preview my memory', 1000);
+    const theirs = await M.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { mp: !!document.querySelector('.vpage.on .mp-section'), mg: !!document.querySelector('.vpage.on .mg-pv-sum, .vpage.on .mg-pv-empty'), t: pg ? pg.innerText : '' }; });
+    check('memory preview: the export look is left alone - "preview my memory" still opens memory-graph, never this card',
+      theirs.mg && !theirs.mp && /Download it|See it all|Nothing leaves this device/.test(theirs.t) && !M.errors.length, JSON.stringify({ theirs, e: M.errors }));
+    await M.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

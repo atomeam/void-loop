@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 697,
+ "counted": 698,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -18,9 +18,9 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 28,
-   "direct": 3,
-   "dependants": 48,
+   "skills": 29,
+   "direct": 4,
+   "dependants": 49,
    "tests": 4
   },
   {
@@ -640,6 +640,13 @@
    "tests": 1
   },
   {
+   "file": "lib/memory-graph.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/stage-port.js",
    "skills": 2,
    "direct": 2,
@@ -1002,13 +1009,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/memory-graph.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/notebook.js",
@@ -3784,7 +3784,8 @@
   "lib/memory-graph.js": {
    "imports": [],
    "importedBy": [
-    "skills/memory-graph.js"
+    "skills/memory-graph.js",
+    "skills/memory-preview.js"
    ]
   },
   "lib/memory-scope.js": {
@@ -5117,6 +5118,7 @@
     "lib/match-history.js",
     "lib/stage-pack-c.js",
     "skills/memory-graph.js",
+    "skills/memory-preview.js",
     "skills/memory.js",
     "skills/state.js"
    ],
@@ -6984,6 +6986,17 @@
    "external": [
     ", { headers: { authorization: ",
     " takes it away again.</p>",
+    ", "
+   ],
+   "importedBy": []
+  },
+  "skills/memory-preview.js": {
+   "imports": [
+    "lib/state.js",
+    "lib/memory-graph.js"
+   ],
+   "external": [
+    ", { headers: { authorization: ",
     ", "
    ],
    "importedBy": []

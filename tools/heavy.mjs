@@ -55,8 +55,12 @@ export async function acquire(label, { lock = LOCK, waitMs = Number(process.env.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (!cmd) { console.error('usage: node tools/heavy.mjs <command> [args...]'); process.exit(2); }
-  const release = await acquire(cmd + ' ' + args.join(' '));
-  const r = spawnSync(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32', env: { ...process.env, VOID_HEAVY_HELD: String(process.pid) } });
+  const release = await acquire([cmd, ...args].join(' '));
+  // Windows: with shell:true spawnSync joins the words itself, without quoting, so a path with a space (C:\Program
+  // Files\nodejs\node.exe, passed by finish.mjs step 0) was split at the first space and cmd.exe answered
+  // "'C:\Program' is not recognized" - the browser check never started. Quote the whole line instead, one line, no word split.
+  const quoted = process.platform === 'win32' ? [cmd, ...args].map((w) => (/[\s"]/.test(w) ? '"' + w.replace(/"/g, '""') + '"' : w)).join(' ') : null;
+  const r = spawnSync(quoted || cmd, quoted ? [] : args, { stdio: 'inherit', shell: process.platform === 'win32', env: { ...process.env, VOID_HEAVY_HELD: String(process.pid) } });
   release();
   process.exit(r.status === null ? 1 : r.status);
 }
