@@ -61,6 +61,10 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tools/claims-verify.mjs --live || echo "::warning title=Claims::some built claims fall through to the fallback; they show as in progress"
+      - name: Nothing clipped at three window sizes (tools/no-clip.mjs)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/no-clip.mjs || { echo "::error title=Clipped::the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700"; exit 1; }
       - name: Keep the suite, seen-set and run log
         run: |
           node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Verse)
