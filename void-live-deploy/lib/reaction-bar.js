@@ -31,7 +31,7 @@ export function reactionBar(target, opts = {}) {
   const bar = doc.createElement('span');
   bar.className = 'rx-bar'; bar.hidden = true; bar.dataset.target = target;
   bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'React to this');
-  bar.style.cssText = 'display:flex;gap:4px;align-items:center;position:relative;flex:1 1 100%';
+  bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;align-items:center;position:relative;flex:1 1 100%;min-width:0;max-width:100%';
   const style = doc.createElement('style'); style.textContent = BURST_CSS; bar.append(style);
   const nums = {}, btns = {};
   let dead = false, restUntil = 0, busy = false;
