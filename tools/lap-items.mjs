@@ -14,6 +14,7 @@ const walk = (p, out = []) => { for (const f of ls(p)) { const q = p + '/' + f; 
 const testsOf = (name, tests) => tests.filter((t) => t.includes(name)).length;
 
 export const SURFACES = [
+  ['home', /^(home|look|showcase|what-can)/], ['ask', /^(answer|router|ask|route)/],
   ['games', /game|chess|checkers|monopoly|poker|snake|pong|sorry|go\b|othello|mancala|battleship|connect4|ringer|tictactoe|duel|fireworks|aggravation|rally/],
   ['cards', /card|rally|duel|collectible|binder/], ['book', /book/], ['store', /store|shop|gumroad/], ['films', /film|movie|poster|video/],
   ['podcast', /podcast/], ['mind-field', /mind/], ['tilt-arena', /tilt|arena/], ['loop', /will|wants|lap|loop|churn|incident|completeness|persona|expectations/],

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { compare, lapProgress, upgradeAsk, nextStep, advance, lapLine, publicLap, staleness, candidateOf, NEW_PER_LAP } from '../void-live-deploy/lib/lap.js';
+import { overhaulWeights, compare, lapProgress, upgradeAsk, nextStep, advance, lapLine, publicLap, staleness, candidateOf, NEW_PER_LAP } from '../void-live-deploy/lib/lap.js';
 test('a lap touches every skill once, then new features, then a new lap over the bigger set', () => {
   let s = null; const seen = []; const skills = ['b', 'a', 'c'];
   for (let i = 0; i < 3; i++) { const r = nextStep(s, skills, { c: 5 }); assert.equal(r.step.kind, 'upgrade'); seen.push(r.step.skill); s = advance(r.state, r.step); }
@@ -22,4 +22,8 @@ test('an item is better only when a fact rose and none fell; plans get no extern
   assert.equal(compare({ lines: 10, tests: 1 }, { lines: 12, tests: 0 }).better, false);
   assert.deepEqual(lapProgress({ a: { n: 1 }, b: { n: 1 } }, [{ id: 'a', facts: { n: 2 } }, { id: 'b', facts: { n: 1 } }]), { better: 1, notYet: 1 });
   assert.match(upgradeAsk('plan:void.store.md'), /no external actions/);
+});
+test('lap 1 is an overhaul, most used first', () => {
+  const ids = ['skill:zz', 'surface:book', 'surface:home', 'skill:chess'], r = nextStep(null, ids, overhaulWeights(ids));
+  assert.equal(r.step.skill, 'surface:home'); assert.match(candidateOf(r.step).title, /^Overhaul surface:home: persona playtest/);
 });

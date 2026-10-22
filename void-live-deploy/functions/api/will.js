@@ -14,7 +14,7 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
-import { nextStep, advance, candidateOf, publicLap } from '../../lib/lap.js';
+import { nextStep, advance, candidateOf, publicLap, overhaulWeights } from '../../lib/lap.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
@@ -96,7 +96,7 @@ export async function onRequestPost({ request, env }) {
   if (!open) { try {
     const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(), items = (inv && inv.items) || [];
     const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v');
-    const r = nextStep(raw ? JSON.parse(raw) : null, items.map((i) => i.id)); const facts = r.step.kind === 'upgrade' ? ((items.find((i) => i.id === r.step.skill) || {}).facts || null) : null;
+    const ids = items.map((i) => i.id), r = nextStep(raw ? JSON.parse(raw) : null, ids, overhaulWeights(ids)); const facts = r.step.kind === 'upgrade' ? ((items.find((i) => i.id === r.step.skill) || {}).facts || null) : null;
     if (r.step.kind === 'upgrade') { const c = candidateOf(r.step, {}, facts); chosenWant = { want: { ...c, because: c.why }, skipped: [] }; }
     if (r.step.kind === 'upgrade' || chosenWant.want) lap = advance(r.state, r.step, at, facts);
   } catch (_) { lap = null; } }

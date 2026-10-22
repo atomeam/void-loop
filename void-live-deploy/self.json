@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T05:35:37Z",
+   "subject": "Game Box: a first line short enough to show whole"
+  },
+  {
    "at": "2026-10-22T05:35:27Z",
    "subject": "Game Box: every game and the table tools in one box (dice of any size with a 3D roll, coin, number picker, answer orb, card deck, timer…"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T04:48:54Z",
    "subject": "rubber band: a band drag no longer selects the cards' text, so the next drag is not taken over by a native text drag (the second band…"
-  },
-  {
-   "at": "2026-10-22T04:44:49Z",
-   "subject": "Films title: keep the glitching word in one box so card title rows can't spread its letters; add a frame-sampling check for glitch titles"
   }
  ],
  "builders": {

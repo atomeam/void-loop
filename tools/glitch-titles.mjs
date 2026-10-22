@@ -61,6 +61,8 @@ if (exe && !process.argv.includes('--no-browser')) {
     // the hostile row is lib/card-frame.js's .vc-title: flex, space-between, a cost mark after
     await page.setContent('<!doctype html><meta charset="utf-8">' + styles + '<style>body{background:#111;color:#fff;font:16px system-ui}.vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;width:640px;font-size:30px;padding:5px 12px;border:2px solid #888}.vc-title::after{content:"\\25C6"}</style><div class="' + wrap + '">' + t.html.replace(/^<(h[1-6])/, '<$1 class="vc-title" id="gt"') + '</div>');
     judgeRate(t.file + ' glitch is rare and slow', await rate(page, '#gt'));
+    // the page re-rolls each cycle to 8-12 s: the swap must stay 300-500 ms at both ends
+    for (const d of ['8s', '12s']) { await page.evaluate((d) => document.querySelector('#gt .glw').style.setProperty('--gl-d', d), d); judgeRate(t.file + ' glitch is rare and slow at ' + d, await rate(page, '#gt')); }
     for (const f of FRAMES) judge(t.file + ' word whole at ' + Math.round(f * 1000) / 10 + '%', await measure(page, '#gt', f));
     await page.close();
   }
