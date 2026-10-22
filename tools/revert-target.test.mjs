@@ -173,7 +173,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:/m, 'a push to main, or a dispatch (automerge, by hand)');
   assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
-  assert.doesNotMatch(verify, /^\s+needs:/m);
+  assert.deepEqual(verify.match(/^\s+needs:.*$/gm).map((x) => x.trim()), ['needs: browser-suite'], 'only the incident job waits (for every shard, so a red head writes one incident)');
   assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the fast tests');
   assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}-\$\{\{ matrix\.shard \}\}\n\s+cancel-in-progress: false/, 'one group per head and shard for the suite, never cancelled (three shards since 2026-10-16)');
   assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3\]/, 'the suite runs as three shards'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/3/, 'each job gets its shard');

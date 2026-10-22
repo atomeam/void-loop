@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 726,
+ "counted": 729,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -52,6 +52,27 @@
    "tests": 1
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 17,
+   "direct": 0,
+   "dependants": 41,
+   "tests": 1
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 17,
+   "direct": 1,
+   "dependants": 41,
+   "tests": 1
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 17,
+   "direct": 0,
+   "dependants": 40,
+   "tests": 3
+  },
+  {
    "file": "lib/ladder.js",
    "skills": 17,
    "direct": 10,
@@ -73,27 +94,6 @@
    "tests": 0
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 16,
-   "direct": 0,
-   "dependants": 40,
-   "tests": 1
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 16,
-   "direct": 1,
-   "dependants": 40,
-   "tests": 1
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 16,
-   "direct": 0,
-   "dependants": 39,
-   "tests": 3
-  },
-  {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
@@ -102,30 +102,30 @@
   },
   {
    "file": "lib/rule-registry.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
-   "skills": 11,
-   "direct": 0,
-   "dependants": 32,
+   "skills": 12,
+   "direct": 1,
+   "dependants": 33,
    "tests": 4
   },
   {
@@ -157,18 +157,18 @@
    "tests": 2
   },
   {
+   "file": "lib/qr.js",
+   "skills": 9,
+   "direct": 2,
+   "dependants": 13,
+   "tests": 2
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/qr.js",
-   "skills": 8,
-   "direct": 2,
-   "dependants": 12,
-   "tests": 2
   },
   {
    "file": "lib/bridges.js",
@@ -227,6 +227,13 @@
    "tests": 3
   },
   {
+   "file": "lib/art-source.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/game-kit.js",
    "skills": 7,
    "direct": 1,
@@ -243,8 +250,22 @@
   {
    "file": "lib/card-deck.js",
    "skills": 7,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 7,
    "direct": 1,
    "dependants": 10,
+   "tests": 2
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 7,
+   "direct": 3,
+   "dependants": 9,
    "tests": 1
   },
   {
@@ -280,27 +301,6 @@
    "skills": 6,
    "direct": 1,
    "dependants": 21,
-   "tests": 1
-  },
-  {
-   "file": "lib/art-source.js",
-   "skills": 6,
-   "direct": 0,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
-   "file": "lib/card-image.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 9,
-   "tests": 2
-  },
-  {
-   "file": "lib/card-share.js",
-   "skills": 6,
-   "direct": 2,
-   "dependants": 8,
    "tests": 1
   },
   {
@@ -1026,6 +1026,13 @@
   },
   {
    "file": "lib/fix-audit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/forge-duel.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2450,6 +2457,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
@@ -2470,7 +2478,8 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
-    "skills/oracle.js"
+    "skills/oracle.js",
+    "skills/rally.js"
    ]
   },
   "lib/ask-text.js": {
@@ -2777,7 +2786,8 @@
     "lib/card-frame.js",
     "lib/card-image.js",
     "lib/skill-confidence.js",
-    "lib/tome.js"
+    "lib/tome.js",
+    "skills/rally.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -2817,6 +2827,7 @@
    ],
    "importedBy": [
     "lib/card-share.js",
+    "skills/duel.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -2824,7 +2835,6 @@
     "lib/duel-rules.js",
     "skills/about-skill.js",
     "skills/collectible.js",
-    "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
     "skills/oracle.js"
@@ -2888,7 +2898,8 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
-    "skills/oracle.js"
+    "skills/oracle.js",
+    "skills/rally.js"
    ]
   },
   "lib/card-kinds.js": {
@@ -2940,7 +2951,8 @@
    "importedBy": [
     "lib/card-frame.js",
     "skills/collectible.js",
-    "skills/oracle.js"
+    "skills/oracle.js",
+    "skills/rally.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -2988,6 +3000,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -3531,6 +3544,12 @@
     "skills/fix-audit.js"
    ]
   },
+  "lib/forge-duel.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/rally.js"
+   ]
+  },
   "lib/forge-makes.js": {
    "imports": [],
    "importedBy": [
@@ -3681,6 +3700,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -3844,6 +3864,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
@@ -4094,6 +4115,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
@@ -4715,7 +4737,8 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
-    "skills/oracle.js"
+    "skills/oracle.js",
+    "skills/rally.js"
    ]
   },
   "lib/rally-rules.js": {
@@ -4955,6 +4978,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -6156,7 +6180,8 @@
   "skills/battleship.js": {
    "imports": [
     "skills/battleship-rules.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6362,7 +6387,8 @@
     "skills/game-level.js",
     "skills/connect4-rules.js",
     "skills/lift3d.js",
-    "lib/arena-say.js"
+    "lib/arena-say.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6610,7 +6636,9 @@
    "imports": [
     "lib/duel-rules.js",
     "lib/card-frame.js",
-    "lib/rules-play.js"
+    "lib/rules-play.js",
+    "skills/game-rules-line.js",
+    "lib/card-deck.js"
    ],
    "importedBy": []
   },
@@ -6758,6 +6786,10 @@
     "skills/zoom-figure.js"
    ]
   },
+  "skills/file-sorter.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/film-metadata.js": {
    "imports": [
     "lib/film-discovery.js"
@@ -6880,6 +6912,23 @@
     "lib/arena.js",
     "skills/games.js",
     "skills/rebuild-map.js"
+   ]
+  },
+  "skills/game-rules-line.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/duel.js",
+    "skills/othello.js",
+    "skills/pong.js",
+    "skills/ringer.js",
+    "skills/snake.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js"
    ]
   },
   "skills/games.js": {
@@ -7974,7 +8023,8 @@
     "skills/game-level.js",
     "skills/lift3d.js",
     "lib/arena-say.js",
-    "lib/match-history.js"
+    "lib/match-history.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "lib/arena.js",
@@ -8116,7 +8166,8 @@
     "skills/pong-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -8231,7 +8282,10 @@
    "imports": [
     "lib/rally-rules.js",
     "lib/card-deck.js",
-    "lib/game-kit.js"
+    "lib/game-kit.js",
+    "lib/card-art.js",
+    "lib/forge-duel.js",
+    "lib/card-share.js"
    ],
    "importedBy": []
   },
@@ -8311,7 +8365,8 @@
    "imports": [
     "skills/ringer-rules.js",
     "skills/figures.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -8639,7 +8694,8 @@
     "skills/snake-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -8961,7 +9017,8 @@
   "skills/tictactoe.js": {
    "imports": [
     "skills/game-level.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"

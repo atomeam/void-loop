@@ -113,20 +113,15 @@ jobs:
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true
 
-      - name: Write the incident (asked by Verse; skills/incident.js shows it as "what broke lately")
-        if: failure() && steps.test.outcome == 'failure'
-        run: |
-          node tools/incident-log.mjs record "$(git rev-parse HEAD)" "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" test-output.txt || true
-          if ! git diff --quiet void-live-deploy/incidents.json; then
-            cp void-live-deploy/incidents.json /tmp/incidents.json
-            git checkout -q -- void-live-deploy/incidents.json # a dirty tree made the checkout below abort and lost the record
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git fetch -q origin main && git checkout -q -B main origin/main
-            cp /tmp/incidents.json void-live-deploy/incidents.json
-            git add void-live-deploy/incidents.json && git commit -q -m "Incident: the browser suite failed on $(git rev-parse --short HEAD@{1} 2>/dev/null || echo main) (void-live-deploy/incidents.json)" && git push -q origin main || echo "::warning title=Incident not recorded::could not push incidents.json to main"
-            git checkout -q - 2>/dev/null || true
-          fi
+      # the incident is written once per head by the incident job below, from every shard's output (one commit per red head,
+      # not one per shard: three shards each pushed their own "Incident:" commit, and each replaced the others' checks)
+      - name: Keep this shard's output for the incident job
+        if: always() && steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-output-${{ matrix.shard }}
+          path: test-output.txt
+          retention-days: 3
 
       - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
         if: failure() && steps.test.outcome == 'failure'
@@ -203,3 +198,51 @@ jobs:
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
           echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
+
+  # One incident per red head of main (all shards' failed checks in one entry, one commit), and a green head closes the open
+  # ones (tools/incident-log.mjs resolve; it was never called, so every incident stayed open). An automatic revert is skipped.
+  incident:
+    needs: browser-suite
+    if: always() && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-incident
+      cancel-in-progress: false
+    permissions:
+      contents: write # the one incidents.json commit on main
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        if: needs.browser-suite.result == 'failure'
+        with:
+          pattern: suite-output-*
+          path: suite-output
+      - name: Record or close
+        run: |
+          tested="${{ github.sha }}"
+          run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git log -1 --format=%B "$tested" | grep -q '^Verse-auto-revert:' && { echo "automatic revert: not recorded"; exit 0; }
+          if [ "${{ needs.browser-suite.result }}" = failure ]; then
+            cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true
+            node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt || true
+            msg="Incident: the browser suite failed on ${tested:0:8} (void-live-deploy/incidents.json)"
+          else
+            node tools/incident-log.mjs resolve "$tested" "$run" || true
+            msg="Incidents closed: the browser suite passed on ${tested:0:8} (void-live-deploy/incidents.json)"
+          fi
+          git diff --quiet -- void-live-deploy/incidents.json && { echo "nothing to write"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp void-live-deploy/incidents.json /tmp/incidents.json
+          for i in 1 2 3 4; do
+            git add void-live-deploy/incidents.json && git commit -q -m "$msg" && git push -q origin HEAD:main && exit 0
+            sleep $((2 ** i)); git fetch -q origin main && git reset -q --hard origin/main
+            # re-apply on the newer main (the record is computed again so nothing written meanwhile is lost)
+            if [ "${{ needs.browser-suite.result }}" = failure ]; then node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt || true; else node tools/incident-log.mjs resolve "$tested" "$run" || true; fi
+            git diff --quiet -- void-live-deploy/incidents.json && exit 0
+          done
+          echo "::warning title=Incident not recorded::could not push incidents.json to main"

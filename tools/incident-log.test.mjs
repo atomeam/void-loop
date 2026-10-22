@@ -28,6 +28,12 @@ test('incident-log: newest first, the same commit once, the list capped', () => 
   assert.equal(addIncident(Array.from({ length: 40 }, (_, i) => ({ sha: 's' + i, checks: [] })), { sha: 'new', checks: [] }).length, 30);
 });
 
+test('incident-log: a second record for the same commit (another shard) adds its checks, never drops the first ones', () => {
+  const one = addIncident([], { at: '1', sha: 'ccc', checks: ['shard 1 check'] });
+  const two = addIncident(one, { at: '2', sha: 'ccc', checks: ['shard 3 check', 'shard 1 check'] });
+  assert.equal(two.length, 1); assert.deepEqual(two[0].checks, ['shard 1 check', 'shard 3 check']);
+});
+
 test('incident skill: "what broke lately" asks open the list; the brief asks and ordinary words do not', () => {
   for (const t of ['what broke lately', 'what broke', 'recent incidents', 'incidents', 'void incidents', 'what failed on main', 'what went wrong lately', 'incident log']) assert.ok(latelyOf(t), t);
   for (const t of ['write an incident brief', 'incident report for the login outage', 'postmortem template', 'what broke my car', 'is void working', 'what is an incident']) assert.ok(!latelyOf(t), t);

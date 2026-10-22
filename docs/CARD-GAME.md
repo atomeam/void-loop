@@ -62,3 +62,30 @@ What it doesn't have yet: online play between people, deck building limits, card
 ## The older duel
 "duel" and "play cards" still open the Verse Duel (`skills/duel.js`, `lib/duel-rules.js`), the arrow-and-treasury game of skill cards.
 Both games stay.
+
+## Forge Duel, folded in (2026-10-22)
+F-235 Forge Duel (`drafts/F235-forge-duel/` in the a-to-mind.com repo) is now part of Verse Rally, and both games keep everything they had.
+Its engine is `lib/forge-duel.js`, ported as the draft built it. It has two new tabs on the same page:
+- **Forge a card** ("forge a card", "forge a card: <text>", "make a card from this text"): paste any text and it becomes a card. The preview
+  shows the card both ways: Forge Duel's type, cost, rarity and ability, and its Rally type, power and ability.
+  "save to My cards" files it as kind `forged`, so it plays in both games. "copy share link" makes a `#vc=` link.
+- **Three lanes** ("forge duel", "three lane duel", "lane duel"): six turns, energy equal to the turn number plus one, three lanes,
+  and you win with two of the three. Verse plans by playing out practice games from a fair view (it reshuffles your unseen cards first),
+  then shows its chances and how it rates each lane. Your deck is forged from the text of your newest and saved cards in My cards.
+
+Both games now have:
+- **Undo:** takes back your last move.
+- **Save and resume:** a match is saved after every move on this device. A reopened page carries on from the same turn, which fixes the
+  draft's restart at turn 1.
+- **Win/loss/draw record:** kept on this device, for each game separately.
+- **Keep a card:** win a match and you keep one of Verse's cards.
+- **Help** ("card game help", "rally help", "card game rules", "my card game record").
+
+Rally gains a fifth level, **Planner**, which uses the same idea: it plays out practice games and never sees your hand.
+
+**Phones:** the page never scrolls inside itself. When there's more than fits, its parts are dealt onto pages with a pager. In Three lanes,
+picking a card turns to the page with the lanes.
+
+**Book starter cards:** their abilities used to all come out the same. Every ability a card's text earns is now listed, and a Book card
+plays one of them chosen by its name. Across the Book that gives Backed 108, Rally 103, Swift 50, Spark 28, Tally 16, and none for 6.
+Answer cards still play their strongest ability.
