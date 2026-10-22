@@ -5972,6 +5972,13 @@ try {
       return l ? { n: +l.dataset.fixAudit, items: l.querySelectorAll('li').length, pages: !!p.querySelector('[data-fix-pages]'), wide: p.scrollWidth > p.clientWidth + 1 } : null; }).catch(() => null), 8000);
     check('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show', !!card && card.items === Math.min(25, card.n) && card.pages && !card.wide, JSON.stringify(card));
     await F.ctx.close(); }
+  // the backlog digest with its suggested-builder tag (asked by Verse): every placed family names who last touched it, from the ledger
+  if (want('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger')) { const F = await fresh({ phone: true });
+    await F.ask('digest your backlog', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Backlog digest') return null;
+      const fams = [...p.querySelectorAll('section[data-family]')]; return { placed: fams.filter((s) => s.dataset.family !== 'none').length, tagged: p.querySelectorAll('[data-builder]').length, src: /suggested builder/.test((p.querySelector('.src') || {}).textContent || '') || !fams.length, wide: p.scrollWidth > p.clientWidth + 1 }; }).catch(() => null), 8000);
+    check('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger', !!card && card.tagged <= card.placed && card.src && !card.wide, JSON.stringify(card));
+    await F.ctx.close(); }
   // family-health: the skill families card (asked by Verse, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
   // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.

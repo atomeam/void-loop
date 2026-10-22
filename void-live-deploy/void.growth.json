@@ -5752,5 +5752,14 @@
   "asked": "post-fix audit that checks if a shipped fix accidentally broke",
   "show": "Fix audit: ratings and breaks after each fix",
   "try": "audit your fixes"
+ },
+ {
+  "at": "2026-10-22T03:18:20Z",
+  "by": "grok-bot",
+  "kind": "grow",
+  "what": "asked by Verse: the backlog digest tags each family with a suggested builder: who wrote the newest growth-ledger line naming a skill the asks name (then the family's own skills; everyday words like 'place' never count), with the skill and the date; new phrases: none (the tag shows on 'digest your backlog', 'backlog by family', which open backlog-digest)",
+  "asked": "suggested builder tag to digest items",
+  "show": "Backlog digest: a suggested builder on each family",
+  "try": "digest your backlog"
  }
 ]
