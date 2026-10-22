@@ -14,7 +14,7 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
-import { nextStep, advance, candidateOf, publicLap, overhaulWeights } from '../../lib/lap.js';
+import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLine } from '../../lib/lap.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
@@ -31,7 +31,8 @@ export async function onRequestGet({ request, env }) {
     if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
   } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
   // the public lap tracker (counts only): ?lap=1, or will.lap on every read
-  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); if (raw) will.lap = publicLap(JSON.parse(raw)); } catch (_) { /* no lap yet */ }
+  let only = null; try { const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(); if (inv && inv.onlySite) only = { counts: inv.onlySiteCounts, line: onlySiteLine(inv.onlySiteCounts), categories: inv.onlySite.map((r) => ({ category: r.category, status: r.status, skills: r.skills })) }; } catch (_) { /* no inventory */ }
+  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); will.lap = publicLap(raw ? JSON.parse(raw) : null, only); } catch (_) { /* no lap yet */ }
   if (new URL(request.url).searchParams.has('lap')) return Response.json(will.lap || publicLap(null), { headers: { 'cache-control': 'public, max-age=60' } });
   return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
