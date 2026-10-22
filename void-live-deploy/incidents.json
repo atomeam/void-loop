@@ -2,15 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T01:57:06.535Z",
-   "sha": "cc841604687fa80121f3f683e2030605ec375748",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39708137880",
+   "at": "2026-10-22T02:00:48.735Z",
+   "sha": "1f25ead583e181652cee6babbcb2a2a17bd93b4c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39708178311",
    "suite": "browser suite on main",
    "checks": [
     "suite ran to the end"
    ],
    "touched": [
-    "tools/stage-camera.test.mjs",
     "void-live-deploy/lib/stage-camera.js",
     "void-live-deploy/skills/fly.js"
    ]
