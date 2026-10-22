@@ -32,3 +32,6 @@ import { reach } from './lacks.mjs';
 const T = { money: { weight: 0.5, patterns: ['store', 'tip'] }, parity: { weight: 0.25, patterns: ['calendar'] } };
 assert.equal(reach('gift-store', T), 1.5); assert.equal(reach('calendar', T), 1.25); assert.equal(reach('stipend', T), 1); assert.equal(reach('x', {}), 1);
 console.log('loop-reach: ok');
+// revenue weight only boosts (owner, 2026-10-21): reach is never below 1, whatever the tags say
+assert.equal(reach('gift-store', { bad: { weight: -5, patterns: ['store'] } }) >= 1, true);
+console.log('loop-reach-boost: ok');
