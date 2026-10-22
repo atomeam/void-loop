@@ -41,7 +41,7 @@ test('since the last visit, newest first, all of them, each ask once', () => {
 test('a line is cut to what a person reads', () => {
   assert.equal(lineOf('Shop this list: the list card has Walmart buttons'), 'Shop this list');
   assert.equal(lineOf('The coral card (NOAA) reads live'), 'The coral card (NOAA) reads live');
-  assert.ok(lineOf('x '.repeat(80)).length <= 90);
+  assert.ok(!lineOf('x '.repeat(80)).includes('\u2026')); // whole sentences, never an ellipsis (owner, 2026-10-21)
 });
 
 test('every known build in the real ledger still matches a line, and its ask is one a person would type', () => {

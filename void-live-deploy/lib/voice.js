@@ -124,7 +124,7 @@ export function followThrough(entries, ledger, links = []) {
   const built = [], open = [];
   for (const g of groups) {
     const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
-    (hit ? built : open).push(hit ? { ...g, what: String(hit.what).slice(0, 160), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
+    (hit ? built : open).push(hit ? { ...g, what: String(hit.what), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
