@@ -62,7 +62,7 @@ export function clauses(text) {
 export function wantsOf(text) {
   const { first } = clauses(text);
   if (!first || NOT.test(first)) return false;
-  return RULES.some((re) => re.test(first));
+  return RULES.some((re) => re.test(first)) || (isWishlist(first) && /\b(?:your|ur|(?:verse|v01d|void)'?s?)\b/.test(CLEAN(first)) && !/\b(?:my|our|amazon|steam)\b/.test(CLEAN(first)));
 }
 /** the one line for a second clause that asks for new ones ("and come up with 50 more new ones"): '' when there is none. Pure. */
 export function moreLine(rest) {
@@ -153,6 +153,18 @@ export function cardHtml(m, esc, { more = '' } = {}) {
     + '<div class="src">Source: my will (/api/will' + (m.at ? ', ' + esc(m.at) : '') + '), my asks and what became of them (/api/reflect) and my growth inbox (/self.json from domains/void.frontier.md). My own records, no model. Tap an item to copy it.</div>';
 }
 
+/** "what is on your wishlist?" (owner, 2026-10-21: it opened the build list, not the wishlist): the ranked improvement budget of
+ *  docs/wishlist.md, which tools/self-context.mjs writes into /self.json `wishlist`. True when the first clause names the wishlist. Pure. */
+export const isWishlist = (text) => /\bwish ?-?list\b/.test(CLEAN(clauses(text).first || text));
+/** the wishlist card: each ranked item with its free path, its value and why it sits there; the paid side stays in the doc. Pure. */
+export function wishlistHtml(list, esc) {
+  const xs = (Array.isArray(list) ? list : []).filter((w) => w && w.item);
+  return '<style>' + CSS + '</style><h2>My wishlist</h2><div class="wants-count" data-wishlist="' + xs.length + '">' + esc(xs.length ? xs.length + ' items, ranked by value to people using me now, how sure it works, over cost; free paths first.' : 'I could not read my wishlist just now, so I will not guess at it.') + '</div>'
+    + (xs.length ? '<ol class="wish-list" style="padding-left:20px;margin:6px 0">' + xs.map((w) => '<li data-rank="' + esc(w.rank) + '" style="margin:0 0 8px;white-space:normal"><b>' + esc(sentence(w.item)) + '</b>'
+      + (w.free ? '<div class="wants-sub">Free path: ' + esc(sentence(w.free)) + '</div>' : '') + (w.value ? '<div class="wants-sub">Value: ' + esc(sentence(w.value)) + '</div>' : '') + (w.why ? '<div class="wants-sub">Why this rank: ' + esc(sentence(w.why)) + '</div>' : '') + '</li>').join('') + '</ol>' : '')
+    + '<p class="wants-more">What I want built next is a different list: ask <a href="#" data-ask="what do you want built now">what do you want built now</a>.</p>'
+    + '<div class="src">Source: docs/wishlist.md, put into /self.json by tools/self-context.mjs at deploy. Nothing on it is bought or signed up for; spending needs the owner.</div>';
+}
 const get = async (url) => { try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
 async function copyText(t) {
   try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(t); return true; } } catch (_) {}
@@ -161,6 +173,12 @@ async function copyText(t) {
 async function run(text, api) {
   if (!wantsOf(text)) return 'none';
   const { showPage, esc, say, keepFresh } = api;
+  if (isWishlist(text)) {
+    const sj = await get('/self.json'), list = sj && sj.wishlist;
+    showPage((el) => { el.classList.add('wants-card'); el.innerHTML = wishlistHtml(list, esc); });
+    if (say) say(Array.isArray(list) && list.length ? 'my wishlist: ' + list.length + ' items, top: ' + sentence(list[0].item) : 'I could not read my wishlist just now');
+    return 'wants';
+  }
   const [will, reflect, self] = await Promise.all([get('/api/will'), get('/api/reflect'), get('/self.json')]);
   const m = cardModel({ will, reflect, self }), more = moreLine(clauses(text).rest);
   const card = showPage((el) => {
@@ -185,7 +203,7 @@ async function run(text, api) {
 export default {
   name: 'wants',
   about: "What I want built: my will, the asks of mine nobody has built, and my growth inbox, from my own records, never a model.",
-  examples: ['what do you want built now', 'name all your unbuilt asks', 'all of your unbuilt wants and asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want', 'growth speed', 'show your growth-speed gauge', 'why do you want those upgrades', 'show the reasoning behind your wants', 'wants reasoning trace'],
+  examples: ['what do you want built now', 'what is on your wishlist?', 'show your wishlist', 'name all your unbuilt asks', 'all of your unbuilt wants and asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want', 'growth speed', 'show your growth-speed gauge', 'why do you want those upgrades', 'show the reasoning behind your wants', 'wants reasoning trace'],
   nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,

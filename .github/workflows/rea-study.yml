@@ -6,6 +6,8 @@ name: REA study
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * *' # daily: study the parity picks the loop made (passive, private findings)
 
 permissions:
   contents: read
@@ -27,4 +29,7 @@ jobs:
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           CHROME_PATH: /usr/bin/google-chrome
-        run: node tools/rea-study.mjs --run | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          # the loop's parity picks get a study first (tools/loop-study.mjs: counts only in this public log)
+          node tools/loop-study.mjs --n 6 | tee -a "$GITHUB_STEP_SUMMARY" || true
+          node tools/rea-study.mjs --run | tee -a "$GITHUB_STEP_SUMMARY"

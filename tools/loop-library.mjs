@@ -7,7 +7,9 @@
 //               lessons and score high, because a past failure is the most useful thing to read before repeating it
 //   relevance   word overlap (Jaccard over content words) between the query and the entry's what/asked/show/try
 // Pure, no network, no model, no writes.
-//   node tools/loop-library.mjs "<want or ask>" [--k 5] [--json]
+//   node tools/loop-library.mjs "<want or ask>" [--k 5] [--json] [--studies]
+// --studies also searches Verse's private REA studies (tools/loop-study.mjs, kind "study" in owner memory; VOID_OWNER_TOKEN).
+// They are read on the owner's machine only: in CI (public logs) they are never fetched or printed.
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -23,7 +25,7 @@ export function relevance(q, e) {
 }
 export function importance(e) {
   const k = String(e.kind || '');
-  if (/revert|incident|fail/.test(k) || /\brevert(ed)?\b/i.test(e.what || '')) return 1;
+  if (/revert|incident|fail|study/.test(k) || /\brevert(ed)?\b/i.test(e.what || '')) return 1;
   let s = 0.3;
   if (k === 'build') s += 0.3;
   if (e.try) s += 0.2;
@@ -40,13 +42,21 @@ export function retrieve(entries, q, { k = 5, now = Date.now() } = {}) {
     .map((e) => { const rel = relevance(q, e); return { e, rel, score: rel > 0 ? rel + importance(e) + recency(e, now) : 0 }; })
     .filter((x) => x.rel > 0).sort((a, b) => b.score - a.score).slice(0, k);
 }
+/** private study records as library memories: a study is a lesson (importance 1 by kind), dated when stored. Pure. */
+export const studiesAsMemories = (st) => (st || []).map((r) => ({ at: r.updated || r.at || '', kind: 'study-lesson', what: String(r.name || '') + ': ' + String(r.summary || ''), show: '' }));
 export const ledger = () => { const g = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/void.growth.json'), 'utf8')); return Array.isArray(g) ? g : Object.values(g); };
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const a = process.argv.slice(2), ki = a.indexOf('--k'), k = ki >= 0 ? +a[ki + 1] || 5 : 5;
   const q = a.filter((x, i) => !x.startsWith('--') && i !== ki + 1).join(' ');
   if (!q) { console.error('usage: node tools/loop-library.mjs "<want>" [--k 5] [--json]'); process.exit(2); }
-  const hits = retrieve(ledger(), q, { k });
+  let mem = ledger();
+  if (a.includes('--studies')) {
+    if (process.env.CI) console.error('loop-library: studies are private; not read in CI');
+    else if (process.env.VOID_OWNER_TOKEN) { const { studyMemory } = await import('./rea-study.mjs'); const st = ((await studyMemory('GET', '?q=study&limit=50')).memory || []).filter((r) => r.kind === 'study' && !/^pending /.test(r.summary || ''));
+      mem = mem.concat(studiesAsMemories(st)); }
+  }
+  const hits = retrieve(mem, q, { k });
   if (a.includes('--json')) console.log(JSON.stringify(hits.map((h) => ({ score: +h.score.toFixed(3), ...h.e })), null, 2));
   else if (!hits.length) console.log(`no past build shares a word with "${q}"`);
   else for (const h of hits) console.log(`${h.score.toFixed(2)}  ${String(h.e.at).slice(0, 10)}  ${h.e.kind}: ${h.e.what}${h.e.try ? `\n      try: ${h.e.try}` : ''}`);

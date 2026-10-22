@@ -126,6 +126,7 @@ async function memory(method, query, body) {
   return r.json();
 }
 const save = (rec) => memory('POST', '', { source: 'rea-study', records: [rec] });
+export { memory as studyMemory, save as saveStudy }; // tools/loop-study.mjs files studies for the loop's parity picks
 
 async function main(argv) {
   const opt = (f) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : ''; };
