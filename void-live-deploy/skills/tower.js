@@ -1,53 +1,68 @@
 /**
- * tower skill — "the tower", "verse tower", "which sites have you beaten": the only-site-you-need ladder (lib/tower.js). A vertical stack
- * of floors, each one real site named in plain text as a comparison (no logos or brand styling, no affiliation implied), easiest at the
- * bottom. Beaten floors glow, the current fight shows its progress, higher floors are dim. A floor is beaten only when every aspect is
- * verified better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a floor shows the
- * Verse skills on it, N of M aspects beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
+ * tower — the tower of real sites (100+ across categories). "show the tower", "sites in fashion",
+ * "tower categories", "is Nike in the tower". Lap grows the list each cycle. Empty surface stays empty.
  */
-import { tower, towerLine } from '../lib/tower.js';
+import { CATEGORIES, allSites, counts, byCategory, findSite } from '../lib/tower-sites.js';
 
-const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^which\s+sites\s+have\s+you\s+beaten$|^what\s+sites\s+have\s+you\s+beaten$/;
-export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
-const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
-
-export function towerHtml(t, esc) {
-  const floors = t.floors.slice().reverse().map((f) => {
-    const glow = f.state === 'beaten' ? 'box-shadow:0 0 14px #b07ce8;border-color:#b07ce8;opacity:1' : f.state === 'current' ? 'border-color:#e86cb8;opacity:1' : 'opacity:.45';
-    const bar = '<i style="display:block;height:4px;border-radius:2px;background:linear-gradient(90deg,#e86cb8,#b07ce8);width:' + Math.round(100 * f.n / f.m) + '%"></i>';
-    return '<button class="tower-floor" data-floor="' + f.floor + '" data-state="' + f.state + '" style="display:block;width:100%;text-align:left;margin:3px 0;padding:6px 8px;border:1px solid #3a3550;border-radius:8px;background:#0d0b14;color:#eee;font:inherit;overflow-wrap:anywhere;' + glow + '">'
-      + '<b aria-hidden="true" style="display:inline-block;width:1.4em;text-align:center">' + esc(f.glyph) + '</b> ' + esc(f.floor + '. ' + f.site) + ' <small>(' + esc(f.label.toLowerCase()) + ')</small>'
-      + (f.state === 'current' ? ' <span aria-label="Verse is here">◆ Verse</span>' : '') + '<span style="float:right">' + esc(f.n + ' of ' + f.m + ' aspects beaten') + '</span>' + bar + '</button>';
-  }).join('');
-  return '<h3 style="margin:0 0 4px">The tower</h3><div class="tower-line">' + esc(towerLine(t)) + '</div><div class="tower-stack" style="max-width:560px">' + floors + '</div>'
-    + '<div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere"></div>'
-    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A floor counts as beaten only when every aspect is verified better in a head-to-head check against the live site.</div>';
-}
-export function detailText(f) {
-  return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. Verse skills here: ' + (f.skills.length ? f.skills.join(', ') : 'none yet') + '. '
-    + (f.lost.length ? 'Still loses on: ' + f.lost.join(', ') + '. ' : '') + (f.regressed.length ? 'Regressed: ' + f.regressed.join(', ') + '. ' : '')
-    + 'Left to beat: ' + (f.left.length ? f.left.join(', ') : 'nothing') + '.';
+export function towerOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:show\s+)?(?:the\s+)?tower(?:\s+of\s+sites)?$|^(?:list\s+)?tower\s+categories$|^what\s+sites\s+are\s+in\s+the\s+tower$/.test(t))
+    return { kind: 'all' };
+  let m = t.match(/^(?:sites?|tower)\s+(?:in|for|under)\s+(.{2,40})$/) || t.match(/^(.{2,40})\s+sites?\s+in\s+the\s+tower$/);
+  if (m) return { kind: 'cat', q: m[1].trim() };
+  m = t.match(/^(?:is\s+)(.+?)\s+in\s+the\s+tower$/) || t.match(/^find\s+(.+?)\s+in\s+the\s+tower$/);
+  if (m) return { kind: 'find', q: m[1].trim() };
+  return null;
 }
 
 async function run(text, api) {
-  if (!towerOf(text)) return 'none';
-  const { showPage, esc, say } = api;
-  const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]);
-  const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {});
-  showPage((el) => {
-    el.classList.add('tower-card'); el.innerHTML = towerHtml(t, esc);
-    const out = el.querySelector('.tower-detail');
-    el.addEventListener('click', (e) => { const b = e.target.closest('.tower-floor'); if (!b) return; const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) out.textContent = detailText(f); });
+  const q = towerOf(text);
+  if (!q) return 'none';
+  const { showPage, esc } = api;
+  const c = counts();
+  if (q.kind === 'all') {
+    showPage((p) => {
+      p.innerHTML = '<h2>Tower of sites</h2><div class="sub">' + c.sites + ' sites · ' + c.categories + ' categories · lap grows this list</div><ul>'
+        + CATEGORIES.map((cat) => '<li><b>' + esc(cat.label) + '</b> · ' + cat.sites.map((s) => esc(s.name)).join(', ') + '</li>').join('')
+        + '</ul><div class="src">Say “sites in fashion” or “is Nike in the tower” · clothes, fashion and merch included</div>';
+    });
+    api.say(c.sites + ' sites in ' + c.categories + ' categories');
+    return 'tower';
+  }
+  if (q.kind === 'find') {
+    const s = findSite(q.q);
+    showPage((p) => {
+      if (!s) p.innerHTML = '<h2>Tower</h2><p>“' + esc(q.q) + '” is not in the tower yet. The lap adds sites each cycle.</p>';
+      else p.innerHTML = '<h2>' + esc(s.name) + '</h2><div class="sub">' + esc(s.categoryLabel) + '</div>'
+        + '<p><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.url) + '</a></p>';
+    });
+    api.say(s ? s.name + ' · ' + s.categoryLabel : 'not in the tower yet');
+    return 'tower';
+  }
+  // category
+  const cat = byCategory(q.q) || CATEGORIES.find((c) => c.label.toLowerCase().includes(q.q) || c.id.includes(q.q.replace(/\s+/g, '-')));
+  // fashion aliases
+  const fashion = /fashion|clothes|clothing|merch|apparel|wear/.test(q.q) ? byCategory('fashion-merch') : null;
+  const hit = cat || fashion;
+  showPage((p) => {
+    if (!hit) p.innerHTML = '<h2>Tower</h2><p>No category matched “' + esc(q.q) + '”. Say “show the tower” for all.</p>';
+    else p.innerHTML = '<h2>' + esc(hit.label) + '</h2><div class="sub">' + hit.sites.length + ' sites</div><ul>'
+      + hit.sites.map((s) => '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a></li>').join('')
+      + '</ul>';
   });
-  if (say) say(towerLine(t));
+  api.say(hit ? hit.label + ' · ' + hit.sites.length + ' sites' : 'no match');
   return 'tower';
 }
 
 export default {
   name: 'tower',
-  about: 'The tower: real sites as floors, and how many aspects of each Verse has verified it beats.',
-  examples: ['the tower', 'verse tower', 'which sites have you beaten', 'show the tower', 'open your tower'],
-  nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me'],
-  match(lower, text) { return towerOf(text || lower); },
-  run, towerOf, towerHtml, detailText,
+  examples: ['show the tower', 'sites in fashion', 'tower categories', 'is Nike in the tower', 'sites in work'],
+  nearMisses: ['eiffel tower', 'tower defence', 'cell tower', 'ivory tower'],
+  match(lower, text) { return !!towerOf(text); },
+  run,
+  suite() {
+    const a = towerOf('show the tower'), b = towerOf('sites in fashion'), c = towerOf('is Nike in the tower'), d = towerOf('eiffel tower');
+    const f = findSite('Nike');
+    return { ok: !!(a && a.kind === 'all' && b && b.kind === 'cat' && c && c.kind === 'find' && d === null && f && f.name === 'Nike') };
+  },
 };
