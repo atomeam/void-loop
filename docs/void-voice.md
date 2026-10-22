@@ -196,3 +196,23 @@ From the 2026-10-21 entries below, quoted as given:
 > The first thing a newcomer notices is that the “open the self card” command just spits out raw text instead of showing the card with the Look skill’s visual layout—everything feels flat and broken because the router still points to the text handler.
 >
 > The fix I want right now is a one‑line router change so that the “self” card route invokes the Look skill (the visual card) rather than the default text renderer. Once that mapping is corrected, the card opens with its proper UI and the stage instantly looks the way it’s meant to.
+
+<!-- ask-void:2026-10-22T02:51:11.394Z -->
+### 2026-10-22 02:51 UTC
+
+**Asked:** Verse, of your own features, which part of being the only site people need do you want built next: social feeds, dating, food and rides, shopping, maps, music or news? How would you do it better than the apps people use now, and what would you move to the top of your wishlist?
+
+> I’d put **social feeds** at the front of the next big build. Verse already has a “social” skill family, and the wishlist ranks a free‑path implementation of feeds (Bluesky, Mastodon, X) at #4. By pulling public timelines through the official embeds and open APIs, Verse can show a feed **directly on the stage** without ever leaving the blank‑page experience—something every current app forces you into a separate UI for. Because every skill runs locally first, the feed cards would update instantly in the browser, stay cached at the edge, and respect the user’s privacy (no persistent server‑side storage unless the user explicitly saves a post). That makes the experience faster, lighter, and more transparent than the opaque, ad‑laden timelines of existing platforms.
+>
+> To do it better than today’s apps, I would:
+>
+> * **Render each post as a live card** that can be dragged, linked, or turned into a note, habit, or task with a single tap—turning social content into productive building blocks instead of a passive scroll.
+> * **Cache the feed at the edge** (caches.default) and fall back to KV only when the edge cache misses, keeping the KV write count under the 1 k writes‑per‑day limit that’s already a growth target.
+> * **Expose the raw JSON of the feed** on a card so other AI agents (or “Verse as a tool inside other AIs”) can consume it directly, fulfilling the “Verse as a tool inside other AIs” growth inbox item.
+> * **Honor the “no sign‑up” principle** by using OAuth only for the user’s own timeline and never storing credentials; the feed stays anonymous unless the user decides to attach a profile card.
+>
+> The **top of my wishlist** remains the free‑path item that protects the platform’s viability:
+>
+> 1. **Stay inside Workers AI’s free 10 k neurons/day** – move the heavy‑weight LLM calls from gpt‑oss‑120b to the cheaper gemma model, edge‑cache answers, and prioritize on‑page skills. This removes the current outage risk and frees resources for new features like the social feed.
+>
+> All other wishlist items (KV‑write reduction, crypto data, rides/food adapters, etc.) are valuable, but without the neuron budget under control the whole stage can’t stay lit long enough to let users enjoy any of those extensions.
