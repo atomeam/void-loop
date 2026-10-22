@@ -1,0 +1,31 @@
+name: 'Auto Deploy'
+description: 'Automated deployment for any platform with zero configuration'
+author: 'Aether'
+
+inputs:
+  platform:
+    description: 'Deployment platform (vercel, netlify, cloudflare, railway, render)'
+    required: true
+    default: 'vercel'
+  api_token:
+    description: 'API token for the platform'
+    required: true
+  project_id:
+    description: 'Project ID or name'
+    required: true
+  build_command:
+    description: 'Build command'
+    required: false
+    default: 'npm run build'
+  output_directory:
+    description: 'Output directory'
+    required: false
+    default: 'dist'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
