@@ -186,3 +186,7 @@ Advanced the shared body part.
 These three are one part family. A figure joint, a wearable, and a field robot can use the same actuator class. Verse's missing stage is still summon to a printable spec.
 
 [think-tank] Summon a printable actuator spec from the three dated sources above. Original name and original shape only.
+
+## 2026-10-21 20:13 ET cycle: life extension, open question 5
+
+Picked life extension (least recently advanced, 2026-10-14 14:13). Found GSE327270 is a 2-sample deposit, so MaGE cannot be scored on the semaglutide trial yet. Used the paper's public Source Data instead: baseline epigenetic acceleration tertiles (67 of 84 linked by age) show a PCGrimAge-only gradient (semaglutide minus placebo -0.64 to -3.59 y/y, low to high tertile; interaction t = -2.48) and none on PCPhenoAge or OMICmAge. Exploratory. Script and table in `experiments/semaglutide-baseline-tertiles.*`. Folded earlier branch `forethinkers/cycle-2026-10-21-1407` (already merged as #1197; branch gone). No growth-board change.
