@@ -5721,5 +5721,6 @@
   {"at": "2026-10-20T20:25:25Z", "by": "verse", "kind": "fix", "what": "Verse fixes its decision-matrix skill: learn to handle \"weighted matrix for hiring a designer\"", "try": "weighted matrix for hiring a designer"},
   {"at": "2026-10-20T21:15:01Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for oracle", "try": "ask the glitch oracle why is the sky blue"},
   {"at": "2026-10-20T21:35:15Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 2 benchmark ask(s) for spectral-review", "try": "spectral review"},
-  {"at": "2026-10-20T21:53:27Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable", "try": "something unkeepable"}
+  {"at": "2026-10-20T21:53:27Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable", "try": "something unkeepable"},
+  {"at": "2026-10-22T00:00:44Z", "by": "claude", "kind": "build", "what": "Implement the memory-preview UI component to show memory snippets from server and local memory", "asked": "ask-20261020-2131-2", "show": "memory-preview card shows memory snippets", "try": "memory preview"}
 ]

@@ -66,7 +66,10 @@ export function telemetryOf(raw) {
   if (signals.length < MIN_SIGNALS && !ours) return null;
   const shas = [...new Set((text.match(/\b[0-9a-f]{7,40}\b/g) || []).filter((s) => /\d/.test(s) && /[a-f]/.test(s)))].slice(0, 5);
   const prs = [...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))].slice(0, 5);
-  const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*passed/i.exec(text);
+  // "159/162 passed", "passed 8 of 8", and a status update's "tests pass 8/8" (2026-10-21: the close-out gate's own status)
+  const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*(?:passed|pass(?:es|ing)?|green)\b/i.exec(text)
+    || /\bpassed\s+(\d+)\s*(?:\/|of)\s*(\d+)\b/i.exec(text)
+    || /\b(?:tests?|checks?|suite)\b[^.\n]{0,40}?\b(\d+)\s*\/\s*(\d+)\b/i.exec(text);
   return { kind: signals.includes('run') || signals.includes('ci') ? 'ci' : 'status', signals, shas, prs, failures: failuresOf(text), passed: m ? { ok: +m[1], of: +m[2] } : null };
 }
 
@@ -85,5 +88,13 @@ export function summaryOf(t) {
  *  an error or a timeout it is describing. lib/automation-fix.js intentOf asks this first. Pure. */
 export function isBuildersReport(text) {
   const t = telemetryOf(text);
-  return !!t && (t.signals.includes('pr') || t.signals.includes('sha')) && (String(text).match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2;
+  if (!t) return false;
+  const s = String(text);
+  if ((t.signals.includes('pr') || t.signals.includes('sha')) && (s.match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2) return true;
+  // A status update can name no commit or pull request: a pass count plus the work's own state ("uncommitted", "commit/push",
+  // "sealed", "waiting") is a builder reporting, not a broken automation (2026-10-21: the close-out gate's own status came back
+  // as "I read this as a broken automation" and an invented fix). An ask to fix or explain it is still the fixer's.
+  const state = (s.match(/\b(?:uncommitted|commit(?:ted|ting)?|push(?:ed|ing)?|merge[d]?|branch|sealed|waiting|blocked|deployed)\b/gi) || []).length;
+  const asking = /\b(?:fix|debug|help|why|how|can you|please)\b/i.test(s);
+  return !!t.passed && state >= 2 && /\b(?:tests?|checks?|suite)\b/i.test(s) && !asking;
 }

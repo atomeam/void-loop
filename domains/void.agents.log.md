@@ -1004,3 +1004,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T21:15:01Z | verse | grow | hardened itself: 1 benchmark ask(s) for oracle (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T21:35:15Z | verse | grow | hardened itself: 2 benchmark ask(s) for spectral-review (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T21:53:27Z | verse | grow | hardened itself: 1 benchmark ask(s) for unkeepable (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-22T00:00:43Z | claude | build | memory-preview | Implement the memory-preview UI component to show memory snippets from server and local memory

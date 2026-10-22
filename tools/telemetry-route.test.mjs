@@ -78,6 +78,25 @@ test('a builder\'s report that quotes a timeout is a report, not a broken automa
   assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
 });
 
+test('a close-out gate status update is read as a report, not answered as a broken automation (2026-10-21)', async () => {
+  const { intentOf, isFixAsk } = await import('../void-live-deploy/lib/automation-fix.js');
+  const { isBuildersReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const status = [
+    'Gate is sealed and the gate/workflow tests pass 8/8. It now reads grow-self.state.json first and fails closed, blocks on an open `made by Verse`/`verse hardens` PR, verifies the last preview\'s `try` live before probing, closes it only when it answers, and persists a close-only record. The PR job also creates the labels the gate reads.',
+    '',
+    'Changed but **uncommitted**: `.github/workflows/grow-self.yml`, `tools/grow-gate.mjs`, the two gate tests, and `docs/MAP.md`. `lacks.test.mjs` fails only locally because it passes a `/C:/...` path to Node on Windows; CI\'s Linux run is unaffected.',
+    '',
+    'The first run will verify `something unkeepable` live. I did not commit because the tree is shared and the closeout-gate lane is actively committing. Commit/push these five files, or leave them for that lane?',
+  ].join('\n');
+  const t = telemetryOf(status);
+  assert.ok(t, 'it is a developer report'); assert.deepEqual(t.passed, { ok: 8, of: 8 });
+  assert.equal(isBuildersReport(status), true, 'a pass count plus uncommitted/commit is the builder reporting');
+  assert.equal(intentOf(status).intent, 'report');
+  assert.equal(isFixAsk(status), false, 'it must not open the automation fixer');
+  for (const ask of ['my workflow tests pass 8/8 but the deploy is blocked, can you fix it?', 'why do my tests pass locally but the workflow fails on main?'])
+    assert.equal(isFixAsk(ask), true, 'a real ask for a fix is still one: ' + ask);
+});
+
 test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
   assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
   assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
