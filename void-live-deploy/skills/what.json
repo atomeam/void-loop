@@ -145,6 +145,7 @@
  "media-pick": "\"pick something to listen to\", \"pick a song\", \"pick something\"",
  "memory": "Verse answers from what it remembers, on the page",
  "memory-graph": "\"What I've noticed\": the page notes which skill answered each ask and a few object words of it in a small…",
+ "memory-preview": "A snippets card of what Verse keeps about you, in both stores at once: the local memory graph (interests and…",
  "merge": "Two ideas make one Verse card",
  "merge-void": "Merge Verse, Verse's sliding-merge puzzle: \"merge void\", \"play 2048\", \"2048 game\", \"sliding tiles\", \"tile…",
  "merges": "The merge log: \"what did you merge\", \"merge log\", \"what merged lately\": the newest pull requests merged into…",
