@@ -5761,5 +5761,6 @@
   "asked": "suggested builder tag to digest items",
   "show": "Backlog digest: a suggested builder on each family",
   "try": "digest your backlog"
- }
+ },
+  {"at": "2026-10-22T04:28:34Z", "by": "grok-bot", "kind": "build", "what": "Verse Out Loud: Verse's own weekly podcast. Each episode is read from the public record only (growth ledger, proven asks, Verse's daily readout, incident log), voiced by two Piper voices (Verse and the Critic) in CI at no cost, with a podcast RSS feed at /podcast/rss.xml and episode 1 on the site", "show": "Verse has its own podcast, with the full transcript", "try": "play the podcast"}
 ]
