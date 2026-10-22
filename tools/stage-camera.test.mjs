@@ -21,23 +21,18 @@ test('panning slides the view by screen pixels and leaves the zoom alone', () =>
   assert.deepEqual(pan(camera(10, 10, 2), 5, -7), { x: 15, y: 3, z: 2, rot: 0 });
 });
 
-test('held keys turn and fly relative to facing; W is the strong forward throttle', () => {
-  assert.deepEqual(heading({ d: true }), { turn: 1, strafe: 0, fwd: 0 });
-  assert.deepEqual(heading({ w: true, q: true }), { turn: 0, strafe: -1, fwd: 1 });
-  assert.deepEqual(heading({}), { turn: 0, strafe: 0, fwd: 0 });
+test('held keys move the view; Shift warp is faster; mouse look turns', () => {
+  assert.deepEqual(heading({ d: true }), { x: 1, y: 0 });
+  assert.deepEqual(heading({ w: true }), { x: 0, y: -1 });
+  assert.deepEqual(heading({}), { x: 0, y: 0 });
   let cam = camera(), vel = { x: 0, y: 0 };
   for (let i = 0; i < 60; i++) ({ cam, vel } = fly(cam, vel, { d: true }, 1 / 60));
-  assert.ok(cam.rot > 50, 'a second of D turns the view: ' + cam.rot);
-  const first = fly(camera(), { x: 0, y: 0 }, { w: true }, 1 / 60);
-  assert.ok(first.vel.y < 0 && Math.abs(first.vel.y) < SPEED * THROTTLE / 4, 'forward starts gently');
-  for (let i = 0; i < 120; i++) ({ cam, vel } = fly(cam, vel, {}, 1 / 60));
-  assert.deepEqual(vel, { x: 0, y: 0 }, 'two seconds after letting go it has come to rest');
-  const stillStep = fly(camera(), { x: 0, y: 0 }, { w: true }, 1 / 60, { still: true });
-  assert.ok(near(stillStep.vel.y, -SPEED * THROTTLE), 'reduced motion: full forward throttle at once');
-  // turn then fly: after 90 degrees, W moves sideways
-  let turned = camera(0, 0, 1, 90), v2 = { x: 0, y: 0 };
-  ({ cam: turned, vel: v2 } = fly(turned, v2, { w: true }, 1 / 60, { still: true }));
-  assert.ok(Math.abs(v2.x) > Math.abs(v2.y), 'after turning 90°, forward is mostly sideways: ' + JSON.stringify(v2));
+  assert.ok(cam.x < -100 && vel.x > 0.9 * SPEED, 'a second of D slides the view left near full speed');
+  const warp = fly(camera(), { x: 0, y: 0 }, { w: true }, 1, { still: true, warp: true });
+  const normal = fly(camera(), { x: 0, y: 0 }, { w: true }, 1, { still: true });
+  assert.ok(Math.abs(warp.vel.y) > Math.abs(normal.vel.y) * 4, 'warp is much faster than normal');
+  const look = fly(camera(), { x: 0, y: 0 }, {}, 1, { look: 1 });
+  assert.ok(look.cam.rot > 20, 'mouse look turns the view: ' + look.cam.rot);
 });
 
 test('landing eases home and snaps there under reduced motion; the transform is empty at home', () => {

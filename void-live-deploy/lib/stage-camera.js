@@ -40,13 +40,12 @@ export function zoomAt(cam, factor, px, py) {
 export function pan(cam, dx, dy) { return { x: cam.x + num(dx), y: cam.y + num(dy), z: cam.z, rot: num(cam.rot) }; }
 
 /** the direction the held keys ask for: { x, y } each -1, 0 or 1 (right and down positive). Pure. */
-/** keys: turn (A/D or arrows), strafe (Q/E), forward/back (W/S). Pure. */
+/** keys: W/S forward/back, A/D strafe, arrows same. Pure. */
 export function heading(keys) {
   const k = keys || {}, on = (n) => !!k[n];
-  const turn = (on('d') || on('arrowright') ? 1 : 0) - (on('a') || on('arrowleft') ? 1 : 0);
-  const strafe = (on('e') ? 1 : 0) - (on('q') ? 1 : 0);
-  const fwd = (on('w') || on('arrowup') ? 1 : 0) - (on('s') || on('arrowdown') ? 1 : 0);
-  return { turn, strafe, fwd };
+  const x = (on('d') || on('arrowright') ? 1 : 0) - (on('a') || on('arrowleft') ? 1 : 0);
+  const y = (on('s') || on('arrowdown') ? 1 : 0) - (on('w') || on('arrowup') ? 1 : 0);
+  return { x, y };
 }
 
 /**
@@ -54,27 +53,21 @@ export function heading(keys) {
  * leftwards). Speed eases in while a key is held and out when it is let go (ACCEL), unless `still` (reduced motion): then
  * full speed at once and a dead stop. Returns the new camera and velocity (screen px/s). Pure.
  */
-export const TURN = 140; // degrees per second at full turn
+export const TURN = 120; // degrees per second from mouse look
 export function fly(cam, vel, keys, dt, { still = false, speed = SPEED, warp = false, look = 0 } = {}) {
   const h = heading(keys);
   const t = Math.min(0.25, Math.max(0, num(dt)));
-  // turn: keys + mouse look
-  const turnRate = (h.turn * TURN + num(look)) * (warp ? 1.4 : 1);
-  let rot = num(cam.rot) + turnRate * t;
+  // mouse look turns the view
+  let rot = num(cam.rot) + num(look) * TURN * t;
   rot = ((rot % 360) + 360) % 360;
-  // movement relative to facing (W is forward in the direction you're looking)
-  const rad = rot * Math.PI / 180;
-  const sx = h.strafe, sy = -h.fwd; // screen: right positive, up negative for forward
-  const wx = sx * Math.cos(rad) - sy * Math.sin(rad);
-  const wy = sx * Math.sin(rad) + sy * Math.cos(rad);
-  const len = Math.hypot(wx, wy) || 1;
-  const throttle = h.fwd > 0 ? THROTTLE : 1; // forward is stronger than strafe or reverse
-  const mult = (warp ? WARP : 1) * throttle;
-  const want = { x: (wx / len) * speed * mult * (Math.hypot(wx, wy) ? 1 : 0), y: (wy / len) * speed * mult * (Math.hypot(wx, wy) ? 1 : 0) };
+  // movement is screen-relative: W goes up the screen, A left, etc. Simple and predictable.
+  const len = Math.hypot(h.x, h.y) || 1;
+  const mult = warp ? WARP : 1;
+  const want = { x: (h.x / len) * speed * mult, y: (h.y / len) * speed * mult };
   const v = vel || { x: 0, y: 0 };
   const k = still ? 1 : 1 - Math.exp(-ACCEL * t);
   let nv = { x: v.x + (want.x - v.x) * k, y: v.y + (want.y - v.y) * k };
-  if (Math.hypot(nv.x, nv.y) < 1 && !h.fwd && !h.strafe) nv = { x: 0, y: 0 };
+  if (Math.hypot(nv.x, nv.y) < 1 && !h.x && !h.y) nv = { x: 0, y: 0 };
   return { cam: { x: cam.x - nv.x * t, y: cam.y - nv.y * t, z: cam.z, rot }, vel: nv };
 }
 
