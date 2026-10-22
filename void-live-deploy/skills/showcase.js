@@ -371,15 +371,17 @@ export async function nudge(stageApi, note) {
   try { list = await ledger(); } catch (_) { return 0; }
   const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: await verifiedSet() });
   if (!steps.length) return 0;
-  markShown(steps); // previewed once: from here on these are never offered again on this device, whether or not the line is tapped
+  // marked shown only when it is seen through (the walkthrough starts): a line that flashed by while you typed used to use up every build,
+  // so nothing was ever previewed again (owner, 2026-10-21: "I am not even seeing I built this previews")
   if (!note) return steps.length;
   const n = steps.length;
   const lead = document.createElement('span');
   lead.className = 'showcase-pill';
-  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I made ' + (n === 1 ? 'a new thing' : n.toLocaleString('en') + ' new things') + ' while you were away · ';
+  // the newest thing by name and what it does, never only a count (owner, 2026-10-21: details on every preview)
+  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I built this: ' + steps[0].line + (n > 1 ? ' (and ' + (n - 1).toLocaleString('en') + ' more)' : '') + ' · ';
   const go = document.createElement('a');
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
-  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps); });
+  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; markShown(steps); start(stageApi, steps); });
   note.textContent = ''; note.append(lead, go);
   bell(stageApi, steps);
   return n;
@@ -412,7 +414,7 @@ export function bell(stageApi, steps) {
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
     + '@media (prefers-reduced-motion:reduce){.whatsnew-bell,.whatsnew-bell svg{animation:none}}</style>'
     + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z" fill="currentColor"/></svg><b aria-hidden="true">' + (n > 99 ? '99+' : n) + '</b>'; // void-review: ok: static markup, the count is a number
-  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); start(stageApi, steps); });
+  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); markShown(steps); start(stageApi, steps); });
   document.body.appendChild(b);
   return b;
 }
