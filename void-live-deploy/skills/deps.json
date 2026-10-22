@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 734,
+ "counted": 736,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -893,6 +893,13 @@
   },
   {
    "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -2275,6 +2282,7 @@
     "lib/shortfall.js",
     "lib/models.js",
     "lib/honest.js",
+    "lib/tower.js",
     "lib/lap.js",
     "lib/will-guard.js"
    ],
@@ -5889,6 +5897,13 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/tower.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js",
+    "skills/tower.js"
+   ]
+  },
   "lib/used.js": {
    "imports": [],
    "importedBy": [
@@ -9197,6 +9212,12 @@
     "skills/notepad.js",
     "lib/bridges.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/tower.js": {
+   "imports": [
+    "lib/tower.js"
    ],
    "importedBy": []
   },

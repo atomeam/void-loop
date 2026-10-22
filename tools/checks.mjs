@@ -362,6 +362,7 @@ for (const [name, file] of [
   ['game-health', 'game-health.test.mjs'],
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
+  ['tower', 'tower.test.mjs'],
   ['persona-playtest', 'persona-playtest.mjs'],
   ['ics', 'ics.test.mjs'],
   ['lineage', 'lineage.test.mjs'],

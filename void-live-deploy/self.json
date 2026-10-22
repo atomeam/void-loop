@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T05:40:46Z",
+   "subject": "Game Box takes 'games' and 'show me the games'; the shelf keeps 'play a game' and its other words"
+  },
+  {
    "at": "2026-10-22T05:36:23Z",
    "subject": "Incident: the browser suite failed on 1e12c2fa (void-live-deploy/incidents.json)"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T05:15:48Z",
    "subject": "Deeds and drawn chance cards join the saved-cards record; the lap loop goes around every item (skills, surfaces, docs, archives, tools…"
-  },
-  {
-   "at": "2026-10-22T05:15:18Z",
-   "subject": "Mind Field gets a sound mode and a book page; Tilt Arena joins as a four-mode learning-agent game"
   }
  ],
  "builders": {
