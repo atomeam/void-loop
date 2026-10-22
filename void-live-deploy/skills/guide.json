@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 1,
-    "proven": 20
+    "checked": 0,
+    "proven": 21
    },
    "from": 140,
    "to": 168
@@ -2792,8 +2792,9 @@
     "summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f",
     "what did this video teach?"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. It has not failed a reader yet.",
    "glow": 100,
    "n": 142
   },
@@ -5088,7 +5089,7 @@
     "summarise your unbuilt asks by family"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the verse itself, tested each day before the sun is up. It has not failed a reader yet.",
    "glow": 100,
    "n": 273
