@@ -4610,6 +4610,8 @@ say('nothing selected to remove');
       say('');
       return el;
     }
+    // a shared card link (#vc=..., the share button in lib/card-share.js) opens that card on arrival
+    if (/[#&]vc=/.test(location.hash)) shareReady.then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
     import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
       // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
