@@ -1,27 +1,34 @@
 /**
- * coin-flip skill: "flip a coin", "heads or tails", "coin flip" for a quick decision.
- * Returns heads or tails with a short reason drawn from the ask when one is present.
- * Empty surface stays empty: the answer is the words, no card of its own.
+ * coin-flip skill — flip a coin for a random heads or tails
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "flip a coin", "heads or tails", "coin flip", "toss a coin".
+ * Empty stage stays empty; the card shows the result.
  */
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+export function isCoin(text) {
+  return /^(?:please\s+)?(?:(?:flip|toss|throw)\s+(?:a\s+)?coin|(?:heads?\s+or\s+tails?|coin\s+flip|flip\s+it))$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
 
-export function coinOf(text) {
-  const t = CLEAN(text);
-  const m = t.match(/^(?:please\s+)?(?:flip\s+(?:a\s+)?coin|heads\s+or\s+tails|coin\s+flip|flip\s+for\s+me)(?:\s+for\s+(.+))?$/);
-  return m ? (m[1] || '').trim() : null;
+export function suite() {
+  const ok = isCoin('flip a coin') && isCoin('heads or tails') && !isCoin('what is a coin');
+  if (!ok) throw new Error('coin match failed');
+  return true;
+}
+
+async function run(text, api) {
+  const { showPage, esc } = api;
+  if (!isCoin(text)) return 'none';
+  const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+  showPage((p) => {
+    p.innerHTML = '<h2>Coin flip</h2><p style="font-size:48px;text-align:center;font-weight:600;margin:20px 0">' + esc(result) + '</p><div class="sub">say “flip a coin” again for another</div>';
+  });
+  return 'coin-flip';
 }
 
 export default {
   name: 'coin-flip',
-  examples: ['flip a coin', 'heads or tails', 'coin flip for dinner', 'flip a coin for me'],
-  nearMisses: ['what is a coin', 'flip the table'],
-  match(lower, text) { return coinOf(text) !== null; },
-  run(text, api) {
-    const reason = coinOf(text);
-    const side = Math.random() < 0.5 ? 'heads' : 'tails';
-    const line = reason ? `${side} — ${reason}` : side;
-    api.say(line);
-    return side;
-  },
+  examples: ['flip a coin', 'heads or tails', 'coin flip', 'toss a coin'],
+  nearMisses: ['what is a coin', 'coin collector', 'heads or tails of the market'],
+  match(lower, text) { return isCoin(text); },
+  run,
+  suite,
 };
