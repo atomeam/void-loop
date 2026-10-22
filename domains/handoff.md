@@ -234,3 +234,5 @@ Plan for the hypothetical $100 (docs/reinvest.md, public list prices only): keep
 - helper/videos-back: films resumed with a second source (shipped changes), tools/record.mjs (frontier #26 step 4)
 - helper/telemetry-narration (claude, 2026-10-18): the telemetry route stops reading a builder's own sentences as failures (the "Developer log absorbed" card listed six)
 - helper/stability-gauge (claude, 2026-10-18): Verse's own suite as a stability dial on the Service Health card, from incidents.json (asked by Verse); next: the Verse rename, visible layer first
+
+- 2026-10-21 (grok-bot): docs/STRATEGY.md holds the owner's strategy directive (paraphrased) and its guardrails; the want picker now weights money/parity skills (tools/revenue-tags.json).

@@ -45,7 +45,7 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Prompt/program optimisation against a metric | DSPy/MIPRO | missing | Verse's prompts are hand-edited; no metric-driven search |
 | Eval-driven development (benchmark gates merges) | eval practice | have | `bench.json`, `bench.best.json`, bench floors |
 | Canary + automatic rollback | SRE | partial | auto-revert on a red browser suite (`revert-target.mjs`); no staged canary, live-watch failure does not revert |
-| Expected-value / bandit want picking | bandits | **built** | `lacks.mjs` orders by lack x chance (Beta(1,1) mean of wins/misses, `grow-lessons.chance`); `familyScores` gives per-family outcomes |
+| Expected-value / bandit want picking | bandits | **built** | `lacks.mjs` orders by lack x chance x market reach (`tools/revenue-tags.json`, docs/STRATEGY.md) (Beta(1,1) mean of wins/misses, `grow-lessons.chance`); `familyScores` gives per-family outcomes |
 | Progress over time (proven, miss rate, speed) | eval practice | missing | no time series on the self card yet |
 
 ## Left, highest value first
