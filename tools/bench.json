@@ -6717,5 +6717,11 @@
   {"ask": "ask the glitch oracle why is the sky blue", "want": "skill:oracle"},
   {"ask": "spectral review", "want": "skill:spectral-review"},
   {"ask": "spectral review of A good map shows the way, because every road has a name. However, it honestly really needs a legend.", "want": "skill:spectral-review"},
-  {"ask": "something unkeepable", "want": "skill:unkeepable"}
+  {"ask": "something unkeepable", "want": "skill:unkeepable"},
+  {"ask": "memory preview", "want": "skill:memory-preview"},
+  {"ask": "show my memory snippets", "want": "skill:memory-preview"},
+  {"ask": "what memories do I have", "want": "skill:memory-preview"},
+  {"ask": "where is jupiter", "want": "skill:sky-card"},
+  {"ask": "where is the moon tonight", "want": "skill:sky-card"},
+  {"ask": "is venus up", "want": "skill:sky-card"}
 ]
