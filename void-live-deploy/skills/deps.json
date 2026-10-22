@@ -17,17 +17,17 @@
    "tests": 2
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 30,
+   "direct": 2,
+   "dependants": 47,
+   "tests": 4
+  },
+  {
    "file": "lib/state.js",
    "skills": 29,
    "direct": 4,
    "dependants": 51,
-   "tests": 4
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 29,
-   "direct": 2,
-   "dependants": 46,
    "tests": 4
   },
   {
@@ -46,10 +46,24 @@
   },
   {
    "file": "lib/motion-throttle.js",
+   "skills": 19,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
+   "file": "lib/mind-field-modes.js",
    "skills": 18,
    "direct": 1,
    "dependants": 19,
    "tests": 1
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 18,
+   "direct": 14,
+   "dependants": 18,
+   "tests": 0
   },
   {
    "file": "lib/keeper.js",
@@ -78,20 +92,6 @@
    "direct": 10,
    "dependants": 33,
    "tests": 2
-  },
-  {
-   "file": "lib/mind-field-modes.js",
-   "skills": 17,
-   "direct": 1,
-   "dependants": 18,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-stage.js",
-   "skills": 17,
-   "direct": 13,
-   "dependants": 17,
-   "tests": 0
   },
   {
    "file": "lib/sky-math.js",
@@ -367,6 +367,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-doodle.js",
+   "skills": 5,
+   "direct": 3,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/observations.js",
    "skills": 5,
    "direct": 2,
@@ -466,13 +473,6 @@
   },
   {
    "file": "lib/field-cards.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-doodle.js",
    "skills": 4,
    "direct": 2,
    "dependants": 4,
@@ -3356,7 +3356,8 @@
    ],
    "importedBy": [
     "skills/doodle-mind.js",
-    "skills/echo-field.js"
+    "skills/echo-field.js",
+    "skills/resonant-membrane.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
@@ -3411,6 +3412,7 @@
     "skills/nca-mind.js",
     "skills/overload.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/riot.js",
     "skills/stigmergy-board.js",
     "skills/sudden-death.js",
@@ -3465,6 +3467,7 @@
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-mode.js",
     "skills/vector-field-mind.js"
@@ -4157,6 +4160,7 @@
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
@@ -4230,6 +4234,7 @@
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
@@ -6631,7 +6636,8 @@
    "importedBy": [
     "skills/echo-field.js",
     "skills/mind-field-mode.js",
-    "skills/mind-field.js"
+    "skills/mind-field.js",
+    "skills/resonant-membrane.js"
    ]
   },
   "skills/draft-triad.js": {
@@ -7597,7 +7603,8 @@
     "skills/nca-mind.js",
     "skills/attention-field-mind.js",
     "skills/living-cards-mind.js",
-    "skills/echo-field.js"
+    "skills/echo-field.js",
+    "skills/resonant-membrane.js"
    ],
    "importedBy": [
     "skills/mind-field.js"
@@ -7609,6 +7616,7 @@
     "skills/mind-field-mode.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
+    "skills/resonant-membrane.js",
     "skills/vector-field-mind.js",
     "skills/living-cards-mind.js",
     "skills/attention-field-mind.js",
@@ -8364,6 +8372,17 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-resonance.js"
+   ],
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
+  },
+  "skills/resonant-membrane.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "skills/doodle-mind.js",
+    "lib/field-doodle.js"
    ],
    "importedBy": [
     "skills/mind-field-mode.js",

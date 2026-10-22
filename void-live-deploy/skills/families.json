@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 6,
-  "tested": 29,
-  "checked": 13,
+  "tested": 30,
+  "checked": 12,
   "proven": 271
  },
  "families": [
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 6,
-    "tested": 5,
+    "tested": 6,
     "checked": 1,
     "proven": 31
    },
@@ -337,6 +337,13 @@
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "since": "2026-10-22"
+    },
+    {
+     "name": "resonant-membrane",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "mind-field-mode",
@@ -2744,7 +2751,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 4,
+    "checked": 3,
     "proven": 39
    },
    "skills": [
@@ -2995,13 +3002,6 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 4
-    },
-    {
-     "name": "podcast",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
-     "last_tested": "2026-10-22",
-     "last_tested_by": "its tests"
     },
     {
      "name": "app",
