@@ -28,3 +28,7 @@ assert.equal(chance('a', mem), 0.8); assert.equal(chance('b', mem), 0.2); assert
 const fs2 = familyScores(mem, (n) => (n === 'c' ? 'g' : 'f'));
 assert.deepEqual(fs2.f, { wins: 3, misses: 3, chance: 0.5 }); assert.equal(fs2.g.chance, 0.5);
 console.log('loop-ev: ok');
+import { reach } from './lacks.mjs';
+const T = { money: { weight: 0.5, patterns: ['store', 'tip'] }, parity: { weight: 0.25, patterns: ['calendar'] } };
+assert.equal(reach('gift-store', T), 1.5); assert.equal(reach('calendar', T), 1.25); assert.equal(reach('stipend', T), 1); assert.equal(reach('x', {}), 1);
+console.log('loop-reach: ok');
