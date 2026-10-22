@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 24,
-  "checked": 12,
+  "checked": 13,
   "proven": 270
  },
  "families": [
@@ -2834,7 +2834,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 2,
+    "checked": 3,
     "proven": 39
    },
    "skills": [
@@ -3127,6 +3127,13 @@
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 4
+    },
+    {
+     "name": "fix-audit",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "deps",
