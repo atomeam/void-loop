@@ -2,29 +2,41 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T01:54:29.377Z",
-   "sha": "a72557b30d433747dd28bab7e119083557c87a28",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39707963750",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/stage-camera.test.mjs",
-    "void-live-deploy/lib/stage-camera.js",
-    "void-live-deploy/skills/fly.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T01:48:12.483Z",
-   "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
+   "at": "2026-10-22T01:54:49.072Z",
+   "sha": "acb37c11148ee2393ec5de953a25ff614f4690a5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39706548087",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/convergence.md",
+    "domains/handoff.md",
+    "domains/lists.metrics.json",
+    "domains/store.products.json",
+    "drafts/fringe/anomalous-event-timeline-4.html",
+    "drafts/fringe/attention-7.html",
+    "drafts/fringe/correlation-view-6.html",
+    "drafts/fringe/human-machine-co-agency-8.html",
+    "drafts/fringe/interval-timing-8.html",
+    "drafts/fringe/miss-board-4.html",
+    "drafts/fringe/non-lexical-intent-5.html",
+    "drafts/fringe/opt-in-gesture-6.html",
+    "drafts/fringe/private-incubation-log-6.html",
+    "drafts/fringe/quiet-signal-filter-5.html"
+   ]
+  },
+  {
+   "at": "2026-10-22T01:31:59.992Z",
+   "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
    ],
    "touched": [
     "docs/MAP.md",
