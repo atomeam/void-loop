@@ -23,10 +23,10 @@ export function nextStep(state, skills, weights = {}) {
   // a skill added mid-lap joins this lap's tail, so it is still touched this lap
   const have = new Set(s.order), added = orderOf((skills || []).filter((x) => !have.has(String(x))), weights);
   if (added.length) s = { ...s, order: s.order.concat(added) };
-  if (s.pos < s.order.length) return { state: s, step: { kind: 'upgrade', skill: s.order[s.pos] } };
+  if (s.pos < s.order.length) return { state: s, step: { kind: 'upgrade', skill: s.order[s.pos], lap: s.lap } };
   if (s.newThisLap < NEW_PER_LAP) return { state: s, step: { kind: 'new', n: s.newThisLap + 1 } };
   const next = { ...fresh(), lap: s.lap + 1, order: orderOf(skills, weights), before: s.before || {}, lastLap: { lap: s.lap, items: s.order.length, added: s.newThisLap } }; // the next lap, over the bigger set
-  return { state: next, step: { kind: 'upgrade', skill: next.order[0] } };
+  return { state: next, step: { kind: 'upgrade', skill: next.order[0], lap: next.lap } };
 }
 
 /** the state after a step was taken (queued): position moves on, so an interruption resumes at the next one. Pure. */
@@ -40,7 +40,7 @@ export function advance(state, step, at = null, facts = null) {
 /** the public line (counts only): "Lap 2: upgraded 140 of 316, 37 of 100 new this lap". Pure. */
 export const lapLine = (s) => { const x = { ...fresh(), ...(s || {}) }; return 'Lap ' + x.lap + ': upgraded ' + x.pos + ' of ' + x.order.length + ' items' + ', ' + x.newThisLap + ' of ' + NEW_PER_LAP + ' new this lap'; };
 /** the public tracker: counts only, no skill names beyond the next one. Pure. */
-export const publicLap = (s) => { const x = { ...fresh(), ...(s || {}) }; return { lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, line: lapLine(x), at: x.at, ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
+export const publicLap = (s, onlySite = null) => { const x = { ...fresh(), ...(s || {}) }; return { ...(onlySite ? { onlySite } : {}), lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, line: lapLine(x), at: x.at, ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
 
 /** a want for a step: an upgrade names the skill and its rolling next upgrade (never "done"); a new step asks for one new feature. Pure. */
 const factLine = (f) => Object.entries(f || {}).map(([k, v]) => k + ' ' + v).join(', ');
@@ -52,6 +52,7 @@ export function upgradeAsk(id) {
   if (g === 'doc') return 'make the ' + name + ' doc more accurate and complete';
   if (g === 'tool') return 'make the ' + name + ' tool better tested or more useful';
   if (g === 'surface') return 'upgrade the ' + name + ' surface as a whole';
+  if (g === 'site') return 'move the ' + name + ' category up (missing to partial, partial to replaced): what a visitor would otherwise leave Verse for';
   if (g === 'loop') return 'upgrade the loop itself';
   return 'upgrade the ' + name + ' skill: fix its gaps, add missing basics and apply every discovered rule';
 }
@@ -69,6 +70,15 @@ export function lapProgress(beforeById, items) {
 
 export function candidateOf(step, nextUpgrade = {}, facts = null) {
   if (!step) return null;
-  if (step.kind === 'upgrade') return { kind: 'upgrade', title: (nextUpgrade[step.skill] ? 'Upgrade ' + step.skill + ': ' + nextUpgrade[step.skill] : upgradeAsk(step.skill).replace(/^./, (c) => c.toUpperCase())).slice(0, 150), why: 'its turn in this lap; it must end measurably better than last lap' + (facts ? ' (before: ' + factLine(facts) + ')' : ''), weight: 1000, source: 'lap' };
+  if (step.kind === 'upgrade') return { kind: 'upgrade', title: (step.lap === 1 ? overhaulAsk(step.skill) : nextUpgrade[step.skill] ? 'Upgrade ' + step.skill + ': ' + nextUpgrade[step.skill] : upgradeAsk(step.skill).replace(/^./, (c) => c.toUpperCase())).slice(0, 150), why: 'its turn in this lap; it must end measurably better than last lap' + (facts ? ' (before: ' + factLine(facts) + ')' : ''), weight: 1000, source: 'lap' };
   return { kind: 'new', title: 'Add new feature ' + step.n + ' of ' + NEW_PER_LAP + ' this lap, from wants, studies, Grok drafts or frontier ideas', why: 'every skill was upgraded this lap; new features come next', weight: 1000, source: 'lap' };
 }
+
+// Lap 1 is a full overhaul (owner, 2026-10-22: "everything needs an overhaul again"): each item gets a persona playtest (new player, power
+// user, phone, screen reader) and a best-site comparison, then whatever is weak is rebuilt (layout, completeness, clarity, speed, beauty in
+// the void look, mobile, no cut-off text). The most used go first: the home page, the ask flow, cards, the book, then the games.
+export const MOST_USED = ['surface:home', 'surface:ask', 'surface:cards', 'surface:book', 'surface:games'];
+export const overhaulWeights = (ids) => { const w = {}; MOST_USED.forEach((id, i) => { w[id] = 1000 - i; }); (ids || []).filter((id) => /^site:/.test(id)).forEach((id, i) => { w[id] = 500 - i; }); for (const id of ids || []) if (/^skill:/.test(id) && !(id in w)) w[id] = /game|rally|duel|chess|monopoly|card|book/.test(id) ? 10 : 0; return w; };
+export const overhaulAsk = (id) => 'Overhaul ' + id + ': persona playtest and best-site comparison, then rebuild what is weak (layout, completeness, clarity, speed, beauty, phone, no cut-off text)';
+/** the "only site you need" line, counts only: "Only site you need: 9 replaced, 11 partial, 4 missing of 24 categories". Pure. */
+export const onlySiteLine = (c) => c ? 'Only site you need: ' + c.replaced + ' replaced, ' + c.partial + ' partial, ' + c.missing + ' missing of ' + c.categories + ' categories' : '';
