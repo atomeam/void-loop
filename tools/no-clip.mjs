@@ -33,4 +33,7 @@ await b.close();
 // the book page by page, at many sizes and zooms, with resizes (tools/book-fit.mjs): its box fitting the window was not enough, the
 // sheets scrolled inside and cut their last lines (owner, 2026-10-21)
 { const { spawnSync } = await import('node:child_process'); const r = spawnSync(process.execPath, [new URL('./book-fit.mjs', import.meta.url).pathname], { stdio: 'inherit', env: { BOOK_QUICK: '1', ...process.env } }); if (r.status !== 0) bad++; }
+// animated glitch titles stay one whole, evenly spaced word at every sampled frame, on the live films card too (tools/glitch-titles.mjs;
+// owner, 2026-10-22: "VERSE F   I   LMS")
+{ const { spawnSync } = await import('node:child_process'); const r = spawnSync(process.execPath, [new URL('./glitch-titles.mjs', import.meta.url).pathname, '--live'], { stdio: 'inherit', env: { VOID_SITE: SITE, ...process.env } }); if (r.status !== 0) bad++; }
 process.exit(bad ? 1 : 0);
