@@ -2,33 +2,36 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T02:57:53.323Z",
-   "sha": "17e3d26aac1b206a7c178cb2a98a4ab41f067ae4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39712488162",
+   "at": "2026-10-22T03:01:10.516Z",
+   "sha": "71fb7da63b960ef16b71f6c991b5614b9e417976",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39713418311",
    "suite": "browser suite on main",
    "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it",
-    "look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor's first move brings \"I made 3 new things while you were away · show me\"; \"show me\" puts the newest (a paper sticky) on the stage with \"1 of 3\", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; \"what's new\" afterwards replays nothing and says so with the count; \"show me everything you made\" walks all 4 by name",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
+    "suite ran to the end"
    ],
    "touched": [
-    "docs/MAP.md",
-    "tools/guide.test.mjs",
-    "tools/no-ellipsis.json",
-    "tools/no-ellipsis.mjs",
-    "tools/showcase.test.mjs",
-    "tools/stage-pack-f.test.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/book-face.js",
-    "void-live-deploy/lib/bridges.js",
-    "void-live-deploy/lib/card-image.js",
-    "void-live-deploy/lib/card-sections.js",
-    "void-live-deploy/lib/film-discovery.js",
-    "void-live-deploy/lib/guide.js",
-    "void-live-deploy/lib/inbox-health.js",
-    "void-live-deploy/lib/media.js"
+    ".github/workflows/loop-critic.yml",
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/loop-critic.mjs",
+    "tools/loop-library.mjs",
+    "tools/loop-parts.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T02:47:56.362Z",
+   "sha": "96c8914b181799c24bdf1134d1d537da2b442433",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39712898523",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/grow-self.yml",
+    "tools/backfill-hardened.mjs",
+    "void-live-deploy/lib/built-detail.js",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -719,45 +722,6 @@
     "void-live-deploy/void.growth.json",
     "void-live-deploy/void.html",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-19T22:33:14.796Z",
-   "sha": "5ace93927896a0b59fa8c4b2e20a8b70e3b65377",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39332276160",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "remember me on a device that already has your passkey signs in (no second Verse)",
-    "paid: the tier comes from the server; only \"paid\" counts (anything else reads as free)",
-    "sign out: your Verse leaves this device and stays on the server"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/telemetry-live.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/telemetry-live.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/telemetry-route.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]
