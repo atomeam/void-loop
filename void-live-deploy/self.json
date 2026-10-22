@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:28:13Z",
+   "subject": "Mind Field: seven field minds in one skill with modes, a new Draw mode, and 'what's similar'"
+  },
+  {
+   "at": "2026-10-22T04:26:45Z",
+   "subject": "cards: the share link reopens its card, now in the page's source file so deploys keep it"
+  },
+  {
+   "at": "2026-10-22T04:26:20Z",
+   "subject": "browser suite: Verse merge works out Forge's plate from the served stats (they moved from R 6 to R 3); the kept quiz is read once the…"
+  },
+  {
    "at": "2026-10-22T04:25:33Z",
    "subject": "void.html: ?open=all survives the ?q= cleanup (the page source; index.html is its deploy copy) so the full self card link opens every block"
   },
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-22T03:59:35Z",
    "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
-  },
-  {
-   "at": "2026-10-22T03:57:45Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:55:38Z",
-   "subject": "MAP: book-fit, loop-refine, study-engine"
-  },
-  {
-   "at": "2026-10-22T03:55:30Z",
-   "subject": "Study engine 2: source-map decode, readable un-minify, feature trace, RPC, own read when REA fails, owner study panel, study-ready wants…"
   }
  ],
  "builders": {
