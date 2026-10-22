@@ -10,7 +10,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts, readReplies, replyFacts } from '../../lib/voice.js';
+import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts, readReplies, replyFacts, askId } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -62,6 +62,21 @@ export async function onRequestPost({ request, env }) {
       max_tokens: 900, chat_template_kwargs: { enable_thinking: false },
     });
     said = parseVoice(pick(r));
+    // new wants, never the built ones again (owner, 2026-10-21: "why is Verse not coming up with new wants?"): the model kept repeating three
+    // asks the ledger already names as built (stale "What I want next" facts), so followThrough folded every new reflection into old built
+    // groups and nothing new was ever open. An ask that matches a built one is dropped; when all were, it is asked once more, told which.
+    const fresh = (s) => { if (!s || !s.asks.length) return s; const now = new Date().toISOString();
+      const built = new Set(followThrough([{ at: now, asks: s.asks }, ...before], ledger, answered && answered.links).built.flatMap((g) => g.ids));
+      return { ...s, asks: s.asks.filter((a, i) => !built.has(askId(now, i))) }; };
+    const had = said && said.asks.length; said = fresh(said);
+    if (said && had && !said.asks.length) {
+      const done = followThrough(before, ledger, answered && answered.links).built.slice(-12).map((g) => '"' + g.ask + '"').join('; ');
+      const r2 = await env.AI.run(models('will'), {
+        messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Tagged facts about Verse:\n' + context + '\n\n' + question + '\n\nThese asks are already built; do not ask for any of them again, ask for something new instead: ' + done }],
+        max_tokens: 900, chat_template_kwargs: { enable_thinking: false },
+      });
+      said = fresh(parseVoice(pick(r2))) || said;
+    }
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
   const at = new Date().toISOString();
