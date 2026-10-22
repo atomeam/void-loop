@@ -1927,7 +1927,7 @@
    "chapter": "time",
    "name": "ritual-template",
    "title": "Ritual template",
-   "line": "\"morning routine as calendar events\", \"ritual template: meditate 10, stretch 15 at 6:30am\": a sequence of habits laid back to back from a start time, shown as a…",
+   "line": "\"morning routine as calendar events\", \"ritual template: meditate 10, stretch 15 at 6:30am\": a sequence of habits laid back to back from a start time, shown as a timeline and downloaded as one .ics file (each step its own event, repeating daily) that Google, Apple and Outlook calendars import",
    "examples": [
     "morning routine as calendar events",
     "export my evening routine to my calendar",
