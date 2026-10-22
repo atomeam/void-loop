@@ -31,10 +31,11 @@ export const TOME_CSS = [
   '.tome-spine{position:absolute;top:-1.6%;bottom:-1.6%;left:50%;width:4%;transform:translateX(-50%);background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.55) 42%,rgba(0,0,0,.62) 58%,rgba(0,0,0,0));z-index:3;pointer-events:none}',
   // the pages: parchment, darker at the edges and in the gutter, grained and foxed
   '.tome-page,.tome-face{filter:var(--tome-tone,none);transition:filter .6s ease}', // the site's health tints the parchment (parchmentFilter)
-  '.tome-page,.tome-face{position:absolute;top:0;bottom:0;width:50%;box-sizing:border-box;padding:6.2cqh 6cqh 7.4cqh;overflow-y:auto;overflow-x:hidden;background-color:#e6d5ae;'
+  '.tome-page,.tome-face{position:absolute;top:0;bottom:0;width:50%;box-sizing:border-box;padding:6.2cqh 6cqh 7.4cqh;overflow:hidden;background-color:#e6d5ae;'
     + 'background-image:radial-gradient(ellipse at 18% 12%,rgba(255,250,236,.5),rgba(255,250,236,0) 55%),radial-gradient(ellipse at 85% 90%,rgba(110,70,25,.16),rgba(110,70,25,0) 55%),' + MOTTLE + ',' + GRAIN + ';'
     + 'background-size:auto,auto,420px 420px,160px 160px;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26);color:#2b1b0e;line-height:1.46;font-size:2.35cqh}',
   '.tome-page::-webkit-scrollbar,.tome-face::-webkit-scrollbar{width:5px}.tome-page::-webkit-scrollbar-thumb,.tome-face::-webkit-scrollbar-thumb{background:rgba(109,76,42,.4);border-radius:2px}.tome-page,.tome-face{scrollbar-width:thin;scrollbar-color:rgba(109,76,42,.4) transparent}',
+  '.tome-fit{display:flow-root}.tome-page.has-tier,.tome-face.has-tier{padding-bottom:12.5cqh}',
   '.tome-page.left{left:0;border-radius:.6% 0 0 .6%/.9% 0 0 .9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26),inset -5cqh 0 6cqh -4cqh rgba(60,35,10,.5)}',
   '.tome-page.right{right:0;border-radius:0 .6% .6% 0/0 .9% .9% 0;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26),inset 5cqh 0 6cqh -4cqh rgba(60,35,10,.5)}',
   // the thickness of what is not open: the leaves stacked at each outer edge, more on the side you have read
@@ -124,6 +125,7 @@ const pageArt = (p, h = 120) => {
     return '<div class="tome-art">' + artSvg({ key: 'book:' + (p.name || p.title || p.kind), name: p.title || '', kind: p.kind === 'mini' ? 'Miniature' : p.game ? 'Game' : p.kind === 'skill' ? 'Skill' : 'Idea', chapter: p.chapter, rarity: p.tier || 'common', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h }) + '</div>';
   } catch (_) { return ''; }
 };
+const stop = (s) => { s = String(s || '').trim(); return !s || /[.!?…:)"”’']$/.test(s) ? s : s + '.'; }; // a line ends as a sentence does
 export function pageHtml(p, book, esc) {
   const t = book.totals || {}, chap = chapterOf(book, p.chapter);
   if (p.kind === 'cover') { // the title page
@@ -132,11 +134,11 @@ export function pageHtml(p, book, esc) {
       + openerSvg({ skills: firsts.map((x) => x.name) }, book, 10) + '<p class="tome-sub">' + t.skills + ' skills · ' + t.games + ' games · ' + t.minis + ' miniatures<br>' + t.pages + ' pages</p></div>';
   }
   if (p.kind === 'how') {
-    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
-      + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>'
+    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + (p.part === 2 ? '<p class="lead">More of the first things to say. Each line of ink below is an ask: touch it and the book closes to do it.</p>' : pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
+      + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>')
       + (p.core || []).map((c) => '<p class="tome-note"><b>' + esc(c.name) + '</b> · ' + esc(c.line) + '</p><ul class="tome-try gb-try">' + c.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>').join('')
       // the store, named where a first visit reads (owner, 2026-10-18: the corner "support Verse" link is gone, "but make the store easy to find")
-      + '<p class="tome-note tome-store"><b>The store</b> · what Verse sells, and how to support it.</p><ul class="tome-try gb-try"><li><a href="#" data-ask="open the store">open the store</a></li><li><a href="#" data-ask="support void">support void</a></li></ul></div>';
+      + (p.part === 1 ? '' : '<p class="tome-note tome-store"><b>The store</b> · what Verse sells, and how to support it.</p><ul class="tome-try gb-try"><li><a href="#" data-ask="open the store">open the store</a></li><li><a href="#" data-ask="support void">support void</a></li></ul>') + '</div>';
   }
   if (p.kind === 'legend') {
     return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">Each page is one thing Verse does: its name, one line on what it does, two or three asks to say, and a rating.</p>'
@@ -151,7 +153,7 @@ export function pageHtml(p, book, esc) {
   }
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
-    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
+    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(stop(p.line || '')) + '</p>' + openerSvg(p, book, 16)
       + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
   if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Verse): lib/rule-registry.js
@@ -179,7 +181,11 @@ export function sheetHtml(p, book, side, esc) {
   const chap = chapterOf(book, p.chapter);
   // the running heads as a book sets them: the book's title on the left-hand page, the chapter on the right-hand page
   const head = side === 'left' ? '<span>' + esc(book.title || 'The Verse Book') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
-  return '<div class="tome-head">' + head + '</div>' + pageHtml(p, book, esc) + '<div class="tome-folio">' + p.n + '</div>';
+  // the page's words sit in .tome-fit, which skills/guide.js scales down until they all fit above the footer (the rating and the
+  // folio, which keep their own reserved strip): the sheet never scrolls and never cuts a line
+  const html = pageHtml(p, book, esc), at = html.lastIndexOf('<div class="tome-tier');
+  const words = at >= 0 ? html.slice(0, at) : html, foot = at >= 0 ? html.slice(at) : '';
+  return '<div class="tome-head">' + head + '</div><div class="tome-fit">' + words + '</div>' + foot + '<div class="tome-folio">' + p.n + '</div>';
 }
 
 /** how thick each stack of unread leaves is, 0..1, from the page you are on. Pure. */

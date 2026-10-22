@@ -28,4 +28,7 @@ for (const [w, h] of SIZES) for (const [ask, sel] of ASKS) {
   await page.close();
 }
 await b.close();
+// the book page by page, at many sizes and zooms, with resizes (tools/book-fit.mjs): its box fitting the window was not enough, the
+// sheets scrolled inside and cut their last lines (owner, 2026-10-21)
+{ const { spawnSync } = await import('node:child_process'); const r = spawnSync(process.execPath, [new URL('./book-fit.mjs', import.meta.url).pathname], { stdio: 'inherit', env: { BOOK_QUICK: '1', ...process.env } }); if (r.status !== 0) bad++; }
 process.exit(bad ? 1 : 0);
