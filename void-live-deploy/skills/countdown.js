@@ -12,6 +12,12 @@ export function plainDate(s) {
     .replace(/\b(jan|feb|mar|apr|jun|jul|aug|sept?|oct|nov|dec)\.?(?=\s+\d)/gi, (m, a) => ABBR[a.toLowerCase()]);
 }
 export function countdownOf(text) {
+  // "show the countdown", "show the days until a date", "show the countdown to christmas" (one countdown with show-countdown,
+  // 2026-10-22): New Year when no day is named, else the day it names
+  const sh = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^please /, '');
+  if (/^show (?:the )?countdown$|^show the days until a date$/.test(sh)) return { kind: 'newyear' };
+  const st = sh.match(/^show (?:the |a |my )?countdown (?:to|until|till) (.+)$/);
+  if (st) return countdownOf('countdown to ' + st[1]) || countdownOf('days until ' + st[1]) || null;
   const t = plainDate(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   if (/^(?:how many )?(?:days|weeks) until new year$/i.test(t)) return { kind: 'newyear' };
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
