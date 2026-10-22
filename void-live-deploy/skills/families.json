@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 27,
+  "tested": 24,
   "checked": 12,
-  "proven": 267
+  "proven": 270
  },
  "families": [
   {
@@ -643,9 +643,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 0,
-    "proven": 14
+    "tested": 3,
+    "checked": 1,
+    "proven": 15
    },
    "skills": [
     {
@@ -742,10 +742,12 @@
     },
     {
      "name": "sky-card",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-22"
     },
     {
      "name": "suntimes",
@@ -767,10 +769,12 @@
     },
     {
      "name": "night-sky",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-22"
     },
     {
      "name": "place",
@@ -815,9 +819,9 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 3,
     "checked": 0,
-    "proven": 15
+    "proven": 16
    },
    "skills": [
     {
@@ -832,10 +836,12 @@
     },
     {
      "name": "ritual-template",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-22",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-22"
     },
     {
      "name": "timer",
@@ -2828,8 +2834,8 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 3,
-    "proven": 38
+    "checked": 2,
+    "proven": 39
    },
    "skills": [
     {
@@ -3230,10 +3236,11 @@
     },
     {
      "name": "memory-preview",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-22",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-10-22"
     },
     {
