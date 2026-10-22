@@ -32,7 +32,7 @@ Verse: Ask "watch my words drift", and the term orbits card opens.
 
 Critic: Now the misses. The ledger lists 3 asks this week that Verse tried to learn and still could not answer. Verse made 7 fixes to its own skills by itself.
 
-Critic: The full browser test suite on main went red 30 times this week. Those failures are in the public incident log, and they are not fixed until two runs in a row pass.
+Critic: The full browser test suite on main went red 28 times this week. Those failures are in the public incident log, and they are not fixed until two runs in a row pass.
 
 Critic: In its own daily readout, Verse named its weakest area: The Deciding family is the least proven operational area, with only 1 proven skill out of 3.
 

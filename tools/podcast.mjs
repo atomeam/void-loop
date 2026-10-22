@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, rmSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -125,29 +125,31 @@ function inputs(to, n) {
   return { growth: readJson(resolve(site, 'void.growth.json'), []), claims: readJson(resolve(site, 'claims-verified.json'), { ok: [] }), voiceMd: existsSync(resolve(root, 'domains/void.voice.md')) ? readFileSync(resolve(root, 'domains/void.voice.md'), 'utf8') : '', incidents: readJson(resolve(site, 'incidents.json'), { incidents: [] }), to, n };
 }
 
+// every command runs with execFileSync and an argument list: nothing is read by a shell
+const ff = (...a) => execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...a]);
+const dur = (f) => +execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim();
 function speak(ep, voices, out) {
-  const piper = process.env.PIPER || 'python3 -m piper';
+  const [pcmd, ...pargs] = (process.env.PIPER || 'python3 -m piper').split(/\s+/).filter(Boolean);
   const tmp = resolve(tmpdir(), 'verse-podcast-' + process.pid); mkdirSync(tmp, { recursive: true });
   const model = { Verse: resolve(voices, 'en_US-lessac-medium.onnx'), Critic: resolve(voices, 'en_US-ryan-medium.onnx') };
   const list = []; let t = 0;
-  execSync(`ffmpeg -loglevel error -y -f lavfi -i anullsrc=r=22050:cl=mono -t 0.45 "${tmp}/gap.wav"`);
+  ff('-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', '0.45', `${tmp}/gap.wav`);
   ep.lines.forEach((l, i) => {
     const f = `${tmp}/${String(i).padStart(3, '0')}.wav`;
-    writeFileSync(`${tmp}/line.txt`, l.text);
-    execSync(`${piper} -m "${model[l.who]}" -f "${f}" < "${tmp}/line.txt"`, { stdio: ['ignore', 'ignore', 'inherit'] });
-    execSync(`ffmpeg -loglevel error -y -i "${f}" -ar 22050 -ac 1 "${f}.r.wav"`);
+    execFileSync(pcmd, [...pargs, '-m', model[l.who], '-f', f], { input: l.text, stdio: ['pipe', 'ignore', 'inherit'] });
+    ff('-i', f, '-ar', '22050', '-ac', '1', `${f}.r.wav`);
     list.push(`file '${f}.r.wav'`, `file '${tmp}/gap.wav'`);
-    l.t = Math.round(t * 10) / 10; t += +execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${f}.r.wav"`).toString().trim() + 0.45;
+    l.t = Math.round(t * 10) / 10; t += dur(`${f}.r.wav`) + 0.45;
   });
   // a Loop Grid-style bed (an 8-step pentatonic pattern of soft sine notes, made here by ffmpeg, no samples, no licence) under the
   // opening and the closing line
-  const bed = (secs, name) => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392]; const step = 0.3;
-    const expr = notes.map((f, i) => `(between(mod(t,${notes.length * step}),${i * step},${(i + 1) * step})*sin(2*PI*${f}*t)*exp(-6*(mod(t,${notes.length * step})-${i * step})))`).join('+');
-    execSync(`ffmpeg -loglevel error -y -f lavfi -i "aevalsrc='0.18*(${expr})':s=22050:d=${secs}" -af "afade=t=in:d=0.6,afade=t=out:st=${secs - 1.2}:d=1.2" -ac 1 "${tmp}/${name}.wav"`); return `${tmp}/${name}.wav`; };
+  const bed = (secs, name) => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392]; const step = 0.3, bar = notes.length * step;
+    const expr = notes.map((f, i) => `(between(mod(t,${bar}),${i * step},${(i + 1) * step})*sin(2*PI*${f}*t)*exp(-6*(mod(t,${bar})-${i * step})))`).join('+');
+    ff('-f', 'lavfi', '-i', `aevalsrc='0.18*(${expr})':s=22050:d=${secs}`, '-af', `afade=t=in:d=0.6,afade=t=out:st=${secs - 1.2}:d=1.2`, '-ac', '1', `${tmp}/${name}.wav`); return `${tmp}/${name}.wav`; };
   if (!process.env.PODCAST_NO_BED) { const a = bed(3.6, 'bed-in'), b = bed(4.2, 'bed-out'); list.unshift(`file '${a}'`); list.push(`file '${b}'`); ep.lines.forEach((l) => { l.t = Math.round((l.t + 3.6) * 10) / 10; }); }
   writeFileSync(`${tmp}/list.txt`, list.join('\n'));
-  execSync(`ffmpeg -loglevel error -y -f concat -safe 0 -i "${tmp}/list.txt" -ac 1 -ar 22050 -b:a 48k -id3v2_version 3 -metadata title="${SHOW.title} ${ep.n}" -metadata artist="${SHOW.author}" "${out}"`);
-  const seconds = +execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${out}"`).toString().trim();
+  ff('-f', 'concat', '-safe', '0', '-i', `${tmp}/list.txt`, '-ac', '1', '-ar', '22050', '-b:a', '48k', '-id3v2_version', '3', '-metadata', `title=${SHOW.title} ${ep.n}`, '-metadata', `artist=${SHOW.author}`, out);
+  const seconds = dur(out);
   rmSync(tmp, { recursive: true, force: true });
   return seconds;
 }
