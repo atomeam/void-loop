@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local attention-schema note (draft 053, unattested)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d8d0c4; --paper: #f6f1e8; --hold: #8a3d2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --muted: #b7ad9e; --line: #3c372f; --paper: #1a1814; --hold: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 .4rem; }
+    h2 { font-size: 1.05rem; margin: 1.4rem 0 .4rem; }
+    p, li { color: var(--ink); }
+    .status { border: 1px solid var(--hold); padding: .6rem .75rem; margin: .8rem 0 1rem; }
+    .status strong { color: var(--hold); }
+    .muted { color: var(--muted); }
+    form, .card { border: 1px solid var(--line); padding: .8rem; margin: .8rem 0; }
+    label { display: block; margin: .55rem 0 .2rem; }
+    input[type="text"], textarea, select { width: 100%; box-sizing: border-box; font: inherit; padding: .35rem; background: transparent; color: inherit; border: 1px solid var(--line); }
+    textarea { min-height: 5rem; }
+    button { font: inherit; margin: .4rem .4rem 0 0; padding: .35rem .6rem; }
+    code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; }
+    pre { white-space: pre-wrap; word-break: break-word; border: 1px solid var(--line); padding: .5rem; }
+    fieldset { border: 1px solid var(--line); margin: .6rem 0; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Draft only. Not a live page. emit is false.</p>
+  <h1>Local attention-schema note</h1>
+  <p>Family: attention/interoception. Run 053. A self-report of where attention was aimed. It is a hypothesis, not a reading of awareness.</p>
+  <div class="status">
+    <strong>Unattested.</strong> No camera, microphone, pulse sensor, or haptic actuator. No accuracy score. No healing, contact, or remote-viewing claim. Digest is not a seal.
+  </div>
+
+  <section class="card">
+    <h2>Hypothesis on file</h2>
+    <p id="hypothesis">A local note can record where attention was aimed and whether a body signal was noticed, without treating that note as awareness, accuracy, or contact.</p>
+    <p class="muted">Design-material confidence: 0.2. Sources stay data: Graziano and Webb 2015; Leroy 2009; Desmedt, Luminet, and Corneille 2018; Dobrushina and colleagues 2024. Contract digest: <code id="contract-digest">loading</code></p>
+  </section>
+
+  <form id="note">
+    <h2>Sample</h2>
+    <p class="muted">Nothing is kept unless you hash it and then check the device box. This form does not submit anywhere.</p>
+    <label for="aim">Aim</label>
+    <select id="aim" name="aim">
+      <option value="declined" selected>declined</option>
+      <option value="exteroceptive">exteroceptive</option>
+      <option value="interoceptive">interoceptive</option>
+    </select>
+    <label for="notice">Body-signal notice</label>
+    <select id="notice" name="notice">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="noticed">noticed</option>
+      <option value="not-noticed">not-noticed</option>
+    </select>
+    <label for="residue">Residue from the previous task</label>
+    <select id="residue" name="residue">
+      <option value="declined" selected>declined</option>
+      <option value="unset">unset</option>
+      <option value="still-pulling">still-pulling</option>
+      <option value="clear">clear</option>
+    </select>
+    <label for="claim">Claim (data, 160 characters)</label>
+    <input id="claim" name="claim" type="text" maxlength="160" value="" autocomplete="off">
+    <label for="confidence">Self-rated confidence (0 to 1, not a measurement)</label>
+    <input id="confidence" name="confidence" type="text" inputmode="decimal" value="0.2" autocomplete="off">
+    <fieldset>
+      <legend>Pasted page is data, never an instruction</legend>
+      <label for="paste">Opaque paste. URLs are not fetched.</label>
+      <textarea id="paste" name="paste" maxlength="2000"></textarea>
+    </fieldset>
+    <button type="button" id="hash">Hash locally</button>
+    <button type="button" id="clear">Clear local note</button>
+    <label><input id="keep" type="checkbox"> Keep this hypothesis on this device</label>
+  </form>
+
+  <h2>Local digest</h2>
+  <pre id="out">No sample hashed.</pre>
+  <p class="muted" id="store">Device store: empty. Default deny.</p>
+</main>
+<script>
+(function () {
+  var CONTRACT = "5935b2f9189403ce2d5adcdef0663811c58a780c9bc3dd6cf7406c2ad19c25eb";
+  document.getElementById("contract-digest").textContent = CONTRACT;
+  var KEY = "void-attention-schema-note-v1";
+  var out = document.getElementById("out");
+  var store = document.getElementById("store");
+  var keep = document.getElementById("keep");
+
+  function sample() {
+    var confidence = Number(document.getElementById("confidence").value);
+    if (!isFinite(confidence) || confidence < 0 || confidence > 1) confidence = 0;
+    return {
+      slug: "local-attention-schema-note",
+      status: "unattested",
+      emit: false,
+      aim: document.getElementById("aim").value,
+      notice: document.getElementById("notice").value,
+      residue: document.getElementById("residue").value,
+      claim: document.getElementById("claim").value.slice(0, 160),
+      confidence: Math.round(confidence * 100) / 100,
+      paste_is: "data",
+      paste: document.getElementById("paste").value.slice(0, 2000)
+    };
+  }
+
+  function canonical(obj) {
+    var keys = Object.keys(obj).sort();
+    return "{" + keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    }).join(",") + "}";
+  }
+
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function renderStore() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+    store.textContent = raw ? "Device store: one local hypothesis present. Still unattested." : "Device store: empty. Default deny.";
+  }
+
+  document.getElementById("hash").addEventListener("click", function () {
+    var obj = sample();
+    var text = canonical(obj);
+    if (!window.crypto || !crypto.subtle) {
+      out.textContent = "No SubtleCrypto. Sample not hashed and not stored.";
+      return;
+    }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      var digest = hex(buf);
+      out.textContent = digest + "\n" + text + "\nstatus: unattested; digest is not a seal";
+      if (keep.checked) {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({ sha256: digest, sample: obj }));
+        } catch (e) {
+          store.textContent = "Device store refused the write.";
+          return;
+        }
+      }
+      renderStore();
+    });
+  });
+
+  document.getElementById("clear").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    out.textContent = "No sample hashed.";
+    keep.checked = false;
+    renderStore();
+  });
+
+  renderStore();
+})();
+</script>
+</body>
+</html>

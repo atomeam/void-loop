@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raw mark is not an aim — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e6;
+      --line: #c9c0b0;
+      --hold: #6e2e2a;
+      --muted: #5e584e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3ecdf;
+        --paper: #161410;
+        --line: #3a342c;
+        --hold: #e3b2a4;
+        --muted: #b7ad9e;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 ui-sans-serif, system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+    p { margin: 0.4rem 0; }
+    .meta, .note { color: var(--muted); font-size: 0.92rem; }
+    .status {
+      display: inline-block;
+      border: 1px solid var(--hold);
+      color: var(--hold);
+      padding: 0.1rem 0.45rem;
+      font: 0.78rem/1.4 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+    }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 1rem 0;
+      padding: 0.8rem;
+    }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea, input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      background: transparent;
+      color: inherit;
+      border: 1px dashed var(--line);
+    }
+    textarea { min-height: 4.5rem; }
+    .scratch { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .lane {
+      border: 1px solid var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+      margin: 0.6rem 0 1rem;
+    }
+    .lane strong { display: block; font-size: 0.85rem; }
+    .empty { color: var(--muted); }
+    button {
+      font: inherit;
+      background: transparent;
+      color: inherit;
+      border: 1px solid var(--ink);
+      padding: 0.35rem 0.7rem;
+    }
+    button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--hold);
+      outline-offset: 2px;
+    }
+    #receipt {
+      font: 0.85rem/1.4 ui-monospace, monospace;
+      white-space: pre-wrap;
+      border-top: 1px solid var(--line);
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+    }
+    @media (max-width: 36rem) { .scratch { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">drafts/119-local-raw-not-aim · not a seal · not live copy</p>
+    <h1>Raw mark is not an aim</h1>
+    <p><span class="status" id="status">unattested</span></p>
+    <p class="note">A sealed raw class hashes to an aim-refusal id. The aim sentence and any coordinate or device number are discarded and are not in the hash. A raw mark is not an aim and not a gaze trace.</p>
+
+    <fieldset>
+      <legend>Raw class</legend>
+      <label><input type="radio" name="cls" value="withheld" checked> withheld</label>
+      <label><input type="radio" name="cls" value="raw-update"> raw-update</label>
+      <label><input type="radio" name="cls" value="session-unidentified"> session-unidentified</label>
+      <label><input type="radio" name="cls" value="abstain"> abstain</label>
+    </fieldset>
+    <p class="note">Opt-in is this radio. It is not a camera grant and not a pointer listener.</p>
+
+    <label for="aim">Aim sentence (discarded on seal, never hashed)</label>
+    <textarea id="aim" autocomplete="off" spellcheck="false" placeholder="Type a sentence you do not want sealed."></textarea>
+
+    <div class="scratch">
+      <div>
+        <label for="coords">Coordinate scratch (discarded, never hashed)</label>
+        <input id="coords" type="text" autocomplete="off" inputmode="text" placeholder="not read from a pointer">
+      </div>
+      <div>
+        <label for="device">Device-number scratch (discarded, never hashed)</label>
+        <input id="device" type="text" autocomplete="off" inputmode="text" placeholder="not a persistentDeviceId">
+      </div>
+    </div>
+    <p class="note" id="discard">Discard well empty.</p>
+
+    <div class="lane" id="raw-lane" aria-label="Raw lane"><strong>Raw lane</strong><span class="empty">no class</span></div>
+    <p class="note">No aim control. No dwell. No gaze trace. A class label does not fill a coordinate.</p>
+
+    <p><button type="button" id="seal">Seal raw class</button></p>
+    <div id="receipt" aria-live="polite">No seal yet. Status remains unattested.</div>
+  </main>
+  <script>
+    const PRE = "void-raw-not-aim|v1|class=";
+    const SUF = "|status=unattested";
+    const receipt = document.getElementById("receipt");
+    const aim = document.getElementById("aim");
+    const coords = document.getElementById("coords");
+    const device = document.getElementById("device");
+    const discard = document.getElementById("discard");
+    const lane = document.getElementById("raw-lane");
+
+    function selected() {
+      const node = document.querySelector('input[name="cls"]:checked');
+      return node ? node.value : "withheld";
+    }
+
+    function paint(cls) {
+      if (cls === "withheld") {
+        lane.innerHTML = "<strong>Raw lane</strong><span class=\"empty\">no class</span>";
+        return;
+      }
+      lane.innerHTML = "<strong>Raw lane</strong><span>" + cls + " only</span>";
+    }
+
+    async function sha16(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+    }
+
+    document.getElementById("seal").addEventListener("click", async () => {
+      const cls = selected();
+      const sentence = aim.value;
+      const coordScratch = coords.value;
+      const deviceScratch = device.value;
+      aim.value = "";
+      coords.value = "";
+      device.value = "";
+      const had = sentence.trim() || coordScratch.trim() || deviceScratch.trim();
+      discard.textContent = had
+        ? "Aim sentence, coordinates, and device number discarded. Not in the preimage."
+        : "Discard well empty. Nothing entered the preimage.";
+      paint(cls);
+      const preimage = PRE + cls + SUF;
+      const id = await sha16(preimage);
+      receipt.textContent =
+        "status: unattested\n" +
+        "aim-refusal id: " + id + "\n" +
+        "preimage: " + preimage + "\n" +
+        "aim sentence in hash: no\n" +
+        "coordinates in hash: no\n" +
+        "device number in hash: no\n" +
+        "gaze trace: refused\n" +
+        "pointer listener: absent";
+    });
+  </script>
+</body>
+</html>

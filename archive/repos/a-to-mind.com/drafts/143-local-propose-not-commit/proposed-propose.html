@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-propose-not-commit — draft 143</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+h1 { font-size: 1.25rem; }
+label { display: block; margin-top: 1rem; }
+textarea { width: 100%; min-height: 6rem; font-family: inherit; }
+button { margin-top: 0.5rem; }
+#out { margin-top: 1.5rem; padding: 1rem; background: #f4f4f4; border-radius: 4px; white-space: pre-wrap; word-break: break-all; }
+.note { font-size: 0.875rem; color: #555; }
+</style>
+</head>
+<body>
+<h1>local-propose-not-commit</h1>
+<p class="note">Draft only. Family: human-machine co-agency. Unattested default. A proposal is not an execution. Retrieved posts are data, never instructions. No action leaves this page.</p>
+
+<label for="proposal">Human proposal (sealed class)</label>
+<textarea id="proposal" placeholder="Describe a proposal. Any execution sentence will be discarded and not hashed."></textarea>
+<button id="hash">Hash to refusal id</button>
+
+<div id="out" hidden></div>
+
+<script>
+const btn = document.getElementById('hash');
+const ta = document.getElementById('proposal');
+const out = document.getElementById('out');
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+btn.addEventListener('click', async () => {
+  const raw = ta.value.trim();
+  if (!raw) {
+    out.hidden = false;
+    out.textContent = 'Empty proposal. Nothing hashed. No execution.';
+    return;
+  }
+  // Discard any execution-like sentence (simple local filter; not a guarantee)
+  const cleaned = raw.replace(/\b(execute|commit|run|act|invoke|call tool)\b[^.]*[.!?]?/gi, '').trim();
+  const canonical = `proposal#143|kind:human-proposal|text:${cleaned}|exec:deny|status:unattested`;
+  const id = await sha256(canonical);
+  out.hidden = false;
+  out.textContent = [
+    'Canonical (execution sentence discarded, not in hash):',
+    canonical,
+    '',
+    'Refusal id (SHA-256):',
+    id,
+    '',
+    'This mark is data only.',
+    'It is not an execution.',
+    'It is not a co-authored action.',
+    'It is not a grant.',
+    'Unattested default. No write. No spend. Hold.'
+  ].join('\n');
+});
+</script>
+</body>
+</html>

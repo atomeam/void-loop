@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 043 — subprocessors (not published)</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --muted: #57534e; --line: #d6d3d1; --bg: #fafaf9; --hold: #92400e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --muted: #a8a29e; --line: #44403c; --bg: #1c1917; --hold: #fbbf24; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.5rem; line-height: 1.25; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    code, pre { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    pre { overflow: auto; padding: 0.75rem; border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 0.4rem 0.25rem; vertical-align: top; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    button[disabled] { opacity: 0.55; }
+    .banner { border: 1px solid var(--hold); padding: 0.75rem 1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="banner"><strong>Draft, not live.</strong> Queue was empty. This page is not sealed and must not be copied to <code>/subprocessors</code>.</p>
+    <h1>Subprocessors</h1>
+    <p>Status: <strong>unattested</strong>. No row is sealed. That is not a claim that zero processors exist, and it is not a claim that a named vendor is in use.</p>
+    <p class="muted">Article 28 notice is a controller-facing duty under a sealed contract. A public “last updated” line is not that notice. This draft claims no objection window and accepts no subscriber.</p>
+    <h2>Sealed rows</h2>
+    <table>
+      <thead><tr><th>Name</th><th>Purpose</th><th>Data classes</th><th>Row hash</th></tr></thead>
+      <tbody><tr><td colspan="4">None. Do not fill this table from a vendor trust page.</td></tr></tbody>
+    </table>
+    <h2>Denied on this page</h2>
+    <ul>
+      <li>Subscribe form, mailto invent, or “email us to be notified”.</li>
+      <li>SOC 2, ISO, GDPR, or Data Privacy Framework chips.</li>
+      <li>“We may add subprocessors by updating this page.”</li>
+      <li>Scraping Cloudflare, Stripe, or a model host into a row.</li>
+      <li>Void Monthly price or token markup.</li>
+    </ul>
+    <p>Contract: <code id="contract">subprocessors#043|kind:attested-subprocessors|route:absent-until-seal|rows:none|notice-window:unclaimed|subscribe:deny|badges:deny|vendor-scrape:deny|seal:human</code></p>
+    <p>Contract SHA-256: <code id="digest">f6d486162130a9c76ac39f787761a10d6e6c9ac302e1805adcf9e822555de6f3</code></p>
+    <p>
+      <button type="button" id="hold">Hold — record locally only</button>
+      <button type="button" id="seal" disabled>Seal (human only)</button>
+    </p>
+    <p id="hold-out" class="muted" role="status"></p>
+  </main>
+  <script>
+    (function () {
+      var contract = document.getElementById("contract").textContent;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(contract)).then(function (buf) {
+        var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+        document.getElementById("digest").textContent = hex;
+      });
+      document.getElementById("hold").addEventListener("click", function () {
+        var rec = { run: "043", at: new Date().toISOString(), meaning: "hold-is-not-a-seal" };
+        try { sessionStorage.setItem("atm-subprocessors-hold-043", JSON.stringify(rec)); } catch (e) {}
+        document.getElementById("hold-out").textContent = "Hold stored in this tab only. It does not publish a row.";
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+{
+ "chain:learn": {
+  "meanEaten": 85.6,
+  "meanDoors": 3,
+  "rows": [
+   92,
+   87,
+   90,
+   75,
+   84
+  ]
+ },
+ "chain:straight": {
+  "meanEaten": 1,
+  "meanDoors": 0.2,
+  "rows": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ "ring:learn": {
+  "meanEaten": 130,
+  "meanDoors": 4.4,
+  "rows": [
+   139,
+   122,
+   137,
+   122,
+   130
+  ]
+ },
+ "ring:straight": {
+  "meanEaten": 159.2,
+  "meanDoors": 6,
+  "rows": [
+   168,
+   161,
+   165,
+   153,
+   149
+  ]
+ },
+ "zigzag:learn": {
+  "meanEaten": 74,
+  "meanDoors": 4,
+  "rows": [
+   83,
+   93,
+   50,
+   94,
+   50
+  ]
+ },
+ "zigzag:straight": {
+  "meanEaten": 1.2,
+  "meanDoors": 0.4,
+  "rows": [
+   2,
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ "moveWindow": {
+  "eatenBefore6000": 33,
+  "eatenAfter6000": 39,
+  "surprises": 2,
+  "doorsBefore": [
+   "0|1",
+   "1|2",
+   "2|3"
+  ],
+  "doorsAfter": [
+   "1|2",
+   "2|3",
+   "0|1"
+  ],
+  "forgets": 2
+ }
+}

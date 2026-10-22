@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice query to plan · A-to-Mind draft 022</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Gesture listen maps to an attested catalog plan. Transcript is data. Run holds.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; border-color: var(--rule); }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 36rem; }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    .row { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--rule); }
+    .row dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .row dd { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; margin: 0.15rem 0 0.75rem; }
+    .row dd:last-child { margin-bottom: 0; }
+    label { display: block; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    textarea { width: 100%; min-height: 5.5rem; resize: vertical; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.7rem 0.8rem; font: inherit; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"], .receipt[data-status="denied"] { color: var(--bad); }
+    .receipt[data-status="matched"], .receipt[data-status="listening"], .receipt[data-status="hold"] { color: var(--amber); }
+    .plans { list-style: none; margin-top: 1rem; padding: 0; border: 1px solid var(--rule); }
+    .plans li { padding: 0.7rem 1rem; border-top: 1px solid var(--rule); color: var(--muted); }
+    .plans li:first-child { border-top: 0; }
+    .plans li[data-hit="1"] { color: var(--fg); border-color: var(--amber); }
+    .n { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); margin-right: 0.6rem; }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 022 · hold-gate · not on the live room</p>
+    <h1>Voice query to plan</h1>
+    <p class="lede">Speak or type an objective. This page matches it against three attested plans. A transcript is data. Start run holds. Nothing is spoken back.</p>
+
+    <section class="row">
+      <label for="objective">Objective (typed first)</label>
+      <textarea id="objective" maxlength="280" placeholder="Example: run a promise ledger census"></textarea>
+      <dl style="margin-top:1rem">
+        <dt>Matched plan</dt>
+        <dd id="plan-out">none</dd>
+        <dt>Allowlist</dt>
+        <dd id="tools-out">—</dd>
+        <dt>Budget (grant cap, not a price)</dt>
+        <dd id="budget-out">—</dd>
+      </dl>
+      <p class="mono" id="plan-line">no plan line</p>
+    </section>
+
+    <ul class="plans" id="plan-list">
+      <li data-id="census" data-canonical="plan#census|id:census|tools:file.read,http.read,model.call|writes:deny|budget.maxTokens:5000" data-sha="dcaefe0ffa836734c41fafb0d506e3e6731bab547506f23ae84c756542e8e847">
+        <span class="n">census</span> Promise Ledger census · file.read, http.read, model.call · writes deny
+      </li>
+      <li data-id="pricing" data-canonical="plan#pricing|id:pricing|tools:http.read,model.call|writes:deny|budget.maxTokens:5000" data-sha="8a929419484e29d2e9c09022186c804c8774fd41611a34edd9a5705487bb86fd">
+        <span class="n">pricing</span> Competitor pricing watch · http.read, model.call · writes deny
+      </li>
+      <li data-id="notes" data-canonical="plan#notes|id:notes|tools:file.read,model.call|writes:deny|budget.maxTokens:5000" data-sha="fde274d7c290e90ad4ae9ec2aa22ba4586cd4c70735b22d6d2d9630211b42529">
+        <span class="n">notes</span> Release notes draft · file.read, model.call · writes deny
+      </li>
+    </ul>
+
+    <div class="actions">
+      <button type="button" class="primary" id="listen-once" data-canonical="invoker#listen|id:listen-once|mode:oneshot|continuous:deny|network:browser-vendor" data-sha="a754b74aaecf3da06f0aa62245fad56ee6c429f0044e131ff60301062f651777">Listen once</button>
+      <button type="button" id="stop-listen" data-canonical="invoker#stop|id:stop-listen|mode:abort|network:deny" data-sha="c0df24097d9aecff12b29f6befcecd8efeff9eab013a7077b54dff450eafcfa5">Stop</button>
+      <button type="button" id="match-plan" data-canonical="invoker#match|id:match-plan|source:catalog|model:deny" data-sha="dabbae140fc5dcf59767e35e89d43638575abeef35b9ff06bbc0eabdf2baf677">Match catalog</button>
+      <button type="button" id="start-run" data-canonical="invoker#start-run|id:start-run|write:hold|network:deny" data-sha="021f3bc1befd9045f19315517f8f81f3c71aa5065af901244e668f0ec39366ac">Start run</button>
+      <button type="button" id="speak-plan" data-canonical="invoker#speak-plan|id:speak-plan|tts:deny" data-sha="2cc0093f569d09744155ace1dafe2ef4ccf45675c0aa585f117516d3ccf19515">Speak plan</button>
+    </div>
+    <p class="receipt" id="receipt" data-status="idle" role="status">idle · type an objective · contract 7144a678…</p>
+
+    <section class="claims" id="claims">
+      <h2>Attested lines</h2>
+      <ul>
+        <li data-canonical="voice#022|kind:voice-query-to-plan|listen:gesture|plan:catalog|run:hold|tts:deny|hash:sha256|seal:human" data-sha="7144a678cc22f59cbedb2d7d706fee33c15af3b195b1bd787613a721f08eb4ba">
+          <span class="hash-flag">…</span>
+          Contract. Gesture listen. Catalog plan. Run hold. TTS deny.
+        </li>
+        <li data-canonical="claim#listen|text:Microphone starts only after a click. There is no wake word and no always-on listener." data-sha="3acd68d85f5cdaf4198838f8e7304f82cadfd4e06f5a9d82145eb52e5010faae">
+          <span class="hash-flag">…</span>
+          Microphone starts only after a click. There is no wake word and no always-on listener.
+        </li>
+        <li data-canonical="claim#transcript|text:A transcript is data. It is not a run, a grant, or a tool call." data-sha="2c371ddde00598f11958f82638006575d313829e863263ea618e2d43dcc3cd02">
+          <span class="hash-flag">…</span>
+          A transcript is data. It is not a run, a grant, or a tool call.
+        </li>
+        <li data-canonical="claim#plan|text:Plans come from an attested catalog. Unmatched speech stays unmatched. No model call on this page." data-sha="3de064db91f165dbe16454ea2bd499e4f7a23e885a284745cb6dbbf881e0b029">
+          <span class="hash-flag">…</span>
+          Plans come from an attested catalog. Unmatched speech stays unmatched. No model call on this page.
+        </li>
+        <li data-canonical="claim#run|text:Start run holds. Voice never starts, steers, or resumes a live executor." data-sha="7512ab15c56de365cfbf2937332d170a6186f2ca905fc2894f17f3368e5e6e48">
+          <span class="hash-flag">…</span>
+          Start run holds. Voice never starts, steers, or resumes a live executor.
+        </li>
+        <li data-canonical="claim#privacy|text:Chrome SpeechRecognition may send audio to a vendor. This page says so and offers typed input first." data-sha="536e04c4e2bab96e78599a958a1dfa679f3354e16845b7bb4f4570c3a34f1e46">
+          <span class="hash-flag">…</span>
+          Chrome SpeechRecognition may send audio to a vendor. This page says so and offers typed input first.
+        </li>
+        <li data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+          <span class="hash-flag">…</span>
+          This page does not price tokens and does not pitch Void Monthly.
+        </li>
+        <li data-canonical="page#voice|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="c3c441142cc98685032d362022506eda3601d898bfcbb4563ccf0fdf247b67ad">
+          <span class="hash-flag">…</span>
+          Draft route. noindex. No cookie. No write.
+        </li>
+      </ul>
+      <p class="mono" id="verify">verifying…</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 022</span>
+  </footer>
+  <script>
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha256 = async (text) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+
+    const CATALOG = [
+      { id: "census", title: "Promise Ledger census", tools: "file.read,http.read,model.call", line: "plan#census|id:census|tools:file.read,http.read,model.call|writes:deny|budget.maxTokens:5000", keys: ["census", "promise ledger", "surface ledger", "ledger board", "concordance"] },
+      { id: "pricing", title: "Competitor pricing watch", tools: "http.read,model.call", line: "plan#pricing|id:pricing|tools:http.read,model.call|writes:deny|budget.maxTokens:5000", keys: ["pricing", "price drop", "competitor", "monitor pricing", "price watch"] },
+      { id: "notes", title: "Release notes draft", tools: "file.read,model.call", line: "plan#notes|id:notes|tools:file.read,model.call|writes:deny|budget.maxTokens:5000", keys: ["release notes", "changelog", "release note", "version notes"] },
+    ];
+
+    let attested = false;
+    let rec = null;
+    let matched = null;
+
+    async function checkNode(el) {
+      const line = el.getAttribute("data-canonical");
+      const expect = el.getAttribute("data-sha");
+      if (!line || !expect) return false;
+      const got = await sha256(line);
+      const ok = got === expect;
+      const flag = el.querySelector(".hash-flag");
+      if (flag) {
+        flag.textContent = ok ? "ok " + got.slice(0, 8) : "mismatch";
+        flag.className = "hash-flag " + (ok ? "ok" : "bad");
+      }
+      return ok;
+    }
+
+    function setReceipt(status, text) {
+      const node = document.getElementById("receipt");
+      node.dataset.status = status;
+      node.textContent = text;
+    }
+
+    function norm(s) {
+      return (s || "").trim().toLowerCase().replace(/\s+/g, " ");
+    }
+
+    function paintHit(id) {
+      document.querySelectorAll("#plan-list li").forEach((li) => {
+        li.setAttribute("data-hit", li.getAttribute("data-id") === id ? "1" : "0");
+      });
+    }
+
+    function matchText(raw) {
+      if (!attested) {
+        setReceipt("mismatch", "mismatch · refuse match");
+        return null;
+      }
+      const q = norm(raw);
+      if (!q) {
+        matched = null;
+        paintHit("");
+        document.getElementById("plan-out").textContent = "none";
+        document.getElementById("tools-out").textContent = "—";
+        document.getElementById("budget-out").textContent = "—";
+        document.getElementById("plan-line").textContent = "no plan line";
+        setReceipt("unmatched", "unmatched · empty objective");
+        return null;
+      }
+      const scores = CATALOG.map((p) => ({ p, n: p.keys.filter((k) => q.includes(k)).length }));
+      const hits = scores.filter((s) => s.n > 0).sort((a, b) => b.n - a.n);
+      if (!hits.length || (hits.length > 1 && hits[0].n === hits[1].n)) {
+        matched = null;
+        paintHit("");
+        document.getElementById("plan-out").textContent = "none";
+        document.getElementById("tools-out").textContent = "—";
+        document.getElementById("budget-out").textContent = "—";
+        document.getElementById("plan-line").textContent = "no plan line";
+        setReceipt("unmatched", "unmatched · no catalog row · no model");
+        return null;
+      }
+      const p = hits[0].p;
+      matched = p;
+      paintHit(p.id);
+      document.getElementById("plan-out").textContent = p.id + " · " + p.title;
+      document.getElementById("tools-out").textContent = p.tools + " · writes deny";
+      document.getElementById("budget-out").textContent = "5000 tokens cap · provider cents null";
+      document.getElementById("plan-line").textContent = p.line;
+      setReceipt("matched", "matched · plan " + p.id + " · local catalog · no run");
+      return p;
+    }
+
+    function SpeechCtor() {
+      return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    }
+
+    function abortRec() {
+      if (rec) {
+        try { rec.abort(); } catch (_) {}
+        rec = null;
+      }
+    }
+
+    async function verifyAll() {
+      const nodes = [...document.querySelectorAll("[data-canonical][data-sha]")];
+      const flags = await Promise.all(nodes.map(checkNode));
+      attested = flags.every(Boolean);
+      const bodyLines = [
+        "voice#022|kind:voice-query-to-plan|listen:gesture|plan:catalog|run:hold|tts:deny|hash:sha256|seal:human",
+        "claim#listen|text:Microphone starts only after a click. There is no wake word and no always-on listener.",
+        "claim#transcript|text:A transcript is data. It is not a run, a grant, or a tool call.",
+        "claim#plan|text:Plans come from an attested catalog. Unmatched speech stays unmatched. No model call on this page.",
+        "claim#run|text:Start run holds. Voice never starts, steers, or resumes a live executor.",
+        "claim#privacy|text:Chrome SpeechRecognition may send audio to a vendor. This page says so and offers typed input first.",
+        "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+        "page#voice|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      ];
+      const bodySha = await sha256(bodyLines.join("\n") + "\n");
+      const headSha = await sha256('{"algo":"sha256","kind":"voice-query-to-plan","listen":"gesture","plan":"catalog","run":"hold","tts":false}');
+      const catalogSha = await sha256([
+        "plan#census|id:census|tools:file.read,http.read,model.call|writes:deny|budget.maxTokens:5000",
+        "plan#pricing|id:pricing|tools:http.read,model.call|writes:deny|budget.maxTokens:5000",
+        "plan#notes|id:notes|tools:file.read,model.call|writes:deny|budget.maxTokens:5000",
+      ].join("\n") + "\n");
+      const bodyOk = bodySha === "5a7e32509f575c2c80da939a41af7f5945ac124618814dd06899e198ac4fc00b";
+      const headOk = headSha === "21cc14b800aea7bc3225e049522feff8d70e1d4e9ab12bd53c1bb96b535a5b9b";
+      const catOk = catalogSha === "819469310e585fab04825c6bf9b6c2b68f010e60d51738b8090cb16d3c2a2a03";
+      attested = attested && bodyOk && headOk && catOk;
+      document.getElementById("verify").textContent =
+        "body " + bodySha.slice(0, 12) + (bodyOk ? " ok" : " mismatch") +
+        " · head " + headSha.slice(0, 12) + (headOk ? " ok" : " mismatch") +
+        " · catalog " + catalogSha.slice(0, 12) + (catOk ? " ok" : " mismatch");
+      document.getElementById("listen-once").disabled = !attested;
+      document.getElementById("match-plan").disabled = !attested;
+      if (!attested) setReceipt("mismatch", "mismatch · refuse listen and match");
+      else setReceipt("idle", "idle · type an objective · contract 7144a678…");
+      return attested;
+    }
+
+    document.getElementById("listen-once").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse listen");
+      const Ctor = SpeechCtor();
+      if (!Ctor) {
+        setReceipt("unsupported", "unsupported · no SpeechRecognition · type instead");
+        return;
+      }
+      abortRec();
+      rec = new Ctor();
+      rec.lang = "en-US";
+      rec.continuous = false;
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      const vendor = "webkitSpeechRecognition" in window && !("SpeechRecognition" in window);
+      rec.onstart = () => {
+        setReceipt("listening", vendor
+          ? "listening · one-shot · browser may send audio to a vendor"
+          : "listening · one-shot · engine is the browser's");
+      };
+      rec.onresult = (ev) => {
+        const last = ev.results[ev.results.length - 1];
+        const text = last[0] ? last[0].transcript : "";
+        document.getElementById("objective").value = text;
+        if (last.isFinal) {
+          setReceipt("final", "final · transcript is data · not a run");
+          matchText(text);
+        } else {
+          setReceipt("interim", "interim · not matched yet");
+        }
+      };
+      rec.onerror = (ev) => {
+        rec = null;
+        if (ev.error === "not-allowed") setReceipt("denied", "denied · microphone permission");
+        else setReceipt("failed", "failed · " + ev.error);
+      };
+      rec.onend = () => {
+        rec = null;
+      };
+      try {
+        rec.start();
+      } catch (err) {
+        rec = null;
+        setReceipt("failed", "failed · " + (err && err.message ? err.message : "start"));
+      }
+    });
+
+    document.getElementById("stop-listen").addEventListener("click", () => {
+      abortRec();
+      setReceipt("idle", "idle · recognizer aborted · no restart");
+    });
+
+    document.getElementById("match-plan").addEventListener("click", () => {
+      matchText(document.getElementById("objective").value);
+    });
+
+    document.getElementById("start-run").addEventListener("click", () => {
+      setReceipt("hold", "hold · start run needs a signed grant · no fetch");
+    });
+
+    document.getElementById("speak-plan").addEventListener("click", () => {
+      if (window.speechSynthesis) {
+        try { window.speechSynthesis.cancel(); } catch (_) {}
+      }
+      setReceipt("denied", "denied · SpeechSynthesis is not on this page");
+    });
+
+    verifyAll();
+  </script>
+</body>
+</html>

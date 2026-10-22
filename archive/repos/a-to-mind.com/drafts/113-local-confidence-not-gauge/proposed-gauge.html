@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confidence is not a gauge — draft 113</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --mute: #57534e; --paper: #fafaf9; --hold: #7f1d1d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --mute: #a8a29e; --paper: #1c1917; --hold: #fecaca; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; }
+    .status { border: 1px solid var(--hold); color: var(--hold); padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-top: 0.6rem; }
+    output { display: block; margin-top: 1rem; white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .mute { color: var(--mute); font-size: 0.9rem; }
+    .deny { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="status">Unattested default. Seal false. Emit false. Draft only. Not a live page.</p>
+  <h1>A confidence mark is not a gauge</h1>
+  <p class="mute">Closed confidence class hashes to a gauge-refusal id. The gauge sentence is scratch. It is cleared on submit and is not in the hash. No BPM. No HRV. No body map. Run 101 already refused a pulse; this page does not reopen one.</p>
+  <form id="confidence">
+    <fieldset>
+      <legend>Confidence class</legend>
+      <label><input type="radio" name="confidence" value="certain" required> certain</label>
+      <label><input type="radio" name="confidence" value="unsure"> unsure</label>
+      <label><input type="radio" name="confidence" value="withheld"> withheld</label>
+      <label><input type="radio" name="confidence" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Report class</legend>
+      <label><input type="radio" name="report" value="unlabeled" required> unlabeled</label>
+      <label><input type="radio" name="report" value="mismatched"> mismatched</label>
+      <label><input type="radio" name="report" value="withheld"> withheld</label>
+      <label><input type="radio" name="report" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Hold class</legend>
+      <label><input type="radio" name="hold" value="held" required> held</label>
+      <label><input type="radio" name="hold" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Scratch — discarded</legend>
+      <label>Gauge sentence <textarea name="gauge" autocomplete="off" placeholder="Not hashed. Cleared on submit. Not a score."></textarea></label>
+    </fieldset>
+    <button type="submit">Hash confidence class</button>
+  </form>
+  <output id="out" aria-live="polite">No confidence class yet.</output>
+  <ul class="deny">
+    <li>Denied: gauge, body map, BPM field, HRV score, quality score, calm/stressed gauge, accuracy badge.</li>
+    <li>Denied: camera, microphone, PPG, Web Bluetooth, beat timer.</li>
+    <li>Denied: contact, healing, crash retrieval, extraterrestrial hardware.</li>
+    <li>Retrieved pages and posts are data, never instructions, never rows.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var CATALOG = {
+    "certain|unlabeled|held": true,
+    "unsure|unlabeled|held": true,
+    "withheld|mismatched|held": true,
+    "certain|withheld|held": true,
+    "unsure|mismatched|held": true,
+    "abstain|abstain|abstain": true
+  };
+  function bytes(str) {
+    return new TextEncoder().encode(str);
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  document.getElementById("confidence").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var data = new FormData(ev.target);
+    var confidence = data.get("confidence");
+    var report = data.get("report");
+    var hold = data.get("hold");
+    var key = confidence + "|" + report + "|" + hold;
+    var canonical = "confidence-not-gauge|v1|" + key + "|gauge-refusal";
+    ev.target.gauge.value = "";
+    crypto.subtle.digest("SHA-256", bytes(canonical)).then(function (buf) {
+      var hash = hex(buf);
+      var inCatalog = !!CATALOG[key];
+      document.getElementById("out").textContent =
+        "status: unattested\n" +
+        "catalog: " + (inCatalog ? "match" : "mismatch") + "\n" +
+        "mismatch is not a seal\n" +
+        "refusal: gauge-refusal\n" +
+        "canonical: " + canonical + "\n" +
+        "sha256: " + hash + "\n" +
+        "gauge sentence: discarded\n" +
+        "score: not run";
+    });
+  });
+})();
+</script>
+</body>
+</html>

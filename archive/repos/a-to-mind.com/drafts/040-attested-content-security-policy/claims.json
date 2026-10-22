@@ -1,0 +1,97 @@
+{
+  "status": "candidate",
+  "hold": true,
+  "slug": "attested-content-security-policy",
+  "run": "040",
+  "date": "2026-10-01",
+  "issue": "https://github.com/atomeam/a-to-mind.com/issues/40",
+  "live_header": false,
+  "report_only": false,
+  "algo": "sha256",
+  "head": "449d0ca1804f60f67c562c0c2b748bb35b63a4d41563e82b597b86bf29068a2a",
+  "body": "b0f07249821bafd153de5a921e07e78b0e984d931ee7e83dc322a47656385433",
+  "policy_sha256": "68be0208ed6d35e497d80057e39eab20dd30878941c9a5ada4e21413013df0d9",
+  "policy": "default-src 'none'; base-uri 'none'; object-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; frame-ancestors 'none'; form-action 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; child-src 'none'",
+  "lines": [
+    {
+      "id": "csp#040",
+      "sha256": "dc1383fe2e1adb6ce74ef3794f5c12b654d3db29e0e99424fa934e34559947f6",
+      "text": "csp#040|kind:attested-content-security-policy|header:absent-until-seal|default-src:none|unsafe-inline:deny|report:deny|hash:sha256|seal:human"
+    },
+    {
+      "id": "claim#absent",
+      "sha256": "ff4279af74bda2732fabd122c936b45fd6264bef940d2838861760e2d3c2d9c6",
+      "text": "claim#absent|text:No Content-Security-Policy response header until a human seals the exact header bytes."
+    },
+    {
+      "id": "claim#report-only",
+      "sha256": "be8def681c456ff8655b85b6f5583fc7c110f0c96f6fe5560f96381aa68012b8",
+      "text": "claim#report-only|text:Content-Security-Policy-Report-Only is absent. Report-only is not enforcement and is not a badge."
+    },
+    {
+      "id": "claim#none",
+      "sha256": "2b726793e761114a2bc427a94dcf816c99f7e51415251fef628f280e1a0d3a40",
+      "text": "claim#none|text:The candidate policy is default-src none. It is not a self allowlist and it is not a grant to load scripts."
+    },
+    {
+      "id": "claim#unsafe",
+      "sha256": "dff0c400aa43d5ada81a4949e65c0df5564fd753c254ed4d21fe8ae9d67bd639",
+      "text": "claim#unsafe|text:unsafe-inline, unsafe-eval, unsafe-hashes, and strict-dynamic are denied."
+    },
+    {
+      "id": "claim#star",
+      "sha256": "052c464e56ceafb3a80a8f6c05c1004f3de96efffcdaaa4780ee6efe8b0bce1c",
+      "text": "claim#star|text:Star, https, data, blob, and localhost sources are denied."
+    },
+    {
+      "id": "claim#nonce",
+      "sha256": "94c81c2208cebf63bc468230b247db703fb4b7e1e7208adecb899ff6af3a429c",
+      "text": "claim#nonce|text:A nonce is denied. A static file cannot mint a per-response nonce."
+    },
+    {
+      "id": "claim#meta",
+      "sha256": "4e153d78b3e034fa030a5e599bc366da43f03bd18eba9935aac7843d756887a7",
+      "text": "claim#meta|text:A meta tag is not this header. frame-ancestors, report-uri, and sandbox do not apply in meta."
+    },
+    {
+      "id": "claim#report",
+      "sha256": "5d6e58c0b4d05ed8986d339c7da7b8442f74118d0ed698ac9a76c2a34154efe6",
+      "text": "claim#report|text:report-uri and report-to are denied. Violation reports are not sent."
+    },
+    {
+      "id": "claim#ancestors",
+      "sha256": "7d14ce4627b34e1beda08f3d639b1b40942b3624558007b33ff4d79726cc4350",
+      "text": "claim#ancestors|text:frame-ancestors none is in the candidate bytes only. It is not live until the header is sealed."
+    },
+    {
+      "id": "claim#base",
+      "sha256": "0a02e1dec7197590edef3e0b0763c030f1d0c3e318e9a6e16122e8f0c95c54a1",
+      "text": "claim#base|text:base-uri none and object-src none are in the candidate bytes. An injected base tag is not a grant."
+    },
+    {
+      "id": "claim#script",
+      "sha256": "24ee3f8be4e42f0078725de0669c1ea60aec0602e0988b0eddced18bd1c1e74b",
+      "text": "claim#script|text:script-src none. The preview verifier is not covered and must not be required to read the page."
+    },
+    {
+      "id": "claim#style",
+      "sha256": "226e91328caac3cd3ef0fa0ce4f7881ea8747417f5665c985b8fcc3fe5fc0f2a",
+      "text": "claim#style|text:style-src none. Inline style on the preview is not a sealed exception."
+    },
+    {
+      "id": "claim#self",
+      "sha256": "fd05eef6fe2781c739fdd39bcb5acf26ad7567045d696fc5ec65c8369a28e82d",
+      "text": "claim#self|text:self is denied until a human names the document and the directive."
+    },
+    {
+      "id": "claim#tokens",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50",
+      "text": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly."
+    },
+    {
+      "id": "page#csp",
+      "sha256": "c6538dea77ea43603c2b16d3e491bef7ebdb144cc88d82692c0b6bf7062e8b14",
+      "text": "page#csp|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny"
+    }
+  ]
+}

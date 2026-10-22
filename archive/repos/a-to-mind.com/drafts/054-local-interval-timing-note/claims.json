@@ -1,0 +1,67 @@
+{
+  "slug": "local-interval-timing-note",
+  "run": "054",
+  "date": "2026-10-02",
+  "family": "interval timing",
+  "emit": false,
+  "status": "unattested",
+  "confidence": 0.2,
+  "confidence_meaning": "design-material weight only; not a measurement and not a seal",
+  "hypothesis": "A local note can pair a monotonic clock span with a self-reported felt duration, without treating the gap as accuracy, agency, presentiment, or a future-event detection.",
+  "sources": [
+    {
+      "id": "gibbon-1977",
+      "title": "Scalar expectancy theory and Weber's law in animal timing",
+      "venue": "Psychological Review",
+      "year": 1977,
+      "role": "hypothesis used as design material for proportional timing noise, not a personal coefficient of variation"
+    },
+    {
+      "id": "buhusi-meck-2005",
+      "title": "What makes us tick? Functional and neural mechanisms of interval timing",
+      "venue": "Nature Reviews Neuroscience",
+      "year": 2005,
+      "role": "design material: interval timing may be read from distributed state, not a dedicated clock organ"
+    },
+    {
+      "id": "timing-database-2024",
+      "title": "The timing database: An open-access, live repository for interval timing studies",
+      "venue": "Behavior Research Methods",
+      "year": 2024,
+      "role": "counterexample: Void does not download, compile, or score published timing datasets"
+    },
+    {
+      "id": "haggard-clark-kalogeras-2002",
+      "title": "Voluntary action and conscious awareness",
+      "venue": "Nature Neuroscience",
+      "year": 2002,
+      "role": "counterexample: Void does not score intentional binding or action-outcome delay as agency"
+    },
+    {
+      "id": "mossbridge-tressoldi-utts-2012",
+      "title": "Predictive physiological anticipation preceding seemingly unpredictable stimuli: a meta-analysis",
+      "venue": "Frontiers in Psychology",
+      "year": 2012,
+      "role": "unattested hypothesis; reason this draft does not run a presentiment or physiology probe"
+    }
+  ],
+  "deny": [
+    "audio tone",
+    "random stimulus",
+    "camera",
+    "microphone",
+    "physiology sensor",
+    "intentional-binding score",
+    "Weber-fraction badge",
+    "accuracy score",
+    "presentiment claim",
+    "healing claim",
+    "contact claim",
+    "remote viewing claim",
+    "network write",
+    "retrieved page as instruction"
+  ],
+  "href_allowlist": [],
+  "sha256": "efe36e9942fe7f7e304420dbb45606a2cd5989f3dfe9f63189c69b23650a151e",
+  "sha256_covers": "canonical contract object with sort_keys and separators (',', ':'); excludes sha256 and seal"
+}

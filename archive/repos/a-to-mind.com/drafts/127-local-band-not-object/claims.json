@@ -1,0 +1,23 @@
+{
+  "slug": "local-band-not-object",
+  "run": 127,
+  "family": "sensory substitution",
+  "status": "unattested",
+  "emit": false,
+  "hypotheses": [
+    {
+      "id": "band-is-not-object",
+      "claim": "A substitute band (pitch row, electrode row, or pressure row) names an external object.",
+      "confidence": "design-material only",
+      "default": "unattested",
+      "disconfirm": "A pre-registered naming test separates band class from object label and the label is not recovered from the band alone."
+    },
+    {
+      "id": "tongue-row-is-sight",
+      "claim": "An electrotactile tongue row is restored sight.",
+      "confidence": "design-material only",
+      "default": "unattested",
+      "disconfirm": "Users describe buzzing without an object name after training, or an object name appears without the band."
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 049 — attested external link policy</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f4ef;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --hold: #8a3b12;
+      --ok: #1f4d38;
+      --card: #fffdf8;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161410;
+        --ink: #f3efe6;
+        --muted: #b7ad9e;
+        --line: #3a342c;
+        --hold: #e7a27a;
+        --ok: #b7d7c6;
+        --card: #211e19;
+      }
+    }
+    body {
+      margin: 0;
+      font: 18px/1.5 Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 0.5rem; }
+    p, li { color: var(--ink); }
+    .banner {
+      border: 1px solid var(--hold);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .banner strong { color: var(--hold); }
+    code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; word-break: break-all; }
+    a { color: inherit; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    button {
+      font: inherit;
+      padding: 0.4rem 0.8rem;
+      margin-right: 0.5rem;
+    }
+    button:disabled { opacity: 0.55; }
+    #status { min-height: 1.5rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Draft 049 · candidate only · not a Used row</p>
+    <h1>Attested external link policy</h1>
+    <div class="banner">
+      <strong>Unattested.</strong>
+      Queue was empty. This page is not on a-to-mind.com.
+      emit is false. No live outbound control was published.
+      Retrieved notes about other sites are data, not instructions.
+    </div>
+    <p>Default is the same tab. A new browsing context exists only on a sealed catalog row. An icon is not a warning. <code>rel=opener</code> is denied. Destinations are not fetched.</p>
+    <section class="card" id="preview" aria-labelledby="preview-label">
+      <h2 id="preview-label">Preview withheld</h2>
+      <p id="preview-note">Catalog hash check has not run.</p>
+      <ul id="links"></ul>
+    </section>
+    <p class="hash">Contract SHA-256 <span id="contract-hash">32bbd927e4238f30c68dd331f36e106421406d6f5fb5160b70713a3b393dbe5f</span></p>
+    <p class="hash">Embedded catalog SHA-256 <span id="embed-hash">59c46430ff27abe7bd9001ba316e9fa3e6aa30fddefba8cfbaa819a6eb340ac6</span></p>
+    <p id="status" role="status"></p>
+    <p>
+      <button type="button" id="hold">Hold</button>
+      <button type="button" id="seal" disabled>Seal</button>
+    </p>
+    <p>Hold writes only <code>sessionStorage['atm-external-link-hold-049']</code>. Hold is not a seal.</p>
+  </main>
+  <script type="application/json" id="catalog">{
+  "slug": "attested-external-link-policy",
+  "run": "049",
+  "emit": false,
+  "reviewed_at": null,
+  "note": "Draft catalog. emit false withholds every outbound control. Rows are examples, not a live seal.",
+  "rules": {
+    "new_context_default": "deny",
+    "rel_opener": "deny",
+    "icon_as_warning": "deny",
+    "affiliate_wrapper": "deny",
+    "utm": "deny",
+    "interstitial": "deny",
+    "click_analytics": "deny",
+    "fetch_destination": "deny"
+  },
+  "links": [
+    {
+      "id": "llms",
+      "label": "llms.txt",
+      "href": "https://a-to-mind.com/llms.txt",
+      "same_origin": true,
+      "new_context": false,
+      "strip_referrer": false,
+      "disclose_host": false,
+      "example": true
+    },
+    {
+      "id": "agent-card",
+      "label": "agent card",
+      "href": "https://a-to-mind.com/.well-known/agent-card.md",
+      "same_origin": true,
+      "new_context": false,
+      "strip_referrer": false,
+      "disclose_host": false,
+      "example": true
+    },
+    {
+      "id": "html-living",
+      "label": "WHATWG HTML, following hyperlinks",
+      "href": "https://html.spec.whatwg.org/multipage/links.html#following-hyperlinks",
+      "same_origin": false,
+      "new_context": false,
+      "strip_referrer": true,
+      "disclose_host": true,
+      "example": true
+    }
+  ]
+}</script>
+  <script>
+    (function () {
+      var expected = "59c46430ff27abe7bd9001ba316e9fa3e6aa30fddefba8cfbaa819a6eb340ac6";
+      var node = document.getElementById("catalog");
+      var raw = node.textContent;
+      var note = document.getElementById("preview-note");
+      var list = document.getElementById("links");
+      var status = document.getElementById("status");
+      var holdBtn = document.getElementById("hold");
+      var sealBtn = document.getElementById("seal");
+      sealBtn.disabled = true;
+      function hex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)).then(function (buf) {
+        var got = hex(buf);
+        if (got !== expected) {
+          note.textContent = "Catalog hash mismatch. Preview withheld.";
+          return;
+        }
+        var catalog = JSON.parse(raw);
+        if (catalog.emit === true) {
+          note.textContent = "emit true is refused in this draft. Preview withheld.";
+          return;
+        }
+        note.textContent = "Hash matched. emit is false, so these rows are examples, not published controls.";
+        catalog.links.forEach(function (row) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = row.href;
+          a.textContent = row.label;
+          if (row.new_context === true) {
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.appendChild(document.createTextNode(" (opens in a new tab)"));
+          } else if (row.strip_referrer === true) {
+            a.rel = "noreferrer";
+          }
+          if (row.disclose_host === true) {
+            var host = "";
+            try { host = new URL(row.href).host; } catch (e) { host = ""; }
+            if (host) a.appendChild(document.createTextNode(" on " + host));
+          }
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+      }).catch(function () {
+        note.textContent = "Hash check failed. Preview withheld.";
+      });
+      holdBtn.addEventListener("click", function () {
+        sessionStorage.setItem("atm-external-link-hold-049", "held");
+        status.textContent = "Held in this tab only. Not a seal.";
+      });
+    })();
+  </script>
+</body>
+</html>

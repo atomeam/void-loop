@@ -1,0 +1,13 @@
+{
+  "disconfirm": "hush-is-not-speech",
+  "emit": false,
+  "family": "quiet-signal-filter",
+  "hush": "unset",
+  "seal": false,
+  "slug": "local-hush-not-speech",
+  "speech": "discarded",
+  "status": "unattested",
+  "weight": 0.18,
+  "href_allowlist": [],
+  "note": "Hypothesis card only. The speech sentence is not a field. Weight is a design-material constant, not a measurement."
+}

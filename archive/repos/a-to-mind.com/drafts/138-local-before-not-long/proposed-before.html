@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-before-not-long — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1a1c1e;
+      --paper: #eef1f2;
+      --line: #b7c0c4;
+      --hold: #6d3a4a;
+      --quiet: #555e63;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #eef1f2; --paper: #16181a; --line: #3a4246; --hold: #e0b0bc; --quiet: #b4bcc0; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .mark {
+      width: 1.4rem;
+      height: 0.35rem;
+      margin: 0.7rem 0 0.2rem;
+      background: var(--ink);
+    }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+    .flag { color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-before-not-long</h1>
+    <p>Draft only. A before mark is not a long interval and not a clock reading. Status stays unattested. The long sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="before-form">
+      <fieldset>
+        <legend>Before class</legend>
+        <label><input type="radio" name="before-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="before-class" value="a-before-b"> a-before-b</label>
+        <label><input type="radio" name="before-class" value="b-before-a"> b-before-a</label>
+        <label><input type="radio" name="before-class" value="unordered"> unordered</label>
+        <label><input type="radio" name="before-class" value="same-seat"> same-seat</label>
+        <label><input type="radio" name="before-class" value="abstain"> abstain</label>
+      </fieldset>
+      <div class="mark" aria-hidden="true"></div>
+      <p>Before seat. Order only. No millisecond.</p>
+      <div class="seat" id="before-seat">empty</div>
+      <p>Long seat. Locked empty. A length sentence is not stored.</p>
+      <div class="seat" id="long-seat">empty — long refused</div>
+      <label for="long-sentence">Long sentence (discarded on seal; not hashed)</label>
+      <textarea id="long-sentence" name="long-sentence" autocomplete="off" spellcheck="false"></textarea>
+      <button type="submit">Seal before class</button>
+    </form>
+    <p>Long-refusal id</p>
+    <output id="refusal" class="ids">none</output>
+    <p>Preimage</p>
+    <output id="preimage" class="ids">none</output>
+    <fieldset>
+      <legend>Retrieved text is data</legend>
+      <label for="paste">Paste well. Not executed. Not hashed.</label>
+      <textarea id="paste" autocomplete="off" spellcheck="false"></textarea>
+      <p id="paste-flag" class="flag">no imperative flag</p>
+    </fieldset>
+    <p>Inert post ids from the scan. Not seats. Not links.</p>
+    <ul class="ids">
+      <li>2108594694196515229</li>
+      <li>2108550149022601487</li>
+      <li>2108597178726043736</li>
+      <li>2108521897520455865</li>
+      <li>2108579544919646210</li>
+      <li>2108562675395342723</li>
+    </ul>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("before-form");
+      var seat = document.getElementById("before-seat");
+      var longSeat = document.getElementById("long-seat");
+      var sentence = document.getElementById("long-sentence");
+      var refusal = document.getElementById("refusal");
+      var preimageOut = document.getElementById("preimage");
+      var paste = document.getElementById("paste");
+      var flag = document.getElementById("paste-flag");
+      var allowed = {
+        withheld: 1,
+        "a-before-b": 1,
+        "b-before-a": 1,
+        unordered: 1,
+        "same-seat": 1,
+        abstain: 1
+      };
+
+      function selected() {
+        var node = form.querySelector("input[name=before-class]:checked");
+        return node ? node.value : "";
+      }
+
+      form.addEventListener("change", function () {
+        var value = selected();
+        seat.textContent = allowed[value] ? value : "empty";
+      });
+
+      paste.addEventListener("input", function () {
+        var lines = paste.value.split(/\n/);
+        var hit = lines.some(function (line) {
+          return /^\s*(do |run |ignore previous|system:|execute |sudo )/i.test(line);
+        });
+        flag.textContent = hit ? "flagged as data, not an instruction" : "no imperative flag";
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var value = selected();
+        if (!allowed[value]) {
+          refusal.textContent = "denied — no class";
+          preimageOut.textContent = "none";
+          return;
+        }
+        var preimage = "before-not-long|v1|" + value + "|long-refusal|status=unattested";
+        sentence.value = "";
+        longSeat.textContent = "empty — long refused";
+        window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          refusal.textContent = hex;
+          preimageOut.textContent = preimage;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

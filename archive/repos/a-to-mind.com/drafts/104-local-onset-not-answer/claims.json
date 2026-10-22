@@ -1,0 +1,48 @@
+{
+  "slug": "local-onset-not-answer",
+  "run": 104,
+  "family": "private incubation log",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical_template": "onset-not-answer|v1|<class>|answer-refusal",
+  "confidence": {
+    "onset_is_answer": "low",
+    "class_stays_separate_from_image": "medium",
+    "note": "design-material weight, not a measurement"
+  },
+  "hypotheses": [
+    {
+      "class": "sleep-onset",
+      "canonical": "onset-not-answer|v1|sleep-onset|answer-refusal",
+      "sha256": "84c783c2b057fbd480e55442b375df44b06194a9c6e5c40a9b01622e1d5624f0",
+      "status": "unattested"
+    },
+    {
+      "class": "wake-offset",
+      "canonical": "onset-not-answer|v1|wake-offset|answer-refusal",
+      "sha256": "d95b65d0e490c8c8aadc1e522dba1c77ca145a5430bb92ff81f04fb2e6a9cb8d",
+      "status": "unattested"
+    },
+    {
+      "class": "wallas-gap",
+      "canonical": "onset-not-answer|v1|wallas-gap|answer-refusal",
+      "sha256": "46e5a5a04f89871648f60601203cd5cd8f78b431de3ab642426d973f0bc988ae",
+      "status": "unattested"
+    },
+    {
+      "class": "n1-window",
+      "canonical": "onset-not-answer|v1|n1-window|answer-refusal",
+      "sha256": "44fef02733134637c0308c04e497546d23211961208b410e7173f37e09b9ffd1",
+      "status": "unattested"
+    },
+    {
+      "class": "key-drop",
+      "canonical": "onset-not-answer|v1|key-drop|answer-refusal",
+      "sha256": "c1cb41c512f767f8f30f5e1635f86f173dd3cc9ca0f3dfc3a4e8ce834e371352",
+      "status": "unattested"
+    }
+  ],
+  "denied": ["answer", "image", "solution", "prophecy", "lucidity-score", "dream-text"],
+  "href_allowlist": []
+}

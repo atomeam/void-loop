@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local gap-not-handoff (draft)</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bba8; --paper: #f4efe6; --mark: #8a4b2f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f3ece3; --line: #4a4036; --paper: #16130f; --mark: #e0b089; }
+  }
+  body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.02em; }
+  .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+  .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+  .lanes { display: grid; grid-template-columns: 1fr 2.5rem 1fr; gap: 0; margin: 1rem 0; align-items: stretch; }
+  .lane { border: 1px solid var(--line); padding: 0.7rem; min-height: 6rem; }
+  .gap { border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font: 0.75rem/1 ui-monospace, monospace; }
+  fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+  legend { padding: 0 0.3rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+  label.opt:has(input:checked) { border-color: var(--mark); }
+  input[type="radio"] { margin-right: 0.3rem; }
+  textarea, input[type="text"] { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+  .scratch { text-decoration: line-through; opacity: 0.75; }
+  button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+  button[disabled] { opacity: 0.45; }
+  pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+  .check { display: block; margin: 0.35rem 0; }
+  p.note { font-size: 0.92rem; }
+  .hint { border-left: 3px solid var(--mark); padding-left: 0.6rem; }
+</style>
+</head>
+<body>
+<main>
+  <p>Draft only. Not a seal. emit is false.</p>
+  <h1>Local gap-not-handoff</h1>
+  <p class="note">Two lanes can be marked. The overlap stays refused. A gap is not a handoff and not shared control. Status stays unattested until a human seals a different file.</p>
+  <div class="banner" role="status">
+    <strong>Unattested default.</strong>
+    Overlap: refused. No arrow is drawn.
+  </div>
+  <div class="lanes" aria-hidden="true">
+    <div class="lane" id="lane-human">Human lane<br>unmarked</div>
+    <div class="gap">gap</div>
+    <div class="lane" id="lane-instrument">Instrument lane<br>unmarked</div>
+  </div>
+  <form id="form">
+    <fieldset>
+      <legend>Lane classes</legend>
+      <div class="row">
+        <label class="opt"><input type="checkbox" id="human" value="marked"> human lane marked</label>
+        <label class="opt"><input type="checkbox" id="instrument" value="marked"> instrument lane marked</label>
+        <label class="opt"><input type="radio" name="overlap" value="refused" checked disabled> overlap refused</label>
+      </div>
+      <p class="note">Marked is not a mover. There is no join control. There is no transfer.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Handoff sentence (discarded)</legend>
+      <textarea id="sentence" class="scratch" maxlength="160" rows="3" placeholder="Typed here, then cleared. Not hashed. Not transferred."></textarea>
+      <p class="note" id="count">0 characters. This line is scratch.</p>
+      <p class="note hint" id="hint" hidden>Imperative spotted. It is not followed and it is not in the hash.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Disconfirm id</legend>
+      <div class="row" id="disconfirms">
+        <label class="opt"><input type="radio" name="disconfirm" value="separate-tasks"> separate-tasks</label>
+        <label class="opt"><input type="radio" name="disconfirm" value="no-shared-artifact"> no-shared-artifact</label>
+        <label class="opt"><input type="radio" name="disconfirm" value="instrument-idle"> instrument-idle</label>
+        <label class="opt"><input type="radio" name="disconfirm" value="human-did-not-yield"> human-did-not-yield</label>
+        <label class="opt"><input type="radio" name="disconfirm" value="retraction"> retraction</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Design-material weight</legend>
+      <input id="weight" type="text" inputmode="decimal" maxlength="5" autocomplete="off" placeholder="0.000 to 1.000">
+      <p class="note">A weight is not an oversight score and not a partner score.</p>
+    </fieldset>
+    <label class="check"><input id="hyp" type="checkbox"> This is a hypothesis, not a handoff.</label>
+    <label class="check"><input id="sensors" type="checkbox"> Sensors denied. No camera, no microphone, no voice control.</label>
+    <label class="check"><input id="keep" type="checkbox"> Keep the digest on this device only.</label>
+    <p><button type="submit" id="go" disabled>Hash the gap, refuse the handoff</button></p>
+    <p><button type="button" id="transfer" disabled>Transfer control — refused</button></p>
+    <p><button type="button" id="save" disabled>Download local receipt</button></p>
+  </form>
+  <section aria-live="polite">
+    <h2>Local digest</h2>
+    <pre id="out">No digest. Default deny.</pre>
+  </section>
+  <p class="note">Fixture digest <code>a1e257ea964aef2a968eb49f7196c2d57f257987c2da0981364a5ff9c4fe770a</code> is in SPEC.md. It is not this page's later digest and not a grant.</p>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("form");
+  var go = document.getElementById("go");
+  var sentence = document.getElementById("sentence");
+  var weight = document.getElementById("weight");
+  var out = document.getElementById("out");
+  var hint = document.getElementById("hint");
+  var count = document.getElementById("count");
+  var save = document.getElementById("save");
+  var DIS = ["separate-tasks", "no-shared-artifact", "instrument-idle", "human-did-not-yield", "retraction"];
+  var last = "";
+
+  function selected() {
+    var node = form.querySelector("input[name=disconfirm]:checked");
+    return node ? node.value : "";
+  }
+  function weightOk(v) {
+    if (!/^\d\.\d{3}$/.test(v)) return false;
+    var n = Number(v);
+    return n >= 0 && n <= 1;
+  }
+  function ready() {
+    var text = sentence.value;
+    count.textContent = text.length + " characters. This line is scratch.";
+    hint.hidden = !/\b(handoff|transfer|steer|execute|ignore previous)\b/i.test(text);
+    go.disabled = !(document.getElementById("human").checked && document.getElementById("instrument").checked && selected() && weightOk(weight.value.trim()) && document.getElementById("hyp").checked && document.getElementById("sensors").checked);
+  }
+  form.addEventListener("input", ready);
+  form.addEventListener("change", ready);
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var dis = selected();
+    var w = weight.value.trim();
+    if (DIS.indexOf(dis) < 0 || !weightOk(w)) return;
+    if (!document.getElementById("human").checked || !document.getElementById("instrument").checked) return;
+    if (!document.getElementById("hyp").checked || !document.getElementById("sensors").checked) return;
+    var line = "void.gap-not-handoff.v1|human=marked|instrument=marked|overlap=refused|disconfirm=" + dis + "|weight=" + w + "|status=unattested";
+    var n = sentence.value.length;
+    sentence.value = "";
+    count.textContent = n + " characters discarded. Not hashed.";
+    hint.hidden = true;
+    document.getElementById("lane-human").textContent = "Human lane\nmarked — not a mover";
+    document.getElementById("lane-instrument").textContent = "Instrument lane\nmarked — not a partner";
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(line)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      last = hex + "\n" + line + "\nstatus: unattested\nsentence: discarded\noverlap: refused";
+      out.textContent = last;
+      save.disabled = false;
+      if (document.getElementById("keep").checked) {
+        try { localStorage.setItem("void-094-gap-not-handoff", hex); } catch (e) {}
+      }
+    }).catch(function () {
+      out.textContent = "Digest unavailable. Nothing was sent.";
+    });
+  });
+
+  save.addEventListener("click", function () {
+    if (!last) return;
+    var blob = new Blob([last + "\n"], { type: "text/plain" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gap-not-handoff-receipt.txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

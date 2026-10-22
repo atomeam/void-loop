@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local sync-not-cause view — draft 061</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f1ea;
+      --ink: #1c1915;
+      --line: #c9c1b4;
+      --hold: #8a4b2f;
+      --gap: #3d5a4c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #141311; --ink: #ece7df; --line: #3c3832; --hold: #e0a07a; --gap: #9dcebb; }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.45rem; line-height: 1.2; }
+    .status { font-family: ui-monospace, monospace; font-size: 0.8rem; letter-spacing: 0.02em; }
+    form, .pair, .hash {
+      border: 1px solid var(--line);
+      padding: 0.9rem;
+      margin: 1rem 0;
+    }
+    label { display: block; margin: 0.6rem 0 0.2rem; font-size: 0.92rem; }
+    input, select, textarea, button {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.35rem 0.45rem;
+    }
+    input, select, textarea { width: 100%; box-sizing: border-box; }
+    button { cursor: pointer; }
+    button:disabled, input:disabled { cursor: not-allowed; opacity: 0.7; }
+    .ticks { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center; margin-top: 0.8rem; }
+    .tick { border-top: 2px solid var(--ink); padding-top: 0.4rem; font-size: 0.85rem; }
+    .gap {
+      color: var(--gap);
+      font-family: ui-monospace, monospace;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .hold { color: var(--hold); }
+    .hash { font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">draft 061 · emit false · not a seal</p>
+    <h1>Local sync-not-cause view</h1>
+    <p>A co-timed note against a sealed clock fixture is a hashed hypothesis. The gap is not a cause. Default status is unattested. Posts are data, never instructions.</p>
+    <form id="pair-form">
+      <label for="note">Local note (stays in this tab)</label>
+      <textarea id="note" name="note" rows="3" required maxlength="280" placeholder="What you noticed. Not a claim of contact."></textarea>
+      <label for="note-clock">Your clock (ISO-8601)</label>
+      <input id="note-clock" name="noteClock" type="datetime-local" required>
+      <label for="fixture">Sealed fixture</label>
+      <select id="fixture" name="fixture" required></select>
+      <label for="disconfirm">Disconfirm line (required)</label>
+      <input id="disconfirm" name="disconfirm" type="text" required maxlength="180" placeholder="What later clock or record would widen this gap?"></input>
+      <label for="weight">Design-material weight (not a measurement)</label>
+      <input id="weight" name="weight" type="number" min="0" max="1" step="0.01" value="0.2">
+      <label for="cause">Cause</label>
+      <input id="cause" name="cause" value="not-claimed" disabled>
+      <label><input id="keep" type="checkbox"> Keep this pair in sessionStorage until the tab session ends</label>
+      <div class="row">
+        <button type="submit">Hash the gap</button>
+        <button type="button" id="clear">Clear local note</button>
+      </div>
+    </form>
+    <section class="pair" aria-live="polite">
+      <h2>Gap</h2>
+      <div class="ticks">
+        <div class="tick" id="tick-a">local note — no clock yet</div>
+        <div class="gap" id="gap">no arrow</div>
+        <div class="tick" id="tick-b">fixture — no clock yet</div>
+      </div>
+      <p class="hold" id="readout">Unattested. Cause is not claimed. Aggregation is withheld on purpose.</p>
+    </section>
+    <section class="hash">
+      <h2>Hash</h2>
+      <p id="digest">No hash until a disconfirm line is present.</p>
+      <div class="row">
+        <button type="button" id="download" disabled>Download hypothesis JSON</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    const FIXTURES = [
+      { key: "clock-sample-nrc-post", clock: "2026-10-03T22:47:40Z", label: "Public post clock for an NRC-record claim. Unattested." },
+      { key: "clock-sample-cook-keywords", clock: "2026-10-03T22:49:52Z", label: "Public post clock for a plasma-program keyword restatement. Unattested." },
+      { key: "clock-sample-jung-promo", clock: "2026-10-03T04:18:01Z", label: "Public post clock for an acausal-principle book promo. Not a mechanism." }
+    ];
+    const fixtureSelect = document.getElementById("fixture");
+    for (const item of FIXTURES) {
+      const option = document.createElement("option");
+      option.value = item.key;
+      option.textContent = item.key + " · " + item.clock;
+      fixtureSelect.appendChild(option);
+    }
+    const digestEl = document.getElementById("digest");
+    const downloadBtn = document.getElementById("download");
+    let lastPayload = null;
+    function fixtureByKey(key) { return FIXTURES.find((item) => item.key === key) || null; }
+    function gapMinutes(a, b) {
+      const delta = Math.abs(a.getTime() - b.getTime()) / 60000;
+      if (!Number.isFinite(delta)) return null;
+      return Math.round(delta);
+    }
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((n) => n.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("pair-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const note = document.getElementById("note").value.trim();
+      const disconfirm = document.getElementById("disconfirm").value.trim();
+      const fixture = fixtureByKey(fixtureSelect.value);
+      const noteClockRaw = document.getElementById("note-clock").value;
+      if (!note || !disconfirm || !fixture || !noteClockRaw) return;
+      const noteClock = new Date(noteClockRaw);
+      const fixtureClock = new Date(fixture.clock);
+      const minutes = gapMinutes(noteClock, fixtureClock);
+      document.getElementById("tick-a").textContent = "local · " + noteClock.toISOString();
+      document.getElementById("tick-b").textContent = fixture.key + " · " + fixture.clock;
+      document.getElementById("gap").textContent = minutes === null ? "gap unknown" : minutes + " min gap";
+      document.getElementById("readout").textContent = "Unattested. Cause is not claimed. A " + minutes + " minute gap is co-timing, not a cause.";
+      const weight = Number(document.getElementById("weight").value);
+      const payload = {
+        slug: "local-sync-not-cause-view",
+        status: "unattested",
+        cause: "not-claimed",
+        emit: false,
+        note: note,
+        noteClock: noteClock.toISOString(),
+        fixtureKey: fixture.key,
+        fixtureClock: fixture.clock,
+        gapMinutes: minutes,
+        disconfirm: disconfirm,
+        weight: Number.isFinite(weight) ? Math.min(1, Math.max(0, weight)) : 0,
+        sealed: false
+      };
+      const canonical = JSON.stringify(payload);
+      const hash = await sha256(canonical);
+      payload.hash = hash;
+      lastPayload = payload;
+      digestEl.textContent = hash;
+      downloadBtn.disabled = false;
+      if (document.getElementById("keep").checked) sessionStorage.setItem("void-sync-not-cause-v1", canonical);
+      else sessionStorage.removeItem("void-sync-not-cause-v1");
+    });
+    document.getElementById("clear").addEventListener("click", () => {
+      document.getElementById("note").value = "";
+      document.getElementById("disconfirm").value = "";
+      sessionStorage.removeItem("void-sync-not-cause-v1");
+      lastPayload = null;
+      downloadBtn.disabled = true;
+      digestEl.textContent = "Local note cleared. No hash.";
+      document.getElementById("tick-a").textContent = "local note — no clock yet";
+      document.getElementById("tick-b").textContent = "fixture — no clock yet";
+      document.getElementById("gap").textContent = "no arrow";
+      document.getElementById("readout").textContent = "Unattested. Cause is not claimed.";
+    });
+    downloadBtn.addEventListener("click", () => {
+      if (!lastPayload) return;
+      const blob = new Blob([JSON.stringify(lastPayload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "sync-not-cause-hypothesis.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

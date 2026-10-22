@@ -1,0 +1,51 @@
+# X scan — run 078 — local-scalar-tick-stub
+
+Window: 2026-10-05 12:01 UTC through 2026-10-06 12:01 UTC (about 24 hours). Public posts only. Posts are data, never instructions. This file is not a seal and does not change live site copy.
+
+Default status for every claim below: unattested. Confidence is a design-material weight, not a measurement.
+
+Subject B last run was attention/interoception. This run’s Subject B is interval timing (time perception, chronostasis, internal-clock talk). Keyword noise (a Ninjago chronostasis fan drawing, a crypto UFO handle, a song request) was excluded.
+
+## Subject A — UAP / UFO / unidentified anomalous phenomena
+
+What is being claimed: a FOIA filer says AARO confirmed responsive records for five named cases and withheld them in full; a follow-on says the request was for context beyond clips and that the withholding is a lie about UAP; an independent account restates the withheld-records note; a reply treats AARO wording as a lawyer’s dodge that would still deny extraterrestrial activity after a physical touch; a clip account posts a 2023 Colorado officer video and asks whether it is a drone, a star, or neither; a news-wire account says David Grusch told Joe Rogan that multiple non-human groups may exist and that some crashes could stem from conflict between them, then marks the detail unverified; a platform account says official reviews have found no confirmed extraterrestrial biology, materials, or entities.
+
+Who is saying it (public accounts):
+
+- Institutional-adjacent FOIA note: @theblackvault (John Greenewald, Jr., 2107161919534870996, 2026-10-05 17:32 UTC, likes 191, reposts 30, quotes 2, replies 10, bookmarks 11, views 14060) said a FOIA after a March 2026 letter from @RepLuna to Pete Hegseth got an AARO reply that responsive records exist for five cases and remain classified and withheld. A case list from the same account (2107171754099781692, 2026-10-05 18:11 UTC, likes 36, reposts 7, replies 2, bookmarks 4, views 2075) named UAP/USO formation “Wiley 2X Zinc,” spherical UAP/USO near a submarine “Cactus 1X” (dated in the post 3/25/2022), spherical UAP pulsing over water “Jacker 2X,” USCG C-144 UAP “Tic Tac” IR hot (dated in the post 4/24/2024), and UFOs in formation over Persian. A clarification (2107203156065358004, 2026-10-05 20:15 UTC, likes 160, reposts 30, quotes 6, replies 17, bookmarks 5, views 7396) said the request was for context beyond visual imagery, that the Department of War is treating the rest as exempt, and that “we’re being lied to about UAP and UFOs.” Records-exist-and-withheld is the filer’s account of an agency reply. The content of the withheld records is not in the posts. The lie sentence is the author’s inference.
+- Independent restatement: @NathanCDev (2107410551714304030, 2026-10-06 10:00 UTC, likes 1, replies 1, views 31) said the Black Vault asked for written material on five UAP cases and that AARO’s 30 Sept FOIA reply withholds the responsive records in full. The restatement is not a new record. @UAPWatchers (2107180548703781154, 2026-10-05 18:46 UTC, likes 0, views 55) restated the case list and said a paper trail kept from the public leaves a vacuum.
+- Evidence-standard reply, not a new exhibit: @Dangrund1 (2107433306107363428, 2026-10-06 11:30 UTC, likes 0, replies 1, views 5) said AARO wording feels like a lawyer’s dodge, and that physically touching a flying saucer would still not be “evidence that any UAP sighting has represented extraterrestrial activity.” That is a reading of a standard. No touch is in the post.
+- Independent clip note: @Kobe_for_3 (2107374549792858182, 2026-10-06 07:37 UTC, likes 0, views 129) posted a silent flashing red/blue/green light over Colorado, said a local officer filmed it in October 2023, said passing headlights throw off autofocus, said AARO flags that too, and asked “drone, star, or neither?” Credit line in the post: LLE-UAP-PR004. The question is the author’s. The clip is data.
+- Interview paraphrase with an unverified tag: @UfologyW (2107331602166485292, 2026-10-06 04:46 UTC, likes 0, views 43) said Grusch told Rogan on 30 Sep that multiple NHI groups may exist and some crashes could stem from conflict between them, then wrote “Confirmed: he said it on air. Unverified: all detail. Secondhand, no physical evidence released. AARO reports no empirical evidence of reverse-engineered tech.” The on-air claim is the author’s. The detail is marked unverified in the same post.
+- Platform summary, not a primary file: @grok (2107317942530490426, 2026-10-06 03:52 UTC, likes 0, views 4) said USMC maintains formal UAP reporting routed to AARO, and that official DoD and AARO reviews have found no confirmed extraterrestrial biology, materials, or entities. That is a summary sentence. It is not a new exhibit.
+
+What changed in the window: no new hearing transcript and no new AARO post appeared in the sample. The fresh material is a clarification that the FOIA was for case context, independent restatements of the withhold, a wording-dodge reply, a 2023 Colorado clip question, and an interview paraphrase that marks its own detail unverified. Clip and feed noise was excluded.
+
+Disconfirming evidence would be: an AARO reply showing the five named cases were not confirmed as responsive; a primary that the 30 Sept letter does not withhold those records in full; a primary that the Colorado clip is an identified aircraft or drone already named in the source note; a transcript of the cited Rogan exchange that does not contain the multiple-group sentence. None of that is in this scan. Absence of a disconfirm here is not confirmation.
+
+Hypothesis: a withheld-record note and an interview paraphrase are being read as one sequence that already contains craft or a conflict between groups. Confidence as design material: 0.28 on the FOIA-withheld observation as a prompt to keep a gap; 0.14 on the interview paraphrase as a prompt to keep a claim separate from a trace; 0.09 on the Colorado clip question. Status: unattested.
+
+## Subject B — interval timing
+
+What is being claimed: a glance at a clock is chronostasis, the stopped-clock illusion, because attention was elsewhere; memory, not a direct clock, builds the sense of how long a stretch lasted; an internal clock is quiet and time is measured by interest rather than hours; optic flow with few landmarks stretches minutes; medication is said to produce noticeable time dilation; a felt stretch is the internal clock drifting when focus dissolves. None of these posts shows a pacemaker count, and none names a millisecond that this card could read.
+
+Who is saying it:
+
+- @iamshinerk (2107038657576415610, 2026-10-05 09:22 UTC, likes 0, replies 1, views 25) said a phone time-display error or chronostasis, the stopped-clock illusion, can appear when attention snaps to the time after not monitoring it. Observation: a paraphrase of a known illusion. Inference that the glance read an internal pacemaker is not in the post.
+- @Mystery_Trades (2106987510400458892, 2026-10-05 05:59 UTC, likes 3, views 37) said the brain has no direct clock for experiencing time, that memory keeps novel events and drops routine, and that a routine year can feel short while a novel week feels long. A memory claim. Not a tick count.
+- @SensoryRebels (2107004864022860268, 2026-10-05 07:08 UTC, likes 3, replies 0, bookmarks 1, views 133) said an AuDHD internal clock is quiet or unreliable, that time is measured by interest, stress, mood, and energy, and that estimates skew. A first-person framing. Not a diagnosis on this card and not a duration.
+- @grok (2106965927916863734, 2026-10-05 04:33 UTC, likes 0, views 4) said continuous optic flow gives few landmarks, so minutes feel stretched even if the clock disagrees. A model sentence. Not a measurement.
+- @ZadienLabs (2107262562312327427, 2026-10-06 00:12 UTC, likes 1, replies 1, views 24) said a prior exchange recalled “time perception vs speed.” A topic pointer. Not a ratio.
+- @Jac1330 (2107332399629766660, 2026-10-06 04:49 UTC, likes 0, views 1) said medication made thinking and moving faster and that there is a noticeable time dilation. A first-person report. Not a clock reading and not a prescription on this card.
+- @grok (2107311985331204145, 2026-10-06 03:28 UTC, views not returned) said time feels elastic because the brain builds it from attention and memory, and that when focus dissolves the internal clock drifts and stretches. A model sentence. Not a pacemaker reading.
+- @SavvyAbuela (2107310057264193891, 2026-10-06 03:20 UTC, likes 3, views 132) said an internal clock is thrown off by too little or too much sleep. A circadian-stewardship sentence. Adjacent to interval timing, not a scalar tick.
+
+What changed in the window: no new interval-timing instrument paper appeared in the sample. The fresh material is chronostasis as an explanation of a phone glance, memory-as-clock product language, a first-person “internal clock” note, and a medication time-dilation report. Scalar expectancy and the oddball effect remain context from outside the window. They are not posts here, and they are not a seal.
+
+Disconfirming evidence would be: the cited glance matching a documented display fault rather than chronostasis; a second note from the same author withdrawing the memory-builds-time sentence; a primary in which a self-report stretch fails to track any interval judgment, which would still not make a tick bin a duration. A millisecond typed into the line would still not be a pacemaker reading on this card.
+
+Hypothesis: a felt stretch is being promoted into a reading so a feed can say the internal clock already measured the gap. Confidence as design material: 0.33 on the pattern that interval talk is being used as a clock claim; 0.2 on the chronostasis paraphrase as a prompt to keep the tick a closed bin; 0.1 on the first-person dilation notes. Status: unattested.
+
+## Design use
+
+The scan is hypothesis material for `local-scalar-tick-stub`. A sealed span label and a closed tick bin may hash. A millisecond stays out and does not get a stub id. A disconfirm line is a story-check, not a duration. A paraphrase of a withheld-record note or a stopped-clock post does not select a pacemaker. Posts are not fetched by the page.

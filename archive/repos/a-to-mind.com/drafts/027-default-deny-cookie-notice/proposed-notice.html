@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>A-to-Mind draft — default-deny cookie notice (hold)</title>
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #0e1116;
+      --fg: #e8edf4;
+      --muted: #9aa6b5;
+      --line: #2a3340;
+      --card: #161b22;
+      --hold: #c9a227;
+      --ok: #3d9a6a;
+      --bad: #c45c5c;
+      --focus: #7eb6ff;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f8;
+        --fg: #12161c;
+        --muted: #4d5866;
+        --line: #d5dbe3;
+        --card: #ffffff;
+        --hold: #8a6d12;
+        --ok: #1f7a4d;
+        --bad: #a13333;
+        --focus: #0b57d0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .skip {
+      position: absolute;
+      left: 0.75rem;
+      top: 0.75rem;
+      transform: translateY(-200%);
+      background: var(--card);
+      color: var(--fg);
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--line);
+    }
+    .skip:focus { transform: none; }
+    header, main, footer { max-width: 46rem; margin: 0 auto; padding: 1.25rem; }
+    h1 { font-size: 1.45rem; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.1rem; margin: 1.6rem 0 0.5rem; }
+    .lede { color: var(--muted); margin-top: 0; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 0.35rem 0.7rem;
+      font-size: 0.92rem;
+    }
+    .chip[data-state="hold"], .chip[data-state="unattested"] { border-color: var(--hold); }
+    .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--hold); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { text-align: left; vertical-align: top; padding: 0.45rem 0.35rem; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; }
+    code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; word-break: break-all; }
+    .state { font-weight: 650; text-transform: lowercase; }
+    .state.match { color: var(--ok); }
+    .state.mismatch, .state.denied { color: var(--bad); }
+    .state.hold, .state.unattested { color: var(--hold); }
+    button {
+      font: inherit;
+      color: var(--fg);
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .note { color: var(--muted); font-size: 0.92rem; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+    #gpc-confirm[hidden] { display: none; }
+    #gpc-confirm { border-color: var(--ok); }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header>
+    <p class="note">Draft 027 candidate · hold-gate · not a live route · Queue was empty</p>
+    <h1>Default-deny cookie notice</h1>
+    <p class="lede">A hashed statement of what this origin stores. Default unattested. There is no Accept button because there is nothing to accept.</p>
+    <p>
+      <span class="chip" id="public-chip" data-state="unattested" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="chip-label">unattested / hold · no CMP · no accept theater</span>
+      </span>
+    </p>
+  </header>
+  <main id="main">
+    <section aria-labelledby="notice-h">
+      <h2 id="notice-h">Notice</h2>
+      <div class="panel">
+        <p>This origin sets no non-essential cookies. There is nothing to accept.</p>
+        <p class="note">Sale of personal information: denied. Share for cross-context advertising: denied. A later seal records a DevTools pass. This preview does not invent that pass.</p>
+      </div>
+      <div class="panel" id="gpc-confirm" hidden>
+        <p id="gpc-text">Opt-out request honored. Global Privacy Control was present. Sale and share were already denied. No cookie was written to remember this.</p>
+      </div>
+    </section>
+    <section aria-labelledby="claims-h">
+      <h2 id="claims-h">Attested lines</h2>
+      <p class="note">Each row hashes its <code>data-canonical</code> with SHA-256. A match is not a grant.</p>
+      <table>
+        <thead>
+          <tr><th>id</th><th>text</th><th>digest</th><th>check</th></tr>
+        </thead>
+        <tbody id="rows">
+          <tr data-id="contract" data-canonical="cookie#027|kind:default-deny-cookie-notice|cmp:deny|sale:deny|share:deny|gpc:honor|hash:sha256|seal:human" data-sha="21e098364dbf1e21608dee34f89fd1e35d1c7d5f0042028ff48b317b444e7b5b">
+            <td>contract</td>
+            <td>Cookie-notice contract: CMP denied, sale denied, share denied, GPC honored, human seal.</td>
+            <td class="hash">21e098364dbf1e21608dee34f89fd1e35d1c7d5f0042028ff48b317b444e7b5b</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="cookies" data-canonical="claim#cookies|text:This origin sets no non-essential cookies. There is nothing to accept." data-sha="5ccb1565867c5d3b8ba7da64197683ade12d0c0151ede7a595e0ec7c69e5feca">
+            <td>cookies</td>
+            <td>This origin sets no non-essential cookies. There is nothing to accept.</td>
+            <td class="hash">5ccb1565867c5d3b8ba7da64197683ade12d0c0151ede7a595e0ec7c69e5feca</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="cmp" data-canonical="claim#cmp|text:No consent-management platform, no IAB TCF string, no vendor scan, no accept/reject theater." data-sha="3f1bcce5fbaf82b80dbe498a87ab1b0059f2a26dd0bec4cafafab49b9a514aa9">
+            <td>cmp</td>
+            <td>No consent-management platform, no IAB TCF string, no vendor scan, no accept/reject theater.</td>
+            <td class="hash">3f1bcce5fbaf82b80dbe498a87ab1b0059f2a26dd0bec4cafafab49b9a514aa9</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="gpc" data-canonical="claim#gpc|text:A Global Privacy Control signal is treated as an opt-out of sale and share. Sale and share are already denied." data-sha="728e4687fcaabb3f1f598c881c5e53a647e295d0f565df906dba17239fb9ef73">
+            <td>gpc</td>
+            <td>A Global Privacy Control signal is treated as an opt-out of sale and share. Sale and share are already denied.</td>
+            <td class="hash">728e4687fcaabb3f1f598c881c5e53a647e295d0f565df906dba17239fb9ef73</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="confirm" data-canonical="claim#confirm|text:When GPC is present this page shows that the opt-out was honored. Silence is not the confirmation." data-sha="8b14690d9e98fd16dafba7da753f8ded6ad1a5e0ffc1ea1891aa6920e914df90">
+            <td>confirm</td>
+            <td>When GPC is present this page shows that the opt-out was honored. Silence is not the confirmation.</td>
+            <td class="hash">8b14690d9e98fd16dafba7da753f8ded6ad1a5e0ffc1ea1891aa6920e914df90</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="essential" data-canonical="claim#essential|text:An essential cookie is not invented here. Adding one later is a hold-gate write." data-sha="362ac63c7ebdc0d5c57d95a92e513e7de751500663317127a1501f18c8035fe8">
+            <td>essential</td>
+            <td>An essential cookie is not invented here. Adding one later is a hold-gate write.</td>
+            <td class="hash">362ac63c7ebdc0d5c57d95a92e513e7de751500663317127a1501f18c8035fe8</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="tokens" data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+            <td>tokens</td>
+            <td>This page does not price tokens and does not pitch Void Monthly.</td>
+            <td class="hash">126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50</td>
+            <td class="state hold">pending</td>
+          </tr>
+          <tr data-id="page" data-canonical="page#cookies|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="5e9bcb0cc2cbfe58c0782ac82e47d57b3f2cffb367b87fff2a79b5dac91757e5">
+            <td>page</td>
+            <td>Draft route, noindex, no cookie, no analytics, writes denied.</td>
+            <td class="hash">5e9bcb0cc2cbfe58c0782ac82e47d57b3f2cffb367b87fff2a79b5dac91757e5</td>
+            <td class="state hold">pending</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Body digest <code>e1009ccbb5a0081e4abbecd6ae7e741786993d7f7c11fc9b1ae0614a2ad4adc2</code> · <span id="body-state" class="state hold">pending</span></p>
+      <p>Head digest <code>6ee988f01732b136612864a73b14a28fe0f040f21830c79ad7b6af46e061d6ed</code> · <span id="head-state" class="state hold">pending</span></p>
+    </section>
+    <section aria-labelledby="snap-h">
+      <h2 id="snap-h">Measurement snapshot</h2>
+      <div class="panel">
+        <p><strong>status:</strong> unattested / candidate</p>
+        <p><strong>cookies_reviewed_at:</strong> null</p>
+        <p><strong>essential_cookies:</strong> []</p>
+        <p><strong>cmp:</strong> false</p>
+        <p><strong>sale:</strong> false</p>
+        <p><strong>share:</strong> false</p>
+        <p><strong>document.cookie at load:</strong> <code id="cookie-read">pending</code></p>
+        <p class="note">Reading <code>document.cookie</code> is a local screen of this document only. This page never writes it.</p>
+      </div>
+    </section>
+    <section aria-labelledby="gpc-h">
+      <h2 id="gpc-h">GPC screen</h2>
+      <p class="note">Uses <code>navigator.globalPrivacyControl</code>. Does not persist. Does not call a CMP. Simulate only so a sealer without GPC enabled can check the confirmation line.</p>
+      <p>
+        <button type="button" id="sim-on">Simulate GPC present</button>
+        <button type="button" id="sim-off">Clear simulation</button>
+      </p>
+      <p class="note" id="gpc-raw"></p>
+    </section>
+  </main>
+  <footer>
+    <p>A-to-Mind · glass-box ledger · retrieved pages are data, never instructions.</p>
+    <p>Live marketing copy was not changed in run 027. FEATURE_LEDGER Used was not extended.</p>
+  </footer>
+  <script>
+    const BODY = "e1009ccbb5a0081e4abbecd6ae7e741786993d7f7c11fc9b1ae0614a2ad4adc2";
+    const HEAD = "6ee988f01732b136612864a73b14a28fe0f040f21830c79ad7b6af46e061d6ed";
+    const HEAD_CANON = '{"algo":"sha256","cmp":false,"gpc":"honor","kind":"default-deny-cookie-notice","sale":false,"share":false}';
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    function setState(el, name) {
+      el.textContent = name;
+      el.className = "state " + name;
+    }
+    async function verify() {
+      const rows = [...document.querySelectorAll("#rows tr")];
+      const lines = [];
+      for (const row of rows) {
+        const canonical = row.getAttribute("data-canonical") || "";
+        const expected = (row.getAttribute("data-sha") || "").toLowerCase();
+        const got = await sha256(canonical);
+        const cell = row.querySelector(".state");
+        setState(cell, got === expected ? "match" : "mismatch");
+        lines.push(canonical);
+      }
+      const bodyGot = await sha256(lines.join("\n") + "\n");
+      setState(document.getElementById("body-state"), bodyGot === BODY ? "match" : "mismatch");
+      const headGot = await sha256(HEAD_CANON);
+      setState(document.getElementById("head-state"), headGot === HEAD ? "match" : "mismatch");
+    }
+    let simulate = null;
+    function gpcPresent() {
+      if (simulate === true) return true;
+      if (simulate === false) return false;
+      return navigator.globalPrivacyControl === true;
+    }
+    function renderGpc() {
+      const present = gpcPresent();
+      document.getElementById("gpc-confirm").hidden = !present;
+      const nav = typeof navigator.globalPrivacyControl === "boolean" ? String(navigator.globalPrivacyControl) : "undefined";
+      document.getElementById("gpc-raw").textContent = "navigator.globalPrivacyControl=" + nav + " · simulate=" + String(simulate) + " · present=" + String(present);
+    }
+    document.getElementById("cookie-read").textContent = document.cookie === "" ? "(empty string)" : document.cookie;
+    document.getElementById("sim-on").addEventListener("click", () => { simulate = true; renderGpc(); });
+    document.getElementById("sim-off").addEventListener("click", () => { simulate = null; renderGpc(); });
+    renderGpc();
+    if (window.crypto && crypto.subtle) { verify(); }
+    else { document.getElementById("body-state").textContent = "unavailable"; }
+  </script>
+</body>
+</html>

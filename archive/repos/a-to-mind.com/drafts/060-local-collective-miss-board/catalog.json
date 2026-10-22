@@ -1,0 +1,36 @@
+{
+  "slug": "local-collective-miss-board",
+  "run": "060",
+  "status": "unattested",
+  "note": "Local fixture only. A published-string label is not a seal of why a recall differs, and not a seal that the past is fixed. The page does not fetch these sources.",
+  "items": [
+    {
+      "key": "berenstain-bears-spelling",
+      "fixture": "Berenstain",
+      "common_recall": "Berenstein",
+      "source_label": "Snopes, 2025-10-12, rates a prior Berenstein rendering claim False against the 1962 byline Stanley and Janice Berenstain. Explanation of the disagreement is unattested.",
+      "class": "spelling"
+    },
+    {
+      "key": "empire-vader-line",
+      "fixture": "No. I am your father.",
+      "common_recall": "Luke, I am your father.",
+      "source_label": "National Geographic, 2025-07-30, states the Luke wording was not the line. Soundtrack check is not performed by this page. Explanation unattested.",
+      "class": "line"
+    },
+    {
+      "key": "jcpenney-spelling",
+      "fixture": "Penney",
+      "common_recall": "Penny",
+      "source_label": "Window post 2106472346127307129 treats a 1958 diary spelling Penny's as Mandela-effect proof against Penney. Trademark page not fetched. Fixture is a label, not a seal.",
+      "class": "spelling"
+    },
+    {
+      "key": "mandela-death-year",
+      "fixture": "2013",
+      "common_recall": "died in prison in the 1980s",
+      "source_label": "Fiona Broome coined Mandela Effect in 2009 for a shared recall of a prison death. Public record label used here is 2013. A double or replacement claim is unattested.",
+      "class": "date"
+    }
+  ]
+}

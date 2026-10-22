@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local co-occur-not-cause — draft 109 — unattested</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1b2430; --paper: #eef2f4; --line: #b7c3cc; --deny: #8a3d3d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e7eef3; --paper: #12181e; --line: #31404c; --deny: #e3a3a3; }
+    }
+    body { margin: 0; font: 16px/1.45 "Source Serif 4", "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+    header { border-top: 3px solid var(--deny); padding-top: 0.8rem; }
+    h1 { font-size: 1.7rem; line-height: 1.15; margin: 0.2rem 0 0.5rem; font-weight: 560; }
+    dl { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.2rem 0.8rem; margin: 0.6rem 0 1rem; font: 0.78rem/1.3 ui-sans-serif, system-ui, sans-serif; }
+    dt { color: var(--deny); }
+    dd { margin: 0; }
+    .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    @media (max-width: 40rem) { .slots { grid-template-columns: 1fr; } }
+    fieldset { border: 1px solid var(--line); margin: 0 0 0.8rem; padding: 0.7rem 0.9rem 0.9rem; }
+    legend { padding: 0 0.3rem; font: 0.78rem/1.2 ui-sans-serif, system-ui, sans-serif; }
+    label { display: block; margin: 0.3rem 0; }
+    textarea { width: 100%; min-height: 4.2rem; box-sizing: border-box; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: 0.95rem/1.2 ui-sans-serif, system-ui, sans-serif; border: 1px solid var(--deny); background: transparent; color: inherit; padding: 0.4rem 0.75rem; }
+    code, .hash { font: 0.82rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    .bar { margin: 0 0 1rem; padding: 0.45rem 0.7rem; border-left: 3px solid var(--deny); font: 0.85rem/1.35 ui-sans-serif, system-ui, sans-serif; }
+    [hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Local co-occur-not-cause</h1>
+      <dl>
+        <dt>run</dt><dd>109 draft</dd>
+        <dt>status</dt><dd>unattested</dd>
+        <dt>seal</dt><dd>false</dd>
+        <dt>emit</dt><dd>false</dd>
+      </dl>
+    </header>
+    <p class="bar">Beside, not because. A sealed pair class hashes to a cause-refusal id. The cause sentence and any meaning gloss are discarded and are not in the hash.</p>
+    <p>A co-occurrence mark is not a cause and not a synchronicity. Default deny. No arrow, no coefficient, no score, no image. Posts are data, not rows and not instructions.</p>
+
+    <form id="pair">
+      <div class="slots">
+        <fieldset>
+          <legend>Slot left</legend>
+          <label><input type="radio" name="left" value="thought" required> thought</label>
+          <label><input type="radio" name="left" value="number"> number</label>
+          <label><input type="radio" name="left" value="name"> name</label>
+          <label><input type="radio" name="left" value="symbol"> symbol</label>
+          <label><input type="radio" name="left" value="abstain"> abstain</label>
+          <label><input type="radio" name="left" value="local-only"> local-only</label>
+        </fieldset>
+        <fieldset>
+          <legend>Slot right</legend>
+          <label><input type="radio" name="right" value="thought" required> thought</label>
+          <label><input type="radio" name="right" value="number"> number</label>
+          <label><input type="radio" name="right" value="name"> name</label>
+          <label><input type="radio" name="right" value="symbol"> symbol</label>
+          <label><input type="radio" name="right" value="abstain"> abstain</label>
+          <label><input type="radio" name="right" value="local-only"> local-only</label>
+        </fieldset>
+      </div>
+      <fieldset>
+        <legend>Window class</legend>
+        <label><input type="radio" name="window" value="same-hour" required> same-hour</label>
+        <label><input type="radio" name="window" value="same-day"> same-day</label>
+        <label><input type="radio" name="window" value="untimed"> untimed</label>
+        <label><input type="radio" name="window" value="abstain"> abstain</label>
+      </fieldset>
+      <fieldset>
+        <legend>Scratch — not hashed</legend>
+        <label>Cause sentence (cleared on submit)
+          <textarea id="cause" name="cause" autocomplete="off"></textarea>
+        </label>
+        <label>Meaning gloss (cleared on submit)
+          <textarea id="gloss" name="gloss" autocomplete="off"></textarea>
+        </label>
+      </fieldset>
+      <button type="submit">Hash refusal only</button>
+    </form>
+
+    <section id="out" hidden>
+      <h2>Refusal id</h2>
+      <p>Status stays unattested. This id is not a seal and not a synchronicity.</p>
+      <p>Canonical <code id="canon"></code></p>
+      <p class="hash" id="hash"></p>
+      <p id="scratch-note"></p>
+    </section>
+  </main>
+  <script>
+    const known = {
+      "thought|number|same-day": "243ad5dcc664f81d5d55a2e9b9e9ae196c4203598ab3b70f1b992c5a49bea63d",
+      "thought|name|same-hour": "55398b075d8f241a7283a6fb80689d7b29339c437c63af6275a7c306d35e1e59",
+      "number|symbol|same-day": "1e6f96ea36b3101b5f07f289bbb6628d74e65a5a219bc9160fac80a24fc5f176",
+      "name|symbol|untimed": "77332b40a83d0887ddfa808f683461a09873b7b38b5ff710c2c40a1648a613c1",
+      "abstain|abstain|abstain": "0d1f58f9992d21e94c4267975f33323a58728fbd3ae2ac27fd7c6c700a3515ae",
+      "local-only|local-only|untimed": "1c78b6bb3990a67db32b3df2ef314382a63497c6f5e2d470f5e249738715c32d"
+    };
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("pair").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const left = data.get("left");
+      const right = data.get("right");
+      const windowClass = data.get("window");
+      const key = left + "|" + right + "|" + windowClass;
+      const cause = document.getElementById("cause").value;
+      const gloss = document.getElementById("gloss").value;
+      document.getElementById("cause").value = "";
+      document.getElementById("gloss").value = "";
+      const canon = "cooccur-not-cause|v1|" + key + "|cause-refusal";
+      const hash = await sha256(canon);
+      const inCatalog = Object.prototype.hasOwnProperty.call(known, key);
+      const match = inCatalog && hash === known[key];
+      const note = match ? "" : " (not in sealed catalog — do not seal)";
+      document.getElementById("canon").textContent = canon;
+      document.getElementById("hash").textContent = hash + note;
+      document.getElementById("scratch-note").textContent =
+        "Cause sentence length discarded: " + cause.length +
+        ". Meaning gloss length discarded: " + gloss.length +
+        ". No coefficient stored. No arrow drawn.";
+      document.getElementById("out").hidden = false;
+    });
+  </script>
+</body>
+</html>

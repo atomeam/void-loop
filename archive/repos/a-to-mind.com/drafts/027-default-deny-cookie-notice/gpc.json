@@ -1,0 +1,7 @@
+{
+  "gpc": true,
+  "lastUpdate": null,
+  "attested": false,
+  "hold": true,
+  "note": "Draft only. Do not publish at /.well-known/gpc.json until a human seals lastUpdate and promotes slug default-deny-cookie-notice."
+}

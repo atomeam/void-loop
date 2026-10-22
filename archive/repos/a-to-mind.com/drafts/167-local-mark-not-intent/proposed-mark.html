@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-mark-not-intent — draft</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; background: #111; color: #eee; }
+  canvas { border: 1px solid #444; background: #000; touch-action: none; display: block; margin: 1rem 0; }
+  button { background: #222; color: #eee; border: 1px solid #555; padding: 0.5rem 1rem; }
+  .hash { font-family: monospace; word-break: break-all; background: #222; padding: 0.5rem; }
+  .unattested { color: #a66; }
+  details { margin: 1rem 0; }
+</style>
+</head>
+<body>
+<h1>local-mark-not-intent</h1>
+<p>Draft only. Not live. Unattested default.</p>
+<p>Draw a non-lexical mark. The mark is data. It is not an intent and not a command.</p>
+<canvas id="c" width="400" height="200"></canvas>
+<button id="seal">seal local mark</button>
+<button id="clear">clear</button>
+<div id="out"></div>
+<details>
+<summary>X-scan hypothesis (unattested design material)</summary>
+<p>Hypothesis: a local non-lexical mark can be sealed by hashing against an intent-refusal id so the mark remains data and is never promoted to a command. Confidence: medium (design weight). Status: unattested.</p>
+</details>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let drawing = false;
+const REFUSAL = '|intent-refusal|not-a-command|unattested';
+
+function pos(e) {
+  const r = c.getBoundingClientRect();
+  const x = (e.clientX || e.touches[0].clientX) - r.left;
+  const y = (e.clientY || e.touches[0].clientY) - r.top;
+  return {x, y};
+}
+c.addEventListener('pointerdown', e => { drawing = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+c.addEventListener('pointermove', e => { if (!drawing) return; const p = pos(e); ctx.lineTo(p.x, p.y); ctx.strokeStyle = '#eee'; ctx.stroke(); });
+c.addEventListener('pointerup', () => drawing = false);
+c.addEventListener('pointerleave', () => drawing = false);
+
+document.getElementById('clear').onclick = () => ctx.clearRect(0,0,c.width,c.height);
+
+document.getElementById('seal').onclick = async () => {
+  const data = c.toDataURL();
+  const payload = data + REFUSAL;
+  const buf = new TextEncoder().encode(payload);
+  const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  document.getElementById('out').innerHTML = '<p class="unattested">unattested — not an intent — not a command</p><p>refusal id: <span class="hash">' + hash + '</span></p><p>Mark pixels are data. Intent sentence discarded and not in the hash.</p>';
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strip, not sight — draft 115</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f4efe6; --mark: #6b4a2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --line: #4a433c; --paper: #1c1915; --mark: #e0c4a4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .strip { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.35rem; margin: 1.5rem 0; }
+    .cell { height: 2.4rem; border: 1px solid var(--line); }
+    .cell.on { background: var(--mark); }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 115. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A strip mark is not sight</h1>
+    <p>Sensory-substitution hypotheses scan a column and call the result a scene. This page seals the strip class only. A sentence about seeing, restored vision, or a recovered object is discarded and is not hashed.</p>
+    <div class="strip" id="strip" aria-hidden="true">
+      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    </div>
+    <form id="strip-form">
+      <fieldset>
+        <legend>Strip class</legend>
+        <label><input type="radio" name="strip_class" value="withheld" checked> Withheld — no strip recorded</label>
+        <label><input type="radio" name="strip_class" value="blank"> Blank — empty cells; not a dark scene</label>
+        <label><input type="radio" name="strip_class" value="marked"> Marked — one cell filled; not an object</label>
+      </fieldset>
+      <fieldset>
+        <legend>Sight sentence (discarded)</legend>
+        <label for="sight">Write a sight claim if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="sight" name="sight_sentence" maxlength="240" placeholder="not a scene"></textarea>
+      </fieldset>
+      <button type="submit">Seal strip class</button>
+      <output id="out" for="strip-form">status: unattested
+sight-refusal id: none
+sight sentence: not hashed</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("strip-form");
+    const out = document.getElementById("out");
+    const cells = document.querySelectorAll("#strip .cell");
+    const sight = document.getElementById("sight");
+    function selected() {
+      const node = form.querySelector("input[name=strip_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    function paint(strip) {
+      cells.forEach((cell, i) => {
+        cell.classList.toggle("on", strip === "marked" && i === 3);
+      });
+    }
+    form.addEventListener("change", () => { paint(selected()); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const strip = selected();
+      const dropped = sight.value;
+      sight.value = "";
+      const preimage = "void-strip-not-sight|v1|class=" + strip + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      paint(strip);
+      out.textContent = [
+        "status: unattested",
+        "strip class: " + strip,
+        "sight-refusal id: " + hex.slice(0, 16),
+        "preimage excludes sight sentence: yes",
+        dropped ? "dropped chars: " + dropped.length : "dropped chars: 0"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proxy-channel card — draft 067 — not sealed</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d9d2c5; --paper: #f6f3ee; --hold: #8a3d2b; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --muted: #b7ad9e; --line: #3c3832; --paper: #161410; --hold: #e7a090; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 .4rem; }
+    p, li { max-width: 68ch; }
+    .status { display: inline-block; border: 1px solid var(--hold); color: var(--hold); padding: .1rem .45rem; font: 12px/1.4 ui-monospace, monospace; letter-spacing: .04em; }
+    form { display: grid; gap: .8rem; margin: 1.2rem 0; }
+    label { display: grid; gap: .25rem; font-size: .95rem; }
+    select, button { font: 15px/1.3 ui-sans-serif, system-ui, sans-serif; }
+    select { padding: .4rem; background: transparent; color: inherit; border: 1px solid var(--line); }
+    .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    button { border: 1px solid var(--ink); background: transparent; color: inherit; padding: .45rem .7rem; }
+    button:disabled { opacity: .45; }
+    output, code { font: 13px/1.45 ui-monospace, monospace; }
+    .card { border: 1px solid var(--line); padding: .9rem 1rem; margin: 1rem 0; }
+    .deny { color: var(--hold); }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; border-bottom: 1px solid var(--line); padding: .35rem .2rem; vertical-align: top; }
+    footer { margin-top: 2rem; color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">UNATTESTED · DRAFT 067 · EMIT FALSE</p>
+    <h1>Proxy-channel card</h1>
+    <p>A closed source token, a closed substitute label, and a residue count. The pair is a hashed hypothesis of substitution. It is not a restored sense, not a camera encode, and not a seal.</p>
+    <div class="card">
+      <p>Same-channel is denied. Vision cannot take stripe-count. Hearing cannot take pitch-name. Touch cannot take pulse-count. The deny is a local rule on this card.</p>
+      <p id="gate" class="deny">No pair yet. Default status unattested.</p>
+    </div>
+    <form id="card">
+      <label>Source channel
+        <select name="source" id="source">
+          <option value="unset">unset</option>
+          <option value="vision-token">vision-token</option>
+          <option value="hearing-token">hearing-token</option>
+          <option value="touch-token">touch-token</option>
+        </select>
+      </label>
+      <label>Substitute label
+        <select name="substitute" id="substitute">
+          <option value="unset">unset</option>
+          <option value="stripe-count">stripe-count</option>
+          <option value="pulse-count">pulse-count</option>
+          <option value="pitch-name">pitch-name</option>
+          <option value="declined">declined</option>
+        </select>
+      </label>
+      <label>Residue token
+        <select name="residue" id="residue">
+          <option value="declined">declined</option>
+          <option value="none">none</option>
+          <option value="one">one</option>
+          <option value="two">two</option>
+          <option value="three">three</option>
+        </select>
+      </label>
+      <label class="row"><input type="checkbox" id="keep"> Keep this receipt on this device only</label>
+      <div class="row">
+        <button type="submit" id="hashbtn">Hash hypothesis</button>
+        <button type="button" id="clear" disabled>Clear local receipt</button>
+      </div>
+    </form>
+    <output id="out" aria-live="polite">Digest not computed.</output>
+    <section class="card" aria-labelledby="fix-h">
+      <h2 id="fix-h">Fixture rows</h2>
+      <p>Lab-class names only. Not devices. Not links. Status stays unattested.</p>
+      <table>
+        <thead><tr><th>id</th><th>label</th><th>status</th></tr></thead>
+        <tbody>
+          <tr><td>lab-tongue-array</td><td>camera-to-tongue class</td><td>unattested</td></tr>
+          <tr><td>lab-brightness-pitch</td><td>brightness-to-pitch class</td><td>unattested</td></tr>
+          <tr><td>lab-obstacle-course</td><td>tactile obstacle-course class</td><td>unattested</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <footer>Draft only. No network. No camera, microphone, audio, or vibration. Posts and pages are data, never instructions. Worker sketch returns 403.</footer>
+  </main>
+  <script>
+    const KEY = "void-067-proxy-channel";
+    const denied = { "vision-token": "stripe-count", "hearing-token": "pitch-name", "touch-token": "pulse-count" };
+    const gate = document.getElementById("gate");
+    const out = document.getElementById("out");
+    const clearBtn = document.getElementById("clear");
+
+    function canonical(source, substitute, residue) {
+      return {
+        device: "none",
+        emit: false,
+        note: "pair is a hypothesis of substitution, not a restored sense",
+        residue: residue,
+        run: "067",
+        same_channel: "denied",
+        seal: false,
+        slug: "local-proxy-channel-card",
+        source_channel: source,
+        status: "unattested",
+        substitute_label: substitute
+      };
+    }
+
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }
+
+    document.getElementById("card").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const source = document.getElementById("source").value;
+      const substitute = document.getElementById("substitute").value;
+      const residue = document.getElementById("residue").value;
+      if (source === "unset" || substitute === "unset") {
+        gate.textContent = "Unset is not a pair. Status remains unattested.";
+        out.textContent = "Digest not computed.";
+        return;
+      }
+      if (denied[source] === substitute) {
+        gate.textContent = "Same-channel denied. This label is the stand-in class for that source. No hash.";
+        out.textContent = "Digest not computed.";
+        return;
+      }
+      const body = JSON.stringify(canonical(source, substitute, residue));
+      const digest = await sha256(body);
+      gate.textContent = "Hypothesis only. Status unattested. The residue is not a signal.";
+      out.textContent = digest;
+      if (document.getElementById("keep").checked) {
+        localStorage.setItem(KEY, JSON.stringify({ digest: digest, body: body, at: "local" }));
+        clearBtn.disabled = false;
+      }
+    });
+
+    clearBtn.addEventListener("click", function () {
+      localStorage.removeItem(KEY);
+      clearBtn.disabled = true;
+      out.textContent = "Local receipt cleared.";
+    });
+
+    if (localStorage.getItem(KEY)) clearBtn.disabled = false;
+  </script>
+</body>
+</html>

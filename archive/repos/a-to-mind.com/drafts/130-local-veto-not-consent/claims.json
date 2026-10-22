@@ -1,0 +1,26 @@
+{
+  "slug": "local-veto-not-consent",
+  "run": 130,
+  "family": "human-machine co-agency",
+  "status": "candidate-draft",
+  "default": "unattested",
+  "emit": false,
+  "hash_excludes": ["consent_sentence", "post_text", "source_url", "engagement"],
+  "vetoes": [
+    {
+      "id": "v-silence-not-yes",
+      "class": "continued-runtime-not-consent",
+      "label": "Continued runtime after the laptop closes is not consent."
+    },
+    {
+      "id": "v-stamp-not-review",
+      "class": "fast-click-not-review",
+      "label": "A fast accept click is not a review of the final action."
+    },
+    {
+      "id": "v-look-not-authority",
+      "class": "finished-artifact-not-authority",
+      "label": "A finished-looking artifact is not authorization."
+    }
+  ]
+}

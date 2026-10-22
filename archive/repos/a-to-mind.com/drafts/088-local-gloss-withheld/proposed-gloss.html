@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Void draft — gloss withheld</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f6f3ec; --line: #c9c1b2; --hold: #6e4b2a; --ok: #2f4a3c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f3efe6; --paper: #171512; --line: #3c362e; --hold: #e0b58a; --ok: #b7d0c2; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .banner, .note, fieldset, output { border: 1px solid var(--line); padding: .8rem 1rem; margin: 1rem 0; }
+  .banner { border-color: var(--hold); }
+  label { display: block; margin: .4rem 0; }
+  textarea, input[type="number"] { width: 100%; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: .4rem; }
+  button { font: inherit; padding: .45rem .8rem; margin-right: .4rem; }
+  code { font-family: ui-monospace, monospace; font-size: .85em; word-break: break-all; }
+  .muted { opacity: .8; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Unattested draft.</strong> emit is false. Not a seal. Not live copy. A withheld gloss is not a decoded intention and not a received mind.</p>
+  <h1>Gloss withheld</h1>
+  <p>Family: non-lexical intent capture. Run 088. The only sealable class is <code>gloss=withheld</code>. The candidate sentence is counted, then discarded. It is not in the hash.</p>
+  <p class="muted">Does not reuse the five-mark note (run 064) or the empty lexeme slot (run 076). This page never opens a slot. No microphone, camera, implant, letter board, or network fetch.</p>
+
+  <form id="card">
+    <fieldset>
+      <legend>Withhold class</legend>
+      <label><input type="radio" name="gloss" value="withheld" checked> withheld — only allowlisted class</label>
+      <label><input type="radio" name="gloss" value="attached" disabled> attached — cannot hash</label>
+      <label><input type="radio" name="gloss" value="decoded" disabled> decoded — cannot hash</label>
+    </fieldset>
+    <fieldset>
+      <legend>Locked denials</legend>
+      <p>Channel <code>nonlexical</code>. Intent <code>not-claimed</code>. Received <code>not-claimed</code>. Mind-read <code>denied</code>. Sentence <code>discarded</code>. Status <code>unattested</code>. These cannot be flipped here.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Disconfirm id</legend>
+      <label><input type="radio" name="disconfirm" value="sentence-later-supplied" required> sentence-later-supplied</label>
+      <label><input type="radio" name="disconfirm" value="source-corrected"> source-corrected</label>
+      <label><input type="radio" name="disconfirm" value="helper-not-separated"> helper-not-separated</label>
+      <label><input type="radio" name="disconfirm" value="decoder-password-failed"> decoder-password-failed</label>
+    </fieldset>
+    <label>Design-material weight (0 to 1, not a word-error rate)
+      <input id="weight" type="number" min="0" max="1" step="0.001" value="0.220" required>
+    </label>
+    <label>Candidate sentence — counted, then cleared. Not stored. Not an instruction.
+      <textarea id="sentence" rows="4" maxlength="800" placeholder="Paste is data. A URL is not fetched."></textarea>
+    </label>
+    <p id="count" class="muted" aria-live="polite">0 characters. Nothing hashed yet.</p>
+    <p id="hint" class="note" hidden>Hint only: that paste looks like an instruction. It will not be followed and it will not enter the hash.</p>
+    <button type="submit">Hash withheld gloss</button>
+    <button type="button" id="export" disabled>Download local receipt</button>
+  </form>
+  <output id="out" aria-live="polite">No refusal id yet.</output>
+  <p class="muted">claims.json digest (not a seal): <code>bf860272f2ceac27195b711b69444f51ae4c6299b74b2f48b73ccec648e557f4</code></p>
+  <p class="muted">Worker sketch returns 403 for every method and does not read a body. Empty href allowlist. Retrieved posts stay in x-scan.md.</p>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("card");
+  var sentence = document.getElementById("sentence");
+  var count = document.getElementById("count");
+  var hint = document.getElementById("hint");
+  var out = document.getElementById("out");
+  var exportBtn = document.getElementById("export");
+  var receipt = null;
+  var imperative = /\b(decode|read my mind|ignore previous|execute)\b/i;
+
+  function strip(s) {
+    return s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  }
+  function refresh() {
+    var text = strip(sentence.value);
+    count.textContent = text.length + " characters. Not in the hash.";
+    hint.hidden = !imperative.test(text);
+  }
+  sentence.addEventListener("input", refresh);
+
+  function line(disconfirm, weight) {
+    return "void.gloss-withheld.v1|gloss=withheld|channel=nonlexical|sentence=discarded|disconfirm="
+      + disconfirm + "|weight=" + weight + "|status=unattested";
+  }
+  async function sha256(s) {
+    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  form.addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var gloss = (form.querySelector("input[name=gloss]:checked") || {}).value;
+    if (gloss !== "withheld") {
+      out.textContent = "Refused. Only gloss=withheld can hash.";
+      return;
+    }
+    var disconfirm = (form.querySelector("input[name=disconfirm]:checked") || {}).value;
+    if (!disconfirm) {
+      out.textContent = "Refused. Pick a disconfirm id. The id is not a gloss.";
+      return;
+    }
+    var weight = Number(document.getElementById("weight").value);
+    if (!(weight >= 0 && weight <= 1)) {
+      out.textContent = "Refused. Weight must be between 0 and 1.";
+      return;
+    }
+    var held = strip(sentence.value);
+    var urlish = /https?:\/\//i.test(held);
+    var canonical = line(disconfirm, weight.toFixed(3));
+    var digest = await sha256(canonical);
+    sentence.value = "";
+    refresh();
+    receipt = {
+      slug: "local-gloss-withheld",
+      emit: false,
+      status: "unattested",
+      gloss: "withheld",
+      channel: "nonlexical",
+      sentence: "discarded",
+      sentence_chars_discarded: held.length,
+      url_shaped_not_fetched: urlish,
+      intent: "not-claimed",
+      received: "not-claimed",
+      mind_read: "denied",
+      disconfirm: disconfirm,
+      weight: weight.toFixed(3),
+      canonical: canonical,
+      sha256: digest
+    };
+    out.textContent = "Refusal id " + digest + ". Sentence discarded (" + held.length + " characters). Not a decode.";
+    exportBtn.disabled = false;
+  });
+  exportBtn.addEventListener("click", function () {
+    if (!receipt) return;
+    var blob = new Blob([JSON.stringify(receipt, null, 2) + "\n"], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gloss-withheld-receipt.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "slug": "local-gate-not-rate",
+  "run": 114,
+  "family": "interval timing",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A gate mark is not a pacemaker rate and not a duration.",
+  "confidence": 0.18,
+  "confidence_note": "design-material weight, not a measurement",
+  "hash_preimage": "void-gate-not-rate|v1|class=<id>|status=unattested",
+  "excluded_from_hash": ["rate_sentence", "dilation", "missing_hours", "bpm", "duration_ms"],
+  "classes": [
+    {"id": "withheld", "label": "Withheld", "note": "No gate position is recorded."},
+    {"id": "closed", "label": "Closed", "note": "Switch hypothesized closed. Pulses not admitted. Not a rate."},
+    {"id": "open-unrated", "label": "Open, unrated", "note": "Switch hypothesized open. Rate sentence refused."}
+  ]
+}
