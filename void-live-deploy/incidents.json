@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T02:12:24.361Z",
-   "sha": "cc841604687fa80121f3f683e2030605ec375748",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39708137880",
+   "at": "2026-10-22T02:13:03.175Z",
+   "sha": "1f25ead583e181652cee6babbcb2a2a17bd93b4c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39708178311",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
@@ -13,7 +13,6 @@
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "tools/stage-camera.test.mjs",
     "void-live-deploy/lib/stage-camera.js",
     "void-live-deploy/skills/fly.js"
    ]
