@@ -382,6 +382,7 @@ for (const [name, file] of [
   ['card-share', 'card-share.test.mjs'],
   ['rally', 'rally.test.mjs'],
   ['forge-duel', 'forge-duel.test.mjs'],
+  ['gamebox', 'gamebox.test.mjs'],
   ['card-art', 'card-art.test.mjs'],
   ['card-image', 'card-image.test.mjs'],
   ['video', 'video.test.mjs'],

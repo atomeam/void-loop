@@ -5659,6 +5659,10 @@ say('nothing selected to remove');
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
+      // folded in from helper/random-num, helper/coin-flip and helper/magic-8ball (2026-10-22, the Game Box): "roll 1 to 6", "pick 1 to 10", "coin flip for dinner", "what does the 8 ball say"
+      { const r = l.match(/^(?:roll|pick)\s+(-?\d{1,9})\s+to\s+(-?\d{1,9})$/); if (r) { let a = +r[1], b = +r[2]; if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; } }
+      { const r = l.match(/^(?:coin\s+(?:flip|toss)|flip\s+(?:a\s+)?coin)\s+for\s+(.{1,60})$/); if (r) return { title: 'Coin for ' + r[1], big: rnd(2) ? 'Heads' : 'Tails', note: 'a fair coin' }; }
+      if (/^what\s+(?:does|would)\s+the\s+(?:magic\s+)?8[\s-]?ball\s+say(?:\s.*)?$/.test(l)) l = 'magic 8 ball';
       if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
@@ -5768,7 +5772,7 @@ say('nothing selected to remove');
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
-        if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+        if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }

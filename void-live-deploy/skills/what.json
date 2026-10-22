@@ -104,6 +104,7 @@
  "friction": "A slider for how slippery things are",
  "fringe-to-skill": "\"fringe to skill\", \"which skills came from the fringe\", \"what did the fringe experiments teach\": every…",
  "fuel": "Trip fuel cost from distance, efficiency, and price",
+ "gamebox": "The Game Box, every game and the table tools in one place",
  "gauge-feedback": "\"clean this feedback <text> | work: <the work, in a few words>\" splits feedback into statements, flags the…",
  "gaze-chase": "Tilt Arena's Gaze Chase mode: in VR the agents chase where you look, and without VR the pointer or tilt steers",
  "gears": "Explainer.gear-pair, the first living miniature: two meshing gears you turn by dragging either one, with…",
