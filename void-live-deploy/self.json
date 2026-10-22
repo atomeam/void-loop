@@ -483,88 +483,92 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T00:36:30Z",
-   "subject": "Incident: the browser suite failed on 7143ee3e (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:26:25Z",
+   "subject": "ritual-template: a habit sequence as one calendar file (asked by Verse)"
   },
   {
-   "at": "2026-10-22T00:22:07Z",
-   "subject": "Incident: the browser suite failed on 7143ee3e (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:25:44Z",
+   "subject": "grow-self: commit an empty tools/grow-lessons.json so the git add finds it; back to the one git add line the allowlist test reads (#1211)"
   },
   {
-   "at": "2026-10-22T00:17:31Z",
-   "subject": "Forethinkers 2026-10-21 20:13: GSE327270 holds 2 of 84 participants, so MaGE waits; Source Data tertile split shows a GrimAge-only…"
+   "at": "2026-10-22T02:24:40Z",
+   "subject": "Incident: the browser suite failed on 9b83e5d9 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T23:03:48Z",
-   "subject": "Incident: the browser suite failed on f836c4b7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:22:21Z",
+   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T22:56:31Z",
-   "subject": "Incident: the browser suite failed on f836c4b7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:21:23Z",
+   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T22:41:18Z",
-   "subject": "Incident: the browser suite failed on f836c4b7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:19:44Z",
+   "subject": "Incident: the browser suite failed on c28ae7a4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T22:35:04Z",
-   "subject": "Lists run 3: memory preview in the memory card, Deciding 3 of 3 proven, template-list + list-starters one family, prepush ledger guard…"
+   "at": "2026-10-22T02:19:26Z",
+   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T21:33:38Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
+   "at": "2026-10-22T02:18:09Z",
+   "subject": "Incident: the browser suite failed on 2c37c935 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T20:29:02Z",
-   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:17:56Z",
+   "subject": "Incident: the browser suite failed on 965a8a1b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T20:20:24Z",
-   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:17:10Z",
+   "subject": "no ellipsis: the book's What's new keeps whole sentences, the book fits the window (dvh, room for the bar), and a check stops new ellipsis…"
   },
   {
-   "at": "2026-10-21T20:17:11Z",
-   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:15:10Z",
+   "subject": "Incident: the browser suite failed on e8d870a4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T20:07:01Z",
-   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:14:56Z",
+   "subject": "Incident: the browser suite failed on 77fab71b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T20:04:29Z",
-   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:13:22Z",
+   "subject": "Incident: the browser suite failed on f0fde96b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T19:59:35Z",
-   "subject": "grades: category-weighted class grade and the grade a final left you (#1200)"
+   "at": "2026-10-22T02:13:12Z",
+   "subject": "showcase: 'I built this' names the newest build, and a preview is used up only when you open it (it was marked shown the moment it flashed…"
   },
   {
-   "at": "2026-10-21T19:53:54Z",
-   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:13:03Z",
+   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T19:49:07Z",
-   "subject": "Lists run 2: main's red fast checks green (fuzzy, privacy, map, parallax, overlap, generated files), suntimes owns the bare sunrise ask…"
+   "at": "2026-10-22T02:12:36Z",
+   "subject": "self card: whole sentences (no ellipsis), what's built and improved skill by skill from the ledger, new phrases named in previews, a check…"
   },
   {
-   "at": "2026-10-21T19:42:40Z",
-   "subject": "Incident: the browser suite failed on d6901d84 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:12:24Z",
+   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T19:37:48Z",
-   "subject": "Lists run 1: four of Verse's asks built, one skill merge, duplicates and blocks recorded, lists metrics (#1195)"
+   "at": "2026-10-22T02:10:24Z",
+   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-21T18:45:43Z",
-   "subject": "Incident: the browser suite failed on f1e751c7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:10:19Z",
+   "subject": "reflect: drop asks the ledger already names as built and ask once more, so Verse comes up with new wants (every reflection repeated three…"
   },
   {
-   "at": "2026-10-21T18:44:14Z",
-   "subject": "Incident: the browser suite failed on 29bdbefe (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:09:06Z",
+   "subject": "grow-self: add only the files that exist (a missing tools/grow-lessons.json failed every hardening run since 15:43 UTC Oct 21); ledger…"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
+    "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
+   },
    {
     "name": "Lists caught up, run 3 (Grok Bot, 2026-10-21)",
     "line": "two of Verse's asks that it had made 9 times each are built: 'preview my memory' (inside the memory card) and the Deciding family (3 of 3 proven now). template-list and list-templates are one routing place (skills/list-starters.js…"
@@ -584,10 +588,6 @@
    {
     "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
     "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
-   },
-   {
-    "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Verse)",
-    "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family…"
    }
   ],
   "ladders": [
