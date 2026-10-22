@@ -2037,6 +2037,26 @@
       "words": "Automate a 'post-fix' audit that checks if a shipped fix accidentally broke a skill in a different family.",
       "ledgerAt": "2026-10-22T03:30:45Z",
       "why": "built: asked by Verse: a fix audit: 'audit your fixes' lists every fix in the growth ledger (last 30 days) with each fixed skill's evidence rating and whether it was re-rated on or after the fix day, flags any failing check in  (linked by tools/asks-link.mjs, shared words: post, fix, audit, check, shipp, accident, broke, skill, different, fami)"
+    },
+    {
+      "words": "Add an 'action' button to the Root cause view that sends the error context directly to the builder agents.",
+      "ledgerAt": "2026-10-22T03:10:39Z",
+      "why": "built: incident-autopsy, asked by Verse: each incident has a 'Send to builders' button that copies a builder brief (failing checks + remediation draft) or files it as a prefilled builder issue; 'send the root cause to the builders' opens it"
+    },
+    {
+      "words": "Verify if the newly shipped /fix/ pages are actually reducing the 'friction' metric in the growth logs, or if they are just moving the debt elsewhere.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'are the fix pages reducing friction' answers that the /fix/ pages explain outside tools' errors and map to no skill, so the friction line cannot show their effect, and what would"
+    },
+    {
+      "words": "Audit the 23 fixed skills to ensure their 'evidence' rating in skills/families.json was updated correctly based on the fix.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'fix evidence audit' lists each fixed skill's rating and flags one rated before its fix"
+    },
+    {
+      "words": "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for each upgrade.",
+      "ledgerAt": "2026-10-22T02:49:48Z",
+      "why": "built: wants, asked by Verse: a 'Why I want this' fold under each want and ask with the reflection behind it; 'show the reasoning behind your wants' opens it"
     }
   ],
   "totals": {
