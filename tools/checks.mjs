@@ -18,7 +18,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -125,6 +125,7 @@ for (const [name, file] of [
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
+  ['glitch-titles', 'glitch-titles.mjs'],
   ['perf3d', 'perf3d.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
