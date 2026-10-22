@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- opencode (memory-preview ship) · helper/memory-preview-ship · Verse's memory-preview ask (ask-20261020-2131-2): one card of memory snippets, the local patterns and the server records, with memory-graph's export look left alone · 2026-10-22 01:07 UTC
+
 - opencode (Option 1) · helper/grow-self-closeout · the close-out gate for grow-self.yml: the gate’s brain (tools/grow-gate.mjs, tools/grow-self.state.json) is now in the repo, an open "made by Verse" pull request stops the run with exit 0, a list that cannot be read stops it too, the preview that is out is verified on the live site and closed before the next one starts, and tools/grow-self.test.mjs locks all of it · 2026-10-20 22:40 UTC
 
 - Claude (fly helper) · worktree-agent-a15d345f1755e8c3b · look around and fly around Verse (owner, 2026-10-18): a camera over the stage, skills/fly.js + lib/stage-camera.js, view only, nothing in void.html · 2026-10-18 01:40 UTC

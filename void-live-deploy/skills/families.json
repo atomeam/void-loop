@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 26,
-  "checked": 11,
+  "checked": 12,
   "proven": 267
  },
  "families": [
@@ -2821,7 +2821,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 2,
+    "checked": 3,
     "proven": 38
    },
    "skills": [
@@ -2950,9 +2950,9 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 11 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 17 browser-suite mentions, 11 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 4
     },
@@ -3220,6 +3220,14 @@
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 3
+    },
+    {
+     "name": "memory-preview",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-22"
     },
     {
      "name": "wants",
