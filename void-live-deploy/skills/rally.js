@@ -54,7 +54,7 @@ const tile = (c, extra = '') => '<span class="n">' + esc(c.name) + '</span><span
 function mountPage(el, mode, api) {
   if (!document.getElementById('rally-style')) { const st = document.createElement('style'); st.id = 'rally-style'; st.textContent = CSS; document.head.appendChild(st); }
   el.dataset.cardPlain = ''; el.dataset.noDeck = ''; el.classList.add('rally');
-  el.innerHTML = '<h2>' + (mode === 'binder' ? 'My cards' : 'Verse Rally') + '</h2><div class="r-tabs" role="tablist"></div><div class="r-main"></div>';
+  el.innerHTML = '<h2>' + (mode === 'binder' ? 'My cards' : 'Verse Rally') + '</h2><div class="r-tabs" role="tablist"></div><div class="r-main"></div>'; // void-review: ok: two fixed strings, no user text
   const tabs = el.querySelector('.r-tabs'), main = el.querySelector('.r-main');
   const TABS = [['binder', 'My cards'], ['play', 'Play'], ['tutorial', 'Learn (1 min)'], ['daily', 'Daily challenge']];
   const go = (m) => { mode = m; for (const b of tabs.children) { b.classList.toggle('on', b.dataset.m === m); b.setAttribute('aria-selected', String(b.dataset.m === m)); } el.querySelector('h2').textContent = m === 'binder' ? 'My cards' : 'Verse Rally'; (m === 'binder' ? binder : match)(m); };
