@@ -1,15 +1,68 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 73,
- "runsTotal": 190,
+ "cases": 75,
+ "runsTotal": 191,
  "kinds": {
-  "grow": 66,
+  "grow": 67,
   "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-22T01:56:37Z",
+   "passed": 67,
+   "of": 78,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play connect four",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "set a timer for 5 minutes",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "what is 17 times 23",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "play reversi",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "show the days until a date",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    },
+    {
+     "ask": "arcade games",
+     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+    }
+   ]
+  },
   {
    "at": "2026-10-20T22:41:16Z",
    "passed": 67,
@@ -176,13 +229,6 @@
    "of": 61,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
-  },
-  {
-   "at": "2026-10-18T06:59:10Z",
-   "passed": 57,
-   "of": 60,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
   }
  ],
  "seen": {
@@ -453,6 +499,10 @@
   "skill:text-tools": "2026-10-19T10:59:48Z",
   "skill:photos": "2026-10-20T22:41:16Z",
   "skill:time-capsule": "2026-10-20T22:41:16Z",
-  "skill:time-math": "2026-10-20T22:41:16Z"
+  "skill:time-math": "2026-10-20T22:41:16Z",
+  "skill:languages": "2026-10-22T01:56:37Z",
+  "skill:list-starters": "2026-10-22T01:56:37Z",
+  "skill:memory-preview": "2026-10-22T01:56:37Z",
+  "skill:stage-out": "2026-10-22T01:56:37Z"
  }
 }

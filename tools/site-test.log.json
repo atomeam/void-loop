@@ -1439,5 +1439,58 @@
    }
   ],
   "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)"
+ },
+ {
+  "at": "2026-10-22T01:56:37Z",
+  "passed": 67,
+  "of": 78,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "what are you?",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play voidquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play connect four",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play reversi",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "arcade games",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   }
+  ],
+  "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)"
  }
 ]
