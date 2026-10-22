@@ -93,3 +93,21 @@ Nothing is ever finished; everything upgrades for ever. No item is marked done a
 (`tools/persona-playtest.mjs`: new player, power user, phone, screen reader) and a best-site comparison, then whatever is weak is rebuilt:
 layout, completeness, clarity, speed, beauty in the void look, phone, no cut-off text. Order: the home page, the ask flow, cards, the book,
 then games, then the rest (`overhaulWeights()` in `lib/lap.js`). Each item ships as its own small PR, and the tracker line is posted after each batch.
+
+**The only site you need** (owner, 2026-10-22: "a-to-mind should be the only website you need"): `tools/lap-items.mjs` lists 24 popular
+site categories (search, video, social, email, shopping, news, maps, weather, music, chat, docs and notes, translate, calendar, photos,
+games, finance, sports, recipes, calculator, timer and clock, learning, podcasts, travel, jobs), most used first, with the Verse skills that
+cover each. Status from facts only: missing (no skill), partial (one skill, or none tested), replaced (two or more skills, one tested).
+Each category is a lap item (`site:<category>`) weighted right after the most-used surfaces, so every lap shrinks missing and upgrades
+partial. 2026-10-22: 7 replaced, 12 partial, 5 missing (email, chat, podcasts, travel, jobs). Public at `GET /api/will?lap=1` (`onlySite`).
+
+**The tower** (owner, 2026-10-22): the only-site-you-need list as a fighting-game ladder ("the tower", "verse tower", "which sites have you
+beaten"; `skills/tower.js`, `lib/tower.js`). Each of 24 floors is one real site, named in plain text only as a comparison (no logos, brand
+art or styling, no affiliation implied; Verse's skills keep their own names). Hard gate: a floor is beaten only when every aspect on its
+checklist (9 common: speed, accuracy, completeness, mobile, accessibility, offline, sharing, design polish, reliability, plus the site's own)
+is verified better in an automated head-to-head against the live site (`tools/tower-gate.mjs` writes `tower.evidence.json`: verdicts and
+numbers; screenshots stay private outside the repo). A pass that turns worse keeps `was` and un-beats the floor. The marker never passes a
+floor whose gate fails. Floors with evidence sort easiest to hardest by measured gap. Automated today: speed, reliability, mobile,
+accessibility; every other aspect is unverified until its check exists, so it never counts. First real run (2026-10-22, calculator floor):
+accessibility better, reliability and mobile equal (not a win), speed worse (Verse 3341 ms vs 908 ms). 0 of 11 aspects beaten.
+The detailed per-site checklists come from passive study (loop-study / rea-study) and stay in private memory.

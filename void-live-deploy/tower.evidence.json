@@ -1,0 +1,35 @@
+{
+ "note": "Head-to-head verdicts per floor and aspect, written by tools/tower-gate.mjs from automated comparisons. Generic aspect names and counts only; the best sites and their detailed checklists stay private.",
+ "floors": {
+  "calculator": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 3341,
+    "best": 908,
+    "evidence": "Verse 3341 ms to network idle (median of 3, phone width) vs calculator.net 908 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-22T05:25:20.699Z"
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
+    "at": "2026-10-22T05:25:20.699Z"
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-22T05:25:20.699Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 6,
+    "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
+    "at": "2026-10-22T05:25:20.699Z"
+   }
+  }
+ }
+}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { overhaulWeights, compare, lapProgress, upgradeAsk, nextStep, advance, lapLine, publicLap, staleness, candidateOf, NEW_PER_LAP } from '../void-live-deploy/lib/lap.js';
+import { onlySiteLine, overhaulWeights, compare, lapProgress, upgradeAsk, nextStep, advance, lapLine, publicLap, staleness, candidateOf, NEW_PER_LAP } from '../void-live-deploy/lib/lap.js';
 test('a lap touches every skill once, then new features, then a new lap over the bigger set', () => {
   let s = null; const seen = []; const skills = ['b', 'a', 'c'];
   for (let i = 0; i < 3; i++) { const r = nextStep(s, skills, { c: 5 }); assert.equal(r.step.kind, 'upgrade'); seen.push(r.step.skill); s = advance(r.state, r.step); }
@@ -26,4 +26,7 @@ test('an item is better only when a fact rose and none fell; plans get no extern
 test('lap 1 is an overhaul, most used first', () => {
   const ids = ['skill:zz', 'surface:book', 'surface:home', 'skill:chess'], r = nextStep(null, ids, overhaulWeights(ids));
   assert.equal(r.step.skill, 'surface:home'); assert.match(candidateOf(r.step).title, /^Overhaul surface:home: persona playtest/);
+});
+test('the only-site line is counts only', () => {
+  assert.equal(onlySiteLine({ replaced: 1, partial: 2, missing: 3, categories: 6 }), 'Only site you need: 1 replaced, 2 partial, 3 missing of 6 categories');
 });

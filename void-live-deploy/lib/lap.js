@@ -40,7 +40,7 @@ export function advance(state, step, at = null, facts = null) {
 /** the public line (counts only): "Lap 2: upgraded 140 of 316, 37 of 100 new this lap". Pure. */
 export const lapLine = (s) => { const x = { ...fresh(), ...(s || {}) }; return 'Lap ' + x.lap + ': upgraded ' + x.pos + ' of ' + x.order.length + ' items' + ', ' + x.newThisLap + ' of ' + NEW_PER_LAP + ' new this lap'; };
 /** the public tracker: counts only, no skill names beyond the next one. Pure. */
-export const publicLap = (s) => { const x = { ...fresh(), ...(s || {}) }; return { lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, line: lapLine(x), at: x.at, ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
+export const publicLap = (s, onlySite = null) => { const x = { ...fresh(), ...(s || {}) }; return { ...(onlySite ? { onlySite } : {}), lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, line: lapLine(x), at: x.at, ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
 
 /** a want for a step: an upgrade names the skill and its rolling next upgrade (never "done"); a new step asks for one new feature. Pure. */
 const factLine = (f) => Object.entries(f || {}).map(([k, v]) => k + ' ' + v).join(', ');
@@ -52,6 +52,7 @@ export function upgradeAsk(id) {
   if (g === 'doc') return 'make the ' + name + ' doc more accurate and complete';
   if (g === 'tool') return 'make the ' + name + ' tool better tested or more useful';
   if (g === 'surface') return 'upgrade the ' + name + ' surface as a whole';
+  if (g === 'site') return 'move the ' + name + ' category up (missing to partial, partial to replaced): what a visitor would otherwise leave Verse for';
   if (g === 'loop') return 'upgrade the loop itself';
   return 'upgrade the ' + name + ' skill: fix its gaps, add missing basics and apply every discovered rule';
 }
@@ -77,5 +78,7 @@ export function candidateOf(step, nextUpgrade = {}, facts = null) {
 // user, phone, screen reader) and a best-site comparison, then whatever is weak is rebuilt (layout, completeness, clarity, speed, beauty in
 // the void look, mobile, no cut-off text). The most used go first: the home page, the ask flow, cards, the book, then the games.
 export const MOST_USED = ['surface:home', 'surface:ask', 'surface:cards', 'surface:book', 'surface:games'];
-export const overhaulWeights = (ids) => { const w = {}; MOST_USED.forEach((id, i) => { w[id] = 1000 - i; }); for (const id of ids || []) if (/^skill:/.test(id) && !(id in w)) w[id] = /game|rally|duel|chess|monopoly|card|book/.test(id) ? 10 : 0; return w; };
+export const overhaulWeights = (ids) => { const w = {}; MOST_USED.forEach((id, i) => { w[id] = 1000 - i; }); (ids || []).filter((id) => /^site:/.test(id)).forEach((id, i) => { w[id] = 500 - i; }); for (const id of ids || []) if (/^skill:/.test(id) && !(id in w)) w[id] = /game|rally|duel|chess|monopoly|card|book/.test(id) ? 10 : 0; return w; };
 export const overhaulAsk = (id) => 'Overhaul ' + id + ': persona playtest and best-site comparison, then rebuild what is weak (layout, completeness, clarity, speed, beauty, phone, no cut-off text)';
+/** the "only site you need" line, counts only: "Only site you need: 9 replaced, 11 partial, 4 missing of 24 categories". Pure. */
+export const onlySiteLine = (c) => c ? 'Only site you need: ' + c.replaced + ' replaced, ' + c.partial + ' partial, ' + c.missing + ' missing of ' + c.categories + ' categories' : '';
