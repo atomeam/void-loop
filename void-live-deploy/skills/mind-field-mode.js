@@ -1,5 +1,7 @@
 /**
- * mind-field-mode skill — the words that reach Mind Field's modes by name (owner, 2026-10-21: "make them all easier to find"):
+ * mind-field-mode skill — Mind Field: one living field you can draw on, talk to and steer, in eight modes (Doodle Mind, Echo Field, Swarm,
+ * Flow, Listen, Grow, Attention and Living cards); "mind field modes" lists them and every card has a Mode switcher. These are the words
+ * that reach Mind Field's modes by name (owner, 2026-10-21: "make them all easier to find"):
  * "mind field swarm", "listen field", "swarm field", "mind field in flow mode", "show me a mind", "mind field modes", "save this mind".
  * A mode ask opens that mode's own skill exactly as its old words do (or switches the card on the stage); "save this mind" seals the
  * Mind Field card on the stage (numbers only, never what you drew). The table is lib/mind-field-modes.js.
@@ -13,8 +15,9 @@ import resonance from './resonance-mind.js';
 import nca from './nca-mind.js';
 import attention from './attention-field-mind.js';
 import livingCards from './living-cards-mind.js';
+import echo from './echo-field.js';
 
-const SKILLS = { 'doodle-mind': doodle, 'swarm-mind': swarmMind, 'vector-field-mind': vectorField, 'resonance-mind': resonance, 'nca-mind': nca, 'attention-field-mind': attention, 'living-cards-mind': livingCards };
+const SKILLS = { 'doodle-mind': doodle, 'echo-field': echo, 'swarm-mind': swarmMind, 'vector-field-mind': vectorField, 'resonance-mind': resonance, 'nca-mind': nca, 'attention-field-mind': attention, 'living-cards-mind': livingCards };
 const CLEAN = (t) => String(t || '').toLowerCase().trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const SHOW_A_MIND = /^(?:show|give|make) me (?:a|the|your) mind$/;
 
@@ -25,8 +28,8 @@ async function run(text, api) {
   const t = String(text || '');
   if (listAsk(t)) {
     api.showPage((p) => {
-      p.innerHTML = '<h2>Mind Field modes</h2><p>Mind Field is one skill with seven modes. Each card has a Mode switcher, and every one of these asks opens its mode.</p><ul class="mf-modes">'
-        + MODES.map((m) => '<li><b>' + api.esc(m.title) + '</b>: ' + api.esc(m.about) + '. <a href="#" data-ask="' + api.esc(m.ask) + '">' + api.esc(m.ask) + '</a> · <a href="#" data-ask="mind field ' + api.esc(m.name.toLowerCase()) + '">mind field ' + api.esc(m.name.toLowerCase()) + '</a></li>').join('')
+      p.innerHTML = '<h2>Mind Field modes</h2><p>Mind Field is one skill with ' + MODES.length + ' modes. Each card has a Mode switcher, and every one of these asks opens its mode.</p><ul class="mf-modes">'
+        + MODES.map((m) => '<li><b>' + api.esc(m.title) + '</b>: ' + api.esc(m.about) + '. <a href="#" data-ask="' + api.esc(m.ask) + '">' + api.esc(m.ask) + '</a> · <a href="#" data-ask="mind field ' + api.esc(m.name.toLowerCase()) + '">mind field ' + api.esc(m.name.toLowerCase()) + '</a>' + (m.link ? ' · <a href="' + api.esc(m.link.href) + '" target="_blank" rel="noopener">' + api.esc(m.link.text) + '</a>' : '') + '</li>').join('')
         + '</ul><p class="src">Say "save this mind" to seal the one on the stage.</p>';
     });
     return 'mind-field-mode';
@@ -45,7 +48,7 @@ async function run(text, api) {
 
 export default {
   name: 'mind-field-mode',
-  examples: ['mind field swarm', 'listen field', 'swarm field', 'mind field in flow mode', 'show me a mind', 'mind field modes', 'save this mind', 'mind field grow'],
+  examples: ['mind field swarm', 'listen field', 'swarm field', 'mind field in flow mode', 'show me a mind', 'mind field modes', 'save this mind', 'mind field grow', 'mind field doodle mind'],
   nearMisses: ['what is a magnetic field', 'mind over matter', 'save this note', 'field trip ideas', 'swarm'],
   match, run
 };

@@ -4270,16 +4270,43 @@ try {
       const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
       await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
       const swapped = { swarm: !!(await F.p.$('.ff-swarm-mind')), doodle: !!(await F.p.$('.ff-doodle-mind')), sel: await F.p.$eval('.ff-swarm-mind select.mf-mode', (s) => s.value).catch(() => '') };
-      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind'], ['echo field', '.ff-echo-field'], ['mind field doodle mind', '.ff-doodle-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
       await F.ask('mind field modes', 700); const list = await F.p.$$eval('.mf-modes li', (l) => l.length).catch(() => 0);
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 7 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 7 && o.sim === 8 && !o.errors.length;
-    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all seven, and "what\'s similar" lists all eight parts',
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 8 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 8 && o.sim === 9 && !o.errors.length;
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }
+  if (want("tilt arena: four modes in one card, agents learn, Mode switches, GPU Swarm falls back, every ask opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
+    const out = {};
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
+      const F = await fresh(); await F.p.setViewportSize(vp);
+      await F.ask('tilt arena', 700); await until(async () => !!(await F.p.$('.ff-tilt-mode canvas')), 8000);
+      const card = '.ff-tilt-mode', cv = await F.p.$(card + ' canvas'), b = await cv.boundingBox();
+      for (let i = 0; i < 30; i++) { await F.p.mouse.move(b.x + b.width * (0.2 + i / 60), b.y + b.height * 0.4); await F.p.waitForTimeout(40); }
+      await F.p.waitForTimeout(3200);
+      const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why,.ta-board li')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className || n.tagName);
+        return { gen: +(e.dataset.gen || 0), board: e.querySelectorAll('.ta-board li').length, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), frameMs: +(e.dataset.frameMs || 99), clipped: out }; });
+      await F.ask('save the arena', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      await F.p.selectOption(card + ' select.mf-mode', 'gpu-swarm'); await until(async () => !!(await F.p.$('.ff-gpu-swarm canvas')), 8000).catch(() => {});
+      await until(async () => /^(on|cpu)$/.test(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.gpu || '')), 8000).catch(() => {});
+      await until(async () => !!(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.frameMs || '')), 8000).catch(() => {});
+      const gpu = await F.p.$eval('.ff-gpu-swarm', (e) => ({ where: e.dataset.gpu || '', frameMs: +(e.dataset.frameMs || 99), tilt: !!document.querySelector('.ff-tilt-mode') })).catch(() => ({}));
+      const asks = {}; for (const [a, sel] of [['gaze chase', '.ff-gaze-chase'], ['hand arena', '.ff-hand-arena'], ['tilt arena gaze', '.ff-gaze-chase']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      const xr = await F.p.$eval('.ff-hand-arena', (e) => [...e.querySelectorAll('button')].map((x) => x.textContent).join('|')).catch(() => '');
+      await F.ask('tilt arena modes', 700); const list = await F.p.$$eval('.ta-modes li', (l) => l.length).catch(() => 0);
+      out[vp.width] = { ...r, seal, gpu, asks, xr, list, errors: F.errors.slice() }; await F.ctx.close();
+    }
+    const good = (o) => o.gen >= 1 && o.board === 3 && o.modes.length === 4 && o.modes[0] === 'tilt-mode' && o.frameMs < 8 && !o.clipped.length && /^[0-9a-f]{12}$/.test(o.seal)
+      && /^(on|cpu)$/.test(o.gpu.where) && o.gpu.frameMs < 8 && !o.gpu.tilt && Object.values(o.asks).every(Boolean) && /VR/.test(o.xr) && o.list === 4 && !o.errors.length;
+    check('tilt arena: "tilt arena" opens Tilt mode with three leader cards, the weakest copies the leader within a few seconds, the card fits at 1280 and 390 wide with nothing cut off, under 8 ms a frame, "save the arena" seals the leader, Mode switches in place to GPU Swarm (graphics card or the processor, under 8 ms), "gaze chase", "hand arena" and "tilt arena gaze" open their modes with a VR button or its fallback, and "tilt arena modes" lists all four',
+      good(out[1280]) && good(out[390]), JSON.stringify(out).slice(0, 900));
+  }
+
   if (want("operating laws: veto council keeps mass at 100 and names who delayed or blocked, stigmergy board grows returning trails, term orbits merge overused words")) { // asked by the owner, 2026-10-18
     const F = await fresh();
     await F.ask('convene a council on whether to rewrite the app', 700); await until(async () => !!(await F.p.$('.veto-council .vc-p')), 8000);
