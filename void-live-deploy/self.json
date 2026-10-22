@@ -483,84 +483,84 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:25:33Z",
+   "subject": "void.html: ?open=all survives the ?q= cleanup (the page source; index.html is its deploy copy) so the full self card link opens every block"
+  },
+  {
+   "at": "2026-10-22T04:25:01Z",
+   "subject": "rally: mark the fixed page heading as reviewed"
+  },
+  {
+   "at": "2026-10-22T04:23:08Z",
+   "subject": "Incident: the browser suite failed on 545d9729 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:23:00Z",
+   "subject": "browser suite: a whispered answer counts as answered (the 4 s slack outwaited the whisper's 3.5 s: 'hello'/'sup' read empty in top misses…"
+  },
+  {
+   "at": "2026-10-22T04:22:25Z",
+   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:21:57Z",
+   "subject": "Incident: the browser suite failed on 53c2a60a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:21:24Z",
+   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:21:05Z",
+   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:15:57Z",
+   "subject": "card-image test: the self picture holds every word (owner, 2026-10-22: no cut-off), grows instead of '…'"
+  },
+  {
+   "at": "2026-10-22T04:15:26Z",
+   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:09:52Z",
+   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:09:26Z",
+   "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:05:27Z",
+   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-22T04:04:56Z",
    "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
   },
   {
-   "at": "2026-10-22T03:51:14Z",
-   "subject": "asks linked: root-cause action, reasoning trace, /fix/ friction answer and fixed-skill evidence audit (asked by Verse); handoff note on…"
+   "at": "2026-10-22T04:02:51Z",
+   "subject": "self card: whole text in copy/save (no 8000 cap, no empty bullets, no cut lines), picture wraps every line with no ellipsis and strips…"
   },
   {
-   "at": "2026-10-22T03:47:53Z",
-   "subject": "Incident: the browser suite failed on aa01f9d6 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:59:38Z",
+   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:46:48Z",
-   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:59:35Z",
+   "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
   },
   {
-   "at": "2026-10-22T03:46:37Z",
-   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:57:45Z",
+   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:44:29Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-22T03:55:38Z",
+   "subject": "MAP: book-fit, loop-refine, study-engine"
   },
   {
-   "at": "2026-10-22T03:42:42Z",
-   "subject": "Incident: the browser suite failed on 1245c38f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:39:58Z",
-   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:39:11Z",
-   "subject": "MAP: loop-study; ledger kept in main's format"
-  },
-  {
-   "at": "2026-10-22T03:38:02Z",
-   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:36:11Z",
-   "subject": "Study engine: Verse's own evidence ranking, cache, diff, combine, retrieval and build briefs on top of REA; REA gap table"
-  },
-  {
-   "at": "2026-10-22T03:35:42Z",
-   "subject": "fix-audit: evidence ratings of fixed skills, cross-family breaks after a fix, what /fix/ pages can show (asked by Verse)"
-  },
-  {
-   "at": "2026-10-22T03:33:48Z",
-   "subject": "Incident: the browser suite failed on 9f073176 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:33:23Z",
-   "subject": "no-clip: spill check is for the walkthrough panel (the tome's boards sit outside its box by design)"
-  },
-  {
-   "at": "2026-10-22T03:33:12Z",
-   "subject": "showcase: the reaction row wraps instead of cutting its last emoji; no-clip checks the walkthrough panel for anything poking out"
-  },
-  {
-   "at": "2026-10-22T03:32:47Z",
-   "subject": "book: every page fits its sheet at any window size or zoom (no inner scroll, no cut lines); How to ask split over two pages…"
-  },
-  {
-   "at": "2026-10-22T03:32:34Z",
-   "subject": "Incident: the browser suite failed on 537ed375 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:32:15Z",
-   "subject": "loop studies before parity builds: loop-study files passive REA studies for parity picks (private best-at notes, findings to private…"
-  },
-  {
-   "at": "2026-10-22T03:29:31Z",
-   "subject": "Incident: the browser suite failed on 67903401 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:29:27Z",
-   "subject": "deploy copies of void.html (main's were behind)"
+   "at": "2026-10-22T03:55:30Z",
+   "subject": "Study engine 2: source-map decode, readable un-minify, feature trace, RPC, own read when REA fails, owner study panel, study-ready wants…"
   }
  ],
  "builders": {

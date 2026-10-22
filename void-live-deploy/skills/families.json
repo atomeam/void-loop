@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 25,
+  "tested": 28,
   "checked": 12,
   "proven": 271
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 5,
     "checked": 1,
     "proven": 31
    },
@@ -266,9 +266,9 @@
     {
      "name": "vector-field-mind",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-19",
      "streak": 4
@@ -336,12 +336,26 @@
     {
      "name": "swarm-mind",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-21",
      "streak": 3
+    },
+    {
+     "name": "doodle-mind",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "mind-field-mode",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "veto-council",
@@ -2839,7 +2853,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 3,
     "checked": 3,
     "proven": 39
    },
@@ -3226,6 +3240,13 @@
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "streak": 3
+    },
+    {
+     "name": "similar",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "approve-card",
