@@ -1,10 +1,11 @@
 // Card quality audit (owner, 2026-10-22: "make sure the cards are the best they can possibly be"): asks a spread of card kinds on the live site (or SITE)
 // at several window sizes and reports any hidden or cut text, raw tags, empty bullets, text past the window, missing card buttons. Exit 1 on any.
 //   CHROME_PATH=/usr/bin/google-chrome node tools/card-quality.mjs
+// Sizes: 1280x800 at 100%, the 390x700 phone, and 1280x800 seen at 50% (2560x1600), 150% (853x533) and 200% (640x400) browser zoom.
 import { chromium } from 'playwright-core';
 const SITE = process.env.SITE || 'https://a-to-mind.com';
 const ASKS = (process.env.ASKS || "what is the speed of light|tell me about tokyo|weather in boston|15% of 240|translate hello to spanish|recipe for pancakes|list of planets|what time is it in london|convert 5 miles to km|who wrote hamlet|what can you do|make a collectible card of a dragon").split('|');
-const SIZES = (process.env.SIZES || '1280x800,390x700,640x400,2560x1600').split(',').map((s) => s.split('x').map(Number));
+const SIZES = (process.env.SIZES || '1280x800,390x700,2560x1600,853x533,640x400').split(',').map((s) => s.split('x').map(Number));
 const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true, args: ['--enable-unsafe-swiftshader','--use-angle=swiftshader'] });
 const out = [];
 for (const [w, h] of SIZES) for (const ask of ASKS) {

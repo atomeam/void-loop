@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T03:33:48Z",
-   "subject": "Incident: the browser suite failed on 9f073176 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:38:57Z",
+   "subject": "Review: say why the learned patterns are safe; the card store logs when it cannot save"
   },
   {
-   "at": "2026-10-22T03:32:34Z",
-   "subject": "Incident: the browser suite failed on 537ed375 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:31:37Z",
+   "subject": "Games show every basic: property game gets player panels, sets, mortgages and deed cards; how-to-play lines and a take-back; completeness…"
   },
   {
-   "at": "2026-10-22T03:29:31Z",
-   "subject": "Incident: the browser suite failed on 67903401 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:28:13Z",
+   "subject": "Mind Field: seven field minds in one skill with modes, a new Draw mode, and 'what's similar'"
   },
   {
-   "at": "2026-10-22T03:27:25Z",
-   "subject": "Incident: the browser suite failed on 1245c38f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:26:45Z",
+   "subject": "cards: the share link reopens its card, now in the page's source file so deploys keep it"
   },
   {
-   "at": "2026-10-22T03:23:55Z",
-   "subject": "live check reverts: a failed MCP live run on main opens one revert PR (automerge, full checks decide; never pushes main)"
+   "at": "2026-10-22T04:26:20Z",
+   "subject": "browser suite: Verse merge works out Forge's plate from the served stats (they moved from R 6 to R 3); the kept quiz is read once the…"
   },
   {
-   "at": "2026-10-22T03:22:43Z",
-   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:25:33Z",
+   "subject": "void.html: ?open=all survives the ?q= cleanup (the page source; index.html is its deploy copy) so the full self card link opens every block"
   },
   {
-   "at": "2026-10-22T03:22:21Z",
-   "subject": "showcase: recently built always shows; a device that had previewed every build saw no 'I built this' ever again. Builds verified in the…"
+   "at": "2026-10-22T04:25:01Z",
+   "subject": "rally: mark the fixed page heading as reviewed"
   },
   {
-   "at": "2026-10-22T03:21:39Z",
-   "subject": "self card: misses and page speed week by week, from the site tester's per-week counts and median load ms (no asks or words in the…"
+   "at": "2026-10-22T04:23:08Z",
+   "subject": "Incident: the browser suite failed on 545d9729 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:21:01Z",
-   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:23:00Z",
+   "subject": "browser suite: a whispered answer counts as answered (the 4 s slack outwaited the whisper's 3.5 s: 'hello'/'sup' read empty in top misses…"
   },
   {
-   "at": "2026-10-22T03:19:29Z",
-   "subject": "strategy: nothing is removed or deferred, features evolve toward revenue/value; merged duplicates keep every phrase; revenue weight boosts…"
+   "at": "2026-10-22T04:22:25Z",
+   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:17:47Z",
-   "subject": "Incident: the browser suite failed on 9f073176 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:21:57Z",
+   "subject": "Incident: the browser suite failed on 53c2a60a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:14:44Z",
-   "subject": "docs/STRATEGY.md (owner directive paraphrased + guardrails), linked from TAGTEAM and handoff; want picker adds market reach: money and…"
+   "at": "2026-10-22T04:21:24Z",
+   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:14:12Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-22T04:21:05Z",
+   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:13:09Z",
-   "subject": "Incident: the browser suite failed on 96c8914b (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:15:57Z",
+   "subject": "card-image test: the self picture holds every word (owner, 2026-10-22: no cut-off), grows instead of '…'"
   },
   {
-   "at": "2026-10-22T03:12:08Z",
-   "subject": "Incident: the browser suite failed on bec07a81 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:15:26Z",
+   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:10:40Z",
-   "subject": "incident autopsy: remediation draft + send-to-builders action (asked by Verse)"
+   "at": "2026-10-22T04:09:52Z",
+   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:10:18Z",
-   "subject": "Incident: the browser suite failed on 4c1a27ed (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:09:26Z",
+   "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:08:54Z",
-   "subject": "Incident: the browser suite failed on 0609fb9f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:05:27Z",
+   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:07:11Z",
-   "subject": "Incident: the browser suite failed on 17e3d26a (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:04:56Z",
+   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
   },
   {
-   "at": "2026-10-22T03:06:47Z",
-   "subject": "Incident: the browser suite failed on d4899e5f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T04:02:51Z",
+   "subject": "self card: whole text in copy/save (no 8000 cap, no empty bullets, no cut lines), picture wraps every line with no ellipsis and strips…"
   }
  ],
  "builders": {

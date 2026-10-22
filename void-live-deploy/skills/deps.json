@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 707,
+ "counted": 718,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -39,9 +39,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 19,
+   "skills": 22,
    "direct": 2,
-   "dependants": 33,
+   "dependants": 37,
    "tests": 4
   },
   {
@@ -81,30 +81,30 @@
   },
   {
    "file": "lib/rule-registry.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
-   "skills": 11,
-   "direct": 0,
-   "dependants": 32,
+   "skills": 12,
+   "direct": 1,
+   "dependants": 33,
    "tests": 4
   },
   {
@@ -129,11 +129,32 @@
    "tests": 5
   },
   {
+   "file": "lib/motion-throttle.js",
+   "skills": 11,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
    "dependants": 11,
    "tests": 2
+  },
+  {
+   "file": "lib/mind-field-modes.js",
+   "skills": 10,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 10,
+   "direct": 8,
+   "dependants": 10,
+   "tests": 0
   },
   {
    "file": "lib/skyfacts.js",
@@ -164,10 +185,17 @@
    "tests": 1
   },
   {
-   "file": "lib/motion-throttle.js",
+   "file": "lib/field-worker.js",
    "skills": 8,
-   "direct": 1,
-   "dependants": 9,
+   "direct": 6,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-family.js",
+   "skills": 8,
+   "direct": 8,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -199,24 +227,31 @@
    "tests": 3
   },
   {
+   "file": "lib/game-kit.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/rally-rules.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-deck.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-find.js",
    "skills": 7,
    "direct": 4,
    "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-stage.js",
-   "skills": 7,
-   "direct": 7,
-   "dependants": 7,
-   "tests": 0
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 7,
-   "direct": 7,
-   "dependants": 7,
    "tests": 1
   },
   {
@@ -274,13 +309,6 @@
    "direct": 5,
    "dependants": 8,
    "tests": 3
-  },
-  {
-   "file": "lib/field-worker.js",
-   "skills": 6,
-   "direct": 6,
-   "dependants": 6,
-   "tests": 1
   },
   {
    "file": "lib/pack5-ui.js",
@@ -416,6 +444,13 @@
    "tests": 2
   },
   {
+   "file": "lib/field-cards.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/note-tools.js",
    "skills": 4,
    "direct": 4,
@@ -479,6 +514,13 @@
    "tests": 2
   },
   {
+   "file": "lib/field-vector.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-tools.js",
    "skills": 3,
    "direct": 3,
@@ -498,6 +540,41 @@
    "direct": 1,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/field-attention.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-doodle.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-nca.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-resonance.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-swarm.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/parody.js",
@@ -615,13 +692,6 @@
    "file": "lib/eclipses.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-cards.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 2,
    "tests": 1
   },
@@ -787,13 +857,6 @@
    "tests": 1
   },
   {
-   "file": "lib/field-vector.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/film-discovery.js",
    "skills": 1,
    "direct": 1,
@@ -934,35 +997,7 @@
    "tests": 1
   },
   {
-   "file": "lib/field-attention.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/field-flow.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-nca.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-resonance.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-swarm.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1082,6 +1117,13 @@
   },
   {
    "file": "lib/service-health.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/similar-index.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1600,13 +1642,6 @@
   },
   {
    "file": "lib/fuzzy.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/game-kit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2721,7 +2756,8 @@
     "lib/card-frame.js",
     "lib/card-image.js",
     "lib/skill-confidence.js",
-    "lib/tome.js"
+    "lib/tome.js",
+    "skills/rally.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -2752,6 +2788,26 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/showcase.js"
+   ]
+  },
+  "lib/card-deck.js": {
+   "imports": [
+    "lib/game-kit.js",
+    "lib/rally-rules.js"
+   ],
+   "importedBy": [
+    "lib/card-share.js",
+    "skills/duel.js",
+    "skills/rally.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/card-forge.js": {
@@ -2858,7 +2914,8 @@
   },
   "lib/card-share.js": {
    "imports": [
-    "lib/card-image.js"
+    "lib/card-image.js",
+    "lib/card-deck.js"
    ],
    "importedBy": [
     "lib/card-frame.js",
@@ -2911,6 +2968,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -3231,6 +3289,10 @@
    ],
    "importedBy": [
     "skills/attention-field-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-cards.js": {
@@ -3240,6 +3302,22 @@
    "importedBy": [
     "skills/family-gravity.js",
     "skills/living-cards-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
+  },
+  "lib/field-doodle.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/doodle-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-flow.js": {
@@ -3256,6 +3334,7 @@
     "lib/council-law.js",
     "lib/field-attention.js",
     "lib/field-cards.js",
+    "lib/field-doodle.js",
     "lib/field-flow.js",
     "lib/field-nca.js",
     "lib/field-resonance.js",
@@ -3272,10 +3351,13 @@
    "reachedBy": [
     "lib/field-vector-worker.js",
     "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
     "skills/extinction.js",
     "skills/family-gravity.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js",
     "skills/mutate.js",
     "skills/nca-mind.js",
     "skills/overload.js",
@@ -3296,6 +3378,10 @@
    ],
    "importedBy": [
     "skills/nca-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-resonance.js": {
@@ -3304,21 +3390,31 @@
    ],
    "importedBy": [
     "skills/resonance-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-stage.js": {
    "imports": [
     "lib/field-kit.js",
-    "lib/motion-throttle.js"
+    "lib/motion-throttle.js",
+    "lib/mind-field-modes.js"
    ],
    "importedBy": [
     "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-swarm.js": {
@@ -3327,6 +3423,10 @@
    ],
    "importedBy": [
     "skills/swarm-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-vector-worker.js": {
@@ -3342,6 +3442,10 @@
    "importedBy": [
     "lib/field-vector-worker.js",
     "skills/vector-field-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/field-worker.js": {
@@ -3353,6 +3457,10 @@
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/film-discovery.js": {
@@ -3415,7 +3523,22 @@
   },
   "lib/game-kit.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/card-deck.js",
+    "lib/rally-rules.js",
+    "skills/rally.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
   },
   "lib/go-ai.js": {
    "imports": [],
@@ -3522,6 +3645,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -3940,6 +4064,24 @@
     "skills/status.js"
    ]
   },
+  "lib/mind-field-modes.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/field-stage.js",
+    "skills/mind-field-mode.js"
+   ],
+   "reachedBy": [
+    "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
+    "skills/flow-canvas.js",
+    "skills/living-cards-mind.js",
+    "skills/mind-field.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js",
+    "skills/vector-field-mind.js"
+   ]
+  },
   "lib/misskey.js": {
    "imports": [],
    "importedBy": [
@@ -3995,8 +4137,11 @@
    ],
    "reachedBy": [
     "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
     "skills/swarm-mind.js",
@@ -4524,6 +4669,26 @@
     "skills/oracle.js"
    ]
   },
+  "lib/rally-rules.js": {
+   "imports": [
+    "lib/game-kit.js"
+   ],
+   "importedBy": [
+    "lib/card-deck.js",
+    "skills/rally.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
+  },
   "lib/rating-note.js": {
    "imports": [],
    "importedBy": []
@@ -4741,6 +4906,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/rally.js",
     "skills/showcase.js"
    ]
   },
@@ -4875,6 +5041,12 @@
     "skills/time.js"
    ]
   },
+  "lib/similar-index.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/similar.js"
+   ]
+  },
   "lib/skill-confidence.js": {
    "imports": [
     "lib/card-art.js"
@@ -4912,6 +5084,7 @@
     "skills/games.js",
     "skills/languages.js",
     "skills/list-starters.js",
+    "skills/mind-field.js",
     "skills/rooms.js",
     "skills/stage-out.js",
     "skills/time.js"
@@ -5842,7 +6015,10 @@
     "lib/field-worker.js",
     "lib/field-attention.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/aurora-tonight.js": {
    "imports": [
@@ -5886,7 +6062,8 @@
   "skills/battleship.js": {
    "imports": [
     "skills/battleship-rules.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6092,7 +6269,8 @@
     "skills/game-level.js",
     "skills/connect4-rules.js",
     "skills/lift3d.js",
-    "lib/arena-say.js"
+    "lib/arena-say.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6307,6 +6485,16 @@
     "skills/country.js"
    ]
   },
+  "skills/doodle-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-doodle.js"
+   ],
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
+  },
   "skills/draft-triad.js": {
    "imports": [
     "lib/stage-pack-i.js",
@@ -6329,7 +6517,9 @@
    "imports": [
     "lib/duel-rules.js",
     "lib/card-frame.js",
-    "lib/rules-play.js"
+    "lib/rules-play.js",
+    "skills/game-rules-line.js",
+    "lib/card-deck.js"
    ],
    "importedBy": []
   },
@@ -6588,6 +6778,23 @@
     "lib/arena.js",
     "skills/games.js",
     "skills/rebuild-map.js"
+   ]
+  },
+  "skills/game-rules-line.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/duel.js",
+    "skills/othello.js",
+    "skills/pong.js",
+    "skills/ringer.js",
+    "skills/snake.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js"
    ]
   },
   "skills/games.js": {
@@ -7056,7 +7263,10 @@
     "lib/field-worker.js",
     "lib/field-cards.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/loan.js": {
    "imports": [],
@@ -7193,6 +7403,35 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/mind-field-mode.js": {
+   "imports": [
+    "lib/mind-field-modes.js",
+    "skills/doodle-mind.js",
+    "skills/swarm-mind.js",
+    "skills/vector-field-mind.js",
+    "skills/resonance-mind.js",
+    "skills/nca-mind.js",
+    "skills/attention-field-mind.js",
+    "skills/living-cards-mind.js"
+   ],
+   "importedBy": [
+    "skills/mind-field.js"
+   ]
+  },
+  "skills/mind-field.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/mind-field-mode.js",
+    "skills/doodle-mind.js",
+    "skills/vector-field-mind.js",
+    "skills/living-cards-mind.js",
+    "skills/attention-field-mind.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js"
+   ],
+   "importedBy": []
   },
   "skills/mini/aggravation.js": {
    "imports": [
@@ -7514,7 +7753,10 @@
     "lib/field-worker.js",
     "lib/field-nca.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/near-choir.js": {
    "imports": [
@@ -7616,7 +7858,8 @@
     "skills/game-level.js",
     "skills/lift3d.js",
     "lib/arena-say.js",
-    "lib/match-history.js"
+    "lib/match-history.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "lib/arena.js",
@@ -7758,7 +8001,8 @@
     "skills/pong-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -7869,6 +8113,15 @@
     "skills/rebuild-map.js"
    ]
   },
+  "skills/rally.js": {
+   "imports": [
+    "lib/rally-rules.js",
+    "lib/card-deck.js",
+    "lib/game-kit.js",
+    "lib/card-art.js"
+   ],
+   "importedBy": []
+  },
   "skills/rebuild-map.js": {
    "imports": [
     "skills/rack.js"
@@ -7920,7 +8173,10 @@
     "lib/field-worker.js",
     "lib/field-resonance.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/rides.js": {
    "imports": [
@@ -7942,7 +8198,8 @@
    "imports": [
     "skills/ringer-rules.js",
     "skills/figures.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -8196,6 +8453,12 @@
     "skills/tictactoe.js"
    ]
   },
+  "skills/similar.js": {
+   "imports": [
+    "lib/similar-index.js"
+   ],
+   "importedBy": []
+  },
   "skills/skill-eclipse.js": {
    "imports": [
     "lib/eclipse.js"
@@ -8275,7 +8538,8 @@
     "skills/snake-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -8505,7 +8769,10 @@
     "lib/field-worker.js",
     "lib/field-swarm.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/swarm.js": {
    "imports": [],
@@ -8594,7 +8861,8 @@
   "skills/tictactoe.js": {
    "imports": [
     "skills/game-level.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -8718,7 +8986,10 @@
     "lib/field-stage.js",
     "lib/field-vector.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
   },
   "skills/veto-council.js": {
    "imports": [

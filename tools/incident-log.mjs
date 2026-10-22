@@ -43,10 +43,13 @@ export function incidentOf({ sha, run, output, at = new Date().toISOString(), su
   return { at, sha: String(sha || '').slice(0, 40), run: /^https:\/\/github\.com\//.test(String(run || '')) ? run : '', suite, checks: checks.slice(0, 20), touched: (Array.isArray(touched) ? touched : []).slice(0, 15) };
 }
 
-/** the list with one more entry at the front, the same sha not written twice, the newest KEEP kept. Pure. */
+/** the list with one more entry at the front, the newest KEEP kept. The same sha is never written twice: a second record for it
+ *  (another shard, a re-run) adds its checks to the first entry instead of replacing them. Pure. */
 export function addIncident(list, inc, keep = KEEP) {
-  const rest = (Array.isArray(list) ? list : []).filter((x) => x && x.sha !== inc.sha);
-  return [inc, ...rest].slice(0, keep);
+  const all = Array.isArray(list) ? list : [], prev = all.find((x) => x && x.sha === inc.sha);
+  const rest = all.filter((x) => x && x.sha !== inc.sha);
+  const merged = prev ? { ...inc, checks: [...new Set([...(prev.checks || []), ...inc.checks])].slice(0, 20) } : inc;
+  return [merged, ...rest].slice(0, keep);
 }
 
 /** the list with every open incident closed by a green suite: those that began at or before `at` get closedAt, closedBy (the sha that passed), closedRun and the minutes they lasted. An incident already closed is left as it was. Pure. */
