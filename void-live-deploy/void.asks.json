@@ -2002,11 +2002,31 @@
       "words": "Implement a 'memory-preview' UI component to show user input snippets.",
       "ledgerAt": "2026-10-21T22:32:28Z",
       "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'time-zone-detect' skill to the export so .ics files are automatically adjusted to the user's local browser time.",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "built: the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Verify that every instance of 'Void' or 'V01D' in the user-facing text, including error messages and 'about' sections, has been successfully replaced with 'Verse'.",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "built: checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'similarity-score' field to the movie picks JSON so users can see how closely a pick matches their expressed intent.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'reasoning-link' to the movie-pick JSON so the specific memory or skill used for the pick is visible to the user.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line (tools/asks-link.json)"
     }
   ],
   "totals": {
     "asked": 229,
-    "built": 215,
+    "built": 219,
     "through": "2026-10-21T21:33:00Z"
   }
 }

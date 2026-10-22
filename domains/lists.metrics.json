@@ -161,6 +161,52 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-10-22T01:40:00Z",
+   "run": 4,
+   "closed": 6,
+   "touched": 6,
+   "pct_blocked": 0.0,
+   "top_block": "none this run",
+   "dup_rate": 0.17,
+   "median_days": 3.7,
+   "asks_open_start": 14,
+   "asks_open_end": 10,
+   "items": [
+    {
+     "what": "similarity score on movie and song picks: 'Match N%' on the pick-for-me card and in its data-pick JSON, from the interests the pick was chosen on (lib/taste.js pickRecord); tools/taste.test.mjs",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "reasoning link on picks: the same record names the skill and the one signal that chose it (thumbs-ups, a kept card, imported taste, recent asks), matching the why line",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "time-zone-detect for the .ics export, built into calendar-file (no new skill): X-WR-TIMEZONE from the browser, said on the card, times stay UTC; tools/ics.test.mjs",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "the Verse rename checked and fixed where people read it: 12 fringe page titles, the memory card, the store's product names and blurbs, the API page; tools/verse-name.test.mjs in the fast checks. 7 early fringe pages keep the old title until they get a check hook (Up for grabs)",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "stage-print and stage-export (both took 'print the stage') are one routing place, skills/stage-out.js at rank 1490; route snapshot 0 moved, 0 new misses; tools/stage-out-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "value-drift tracker of appraisals: already passed over by Claude on 2026-10-17 (it tracks prices; the money rule)",
+     "list": "void.asks.json",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
+    }
+   ]
   }
  ]
 }

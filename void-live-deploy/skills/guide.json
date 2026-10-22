@@ -6790,7 +6790,7 @@
     "noun-heat",
     "overload",
     "plan-stability",
-    "stage-print",
+    "stage-out",
     "whisper-network",
     "extinction",
     "hunting-question",
@@ -6810,7 +6810,6 @@
     "stage-find",
     "dismissed-pile",
     "bookmarks",
-    "stage-export",
     "copy-stack",
     "study-cards",
     "dev-tools",
@@ -8250,8 +8249,8 @@
     },
     {
      "rank": 238,
-     "name": "stage-print",
-     "catches": "print this stage as a one-page sheet"
+     "name": "stage-out",
+     "catches": "most skills can be combined"
     },
     {
      "rank": 239,
@@ -8374,38 +8373,38 @@
     },
     {
      "rank": 258,
-     "name": "stage-export",
-     "catches": "export my stage as json"
-    },
-    {
-     "rank": 259,
      "name": "copy-stack",
      "catches": "show my clipboard stack"
     },
     {
-     "rank": 260,
+     "rank": 259,
      "name": "study-cards",
      "catches": "flashcards: hola = hello, gato = cat"
     },
     {
-     "rank": 261,
+     "rank": 260,
      "name": "dev-tools",
      "catches": "a"
     },
     {
-     "rank": 262,
+     "rank": 261,
      "name": "accessibility-modes",
      "catches": "dyslexia friendly font"
     },
     {
-     "rank": 263,
+     "rank": 262,
      "name": "about-skill",
      "catches": "play chess"
     },
     {
-     "rank": 264,
+     "rank": 263,
      "name": "backlog-digest",
      "catches": "digest your backlog"
+    },
+    {
+     "rank": 264,
+     "name": "calendar-file",
+     "catches": "export my calendar"
     }
    ],
    "n": 398
@@ -8413,35 +8412,30 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCLXV–CCLXX",
+   "title": "Rules CCLXV–CCLXIX",
    "rules": [
     {
      "rank": 265,
-     "name": "calendar-file",
-     "catches": "export my calendar"
-    },
-    {
-     "rank": 266,
      "name": "remediation-velocity",
      "catches": "how fast do you fix your misses"
     },
     {
-     "rank": 267,
+     "rank": 266,
      "name": "dependency-health",
      "catches": "dependency health"
     },
     {
-     "rank": 268,
+     "rank": 267,
      "name": "notebook",
      "catches": "daily note"
     },
     {
-     "rank": 269,
+     "rank": 268,
      "name": "terminal",
      "catches": "set a timer for 5 minutes"
     },
     {
-     "rank": 270,
+     "rank": 269,
      "name": "photos",
      "catches": "my photos"
     }

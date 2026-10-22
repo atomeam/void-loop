@@ -325,6 +325,26 @@
       "match": "deciding family",
       "ledgerAt": "2026-10-21T22:32:30Z",
       "why": "decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json)"
+    },
+    {
+      "match": "similarity.?score",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs)"
+    },
+    {
+      "match": "reasoning.?link",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line"
+    },
+    {
+      "match": "time.?zone.?detect",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs)"
+    },
+    {
+      "match": "replaced with 'Verse'",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose"
     }
   ],
   "extra": [

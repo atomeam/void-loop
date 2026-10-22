@@ -42,6 +42,8 @@ for (const [name, file] of [
   ['memory-preview', 'memory-preview.test.mjs'],
   ['decide-cards', 'decide-cards.test.mjs'],
   ['list-starters-family', 'list-starters-family.test.mjs'],
+  ['verse-name', 'verse-name.test.mjs'],
+  ['stage-out-family', 'stage-out-family.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
