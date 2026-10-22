@@ -78,6 +78,14 @@ export function buildEpisode({ growth = [], claims = { ok: [] }, voiceMd = '', i
   const selfFixes = week.filter((e) => e.kind === 'fix' && e.by === 'verse').length;
   const notRouted = week.reduce((s, e) => s + ((String(e.what || '').match(/Did not route: ([^]*)$/) || ['', ''])[1].split(';').filter((x) => x.trim()).length), 0);
   const findings = week.filter((e) => e.kind === 'finding' && !/^already built/i.test(e.what || '')).map((e) => firstSentence(e.show || e.what)).filter(Boolean);
+  // frontier experiments: build and growth steps that name the Frontier Engine drafts (F-123) they came from, newest first
+  const frontier = []; const fSeen = new Set();
+  for (const e of [...week].reverse()) {
+    const ids = [...new Set((String(e.what || '') + ' ' + String(e.show || '')).match(/\bF-?\d{3}\b/g) || [])].map((x) => x.replace(/^F-?/, 'F-'));
+    if (!ids.length || !['build', 'grow'].includes(e.kind)) continue;
+    const t = firstSentence(String(e.show || '').replace(/^./, (c) => c.toUpperCase()), 200); if (!t || fSeen.has(t.toLowerCase())) continue;
+    fSeen.add(t.toLowerCase()); frontier.push({ ids, text: t }); if (frontier.length >= 3) break;
+  }
   const red = (incidents.incidents || []).filter((i) => new Date(i.at) > start && new Date(i.at) <= end).length;
   const daily = latestDaily(voiceMd);
   const V = 'Verse', C = 'Critic', L = [];
@@ -91,12 +99,13 @@ export function buildEpisode({ growth = [], claims = { ok: [] }, voiceMd = '', i
   say(C, notRouted ? `Now the misses. The ledger lists ${plural(notRouted, 'ask')} this week that Verse tried to learn and still could not answer. ${selfFixes ? `Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself.` : 'Verse fixed none of its own skills by itself this week.'}` : `Now the misses. The ledger lists no ask that Verse failed to learn this week${selfFixes ? `, and Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself` : ''}.`);
   say(C, red ? `The full browser test suite on main went red ${plural(red, 'time')} this week. Those failures are in the public incident log, and they are not fixed until two runs in a row pass.` : 'The full browser test suite on main never went red this week.');
   if (daily && daily.weakest) say(C, `In its own daily readout, Verse named its weakest area: ${daily.weakest}`);
+  if (frontier.length) { say(V, 'From my frontier experiments, the drafts that became something you can use:'); for (const f of frontier) say(V, `${f.ids.slice(0, 4).join(', ')}: ${f.text}`); }
   if (findings.length) { say(V, 'From the experiments, what was found:'); for (const f of findings.slice(-2)) say(V, f); }
   if (daily && daily.asks.length) { say(V, 'And what I asked the builders for next, in my own words:'); for (const a of daily.asks) say(V, a); }
   say(C, 'Whether those get built is in next week\'s ledger, and you will hear it here either way.');
   say(V, `That was ${SHOW.title}. Every episode is free to download and repost. Try any of it at a-to-mind.com, and if it helped, ask it for the tip jar.`);
   const title = `Episode ${n}: the week to ${human(end)}`;
-  return { n, title, from: iso(start), to: iso(end), lines: L, counts: { entries: week.length, builds: count('build'), grows: count('grow'), fixes: count('fix'), findings: count('finding'), phrases: allPhrases, proven: phrases.length, notRouted, red } };
+  return { n, title, from: iso(start), to: iso(end), lines: L, counts: { entries: week.length, builds: count('build'), grows: count('grow'), fixes: count('fix'), findings: count('finding'), frontier: frontier.length, phrases: allPhrases, proven: phrases.length, notRouted, red } };
 }
 
 export const transcriptText = (ep) => ep.lines.map((l) => `${l.who}: ${l.text}`).join('\n\n') + '\n';
@@ -130,6 +139,12 @@ function speak(ep, voices, out) {
     list.push(`file '${f}.r.wav'`, `file '${tmp}/gap.wav'`);
     l.t = Math.round(t * 10) / 10; t += +execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${f}.r.wav"`).toString().trim() + 0.45;
   });
+  // a Loop Grid-style bed (an 8-step pentatonic pattern of soft sine notes, made here by ffmpeg, no samples, no licence) under the
+  // opening and the closing line
+  const bed = (secs, name) => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392]; const step = 0.3;
+    const expr = notes.map((f, i) => `(between(mod(t,${notes.length * step}),${i * step},${(i + 1) * step})*sin(2*PI*${f}*t)*exp(-6*(mod(t,${notes.length * step})-${i * step})))`).join('+');
+    execSync(`ffmpeg -loglevel error -y -f lavfi -i "aevalsrc='0.18*(${expr})':s=22050:d=${secs}" -af "afade=t=in:d=0.6,afade=t=out:st=${secs - 1.2}:d=1.2" -ac 1 "${tmp}/${name}.wav"`); return `${tmp}/${name}.wav`; };
+  if (!process.env.PODCAST_NO_BED) { const a = bed(3.6, 'bed-in'), b = bed(4.2, 'bed-out'); list.unshift(`file '${a}'`); list.push(`file '${b}'`); ep.lines.forEach((l) => { l.t = Math.round((l.t + 3.6) * 10) / 10; }); }
   writeFileSync(`${tmp}/list.txt`, list.join('\n'));
   execSync(`ffmpeg -loglevel error -y -f concat -safe 0 -i "${tmp}/list.txt" -ac 1 -ar 22050 -b:a 48k -id3v2_version 3 -metadata title="${SHOW.title} ${ep.n}" -metadata artist="${SHOW.author}" "${out}"`);
   const seconds = +execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${out}"`).toString().trim();
