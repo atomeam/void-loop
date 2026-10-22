@@ -49,6 +49,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
+  ['mind-field', 'mind-field.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['fix-audit', 'fix-audit.test.mjs'],
@@ -430,6 +431,7 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
+addScript('similar', 'similar-index.mjs', ['--check']); // the "what's similar" index of every family's parts (lib/similar-index.js)
 addScript('refresh', 'refresh.mjs', ['--check']);
 addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its source: the floor only rises (tools/art-floor.json)
 addScript('art-pixels', 'art-pixels.mjs', ['--check']); // the card art as a person sees it, in Chromium (passes with a note when there is no browser) // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)
