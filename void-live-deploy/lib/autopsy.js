@@ -154,7 +154,7 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
-      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
+      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + remedyHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
 /**
@@ -176,12 +176,46 @@ export function stabilityHtml(g, esc = escHtml) {
     + '<span class="sub">' + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day), from <code>incidents.json</code>.</span></div>';
 }
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
+
+/**
+ * the remediation draft of one incident (asked by Verse: "Add a 'remediation-draft' field to the incident-autopsy output that proposes a
+ * code fix for the reported error"): a fix plan built from the record only, never a model's guess at code: the failing checks to re-run
+ * alone, the files to open first (a changed skill file with a failing check, then the failing skills' own files, then what the commit
+ * touched), how to undo the likely file if it fails again, and the commit to read. Code the page cannot check is not proposed. Pure.
+ */
+export function remediationOf(i) {
+  const checks = (i && i.checks || []).filter((c) => c && !c.meta), sha = String(i && i.sha || ''), s8 = sha.slice(0, 8);
+  const likely = (i && i.suspects || []).filter((x) => x.likely).map((x) => x.file);
+  const own = [...new Set(checks.map((c) => c.skill).filter(Boolean))].map((k) => 'void-live-deploy/skills/' + k + '.js');
+  const open = [...new Set([...likely, ...own, ...(likely.length || own.length ? [] : (i && i.touched || []))])].slice(0, 5);
+  const steps = [];
+  if (checks.length) steps.push('Re-run only what failed: ' + checks.slice(0, 3).map((c) => 'node tools/test_void.mjs --only "' + titleOf(c.text) + '"').join(' ; '));
+  else if ((i && i.checks || []).some((c) => c && c.meta)) steps.push('Only the runner stalled here; re-run the suite on main before changing any skill.');
+  if (open.length) steps.push('Open first: ' + open.map((f) => f.replace(/^void-live-deploy\//, '')).join(', ') + '.');
+  if (likely.length && s8) steps.push('If it still fails, put ' + likely[0].replace(/^void-live-deploy\//, '') + ' back as it was before ' + s8 + ' (git checkout ' + s8 + '~1 -- ' + likely[0] + '), re-run, and open a PR with the fix.');
+  if (sha) steps.push('Read the change: https://github.com/atomeam/void-loop/commit/' + sha);
+  return steps;
+}
+/** the brief a builder agent gets from the root-cause button: the incident, its failing checks and the draft, one plain text. Pure. */
+export function builderBrief(i) {
+  const checks = (i && i.checks || []).map((c) => '- ' + c.text + (c.meta ? ' (the suite itself)' : c.skill ? ' (' + c.skill + ')' : ' (unmapped)'));
+  return ['Incident ' + String(i && i.sha || '').slice(0, 8) + ' (' + String(i && i.at || '').slice(0, 16).replace('T', ' ') + ' UTC, ' + (i && i.suite || 'browser suite') + ')', 'Failing checks:', ...checks, 'Remediation draft:', ...remediationOf(i).map((x, k) => k + 1 + '. ' + x)].join('\n');
+}
 export function culpritHtml(i, esc) {
   if (!Array.isArray(i.touched) || !i.touched.length) return '';
   const sus = i.suspects || [], likely = sus.filter((x) => x.likely);
   if (!sus.length) return '<div class="sub" data-culprit="none">No skill file changed in this commit (' + esc(i.touched.length) + ' file' + (i.touched.length === 1 ? '' : 's') + ' did), so the cause is not a skill rewrite.</div>';
   return '<div class="sub" data-culprit="' + (likely.length ? 'likely' : 'changed') + '">' + (likely.length ? 'Likely cause: ' : 'Skill files changed in this commit: ')
     + sus.slice(0, 5).map((x) => '<code>' + esc(x.file.replace(/^void-live-deploy\//, '')) + '</code>' + (x.likely ? ' (has a failing check)' : '')).join(', ') + '</div>';
+}
+/** the remediation draft and the root-cause action under one incident: copy the brief for the builder agents, or open it as a
+ *  prefilled issue the visitor files themselves (nothing is sent for them). Pure. */
+export function remedyHtml(i, esc) {
+  const steps = remediationOf(i); if (!steps.length) return '';
+  const brief = builderBrief(i), issue = 'https://github.com/atomeam/void-loop/issues/new?labels=builder&title=' + encodeURIComponent('Incident ' + String(i.sha || '').slice(0, 8) + ': fix the failing checks') + '&body=' + encodeURIComponent(brief.slice(0, 6000));
+  return '<div class="sub" data-remediation="' + esc(steps.length) + '"><b>Remediation draft:</b><ol style="margin:2px 0 4px 18px;padding:0">' + steps.map((x) => '<li style="white-space:normal;overflow-wrap:anywhere">' + esc(x) + '</li>').join('') + '</ol>'
+    + '<span role="button" tabindex="0" data-builder-brief="' + esc(brief) + '" style="display:inline-block;cursor:pointer;border:1px solid #ffd45e;border-radius:12px;padding:3px 10px;margin:0 6px 4px 0">Send to builders: copy the brief</span>'
+    + '<a href="' + esc(issue) + '" target="_blank" rel="noopener" data-builder-issue="1">or file it as an issue for the builder agents</a></div>';
 }
 /** the health pulse (self card): the latest incident, its commit and the families its checks map to; null when none is recorded. Pure. */
 export function pulseOf(a) {

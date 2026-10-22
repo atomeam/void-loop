@@ -5772,8 +5772,8 @@
    "line": "\"what do you want built now\", \"name all your unbuilt asks\", \"your backlog\": one card, \"What I want built\", read from",
    "examples": [
     "what do you want built now",
-    "name all your unbuilt asks",
-    "all of your unbuilt wants and asks"
+    "what is on your wishlist?",
+    "show your wishlist"
    ],
    "tier": "proven",
    "why": "a self-test, 7 browser-suite mentions, 13 real asks in the benchmark",
