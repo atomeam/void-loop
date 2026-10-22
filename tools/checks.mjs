@@ -375,6 +375,7 @@ for (const [name, file] of [
   ['paste-rule', 'paste-rule.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
   ['rally', 'rally.test.mjs'],
+  ['forge-duel', 'forge-duel.test.mjs'],
   ['card-art', 'card-art.test.mjs'],
   ['card-image', 'card-image.test.mjs'],
   ['video', 'video.test.mjs'],
