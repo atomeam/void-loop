@@ -37,3 +37,34 @@ test('study-engine: cache, diff over time, combine sites, retrieval, build brief
   const b = buildBrief({ ...s1, id: 'study-1' }, 'coin grader at https://x.example/p');
   assert.equal(b.kind, 'want'); assert.doesNotMatch(b.text, /https?:|x\.example/); assert.match(b.text, /copy nothing/);
 });
+
+import { vlq, decodeSourceMap, originalPosition, readable, rpcOf, traceFeature, visualDiff, studyBoosts } from './study-engine.mjs';
+test('study-engine: decodes source maps (VLQ) and finds the original line and name', () => {
+  assert.deepEqual(vlq('AAAA'), [0, 0, 0, 0]); assert.deepEqual(vlq('gB'), [16]); assert.deepEqual(vlq('D'), [-1]); assert.equal(vlq('g'), null);
+  // generated line 1: col 0 -> src0 line0 col0 name0; col 9 -> src0 line1 col2 name1
+  const d = decodeSourceMap({ version: 3, sources: ['src/grade.ts'], names: ['gradeCoin', 'price'], mappings: 'AAAAA,SACEC' });
+  assert.deepEqual(originalPosition(d, 1, 12), { source: 'src/grade.ts', line: 2, column: 2, name: 'price' });
+  assert.deepEqual(originalPosition(d, 1, 0), { source: 'src/grade.ts', line: 1, column: 0, name: 'gradeCoin' });
+  assert.equal(decodeSourceMap('{"version":2}'), null); assert.equal(originalPosition(d, 9, 0), null);
+});
+test('study-engine: makes minified code readable without breaking strings or regexes, names restored from the map', () => {
+  const r = readable('function a(b){if(b){return "x;{y}"}var c=/[;{]/g;return c}a(1);', { names: { a: 'gradeCoin' } });
+  assert.match(r, /function gradeCoin\(b\) \{\n  if\(b\) \{\n    return "x;\{y\}"\n  \}/); assert.match(r, /\/\[;\{\]\/g;/); assert.match(r, /gradeCoin\(1\);/);
+  assert.match(readable('for(i=0;i<3;i++){x()}'), /for\(i=0;i<3;i\+\+\) \{/);
+});
+test('study-engine: finds tRPC, JSON-RPC and gRPC-web calls', () => {
+  const r = rpcOf("fetch('/api/trpc/coin.grade');\nsend({jsonrpc:'2.0',id:1,method:'eth_getBalance'});\nc.unary('/shop.v1.Cart/AddItem')", 'r.js');
+  assert.deepEqual(r.map((x) => [x.mechanism, x.value, x.line]), [['rpc:trpc', '/api/trpc/coin.grade', 1], ['rpc:json-rpc', 'eth_getBalance', 2], ['rpc:grpc-web', '/shop.v1.Cart/AddItem', 3]]);
+});
+test('study-engine: traces a feature from one word to its function and nearby calls', () => {
+  const t = traceFeature([{ name: 'a.js', text: "const x = 1;\nasync function gradeCoin(img) {\n  // grade the coin\n  const r = await fetch('/api/grade');\n}\nconst label = 'grade';" }], 'grade');
+  assert.equal(t[0].fn, 'gradeCoin'); assert.ok(t[0].nearCalls[0].startsWith('/api/grade (call:fetch'));
+  assert.deepEqual(traceFeature([], 'ab'), []);
+});
+test('study-engine: compares two captures pixel by pixel; strong studies raise their want', () => {
+  const px = (v) => ({ width: 2, height: 2, data: Uint8Array.from({ length: 16 }, (_, i) => (i === 4 ? v : 0)) });
+  assert.deepEqual(visualDiff(px(0), px(9)), { comparable: true, changed: 1, share: 0.25, box: { x: 1, y: 0, w: 1, h: 1 } });
+  assert.equal(visualDiff(px(0), px(9), 10).changed, 0); assert.equal(visualDiff(px(0), { width: 1, height: 1, data: [] }).comparable, false);
+  const b = studyBoosts([{ skill: 'coin', ranked: [{ confidence: 'high' }, { confidence: 'exact' }, { confidence: 'low' }] }, { skill: 'map', ranked: [] }]);
+  assert.deepEqual(b, { coin: 1.2, map: 1 });
+});

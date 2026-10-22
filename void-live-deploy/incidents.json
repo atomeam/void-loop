@@ -2,33 +2,40 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T04:05:27.409Z",
-   "sha": "ffaa62b0ee59d75817c05b6e6c1aaa6fbc2c156e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39719890143",
+   "at": "2026-10-22T04:23:07.966Z",
+   "sha": "545d9729fca639650c28993e1b5432f992fb317c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39721628049",
    "suite": "browser suite on main",
    "checks": [
     "suite ran to the end"
    ],
    "touched": [
+    "docs/REA-GAPS.md",
+    "docs/playbooks/study-with-rea.md",
+    "tools/checks.mjs",
+    "tools/lacks.mjs",
+    "tools/lacks.test.mjs",
+    "tools/loop-study.mjs",
+    "tools/rea-study.mjs",
+    "tools/rea-study.test.mjs",
+    "tools/studies-api.test.mjs",
+    "tools/study-engine.mjs",
+    "tools/study-engine.test.mjs",
+    "void-live-deploy/functions/api/studies.js",
+    "void-live-deploy/studies.html",
     "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/backlog-digest.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/backlog-digest.js",
-    "void-live-deploy/skills/backlog-digest.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/skills/showcase.js"
+    "domains/void.agents.log.md"
    ]
   },
   {
-   "at": "2026-10-22T03:59:37.974Z",
+   "at": "2026-10-22T04:15:25.571Z",
    "sha": "f3dabbf1ce546fb89196c55c371e68d91adff487",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39719352831",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "domains/handoff.md",
