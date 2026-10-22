@@ -1,0 +1,10 @@
+clock,tertile,n_sema,n_placebo,sema_change,placebo_change,difference
+PCGrimAge,low,10,13,1.73,2.37,-0.64
+PCGrimAge,mid,13,9,0.4,2.79,-2.39
+PCGrimAge,high,13,9,-2.01,1.59,-3.59
+PCPhenoAge,low,11,12,3.15,6.6,-3.45
+PCPhenoAge,mid,12,10,-1.58,2.99,-4.57
+PCPhenoAge,high,13,9,-3.42,-0.33,-3.09
+OMICmAge,low,9,14,0.48,3.28,-2.8
+OMICmAge,mid,13,9,0.45,1.35,-0.89
+OMICmAge,high,14,8,-0.75,0.83,-1.58
