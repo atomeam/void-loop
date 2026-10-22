@@ -39,6 +39,8 @@ ok(datingAsk('dating profile')?.open && datingAsk('icebreaker coach')?.open, 'da
 ok(datingAsk('icebreakers about hiking')?.icebreaker === 'hiking', 'ice');
 for (const a of ['date today', 'what is the date', 'carbon dating', 'update my profile']) ok(!datingAsk(a), 'not: ' + a);
 ok(icebreakers('hiking, jazz').length === 3 && bio({ name: 'Sam', interests: 'hiking, jazz' }) === 'Sam. Happiest when hiking or jazz is involved.', 'coach');
+import { slimRow } from '../void-live-deploy/skills/markets.js';
+ok(slimRow({ id: 'x', symbol: 'x', sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => i) } }).spark.length <= 56, 'client slim');
 console.log('everything: ' + n + ' checks pass');
 // the wishlist goes into self.json, free paths first
 import { readFileSync } from 'node:fs';
