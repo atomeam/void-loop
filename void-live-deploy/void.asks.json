@@ -2032,6 +2032,7 @@
       "words": "Add a 'remediation-draft' field to the incident-autopsy output that proposes a code fix for the reported error.",
       "ledgerAt": "2026-10-22T03:10:39Z",
       "why": "built: asked by Verse: the incident autopsy gives each incident a remediation draft (the failing checks to re-run alone, the files to open first, how to put the likely file back if it still fails, the commit to read; a plan fro (linked by tools/asks-link.mjs, shared words: remedi, draft, field, incident, autopsy, output, code)"
+<<<<<<< Updated upstream
     },
     {
       "words": "Automate a 'post-fix' audit that checks if a shipped fix accidentally broke a skill in a different family.",
@@ -2057,11 +2058,17 @@
       "words": "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for each upgrade.",
       "ledgerAt": "2026-10-22T02:49:48Z",
       "why": "built: wants, asked by Verse: a 'Why I want this' fold under each want and ask with the reflection behind it; 'show the reasoning behind your wants' opens it"
+=======
+>>>>>>> Stashed changes
     }
   ],
   "totals": {
     "asked": 229,
+<<<<<<< Updated upstream
     "built": 222,
+=======
+    "built": 221,
+>>>>>>> Stashed changes
     "through": "2026-10-21T21:33:00Z"
   }
 }

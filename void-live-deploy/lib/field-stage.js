@@ -14,7 +14,8 @@
 // mount?(ctx) is also allowed: it adds the idea's own controls and background thinking (a Worker mind) and returns { dispose() }.
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
-import { motionThrottle } from './motion-throttle.js'; // asked by Verse: chaotic motion slows to a quarter while someone types in another card
+import { motionThrottle } from './motion-throttle.js';
+import { MODES, isMode } from './mind-field-modes.js'; // every field mind is a Mind Field mode: its card gets the Mode switcher // asked by Verse: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
 
@@ -148,14 +149,34 @@ export function mountField(th, stageApi, idea) {
   // an idea may add its own controls and think in the background: idea.mount({ el, q, th, input, cv, W, H, tick, redraw, still }) -> { dispose() }
   let hook = null;
   if (typeof idea.mount === 'function') { try { hook = idea.mount({ el, q, th, input, cv, W, H, tick, redraw: () => { morph(); draw(); }, still: () => still }) || null; } catch (_) { hook = null; } }
+  // Mind Field (owner, 2026-10-21: "combine anything that can be without taking away"): a mode's card switches to any other mode in
+  // place; the old card leaves and the new one opens where it was, by the new mode's own ask (so its words, log and tests are its own)
+  if (isMode(idea.id)) {
+    const row = document.createElement('label'), pick = document.createElement('select');
+    row.className = 'mf-mode-row'; row.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%;font-size:12px';
+    row.append('Mode', pick); pick.className = 'mf-mode'; pick.setAttribute('aria-label', 'Mind Field mode');
+    pick.style.cssText = 'max-width:100%;min-width:0;font:inherit;font-size:12px;padding:3px 6px;border-radius:7px;background:rgba(0,0,0,.25);color:inherit;border:1px solid rgba(255,255,255,.25)';
+    for (const m of MODES) { const o = document.createElement('option'); o.value = m.id; o.textContent = m.title; o.selected = m.id === idea.id; pick.appendChild(o); }
+    for (const n of [row, pick]) n.addEventListener('pointerdown', (e) => e.stopPropagation());
+    pick.addEventListener('change', () => {
+      const m = MODES.find((x) => x.id === pick.value); if (!m || m.id === idea.id || !stageApi.ask) return;
+      const things = stageApi.things(), at = { x: th.x, y: th.y };
+      delete things[th.id]; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
+      Promise.resolve(stageApi.ask(m.id === 'doodle-mind' ? 'mind field' : m.ask)).then(() => {
+        const now = Object.values(stageApi.things()).filter((t) => t.kind === m.id).pop(); if (!now) return;
+        now.x = at.x; now.y = at.y; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
+      }).catch(() => {});
+    });
+    q('.ff-btns').prepend(row); el.dataset.mode = idea.id;
+  }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
   const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
-  let raf = 0, last = 0; const thr = motionThrottle();
-  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt * thr.scale(el)); raf = requestAnimationFrame(loop); };
+  let raf = 0, last = 0, cost = 0, gap = 16.7; const thr = motionThrottle(); // frame time is measured (data-frame-ms: the field's own work a frame; data-fps)
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
   return { el, state: th.state, tick, input, get still() { return still; } };
