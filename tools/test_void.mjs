@@ -5965,18 +5965,19 @@ try {
       !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
         && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
     await F.ctx.close(); }
-  // the backlog digest with its suggested-builder tag (asked by Verse): every placed family names who last touched it, from the ledger
-  if (want('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger')) { const F = await fresh({ phone: true });
-    await F.ask('digest your backlog', 1500);
-    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Backlog digest') return null;
-      const fams = [...p.querySelectorAll('section[data-family]')]; return { placed: fams.filter((s) => s.dataset.family !== 'none').length, tagged: p.querySelectorAll('[data-builder]').length, src: /suggested builder/.test((p.querySelector('.src') || {}).textContent || '') || !fams.length, wide: p.scrollWidth > p.clientWidth + 1 }; }).catch(() => null), 8000);
-    check('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger', !!card && card.tagged <= card.placed && card.src && !card.wide, JSON.stringify(card));
   // the fix audit (asked by Verse): fixes from the real ledger with their skills' evidence ratings and any break in another family
   if (want('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show')) { const F = await fresh({ phone: true });
     await F.ask('audit your fixes', 1500);
     const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Fix audit' || !p.querySelector('[data-fix-audit],p')) return null; const l = p.querySelector('[data-fix-audit]');
       return l ? { n: +l.dataset.fixAudit, items: l.querySelectorAll('li').length, pages: !!p.querySelector('[data-fix-pages]'), wide: p.scrollWidth > p.clientWidth + 1 } : null; }).catch(() => null), 8000);
     check('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show', !!card && card.items === Math.min(25, card.n) && card.pages && !card.wide, JSON.stringify(card));
+    await F.ctx.close(); }
+  // the backlog digest with its suggested-builder tag (asked by Verse): every placed family names who last touched it, from the ledger
+  if (want('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger')) { const F = await fresh({ phone: true });
+    await F.ask('digest your backlog', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Backlog digest') return null;
+      const fams = [...p.querySelectorAll('section[data-family]')]; return { placed: fams.filter((s) => s.dataset.family !== 'none').length, tagged: p.querySelectorAll('[data-builder]').length, src: /suggested builder/.test((p.querySelector('.src') || {}).textContent || '') || !fams.length, wide: p.scrollWidth > p.clientWidth + 1 }; }).catch(() => null), 8000);
+    check('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger', !!card && card.tagged <= card.placed && card.src && !card.wide, JSON.stringify(card));
     await F.ctx.close(); }
   // family-health: the skill families card (asked by Verse, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
