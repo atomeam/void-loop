@@ -6727,5 +6727,11 @@
   {"ask": "ritual template: meditate 10, stretch 15, journal 10 at 6:30am", "want": "skill:ritual-template"},
   {"ask": "where is jupiter", "want": "skill:sky-card"},
   {"ask": "where is the moon tonight", "want": "skill:sky-card"},
-  {"ask": "is venus up", "want": "skill:sky-card"}
+  {"ask": "is venus up", "want": "skill:sky-card"},
+  {"ask": "mind field", "want": "skill:doodle-mind"},
+  {"ask": "show me the mind field", "want": "skill:doodle-mind"},
+  {"ask": "living field", "want": "skill:doodle-mind"},
+  {"ask": "play my cards", "want": "skill:rally"},
+  {"ask": "card battle", "want": "skill:rally"},
+  {"ask": "my cards", "want": "skill:rally"}
 ]

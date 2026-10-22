@@ -264,7 +264,10 @@ export const sinceMark = (v, fam, now = Date.now()) => { const f = (v && v.follo
  *  "What got built" and every sentence read before taken out (noRepeats). Returns { sections, shown }. Pure. */
 export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null) {
   const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.map((it) => it.key)));
-  const f = v && v.follow, rest = f && Array.isArray(f.recent) ? { ...v, follow: { ...f, recent: f.recent.filter((r) => !lead.has(buildKey(r))) } } : v;
+  // the lead's builds leave "What got built", but never all of them: a first look leads with every build there is, and an empty
+  // "What got built (2 of 5 asks)" hid what each ask became (its details) with nothing to open
+  const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;
+  const rest = left ? { ...v, follow: { ...f, recent: left.length ? left : f.recent } } : v;
   const r = noRepeats([since].concat(selfSections(rest, now)), seen);
   return { sections: r.sections, shown: r.shown };
 }

@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 6,
-    "tested": 6,
+    "tested": 5,
     "checked": 1,
-    "proven": 31
+    "proven": 32
    },
    "from": 6,
    "to": 50
@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 0,
-    "proven": 27
+    "proven": 28
    },
    "from": 51,
    "to": 81
@@ -886,8 +886,10 @@
     "show me the mind field",
     "living field"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the making things it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "glow": 100,
    "n": 39
   },
   {
@@ -1648,8 +1650,10 @@
     "card battle",
     "my cards"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the games. Let the stage be the proof.",
+   "glow": 100,
    "n": 78
   },
   {
