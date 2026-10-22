@@ -96,8 +96,8 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('query.wikidata.org/sparql')) { // the country skill's live source (skills/country.js wikidataQuery): the same stand-in as REST Countries' below
       const n = ((String(new URL(u).searchParams.get('query') || '').match(/VALUES \?lab \{ "([^"]+)"@en/) || [])[1] || '').toLowerCase().replace(/^the\s+/, '');
       const t = n.replace(/\b\w/g, (x) => x.toUpperCase()), L = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, { type: 'literal', value: String(v) }]));
-      const row = n === 'australia' || !CAPITALS[n] ? L({ c: 'http://www.wikidata.org/entity/Q408', name: 'Australia', capitals: 'Canberra', population: 25687041, currencies: 'Australian dollar', languages: 'English', area: 7692024, continents: 'Oceania', timezones: 'UTC+10:00', cca2: 'AU' })
-        : L({ c: 'http://www.wikidata.org/entity/Q1', name: t, capitals: CAPITALS[n], population: 1000000, currencies: CURRENCIES[n] || '', languages: 'Local', area: 100000 });
+      const row = n === 'australia' || !CAPITALS[n] ? L({ c: 'https://www.wikidata.org/entity/Q408', name: 'Australia', capitals: 'Canberra', population: 25687041, currencies: 'Australian dollar', languages: 'English', area: 7692024, continents: 'Oceania', timezones: 'UTC+10:00', cca2: 'AU' })
+        : L({ c: 'https://www.wikidata.org/entity/Q1', name: t, capitals: CAPITALS[n], population: 1000000, currencies: CURRENCIES[n] || '', languages: 'Local', area: 100000 });
       return r.fulfill(json({ results: { bindings: [row] } })); }
     if (u.includes('restcountries.com')) { // the country asked for, from Verse's own built-in lists (Australia in full)
       const n = decodeURIComponent((u.match(/\/name\/([^?]+)/) || [])[1] || '').toLowerCase();

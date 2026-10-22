@@ -3150,7 +3150,7 @@
    "chapter": "words",
    "name": "sport",
    "title": "Sport",
-   "line": "A team from TheSportsDB's public test key, with Wikipedia as the second source when it has no team of the league asked for",
+   "line": "A team from TheSportsDB, with Wikipedia as the second source",
    "examples": [
     "nba team celtics",
     "soccer club barcelona",

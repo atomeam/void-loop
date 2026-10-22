@@ -1,6 +1,7 @@
 /**
- * sport skill — a team from TheSportsDB's public test key (no account; the old key "3" was retired in 2026 and every ask was refused
- * with a CORS error, site-test issue #1048), with Wikipedia as the second source when it has no team of the league asked for
+ * sport skill — a team from TheSportsDB, with Wikipedia as the second source.
+ * TheSportsDB's public test key needs no account (the old key "3" was retired in 2026 and every ask was refused with a CORS error,
+ * site-test issue #1048); when it has no team of the league asked for, the team's Wikipedia summary answers.
  * "nba team celtics", "soccer club barcelona", "what stadium do the yankees play in".
  */
 export function sportOf(text) {
