@@ -30,7 +30,8 @@ export async function onRequestGet({ request }) {
     if (!r.ok) throw new Error('upstream ' + r.status);
     const rows = await r.json();
     body = { ok: true, vs, source: 'CoinGecko', at: new Date().toISOString(), coins: (Array.isArray(rows) ? rows : []).map(slim) };
-  } catch (e) { body = { ok: false, vs, error: 'The price service did not answer.' }; status = 502; }
+  } catch (e) { body = { ok: false, vs, error: 'The price service did not answer.', why: String(e && e.message || e).slice(0, 60) }; status = 503; }
+  // 503, not 502: Cloudflare swaps a Function's 502 for its own error page, and the card needs this JSON to fall back
   const res = new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=' + (status === 200 ? 120 : 15) } });
   if (cache && status === 200) await cache.put(key, res.clone());
   return res;
