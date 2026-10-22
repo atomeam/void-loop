@@ -117,7 +117,7 @@ export function plan(data, { n = 6, first = [] } = {}) {
   const heavy = new Set(heavyLessons());
   // expected value (docs/LOOP-GAPS.md): how much proof a skill lacks times the chance a try at it lands, from the result memory
   // in tools/grow-lessons.json. A skill never tried scores its lack x 0.5, so fresh skills and proven-weak ones both get turns.
-  const mem = data.lessons || loadLessons(), tags = data.revenue || readJson('tools/revenue-tags.json', {}), ev = (r) => r.score * chance(r.name, mem) * reach(r.name, tags);
+  const mem = data.lessons || loadLessons(), tags = data.revenue || readJson('tools/revenue-tags.json', {}), boost = data.studyBoost || {}, ev = (r) => r.score * chance(r.name, mem) * reach(r.name, tags) * (boost[r.name] || 1); // a finished study with strong evidence (tools/study-engine.mjs studyBoosts) moves its want up, never off
   const byEv = (a, b) => ev(b) - ev(a);
   const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name)).sort(byEv)).concat(ranked.filter((r) => heavy.has(r.name)).sort(byEv));
   // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
