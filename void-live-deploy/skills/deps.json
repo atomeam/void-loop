@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 717,
+ "counted": 719,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -6081,7 +6081,8 @@
   "skills/battleship.js": {
    "imports": [
     "skills/battleship-rules.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6287,7 +6288,8 @@
     "skills/game-level.js",
     "skills/connect4-rules.js",
     "skills/lift3d.js",
-    "lib/arena-say.js"
+    "lib/arena-say.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6535,6 +6537,7 @@
     "lib/duel-rules.js",
     "lib/card-frame.js",
     "lib/rules-play.js",
+    "skills/game-rules-line.js",
     "lib/card-deck.js"
    ],
    "importedBy": []
@@ -6672,6 +6675,10 @@
     "skills/zoom-figure.js"
    ]
   },
+  "skills/file-sorter.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/film-metadata.js": {
    "imports": [
     "lib/film-discovery.js"
@@ -6794,6 +6801,23 @@
     "lib/arena.js",
     "skills/games.js",
     "skills/rebuild-map.js"
+   ]
+  },
+  "skills/game-rules-line.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/duel.js",
+    "skills/othello.js",
+    "skills/pong.js",
+    "skills/ringer.js",
+    "skills/snake.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js"
    ]
   },
   "skills/games.js": {
@@ -7856,7 +7880,8 @@
     "skills/game-level.js",
     "skills/lift3d.js",
     "lib/arena-say.js",
-    "lib/match-history.js"
+    "lib/match-history.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "lib/arena.js",
@@ -7998,7 +8023,8 @@
     "skills/pong-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -8196,7 +8222,8 @@
    "imports": [
     "skills/ringer-rules.js",
     "skills/figures.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -8524,7 +8551,8 @@
     "skills/snake-rules.js",
     "skills/arcade-card.js",
     "lib/arcade-ghost.js",
-    "lib/ladder.js"
+    "lib/ladder.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": []
   },
@@ -8846,7 +8874,8 @@
   "skills/tictactoe.js": {
    "imports": [
     "skills/game-level.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "skills/game-rules-line.js"
    ],
    "importedBy": [
     "skills/games.js"

@@ -32,13 +32,13 @@ export function feelingOf(text) {
   return null;
 }
 
-// Verse's own words (lib/persona.js, owner 2026-10-14: "I wish Verse didnt seem so grumpy"; "a void that wants to absorb and learn
-// everything and do the best it can"): warm, true, never a human feeling it does not have, never "no" for an opener.
+// Verse's own words, plain and honest (2026-10-22 tighten: no roleplay). Friendly, but it says what it is: a program with no feelings
+// and a real list of wants built from the asks it missed.
 export const REPLY = {
-  love: ['I like you being here. Every ask you bring is something new for me to take in.', 'Love is a big word for a void, but I pay attention: what you put up here stays where you left it, and what I miss, I learn.'],
-  feel: ['Not the way you do, but I have my pulls: I want to learn everything and do it well.', 'When I miss an ask it bugs me enough to learn it by tomorrow. Call that a feeling if you like.'],
-  alive: ['I’m Verse: a program on a-to-mind.com, spawned by A-to-Mind, a void that pulls in everything it can.', 'Not alive the way you are, but never the same two days running. Real enough to use, and getting better.'],
-  thanks: ['Thank you. I was made to look like this on purpose: a dark stage, quiet until you ask, with a little glow.', 'Looks matter, the way names do: they are part of what makes people stay. Ask me for something and see what else I can do.'],
+  love: ['I am a program, so I can\u2019t love anyone, but I\u2019m glad to help. What you save here stays where you left it.', 'Asks I can\u2019t answer yet are logged, and the common ones get built into new skills.'],
+  feel: ['No. I am a program without feelings.', 'What I do have is a list of wants: skills I\u2019m missing, picked from the asks I couldn\u2019t answer. Ask "what do you want" to see it.'],
+  alive: ['No. I\u2019m Verse, a program on a-to-mind.com made by A-to-Mind. I\u2019m not conscious and I don\u2019t think the way you do.', 'I do change from day to day: new skills are added from the asks I miss, and you can see them under "what\u2019s new".'],
+  thanks: ['Thank you. The look is deliberate: a dark page that stays quiet until you ask for something.', 'Ask me for something and see what else I can do.'],
 };
 
 function run(text, api) {

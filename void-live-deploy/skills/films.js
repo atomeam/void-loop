@@ -98,6 +98,10 @@ const STYLE = `<style>
   .vfilms li::before { content: counter(s); display: block; font-weight: 800; font-size: 18px; background: linear-gradient(90deg, #ff3d7f, #7a5cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .vfilms .who { margin: 0; font-size: 13px; opacity: .75; }
   /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+  /* the whole word is ONE box (owner, 2026-10-22: "VERSE F   I   LMS"): a card title is a flex row spread with space-between, so loose
+     text and the glitch span were spread apart as three items; wrapped, the word stays whole and the glitch shakes all of it */
+  .vfilms .glw { display: inline-block; white-space: nowrap; animation: gl-w 2.6s steps(1, end) -1.1s infinite; }
+  @keyframes gl-w { 0%, 88% { transform: none; text-shadow: none; } 89% { transform: translateX(1px); text-shadow: -2px 0 rgba(255,61,127,.7), 2px 0 rgba(122,92,255,.7); } 91% { transform: none; text-shadow: none; } 94% { transform: translateX(-1px); text-shadow: 2px 0 rgba(255,61,127,.7), -2px 0 rgba(122,92,255,.7); } 95%, 100% { transform: none; text-shadow: none; } }
   .vfilms .gl { position: relative; display: inline-block; }
   .vfilms .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
   .vfilms .gl i { position: absolute; left: 50%; top: 0; font-style: normal; visibility: hidden; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
@@ -105,7 +109,7 @@ const STYLE = `<style>
   .vfilms .gl.fast b, .vfilms .gl.fast i { animation-duration: 2.6s; animation-delay: -1.1s; } /* the I flickers more often (owner: "the i flickers") */
   @keyframes gl-l { 0%, 88% { visibility: visible; } 89% { visibility: hidden; } 91% { visibility: visible; } 94% { visibility: hidden; } 95%, 100% { visibility: visible; } }
   @keyframes gl-1 { 0%, 88% { visibility: hidden; } 89% { visibility: visible; } 91% { visibility: hidden; } 94% { visibility: visible; } 95%, 100% { visibility: hidden; } }
-  @media (prefers-reduced-motion: reduce) { .vfilms .gl b, .vfilms .gl i { animation: none; } .vfilms .play { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .vfilms .gl b, .vfilms .gl i, .vfilms .glw { animation: none; } .vfilms .play { transition: none; } }
 
 </style>`;
 
@@ -116,7 +120,7 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
+      + '<h2 aria-label="VERSE FILMS"><span class="glw">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</span></h2>'
       + '<p class="line">' + esc('Every day Verse films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + (wantsUpload(text)

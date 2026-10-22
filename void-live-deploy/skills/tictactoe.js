@@ -7,6 +7,7 @@
  */
 import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function createTicTacToeState() {
   return {
@@ -103,7 +104,11 @@ function mount(th, stageApi) {
   const status = document.createElement('div'); status.className = 'g-status'; status.setAttribute('aria-live', 'polite');
   const again = document.createElement('button');
   again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
-  bar.append(status, again);
+  const undoB = document.createElement('button'); undoB.type = 'button'; undoB.className = 'g-btn ttt-undo'; undoB.textContent = 'Take back';
+  bar.append(status, again, undoB);
+  const past = []; // the board before each of your moves, so a take-back undoes your move and Verse's answer together
+  undoB.addEventListener('pointerdown', (e) => e.stopPropagation());
+  undoB.addEventListener('click', (e) => { e.stopPropagation(); if (!past.length) return; th.state = past.pop(); paint(); stageApi.save && stageApi.save(); });
   const cells = [];
   for (let i = 0; i < 9; i++) {
     const b = document.createElement('button');
@@ -115,7 +120,7 @@ function mount(th, stageApi) {
       e.stopPropagation();
       if (th.state.currentPlayer !== 'X') return; // Verse is answering
       try {
-        th.state = resolveMove(th.state, i).nextState;
+        const before = th.state; th.state = resolveMove(th.state, i).nextState; past.push(before);
         paint();
       } catch (_) { return; /* occupied cell or finished game: no-op */ }
       const was = th.state;
@@ -138,12 +143,13 @@ function mount(th, stageApi) {
       cells[i].classList.toggle('win', !!(line && line.includes(i)));
       cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (v || 'empty'));
     }
+    undoB.disabled = !past.length || th.state.currentPlayer !== 'X';
     const s = th.state.status;
     status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'Verse is thinking…') : s === 'draw' ? 'A draw. Verse never loses.' : s === 'X_wins' ? 'You win!' : 'Verse wins this one.';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
-  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); stageApi.save && stageApi.save(); });
-  el.append(wrap, bar);
+  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); past.length = 0; paint(); stageApi.save && stageApi.save(); });
+  el.append(wrap, bar, rulesLine('take turns placing X and O; three in a row across, down or diagonally wins. A full board with no line is a draw.'));
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

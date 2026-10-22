@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:58:04Z",
+   "subject": "rally: the pager is numbers and fixed words"
+  },
+  {
+   "at": "2026-10-22T04:57:52Z",
+   "subject": "cards: Forge Duel joins Verse Rally (forge any text into a card, three lanes, a planning opponent, undo, resume, record, keep a won card…"
+  },
+  {
    "at": "2026-10-22T04:40:33Z",
    "subject": "verify: one incident per red head of main (an incident job after all three shards, checks merged per sha), a green head closes open…"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-22T04:09:26Z",
    "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:05:27Z",
-   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:04:56Z",
-   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
   }
  ],
  "builders": {
