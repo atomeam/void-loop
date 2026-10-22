@@ -3464,7 +3464,7 @@
    "chapter": "stage",
    "name": "file-sorter",
    "title": "File sorter",
-   "line": "\"sort these files: app.py, LICENSE, data.csv, logo.png\": each file name goes into one kind (licence, source code, settings, documents, data, images and binaries, or unknown) with the reason and how sure the rule is",
+   "line": "Sorts a list of file names by kind",
    "examples": [
     "sort these files: app.py, LICENSE, data.csv, logo.png",
     "what kind of files are these: README.md, config.yaml",

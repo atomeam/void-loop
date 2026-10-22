@@ -88,7 +88,7 @@
  "figure": "Little 3D things that live on the stage",
  "figure-can": "\"what can this figure do\": stays on the brand already written for Motelet in figure.js",
  "figures": "A small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away",
- "file-sorter": "\"sort these files: app.py, LICENSE, data.csv, logo.png\": each file name goes into one kind (licence, source…",
+ "file-sorter": "Sorts a list of file names by kind",
  "film-metadata": "Film discovery returns structured JSON film metadata",
  "films": "Verse's own films: where to watch them",
  "fireworks": "A cooperative card game in the style of Hanabi, you and Verse on the same side: \"play fireworks\", \"play…",

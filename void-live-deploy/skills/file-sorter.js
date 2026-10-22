@@ -1,6 +1,7 @@
 /**
- * file-sorter skill - "sort these files: app.py, LICENSE, data.csv, logo.png": each file name goes into one kind (licence, source code,
- * settings, documents, data, images and binaries, or unknown) with the reason and how sure the rule is. Brought in from the archived
+ * file-sorter skill - sorts a list of file names by kind.
+ * "sort these files: app.py, LICENSE, data.csv": each name goes into one kind (licence, source code, settings, documents, data, images and
+ * binaries, or unknown) with the reason and how sure the rule is. Brought in from the archived
  * autosalvage repo (archive/repos/autosalvage/evaluator.py, its rule-based classifier), rewritten in plain JS with the same rules,
  * no model and no network. It reads names only: nothing is uploaded, opened or moved.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
