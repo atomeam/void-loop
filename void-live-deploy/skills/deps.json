@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 729,
+ "counted": 731,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -17,17 +17,17 @@
    "tests": 2
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 30,
+   "direct": 2,
+   "dependants": 47,
+   "tests": 4
+  },
+  {
    "file": "lib/state.js",
    "skills": 29,
    "direct": 4,
    "dependants": 51,
-   "tests": 4
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 29,
-   "direct": 2,
-   "dependants": 46,
    "tests": 4
   },
   {
@@ -46,10 +46,24 @@
   },
   {
    "file": "lib/motion-throttle.js",
+   "skills": 19,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
+   "file": "lib/mind-field-modes.js",
    "skills": 18,
    "direct": 1,
    "dependants": 19,
    "tests": 1
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 18,
+   "direct": 14,
+   "dependants": 18,
+   "tests": 0
   },
   {
    "file": "lib/keeper.js",
@@ -78,20 +92,6 @@
    "direct": 10,
    "dependants": 33,
    "tests": 2
-  },
-  {
-   "file": "lib/mind-field-modes.js",
-   "skills": 17,
-   "direct": 1,
-   "dependants": 18,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-stage.js",
-   "skills": 17,
-   "direct": 13,
-   "dependants": 17,
-   "tests": 0
   },
   {
    "file": "lib/sky-math.js",
@@ -157,11 +157,32 @@
    "tests": 2
   },
   {
+   "file": "lib/game-kit.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
    "file": "lib/qr.js",
    "skills": 9,
    "direct": 2,
    "dependants": 13,
    "tests": 2
+  },
+  {
+   "file": "lib/rally-rules.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-deck.js",
+   "skills": 9,
+   "direct": 3,
+   "dependants": 12,
+   "tests": 1
   },
   {
    "file": "lib/skyfacts.js",
@@ -231,27 +252,6 @@
    "skills": 7,
    "direct": 0,
    "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/game-kit.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/rally-rules.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
-   "file": "lib/card-deck.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 10,
    "tests": 1
   },
   {
@@ -367,6 +367,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-doodle.js",
+   "skills": 5,
+   "direct": 3,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/observations.js",
    "skills": 5,
    "direct": 2,
@@ -466,13 +473,6 @@
   },
   {
    "file": "lib/field-cards.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-doodle.js",
    "skills": 4,
    "direct": 2,
    "dependants": 4,
@@ -1557,6 +1557,13 @@
    "tests": 2
   },
   {
+   "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/misskey.js",
    "skills": 0,
    "direct": 0,
@@ -2254,6 +2261,7 @@
     "lib/shortfall.js",
     "lib/models.js",
     "lib/honest.js",
+    "lib/lap.js",
     "lib/will-guard.js"
    ],
    "importedBy": []
@@ -2828,6 +2836,7 @@
    "importedBy": [
     "lib/card-share.js",
     "skills/duel.js",
+    "skills/monopoly.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -2836,6 +2845,7 @@
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
     "skills/oracle.js"
    ]
@@ -3346,7 +3356,8 @@
    ],
    "importedBy": [
     "skills/doodle-mind.js",
-    "skills/echo-field.js"
+    "skills/echo-field.js",
+    "skills/resonant-membrane.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
@@ -3401,6 +3412,7 @@
     "skills/nca-mind.js",
     "skills/overload.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/riot.js",
     "skills/stigmergy-board.js",
     "skills/sudden-death.js",
@@ -3455,6 +3467,7 @@
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-mode.js",
     "skills/vector-field-mind.js"
@@ -3591,7 +3604,9 @@
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
+    "skills/monopoly.js",
     "skills/oracle.js"
    ]
   },
@@ -3912,6 +3927,12 @@
     "skills/showcase.js"
    ]
   },
+  "lib/lap.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js"
+   ]
+  },
   "lib/learn.js": {
    "imports": [
     "lib/actions.js",
@@ -4139,6 +4160,7 @@
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
@@ -4212,6 +4234,7 @@
     "skills/mind-field.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
@@ -4757,7 +4780,9 @@
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/games.js",
     "skills/merge.js",
+    "skills/monopoly.js",
     "skills/oracle.js"
    ]
   },
@@ -6611,7 +6636,8 @@
    "importedBy": [
     "skills/echo-field.js",
     "skills/mind-field-mode.js",
-    "skills/mind-field.js"
+    "skills/mind-field.js",
+    "skills/resonant-membrane.js"
    ]
   },
   "skills/draft-triad.js": {
@@ -7577,7 +7603,8 @@
     "skills/nca-mind.js",
     "skills/attention-field-mind.js",
     "skills/living-cards-mind.js",
-    "skills/echo-field.js"
+    "skills/echo-field.js",
+    "skills/resonant-membrane.js"
    ],
    "importedBy": [
     "skills/mind-field.js"
@@ -7589,6 +7616,7 @@
     "skills/mind-field-mode.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
+    "skills/resonant-membrane.js",
     "skills/vector-field-mind.js",
     "skills/living-cards-mind.js",
     "skills/attention-field-mind.js",
@@ -7851,7 +7879,8 @@
   "skills/monopoly.js": {
    "imports": [
     "skills/monopoly-rules.js",
-    "skills/lift3d.js"
+    "skills/lift3d.js",
+    "lib/card-deck.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -8339,6 +8368,17 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-resonance.js"
+   ],
+   "importedBy": [
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js"
+   ]
+  },
+  "skills/resonant-membrane.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "skills/doodle-mind.js",
+    "lib/field-doodle.js"
    ],
    "importedBy": [
     "skills/mind-field-mode.js",

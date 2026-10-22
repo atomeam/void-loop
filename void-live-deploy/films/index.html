@@ -46,8 +46,8 @@
     .gl i { position: absolute; left: 50%; top: 0; font-style: normal; opacity: 0; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
       text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 var(--gl-d, 10s) ease-in-out -3s infinite; }
     /* rare and slow (owner, 2026-10-22: "rarer and slower"): one eased ~400ms swap per 8-12 s cycle; the page re-rolls the cycle length each time (--gl-d) */
-    @keyframes gl-l { 0%, 94.5% { opacity: 1; } 96% { opacity: 0; } 98% { opacity: 0; } 99.5%, 100% { opacity: 1; } }
-    @keyframes gl-1 { 0%, 94.5% { opacity: 0; } 96% { opacity: 1; } 98% { opacity: 1; } 99.5%, 100% { opacity: 0; } }
+    @keyframes gl-l { 0%, 94% { opacity: 1; } 95.5% { opacity: 0; } 98% { opacity: 0; } 99.6%, 100% { opacity: 1; } }
+    @keyframes gl-1 { 0%, 94% { opacity: 0; } 95.5% { opacity: 1; } 98% { opacity: 1; } 99.6%, 100% { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) { .gl b, .gl i, .glw { animation: none; } }
     footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
     @media (prefers-reduced-motion: reduce) { .film, .btn { transition: none; } .film:hover { transform: none; } }

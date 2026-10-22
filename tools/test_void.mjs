@@ -4279,8 +4279,8 @@ try {
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 8 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 8 && o.sim === 9 && !o.errors.length;
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 9 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 9 && o.sim === 10 && !o.errors.length;
     check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }

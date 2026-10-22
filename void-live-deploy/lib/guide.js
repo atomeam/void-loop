@@ -127,7 +127,7 @@ export function miniOwners(names, read) {
   return out;
 }
 
-const NAMED = { 'mind-field-mode': 'Mind Field', 'tilt-arena-mode': 'Tilt Arena', 'doodle-mind': 'Doodle Mind', 'echo-field': 'Echo Field', 'gaze-chase': 'Gaze Chase', 'gpu-swarm': 'GPU Swarm', 'hand-arena': 'Hand Arena' }; // a family's front page carries the family's own name (owner, 2026-10-21: "make them all easier to find")
+const NAMED = { 'mind-field-mode': 'Mind Field', 'tilt-arena-mode': 'Tilt Arena', 'doodle-mind': 'Doodle Mind', 'echo-field': 'Echo Field', 'resonant-membrane': 'Resonant Membrane', 'gaze-chase': 'Gaze Chase', 'gpu-swarm': 'GPU Swarm', 'hand-arena': 'Hand Arena' }; // a family's front page carries the family's own name (owner, 2026-10-21: "make them all easier to find")
 const title = (s) => NAMED[s] || String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
 
 // Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book

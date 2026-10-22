@@ -11,7 +11,7 @@
 import { fieldSkill } from '../lib/field-stage.js';
 import * as D from '../lib/field-doodle.js';
 
-const SAY = 'Mind Field, Doodle Mind mode: draw on it and it guesses your next stroke; drag the orbs, tap Tilt or Listen to feed it, Mode for the other seven modes';
+const SAY = 'Mind Field, Doodle Mind mode: draw on it and it guesses your next stroke; drag the orbs, tap Tilt or Listen to feed it, Mode for the other eight modes';
 
 /** the Listen button (the mic only after a press, a level number in memory only), the draggable orbs and the oracle nodes. */
 export function mount({ el, q, th, input, cv }) {

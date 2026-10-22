@@ -39,7 +39,7 @@ test('the plain words open Mind Field and each mode', () => {
   for (const m of MODES) { assert.ok(fam.match(m.ask.toLowerCase(), m.ask), m.ask); assert.equal(modeAsk('mind field ' + m.name.toLowerCase()).id, m.id); }
 });
 test('the family takes one place in the index, keeps every old name as a part, and every part has a stage kind', () => {
-  assert.deepEqual(fam.parts, ['mind-field-mode', 'doodle-mind', 'echo-field', 'vector-field-mind', 'living-cards-mind', 'attention-field-mind', 'nca-mind', 'resonance-mind', 'swarm-mind']);
+  assert.deepEqual(fam.parts, ['mind-field-mode', 'doodle-mind', 'echo-field', 'resonant-membrane', 'vector-field-mind', 'living-cards-mind', 'attention-field-mind', 'nca-mind', 'resonance-mind', 'swarm-mind']);
   const index = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8'));
   assert.ok(index.includes('mind-field')); for (const n of fam.parts) assert.ok(!index.includes(n), n);
   assert.ok(existsSync(new URL('../void-live-deploy/skills/order/1400-mind-field', import.meta.url)));
@@ -47,7 +47,7 @@ test('the family takes one place in the index, keeps every old name as a part, a
 });
 test('"what\'s similar" lists the modes of any combined skill', () => {
   for (const a of ["what's similar to swarm mind", 'modes of mind field', 'skills like nca mind']) assert.ok(similar.match(a.toLowerCase(), a), a);
-  assert.equal(INDEX.families['mind-field'].length, 9); assert.ok(doodle.examples.includes('mind field')); assert.ok(modeSkill.examples.includes('listen field'));
+  assert.equal(INDEX.families['mind-field'].length, 10); assert.ok(doodle.examples.includes('mind field')); assert.ok(modeSkill.examples.includes('listen field'));
   for (const a of similar.nearMisses) assert.equal(similar.match(a.toLowerCase(), a), false, a);
 });
 test('the Draw law: seeded, bounded, predicts the stroke, seals numbers only, fast', () => {
@@ -59,4 +59,12 @@ test('the Draw law: seeded, bounded, predicts the stroke, seals numbers only, fa
   const p = JSON.stringify(D.params(a)); assert.ok(!/trace/.test(p), 'no trace in a seal');
   const s = D.create(1), t0 = performance.now(); for (let i = 0; i < 600; i++) D.step(s, 1 / 60, { x: 0.5, y: 0.5, over: true, down: true }); assert.ok((performance.now() - t0) / 600 < 4, 'a step is a small part of a 16 ms frame');
   const h = D.create(1); h.orbs[0].held = true; h.orbs[0].x = 0.9; h.orbs[0].y = 0.1; for (let i = 0; i < 30; i++) D.step(h, 1 / 60, {}); assert.equal(h.orbs[0].x, 0.9); assert.ok(h.a[Math.floor(0.1 * D.GH) * D.GW + Math.floor(0.9 * D.GW)] > 0, 'a held orb feeds the field where it sits');
+});
+
+test('Resonant Membrane: its words open it, its mode is listed, pitch follows energy, and the probes reach Attention', async () => {
+  const M = await import('../void-live-deploy/skills/resonant-membrane.js');
+  for (const a of ['resonant membrane', 'pluck the membrane', 'membrane mind']) assert.equal(fam.part(a, a), 'resonant-membrane', a);
+  for (const a of M.default.nearMisses) assert.equal(M.default.match(a, a), false, a);
+  assert.equal(modeAsk('mind field membrane').id, 'resonant-membrane'); assert.equal(modeAsk('mind field probes').id, 'attention-field-mind');
+  assert.ok(M.pitchOf(1) > M.pitchOf(0)); const a = new Float32Array(D.GW * D.GH); a[0] = 0.9; assert.ok(Math.abs(M.energyAt(a, 0, 0) - 0.9) < 1e-6); assert.equal(M.energyAt(a, 0.9, 0.9), 0);
 });
