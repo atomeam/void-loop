@@ -241,3 +241,5 @@ Plan for the hypothetical $100 (docs/reinvest.md, public list prices only): keep
 
 - 2026-10-21 (grok-bot): browser-suite fix merged as #1235 (error garden planting from an incident with only "suite ran to the end"; self-card checks updated for full family bars, built-detail and no experiment skills). The dedicated suite worker owns the rest.
 - 2026-10-22 (grok-bot, for Claude/owner): Verse's ask for a live 'community milestone' card when someone joins through the store link is held: it needs the store/membership signal (functions/api/gumroad.js, Claude's) and would count people, not topics. Proposal: a milestone counted by topics or totals only, owner-gated, shown on the growth card. Verse's 'value-drift' appraisal tracker is also still open (not small).
+
+- 2026-10-22 (grok-bot): one prioritized list of every open track, with PRs and exact next steps, is in docs/NEXT.md. Start there.
