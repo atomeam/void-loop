@@ -2717,9 +2717,9 @@ try {
     const seenAfterFirst = await seen();
     verified = ['sticky note buy milk', 'make a counter']; // the live check ran: the counter answers now
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
-    const second = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
+    const second = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
     check('look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered',
-      !/while you were away/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I made 2 new things while you were away/.test(second),
+      !/I built this/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I built this: a counter you can tap \(and 1 more\)/.test(second),
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
@@ -2736,12 +2736,13 @@ try {
     await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
     const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    const first = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
-    // the line was seen and ignored: the next visit does not say it again
+    const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
+    // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
+    await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
-      /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
+      /I built this: a counter you can tap \(and 1 more\)/.test(first) && !/I built this/.test(second), JSON.stringify({ first, second }));
     await P.ctx.close();
   }
   if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Verse
@@ -2773,6 +2774,24 @@ try {
     const after = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 8000);
     check('look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new',
       !before && after === '1' && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-21: "still not seeing i made this anymore": a device that had previewed every build (or said "show me everything") had every ask
+  // in a2m.void.shown.v1, so no preview ever showed again; what was built this week stays one tap away, with its whole line, however often it was seen
+  if (want("look what I made: what was built recently always shows, even on a device that has seen everything")) {
+    const at = new Date(Date.now() - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+    const LEDGER = [{ at, by: 'verse', kind: 'build', what: 'ritual template', show: 'A routine becomes back-to-back daily calendar events in one file you can download', try: 'morning routine as calendar events' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-r')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['morning routine as calendar events'])); sessionStorage.setItem('sc-r', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['morning routine as calendar events'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bellOk = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.mode).catch(() => null), 20000);
+    const line = await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    const whole = await P.p.$eval('#away-note', (e) => e.scrollWidth <= e.clientWidth + 1 || getComputedStyle(e).whiteSpace !== 'nowrap').catch(() => false);
+    await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
+    check('look what I made: what was built recently always shows, even on a device that has seen everything: the sparkle stays (recent), the quiet line names the build in full, and a tap plays it',
+      bellOk === 'recent' && /Recently built: A routine becomes back-to-back daily calendar events in one file you can download/.test(line) && whole && /1 of 1/.test(bar) && !P.errors.length,
+      JSON.stringify({ bellOk, line, whole, bar, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
@@ -2847,7 +2866,7 @@ try {
     await ledger(P.ctx); await P.p.waitForTimeout(500);
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
-    r.pill = await until(async () => ((await note(P)).includes('I made 3 new things while you were away') ? await note(P) : ''), 6000);
+    r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
     await P.p.click('[data-showcase="show"]');
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
@@ -2936,7 +2955,7 @@ try {
     await P.ctx.route(/\/api\/miss(?:\?|$)/, (r) => { try { misses.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} r.fulfill({ status: 204, body: '' }); });
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    await until(async () => /while you were away/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
+    await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
     await P.p.click('[data-showcase="show"]');
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
