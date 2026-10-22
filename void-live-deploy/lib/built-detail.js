@@ -5,7 +5,12 @@
 import { depthOf } from './voice.js';
 
 const esc0 = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const reOf = (name) => new RegExp('(^|[^a-z0-9-])' + String(name).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z0-9-])');
+// a line is filed under a skill only when it names that skill explicitly (owner, 2026-10-21: 'merge' got Monopoly and PR-merge lines, 'image'
+// and 'part' were junk buckets): its phrases' skills, a skill file it names (skills/<id>.js), the line opening with the id ("forge: ...",
+// "forge family"), "the <id> skill", or a hyphenated id as a whole word. Plain dictionary words are never matched loosely.
+const escRe = (n) => String(n).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const reOf = (name) => { const n = escRe(name);
+  return new RegExp((/-/.test(n) ? '(^|[^a-z0-9-])' + n + '(?![a-z0-9-])|' : '') + 'skills/' + n + '\\.js|^' + n + '(?::| family)|(^|[^a-z0-9-])(?:the )?' + n + ' skill\\b'); };
 const KINDS = /^(?:fix|build|grow|retire|tune|polish)$/;
 /** the PR number a ledger line names (its ref, or "(#123)" / "PR #123" in its words), or null. Pure. */
 export function prOf(x) {
@@ -26,11 +31,13 @@ export function builtByFamily(ledger, fam, limit = 40) {
     .slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   const skills = F.flatMap((f) => (f.skills || []).filter((s) => s && s.name && String(s.name).length > 2).map((s) => ({ fam: f, name: String(s.name), re: reOf(s.name) })));
-  const item = (x) => ({ at: x.at, day: String(x.at || '').slice(0, 10), kind: x.kind, depth: depthOf(x.kind), what: x.what.trim(), show: x.show || '', pr: prOf(x) });
+  // a hardening line with its phrases reads as the phrases themselves: what was added and which skill each now opens
+  const words = (x) => Array.isArray(x.phrases) && x.phrases.length ? 'New phrases: ' + x.phrases.map((p) => '\u201c' + p.ask + '\u201d now opens ' + p.skill).join('; ') : x.what.trim();
+  const item = (x) => ({ at: x.at, day: String(x.at || '').slice(0, 10), kind: x.kind, depth: depthOf(x.kind), what: words(x), show: x.show || '', pr: prOf(x) });
   const by = new Map(), across = [];
   for (const x of L) {
-    const text = (x.what + ' ' + (x.try || '')).toLowerCase();
-    const hit = skills.filter((s) => s.re.test(text));
+    const text = x.what.toLowerCase(), named = new Set((Array.isArray(x.phrases) ? x.phrases : []).map((p) => p.skill));
+    const hit = named.size ? skills.filter((s) => named.has(s.name)) : skills.filter((s) => s.re.test(text));
     if (!hit.length) { across.push(item(x)); continue; }
     for (const s of hit) { const k = s.fam.id + '|' + s.name; if (!by.has(k)) by.set(k, { fam: s.fam, name: s.name, items: [] }); by.get(k).items.push(item(x)); }
   }

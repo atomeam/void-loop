@@ -76,7 +76,7 @@ export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
   if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
-  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
+  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || (Array.isArray(e.phrases) && e.phrases.length ? (hardenedLine(e.what) || '').split(':')[0] + ': new phrases ' + e.phrases.map((p) => '\u201c' + p.ask + '\u201d now opens ' + p.skill).join('; ') : '') || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
 }

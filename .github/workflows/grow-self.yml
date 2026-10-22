@@ -228,6 +228,8 @@ jobs:
           # "bring back the I made this for upgrades"; Verse's own builds never reached the ledger, so they never popped up)
           try=$(node -p "const c = JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')); (c[0] && c[0].ask) || ''" "$g/passing.json" 2>/dev/null || true)
           node tools/grow.mjs grow "$what" --by verse ${try:+--try "$try"}
+          # the line carries its phrases as data too, so every card and preview lists them (owner, 2026-10-21; tools/backfill-hardened.mjs)
+          [ -s "$g/passing.json" ] && node tools/backfill-hardened.mjs --last "$g/passing.json" || true
           # the card cycle moves only now that this run has a patch: a run that stopped earlier consumed no turn
           n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
           node tools/card-cycle.mjs --n "$n" --advance >> "$GITHUB_STEP_SUMMARY" || true
