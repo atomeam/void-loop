@@ -18,7 +18,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -48,6 +48,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
+  ['mind-field', 'mind-field.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['fix-audit', 'fix-audit.test.mjs'],
@@ -125,6 +126,7 @@ for (const [name, file] of [
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
+  ['glitch-titles', 'glitch-titles.mjs'],
   ['perf3d', 'perf3d.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
@@ -357,6 +359,8 @@ for (const [name, file] of [
   ['card-look', 'card-look.test.mjs'],
   ['autopsy-asks', 'autopsy-asks.test.mjs'],
   ['game-health', 'game-health.test.mjs'],
+  ['completeness', 'completeness.test.mjs'],
+  ['persona-playtest', 'persona-playtest.mjs'],
   ['ics', 'ics.test.mjs'],
   ['lineage', 'lineage.test.mjs'],
   ['remediation-velocity', 'remediation-velocity.test.mjs'],
@@ -429,6 +433,7 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
+addScript('similar', 'similar-index.mjs', ['--check']); // the "what's similar" index of every family's parts (lib/similar-index.js)
 addScript('refresh', 'refresh.mjs', ['--check']);
 addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its source: the floor only rises (tools/art-floor.json)
 addScript('art-pixels', 'art-pixels.mjs', ['--check']); // the card art as a person sees it, in Chromium (passes with a note when there is no browser) // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)

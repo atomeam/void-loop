@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:40:45Z",
+   "subject": "File sorter: a short whole-sentence book line"
+  },
+  {
    "at": "2026-10-22T04:29:54Z",
    "subject": "One countdown parses show-countdown asks without overlap; file sorter test and family; refresh generated files"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T03:59:35Z",
    "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
-  },
-  {
-   "at": "2026-10-22T03:57:45Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

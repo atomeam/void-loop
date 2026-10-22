@@ -6,6 +6,7 @@ import * as P from './pong-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { pongRecorder, pongGhostY, submit, load, words } from '../lib/arcade-ghost.js';
 import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Verse)
+import { rulesLine } from './game-rules-line.js';
 
 export function pongOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -23,6 +24,7 @@ function mount(th, stageApi) {
   c.cv.addEventListener('pointerdown', (e) => { input = { y: c.local(e).y }; });
   c.el.addEventListener('keydown', (e) => { const k = e.key.toLowerCase(); if (['arrowup', 'arrowdown', 'w', 's'].includes(k)) { keys.add(k); e.preventDefault(); } });
   c.el.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
+  c.el.appendChild(rulesLine('move your paddle with the mouse, a finger, or the up and down keys; get the ball past Verse. First to 7 wins.'));
   c.again.addEventListener('click', (e) => { e.stopPropagation(); fresh(); });
   c.start((dt, g) => {
     const s = th.state;
