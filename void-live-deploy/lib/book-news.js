@@ -13,7 +13,7 @@ export const KIND_ORDER = ['grow', 'build', 'fix'];
 export const KIND_NAME = { grow: 'Grew', build: 'Built', fix: 'Fixed', retire: 'Retired', idea: 'Ideas', finding: 'Found' };
 
 const LINE_MAX = 150;
-const cut = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const t = s.slice(0, n - 1); return t.slice(0, Math.max(t.lastIndexOf(' '), n * 0.6)).replace(/[\s,;:.—-]+$/, '') + '…'; };
+const cut = (s) => String(s || '').replace(/\s+/g, ' ').trim(); // whole sentences, never cut with an ellipsis (owner, 2026-10-21: the book cut its What's new lines)
 
 /** the ledger entries worth a line: the newest NEWS_MAX with a date and some text, newest first, as { at, day, kind, line, try }. Pure. */
 export function newsEntries(ledger, max = NEWS_MAX, tryOf = null) { // tryOf(entry): an ask for an entry with no `try` of its own (skills/showcase.js playable)

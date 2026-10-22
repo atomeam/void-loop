@@ -22,7 +22,7 @@ export const TOME_CSS = [
   'html.vtome-open,html.vtome-open body{overscroll-behavior:none}#vtome{touch-action:pan-y;position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;perspective:2200px;perspective-origin:50% 45%;font-family:' + SERIF + ';color:#2b1b0e;opacity:0;transition:opacity .35s ease}#vtome.on{opacity:1}',
   '#vtome .tome-dim{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(14,10,6,.45),rgba(5,4,2,.9) 78%)}',
   // the book: height-led so two pages always fit; everything inside is sized from the book (cqh), so it reads the same on any screen
-  '.tome{position:relative;--th:min(86vh,calc(94vw / 1.46));height:var(--th);width:calc(var(--th) * 1.46);container-type:size;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1)}',
+  '.tome{position:relative;--th:min(86vh,calc(100vh - 96px),calc(94vw / 1.46));--th:min(86dvh,calc(100dvh - 96px),calc(94vw / 1.46));height:var(--th);width:calc(var(--th) * 1.46);container-type:size;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1)}',
   '.tome.shut{transform:translateX(-25%) scale(.96)}',
   '.tome.shut .tome-page,.tome.shut .tome-stack{opacity:0;transition:opacity .25s ease}.tome-page,.tome-stack{transition:opacity .25s ease}',
   // boards and spine: dark worn leather with a blind-tooled double border
