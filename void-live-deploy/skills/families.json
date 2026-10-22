@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 24,
-  "checked": 13,
-  "proven": 270
+  "checked": 12,
+  "proven": 271
  },
  "families": [
   {
@@ -1292,8 +1292,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 1,
-    "proven": 20
+    "checked": 0,
+    "proven": 21
    },
    "sources": {
     "read": 20,
@@ -1302,7 +1302,6 @@
     "answered": 0,
     "points": 1.4,
     "one_live_from_proven": [
-     "digest",
      "news",
      "joke",
      "book",
@@ -1310,7 +1309,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 7 more proven: digest, news, joke, book, show, sport and 1 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 6 more proven: news, joke, book, show, sport, senolytic."
    },
    "skills": [
     {
@@ -1335,12 +1334,12 @@
     },
     {
      "name": "digest",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-19",
+     "promoted": "2026-10-22",
      "streak": 4,
      "source": {
       "sites": [
@@ -1352,8 +1351,7 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
+      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -2851,9 +2849,9 @@
     {
      "name": "backlog-digest",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-21",
      "streak": 3
