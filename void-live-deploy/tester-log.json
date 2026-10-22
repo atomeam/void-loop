@@ -231,6 +231,80 @@
    "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
   }
  ],
+ "weekly": [
+  {
+   "from": "2026-07-30",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-08-06",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-08-13",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-08-20",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-08-27",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-09-03",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-09-10",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-09-17",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-09-24",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-10-01",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-10-08",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
+  },
+  {
+   "from": "2026-10-15",
+   "runs": 191,
+   "passed": 3151,
+   "of": 5810
+  }
+ ],
  "seen": {
   "page:/films/": "2026-10-15T06:04:21Z",
   "page:/store/": "2026-10-15T06:04:21Z",
