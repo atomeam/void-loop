@@ -14,7 +14,7 @@ const TAKES = {
 
 export function cartoonOf(text) {
   const t = CLEAN(text);
-  const m = t.match(/^(?:please\s+)?cartoon version of (?:a |an |the )?(.+)$/);
+  const m = t.match(/^(?:please\s+)?(?:cartoon version of (?:a |an |the )?|draw a (?:toon )?)(.+)$/);
   if (!m) return null;
   const subject = m[1].replace(/^hard subject$/, 'shipwreck');
   return { subject };
@@ -57,7 +57,7 @@ async function run(text, api) {
 
 export default {
   name: 'cartoon',
-  examples: ['cartoon version of a plague', 'cartoon version of a shipwreck', 'cartoon version of gg allin', 'cartoon version of a hard subject'],
+  examples: ['cartoon version of a plague', 'cartoon version of a shipwreck', 'cartoon version of gg allin', 'cartoon version of a hard subject', 'draw a toon cat'],
   nearMisses: ['what is a cartoon', 'summon a figure', 'make a clock', 'cartoon network'],
   cartoonOf,
   cartoonTake,
