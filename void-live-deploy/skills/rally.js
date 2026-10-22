@@ -228,7 +228,7 @@ function mountPage(el, mode, api) {
     if (want) { const i = pages.findIndex((p) => p.some((b) => b.matches && (b.matches(want) || b.querySelector(want)))); if (i >= 0) pg = i; want = ''; }
     pg = Math.max(0, Math.min(pg, pages.length - 1));
     pages.forEach((p, i) => { for (const b of p) b.hidden = i !== pg; });
-    pager.innerHTML = '<button type="button" data-d="-1"' + (pg ? '' : ' disabled') + '>‹ back</button><span class="r-note">page ' + (pg + 1) + ' of ' + pages.length + '</span><button type="button" data-d="1"' + (pg < pages.length - 1 ? '' : ' disabled') + '>next ›</button>';
+    pager.innerHTML = '<button type="button" data-d="-1"' + (pg ? '' : ' disabled') + '>‹ back</button><span class="r-note">page ' + (pg + 1) + ' of ' + pages.length + '</span><button type="button" data-d="1"' + (pg < pages.length - 1 ? '' : ' disabled') + '>next ›</button>'; // void-review: ok: numbers and fixed strings only
     main.appendChild(pager); el.scrollTop = 0; fitting = false; obs.takeRecords();
   }
   let want = '';
