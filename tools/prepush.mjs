@@ -20,6 +20,7 @@ export function problemsIn(files) {
   const out = [];
   for (const { path, text } of files) {
     if (typeof text !== 'string' || text.includes('\0')) continue;
+    if (path.startsWith('archive/repos/')) continue; // early builds kept as found (archive/repos/README.md); conflict markers aside, nothing there runs
     const marks = conflictMarkers(text);
     if (marks.length) out.push(`${path}: conflict marker at line ${marks[0].line}${marks.length > 1 ? ` (and ${marks.length - 1} more)` : ''}: settle the merge (node tools/merge-main.mjs)`);
     if (/\.(m?js)$/.test(path)) {
