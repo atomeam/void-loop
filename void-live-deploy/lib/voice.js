@@ -277,3 +277,15 @@ export async function readReplies(env) {
     return Array.isArray(list) ? list : [];
   } catch (_) { return []; }
 }
+
+/** a will's wants split into what is still wanted and what the ledger already names as built (owner, 2026-10-21: the wants card listed two
+ *  asks built on 10-17 and 10-19). The same evidence followThrough uses: a ledger line that names the ask, or one in the same words. Pure. */
+export function splitBuilt(wants, ledger, links = []) {
+  const W = Array.isArray(wants) ? wants : [], at = '2000-01-01T00:00:00Z';
+  const words = (w) => String((w && (w.title || w.i_want)) || '').replace(/^I want to\s+/i, '');
+  const t = followThrough([{ at, asks: W.map((w) => ({ ask: words(w) })) }], ledger, links);
+  const built = new Map(); for (const g of t.built) for (const id of g.ids) built.set(id, g);
+  const open = [], got = [];
+  W.forEach((w, i) => { const g = built.get(askId(at, i)); if (g) got.push({ ...w, builtAt: String(g.builtAt || '').slice(0, 10), what: g.what }); else open.push(w); });
+  return { open, got };
+}

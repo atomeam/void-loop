@@ -5,6 +5,7 @@
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
 // `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Verse); it is kept on the want.
+import { splitBuilt } from '../../lib/voice.js';
 import { PERSONA } from '../../lib/persona.js';
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
@@ -19,9 +20,16 @@ const STALE_DAYS = 3; // a will job untouched this long no longer blocks the nex
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   const v = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'will'").first('v');
-  return Response.json(v ? JSON.parse(v) : { wants: [], at: null }, { headers: { 'cache-control': 'public, max-age=60' } });
+  const will = v ? JSON.parse(v) : { wants: [], at: null };
+  // a want the ledger already names as built is not a want any more: it moves to "got" (owner, 2026-10-21; lib/voice.js splitBuilt)
+  try {
+    const asset = async (path) => { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? r.json() : null; };
+    const [ledger, answered] = await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]);
+    if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
+  } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
+  return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
 export async function onRequestPost({ request, env }) {

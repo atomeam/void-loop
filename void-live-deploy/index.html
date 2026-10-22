@@ -2645,15 +2645,18 @@ say('nothing selected to remove');
       let w = null;
       try { w = await fetch('/api/will').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
-      if (!w || !w.wants || !w.wants.length) { el.innerHTML = '<h2>What I want to become</h2><p>I haven\'t decided yet. I look at everything that exists every few hours and choose.</p>'; return; }
+      if (!w || !w.wants || (!w.wants.length && !(w.got && w.got.length))) { el.innerHTML = '<h2>What I want to become</h2><p>I haven\'t decided yet. I look at everything that exists every few hours and choose.</p>'; return; }
       // zero lies (the owner, 2026-10-12): a reason that ranks or counts what Verse cannot back shows the recorded fact instead
       // (lib/honest.js, the same check /api/will runs), and the fact itself sits under each want
       const honest = await import('/lib/honest.js').catch(() => null);
       if (vpageEl !== el) return;
       const why = (x) => (honest ? honest.honestBecause(x.because, x.evidence) : x.because);
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
-        + '<ul>' + w.wants.map((x) => '<li><b>' + esc(x.i_want) + '</b> <span style="color:#8a8a8a">— ' + esc(why(x)) + '</span>'
-          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>'
+        // one block per want (owner, 2026-10-21: the wants ran together): the want, then its reason on its own line, then the recorded fact
+        + (w.wants.length ? '<ul class="will-list" style="list-style:none;padding:0;margin:10px 0">' + w.wants.map((x) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + esc(x.i_want) + '</b><div style="color:#8a8a8a;margin-top:4px">' + esc(why(x)) + '</div>'
+          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
+        // what I wanted and got: asks the ledger names as built, shown apart, never as a current want (functions/api/will.js splitBuilt)
+        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Got it</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li style="margin:0 0 10px;color:#9aa"><b style="display:block">' + esc(x.i_want) + '</b><div style="font-size:12px">built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
     }
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
