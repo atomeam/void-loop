@@ -2,6 +2,38 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T05:10:55.865Z",
+   "sha": "3479ba40b0f08b81fb86c0f829e49ea9fd24958e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39724682346",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "void-live-deploy/skills/card-play.js",
+    ".github/workflows/verify.yml",
+    "docs/COMPLETENESS.md",
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/completeness-rules.json",
+    "tools/completeness.mjs",
+    "tools/completeness.test.mjs",
+    "tools/expectations.mjs",
+    "tools/glitch-titles.mjs",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "tools/no-clip.mjs",
+    "tools/persona-playtest.mjs",
+    "tools/revert-target.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-22T05:09:56.284Z",
    "sha": "a242f6e8fe66da33680a641ab79017ea84932505",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39724392862",
@@ -728,28 +760,6 @@
     "tools/film-discovery.test.mjs",
     "tools/site-test.json",
     "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-21T02:30:54.251Z",
-   "sha": "f48ba3679219eb96c850353561cc82c5149e86f2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39531790473",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/grow-gate.mjs",
-    "tools/grow-gate.test.mjs",
-    "tools/grow-self.state.json",
-    "tools/grow-self.test.mjs"
    ]
   }
  ]
