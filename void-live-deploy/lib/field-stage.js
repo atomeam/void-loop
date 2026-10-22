@@ -2,7 +2,7 @@
 // mountField(th, stageApi, idea) puts a small Canvas2D card on the stage and runs the idea's step law on it:
 //   - one requestAnimationFrame loop, paused while the tab is hidden and gone when the card leaves the page;
 //     with prefers-reduced-motion the field is warmed up once and then moves only when you touch it (no loop);
-//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale and shift of the card's body,
+//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale of the card's field and a shift,
 //     a blur on the canvas): never the page around it;
 //   - sound stays OFF until you tap "Sound on" (a Web Audio spectrum drone that follows the metrics); no Web Audio: the button says so;
 //   - "Tilt" asks for the device orientation only on a tap (iOS asks permission, others just start); no sensor: the button says so;
@@ -91,7 +91,7 @@ export function mountField(th, stageApi, idea) {
   if (idea.vars) cv.style.filter = 'contrast(calc(0.9 + var(--ink-density, 0) * 0.6)) blur(calc((1 - var(--ink-density, 0)) * 0.7px))'; // --ink-density: sharp and high-contrast when high, soft charcoal when low
   const g = cv.getContext('2d'); if (g) g.scale(dpr, dpr);
   q('.ff-frame').appendChild(cv);
-  const body = q('.ff-body'), hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
+  const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
 
@@ -108,7 +108,7 @@ export function mountField(th, stageApi, idea) {
   const morph = () => {
     metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
-    body.style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter;
+    q('.ff-frame').style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter; // the field breathes, the buttons hold still under a finger (a scaled body kept Law, Mode and New game moving)
     for (const [k, v] of Object.entries({ ...css.vars, ...extra })) el.style.setProperty(k, v);
     if (extra['--ink-density'] != null) el.dataset.ink = extra['--ink-density'];
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
