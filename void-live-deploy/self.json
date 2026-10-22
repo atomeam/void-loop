@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:38:57Z",
+   "subject": "Review: say why the learned patterns are safe; the card store logs when it cannot save"
+  },
+  {
+   "at": "2026-10-22T04:31:37Z",
+   "subject": "Games show every basic: property game gets player panels, sets, mortgages and deed cards; how-to-play lines and a take-back; completeness…"
+  },
+  {
    "at": "2026-10-22T04:28:13Z",
    "subject": "Mind Field: seven field minds in one skill with modes, a new Draw mode, and 'what's similar'"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-22T04:02:51Z",
    "subject": "self card: whole text in copy/save (no 8000 cap, no empty bullets, no cut lines), picture wraps every line with no ellipsis and strips…"
-  },
-  {
-   "at": "2026-10-22T03:59:38Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:59:35Z",
-   "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
   }
  ],
  "builders": {

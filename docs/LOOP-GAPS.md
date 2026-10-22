@@ -55,3 +55,17 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 2. Critic gates (drop `|| true`) once hardening lines list their phrases.
 3. Variant archive: failed candidates kept with their score so a later run can retry from them.
 4. Live-watch failure → revert, through the same `revert-target.mjs` safety checks.
+
+## Unknown unknowns (2026-10-22)
+
+Adam: "Verse needs to learn to check things it can't think of yet." For the five parts, see docs/COMPLETENESS.md.
+
+| Part | Verse | Where |
+|---|---|---|
+| Expectation mining (manuals and leading sites to expected features, then gaps, then wants) | **built** | `tools/expectations.mjs` (private study text, topic-only wants) |
+| Persona playtests (new, phone, keyboard, screen reader) | **built** | `tools/persona-playtest.mjs`, in `tools/checks.mjs` |
+| Generalize every miss into a rule for all skills | **built** | `RULES` + `tools/completeness-rules.json` (learned) in `tools/completeness.mjs` |
+| Cross-skill analogy | **built** | `analogies()` in `tools/completeness.mjs` |
+| Mutation and fuzz testing of asks | **built** | `fuzz()` in `tools/completeness.mjs`, run on every game |
+| Vision critic on persona screenshots | missing | screenshots are saved; no automatic look-and-judge pass yet |
+| The same approach for skills that are not games | missing | next |
