@@ -2,13 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T03:46:36.275Z",
-   "sha": "b959542fd5ed3054ffe880e1e8fd751d297aab00",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39715806911",
+   "at": "2026-10-22T03:46:47.400Z",
+   "sha": "e46730391399c0ca48626a0c09cb250c7590f6e7",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39715775803",
    "suite": "browser suite on main",
    "checks": [
     "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
     "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
     "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
     "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
@@ -26,16 +25,10 @@
     "confirm line: visitors cannot send",
     "confirm line: no = it does not run",
     "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard"
+    "confirm line: changed request fails hard",
+    "paid: with a passkey, an outbound action still stops on the confirm line"
    ],
    "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
     "docs/LOOP-GAPS.md",
     "docs/STRATEGY.md",
     "docs/TAGTEAM.md",
