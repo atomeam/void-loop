@@ -153,3 +153,17 @@ test('Verse\'s own upgrades say what got better, not "Verse hardened itself" eve
   const chips = trayOf([{ line: 'x' }].concat(steps), 0, 6).map((c) => c.line);
   assert.equal(new Set(chips).size, chips.length, JSON.stringify(chips));
 });
+
+// recently built stays reachable after it was previewed (owner, 2026-10-21: "still not seeing i made this anymore")
+{
+  const { recentOf } = await import('../void-live-deploy/skills/showcase.js');
+  const now = Date.parse('2026-10-22T03:00:00Z');
+  const L = [
+    { at: '2026-10-21T02:00:00Z', kind: 'build', what: 'ritual', show: 'routine as events', try: 'morning routine as calendar events' },
+    { at: '2026-10-01T02:00:00Z', kind: 'build', what: 'old', show: 'old thing', try: 'old thing' },
+    { at: '2026-10-21T03:00:00Z', kind: 'build', what: 'unchecked', show: 'not answering', try: 'not answering yet' },
+  ];
+  const r = recentOf(L, new Set(['morning routine as calendar events', 'old thing']), now);
+  if (!(r.length === 1 && r[0].ask === 'morning routine as calendar events')) { console.log('FAIL recentOf keeps only verified builds of the last week, seen or not', JSON.stringify(r)); process.exitCode = 1; }
+  else console.log('ok recentOf: verified builds of the last week, previewed or not');
+}

@@ -150,3 +150,13 @@ test('a stall escalates only when the timeout signature repeats across STALL_REP
   assert.match(autopsyHtml(two), /data-stall-escalated="0">Not escalated: 2 of the 3/); assert.match(autopsyHtml(three), /data-stall-escalated="1">Escalated:<\/b> the stall repeats across 3 suites/);
   assert.equal(autopsy({ incidents: [{ at: '2026-10-17T09:00:00Z', sha: 'aaaaaaa1', suite: 's', checks: ['clock: "set it" fails'] }] }, fam, { pages: [] }).suite.escalated, false);
 });
+
+test('remediation draft and builder brief: re-run the failing checks alone, open the likely file, undo it if it still fails (asked by Verse)', async () => {
+  const A = await import('../void-live-deploy/lib/autopsy.js');
+  const i = { sha: 'abcdef1234567', at: '2026-10-21T09:00:00Z', suite: 's', checks: [{ text: 'clock: what time', skill: 'clock', family: 'time' }, { text: 'check timeout: x', meta: true }], suspects: [{ file: 'void-live-deploy/skills/clock.js', skill: 'clock', likely: true }], touched: ['void-live-deploy/skills/clock.js'] };
+  const r = A.remediationOf(i);
+  assert.ok(r[0].includes('test_void.mjs --only "clock"') && r[1].includes('skills/clock.js') && r[2].includes('git checkout abcdef12~1 -- void-live-deploy/skills/clock.js') && r[3].endsWith('/commit/abcdef1234567'), r.join('\n'));
+  assert.ok(A.builderBrief(i).includes('Remediation draft:') && A.builderBrief(i).includes('(the suite itself)'));
+  const h = A.remedyHtml(i, (s) => String(s).replace(/[&<>"]/g, ''));
+  assert.ok(h.includes('data-builder-brief=') && h.includes('issues/new?labels=builder'));
+});
