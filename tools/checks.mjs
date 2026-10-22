@@ -426,6 +426,8 @@ addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its
 addScript('art-pixels', 'art-pixels.mjs', ['--check']); // the card art as a person sees it, in Chromium (passes with a note when there is no browser) // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
 addScript('overlap', 'skill-overlap.mjs', ['--check']);
+// no sentence cut with an ellipsis: the per-file allowance only goes down (tools/no-ellipsis.mjs; owner 2026-10-21)
+addScript('no-ellipsis', 'no-ellipsis.mjs', []);
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Verse's own ask)
 addScript('families-json', 'families.mjs', ['--check']);
 // the dependency map (skills/deps.json, tools/deps.mjs; asked by Verse) is read off the import lines and kept current like families.json

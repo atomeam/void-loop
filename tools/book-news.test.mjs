@@ -22,7 +22,7 @@ test('entries: newest first, only real dated entries with text, show before what
   assert.equal(e[2].try, 'make a clock'); assert.equal(e[0].try, '');
   assert.equal(newsEntries(L, 2).length, 2);
   assert.deepEqual(newsEntries(null), []);
-  assert.ok(newsEntries([{ at: '2026-10-16T10:00:00Z', what: 'word '.repeat(80) }])[0].line.length <= 150, 'a long line is cut at a word');
+  assert.ok(newsEntries([{ at: '2026-10-16T10:00:00Z', what: 'word '.repeat(80) }])[0].line === 'word '.repeat(80).trim(), 'a long line is kept whole, never cut with an ellipsis (owner, 2026-10-21)');
 });
 
 test('grouping: newest day first, then grow, build, fix inside a day; nothing lost or invented', () => {
