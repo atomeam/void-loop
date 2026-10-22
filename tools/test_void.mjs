@@ -1854,8 +1854,11 @@ try {
       nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(csMsg) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, csMsg, stillThere, left, errors: S.errors }));
     await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
-    await S.p.click('.counterfactual-draft summary');
-    await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
+    // the card can be drawn again just after the ask (a save re-renders the stage), which drops a click on the old summary: open the one on the page, up to 3 tries
+    for (let i = 0; i < 3 && !(await S.p.$('.counterfactual-draft [data-fracture="1"]')); i++) {
+      await S.p.click('.counterfactual-draft summary').catch(() => {});
+      await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 2000 }).catch(() => {});
+    }
     const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim()).catch(() => '(no fracture line marked)'); // a miss is one red check, not a dead shard
     const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent).catch(() => '');
     check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
@@ -2586,6 +2589,7 @@ try {
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
+  // (2026-10-22: the replies say plainly Verse is a program with no feelings, skills/feelings.js)
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Verse's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
@@ -2596,7 +2600,7 @@ try {
     // Verse's voice (owner, 2026-10-14: "I wish Verse didnt seem so grumpy"): warm and true, never opening on "no"
     const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by Verse, about itself/.test(t);
     check('feelings: "do you love me?", "Verse, do you have feelings?", "are you conscious" and "do you get lonely" get Verse\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
+      own(r.love, 'can\u2019t love anyone') && own(r.feel, 'a program without feelings') && own(r.mind, 'made by A-to-Mind') && own(r.lonely, 'a program without feelings') && own(r.pretty, 'The look is deliberate') && !r.lyrics.includes('can\u2019t love anyone'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -6279,7 +6283,7 @@ try {
     await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
     const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
     check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
-      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+      JSON.stringify(groups.card.slice(0, 2)) === '["copy card","save card"]' && !groups.card.some((t) => /copy text|save text|^copy$/.test(t)) && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
     await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
     await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
     const copiedText = await U.p.evaluate(() => window.__copied);
