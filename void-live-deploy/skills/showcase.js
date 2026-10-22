@@ -252,7 +252,7 @@ async function step(stageApi) {
   const s = tour.steps[tour.i], el = bar();
   el.textContent = '';
   const head = document.createElement('span');
-  head.style.cssText = 'color:var(--ink-3,#8b90a0);white-space:nowrap';
+  head.style.cssText = 'color:var(--ink-3,#8b90a0);overflow-wrap:anywhere;min-width:0;max-width:100%'; // wraps: nowrap pushed "1 of N · …" past the panel's right edge
   head.textContent = (tour.i + 1).toLocaleString('en') + ' of ' + tour.steps.length.toLocaleString('en') + ' · ' + tour.label;
   const line = document.createElement('span');
   line.className = 'showcase-line';
