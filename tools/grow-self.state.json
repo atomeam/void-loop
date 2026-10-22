@@ -1,10 +1,15 @@
 {
-  "status": "closed",
-  "run": "backfill-2026-10-20",
-  "at": "2026-10-20T21:53:27Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable",
-  "try": "something unkeepable",
-  "closedAt": "2026-10-21T15:36:02Z",
-  "proof": "manually closed 2026-10-21 so growth can resume; previous preview was from before the gate existed",
-  "note": "the last preview from before the close-out gate existed; the next run verifies it live before starting"
+  "status": "open",
+  "run": "39713650962",
+  "at": "2026-10-22T02:52:58Z",
+  "what": "Verse hardened itself: 10 benchmark ask(s) for memory-preview, night-sky, ritual-template, sky-card.  Why these: memory-preview (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); night-sky (no benchmark ask, evidence tier: tested); ritual-template (no benchmark ask, evidence tier: tested); sky-card (no benchmark ask, evidence tier: tested); tab (no benchmark ask, evidence tier: tested). New phrases: “memory preview” now opens memory-preview; “show my memory snippets” now opens memory-preview; “what memories do I have” now opens memory-preview; “hide the sky” now opens night-sky; “morning routine as calendar events” now opens ritual-template; “export my evening routine to my calendar” now opens ritual-template; “ritual template: meditate 10, stretch 15, journal 10 at 6:30am” now opens ritual-template; “where is jupiter” now opens sky-card; “where is the moon tonight” now opens sky-card; “is venus up” now opens sky-card. Did not route: magic 8 ball should spawn an 8 ball; put in the page; draft for me.",
+  "try": "memory preview",
+  "closedAt": null,
+  "proof": null,
+  "note": "",
+  "previous": {
+    "at": "2026-10-20T21:53:27Z",
+    "try": "something unkeepable",
+    "closedAt": "2026-10-21T15:36:02Z"
+  }
 }
