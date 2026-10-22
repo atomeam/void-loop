@@ -2,7 +2,7 @@
 // Every sample here is synthetic (made up for the test).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { blank, markSeen, allowed, choose, interests, parseTakeout, parseList, whyPick, rate, load, save, forget, EXPLORE, SEEN_MAX, wordsOf } from '../void-live-deploy/lib/taste.js';
+import { blank, markSeen, allowed, choose, interests, parseTakeout, parseList, whyPick, rate, load, save, forget, pickRecord, EXPLORE, SEEN_MAX, wordsOf } from '../void-live-deploy/lib/taste.js';
 
 const lcg = (seed) => () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
 const GENRES = ['Jazz', 'Rock', 'Pop', 'Folk', 'Soul', 'Blues'];
@@ -50,4 +50,16 @@ test('the why line names only signals that were really used', () => {
   assert.ok(!/strongest|new on purpose|YouTube history/.test(whyPick({ mood: 'cozy', kind: 'music', kindBy: 'day' })));
   const ints = interests(rate(blank(), 'music', 'Hey Jude', true, { genre: 'Rock', words: 'rock' }), { asks: ['pizza recipes'], kept: [] });
   assert.equal(ints.rock.src, 'thumbs'); assert.equal(ints.pizza.src, 'asks'); assert.deepEqual(wordsOf('The Official Video'), []);
+});
+
+test('the pick as JSON (asked by Verse): a similarity score and a reasoning link that name the same signal as the why line', () => {
+  const t = rate(blank(), 'movie', 'Night Noir', true, { genre: 'Noir', words: 'noir' }), ints = interests(t);
+  const r = choose([{ title: 'Noir City', genre: 'Noir', verified: true }], t, ints, () => 0.9);
+  const rec = pickRecord(r, { kind: 'movie' });
+  assert.equal(rec.mode, 'exploit'); assert.equal(rec.reasoning.skill, 'pick-for-me'); assert.equal(rec.reasoning.signal.from, 'thumbs'); assert.equal(rec.reasoning.signal.word, 'noir');
+  assert.ok(rec.similarity >= 0.5 && rec.similarity < 1, 'similarity ' + rec.similarity);
+  assert.ok(whyPick({ mode: r.mode, hit: r.hit }).includes(rec.reasoning.signal.source));
+  const fresh = pickRecord(choose([{ title: 'Plain', genre: '', verified: true }], blank(), {}, () => 0.9), { kind: 'movie' });
+  assert.equal(fresh.similarity, 0); assert.equal(fresh.reasoning.signal, null); assert.equal(pickRecord(null), null);
+  assert.doesNotThrow(() => JSON.parse(JSON.stringify(rec)));
 });

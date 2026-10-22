@@ -9,7 +9,7 @@
  * "stop remembering" turns the noting off, "start remembering" turns it on. "remember that I like tea" and "what do you remember about
  * the parser" are the memory skill's; "export my memory", "download my graph", "back up what you know about me", "export my patterns as json" download the graph
  * as one JSON file (schema void.memory.v1, made here, never uploaded), and for whoever holds the key or a member session the card adds
- * "Download what V01D keeps" (the "remember that …" lines kept on the server, GET /api/memory?view=export) and "import my memory" reads one back beside what is kept (one undo); each interest and each
+ * "Download what Verse keeps" (the "remember that …" lines kept on the server, GET /api/memory?view=export) and "import my memory" reads one back beside what is kept (one undo); each interest and each
  * fact shows how sure the graph is (lib/memory-graph.js confidence), and a fact has a "still true" button; "who am I" is the sign-in line; "what is a knowledge graph" is a question for the web.
  */
 import { sessionToken } from '../lib/state.js';
@@ -125,9 +125,9 @@ function exportCard(api) {
       + '<div><button type="button" class="mg-again" style="' + BTN + '">Download again</button><button type="button" class="mg-go-import" style="' + BTN + '">Import a file</button></div>'
       + '<div class="src">Made in this browser and saved by your browser. It is yours: it was never uploaded and goes nowhere. Nothing leaves this device. Say "import my memory" to bring a file back.</div>'
       // the other half of "my memory" (the owner, 2026-10-18): what "remember that …" kept on V01D's server, for whoever holds the key or a member session
-      + (sessionToken() ? '<h3 style="margin:.8em 0 .2em">What V01D keeps for you</h3><p>The lines you asked me to remember ("remember that …") live with V01D, not in this browser.</p>'
-        + '<div><button type="button" class="mg-kept" style="' + BTN + '">Download what V01D keeps</button></div><div class="mg-kept-out" role="status" aria-live="polite"></div>'
-        + '<div class="src">Comes from V01D to you: only your own memory, read with your key. "forget that …" removes a line.</div>' : '');
+      + (sessionToken() ? '<h3 style="margin:.8em 0 .2em">What Verse keeps for you</h3><p>The lines you asked me to remember ("remember that …") live with Verse, not in this browser.</p>'
+        + '<div><button type="button" class="mg-kept" style="' + BTN + '">Download what Verse keeps</button></div><div class="mg-kept-out" role="status" aria-live="polite"></div>'
+        + '<div class="src">Comes from Verse to you: only your own memory, read with your key. "forget that …" removes a line.</div>' : '');
   });
   if (el && el.querySelector) {
     el.querySelector('.mg-again').addEventListener('click', () => download(fileName(Date.now()), JSON.stringify(exportOf(readGraph(), Date.now()), null, 2)));
@@ -141,14 +141,14 @@ function exportCard(api) {
 // what V01D's server keeps for this key or member (GET /api/memory?view=export, lib/memory-core.js exportAll): fetched only on the tap
 export async function downloadKept(out) {
   const tok = sessionToken(), say = (t) => { if (out) out.textContent = t; };
-  if (!tok) { say('Unlock V01D first (unlock <key>, or sign in with your passkey).'); return; }
+  if (!tok) { say('Unlock Verse first (unlock <key>, or sign in with your passkey).'); return; }
   say('gathering…');
   try {
     const r = await fetch('/api/memory?view=export', { headers: { authorization: 'Bearer ' + tok } });
-    if (!r.ok) { say(r.status === 401 ? 'Only the owner can read this.' : r.status === 403 ? 'What V01D keeps is for paid members.' : r.status === 503 ? 'There is no database behind this copy of V01D.' : 'Memory answered ' + r.status + '.'); return; }
+    if (!r.ok) { say(r.status === 401 ? 'Only the owner can read this.' : r.status === 403 ? 'What Verse keeps is for paid members.' : r.status === 503 ? 'There is no database behind this copy of Verse.' : 'Memory answered ' + r.status + '.'); return; }
     const data = await r.json();
     download('v01d-kept-' + stamp(Date.now()) + '.json', JSON.stringify(data, null, 2));
-    say(data.count ? 'saved: ' + data.count + ' line' + (data.count === 1 ? '' : 's') + (data.capped ? ' (the newest; there are more)' : '') : 'saved: V01D keeps nothing for you yet');
+    say(data.count ? 'saved: ' + data.count + ' line' + (data.count === 1 ? '' : 's') + (data.capped ? ' (the newest; there are more)' : '') : 'saved: Verse keeps nothing for you yet');
   } catch (_) { say('Memory is out of reach right now.'); }
 }
 

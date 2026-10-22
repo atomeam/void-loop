@@ -3,7 +3,8 @@
  * standard .ics file that Google Calendar, Apple Calendar and Outlook import. Built on this device; nothing is sent anywhere.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { icsOf, eventsOf } from '../lib/ics.js';
+import { icsOf, eventsOf, tzName } from '../lib/ics.js';
+const localTz = () => { try { return tzName(Intl.DateTimeFormat().resolvedOptions().timeZone); } catch (_) { return ''; } };
 const KEY = 'a2m.void.agenda.v1';
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const WHAT = "(?:(?:my|the|your|verse's|(?:verse|void)'s) )?(?:calendar|calender|agenda)(?: events)?";
@@ -15,10 +16,10 @@ function saveFile(text) {
   a.href = u; a.download = 'verse-agenda.ics'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
 }
 function run(text, api) {
-  const { showPage, esc } = api, rows = load(), n = eventsOf(rows).length, ics = icsOf(rows);
+  const { showPage, esc } = api, rows = load(), n = eventsOf(rows).length, tz = localTz(), ics = icsOf(rows, new Date(), { tz });
   showPage((el) => {
     el.innerHTML = '<h2>Calendar file</h2>' + (ics
-      ? '<p>' + esc(n) + ' event' + (n === 1 ? '' : 's') + ' from your agenda in one .ics file. Open it in Google Calendar, Apple Calendar or Outlook to add them.</p><button type="button" class="tr-copy" data-ics>Download verse-agenda.ics</button> <span class="sub" data-ics-said></span>'
+      ? '<p>' + esc(n) + ' event' + (n === 1 ? '' : 's') + ' from your agenda in one .ics file. Open it in Google Calendar, Apple Calendar or Outlook to add them.</p><p class="sub" data-ics-tz>' + (tz ? 'Times are set for your time zone, ' + esc(tz) + ', and each app shows them at its own local time.' : 'Times are written in UTC, so each app shows them at its own local time.') + '</p><button type="button" class="tr-copy" data-ics>Download verse-agenda.ics</button> <span class="sub" data-ics-said></span>'
       : '<p>Your agenda is empty, so there is nothing to export yet. Add something first, like <b>dentist friday 3pm</b>.</p>')
       + '<div class="src">Built on this device from the agenda kept in this browser; nothing is sent anywhere.</div>';
     const b = el.querySelector('[data-ics]');

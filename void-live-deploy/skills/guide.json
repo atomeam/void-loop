@@ -6773,7 +6773,7 @@
     "noun-heat",
     "overload",
     "plan-stability",
-    "stage-print",
+    "stage-out",
     "whisper-network",
     "extinction",
     "hunting-question",
@@ -6793,7 +6793,6 @@
     "stage-find",
     "dismissed-pile",
     "bookmarks",
-    "stage-export",
     "copy-stack",
     "study-cards",
     "dev-tools",
@@ -8228,8 +8227,8 @@
     },
     {
      "rank": 237,
-     "name": "stage-print",
-     "catches": "print this stage as a one-page sheet"
+     "name": "stage-out",
+     "catches": "most skills can be combined"
     },
     {
      "rank": 238,
@@ -8352,43 +8351,43 @@
    "rules": [
     {
      "rank": 257,
-     "name": "stage-export",
-     "catches": "export my stage as json"
-    },
-    {
-     "rank": 258,
      "name": "copy-stack",
      "catches": "show my clipboard stack"
     },
     {
-     "rank": 259,
+     "rank": 258,
      "name": "study-cards",
      "catches": "flashcards: hola = hello, gato = cat"
     },
     {
-     "rank": 260,
+     "rank": 259,
      "name": "dev-tools",
      "catches": "a"
     },
     {
-     "rank": 261,
+     "rank": 260,
      "name": "accessibility-modes",
      "catches": "dyslexia friendly font"
     },
     {
-     "rank": 262,
+     "rank": 261,
      "name": "about-skill",
      "catches": "play chess"
     },
     {
-     "rank": 263,
+     "rank": 262,
      "name": "backlog-digest",
      "catches": "digest your backlog"
     },
     {
-     "rank": 264,
+     "rank": 263,
      "name": "calendar-file",
      "catches": "export my calendar"
+    },
+    {
+     "rank": 264,
+     "name": "remediation-velocity",
+     "catches": "how fast do you fix your misses"
     }
    ],
    "n": 397
@@ -8396,30 +8395,25 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCLXV–CCLXIX",
+   "title": "Rules CCLXV–CCLXVIII",
    "rules": [
     {
      "rank": 265,
-     "name": "remediation-velocity",
-     "catches": "how fast do you fix your misses"
-    },
-    {
-     "rank": 266,
      "name": "dependency-health",
      "catches": "dependency health"
     },
     {
-     "rank": 267,
+     "rank": 266,
      "name": "notebook",
      "catches": "daily note"
     },
     {
-     "rank": 268,
+     "rank": 267,
      "name": "terminal",
      "catches": "set a timer for 5 minutes"
     },
     {
-     "rank": 269,
+     "rank": 268,
      "name": "photos",
      "catches": "my photos"
     }

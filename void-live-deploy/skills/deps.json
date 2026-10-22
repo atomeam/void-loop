@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 697,
+ "counted": 698,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 58,
+   "skills": 59,
    "direct": 50,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 6
   },
   {
@@ -199,6 +199,13 @@
    "tests": 3
   },
   {
+   "file": "lib/stage-find.js",
+   "skills": 7,
+   "direct": 4,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/field-stage.js",
    "skills": 7,
    "direct": 7,
@@ -262,14 +269,21 @@
    "tests": 3
   },
   {
-   "file": "lib/stage-find.js",
+   "file": "lib/field-worker.js",
    "skills": 6,
-   "direct": 4,
-   "dependants": 8,
+   "direct": 6,
+   "dependants": 6,
    "tests": 1
   },
   {
-   "file": "lib/field-worker.js",
+   "file": "lib/pack5-ui.js",
+   "skills": 6,
+   "direct": 5,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-family.js",
    "skills": 6,
    "direct": 6,
    "dependants": 6,
@@ -318,13 +332,6 @@
    "tests": 1
   },
   {
-   "file": "lib/pack5-ui.js",
-   "skills": 5,
-   "direct": 5,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
    "file": "lib/pulse.js",
    "skills": 5,
    "direct": 2,
@@ -332,16 +339,16 @@
    "tests": 1
   },
   {
-   "file": "lib/skill-family.js",
+   "file": "lib/stage-pack-i.js",
    "skills": 5,
    "direct": 5,
    "dependants": 5,
    "tests": 1
   },
   {
-   "file": "lib/stage-pack-i.js",
+   "file": "lib/stage-watch.js",
    "skills": 5,
-   "direct": 5,
+   "direct": 4,
    "dependants": 5,
    "tests": 1
   },
@@ -430,13 +437,6 @@
    "tests": 1
   },
   {
-   "file": "lib/stage-watch.js",
-   "skills": 4,
-   "direct": 4,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
    "file": "lib/stage-words.js",
    "skills": 4,
    "direct": 4,
@@ -519,6 +519,13 @@
    "direct": 3,
    "dependants": 3,
    "tests": 3
+  },
+  {
+   "file": "lib/stage-port.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/stage-tools-dom.js",
@@ -636,13 +643,6 @@
    "file": "lib/list-templates.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/stage-port.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 2,
    "tests": 1
   },
@@ -4010,6 +4010,9 @@
     "skills/dismissed-pile.js",
     "skills/stage-export.js",
     "skills/stage-find.js"
+   ],
+   "reachedBy": [
+    "skills/stage-out.js"
    ]
   },
   "lib/page-picture.js": {
@@ -4796,6 +4799,7 @@
     "skills/games.js",
     "skills/languages.js",
     "skills/list-starters.js",
+    "skills/stage-out.js",
     "skills/time.js"
    ]
   },
@@ -4914,7 +4918,8 @@
    ],
    "reachedBy": [
     "skills/copy-stack.js",
-    "skills/stage-export.js"
+    "skills/stage-export.js",
+    "skills/stage-out.js"
    ]
   },
   "lib/stage-image.js": {
@@ -5037,7 +5042,8 @@
     "skills/list-starters.js",
     "skills/merge-void.js",
     "skills/null-sweep.js",
-    "skills/stage-find.js"
+    "skills/stage-find.js",
+    "skills/stage-out.js"
    ]
   },
   "lib/stage-port.js": {
@@ -5048,6 +5054,9 @@
    "importedBy": [
     "skills/copy-stack.js",
     "skills/stage-export.js"
+   ],
+   "reachedBy": [
+    "skills/stage-out.js"
    ]
   },
   "lib/stage-tools-dom.js": {
@@ -5078,6 +5087,9 @@
     "skills/dismissed-pile.js",
     "skills/stage-export.js",
     "skills/stage-find.js"
+   ],
+   "reachedBy": [
+    "skills/stage-out.js"
    ]
   },
   "lib/stage-words.js": {
@@ -8188,7 +8200,9 @@
     "lib/pack5-ui.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/stage-out.js"
+   ]
   },
   "skills/stage-find.js": {
    "imports": [
@@ -8221,9 +8235,19 @@
    ],
    "importedBy": []
   },
+  "skills/stage-out.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/stage-print.js",
+    "skills/stage-export.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-print.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/stage-out.js"
+   ]
   },
   "skills/stage-style.js": {
    "imports": [

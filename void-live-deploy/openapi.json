@@ -65,7 +65,7 @@
         "tags": ["review"],
         "operationId": "reviewCode",
         "summary": "Review code or a diff",
-        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Void Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
+        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Verse Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
         "security": [{}, { "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -96,7 +96,7 @@
                   "ms": 14,
                   "tier": "free",
                   "review": "rules",
-                  "upgrade": "Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
+                  "upgrade": "Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
                 }
               }
             }
@@ -118,11 +118,11 @@
         ],
         "responses": {
           "200": {
-            "description": "The offer. `standalone` is null whenever Void Code Review Pro is not sold on its own.",
+            "description": "The offer. `standalone` is null whenever Verse Code Review Pro is not sold on its own.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ReviewOffer" },
-                "example": { "product": "Void Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
+                "example": { "product": "Verse Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
               }
             }
           },
@@ -240,7 +240,7 @@
       "reviewKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Optional. A Void Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Void Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
+        "description": "Optional. A Verse Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Verse Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
       }
     },
     "responses": {

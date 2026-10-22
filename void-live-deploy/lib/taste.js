@@ -134,7 +134,16 @@ export function choose(cands, t, ints, rng = Math.random, { lastGenre = '' } = {
   }
   scored.sort((a, b) => b.score - a.score);
   if (!anySignal) return { pick: scored[Math.floor(rng() * scored.length) % scored.length].f, mode: 'fresh', hit: null };
-  return { pick: scored[0].f, mode: 'exploit', hit: scored[0].hit };
+  return { pick: scored[0].f, mode: 'exploit', hit: scored[0].hit, score: scored[0].score };
+}
+/** the pick as JSON the person can read (asked by Verse): similarity is how closely the pick touches the interests it was chosen on
+ * (0 when nothing was used; s / (s + 3), so one thumbs-up word is 0.5), and reasoning names the one signal and the skill that chose it,
+ * the same signal whyPick says, so the number and the sentence never disagree. Pure. */
+export function pickRecord(r, { kind = '', skill = 'pick-for-me' } = {}) {
+  if (!r || !r.pick) return null;
+  const s = r.mode === 'exploit' && r.hit ? Math.max(0, Math.round((r.score || r.hit.w) * 100) / 100) : 0;
+  return { title: r.pick.title, kind, mode: r.mode, similarity: Math.round((s / (s + 3)) * 100) / 100,
+    reasoning: { skill, signal: r.mode === 'exploit' && r.hit ? { word: r.hit.word, from: r.hit.src, source: SRC[r.hit.src] || r.hit.src } : null } };
 }
 const SRC = { youtube: 'the YouTube history you imported', thumbs: 'your thumbs-ups', kept: 'a card you kept', asks: 'your recent asks' };
 /** the one honest line of why: names only a signal that was really used. Pure. */
