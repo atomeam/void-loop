@@ -62,7 +62,7 @@ function loop(t) {
   S.raf = 0;
   const dt = S.last ? (t - S.last) / 1000 : 1 / 60; S.last = t;
   const idle = !Object.keys(S.keys).length && !S.vel.x && !S.vel.y;
-  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still(), warp: !!(S.keys.shift || S.warp), look: S.look || 0 })); S.look = 0;
+  if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still(), warp: !!S.warp, look: S.look || 0 })); S.look = 0;
   if (S.landing) S.cam = ease(S.cam, HOME, dt, { still: still() });
   apply();
   if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; depth(st); } tell(); keep(); return; }
@@ -74,7 +74,7 @@ function hudUpdate() {
   const el = document.getElementById(HUD_ID); if (!el) return;
   const span = el.querySelector('span'); if (!span) return;
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-  const base = coarse ? 'flying · drag to turn · pinch to zoom · tap land' : 'flying · drag to turn · WASD move · QE strafe · Shift/Space warp · scroll zoom · Esc land';
+  const base = coarse ? 'flying · drag to turn · pinch to zoom · tap land' : 'flying · W to warp forward · drag to turn · A/D turn · QE strafe · scroll zoom · Esc land';
   span.textContent = (S.warp || S.keys.shift) ? base.replace('warp', 'WARP ON') : base;
   el.style.borderColor = (S.warp || S.keys.shift) ? 'rgba(255,180,80,.8)' : 'rgba(160,180,255,.28)';
 }
@@ -92,7 +92,7 @@ function hud(on) {
   }
   el = document.createElement('div'); el.id = HUD_ID; el.setAttribute('role', 'status');
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to turn · pinch to zoom · tap land' : 'flying · drag to turn · WASD move · QE strafe · Shift or Space for warp · scroll zoom · Esc land';
+  const words = document.createElement('span'); words.textContent = coarse ? 'flying · drag to turn · pinch to zoom · tap land' : 'flying · W to warp forward · drag to turn · A/D turn · QE strafe · scroll zoom · Esc land';
   const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'land'; btn.setAttribute('aria-label', 'land: back to the normal view');
   btn.addEventListener('click', () => land());
   el.append(words, btn);
@@ -104,15 +104,21 @@ function onKeyDown(e) {
   if (!S.flying) return;
   if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); land(); return; }
   if (typing(e.target)) return;
-  // Shift or Space engages warp (held). Also accept the word "warp" as a toggle via the ask bar.
-  if (e.key === 'Shift' || e.code === 'Space') { e.preventDefault(); S.keys.shift = true; S.warp = true; hudUpdate(); kick(); return; }
+  // W is warp: holding W engages warp and flies forward at extreme speed
   const k = String(e.key || '').toLowerCase();
   if (!KEYS.has(k) || e.metaKey || e.ctrlKey || e.altKey) return;
-  e.preventDefault(); S.keys[k] = true; kick();
+  e.preventDefault();
+  S.keys[k] = true;
+  if (k === 'w' || k === 'arrowup') { S.warp = true; hudUpdate(); }
+  kick();
 }
 function onKeyUp(e) {
-  if (e.key === 'Shift' || e.code === 'Space') { delete S.keys.shift; S.warp = false; hudUpdate(); kick(); return; }
-  const k = String(e.key || '').toLowerCase(); if (S.keys[k]) { delete S.keys[k]; kick(); }
+  const k = String(e.key || '').toLowerCase();
+  if (S.keys[k]) {
+    delete S.keys[k];
+    if (k === 'w' || k === 'arrowup') { S.warp = false; hudUpdate(); }
+    kick();
+  }
 }
 function onBlur() { S.keys = {}; }
 // a card up over the stage, the ask bar and the chip keep their own pointer and wheel; everywhere else is the void, and the eye moves
@@ -206,10 +212,10 @@ async function run(text, api) {
   if (what === 'fly') {
     if (!takeOff()) {
       if (S.flying && /warp/i.test(text)) { S.warp = !S.warp; S.keys.shift = S.warp; hudUpdate(); api.say(S.warp ? 'warp on · hold Shift or Space, or say warp again to stop' : 'warp off'); return 'fly'; }
-      api.say(S.flying ? 'already flying · drag to turn · WASD move · QE strafe · Shift or Space for warp · W throttle · scroll zoom · Esc land' : 'no stage to fly over'); return 'fly';
+      api.say(S.flying ? 'already flying · hold W to warp forward · drag to turn · A/D turn · QE strafe · scroll zoom · Esc land' : 'no stage to fly over'); return 'fly';
     }
     const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })();
-    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · drag to turn around · WASD move relative to facing · QE strafe · Shift warp · W strong throttle · scroll zoom · Esc land');
+    api.say(coarse ? 'flying · drag to look around · pinch to zoom · tap land to come back' : 'flying · hold W to warp forward · drag to turn · A/D turn · QE strafe · scroll zoom · Esc land');
     return 'fly';
   }
   api.say(land() ? 'landed' : 'already on the ground · "fly around" to take off');
