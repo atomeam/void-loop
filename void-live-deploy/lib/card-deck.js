@@ -8,7 +8,7 @@ import { seedOf } from './game-kit.js';
 import { cardFrom } from './rally-rules.js';
 
 export const KEY = 'verse.cards.v1', MAX_SEEN = 600, BODY = 8000;
-export const KINDS = ['answer', 'skill', 'collectible', 'game', 'board', 'store'];
+export const KINDS = ['answer', 'skill', 'collectible', 'forged', 'game', 'board', 'store'];
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const NOT_A_CARD = /^(?:…|\.\.\.|thinking|looking up|loading|searching|working on it|asking verse)/i;
 /** a clean record from anything card-shaped, or null when it is still loading or has no title. Pure. */

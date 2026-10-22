@@ -483,16 +483,36 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T04:40:45Z",
-   "subject": "File sorter: a short whole-sentence book line"
+   "at": "2026-10-22T04:58:04Z",
+   "subject": "rally: the pager is numbers and fixed words"
   },
   {
-   "at": "2026-10-22T04:29:54Z",
-   "subject": "One countdown parses show-countdown asks without overlap; file sorter test and family; refresh generated files"
+   "at": "2026-10-22T04:57:52Z",
+   "subject": "cards: Forge Duel joins Verse Rally (forge any text into a card, three lanes, a planning opponent, undo, resume, record, keep a won card…"
   },
   {
-   "at": "2026-10-22T04:29:45Z",
-   "subject": "Tighten: honest self-talk (no claimed feelings), one countdown for show-countdown asks, file sorter from the archived autosalvage rules…"
+   "at": "2026-10-22T04:40:33Z",
+   "subject": "verify: one incident per red head of main (an incident job after all three shards, checks merged per sha), a green head closes open…"
+  },
+  {
+   "at": "2026-10-22T04:37:15Z",
+   "subject": "cards: art on every Rally card, balanced starter and Verse decks, older card shapes fold into the one record, saved cards summonable in…"
+  },
+  {
+   "at": "2026-10-22T04:36:04Z",
+   "subject": "Incident: the browser suite failed on a3f93ab0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T04:28:13Z",
+   "subject": "Mind Field: seven field minds in one skill with modes, a new Draw mode, and 'what's similar'"
+  },
+  {
+   "at": "2026-10-22T04:26:45Z",
+   "subject": "cards: the share link reopens its card, now in the page's source file so deploys keep it"
+  },
+  {
+   "at": "2026-10-22T04:26:20Z",
+   "subject": "browser suite: Verse merge works out Forge's plate from the served stats (they moved from R 6 to R 3); the kept quiz is read once the…"
   },
   {
    "at": "2026-10-22T04:25:33Z",
@@ -541,26 +561,6 @@
   {
    "at": "2026-10-22T04:09:26Z",
    "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:05:27Z",
-   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T04:04:56Z",
-   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
-  },
-  {
-   "at": "2026-10-22T04:02:51Z",
-   "subject": "self card: whole text in copy/save (no 8000 cap, no empty bullets, no cut lines), picture wraps every line with no ellipsis and strips…"
-  },
-  {
-   "at": "2026-10-22T03:59:38Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:59:35Z",
-   "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
   }
  ],
  "builders": {
