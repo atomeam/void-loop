@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 26,
+  "tested": 27,
   "checked": 12,
   "proven": 267
  },
@@ -815,7 +815,7 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 0,
     "proven": 15
    },
@@ -829,6 +829,13 @@
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 3
+    },
+    {
+     "name": "ritual-template",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "timer",

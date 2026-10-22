@@ -51,7 +51,7 @@ function mount(th, stageApi) {
     body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
       const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
       if (intent === 'proposal') return bridge.proposalFromTab(tab, said, footLine);
-      said.textContent = 'asking Verse for a ' + intent + '…';
+      said.textContent = 'asking Verse for a ' + intent + '…'; // ellipsis-ok: progress text, not a cut
       let j = null;
       try {
         const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'draft', intent, title: tab.title, url: tab.url, selection: tab.selection, note: ta.value.trim().slice(0, 300) }) });

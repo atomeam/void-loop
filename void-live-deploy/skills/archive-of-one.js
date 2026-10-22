@@ -24,7 +24,7 @@ const KIND_WORD = { kept: 'kept card', figure: 'figure', sticky: 'sticky note', 
 export function nameOf(th) {
   const t = th || {};
   const raw = t.name || t.title || t.label || t.text || (Array.isArray(t.items) && t.items[0] && (t.items[0].text || t.items[0])) || stripHtml(t.html) || KIND_WORD[t.kind] || t.kind || 'thing';
-  const s = squeeze(raw); return s.length > 40 ? s.slice(0, 39).trimEnd() + '…' : s;
+  const s = squeeze(raw); return s.length > 40 ? s.slice(0, 39).trimEnd() + '…' : s; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 
 /** every kept thing as { id, kind, label, title, text }, oldest first as the stage holds them. Pure. */
@@ -41,7 +41,7 @@ export function archiveItems(things) {
     else text = String(t.text || '').trim();
     const title = nameOf(t);
     if (!text && title === KIND_WORD[t.kind]) continue; // an empty note or blank card is nothing to look at
-    out.push({ id: t.id, kind: t.kind, label: KIND_WORD[t.kind], title, text: text.length > 1200 ? text.slice(0, 1199) + '…' : text });
+    out.push({ id: t.id, kind: t.kind, label: KIND_WORD[t.kind], title, text });
   }
   return out;
 }

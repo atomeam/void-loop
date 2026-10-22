@@ -79,7 +79,7 @@ export function toFilm(r) {
   const year = cleanYear(String(r.releaseDate || '').slice(0, 4)), g = one(r.primaryGenreName);
   const plot = String(r.shortDescription || r.longDescription || '').replace(/\s+/g, ' ').trim();
   const head = plot.slice(0, 220), i = head.lastIndexOf('. ');
-  const cut = plot.length <= 220 ? plot : i > 80 ? head.slice(0, i + 1) : head.replace(/\s+\S*$/, '') + '…';
+  const cut = plot; void head; void i; // the whole plot (owner, 2026-10-21: whole sentences)
   return {
     title: one(r.trackName), year, director: one(r.artistName), runtime_min: r.trackTimeMillis > 0 ? Math.round(r.trackTimeMillis / 60000) : null,
     genres: g ? [g] : [], plot: cut || null,

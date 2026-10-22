@@ -44,7 +44,7 @@ export function repoAsk(text) {
 /** untrusted one-line text -> safe short text: control characters out, key shapes redacted, cut to max. Pure. */
 export function clean(v, max = 200) {
   const s = redact(String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]/g, ' ').replace(/\s+/g, ' ').trim());
-  return s.length > max ? s.slice(0, max - 1) + '…' : s;
+  return s.length > max ? s.slice(0, max - 1) + '…' : s; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 
 /** the README's first plain paragraph (headings, badges, images, html and code skipped), cut to max. Pure. */

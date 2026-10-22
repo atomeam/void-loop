@@ -202,7 +202,7 @@ export const TOOLS = [
   T('slug', 'Slug', ['slugi(?:fy|[sz]e)', 'make\\s+(?:it\\s+|a\\s+)?(?:url\\s+)?slug', '(?:url\\s+)?slug(?:\\s+of)?'],
     (s) => mapLines(s, (l) => l.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, ' and ').replace(/['’]/g, '').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '')), { loose: new RegExp('^slugi(?:fy|[sz]e)\\s+' + LOOSE + '(?<body>.+)$', 'i') }),
   T('title', 'Title from the first line', ['(?:a\\s+)?title\\s+from\\s+(?:the\\s+)?first\\s+line', 'first\\s+line\\s+(?:as\\s+(?:a\\s+)?)?title', 'make\\s+(?:a\\s+)?title'],
-    (s) => { const l = lines(s).map((x) => x.trim()).find(Boolean) || ''; let t = l.replace(/^(?:#{1,6}\s+|[-*•>]\s+|\d+[.)]\s+)/, '').replace(/[\s.,;:!?-]+$/, ''); if (t.length > 60) { t = t.slice(0, 60).replace(/\s+\S*$/, '') + '…'; } return t; }),
+    (s) => { const l = lines(s).map((x) => x.trim()).find(Boolean) || ''; let t = l.replace(/^(?:#{1,6}\s+|[-*•>]\s+|\d+[.)]\s+)/, '').replace(/[\s.,;:!?-]+$/, ''); return t; }),
   T('urls', 'Links found', ['(?:extract|find|get|pull\\s+out|list)\\s+(?:all\\s+|the\\s+)?(?:urls?|links?|web\\s+addresses)'],
     (s) => { const r = (s.match(/\b(?:https?:\/\/|www\.)[^\s<>"')\]]+/gi) || []).map((u) => u.replace(/[.,;:!?]+$/, '')); return { text: r.join('\n'), note: plural(r.length, 'link') + ' found' }; }),
   T('emails', 'Email addresses found', ['(?:extract|find|get|pull\\s+out|list)\\s+(?:all\\s+|the\\s+)?(?:e-?mails?(?:\\s+addresses)?)'],

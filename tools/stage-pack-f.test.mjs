@@ -152,7 +152,7 @@ test('spectators card: the link is shortened in the middle to what the field hol
   assert.deepEqual(S.thingName({ k: 'clock', t: 'clock' }), { name: 'Clock', words: '' }, 'no word that only repeats the name');
   assert.deepEqual(S.thingName({ k: 'counter', t: 'counter 4' }), { name: 'Counter', words: '4' });
   assert.deepEqual(S.thingName({ k: 'word-cloud', t: '' }), { name: 'Word cloud', words: '' });
-  assert.ok(S.thingName({ k: 'sticky', t: 'a very long note that goes on and on past the chip' }).words.length <= 28);
+  assert.ok(!S.thingName({ k: 'sticky', t: 'a very long note that goes on and on past the chip' }).words.endsWith('…'));
   const snap = Array.from({ length: 10 }, (_, i) => ({ k: i ? 'sticky' : 'clock', x: 0, y: 0, t: i ? 'n' + i : '' }));
   const sum = S.summaryOf(snap);
   assert.equal(sum.line, 'Anyone with this link sees a read-only snapshot of 10 things on your stage.');

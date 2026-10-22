@@ -10018,6 +10018,12 @@ try {
         && !/no checks reported/.test(live) && /but GitHub does/.test(none) && asked.filter((u) => /check-runs/.test(u)).length === 1 && !S.errors.length,
       JSON.stringify({ live, none, asked, errors: S.errors }));
     await S.ctx.close(); }
+  if (want("ritual template: a habit sequence laid back to back with a download for one calendar file")) { const S = await fresh();
+    await S.ask('ritual template: meditate 10, stretch 15, journal 10 at 6:30am', 600);
+    const t = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((x) => /routine/i.test(x) ? x : '').catch(() => ''), 8000).catch(() => '');
+    const n = await S.p.$$eval('.vpage.on [data-ritual] li', (l) => l.length).catch(() => 0), btn = await S.p.$('.vpage.on [data-ritual-ics]');
+    check('ritual template: three steps, 35 minutes, a download button, no errors', n === 3 && /35 minutes/.test(t) && !!btn && !S.errors.length, JSON.stringify({ t, n, errors: S.errors }));
+    await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

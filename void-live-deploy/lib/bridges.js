@@ -18,7 +18,7 @@ export function keptNote(th, plain = '', max = 600) {
   if (!th) return '';
   const head = squeeze(th.name || th.ask || 'kept card'), body = squeeze(plain);
   const line = body && body !== head ? head + ': ' + body : head;
-  return line.length > max ? line.slice(0, max - 1).trimEnd() + '…' : line;
+  return line;
 }
 
 /** what a stage thing dropped on a list becomes: its words, or its name, or nothing (a figure, a game). Pure. */
