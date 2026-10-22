@@ -122,3 +122,14 @@ export function verseMove(s) {
 }
 /** the daily challenge's seed: the same for everyone on a UTC day. Pure. */
 export const dailySeed = (isoDay) => seedOf('verse-rally-' + String(isoDay).slice(0, 10));
+/** n cards spread over the five types and the abilities (a starter deck, Verse's deck, the daily decks): round-robin over type, then over ability
+ *  inside a type, each group shuffled by r. The cards themselves are unchanged; only which ones are dealt is balanced. Pure. */
+export function balancedPick(pool, n, r = rng(1)) {
+  const groups = new Map(); for (const c of shuffle(pool, r)) { const k = c.type; if (!groups.has(k)) groups.set(k, new Map()); const g = groups.get(k), a = c.ability || '-'; if (!g.has(a)) g.set(a, []); g.get(a).push(c); }
+  const out = [], seen = new Set(), types = TYPES.filter((t) => groups.has(t)), turn = new Map(types.map((t) => [t, 0]));
+  while (out.length < n && types.some((t) => [...groups.get(t).values()].some((l) => l.length))) {
+    for (const t of types) { if (out.length >= n) break; const g = groups.get(t), keys = [...g.keys()].filter((k) => g.get(k).length); if (!keys.length) continue;
+      const k = keys[turn.get(t) % keys.length]; turn.set(t, turn.get(t) + 1); const c = g.get(k).shift(); if (!seen.has(c.id)) { seen.add(c.id); out.push(c); } }
+  }
+  return out;
+}
