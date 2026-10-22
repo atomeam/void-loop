@@ -4,14 +4,13 @@
  * stacked), so "show the countdown to christmas" now counts to Christmas instead of always New Year. New Year when no day is named.
  * Does not publish a page. An unmatched ask stays empty.
  */
-import C, { countdownOf, daysUntil, newYearDate, daysLine } from './countdown.js';
+import C, { countdownOf, showAskOf, daysUntil, newYearDate, daysLine } from './countdown.js';
 import { clean } from '../lib/ask-text.js';
 
 /** the countdown a "show the countdown…" ask wants, or null. Pure. */
 export function showCountdownOf(text) {
-  const t = clean(text);
-  if (!/^(?:please\s+)?show\b/.test(t)) return null;
-  return countdownOf(t);
+  const ask = showAskOf(clean(text));
+  return ask ? countdownOf(ask) : null;
 }
 
 export function countdownCard(now = new Date()) {
@@ -22,7 +21,7 @@ export function countdownCard(now = new Date()) {
 
 async function run(text, api) {
   if (!showCountdownOf(text)) return 'none';
-  if (api.stage && api.summon) { const r = await C.run(String(text), api); if (r !== 'none') return 'show-countdown'; }
+  if (api.stage && api.summon) { const r = await C.run(showAskOf(clean(text)), api); if (r !== 'none') return 'show-countdown'; }
   const card = countdownCard();
   if (api.summon) api.summon('countdown', { label: card.label, days: card.days, dateText: card.line, x: 40, y: 60 });
   if (api.say) api.say(card.line + ' until ' + card.label);

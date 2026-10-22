@@ -11,13 +11,17 @@ export function plainDate(s) {
     .replace(/\b([a-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)\b/gi, '$1 $2')
     .replace(/\b(jan|feb|mar|apr|jun|jul|aug|sept?|oct|nov|dec)\.?(?=\s+\d)/gi, (m, a) => ABBR[a.toLowerCase()]);
 }
-export function countdownOf(text) {
-  // "show the countdown", "show the days until a date", "show the countdown to christmas" (one countdown with show-countdown,
-  // 2026-10-22): New Year when no day is named, else the day it names
+// "show the countdown", "show the days until a date", "show the countdown to christmas" (one countdown with show-countdown,
+// 2026-10-22): the plain countdown ask they mean ("days until new year" when no day is named), or null. Pure.
+export function showAskOf(text) {
   const sh = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^please /, '');
-  if (/^show (?:the )?countdown$|^show the days until a date$/.test(sh)) return { kind: 'newyear' };
+  if (/^show (?:the )?countdown$|^show the days until a date$/.test(sh)) return 'days until new year';
   const st = sh.match(/^show (?:the |a |my )?countdown (?:to|until|till) (.+)$/);
-  if (st) return countdownOf('countdown to ' + st[1]) || countdownOf('days until ' + st[1]) || null;
+  if (!st) return null;
+  for (const ask of ['countdown to ' + st[1], 'days until ' + st[1]]) if (countdownOf(ask)) return ask;
+  return null;
+}
+export function countdownOf(text) {
   const t = plainDate(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   if (/^(?:how many )?(?:days|weeks) until new year$/i.test(t)) return { kind: 'newyear' };
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
