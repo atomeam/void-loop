@@ -88,3 +88,8 @@ Nothing is ever finished; everything upgrades for ever. No item is marked done a
   interruption resumes at the same item.
 - **Public tracker (counts only):** `GET /api/will?lap=1`, and the will card shows the line, e.g. "Lap 2: upgraded 140 of 316 items, 37 of
   100 new this lap". Code: `void-live-deploy/lib/lap.js`, tested by `tools/lap.test.mjs` in `tools/checks.mjs`.
+
+**Lap 1 is a full overhaul** (owner, 2026-10-22: "everything needs an overhaul again"): each item gets a persona playtest
+(`tools/persona-playtest.mjs`: new player, power user, phone, screen reader) and a best-site comparison, then whatever is weak is rebuilt:
+layout, completeness, clarity, speed, beauty in the void look, phone, no cut-off text. Order: the home page, the ask flow, cards, the book,
+then games, then the rest (`overhaulWeights()` in `lib/lap.js`). Each item ships as its own small PR, and the tracker line is posted after each batch.
