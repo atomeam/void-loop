@@ -61,7 +61,7 @@ export function selfLayout(self, w = 624, soft = '#c9cfe8') {
   const els = [], S = self || {}, cols = (px, fs) => Math.max(8, Math.floor(px / (fs * 0.5)));
   let y = 0;
   const text = (str, x, fs, o = {}) => els.push({ k: 'text', x, y, text: str, fs, bold: !!o.bold, italic: !!o.italic, fill: o.fill || '#e6e1d3' });
-  const voice = wrap(S.voice || '', cols(w - 22, 21), SELF_VOICE_LINES);
+  const voice = wrap(S.voice || '', cols(w - 22, 21), 9999); // every sentence, wrapped; the card grows (owner, 2026-10-22: no '...' anywhere)
   if (voice.length) {
     const top = y + 4;
     for (const l of voice) { y += 28; text(l, 20, 21, { italic: true, fill: '#f3efe2' }); }
@@ -74,16 +74,19 @@ export function selfLayout(self, w = 624, soft = '#c9cfe8') {
     const tx = 210, tw = w - tx - 64;
     for (const b of bars) {
       y += 18; const share = Math.max(0, Math.min(1, +b.share || 0));
-      text(wrap(String(b.name || '') + (b.weak ? ' (weakest)' : ''), cols(tx - 12, 14), 1)[0] || '', 0, 14, { fill: b.weak ? '#ffd45e' : '#d8d4c6' });
+      const nl = wrap(String(b.name || '') + (b.weak ? ' (weakest)' : ''), cols(tx - 12, 14), 99);
+      nl.forEach((l, i) => { if (i) y += 16; text(l, 0, 14, { fill: b.weak ? '#ffd45e' : '#d8d4c6' }); });
       els.push({ k: 'rect', x: tx, y: y - 10, w: tw, h: 8, fill: b.weak ? 'rgba(255,176,0,.25)' : 'rgba(255,255,255,.12)', rx: 4, track: true });
       if (share > 0) els.push({ k: 'rect', x: tx, y: y - 10, w: Math.max(4, Math.round(tw * share)), h: 8, fill: b.weak ? '#ffb000' : soft, rx: 4 });
       text(String(b.label || '').replace(/ proven$/, '').replace(' of ', '/'), tx + tw + 10, 13, { fill: '#a9a69a' });
     }
     y += 14;
   }
-  for (const sec of (Array.isArray(S.sections) ? S.sections : []).slice(0, 6)) {
-    y += 24; text(wrap(sec.title || '', cols(w, 18 * 1.08), 1)[0] || '', 0, 18, { bold: true, fill: '#f3efe2' });
-    for (const l of (sec.lines || []).slice(0, SELF_LINES)) { y += 19; text('•', 4, 15, { fill: soft }); text(wrap(l, cols(w - 22, 15), 1)[0] || '', 22, 15); }
+  for (const sec of (Array.isArray(S.sections) ? S.sections : [])) {
+    const head = wrap(sec.title || '', cols(w, 18 * 1.08), 99); head.forEach((l, i) => { y += i ? 21 : 24; text(l, 0, 18, { bold: true, fill: '#f3efe2' }); });
+    const all = (sec.lines || []).filter(Boolean), shown = all.slice(0, SELF_LINES), rest = all.length - shown.length;
+    if (rest > 0) shown.push('And ' + rest + ' more, every one of them in the saved text.');
+    for (const l of shown) { wrap(l, cols(w - 22, 15), 9999).forEach((t, i) => { y += i ? 18 : 19; if (!i) text('\u2022', 4, 15, { fill: soft }); text(t, 22, 15); }); }
     y += 4;
   }
   return { els, height: y + 6 };

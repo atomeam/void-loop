@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 708,
+ "counted": 709,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -210,14 +210,14 @@
    "skills": 7,
    "direct": 1,
    "dependants": 11,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/card-deck.js",
    "skills": 7,
    "direct": 1,
    "dependants": 10,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/stage-find.js",
@@ -273,7 +273,7 @@
    "skills": 6,
    "direct": 1,
    "dependants": 9,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/card-share.js",
@@ -1224,7 +1224,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 11
   },
   {
@@ -1305,18 +1305,18 @@
    "tests": 5
   },
   {
+   "file": "lib/memory-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 0
-  },
-  {
-   "file": "lib/memory-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 2
   },
   {
    "file": "lib/privacy.js",
@@ -2128,6 +2128,13 @@
     "lib/alt-pay.js",
     "lib/gumroad.js",
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/studies.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/memory-core.js"
    ],
    "importedBy": []
   },
@@ -3498,6 +3505,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/store/[[path]].js",
+    "functions/api/studies.js",
     "functions/api/support.js",
     "functions/api/v01d-fixes.js",
     "functions/api/voice-reply.js",
@@ -3896,7 +3904,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/memory.js"
+    "functions/api/memory.js",
+    "functions/api/studies.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",

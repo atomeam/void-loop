@@ -13,7 +13,7 @@ const unb64 = (c) => { const bin = atob(String(c).replace(/-/g, '+').replace(/_/
 
 // the whole answer, not its first 2400 characters (owner, 2026-10-17: "copy card should show the rest of the info"; the self card stopped mid-word at "rath"):
 // the saved picture grows longer to hold it (lib/card-image.js fitLong) and the code line still carries only its start
-export const BODY_MAX = 8000;
+export const BODY_MAX = 4e6; // no cut-off (owner, 2026-10-22: "first 8000 of 724820 characters kept" is forbidden); only the code line is short
 export const TITLE_MAX = 600; // the whole ask shows as the title (owner, 2026-10-18: "make it show the whole ask"); it was 120
 /** the facts a card carries, cleaned and capped: { v, t, k, b, src: [{ t, u }] }. Pure. */
 export function dataOf({ title, kind, body, sources, n } = {}) {
@@ -30,6 +30,10 @@ export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
   return [x.t, x.k, '', x.b, x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nVerse card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
+/** a link that reopens the card on the site: the short code rides in the #fragment, so it never reaches a server log. Pure. */
+export const linkOf = (d, origin = 'https://a-to-mind.com') => origin.replace(/\/+$/, '') + '/#vc=' + codeOf(d).slice(MARK.length);
+/** the card a #vc= link carries, or null. Pure. */
+export const fromHash = (hash) => { const m = /(?:^#|&)vc=([A-Za-z0-9_-]{8,12000})/.exec(String(hash || '')); return m ? parse(MARK + m[1]) : null; };
 /** the card inside a pasted text, or null: any text holding a code line, or a bare code. Pure. */
 export function parse(text) {
   const m = CODE_RE.exec(String(text || '')); if (!m) return null;
@@ -89,17 +93,21 @@ export function imageData(el, d) {
     // the self card draws its own shape (lib/card-image.js selfLayout): its words, the family bars, each block's heading and first lines; other cards: none
     self: el.classList && el.classList.contains('vc-self') ? selfImage(el) : undefined };
 }
+/** Verse's words without the model's fact tags ("[S2]", "[S1, S3]", "[What I said about myself most recently]"): the sources are listed on the card. Pure. */
+export const readableVoice = (s) => String(s || '').replace(/\s*\[(?:S\d+(?:\s*,\s*S\d+)*|[A-Z][^\[\]]{2,60})\]/g, '').replace(/\s+([.,;:])/g, '$1').replace(/\s+/g, ' ').trim();
 /** the self card's picture data from the card on the page: { voice, bars: [{ name, share, label, weak }], sections: [{ title, lines (at most 3) }] }.
  *  The interactive blocks (Correct me, Talk to me) are left out; a list gives its newest items, a block of paragraphs its sub-heading and words. */
 export function selfImage(el) {
   const t = (n) => (n ? n.textContent.replace(/\s+/g, ' ').trim() : '');
   const bars = [...el.querySelectorAll('[data-fam-bar]')].map((b) => ({ name: b.dataset.name || '', share: +b.dataset.share || 0, label: b.dataset.label || '', weak: !!b.dataset.weak }));
-  const sections = [...el.querySelectorAll('details.vs-sec')].filter((d) => !/^(?:correct|talk)$/.test(d.dataset.sec || '')).map((d) => {
-    let lines = [...d.querySelectorAll('li[data-bullet] > details > summary')].map(t);
+  const sections = [...el.querySelectorAll('details.vs-sec')].filter((d) => !d.classList.contains('vs-fam') && !/^(?:correct|talk)$/.test(d.dataset.sec || '')).map((d) => {
+    let lines = [...d.querySelectorAll('li[data-bullet]')].map((li) => t(li.querySelector(':scope > details > summary')) || t(li));
+    // the skill-by-skill ledger: each family's heading with its newest line (the whole list is in the saved text)
+    if (!lines.length && d.querySelector('.vs-fam')) lines = [...d.querySelectorAll('details.vs-fam')].map((f) => { const li = f.querySelector('li'); return t(f.querySelector(':scope > summary')) + (li ? ': ' + t(li) : ''); });
     if (!lines.length) { let head = ''; lines = []; for (const n of d.querySelectorAll('.vs-h4, .vs-p, .vs-note, .vs-lead')) { if (n.classList.contains('vs-h4')) { head = t(n); continue; } lines.push((head ? head + ': ' : '') + t(n)); head = ''; } }
-    return { title: t(d.querySelector(':scope > summary')), lines: lines.filter(Boolean).slice(0, 3) };
-  });
-  return { voice: t(el.querySelector('.vs-voice > p')), bars, sections };
+    return { title: t(d.querySelector(':scope > summary')), lines: lines.map(readableVoice).filter(Boolean) };
+  }).filter((s) => s.lines.length);
+  return { voice: readableVoice(t(el.querySelector('.vs-voice > p'))), bars, sections };
 }
 const download = (blob, name) => { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
 /** the picture a saved card draws in its art box: the Art Forge's painting first (owner, 2026-10-17: "still no art": the copied card
@@ -114,7 +122,7 @@ export async function artPicture(el) {
  *  data is preserved"): '' for a short card, 'whole text kept' up to BODY_MAX, and past it only what is true. Pure. */
 export function fullNote(n) {
   const len = Math.max(0, Math.floor(+n) || 0);
-  return len <= 2400 ? '' : len <= BODY_MAX ? 'whole text kept' : 'first ' + BODY_MAX + ' of ' + len + ' characters kept';
+  return len <= 2400 ? '' : 'whole text kept';
 }
 /** puts, updates or removes the badge in a card's share bar from the card's text now (an answer can grow after its bar is built). */
 function fullMark(el, w) {
@@ -122,8 +130,12 @@ function fullMark(el, w) {
   const note = fullNote(raw); let chip = w.querySelector('.vc-full');
   if (!note) { if (chip) chip.remove(); return; }
   if (!chip) { chip = document.createElement('span'); chip.className = 'vc-full'; w.appendChild(chip); }
-  chip.textContent = note; chip.title = raw + ' characters: copy card, save card, copy text and save text ' + (raw > BODY_MAX ? 'keep the first ' + BODY_MAX : 'keep all of them'); chip.dataset.chars = String(raw);
+  chip.textContent = note; chip.title = raw + ' characters: copy card, save card, copy text and save text ' + (raw > BODY_MAX ? 'keep all of them' : 'keep all of them'); chip.dataset.chars = String(raw);
 }
+/** the self card's public link, every block open. Pure. */
+export const selfLink = (origin) => String(origin || 'https://a-to-mind.com') + '/?q=' + encodeURIComponent('what do you think of yourself') + '&open=all';
+/** opens every block and folded item of a card (the shared link's view). */
+export function openAll(el) { el.querySelectorAll('details').forEach((d) => { d.open = true; }); el.querySelectorAll('li[data-more][hidden], li[hidden]').forEach((li) => { li.hidden = false; }); el.querySelectorAll('[data-v-more]').forEach((b) => b.setAttribute('aria-expanded', 'true')); }
 /** the buttons on a card: copy card (text and picture), save card (the picture), save text. Idempotent. */
 export function bar(el) {
   const had = el && el.querySelector && el.querySelector(':scope > .vc-share'); if (had) fullMark(el, had);
@@ -143,10 +155,24 @@ export function bar(el) {
     try { await navigator.clipboard.writeText(text); return 'copied text'; } catch (_) { return 'select and copy'; }
   });
   mk(gCard, 'save card', async () => { const d = readCard(el); try { download(await png(d), fileName({ t: d.t }, 'png')); return 'saved'; } catch (_) { try { download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved text'; } catch (_2) { return 'could not save'; } } });
+  // share (asked 2026-10-22: every card has copy, save text, save picture and share): the system share sheet with the card's text and a link
+  // that reopens it; with no share sheet the link is copied. The link carries what the card shows, never who made it.
+  mk(gCard, 'share', async () => {
+    const d = readCard(el), url = linkOf(d, typeof location !== 'undefined' && /^https:/.test(location.origin) ? location.origin : undefined);
+    try { if (navigator.share) { await navigator.share({ title: d.t.slice(0, 120), text: d.t + (d.b ? '\n\n' + d.b : ''), url }); return 'shared'; } } catch (e) { if (e && e.name === 'AbortError') return 'share'; }
+    try { await navigator.clipboard.writeText(url); return 'link copied'; } catch (_) { return 'select and copy'; }
+  });
   mk(gText, 'copy text', async () => { // what the answer's own "copy" pill did: the heading and the answer's words, no sources, no frame
     try { const d = readCard(el); await navigator.clipboard.writeText(d.t + (d.b ? '\n\n' + d.b : '')); return 'copied'; } catch (_) { return 'select and copy'; }
   });
   mk(gText, 'save text', async () => { try { const d = readCard(el); download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved'; } catch (_) { return 'could not save'; } });
+  if (el.classList.contains('vc-self')) {
+    // one link to the whole card (owner, 2026-10-22: "hard to get the whole card to us"): the public self card, every block open
+    mk(gText, 'full card link', async () => { const u = selfLink(location.origin); try { await navigator.clipboard.writeText(u); } catch (_) {} try { window.open(u, '_blank', 'noopener'); } catch (_) {} return 'link copied'; });
+    // a hand selection skips the inside of closed blocks (empty "- " bullets, 2026-10-22): copying inside the card copies the whole card's text instead
+    el.addEventListener('copy', (e) => { try { const sel = getSelection(); if (!sel || sel.isCollapsed || !el.contains(sel.anchorNode)) return; const d = readCard(el); e.clipboardData.setData('text/plain', d.t + (d.b ? '\n\n' + d.b : '')); e.preventDefault(); } catch (_) {} });
+    if (/(?:^|[?&])open=all(?:&|$)/.test(location.search)) for (const ms of [0, 1500, 4000, 9000]) setTimeout(() => openAll(el), ms); // the card fills in as its parts load
+  }
   const foot = el.querySelector(':scope > .vc-foot'); if (foot) el.insertBefore(w, foot); else el.appendChild(w);
   fullMark(el, w);
   binder(el, gCard);

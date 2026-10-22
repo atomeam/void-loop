@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:04:56Z",
+   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
+  },
+  {
    "at": "2026-10-22T03:51:14Z",
    "subject": "asks linked: root-cause action, reasoning trace, /fix/ friction answer and fixed-skill evidence audit (asked by Verse); handoff note on…"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T03:29:27Z",
    "subject": "deploy copies of void.html (main's were behind)"
-  },
-  {
-   "at": "2026-10-22T03:29:15Z",
-   "subject": "browser suite: error garden plants the newest incident that has a real check (the newest only said the suite did not finish) and counts a…"
   }
  ],
  "builders": {

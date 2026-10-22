@@ -368,3 +368,6 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 - **Live-check reverts (`.github/workflows/live-revert.yml`, 2026-10-22):** a failed live run on main opens one revert pull request (automerge; the full checks decide; it never pushes main).
 - **Study before building (`tools/loop-study.mjs`, 2026-10-22):** when the loop picks a parity want, it files a passive REA study first (`tools/rea-study.mjs`); findings go to private memory only, never the repo.
 - **Verse Rally and the card binder (`skills/rally.js`, `lib/rally-rules.js`, `lib/card-deck.js`, `tools/rally.test.mjs`, `docs/CARD-GAME.md`)**: one card record for every card, "my cards" opens the binder, "play my cards" / "card battle" a best-of-three match with cards earned from real answers.
+- **Book fit (`tools/book-fit.mjs`, 2026-10-21):** opens the book on the live site at many window sizes and zooms and checks every page fits its sheet with whole sentences.
+- **Loop refine (`tools/loop-refine.mjs`, 2026-10-22):** the Self-Refine step of the loop: critique, mechanical rewrite, critique again; never adds claims.
+- **Study engine (`tools/study-engine.mjs`, 2026-10-22):** Verse's own pure helpers on top of the passive REA capture (`tools/rea-study.mjs`); nothing copied, findings stay private.

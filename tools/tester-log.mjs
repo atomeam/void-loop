@@ -13,9 +13,9 @@ export const OUT = resolve(root, 'void-live-deploy/tester-log.json');
 
 /** per-week counts and timings only (no asks, no words): runs, checks passed of checks run, median page-load ms. Pure. */
 export function weeklyOf(log, weeks = 12, now = Date.now()) {
-  const W = 7 * 864e5, start = now - weeks * W, rows = Array.from({ length: weeks }, (_, i) => ({ from: new Date(start + i * W).toISOString().slice(0, 10), runs: 0, passed: 0, of: 0, ms: [] }));
-  for (const r of Array.isArray(log) ? log : []) { const t = Date.parse((r && r.at) || ''); if (!(t >= start && t <= now)) continue; const x = rows[Math.min(weeks - 1, Math.floor((t - start) / W))]; x.runs++; x.passed += r.passed | 0; x.of += r.of | 0; if (Number.isFinite(r.ms)) x.ms.push(r.ms); }
-  return rows.map((x) => { const m = x.ms.sort((a, b) => a - b); return { from: x.from, runs: x.runs, passed: x.passed, of: x.of, ...(m.length ? { ms: m[m.length >> 1] } : {}) }; });
+  const W = 7 * 864e5, start = now - weeks * W, rows = Array.from({ length: weeks }, (_, i) => ({ from: new Date(start + i * W).toISOString().slice(0, 10), runs: 0, passed: 0, of: 0, broken: 0, bPassed: 0, bOf: 0, ms: [] }));
+  for (const r of Array.isArray(log) ? log : []) { const t = Date.parse((r && r.at) || ''); if (!(t >= start && t <= now)) continue; const x = rows[Math.min(weeks - 1, Math.floor((t - start) / W))]; x.runs++; x.passed += r.passed | 0; x.of += r.of | 0; if ((r.of | 0) > 0 && (r.passed | 0) * 2 < (r.of | 0)) { x.broken++; x.bPassed += r.passed | 0; x.bOf += r.of | 0; } if (Number.isFinite(r.ms)) x.ms.push(r.ms); }
+  return rows.map((x) => { const m = x.ms.sort((a, b) => a - b); return { from: x.from, runs: x.runs, passed: x.passed, of: x.of, ...(x.broken ? { broken: x.broken, brokenOf: x.bOf, brokenPassed: x.bPassed } : {}), ...(m.length ? { ms: m[m.length >> 1] } : {}) }; });
 }
 
 /** the public view: newest first, at most n runs, plus totals. Pure. */

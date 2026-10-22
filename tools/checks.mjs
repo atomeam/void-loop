@@ -185,7 +185,7 @@ for (const [name, file] of [
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
-  ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'],
+  ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],
   ['go', 'go.test.mjs'],
   ['monopoly', 'monopoly.test.mjs'],
