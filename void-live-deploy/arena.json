@@ -68,26 +68,26 @@
       "theirThree": 5.9,
       "theirTwo": 2.5
     },
-    "vsCard": 0.475,
+    "vsCard": 0.35,
     "since": "2026-10-20",
-    "last": "2026-10-21",
-    "days": 11,
+    "last": "2026-10-22",
+    "days": 12,
     "tried": [
       {
-        "score": 0.3625,
-        "kept": false
-      },
-      {
-        "score": 0.4125,
-        "kept": false
-      },
-      {
         "score": 0.55,
+        "kept": false
+      },
+      {
+        "score": 0.4375,
+        "kept": false
+      },
+      {
+        "score": 0.225,
         "kept": false
       }
     ]
   },
-  "played": "2026-10-21",
+  "played": "2026-10-22",
   "history": [
     {
       "date": "2026-10-11",
@@ -143,6 +143,11 @@
       "date": "2026-10-21",
       "rating": 1609,
       "vsCard": 0.475
+    },
+    {
+      "date": "2026-10-22",
+      "rating": 1609,
+      "vsCard": 0.35
     }
   ]
 }
