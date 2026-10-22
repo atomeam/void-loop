@@ -360,6 +360,7 @@ for (const [name, file] of [
   ['autopsy-asks', 'autopsy-asks.test.mjs'],
   ['game-health', 'game-health.test.mjs'],
   ['completeness', 'completeness.test.mjs'],
+  ['lap', 'lap.test.mjs'],
   ['persona-playtest', 'persona-playtest.mjs'],
   ['ics', 'ics.test.mjs'],
   ['lineage', 'lineage.test.mjs'],
