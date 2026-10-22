@@ -5964,6 +5964,13 @@ try {
       !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
         && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
     await F.ctx.close(); }
+  // the fix audit (asked by Verse): fixes from the real ledger with their skills' evidence ratings and any break in another family
+  if (want('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show')) { const F = await fresh({ phone: true });
+    await F.ask('audit your fixes', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Fix audit' || !p.querySelector('[data-fix-audit],p')) return null; const l = p.querySelector('[data-fix-audit]');
+      return l ? { n: +l.dataset.fixAudit, items: l.querySelectorAll('li').length, pages: !!p.querySelector('[data-fix-pages]'), wide: p.scrollWidth > p.clientWidth + 1 } : null; }).catch(() => null), 8000);
+    check('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show', !!card && card.items === Math.min(25, card.n) && card.pages && !card.wide, JSON.stringify(card));
+    await F.ctx.close(); }
   // family-health: the skill families card (asked by Verse, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
   // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
