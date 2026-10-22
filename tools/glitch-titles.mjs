@@ -69,10 +69,9 @@ if (exe && !process.argv.includes('--no-browser')) {
     // opens the home page and types "films"; then, in the same browser, a returning visit (reload, service worker in charge) asks again
     const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
     // the deployed code carries the fix (a stale or unshipped copy was one suspect; the deploy strips comments, so markers, not bytes)
-    for (const [f, mark] of [['skills/films.js', 'class="glw"'], ['lib/card-frame.js', 'vc-tw'], ['sw.js', "cache: 'no-cache'"]]) {
-      const body = await fetch(SITE + '/' + f + '?fresh=' + Date.now()).then((r) => r.text()).catch(() => '');
-      check('live ' + f + ' has the fix', body.includes(mark), body.length + ' bytes');
-    }
+    const MARKS = [['skills/films.js', 'class="glw"'], ['lib/card-frame.js', 'vc-tw'], ['sw.js', "cache: 'no-cache'"]];
+    const bodies = await Promise.all(MARKS.map(([f]) => fetch(SITE + '/' + f + '?fresh=' + Date.now()).then((r) => r.text()).catch(() => '')));
+    MARKS.forEach(([f, mark], k) => check('live ' + f + ' has the fix', bodies[k].includes(mark), bodies[k].length + ' bytes'));
     for (const [w, h] of [[1280, 800], [740, 700], [390, 700]]) {
       const ctx = await b.newContext({ viewport: { width: w, height: h } }), page = await ctx.newPage();
       for (const visit of ['fresh', 'returning']) {
