@@ -33,6 +33,7 @@ test('rea-study: the digest keeps each finding\'s evidence and says what REA cou
     unknowns: [], limitations: ['String-built routes may remain unknown.'] } };
   const { digest, counts } = digestOf({ url: 'https://example.org/', question: 'how does it grade', at: '2026-10-15T00:00:00Z', result });
   assert.deepEqual(counts, { scripts: 2, endpoints: 1, modules: 2 });
+  assert.match(digest, /Strongest evidence first[\s\S]*`\/api\/grade` high/);
   assert.match(digest, /`\/api\/grade` via call:fetch at \/vision\.js\?…:88/);
   assert.match(digest, /\/app\.js \(40 KB\)/); assert.match(digest, /grade_coin/); assert.match(digest, /upload.*low.*\/app\.js:12/);
   assert.match(digest, /could not tell[\s\S]*String-built routes/); assert.match(digest, /Never copy/);
