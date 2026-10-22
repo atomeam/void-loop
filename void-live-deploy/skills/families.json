@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-20",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 24,
   "checked": 13,
   "proven": 270
@@ -380,7 +380,7 @@
    "name": "Games",
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 1,
     "checked": 0,
     "proven": 27
@@ -614,6 +614,14 @@
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 4
+    },
+    {
+     "name": "rally",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-22"
     },
     {
      "name": "merge",

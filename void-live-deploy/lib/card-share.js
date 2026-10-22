@@ -149,5 +149,18 @@ export function bar(el) {
   mk(gText, 'save text', async () => { try { const d = readCard(el); download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved'; } catch (_) { return 'could not save'; } });
   const foot = el.querySelector(':scope > .vc-foot'); if (foot) el.insertBefore(w, foot); else el.appendChild(w);
   fullMark(el, w);
+  binder(el, gCard);
+}
+// the one card record (lib/card-deck.js): every card shown is noted on this device so it can be played (Verse Rally), and "save" pins it in the
+// binder ("my cards"). Loaded only when a card is shown; a card still loading is not noted (recordOf drops it).
+const recOf = (el) => { const d = readCard(el), c = el._vcard || {}; return { kind: el.dataset.deckKind || (el.dataset.skill ? 'skill' : 'answer'), game: el.dataset.deckGame || '', t: d.t, k: d.k, b: d.b, src: d.src.length, rarity: el.dataset.rarity && el.dataset.rarity !== 'answer' ? el.dataset.rarity : (c.rarity && c.rarity.name) || '' }; };
+function binder(el, g) {
+  if (typeof document === 'undefined' || el.dataset.noDeck !== undefined) return;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-save'; b.textContent = '☆ save'; b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('pointerdown', (e) => e.stopPropagation()); g.appendChild(b);
+  const deck = import('./card-deck.js');
+  const sync = () => deck.then((D) => { const on = D.isSaved(recOf(el)); b.textContent = on ? '★ saved' : '☆ save'; b.setAttribute('aria-pressed', String(on)); }).catch(() => {});
+  b.addEventListener('click', (e) => { e.stopPropagation(); deck.then((D) => { D.setSaved(recOf(el), !D.isSaved(recOf(el))); sync(); }).catch(() => {}); });
+  setTimeout(() => { if (el.isConnected) deck.then((D) => { D.note(recOf(el)); sync(); }).catch(() => {}); }, 2500);
 }
 export const SHARE_CSS = '.vcard .vc-share .vc-full{align-self:center;margin-left:auto;font-size:10.5px;letter-spacing:.08em;padding:2px 8px;border-radius:9px;border:1px solid var(--edge);color:hsl(var(--h) 45% 80%);opacity:.85;white-space:nowrap}.vcard .vc-share{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:8px 12px 0}.vcard .vc-share .vc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.vcard .vc-share .vc-grp::before{content:attr(data-label);font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-right:2px;color:hsl(var(--h) 30% 76%)}.vcard .vc-share button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--edge);background:rgba(255,255,255,.04);color:hsl(var(--h) 40% 78%);cursor:pointer}.vcard .vc-share button:hover,.vcard .vc-share button:focus-visible{background:rgba(255,255,255,.12);outline:none}@media (max-width:520px){.vcard .vc-share{margin:6px 6px 0}}';

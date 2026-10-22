@@ -373,6 +373,7 @@ for (const [name, file] of [
   ['event-date', 'event-date.test.mjs'],
   ['paste-rule', 'paste-rule.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
+  ['rally', 'rally.test.mjs'],
   ['card-art', 'card-art.test.mjs'],
   ['card-image', 'card-image.test.mjs'],
   ['video', 'video.test.mjs'],
