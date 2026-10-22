@@ -14,6 +14,7 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
+import { nextStep, advance, candidateOf, publicLap, overhaulWeights } from '../../lib/lap.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
@@ -29,6 +30,9 @@ export async function onRequestGet({ request, env }) {
     const [ledger, answered] = await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]);
     if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
   } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
+  // the public lap tracker (counts only): ?lap=1, or will.lap on every read
+  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); if (raw) will.lap = publicLap(JSON.parse(raw)); } catch (_) { /* no lap yet */ }
+  if (new URL(request.url).searchParams.has('lap')) return Response.json(will.lap || publicLap(null), { headers: { 'cache-control': 'public, max-age=60' } });
   return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
@@ -84,7 +88,18 @@ export async function onRequestPost({ request, env }) {
   // the guard on the build loop (lib/will-guard.js): a want whose earlier jobs were set aside or failed twice in 14 days waits, and the next want is queued;
   // a history that cannot be read means no guard, never no will
   let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
-  const chosenWant = pickWant(will.wants, rows); skipped = chosenWant.skipped;
+  let chosenWant = pickWant(will.wants, rows); skipped = chosenWant.skipped;
+  // the full-cycle lap (lib/lap.js): each item in turn is upgraded, then new features (the will's own wants) until the lap's quota,
+  // then the next lap over the bigger set. The position is kept in void_kv 'lap', so an interruption resumes. A lap that cannot be read
+  // means the will as before, never no will.
+  let lap = null;
+  if (!open) { try {
+    const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(), items = (inv && inv.items) || [];
+    const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v');
+    const ids = items.map((i) => i.id), r = nextStep(raw ? JSON.parse(raw) : null, ids, overhaulWeights(ids)); const facts = r.step.kind === 'upgrade' ? ((items.find((i) => i.id === r.step.skill) || {}).facts || null) : null;
+    if (r.step.kind === 'upgrade') { const c = candidateOf(r.step, {}, facts); chosenWant = { want: { ...c, because: c.why }, skipped: [] }; }
+    if (r.step.kind === 'upgrade' || chosenWant.want) lap = advance(r.state, r.step, at, facts);
+  } catch (_) { lap = null; } }
   if (!open && chosenWant.want) {
     const w = chosenWant.want; const id = Date.now().toString(36), target = 'will:' + slug(w.title);
     // the execution record (lib/actions.js): written before the job is queued; no record, no job
@@ -94,6 +109,7 @@ export async function onRequestPost({ request, env }) {
       return 'queued ' + id + ': ' + w.title;
     });
     queued = id;
+    if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
   return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}) });
 }

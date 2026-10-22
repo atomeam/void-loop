@@ -224,6 +224,9 @@ export function keep(el, esc, stats) {
   const key = JSON.stringify([c.key, c.nouns, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.artHue, c.artInk, c.rarity && c.rarity.name, c.hue, photo]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
+  // the title row spreads its children (flex, space-between): a title made of loose text and inline pieces (the films title's glitching I)
+  // was pulled apart into "VERSE F   I   LMS" (owner, 2026-10-22), so a mixed title is kept as one word box
+  if (h2 && h2.childNodes.length > 1 && [...h2.childNodes].some((n) => n.nodeType === 3 && n.data.trim())) { const w = document.createElement('span'); w.className = 'vc-tw'; while (h2.firstChild) w.appendChild(h2.firstChild); h2.appendChild(w); }
   // the page keeps its own lines last (a product line, the Tell Verse link): the arrows sit before them, never after, or the two keep moving past each other forever
   const trailing = (n) => n.classList.contains('vtail') || n.classList.contains('vtell') || n.classList.contains('vtell-box');
   let last = el.lastElementChild; while (last && trailing(last)) last = last.previousElementSibling;

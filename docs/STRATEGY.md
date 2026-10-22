@@ -25,3 +25,22 @@ Monetization first. Velocity. Every domain.
 - Count topics, never people. No visitor's words are copied anywhere public.
 - No trademarked names for Verse's own things.
 - No unverified claims: "best" or "faster" only next to a check that shows it. Dollar figures stay behind owner APIs.
+
+## The lap loop: everything, around and around (owner, 2026-10-22)
+
+Nothing is ever finished; everything upgrades for ever. No item is marked done anywhere: each keeps a rolling next upgrade.
+
+- **What a lap covers:** every item in `void-live-deploy/lap.items.json` (written by `node tools/lap-items.mjs --write`): each skill, the
+  surfaces (games, cards, the book, the store, films, the podcast, Mind Field, Tilt Arena, the loop itself), every doc, every archived repo in
+  `archive/repos/` (its reusable parts), every check and tool, every business plan in `domains/` and the Forethinkers research. Plans and
+  research get one concrete improvement each per lap, never an external action. On 2026-10-22 that is 675 items.
+- **Order:** a lap goes around every item one by one (fix gaps, add basics, apply every discovered rule), then adds 100 new features (the
+  will's own wants: studies, Grok drafts, frontier ideas), then the next lap starts over the whole, now bigger, set. Items can be weighted
+  within a lap (rarely used, earning, stale: `staleness()` is one point per week since the last upgrade), but every item is touched each lap.
+  An item added mid-lap joins this lap's tail.
+- **Measurably better:** each upgrade records the item's facts before (counts only, such as lines, tests, examples, sections, reused parts).
+  The next lap compares them (`compare()`, `lapProgress()`): an item is better only when a fact rose and none fell.
+- **Resume:** the position is kept in `void_kv` row `lap` by `functions/api/will.js`, and moves on only when a job is queued, so an
+  interruption resumes at the same item.
+- **Public tracker (counts only):** `GET /api/will?lap=1`, and the will card shows the line, e.g. "Lap 2: upgraded 140 of 316 items, 37 of
+  100 new this lap". Code: `void-live-deploy/lib/lap.js`, tested by `tools/lap.test.mjs` in `tools/checks.mjs`.

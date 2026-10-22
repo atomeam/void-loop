@@ -76,9 +76,14 @@ export async function loadGames() {
   }
   return out;
 }
+// nothing is ever finished (owner, 2026-10-22): no game is marked done; each keeps a rolling next upgrade
+export const ROLLING = ['a stronger, explainable Verse opponent', 'a shareable replay of the last game', 'a daily challenge with a streak count',
+  'stats across games kept on this device', 'a guided first game for a new player', 'larger touch targets and a phone-first layout pass',
+  'screen-reader announcements for every move', 'a saved card for each finished game'];
+export const nextUpgrade = (a) => a.missing.length ? a.missing[0].label : ROLLING[[...a.name].reduce((n, c) => n + c.charCodeAt(0), 0) % ROLLING.length];
 export function table(audits) {
-  const lines = ['| Game | Missing basics | Fixed |', '|---|---|---|'];
-  for (const a of audits) lines.push('| ' + a.name + ' | ' + (a.missing.map((r) => r.label + (r.need === 'must' ? ' (must)' : '')).join('; ') || 'none') + ' | ' + (a.missing.length ? 'no' : 'yes') + ' |');
+  const lines = ['| Game | Missing basics | Next upgrade |', '|---|---|---|'];
+  for (const a of audits) lines.push('| ' + a.name + ' | ' + (a.missing.map((r) => r.label + (r.need === 'must' ? ' (must)' : '')).join('; ') || 'none of the listed basics') + ' | ' + nextUpgrade(a) + ' |');
   return lines.join('\n');
 }
 
