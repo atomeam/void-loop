@@ -1,0 +1,31 @@
+{
+  "schema": "a-to-mind.heading-permalinks/047",
+  "emit": false,
+  "page": "draft-only",
+  "autoslug": "deny",
+  "hover_only": "deny",
+  "copy_replaces_nav": "deny",
+  "jsonld": "deny",
+  "smooth_scroll": "deny",
+  "seal": "human",
+  "headings": [
+    {
+      "id": "what-a-permalink-is",
+      "level": 2,
+      "text": "What a permalink is",
+      "href": "#what-a-permalink-is"
+    },
+    {
+      "id": "catalog-not-slug",
+      "level": 2,
+      "text": "Catalog, not a slugger",
+      "href": "#catalog-not-slug"
+    },
+    {
+      "id": "fragment-miss",
+      "level": 2,
+      "text": "A fragment that is not attested",
+      "href": "#fragment-miss"
+    }
+  ]
+}

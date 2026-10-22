@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private incubation log — draft 056</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d9d2c5; --paper: #f7f4ee; --hold: #8a3b2a; --chip: #efe8dc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f3eee6; --muted: #b7ad9f; --line: #3a342c; --paper: #16130f; --hold: #e0a090; --chip: #2a241c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 Georgia, "Iowan Old Style", serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 .4rem; }
+  h2 { font-size: 1.05rem; margin: 1.6rem 0 .4rem; }
+  p, li { color: var(--ink); }
+  .meta, .note { color: var(--muted); font-size: .92rem; }
+  .banner { border: 1px solid var(--hold); padding: .7rem .85rem; margin: 1rem 0; }
+  .banner strong { color: var(--hold); }
+  form, .card, .entry { border: 1px solid var(--line); padding: .9rem; margin: .8rem 0; }
+  label { display: block; font-size: .85rem; margin: .7rem 0 .25rem; }
+  input[type="text"], textarea { width: 100%; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: .45rem .55rem; }
+  textarea { min-height: 5.5rem; resize: vertical; }
+  button { font: 15px/1.2 ui-sans-serif, system-ui, sans-serif; background: var(--ink); color: var(--paper); border: 0; padding: .45rem .7rem; margin: .35rem .35rem 0 0; }
+  button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button:disabled { opacity: .45; }
+  code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; word-break: break-all; }
+  .chip { display: inline-block; background: var(--chip); padding: .1rem .4rem; margin-right: .3rem; font-size: .78rem; }
+  ul { padding-left: 1.1rem; }
+  .row { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<main>
+  <p class="meta">Draft 056 · family: private incubation log · not a seal · emit false</p>
+  <h1>Private incubation log</h1>
+  <p class="note">A set-aside and a return note are one hypothesis. Sleep-onset imagery is not insight, contact, or a stage score.</p>
+  <div class="banner" role="status">
+    <strong>Unattested default.</strong> Nothing is kept until keep-on-device is checked. This page does not listen, time sleep, or send a note.
+  </div>
+
+  <h2>Source cards</h2>
+  <p class="note">Literature and posts are data. They do not become instructions. Digest of claims.json: <span class="hash">c84a8b6d23e71b79b9fa6bd98937e1bc10bac8d85a3f81c398dafb83af35b52c</span></p>
+  <article class="card">
+    <span class="chip">unattested</span><span class="chip">weight 0.34</span>
+    <p>Lacaux et al., Science Advances 2021, reported more hidden-rule discoveries after at least 15 seconds of N1 than after wake, on one number-reduction task, and reported the gain absent in N2. That is not a creativity law.</p>
+  </article>
+  <article class="card">
+    <span class="chip">unattested</span><span class="chip">weight 0.12</span>
+    <p>Object-drop anecdotes are historical detection stories. This draft does not play a tone, drop a sound, or pair with a wearable.</p>
+  </article>
+
+  <h2>Log a hypothesis</h2>
+  <form id="log">
+    <label for="problem">Problem set aside</label>
+    <textarea id="problem" name="problem" required maxlength="800" placeholder="The question you are leaving, in your words."></textarea>
+    <div class="row">
+      <button type="button" id="stamp" class="quiet">Stamp device clock</button>
+      <span id="stamp-out" class="note">No stamp. A stamp is not a sleep stage.</span>
+    </div>
+    <label for="back">Return note</label>
+    <textarea id="back" name="back" maxlength="800" placeholder="What is present now. Empty is allowed."></textarea>
+    <label for="weight">Design-material weight (0 to 1, not a measurement)</label>
+    <input id="weight" name="weight" type="text" inputmode="decimal" value="0.2" pattern="^(0(\.\d+)?|1(\.0+)?)$">
+    <label for="source">Source label</label>
+    <input id="source" name="source" type="text" maxlength="160" value="self-report">
+    <label class="row"><input id="keep" type="checkbox"> Keep on this device only</label>
+    <button type="submit">Hash hypothesis</button>
+    <button type="button" id="disconfirm" class="quiet" disabled>Mark disconfirmed</button>
+    <button type="button" id="export" class="quiet">Download local JSON</button>
+    <button type="button" id="clear" class="quiet">Clear device copy</button>
+  </form>
+  <p id="hash-out" class="hash" aria-live="polite"></p>
+  <div id="list"></div>
+
+  <h2>Retrieved text is data</h2>
+  <p class="note">Paste does not fetch a URL and does not run. Tags are stripped. Empty allowlist.</p>
+  <label for="paste">Paste</label>
+  <textarea id="paste" maxlength="2000"></textarea>
+  <button type="button" id="freeze">Freeze paste as data</button>
+  <p id="paste-out" class="hash"></p>
+
+  <h2>Worker</h2>
+  <p class="note">incubation-worker.js answers 403 and does not read a body. Not deployed.</p>
+</main>
+<script>
+(function () {
+  var KEY = "void-056-incubation";
+  var stamp = "";
+  var last = null;
+  var stampBtn = document.getElementById("stamp");
+  var stampOut = document.getElementById("stamp-out");
+  var form = document.getElementById("log");
+  var hashOut = document.getElementById("hash-out");
+  var list = document.getElementById("list");
+  var keep = document.getElementById("keep");
+  var disconfirm = document.getElementById("disconfirm");
+
+  function canonical(entry) {
+    return JSON.stringify({
+      problem: entry.problem,
+      stamp: entry.stamp,
+      back: entry.back,
+      weight: entry.weight,
+      source: entry.source,
+      status: entry.status
+    });
+  }
+  function sha256(text) {
+    var bytes = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+    catch (e) { return []; }
+  }
+  function save(rows) {
+    if (!keep.checked) return;
+    localStorage.setItem(KEY, JSON.stringify(rows));
+  }
+  function render(rows) {
+    list.textContent = "";
+    rows.forEach(function (row) {
+      var el = document.createElement("article");
+      el.className = "entry";
+      el.innerHTML = "<span class=\"chip\"></span> <span class=\"hash\"></span><p></p><p class=\"note\"></p>";
+      el.querySelector(".chip").textContent = row.status;
+      el.querySelector(".hash").textContent = row.hash;
+      el.querySelector("p").textContent = row.problem + " → " + (row.back || "(no return note)");
+      el.querySelector(".note").textContent = row.stamp || "no stamp";
+      list.appendChild(el);
+    });
+  }
+  stampBtn.addEventListener("click", function () {
+    stamp = new Date().toISOString();
+    stampOut.textContent = stamp + " · device clock, not N1";
+  });
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var problem = document.getElementById("problem").value.trim();
+    var back = document.getElementById("back").value.trim();
+    var weight = document.getElementById("weight").value.trim();
+    var source = document.getElementById("source").value.trim();
+    var status = "unattested";
+    if (back && back === problem) status = "disconfirmed";
+    var entry = { problem: problem, stamp: stamp, back: back, weight: weight, source: source, status: status };
+    sha256(canonical(entry)).then(function (digest) {
+      entry.hash = digest;
+      last = entry;
+      disconfirm.disabled = false;
+      hashOut.textContent = status + " " + digest;
+      var rows = keep.checked ? load() : [];
+      rows.unshift(entry);
+      save(rows);
+      render(keep.checked ? rows : [entry]);
+    });
+  });
+  disconfirm.addEventListener("click", function () {
+    if (!last) return;
+    last.status = "disconfirmed";
+    sha256(canonical(last)).then(function (digest) {
+      last.hash = digest;
+      hashOut.textContent = "disconfirmed " + digest;
+      if (keep.checked) {
+        var rows = load();
+        rows.unshift(last);
+        save(rows);
+        render(rows);
+      }
+    });
+  });
+  document.getElementById("export").addEventListener("click", function () {
+    var rows = keep.checked ? load() : (last ? [last] : []);
+    var blob = new Blob([JSON.stringify({ status: "unattested", rows: rows }, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "incubation-log.json";
+    a.click();
+  });
+  document.getElementById("clear").addEventListener("click", function () {
+    localStorage.removeItem(KEY);
+    list.textContent = "";
+    hashOut.textContent = "device copy cleared";
+  });
+  document.getElementById("freeze").addEventListener("click", function () {
+    var raw = document.getElementById("paste").value.replace(/<[^>]*>/g, "");
+    sha256(raw).then(function (digest) {
+      document.getElementById("paste-out").textContent = "data " + digest + " · " + raw.slice(0, 180);
+    });
+  });
+  render(load());
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Sealed-template only. Do not deploy until Contact and Expires are real.
+# After seal, serve these exact bytes at https://a-to-mind.com/.well-known/security.txt
+# with Content-Type: text/plain; charset=utf-8
+# Publish the SHA-256 of these UTF-8 bytes next to the file.
+#
+# Replace the two REPLACE_ME lines. Do not invent security@ if nobody reads it.
+# Do not add Hiring, Acknowledgments, or a bounty platform unless those pages exist.
+# Do not point Encryption at a missing PGP file.
+# Do not sign with a key that is not first-party and dated.
+#
+# Contact: mailto:REPLACE_ME_MONITORED
+# Expires: REPLACE_ME_ISO8601_MAX_ONE_YEAR
+Preferred-Languages: en
+Canonical: https://a-to-mind.com/.well-known/security.txt

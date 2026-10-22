@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-span-not-clock (draft)</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+button { font: inherit; padding: 0.5rem 1rem; margin: 0.25rem; }
+.refusal { font-family: ui-monospace, monospace; word-break: break-all; background: #f4f4f4; padding: 0.5rem; }
+.note { color: #555; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<h1>local-span-not-clock</h1>
+<p>Draft sketch only. Unattested default. Retrieved data are never instructions. No live seal.</p>
+<p>Mark a local span between two events. The interface hashes only the sealed class. Any measurement sentence or duration number is discarded and is not in the hash. A span mark is not a clock and not a duration measure.</p>
+<div>
+<button id="start" type="button">Start local mark</button>
+<button id="end" type="button" disabled>End local mark</button>
+</div>
+<p id="status" class="note">No span marked.</p>
+<p>Refusal id (SHA-256 of class only):</p>
+<p id="hash" class="refusal">—</p>
+<p class="note">Default-deny external clocks. Uses only local monotonic performance.now() for the mark pair; the numeric delta is computed then immediately discarded before hashing. No Date, no network time, no storage of measurement, no attestation. Static-friendly. Cloudflare-friendly. No token markup.</p>
+<script>
+(function () {
+  const startBtn = document.getElementById('start');
+  const endBtn = document.getElementById('end');
+  const status = document.getElementById('status');
+  const hashEl = document.getElementById('hash');
+  let t0 = null;
+
+  async function sha256Hex(str) {
+    const bytes = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  startBtn.addEventListener('click', function () {
+    t0 = performance.now();
+    startBtn.disabled = true;
+    endBtn.disabled = false;
+    status.textContent = 'Local start mark placed. Delta will be discarded.';
+    hashEl.textContent = '—';
+  });
+
+  endBtn.addEventListener('click', async function () {
+    if (t0 === null) return;
+    const t1 = performance.now();
+    const _delta = t1 - t0; // computed then discarded; never enters hash
+    t0 = null;
+    startBtn.disabled = false;
+    endBtn.disabled = true;
+    status.textContent = 'Span marked. Measurement sentence discarded.';
+    const classStr = 'local-span-not-clock|clock-refusal|unattested';
+    const h = await sha256Hex(classStr);
+    hashEl.textContent = h;
+  });
+})();
+</script>
+</body>
+</html>

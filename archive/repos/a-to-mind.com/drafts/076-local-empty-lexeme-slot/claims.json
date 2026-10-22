@@ -1,0 +1,33 @@
+{
+  "slug": "local-empty-lexeme-slot",
+  "run": "076",
+  "date": "2026-10-06",
+  "emit": false,
+  "default_status": "unattested",
+  "claims": [
+    {
+      "id": "slot-empty",
+      "text": "A committed blank is a hashed hypothesis of a refused lexeme. The blank is not intent.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "letter-held",
+      "text": "A letter, digit, or word-shaped character in the slot refuses the hash. The held text is not decoded.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "disconfirm-not-slot",
+      "text": "The disconfirm line is a later sentence about what would falsify the row. It does not fill the slot.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "decode-claim-not-trace",
+      "text": "A machine-decode-claim source labels a public claim. It does not load a decoder and does not set received.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    }
+  ]
+}

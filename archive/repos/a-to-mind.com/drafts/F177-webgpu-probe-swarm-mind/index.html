@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F177 · Probe Swarm Mind</title>
+<style>
+  :root { --hue: 200; --fit: 0.5; }
+  body { margin: 0; background: #0a0a0c; color: #e0e0e0; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  #mind {
+    position: absolute; width: 140px; height: 70px; border-radius: 12px;
+    border: 3px solid hsl(var(--hue), 70%, 55%); background: rgba(10,10,12,0.7);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 0.75rem; cursor: grab; user-select: none; backdrop-filter: blur(4px);
+    transition: border-color 0.4s, box-shadow 0.4s;
+    box-shadow: 0 0 20px hsl(var(--hue), 70%, 40%);
+  }
+  #mind:active { cursor: grabbing; }
+  #status { opacity: 0.9; }
+  #seal { position: absolute; bottom: 1rem; right: 1rem; padding: 0.5rem 1rem; background: #222; border: 1px solid #555; color: #ccc; border-radius: 6px; cursor: pointer; }
+  #info { position: absolute; top: 1rem; left: 1rem; font-size: 0.8rem; opacity: 0.6; max-width: 280px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="mind"><div id="status">probe · mind</div><div id="fit">fitness --</div></div>
+<button id="seal">seal genome</button>
+<div id="info">Draw to deposit intent. Probes track. Mind card follows centroid. Drag card to attract.</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const mind = document.getElementById('mind');
+const statusEl = document.getElementById('status');
+const fitEl = document.getElementById('fit');
+let w = canvas.width = innerWidth, h = canvas.height = innerHeight;
+addEventListener('resize', () => { w = canvas.width = innerWidth; h = canvas.height = innerHeight; });
+
+const N = 180;
+const probes = Array.from({length: N}, () => ({
+  x: Math.random() * w, y: Math.random() * h,
+  vx: 0, vy: 0
+}));
+let density = new Float32Array(w * h);
+function resizeDensity() { density = new Float32Array(w * h); }
+resizeDensity();
+addEventListener('resize', resizeDensity);
+
+let params = { attract: 0.08, decay: 0.992, noise: 0.3 };
+let best = { ...params, fitness: 0 };
+let pointerHistory = [];
+let mx = w/2, my = h/2, drawing = false;
+
+function deposit(x, y) {
+  const ix = Math.floor(x), iy = Math.floor(y);
+  for (let dy = -8; dy <= 8; dy++) for (let dx = -8; dx <= 8; dx++) {
+    const px = ix + dx, py = iy + dy;
+    if (px >= 0 && px < w && py >= 0 && py < h) {
+      const d = Math.hypot(dx, dy);
+      if (d < 8) density[py * w + px] += (1 - d/8) * 2;
+    }
+  }
+  pointerHistory.push({x, y, t: performance.now()});
+  if (pointerHistory.length > 80) pointerHistory.shift();
+}
+
+canvas.addEventListener('pointerdown', e => { drawing = true; deposit(e.clientX, e.clientY); });
+canvas.addEventListener('pointermove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (drawing) deposit(e.clientX, e.clientY);
+});
+addEventListener('pointerup', () => drawing = false);
+
+let draggingMind = false, offX = 0, offY = 0;
+mind.addEventListener('pointerdown', e => {
+  draggingMind = true; offX = e.clientX - mind.offsetLeft; offY = e.clientY - mind.offsetTop;
+  mind.setPointerCapture(e.pointerId);
+});
+mind.addEventListener('pointermove', e => {
+  if (!draggingMind) return;
+  mind.style.left = (e.clientX - offX) + 'px';
+  mind.style.top = (e.clientY - offY) + 'px';
+  deposit(e.clientX, e.clientY);
+});
+addEventListener('pointerup', () => draggingMind = false);
+
+const workerCode = `
+let pop = Array.from({length: 6}, () => ({attract: 0.05 + Math.random()*0.1, decay: 0.98 + Math.random()*0.015, fitness: 0}));
+let best = pop[0];
+self.onmessage = e => {
+  const {centroid, energy, historyLen, avgDist} = e.data;
+  const fit = Math.max(0, 1 - avgDist / 200) * 0.7 + Math.min(1, energy) * 0.3;
+  pop[0].fitness = fit;
+  if (fit > best.fitness) best = {...pop[0], fitness: fit};
+  for (let i = 1; i < pop.length; i++) {
+    pop[i].attract = Math.max(0.01, Math.min(0.3, pop[i].attract + (Math.random()-0.5)*0.02));
+    pop[i].decay = Math.max(0.97, Math.min(0.999, pop[i].decay + (Math.random()-0.5)*0.005));
+  }
+  pop.sort((a,b) => b.fitness - a.fitness);
+  self.postMessage({params: pop[0], best, fit});
+};
+`;
+const worker = new Worker(URL.createObjectURL(new Blob([workerCode])));
+let lastEvo = 0;
+worker.onmessage = e => {
+  params = e.data.params;
+  best = e.data.best;
+  fitEl.textContent = 'fitness ' + e.data.fit.toFixed(2);
+  document.documentElement.style.setProperty('--fit', e.data.fit);
+};
+
+function step() {
+  for (let i = 0; i < density.length; i++) density[i] *= params.decay;
+
+  let cx = 0, cy = 0, energy = 0;
+  for (const p of probes) {
+    const ix = Math.floor(p.x), iy = Math.floor(p.y);
+    let gx = 0, gy = 0;
+    if (ix > 1 && ix < w-1 && iy > 1 && iy < h-1) {
+      gx = density[iy*w + ix+1] - density[iy*w + ix-1];
+      gy = density[(iy+1)*w + ix] - density[(iy-1)*w + ix];
+    }
+    p.vx += gx * params.attract + (Math.random()-0.5) * params.noise;
+    p.vy += gy * params.attract + (Math.random()-0.5) * params.noise;
+    p.vx *= 0.92; p.vy *= 0.92;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x += w; if (p.x > w) p.x -= w;
+    if (p.y < 0) p.y += h; if (p.y > h) p.y -= h;
+    cx += p.x; cy += p.y;
+    energy += Math.hypot(p.vx, p.vy);
+  }
+  cx /= N; cy /= N;
+  energy /= N;
+
+  if (!draggingMind) {
+    const left = parseFloat(mind.style.left || '50') || 50;
+    const top = parseFloat(mind.style.top || '50') || 50;
+    mind.style.left = (left * 0.85 + (cx - 70) * 0.15) + 'px';
+    mind.style.top = (top * 0.85 + (cy - 35) * 0.15) + 'px';
+  }
+  const hue = (energy * 180 + 180) % 360;
+  document.documentElement.style.setProperty('--hue', hue);
+  statusEl.textContent = energy > 0.8 ? 'tracking' : 'seeking';
+
+  ctx.fillStyle = 'rgba(10,10,12,0.2)';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(100,180,255,0.15)';
+  for (let i = 0; i < 400; i++) {
+    const idx = Math.floor(Math.random() * density.length);
+    if (density[idx] > 0.5) {
+      const x = idx % w, y = Math.floor(idx / w);
+      ctx.fillRect(x, y, 2, 2);
+    }
+  }
+  ctx.fillStyle = 'hsl(' + hue + ', 80%, 65%)';
+  for (const p of probes) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.8, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  const now = performance.now();
+  if (now - lastEvo > 1500 && pointerHistory.length > 5) {
+    let avgDist = 0;
+    for (const h of pointerHistory.slice(-20)) {
+      let minD = 1e9;
+      for (const p of probes) minD = Math.min(minD, Math.hypot(p.x - h.x, p.y - h.y));
+      avgDist += minD;
+    }
+    avgDist /= 20;
+    worker.postMessage({centroid: {x: cx, y: cy}, energy, historyLen: pointerHistory.length, avgDist});
+    lastEvo = now;
+  }
+
+  requestAnimationFrame(step);
+}
+step();
+
+document.getElementById('seal').addEventListener('click', () => {
+  localStorage.setItem('probe-swarm-genome', JSON.stringify(best));
+  statusEl.textContent = 'sealed';
+  setTimeout(() => statusEl.textContent = 'probe · mind', 1200);
+});
+
+mind.style.left = (w/2 - 70) + 'px';
+mind.style.top = (h/2 - 35) + 'px';
+</script>
+</body>
+</html>

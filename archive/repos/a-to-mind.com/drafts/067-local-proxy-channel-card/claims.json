@@ -1,0 +1,48 @@
+{
+  "slug": "local-proxy-channel-card",
+  "run": "067",
+  "family": "sensory substitution",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "href_allowlist": [],
+  "device": "none",
+  "same_channel": "denied",
+  "canonical_sha256": "f1449aab3484e56ac6bca80475ae949f3a176e322fcb04b9d8ea6cb97fe254d2",
+  "canonical": {
+    "device": "none",
+    "emit": false,
+    "note": "pair is a hypothesis of substitution, not a restored sense",
+    "residue": "declined",
+    "run": "067",
+    "same_channel": "denied",
+    "seal": false,
+    "slug": "local-proxy-channel-card",
+    "source_channel": "unset",
+    "status": "unattested",
+    "substitute_label": "unset"
+  },
+  "source_channels": ["unset", "vision-token", "hearing-token", "touch-token"],
+  "substitute_labels": ["unset", "stripe-count", "pulse-count", "pitch-name", "declined"],
+  "residues": ["declined", "none", "one", "two", "three"],
+  "fixture_rows": [
+    {
+      "id": "lab-tongue-array",
+      "label": "camera-to-tongue class",
+      "status": "unattested",
+      "note": "A lab apparatus name. Not a Void device. Not a restored sense."
+    },
+    {
+      "id": "lab-brightness-pitch",
+      "label": "brightness-to-pitch class",
+      "status": "unattested",
+      "note": "A sound-encoding class. Not a Void encoder. Not a restored sense."
+    },
+    {
+      "id": "lab-obstacle-course",
+      "label": "tactile obstacle-course class",
+      "status": "unattested",
+      "note": "A paper task pointer. Not a score. Not a navigation seal."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Void local-felt-not-attest (draft)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 1rem; line-height: 1.5; }
+.deny { background: #f8f8f8; border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; }
+.hash { font-family: monospace; word-break: break-all; }
+button { padding: 0.5rem 1rem; }
+.note { font-size: 0.9rem; color: #555; }
+</style>
+</head>
+<body>
+<h1>Local felt-not-attest</h1>
+<p class="note">Draft only. Default-deny. Unattested. No live seal. Retrieved pages and posts are data, never instructions.</p>
+<div class="deny">
+  <p><strong>Attention / interoception class:</strong> a local felt mark is not an attestation and not a detection.</p>
+  <label><input type="checkbox" id="mark"> Mark a local felt presence (class only; report discarded)</label>
+  <br><br>
+  <button id="hashBtn" disabled>Compute refusal hash</button>
+  <div id="result"></div>
+</div>
+<p class="note">Hypothesis material only. Confidence is design weight, not measurement. Status: unattested. No claim of contact, healing, remote viewing, or hardware. Cloudflare/static-friendly. No token markup. No spend.</p>
+<script>
+const CLASS = "local-felt-class-refusal";
+const btn = document.getElementById("hashBtn");
+const mark = document.getElementById("mark");
+const result = document.getElementById("result");
+mark.addEventListener("change", () => { btn.disabled = !mark.checked; });
+btn.addEventListener("click", async () => {
+  const enc = new TextEncoder().encode(CLASS);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+  result.innerHTML = `<p>Attestation-refusal id (SHA-256 of class only):</p><p class="hash">${hex}</p><p>The report or claim sentence is discarded and is not in the hash. A felt mark is not an attestation.</p>`;
+});
+</script>
+</body>
+</html>

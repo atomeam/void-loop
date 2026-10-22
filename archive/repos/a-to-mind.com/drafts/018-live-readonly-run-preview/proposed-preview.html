@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Readonly run preview · A-to-Mind draft 018</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Local replay of attested demo-018 events. Not a live executor.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; border-color: var(--rule); }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 36rem; }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    .row { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--rule); }
+    .row dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .row dd { font-family: "Source Serif 4", Georgia, serif; font-size: 1.2rem; margin: 0.15rem 0 0.75rem; }
+    .row dd:last-child { margin-bottom: 0; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"] { color: var(--bad); }
+    .receipt[data-status="playing"], .receipt[data-status="sealed"], .receipt[data-status="paused"] { color: var(--amber); }
+    ol.events { list-style: none; margin-top: 1rem; padding: 0; border: 1px solid var(--rule); }
+    ol.events li { padding: 0.7rem 1rem; border-top: 1px solid var(--rule); color: var(--muted); }
+    ol.events li:first-child { border-top: 0; }
+    ol.events li[data-open="1"] { color: var(--fg); }
+    ol.events li[data-kind="deny"][data-open="1"] { color: var(--bad); }
+    ol.events li[data-kind="hold"][data-open="1"] { color: var(--amber); }
+    .n { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); margin-right: 0.6rem; }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 018 · hold-gate · not on the live room</p>
+    <h1>Readonly run preview</h1>
+    <p class="lede">This pane replays attested events from demo-018. It cannot start, steer, or resume a live run. No WebSocket. No EventSource. Playback is opt-in.</p>
+
+    <section class="row">
+      <dl>
+        <dt>Run</dt>
+        <dd>demo-018 · writes none</dd>
+        <dt>Spend (ledger fact)</dt>
+        <dd id="spend-out">$0.01 of $2.00 cap · provider: null</dd>
+        <dt>Cursor</dt>
+        <dd id="cursor-out">0 / 6</dd>
+      </dl>
+      <p class="mono" id="snap-line" data-canonical="snap#demo-018|events:6|spend-cents:1|cap-cents:200|provider-cents:null" data-sha="a587153e48c7660572e963a2506ba3b01216d31f60ea99d9177643d83f81edd4">snap#demo-018|events:6|spend-cents:1|cap-cents:200|provider-cents:null</p>
+    </section>
+
+    <ol class="events" id="event-list">
+      <li data-n="1" data-kind="plan" data-canonical="event#1|kind:plan|tools:http.read,file.read,model.call,artifact|writes:deny" data-sha="3ce79f42b69c1e3dfc69af2d5ee9370ba2f579fd55901e83e41ffb90574c45a3" data-open="0">
+        <span class="n">01</span> Plan sealed. Allowlist: http.read, file.read, model.call, artifact. Writes deny.
+      </li>
+      <li data-n="2" data-kind="step" data-canonical="event#2|kind:step|id:1|tool:file.read|tok:612|usd-cents:0" data-sha="19bf41789d72d92028c73f2a0a7a93b876cd6a88115cce3cc5bbbc4df3249ece" data-open="0">
+        <span class="n">02</span> Step 1 · file.read · 612 tok · $0.00
+      </li>
+      <li data-n="3" data-kind="step" data-canonical="event#3|kind:step|id:2|tool:http.read|tok:1940|usd-cents:0" data-sha="edacf88639e611af359b6bb3d0cac9d9be3bdb13b20e1edcc32078fc00683971" data-open="0">
+        <span class="n">03</span> Step 2 · http.read · 1,940 tok · $0.00
+      </li>
+      <li data-n="4" data-kind="deny" data-canonical="event#4|kind:deny|tool:slack.notify|reason:default-deny" data-sha="5e2296163e367da19d3c5a80b094d531171472ab2512af51d2057fbcb49f7538" data-open="0">
+        <span class="n">04</span> slack.notify denied · default-deny · no grant
+      </li>
+      <li data-n="5" data-kind="step" data-canonical="event#5|kind:step|id:3|tool:model.call|tok:2280|usd-cents:1" data-sha="c17536b77bf1261d566c6f4d826eceafa54aff04de95af37093c169c56ef6290" data-open="0">
+        <span class="n">05</span> Step 3 · model.call · 2,280 tok · $0.01 ledger fact
+      </li>
+      <li data-n="6" data-kind="hold" data-canonical="event#6|kind:hold|tool:artifact.write|reason:human-seal" data-sha="ab4342c739fc131a0e1e1b3caaa1a339ce3e111f0b7918d1a00a2e18c5edc1a9" data-open="0">
+        <span class="n">06</span> artifact.write held · waiting for a human seal
+      </li>
+    </ol>
+
+    <div class="actions">
+      <button type="button" class="primary" id="play-preview" data-canonical="invoker#play|id:play-preview|transport:local|network:deny" data-sha="81e511e5c5b6fa76f78a50a19e3903f66b145a505a8fc8d73668deac52d9ba76">Play snapshot</button>
+      <button type="button" id="pause-preview" data-canonical="invoker#pause|id:pause-preview|transport:local|network:deny" data-sha="2f9af7dc9ca6e6e68282674560f43290ef88b440c2b8c748dc6b7dd57d8ca584">Pause</button>
+      <button type="button" id="steer-run" data-canonical="invoker#steer|id:steer-run|write:hold|network:deny" data-sha="9f5b4bc7fe9e5149ee20f5b78bcb99cc074501c807d6f73b319150f0534fc133">Steer run</button>
+      <button type="button" id="approve-tool" data-canonical="invoker#approve-tool|id:approve-tool|write:hold|network:deny" data-sha="4a31b6e272db43f7e1060f96b97f74ea30d4891e8b8bbed50999975c0b2051ef">Approve tool</button>
+      <button type="button" id="open-sse">Open live SSE</button>
+    </div>
+    <p class="receipt" id="receipt" data-status="idle" role="status">idle · unplayed · contract 1b4912e8…</p>
+
+    <section class="claims" id="claims">
+      <h2>Attested lines</h2>
+      <ul>
+        <li data-canonical="preview#018|kind:readonly-run-replay|transport:local-snapshot|write:deny|steer:deny|sse:deny|hash:sha256|seal:human" data-sha="1b4912e81505175ba83db4a3b5455aac14f2078b9f8cae86703e1154c12c315d">
+          <span class="hash-flag">…</span>
+          Contract. Local snapshot replay. Writes deny. Steer deny. SSE deny.
+        </li>
+        <li data-canonical="claim#readonly|text:This pane replays attested events. It cannot start, steer, or resume a live run." data-sha="3756d7b2bcc7e0269e168775cad9c93a9f088a127ee64274fb5681ac04ef00c6">
+          <span class="hash-flag">…</span>
+          This pane replays attested events. It cannot start, steer, or resume a live run.
+        </li>
+        <li data-canonical="claim#snapshot|text:Playback starts only after the snapshot hash matches. Unattested default is idle." data-sha="6713894c319f2964adece4ee366e9180bc31124c3cefc21d32d73c8f0597a981">
+          <span class="hash-flag">…</span>
+          Playback starts only after the snapshot hash matches. Unattested default is idle.
+        </li>
+        <li data-canonical="claim#transport|text:No WebSocket. No EventSource. No Worker stream. Events come from the sealed JSON." data-sha="58ea7255f10f3a17ea8d5856a75ab04d642a0e21fe8c2e9fcbebfe718da65502">
+          <span class="hash-flag">…</span>
+          No WebSocket. No EventSource. No Worker stream. Events come from the sealed JSON.
+        </li>
+        <li data-canonical="claim#steer|text:Steer, interrupt, and tool-approve controls hold. They do not send signals." data-sha="4fad2be47c2273e7b28666d71e102f25bcf152659786bdbaca28d624a2cfcb7b">
+          <span class="hash-flag">…</span>
+          Steer, interrupt, and tool-approve controls hold. They do not send signals.
+        </li>
+        <li data-canonical="claim#tokens|text:Token counts are ledger facts from the snapshot. This page does not price tokens." data-sha="e7d3aaa15706da26e1b7246bcc4fdc9dbf71853b7e059cf1e8007f3ab5a529c2">
+          <span class="hash-flag">…</span>
+          Token counts are ledger facts from the snapshot. This page does not price tokens.
+        </li>
+        <li data-canonical="claim#motion|text:Playback is opt-in. Reduced-motion prefers the sealed end-state." data-sha="0e1d9c86bb6ddf1c90867ece946a30b9fbef0d9277aa8d38d9a4c194d3e538dc">
+          <span class="hash-flag">…</span>
+          Playback is opt-in. Reduced-motion prefers the sealed end-state.
+        </li>
+        <li data-canonical="page#preview|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="ab23e21f74a587328b7994ac98010ee114151f79e80fb18d00ced08ca081130c">
+          <span class="hash-flag">…</span>
+          Draft route. noindex. No cookie. No write.
+        </li>
+      </ul>
+      <p class="mono" id="verify">verifying…</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 018</span>
+  </footer>
+  <script>
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha256 = async (text) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const TOTAL = 6;
+    let attested = false;
+    let cursor = 0;
+    let timer = null;
+
+    async function checkNode(el) {
+      const line = el.getAttribute("data-canonical");
+      const expect = el.getAttribute("data-sha");
+      if (!line || !expect) return false;
+      const got = await sha256(line);
+      const ok = got === expect;
+      const flag = el.querySelector(".hash-flag");
+      if (flag) {
+        flag.textContent = ok ? "ok " + got.slice(0, 8) : "mismatch";
+        flag.className = "hash-flag " + (ok ? "ok" : "bad");
+      }
+      return ok;
+    }
+
+    function setReceipt(status, text) {
+      const node = document.getElementById("receipt");
+      node.dataset.status = status;
+      node.textContent = text;
+    }
+
+    function paint() {
+      document.querySelectorAll("#event-list li").forEach((li) => {
+        const n = Number(li.getAttribute("data-n"));
+        li.setAttribute("data-open", n <= cursor ? "1" : "0");
+      });
+      document.getElementById("cursor-out").textContent = cursor + " / " + TOTAL;
+    }
+
+    function stopTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function advanceOne() {
+      if (!attested) return;
+      if (cursor >= TOTAL) {
+        stopTimer();
+        setReceipt("sealed", "sealed · snap a587153e… · local cursor only");
+        return;
+      }
+      cursor += 1;
+      paint();
+      if (cursor >= TOTAL) {
+        stopTimer();
+        setReceipt("sealed", "sealed · snap a587153e… · local cursor only");
+      } else {
+        setReceipt("playing", "playing · cursor " + cursor + " · no network");
+      }
+    }
+
+    async function verifyAll() {
+      const nodes = [...document.querySelectorAll("[data-canonical][data-sha]")];
+      const flags = await Promise.all(nodes.map(checkNode));
+      attested = flags.every(Boolean);
+      const bodyLines = [
+        "preview#018|kind:readonly-run-replay|transport:local-snapshot|write:deny|steer:deny|sse:deny|hash:sha256|seal:human",
+        "claim#readonly|text:This pane replays attested events. It cannot start, steer, or resume a live run.",
+        "claim#snapshot|text:Playback starts only after the snapshot hash matches. Unattested default is idle.",
+        "claim#transport|text:No WebSocket. No EventSource. No Worker stream. Events come from the sealed JSON.",
+        "claim#steer|text:Steer, interrupt, and tool-approve controls hold. They do not send signals.",
+        "claim#tokens|text:Token counts are ledger facts from the snapshot. This page does not price tokens.",
+        "claim#motion|text:Playback is opt-in. Reduced-motion prefers the sealed end-state.",
+        "page#preview|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      ];
+      const bodySha = await sha256(bodyLines.join("\n") + "\n");
+      const headSha = await sha256('{"algo":"sha256","kind":"readonly-run-replay","transport":"local-snapshot","write":false,"steer":false,"sse":false}');
+      const bodyOk = bodySha === "df509a2a35d99c5ccbaf05146b857b33aeb9850489117c49b071fcd0900884b1";
+      const headOk = headSha === "f6fa20ba66b69e47912438ba3ccb960db5535b7092426e13c4b0af9218296384";
+      attested = attested && bodyOk && headOk;
+      document.getElementById("verify").textContent =
+        "body " + bodySha.slice(0, 12) + (bodyOk ? " ok" : " mismatch") +
+        " · head " + headSha.slice(0, 12) + (headOk ? " ok" : " mismatch");
+      document.getElementById("play-preview").disabled = !attested;
+      document.getElementById("pause-preview").disabled = !attested;
+      if (!attested) setReceipt("mismatch", "mismatch · refuse playback");
+      else setReceipt("idle", "idle · unplayed · contract 1b4912e8…");
+      return attested;
+    }
+
+    document.getElementById("play-preview").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse playback");
+      if (cursor >= TOTAL) {
+        setReceipt("sealed", "sealed · snap a587153e… · local cursor only");
+        return;
+      }
+      if (reduce) {
+        cursor = TOTAL;
+        paint();
+        setReceipt("sealed", "sealed · reduced-motion jump · snap a587153e…");
+        return;
+      }
+      if (timer) return;
+      setReceipt("playing", "playing · cursor " + cursor + " · no network");
+      timer = setInterval(advanceOne, 650);
+      advanceOne();
+    });
+
+    document.getElementById("pause-preview").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse playback");
+      stopTimer();
+      if (cursor >= TOTAL) setReceipt("sealed", "sealed · snap a587153e… · local cursor only");
+      else setReceipt("paused", "paused · cursor " + cursor + " · no refetch");
+    });
+
+    document.getElementById("steer-run").addEventListener("click", () => {
+      setReceipt("hold", "hold · steer is a separate sealed grant · no signal");
+    });
+
+    document.getElementById("approve-tool").addEventListener("click", () => {
+      setReceipt("hold", "hold · tool approve needs a signed grant · no fetch");
+    });
+
+    document.getElementById("open-sse").addEventListener("click", () => {
+      setReceipt("denied", "denied · EventSource and WebSocket are not on this pane");
+    });
+
+    verifyAll().then(paint);
+  </script>
+</body>
+</html>

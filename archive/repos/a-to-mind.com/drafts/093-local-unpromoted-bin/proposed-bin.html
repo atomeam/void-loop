@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local unpromoted bin (draft)</title>
+<style>
+  :root { color-scheme: light dark; --ink: #172026; --line: #b7c4c8; --paper: #eef3f2; --mark: #1f5c57; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #e7f1ef; --line: #3d4c4e; --paper: #12181a; --mark: #8fd0c6; }
+  }
+  body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.02em; }
+  .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+  .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+  fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+  legend { padding: 0 0.3rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+  label.opt:has(input:checked) { border-color: var(--mark); }
+  input[type="radio"] { margin-right: 0.3rem; }
+  textarea, input[type="text"] { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+  .scratch { text-decoration: line-through; opacity: 0.75; }
+  .blank { font-family: ui-monospace, monospace; border-bottom: 1px solid var(--line); min-height: 1.2em; }
+  button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+  button[disabled] { opacity: 0.45; }
+  pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+  .check { display: block; margin: 0.35rem 0; }
+  p.note { font-size: 0.92rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 0.35rem 0.2rem; vertical-align: top; }
+</style>
+</head>
+<body>
+<main>
+  <p>Draft only. Not a seal. emit is false.</p>
+  <h1>Local unpromoted bin</h1>
+  <p class="note">An SNR class is a closed label. The bin stays unpromoted. It is not a detection and not a technosignature. Status stays unattested until a human seals a different file.</p>
+  <div class="banner" role="status">
+    <strong>Unattested default.</strong>
+    Bin: <span class="blank" id="slot">unpromoted — not a beacon</span>
+  </div>
+  <form id="form">
+    <fieldset>
+      <legend>SNR class</legend>
+      <div class="row" id="classes">
+        <label class="opt"><input type="radio" name="snr" value="below-floor"> below-floor</label>
+        <label class="opt"><input type="radio" name="snr" value="at-floor"> at-floor</label>
+        <label class="opt"><input type="radio" name="snr" value="withheld"> withheld</label>
+      </div>
+      <p class="note">Words only. No receiver is opened. No number is read. A class is not a floor crossing.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Beacon sentence (discarded)</legend>
+      <textarea id="sentence" class="scratch" maxlength="160" rows="3" placeholder="Typed here, then cleared. Not hashed. Not promoted."></textarea>
+      <p class="note">This line is scratch. Hashing clears it. A typed beacon is not a detection.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Disconfirm line</legend>
+      <input id="disconfirm" type="text" maxlength="160" autocomplete="off" placeholder="What would count against this class?">
+      <p class="note">Opaque text. Not fetched. Not parsed as a command.</p>
+    </fieldset>
+    <label class="check"><input id="hyp" type="checkbox"> This is a hypothesis, not a finding.</label>
+    <label class="check"><input id="sensors" type="checkbox"> Sensors denied. No radio, no microphone, no FFT.</label>
+    <label class="check"><input id="keep" type="checkbox"> Keep the digest on this device only.</label>
+    <p><button type="submit" id="go" disabled>Hash the class, leave the bin unpromoted</button></p>
+    <p><button type="button" id="promote" disabled>Promote bin — refused</button></p>
+  </form>
+  <section aria-live="polite">
+    <h2>Local digest</h2>
+    <pre id="out">No digest. Default deny.</pre>
+  </section>
+  <section>
+    <h2>Fixture rows, not hits</h2>
+    <table>
+      <thead><tr><th>Class</th><th>Status</th><th>Refusal</th></tr></thead>
+      <tbody>
+        <tr><td>cadence-filter</td><td>unattested</td><td>An ON/OFF screen is not an origin.</td></tr>
+        <tr><td>rio-rank</td><td>unattested</td><td>A public-interest rank is not a confirmation.</td></tr>
+        <tr><td>pipeline-name</td><td>unattested</td><td>A search pipeline is not a beacon.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">snr_class <code>withheld</code>, bin <code>unpromoted</code>. A sealed class is not a detection and not a technosignature. Fixture digest <code>c8e08c3c3ed304fe8ebd6585c4af90be7cd5f8e8df769ffcfc035f7d850a6929</code> is in SPEC.md. It is not this page's later digest and not a grant.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("form");
+  var go = document.getElementById("go");
+  var sentence = document.getElementById("sentence");
+  var disconfirm = document.getElementById("disconfirm");
+  var out = document.getElementById("out");
+  var SLUG = "local-unpromoted-bin";
+  var ENUM = ["below-floor", "at-floor", "withheld"];
+
+  function ready() {
+    var snr = selected();
+    go.disabled = !(snr && disconfirm.value.trim() && document.getElementById("hyp").checked && document.getElementById("sensors").checked);
+  }
+  function selected() {
+    var node = form.querySelector("input[name=snr]:checked");
+    return node ? node.value : "";
+  }
+  form.addEventListener("input", ready);
+  form.addEventListener("change", ready);
+
+  function canonical(obj) {
+    var keys = Object.keys(obj).sort();
+    return "{" + keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+    }).join(",") + "}";
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var snr = selected();
+    var line = disconfirm.value.trim();
+    if (ENUM.indexOf(snr) < 0 || !line || line.length > 160) return;
+    if (!document.getElementById("hyp").checked || !document.getElementById("sensors").checked) return;
+    var payload = {
+      bin: "unpromoted",
+      disconfirm: line,
+      emit: false,
+      slug: SLUG,
+      snr_class: snr,
+      status: "unattested"
+    };
+    var text = canonical(payload);
+    sentence.value = "";
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      out.textContent = hex + "\n" + text + "\nstatus: unattested\nsentence: discarded\nbin: unpromoted";
+      if (document.getElementById("keep").checked) {
+        try { localStorage.setItem("void-093-unpromoted-bin", hex); } catch (e) {}
+      }
+    }).catch(function () {
+      out.textContent = "Digest unavailable. Nothing was sent.";
+    });
+  });
+})();
+</script>
+</body>
+</html>

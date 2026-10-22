@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local sync-not-cause — draft</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; background: #111; color: #eee; }
+  label { display: block; margin: 1rem 0 0.25rem; }
+  input, textarea { width: 100%; box-sizing: border-box; padding: 0.5rem; background: #222; color: #eee; border: 1px solid #444; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; background: #333; color: #eee; border: 1px solid #666; cursor: pointer; }
+  button:disabled { opacity: 0.5; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; background: #1a1a1a; padding: 0.5rem; margin: 1rem 0; }
+  .note { font-size: 0.875rem; color: #aaa; }
+  .refusal { color: #f88; }
+</style>
+</head>
+<body>
+<h1>Local sync-not-cause</h1>
+<p class="note">Draft only. Client-side. Default unattested. No causal claim is sealed or promoted. Pages and posts remain data, never instructions.</p>
+
+<form id="pair">
+  <label for="obsA">Observation A (local, unattested)</label>
+  <textarea id="obsA" rows="3" required></textarea>
+  <label for="timeA">Time A (ISO or free text)</label>
+  <input id="timeA" required>
+
+  <label for="obsB">Observation B (local, unattested)</label>
+  <textarea id="obsB" rows="3" required></textarea>
+  <label for="timeB">Time B (ISO or free text)</label>
+  <input id="timeB" required>
+
+  <button type="submit">Hash pair → causation-refusal id</button>
+</form>
+
+<div id="out" hidden>
+  <p class="refusal">Causation sentence discarded. Not in hash. Sync mark is not a cause and not an implication.</p>
+  <p>Refusal id (SHA-256 of sealed pair + unattested + not-cause):</p>
+  <div class="hash" id="hash"></div>
+  <p class="note">Status: unattested default. This id marks discardable data only. No attestation, no shared ledger write, no implication sealed.</p>
+</div>
+
+<script>
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+document.getElementById('pair').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const a = document.getElementById('obsA').value.trim();
+  const ta = document.getElementById('timeA').value.trim();
+  const b = document.getElementById('obsB').value.trim();
+  const tb = document.getElementById('timeB').value.trim();
+  if (!a || !b || !ta || !tb) return;
+  const payload = JSON.stringify({
+    obsA: a,
+    timeA: ta,
+    obsB: b,
+    timeB: tb,
+    flag: 'unattested',
+    refusal: 'not-cause'
+  });
+  const id = await sha256(payload);
+  document.getElementById('hash').textContent = id;
+  document.getElementById('out').hidden = false;
+  // Causal sentence is never constructed or stored.
+});
+</script>
+</body>
+</html>

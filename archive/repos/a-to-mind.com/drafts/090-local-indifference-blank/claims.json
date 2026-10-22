@@ -1,0 +1,30 @@
+{
+  "discarded_not_in_hash": [
+    "reproduction_sentence"
+  ],
+  "emit": false,
+  "family": "interval timing",
+  "fixture": {
+    "id": "range-label-only",
+    "note": "A sealed mixed prior-set label is not a measured interval and not an indifference point.",
+    "prior_set": "mixed"
+  },
+  "hash_fields": [
+    "disconfirm",
+    "prior_set",
+    "slug",
+    "status"
+  ],
+  "href_allowlist": [],
+  "prior_set_enum": [
+    "short",
+    "mid",
+    "long",
+    "mixed",
+    "declined"
+  ],
+  "run": "090",
+  "seal": null,
+  "slug": "local-indifference-blank",
+  "status": "unattested"
+}

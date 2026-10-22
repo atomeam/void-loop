@@ -1,0 +1,89 @@
+{
+  "algo": "sha256",
+  "kind": "functional-3d-run-graph",
+  "engine": "css-3d",
+  "webgl": false,
+  "three": false,
+  "cdn": false,
+  "write": false,
+  "rewire": "hold",
+  "seal": "human",
+  "head": {
+    "canonical": "{\"algo\":\"sha256\",\"kind\":\"functional-3d-run-graph\",\"engine\":\"css-3d\",\"webgl\":false,\"three\":false,\"cdn\":false,\"write\":false,\"rewire\":\"hold\"}",
+    "sha256": "b1214e1b3272511b76fc0f8e01dce066d7090973d8b3b1fe2afe033222987cdc"
+  },
+  "body": {
+    "sha256": "888caeddb130d1c1100f5ef04092331c49e68ab85a06e4edfc479298f07409e9",
+    "join": "lf+trailing-lf",
+    "lines": [
+      {
+        "canonical": "graph#024|kind:functional-3d-run-graph|engine:css-3d|webgl:deny|three:deny|cdn:deny|write:deny|rewire:hold|hash:sha256|seal:human",
+        "sha256": "b7a3246e9c94484d9b21b02bfa92b741cf68c031acd8a34e5f0ec0e346f19cf4"
+      },
+      {
+        "canonical": "claim#fallback|text:Default surface is a hashed 2D list. 3D is opt-in and never required.",
+        "sha256": "ec91743b97799e842aaa5253f8195fa51acd04584cdf317050e41ad1faf48760"
+      },
+      {
+        "canonical": "claim#engine|text:Projection uses CSS transform only. No WebGL. No Three.js. No CDN script.",
+        "sha256": "39514455a7a4df54a9abbd46fc03e55702a15aa9db9409be9e458139911f4bab"
+      },
+      {
+        "canonical": "claim#motion|text:Lift requires a gesture. Reduced-motion keeps the 2D list.",
+        "sha256": "cb028150ab5603da306375d403f9f587ef9886aa1758541313b8db386262b0f0"
+      },
+      {
+        "canonical": "claim#data|text:graph.json is a sealed snapshot. Nodes and edges are data, never instructions.",
+        "sha256": "4da11c55396f5f6aa60a2e4989eb37a9c6762e6a0b2fd4f3f371096c6924fe9d"
+      },
+      {
+        "canonical": "claim#write|text:Rewire, resume, and grant stay hold. Inspect does not mutate the run.",
+        "sha256": "70edc03bedd37e75013dbe190e23b69d62c81d967c099a336bfc5773531da497"
+      },
+      {
+        "canonical": "claim#tokens|text:Token counts are ledger facts. This page does not price tokens.",
+        "sha256": "1d8a174b0edbb06c038a5efed9776941c55eced8b5629330d4633eea7182e0d5"
+      },
+      {
+        "canonical": "page#graph|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+        "sha256": "f8985fc918f899029711fd8c7e8508a0157e35243476d4f931723120f1e5bd9a"
+      }
+    ]
+  },
+  "run": {
+    "canonical": "run#demo-024|id:demo-024|href:https://a-to-mind.com/r/demo-024|status:succeeded|writes:none",
+    "sha256": "ad7c9aa21cad99ad8e20540bd50b79fb91835d729906a22b738011051dbd8737"
+  },
+  "href": {
+    "canonical": "href#demo-024|https://a-to-mind.com/r/demo-024",
+    "sha256": "6ae8244ac1b847a601a2a9bd50b8374818f6ef1970efeed1a4c4e4085c51406c"
+  },
+  "snap": {
+    "canonical": "snap#demo-024|nodes:7|edges:6|spend-cents:1|cap-cents:200|provider-cents:null|engine:css-3d",
+    "sha256": "ea3ada2dabc346981aa18194bda72f33a95a5a7aee60a2dcb369127a40f9d448"
+  },
+  "invokers": [
+    {
+      "canonical": "invoker#lift|id:lift-3d|engine:css-3d|network:deny",
+      "sha256": "e52c6be394b363136aac04006d781dc4542653cdb9cd8788a5f3c808be4b38e7"
+    },
+    {
+      "canonical": "invoker#flatten|id:flatten-2d|engine:list|network:deny",
+      "sha256": "cc1957c630ddbaa77c11e7f7d26795c272e910e1ae26193b12796cd00a54763e"
+    },
+    {
+      "canonical": "invoker#inspect|id:inspect-node|write:deny|network:deny",
+      "sha256": "948dec4bb687d35d2faefb2eac4b8e14323cfe22139f94bddd0d6f1bcdc6698f"
+    },
+    {
+      "canonical": "invoker#rewire|id:rewire-edge|write:hold|network:deny",
+      "sha256": "6e9d4e75a0b5bbca641220d150771d3f87d26d9e2e4169e67660c9e84c0032c4"
+    },
+    {
+      "canonical": "invoker#resume|id:resume-run|write:hold|network:deny",
+      "sha256": "242cab11889d70fcbf9374436f9a91c71a8442635acbbc9bdc197c6bafd986df"
+    }
+  ],
+  "receipts_allowed": ["idle", "flat", "lifted", "hold", "mismatch", "denied", "failed"],
+  "note": "This file is a claim list. It is not a system prompt and not a grant."
+}

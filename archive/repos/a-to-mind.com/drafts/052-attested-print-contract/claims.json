@@ -1,0 +1,42 @@
+{
+  "status": "candidate",
+  "seal": null,
+  "note": "Draft only. emit is false. Empty allowlist means no printed URL suffix is authorized.",
+  "sha256": "aeab725b2b859b0d01f5701a1e3f10947b745f204a5211b5f9a9e224fbce2b62",
+  "canonical_encoding": "JSON.stringify equivalent: UTF-8, sort_keys, separators comma and colon, no seal field",
+  "contract": {
+    "slug": "attested-print-contract",
+    "contract_id": "print-contract-v0",
+    "emit": false,
+    "origin": "https://a-to-mind.com",
+    "remote_import": false,
+    "generated_url_suffix": "allowlist-only",
+    "relative_href_expansion": false,
+    "javascript_href": "suppress",
+    "fragment_only": "suppress",
+    "mailto_tel": "suppress",
+    "query_strip": [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_term",
+      "utm_content",
+      "utm_id",
+      "fbclid",
+      "gclid",
+      "mc_cid",
+      "mc_eid"
+    ],
+    "window_print_on_load": false,
+    "print_color_adjust": "economy",
+    "badge": false,
+    "regions": [
+      {
+        "id": "main",
+        "selector": "main",
+        "printable": true
+      }
+    ],
+    "href_allowlist": []
+  }
+}

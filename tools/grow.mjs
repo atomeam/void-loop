@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 export const LEDGER = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'void.growth.json');
 export const KINDS = ['grow', 'build', 'fix', 'retire', 'idea', 'finding'];
-const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from', 'asked', 'show', 'try'];
+const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from', 'asked', 'show', 'try', 'phrases'];
 
 // null when the entry is valid, else what is wrong with it
 export function entryProblem(e) {

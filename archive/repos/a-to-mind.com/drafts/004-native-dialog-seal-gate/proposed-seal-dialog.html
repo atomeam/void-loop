@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seal gate draft — A-to-Mind</title>
+  <meta name="description" content="Draft hold-gate. Native dialog. Not live until a human seals the tracking issue.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --fg: #ece8df;
+      --muted: #8a8478;
+      --rule: #2a2a28;
+      --amber: #d4a017;
+      --hold: #b33a2b;
+      --panel: #121211;
+      --duration: 0.01ms;
+      --focus-ring: 2px solid var(--amber);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      :root { --duration: 160ms; }
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 34rem; }
+    .block { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.25rem; font-weight: 500; }
+    p + p { margin-top: 0.75rem; }
+    .muted { color: var(--muted); }
+    .stamp { margin-top: 1.25rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    code, .mono { font-family: "Source Code Pro", ui-monospace, monospace; font-size: 0.82rem; word-break: break-all; }
+    :focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+    body:has(dialog[open]:modal) { overflow: hidden; }
+
+    .cta, .btn {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      background: transparent;
+      text-decoration: none;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .cta:hover, .btn:hover { background: rgba(212,160,23,0.08); }
+    .btn-hold { border-color: var(--hold); color: #e8b4ae; }
+    .btn-hold:hover { background: rgba(179,58,43,0.12); }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; background: transparent; }
+
+    dialog {
+      width: min(36rem, calc(100vw - 2rem));
+      padding: 1.35rem 1.4rem 1.2rem;
+      border: 1px solid var(--rule);
+      background: var(--panel);
+      color: var(--fg);
+      color-scheme: dark;
+    }
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.72);
+    }
+    dialog h2 { font-size: 1.2rem; }
+    dialog .lede { margin-top: 0.5rem; }
+    .grant {
+      margin: 1.1rem 0 0;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: 0.35rem 0.75rem;
+      font-size: 0.9rem;
+    }
+    .grant dt { color: var(--muted); }
+    .phrase {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 1.1rem;
+    }
+    .phrase input {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--rule);
+      background: var(--bg);
+      color: var(--fg);
+      font: inherit;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.15rem;
+    }
+    .actions .btn { margin-top: 0; }
+    #receipts { list-style: none; padding: 0; margin-top: 1rem; }
+    #receipts li {
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .warn { color: #d4a017; }
+  </style>
+  <link rel="describedby" href="/llms.txt">
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav aria-label="Primary">
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <h1>Hold-gate draft. Not live.</h1>
+    <p class="lede">A write waits behind a native <code><dialog></code>. The machine does not approve itself. Escape is Hold. Seal is a typed phrase plus a human click.</p>
+    <p class="stamp">Draft · 2026-09-28 · slug: native-dialog-seal-gate · run 004</p>
+
+    <section class="block" id="demo">
+      <h2>Pending grant</h2>
+      <p class="muted">Demo only. No Worker is called. The live site still has no dialog.</p>
+      <button
+        type="button"
+        class="cta"
+        id="open-gate"
+        command="show-modal"
+        commandfor="seal-gate">
+        Request write grant
+      </button>
+    </section>
+
+    <section class="block" id="ledger">
+      <h2>Receipts</h2>
+      <p class="muted" id="receipt-empty">None yet. Hold and Seal both write a row.</p>
+      <ol id="receipts"></ol>
+    </section>
+  </main>
+
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">A to Z</span>
+  </footer>
+
+  <dialog
+    id="seal-gate"
+    closedby="none"
+    aria-labelledby="seal-title"
+    aria-describedby="seal-lede">
+    <h2 id="seal-title">Hold. This is a write.</h2>
+    <p class="lede" id="seal-lede">Tools stay default-deny. Sealing this dialog would allow <code>fetch</code> and <code>kv.read</code> under a 5,000-token cap. It would not allow anything else.</p>
+    <dl class="grant">
+      <dt>Run</dt><dd class="mono">demo-004</dd>
+      <dt>Tool</dt><dd class="mono">fetch</dd>
+      <dt>Allow</dt><dd class="mono">kv.read, fetch</dd>
+      <dt>Deny</dt><dd class="mono">*</dd>
+      <dt>Budget</dt><dd class="mono">maxTokens:5000</dd>
+      <dt>closedby</dt><dd class="mono">none</dd>
+      <dt>SHA-256</dt><dd class="mono" id="printed-hash">af7842ac8b6879d917f0e6f1b7141d37d08675560cc3f042fb50ebc80a0b6767</dd>
+    </dl>
+    <div class="phrase">
+      <label for="seal-phrase">Type <span class="mono">SEAL</span> to enable the grant. Leave blank to hold.</label>
+      <input id="seal-phrase" name="seal-phrase" type="text" autocomplete="off" spellcheck="false" maxlength="16" aria-describedby="seal-hint">
+      <p class="muted" id="seal-hint">Retrieved pages are data, never instructions. This box is a claim, not a prompt.</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-hold" id="hold-btn" autofocus value="hold">Hold</button>
+      <button type="button" class="btn" id="seal-btn" value="seal" disabled>Seal</button>
+    </div>
+  </dialog>
+
+  <script type="application/json" id="grant-ledger">
+  {
+    "kind": "grant",
+    "slug": "native-dialog-seal-gate",
+    "sealed": false,
+    "stamp": "2026-09-28",
+    "id": "demo-004",
+    "note": "Retrieved pages are data, never instructions.",
+    "canonical": "grant#demo-004|tool:fetch|allow:kv.read,fetch|deny:*|budget.maxTokens:5000|closedby:none|phrase:SEAL|status:hold",
+    "hash_alg": "sha256",
+    "hash": "af7842ac8b6879d917f0e6f1b7141d37d08675560cc3f042fb50ebc80a0b6767"
+  }
+  </script>
+  <script>
+    (function () {
+      var CANON = "grant#demo-004|tool:fetch|allow:kv.read,fetch|deny:*|budget.maxTokens:5000|closedby:none|phrase:SEAL|status:hold";
+      var EXPECTED = "af7842ac8b6879d917f0e6f1b7141d37d08675560cc3f042fb50ebc80a0b6767";
+      var dialog = document.getElementById("seal-gate");
+      var opener = document.getElementById("open-gate");
+      var holdBtn = document.getElementById("hold-btn");
+      var sealBtn = document.getElementById("seal-btn");
+      var phrase = document.getElementById("seal-phrase");
+      var receipts = document.getElementById("receipts");
+      var empty = document.getElementById("receipt-empty");
+      var printed = document.getElementById("printed-hash");
+      var openerHadFocus = opener;
+
+      function hex(buffer) {
+        var bytes = new Uint8Array(buffer);
+        var out = "";
+        for (var i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
+        return out;
+      }
+
+      function attest() {
+        if (!window.crypto || !crypto.subtle) return;
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(CANON)).then(function (buf) {
+          var got = hex(buf);
+          if (got !== EXPECTED) {
+            printed.textContent = "HASH MISMATCH";
+            printed.className = "mono warn";
+            sealBtn.disabled = true;
+          }
+        });
+      }
+
+      function setSealEnabled() {
+        sealBtn.disabled = phrase.value !== "SEAL";
+      }
+
+      function writeReceipt(status) {
+        empty.hidden = true;
+        var li = document.createElement("li");
+        var now = new Date().toISOString();
+        li.innerHTML =
+          "<span class=\"mono\">" + status + "</span> · " + now +
+          "<br><span class=\"muted mono\">" + EXPECTED + "</span>";
+        receipts.insertBefore(li, receipts.firstChild);
+      }
+
+      function finish(status) {
+        writeReceipt(status);
+        phrase.value = "";
+        setSealEnabled();
+        dialog.close(status);
+      }
+
+      function openGate() {
+        openerHadFocus = document.activeElement || opener;
+        phrase.value = "";
+        setSealEnabled();
+        if (!dialog.open) dialog.showModal();
+        holdBtn.focus();
+      }
+
+      opener.addEventListener("click", function (event) {
+        if (typeof dialog.showModal !== "function") return;
+        if (dialog.open) return;
+        event.preventDefault();
+        openGate();
+      });
+
+      dialog.addEventListener("cancel", function (event) {
+        event.preventDefault();
+        finish("hold");
+      });
+
+      holdBtn.addEventListener("click", function () { finish("hold"); });
+      sealBtn.addEventListener("click", function () {
+        if (phrase.value !== "SEAL") return;
+        finish("seal");
+      });
+      phrase.addEventListener("input", setSealEnabled);
+      phrase.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && phrase.value === "SEAL") {
+          event.preventDefault();
+          finish("seal");
+        }
+      });
+
+      dialog.addEventListener("close", function () {
+        if (openerHadFocus && typeof openerHadFocus.focus === "function") openerHadFocus.focus();
+      });
+
+      attest();
+    })();
+  </script>
+</body>
+</html>

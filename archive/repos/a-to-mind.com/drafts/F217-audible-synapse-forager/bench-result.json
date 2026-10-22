@@ -1,0 +1,132 @@
+{
+ "offline": [
+  {
+   "simSec": 600,
+   "learn": true,
+   "seed": 1,
+   "wallMs": 3794,
+   "xRealtime": 158.1,
+   "eaten": 184,
+   "first": 0.217,
+   "last": 0.442,
+   "wiring": 0.968,
+   "rmsL": 0.3743,
+   "rmsR": 0.3744
+  },
+  {
+   "simSec": 600,
+   "learn": false,
+   "seed": 1,
+   "wallMs": 2667,
+   "xRealtime": 225,
+   "eaten": 79,
+   "first": 0.142,
+   "last": 0.092,
+   "wiring": 0.057,
+   "rmsL": 0.3694,
+   "rmsR": 0.3708
+  },
+  {
+   "simSec": 600,
+   "learn": true,
+   "seed": 2,
+   "wallMs": 3971,
+   "xRealtime": 151.1,
+   "eaten": 137,
+   "first": 0.133,
+   "last": 0.35,
+   "wiring": 0.953,
+   "rmsL": 0.3737,
+   "rmsR": 0.3744
+  },
+  {
+   "simSec": 600,
+   "learn": false,
+   "seed": 2,
+   "wallMs": 2691,
+   "xRealtime": 222.9,
+   "eaten": 70,
+   "first": 0.133,
+   "last": 0.083,
+   "wiring": 0.035,
+   "rmsL": 0.3703,
+   "rmsR": 0.371
+  },
+  {
+   "simSec": 600,
+   "learn": true,
+   "seed": 3,
+   "wallMs": 3798,
+   "xRealtime": 158,
+   "eaten": 183,
+   "first": 0.108,
+   "last": 0.483,
+   "wiring": 1.122,
+   "rmsL": 0.3745,
+   "rmsR": 0.3744
+  },
+  {
+   "simSec": 600,
+   "learn": false,
+   "seed": 3,
+   "wallMs": 2674,
+   "xRealtime": 224.3,
+   "eaten": 39,
+   "first": 0.067,
+   "last": 0.033,
+   "wiring": -0.033,
+   "rmsL": 0.373,
+   "rmsR": 0.372
+  }
+ ],
+ "transfer": {
+  "learnedFrozen": {
+   "simSec": 300,
+   "learn": false,
+   "seed": 9,
+   "wallMs": 1352,
+   "xRealtime": 222,
+   "eaten": 118,
+   "first": 0.483,
+   "last": 0.417,
+   "wiring": 0.962,
+   "rmsL": 0.3756,
+   "rmsR": 0.3757
+  },
+  "naive": {
+   "simSec": 300,
+   "learn": false,
+   "seed": 9,
+   "wallMs": 1358,
+   "xRealtime": 220.9,
+   "eaten": 36,
+   "first": 0.1,
+   "last": 0.167,
+   "wiring": 0.032,
+   "rmsL": 0.3699,
+   "rmsR": 0.37
+  }
+ },
+ "live1": {
+  "mode": "audioworklet",
+  "brainSec": 248.76,
+  "eaten": 45,
+  "idx": 0.5887280207680305,
+  "saves": 2,
+  "roundTrip": true,
+  "events": []
+ },
+ "live2": {
+  "mode": "audioworklet",
+  "restoredIdx": 0.5887280207680305,
+  "idxNow": 0.5887280207680305,
+  "events": [
+   "restored synapses from OPFS",
+   "loaded 0.589"
+  ],
+  "brainSec": 2.592
+ },
+ "errs": [
+  "Failed to load resource: the server responded with a status of 404 (File not found)"
+ ]
+}

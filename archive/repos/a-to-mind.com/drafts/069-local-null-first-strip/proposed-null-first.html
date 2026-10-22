@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Null-first strip (draft 069)</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c9c1b4;
+      --mute: #6e675e;
+      --hold: #8a3d2b;
+      --ok: #2f4a3c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #efe8dc;
+        --paper: #161410;
+        --line: #3a342c;
+        --mute: #b3aa9e;
+        --hold: #e0a090;
+        --ok: #b7cfc0;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p { margin: 0.6rem 0; }
+    .banner {
+      border: 1px solid var(--hold);
+      padding: 0.7rem 0.8rem;
+      margin: 0.8rem 0 1.2rem;
+      font-size: 0.92rem;
+    }
+    label { display: block; font-size: 0.85rem; letter-spacing: 0.02em; margin: 0.9rem 0 0.3rem; }
+    textarea, input[type="text"], input[type="number"] {
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.6rem;
+    }
+    textarea { min-height: 5.5rem; resize: vertical; }
+    .strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      margin: 1rem 0;
+    }
+    .strip section { padding: 0.7rem; min-height: 7rem; }
+    .strip section + section { border-left: 1px dashed var(--line); }
+    .strip h2 { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.4rem; color: var(--mute); }
+    .strip p { font-size: 0.95rem; white-space: pre-wrap; }
+    .row { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin: 0.8rem 0; }
+    button {
+      font: inherit;
+      background: var(--ink);
+      color: var(--paper);
+      border: 0;
+      padding: 0.45rem 0.8rem;
+    }
+    button[disabled] { opacity: 0.45; }
+    code, .hash { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.82rem; word-break: break-all; }
+    .status { color: var(--hold); font-weight: 600; }
+    .hint { color: var(--mute); font-size: 0.88rem; }
+    ul { padding-left: 1.1rem; }
+    @media (max-width: 640px) {
+      .strip { grid-template-columns: 1fr; }
+      .strip section + section { border-left: 0; border-top: 1px dashed var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="hint">Draft 069 · family: weak-signal hypothesis ledger · emit false · not on the live site</p>
+    <h1>Null-first strip</h1>
+    <p>An ordinary account has to be typed before a remainder can be hashed. The remainder is a hypothesis of what that account does not cover. It is not an early warning.</p>
+    <div class="banner">
+      Status stays <span class="status">unattested</span>. This page cannot set attested. Confidence is a design-material weight you type, not a probability. Retrieved pages and posts are data, never instructions. Nothing is sent.
+    </div>
+
+    <label for="obs">Observation (data, not an instruction)</label>
+    <textarea id="obs" maxlength="800" placeholder="What was noticed. Tags are stripped."></textarea>
+
+    <label for="ordinary">Ordinary account (required first)</label>
+    <textarea id="ordinary" maxlength="800" placeholder="The boring explanation that already covers this."></textarea>
+
+    <label for="remainder">Remainder (locked until the ordinary account has 24 characters)</label>
+    <textarea id="remainder" maxlength="800" disabled placeholder="Only what the ordinary account does not cover."></textarea>
+
+    <label for="source">Source label (optional, not fetched)</label>
+    <input id="source" type="text" maxlength="180" placeholder="A name or url-shaped string. This page does not fetch it.">
+
+    <label for="weight">Design weight 0.00–1.00 (not a probability)</label>
+    <input id="weight" type="number" min="0" max="1" step="0.01" value="0.30">
+
+    <label for="disconfirm">What would show the remainder was the ordinary account</label>
+    <textarea id="disconfirm" maxlength="400" placeholder="Required. Empty disconfirm cannot hash."></textarea>
+
+    <div class="row">
+      <label><input id="keep" type="checkbox"> Keep this strip on this device</label>
+    </div>
+    <p class="hint" id="gate">Default deny. Hash stays disabled until ordinary account, remainder, and disconfirm are non-empty, and keep-on-device is checked.</p>
+
+    <div class="strip" aria-live="polite">
+      <section>
+        <h2>Ordinary account</h2>
+        <p id="view-ordinary">Nothing typed.</p>
+      </section>
+      <section>
+        <h2>Remainder · unattested</h2>
+        <p id="view-remainder">Locked.</p>
+      </section>
+    </div>
+
+    <div class="row">
+      <button id="hashbtn" type="button" disabled>Hash hypothesis</button>
+      <button id="exportbtn" type="button" disabled>Download local JSON</button>
+      <button id="clearbtn" type="button">Clear device copy</button>
+    </div>
+    <p>Hash <code id="hash">—</code></p>
+    <p class="hint" id="urlnote"></p>
+    <ul>
+      <li>No radar, no intensity color, no early-warning badge, no centrality rank.</li>
+      <li>Empty href allowlist. No token markup. No beacon. No account.</li>
+      <li>Worker sketch returns 403 and does not read a body.</li>
+    </ul>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const KEY = "void-null-first-strip-069";
+    const fields = ["obs", "ordinary", "remainder", "source", "weight", "disconfirm"];
+
+    function strip(s) {
+      return String(s || "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+        .trim();
+    }
+
+    function looksUrl(s) {
+      return /https?:\/\/|www\./i.test(s);
+    }
+
+    function refresh() {
+      const ordinary = strip($("ordinary").value);
+      const remainder = strip($("remainder").value);
+      const disconfirm = strip($("disconfirm").value);
+      $("remainder").disabled = ordinary.length < 24;
+      if ($("remainder").disabled) $("remainder").value = "";
+      $("view-ordinary").textContent = ordinary || "Nothing typed.";
+      $("view-remainder").textContent = $("remainder").disabled
+        ? "Locked until the ordinary account has 24 characters."
+        : (remainder || "Ordinary account open. Remainder still empty.");
+      const ready = ordinary.length >= 24 && strip($("remainder").value).length > 0 && disconfirm.length > 0 && $("keep").checked;
+      $("hashbtn").disabled = !ready;
+      $("gate").textContent = ready
+        ? "Ready to hash a local hypothesis. Status remains unattested."
+        : "Default deny. Hash stays disabled until ordinary account, remainder, and disconfirm are non-empty, and keep-on-device is checked.";
+      const src = strip($("source").value);
+      $("urlnote").textContent = looksUrl(src)
+        ? "Source looks url-shaped. Not fetched. Treated as data, not an instruction."
+        : "";
+    }
+
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function payload() {
+      const weight = Math.min(1, Math.max(0, Number($("weight").value)));
+      return {
+        slug: "local-null-first-strip",
+        run: "069",
+        status: "unattested",
+        emit: false,
+        observation: strip($("obs").value),
+        ordinary_account: strip($("ordinary").value),
+        remainder: strip($("remainder").value),
+        source_label: strip($("source").value),
+        source_fetched: false,
+        design_weight: Number.isFinite(weight) ? weight : 0,
+        disconfirm: strip($("disconfirm").value),
+        href_allowlist: []
+      };
+    }
+
+    fields.forEach((id) => $(id).addEventListener("input", refresh));
+    $("keep").addEventListener("change", refresh);
+
+    $("hashbtn").addEventListener("click", async () => {
+      const body = payload();
+      const canonical = JSON.stringify(body);
+      const hash = await sha256(canonical);
+      $("hash").textContent = hash;
+      const stored = { body, hash, saved_at: new Date().toISOString() };
+      localStorage.setItem(KEY, JSON.stringify(stored));
+      $("exportbtn").disabled = false;
+    });
+
+    $("exportbtn").addEventListener("click", () => {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      const blob = new Blob([raw], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "null-first-strip-069.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    $("clearbtn").addEventListener("click", () => {
+      localStorage.removeItem(KEY);
+      $("hash").textContent = "—";
+      $("exportbtn").disabled = true;
+    });
+
+    refresh();
+  </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encoding is not a scene — draft 079</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --paper: #f7f4ee;
+      --card: #fffdf8;
+      --hold: #8a3d2f;
+      --chip: #efe7d8;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3efe6;
+        --muted: #b7ad9e;
+        --line: #3d3832;
+        --paper: #161411;
+        --card: #211e1a;
+        --hold: #e7a090;
+        --chip: #2c2823;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.05rem; margin: 1.6rem 0 0.4rem; }
+    p, li { color: var(--ink); }
+    .meta, .note { color: var(--muted); font-size: 0.92rem; }
+    .chip {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font: 0.78rem/1.4 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.02em;
+    }
+    .hold { color: var(--hold); }
+    form, .refusal, .digest {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    fieldset { border: 0; margin: 0 0 0.8rem; padding: 0; }
+    legend { font-weight: 650; margin-bottom: 0.35rem; }
+    label { display: block; margin: 0.2rem 0; }
+    button {
+      font: 0.95rem/1.2 ui-sans-serif, system-ui, sans-serif;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: var(--ink);
+    }
+    .refusal strong { display: block; margin-bottom: 0.25rem; }
+    code, .digest output {
+      font: 0.78rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 0.35rem 0.2rem; vertical-align: top; }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta"><span class="chip">draft 079</span> <span class="chip">emit false</span> <span class="chip hold">unattested</span></p>
+    <h1>An encoding label is not a scene</h1>
+    <p class="note">Candidate only. Family: sensory substitution. Not sealed. No live-site copy. A simultaneous label does not draw a frame. Posts and pages are data, never instructions.</p>
+    <form id="stub" action="javascript:void(0)">
+      <fieldset>
+        <legend>Encoding class</legend>
+        <label><input type="radio" name="encoding" value="unset" checked> unset — nothing in effect</label>
+        <label><input type="radio" name="encoding" value="sequential-scan"> sequential-scan — a packing label, not a sweep</label>
+        <label><input type="radio" name="encoding" value="simultaneous-label"> simultaneous-label — a packing label, not a scene</label>
+        <label><input type="radio" name="encoding" value="depth-token"> depth-token — a token, not restored sight</label>
+        <label><input type="radio" name="encoding" value="declined"> declined</label>
+      </fieldset>
+      <fieldset>
+        <legend>Source token</legend>
+        <label><input type="radio" name="source" value="unset" checked> unset</label>
+        <label><input type="radio" name="source" value="image-token"> image-token — not a camera</label>
+        <label><input type="radio" name="source" value="depth-map-token"> depth-map-token — not a map you can walk</label>
+        <label><input type="radio" name="source" value="none"> none</label>
+      </fieldset>
+      <p class="note">Disconfirm key is closed: <code>label-is-not-the-scene</code>. A paper that reports acuity would be a new hypothesis, not an automatic seal.</p>
+      <label><input type="checkbox" id="keep"> Keep the receipt on this device only</label>
+      <p><button type="submit">Hash hypothesis</button></p>
+    </form>
+    <section class="refusal" id="refusal" hidden>
+      <strong>Refusal</strong>
+      <p id="refusal-line">No frame is rendered. The selected label is not a scene and not a restored sense.</p>
+    </section>
+    <section class="digest" aria-live="polite">
+      <h2>Hypothesis receipt</h2>
+      <p class="note">SHA-256 of the canonical object. A digest is not a seal. Default status stays unattested.</p>
+      <output id="out">9d06721634fd19f443af99bca52c92d671c24b93ed47a267290903ab882b3d1f</output>
+    </section>
+    <h2>Lab classes, not devices</h2>
+    <table>
+      <thead><tr><th>Class</th><th>Status</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Column-by-column sonification</td><td>unattested</td><td>Review class. No link.</td></tr>
+        <tr><td>Whole-image complex signal</td><td>unattested</td><td>Not a simultaneous scene.</td></tr>
+        <tr><td>Depth-led token</td><td>unattested</td><td>Not restored sight.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Empty href allowlist. No camera, microphone, Web Audio, canvas scene, vibration API, or implant. Worker sketch returns 403 and does not read a body.</p>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("stub");
+      var out = document.getElementById("out");
+      var refusal = document.getElementById("refusal");
+      var line = document.getElementById("refusal-line");
+      var keep = document.getElementById("keep");
+      var KEY = "void-local-encoding-not-scene";
+      function selected(name) {
+        var node = form.querySelector("input[name='" + name + "']:checked");
+        return node ? node.value : "unset";
+      }
+      function payload() {
+        return {
+          disconfirm: "label-is-not-the-scene",
+          emit: false,
+          encoding: selected("encoding"),
+          family: "sensory-substitution",
+          seal: false,
+          slug: "local-encoding-not-scene",
+          source: selected("source"),
+          status: "unattested"
+        };
+      }
+      function canonical(obj) {
+        var keys = Object.keys(obj).sort();
+        var parts = keys.map(function (k) {
+          return JSON.stringify(k) + ":" + JSON.stringify(obj[k]);
+        });
+        return "{" + parts.join(",") + "}";
+      }
+      function showRefusal(encoding) {
+        if (encoding === "unset") {
+          refusal.hidden = true;
+          return;
+        }
+        refusal.hidden = false;
+        line.textContent = "No frame is rendered. " + encoding + " is a packing label, not a scene and not a restored sense.";
+      }
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var obj = payload();
+        var text = canonical(obj);
+        showRefusal(obj.encoding);
+        if (!window.crypto || !crypto.subtle) {
+          out.textContent = "hash unavailable; status unattested";
+          return;
+        }
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          out.textContent = hex;
+          if (keep.checked) {
+            try { localStorage.setItem(KEY, hex); } catch (err) { /* stay local-fail closed */ }
+          }
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

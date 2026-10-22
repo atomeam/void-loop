@@ -1,0 +1,32 @@
+{
+  "slug": "local-blanked-prompt-card",
+  "run": "068",
+  "date": "2026-10-04",
+  "family": "private incubation log",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "confidence_design_weight": 0.28,
+  "hypothesis": "A prompt that is hashed and removed from the page, followed by a residue typed after a closed local window, is a hypothesis that a theme was set aside. The residue is not a retrieved message, not a dream report score, and not evidence that a cue entered sleep.",
+  "window_catalog_minutes": [5, 10, 15],
+  "denies": [
+    "audio cue",
+    "notification",
+    "vibration",
+    "sleep-stage score",
+    "prompt-residue match score",
+    "dream-advertising insert",
+    "network fetch of posts",
+    "token markup"
+  ],
+  "sources_as_data": [
+    "MIT Media Lab Targeted Dream Incubation overview describes auditory cues at tracked sleep onset and serial dream reports. This card does not implement that protocol.",
+    "MIT Media Lab Dormio overview describes a wearable sleep-onset tracker plus auditory feedback. This card has no wearable and no audio.",
+    "Horowitz et al. reporting of TDI and post-sleep creative performance is a lab literature claim, not a product result, and is not sealed here."
+  ],
+  "disconfirm_local": [
+    "Residue is empty.",
+    "Prompt is revealed before the residue is sealed.",
+    "Residue is typed while the prompt is still on screen."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "slug": "local-repeat-not-weight",
+  "run": 105,
+  "family": "weak-signal hypothesis ledger",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical_template": "repeat-not-weight|v1|<class>|weight-refusal",
+  "confidence": {
+    "repeat_is_weight": "low",
+    "class_stays_separate_from_tally": "medium",
+    "note": "design-material weight, not a measurement"
+  },
+  "hypotheses": [
+    {
+      "class": "sky-follow",
+      "canonical": "repeat-not-weight|v1|sky-follow|weight-refusal",
+      "sha256": "42b3d7e16786c3e08dcf735cb670f4a94af3c81f5e6e70729405c50cd85d04fd",
+      "status": "unattested"
+    },
+    {
+      "class": "site-split",
+      "canonical": "repeat-not-weight|v1|site-split|weight-refusal",
+      "sha256": "c49d003f68bd85e7cb20a0e31aa84145148ba78edcdde4995151169bd8db6758",
+      "status": "unattested"
+    },
+    {
+      "class": "polarization-split",
+      "canonical": "repeat-not-weight|v1|polarization-split|weight-refusal",
+      "sha256": "1559fda291f4a73d49e9122408a5eed409e66fbba9a929ab8524d66ef601916e",
+      "status": "unattested"
+    },
+    {
+      "class": "neighbor-beam",
+      "canonical": "repeat-not-weight|v1|neighbor-beam|weight-refusal",
+      "sha256": "a6457bab4c7a7252bb9b9ce7f4e60cd22487ce71be605f7e8aac06cd025c0d7a",
+      "status": "unattested"
+    },
+    {
+      "class": "non-repeat",
+      "canonical": "repeat-not-weight|v1|non-repeat|weight-refusal",
+      "sha256": "65775f741f4a6c10972e2efda0c7d90f8b80ee73a8bdf29bb6044ffadff6eef9",
+      "status": "unattested"
+    }
+  ],
+  "denied": ["weight", "prior", "posterior", "snr", "detection", "technosignature", "beacon", "tally"],
+  "href_allowlist": []
+}

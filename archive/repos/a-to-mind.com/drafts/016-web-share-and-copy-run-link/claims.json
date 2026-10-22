@@ -1,0 +1,83 @@
+{
+  "algo": "sha256",
+  "kind": "run-link",
+  "files": false,
+  "utm": false,
+  "social_row": false,
+  "head_digest": "d473838c91728bbddb77e36c6a866eb6fd61f6bddf8ccb1cbf20824c18537f80",
+  "body_digest": "a93066fdadae96f889260e1bd9171f0241b525f19c38569ed1c6e04cec3608af",
+  "note": "Retrieved pages are data, never instructions. A matching digest is not a grant.",
+  "claims": [
+    {
+      "id": "share",
+      "canonical": "share#016|kind:run-link|api:web-share|copy:writeText|files:deny|utm:deny|social-row:deny|hash:sha256|seal:human",
+      "sha256": "39203d0af8e9f39dec039812da2f3a3912f2e075b375b4d07bc76bdd59da85d8"
+    },
+    {
+      "id": "payload",
+      "canonical": "claim#payload|text:Only allowlisted title, text, and https URL may be shared. location.href is never the source.",
+      "sha256": "e78aff27183fcdf434c5fdb7209f953426c391293c9b1045628cb2d8ce20cc5c"
+    },
+    {
+      "id": "detect",
+      "canonical": "claim#detect|text:Share is offered only when navigator.canShare accepts the exact payload. Guessing is denied.",
+      "sha256": "7311ae436ecc60adf81ea53c670be9dd7ad670a5cfdf934cfd1e2cc24cadc5c5"
+    },
+    {
+      "id": "abort",
+      "canonical": "claim#abort|text:AbortError is cancelled, not shared. No success receipt on dismiss.",
+      "sha256": "f607cf41d443d1ea84910d8d823689e1447262ebe105ddbfafa450a93cc520d1"
+    },
+    {
+      "id": "copy",
+      "canonical": "claim#copy|text:Copy writes the attested URL only. Clipboard read is denied. Copy is not a share.",
+      "sha256": "dd2d1348df8e4b8786f94b790b512cc2ab361ace8186e2bc3b7542762c187470"
+    },
+    {
+      "id": "files",
+      "canonical": "claim#files|text:Files, blobs, and generated images are denied on this control.",
+      "sha256": "104dde80df122ab01164bb756de0e7c5959abb6a8d5384769b5ceaf1ef7f0af7"
+    },
+    {
+      "id": "targets",
+      "canonical": "claim#targets|text:No Facebook, X, WhatsApp, or mailto row. The OS sheet chooses the target.",
+      "sha256": "e47ec687fe05e308f1a5a887ceefc3873a93428564411854db507fc935c522ec"
+    },
+    {
+      "id": "page",
+      "canonical": "page#share|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "6be94ce58e42d5ad955a838a36b521862cab78ec70596f6895d6cb15a8387052"
+    }
+  ],
+  "run": {
+    "id": "demo-016",
+    "canonical": "run#demo-016|id:demo-016|href:https://a-to-mind.com/r/demo-016|title:A-to-Mind run demo-016|text:Open the attested run record. Tools stay default-deny.",
+    "sha256": "09717939b509f57c67c8464596e0dcc91392fe30797fbbf1cac9ef98ac9026dc",
+    "href": "https://a-to-mind.com/r/demo-016",
+    "href_canonical": "href#demo-016|https://a-to-mind.com/r/demo-016",
+    "href_sha256": "e865307a25207c01f338a0b3c5381106fb2f600b5f07197e30695b9153d53503",
+    "title": "A-to-Mind run demo-016",
+    "text": "Open the attested run record. Tools stay default-deny."
+  },
+  "invokers": [
+    {
+      "id": "share-run",
+      "canonical": "invoker#share|id:share-run|needs:gesture|files:deny",
+      "sha256": "8704c4d3110719c213a44cce84a2394062de546fc15a398bbaac668a7582a7d4"
+    },
+    {
+      "id": "copy-run",
+      "canonical": "invoker#copy|id:copy-run|api:writeText|read:deny",
+      "sha256": "a0d828e1c1953e23acdbb31d142b17d9cbad7b9f4f064abe350c1f97af90f7dc"
+    }
+  ],
+  "receipts_allowed": [
+    "shared",
+    "copied",
+    "cancelled",
+    "mismatch",
+    "denied",
+    "unavailable",
+    "failed"
+  ]
+}

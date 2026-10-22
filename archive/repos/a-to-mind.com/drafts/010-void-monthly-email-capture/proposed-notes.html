@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Void Monthly notes — draft, hold-gate</title>
+  <meta name="description" content="Draft capture surface. Double opt-in. No popup. Submit holds until a human seals a worker.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; --ok:#7a9e6b; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.75rem, 4vw, 2.4rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 34rem; }
+    .stamp { margin-top: 1.25rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .block { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.25rem; font-weight: 500; }
+    p + p { margin-top: 0.75rem; }
+    .muted { color: var(--muted); }
+    .claims { list-style: none; margin-top: 1rem; }
+    .claims li { border: 1px solid var(--rule); padding: 0.85rem 1rem; margin-top: 0.6rem; }
+    .claims .label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .digest { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: var(--muted); word-break: break-all; margin-top: 0.35rem; }
+    .state { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .state.match { color: var(--ok); }
+    .state.mismatch, .state.hold { color: var(--amber); }
+    .state.bad { color: var(--bad); }
+    form { margin-top: 1rem; display: grid; gap: 0.85rem; }
+    label.field { display: grid; gap: 0.35rem; }
+    label.field span { font-size: 0.85rem; color: var(--muted); }
+    input[type="email"] {
+      background: #141413; color: var(--fg); border: 1px solid var(--rule);
+      padding: 0.65rem 0.75rem; font: inherit;
+    }
+    input[type="email"]:focus { outline: 1px solid var(--amber); }
+    .consent { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.95rem; }
+    .consent input { margin-top: 0.3rem; }
+    .honey { position: absolute; left: -9999px; height: 0; overflow: hidden; }
+    button {
+      justify-self: start; background: transparent; color: var(--amber);
+      border: 1px solid var(--amber); padding: 0.65rem 1rem; font: inherit; cursor: pointer;
+    }
+    button:hover { background: rgba(212,160,23,0.08); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #receipt { margin-top: 1rem; border: 1px solid var(--rule); padding: 0.85rem 1rem; display: none; }
+    #receipt.show { display: block; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/">Room</a>
+      <a href="/llms.txt">llms.txt</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">Draft · run 010 · hold-gate · not a live list</p>
+    <h1>Void Monthly notes</h1>
+    <p class="lede" data-canonical="claim#purpose|text:Void Monthly notes are one email per month about sealed product changes. This is not product access and not a paid checkout.">
+      Void Monthly notes are one email per month about sealed product changes. This is not product access and not a paid checkout.
+    </p>
+    <p class="stamp" id="offer-state">Offer hash unverified</p>
+
+    <section class="block" id="ask">
+      <h2>Request a confirmation</h2>
+      <p class="muted">This page does not subscribe you. Until a human seals a worker, submit writes a Hold receipt in this browser and does not leave the machine.</p>
+      <form id="notes-form" action="#" method="post" novalidate>
+        <label class="field">
+          <span>Email address</span>
+          <input type="email" id="email" name="email" autocomplete="email" required maxlength="254" spellcheck="false">
+        </label>
+        <label class="honey" aria-hidden="true">
+          Company
+          <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+        </label>
+        <label class="consent">
+          <input type="checkbox" id="consent" name="consent" value="void-monthly-notes">
+          <span>Send me Void Monthly notes. One email per month. I can withdraw from any send. This is not checkout and not a Void session.</span>
+        </label>
+        <button type="submit" id="submit">Hold this request</button>
+      </form>
+      <div id="receipt" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="block" id="claims">
+      <h2>Attested claims</h2>
+      <p class="muted">Each sentence is one canonical line. A mismatch means the page drifted from the sealed text.</p>
+      <ul class="claims" id="claim-list"></ul>
+      <p class="digest" id="body-digest"></p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">A to Z</span>
+  </footer>
+  <script>
+    const HEAD = '{"algo":"sha256","claims":5,"kind":"void-monthly-notes","optin":"double","popup":false}';
+    const EXPECT_HEAD = "ac754fc6aa91043ded5eac43b59e5a0f4ced05c60b573661e957c0391c9cd728";
+    const EXPECT_BODY = "c96508e20d610915815f5594ad38a23a9c3bfd49a64af74d934578a822866488";
+    const LINES = [
+      {
+        id: "offer#010",
+        canonical: "offer#010|kind:void-monthly-notes|cadence:monthly|purpose:product-notes-only|checkout:separate|popup:deny|precheck:deny|bundle:deny|optin:double|write:hold-until-confirm|hash:sha256|seal:human",
+        expect: "f8b9c2128680c2a71c885a7687e2bb1257f76c868a10cc27dc012aa81e4f419c",
+        label: "Offer"
+      },
+      {
+        id: "claim#purpose",
+        canonical: "claim#purpose|text:Void Monthly notes are one email per month about sealed product changes. This is not product access and not a paid checkout.",
+        expect: "4580c70e9b8bf6a27924ede7bc492c34d8e7dd306647b68f467e69b91b004639",
+        label: "Purpose"
+      },
+      {
+        id: "claim#consent",
+        canonical: "claim#consent|text:Consent is an unchecked box plus a later confirm click on an address only that person controls.",
+        expect: "dd1ed66a9718343b91d61dc6bcfd412de1e2cabf31bfac54d1670220ef718fd7",
+        label: "Consent"
+      },
+      {
+        id: "claim#not-access",
+        canonical: "claim#not-access|text:Signing this list does not create a Void session, a passkey, or a $49 grant.",
+        expect: "2dde5046ffdac6d245222781857cb4515e575c47c25af9a62c7d323d89f6d95e",
+        label: "Not access"
+      },
+      {
+        id: "claim#withdraw",
+        canonical: "claim#withdraw|text:Withdraw is as easy as subscribe: one link in every send, honored without a login wall.",
+        expect: "9c7fa5c9a401173ea7c5a71ca0f7da49c9ca6f03a5149c75aa8811bacc62e28d",
+        label: "Withdraw"
+      },
+      {
+        id: "claim#hold",
+        canonical: "claim#hold|text:Until a human seals this surface and wires a worker, submit writes a local Hold receipt and does not POST.",
+        expect: "989f66c95795c4ee40398757b652698e988d6382fb5d98fd6f344d205142635c",
+        label: "Hold"
+      },
+      {
+        id: "page#capture",
+        canonical: "page#capture|route:/notes|index:noindex|vendor-script:deny|popup:deny|tracking-pixel:deny|exec:allowlist-only",
+        expect: "1daf19755b6378ddd2ea734f9f5f7cd48697fd43c2b885eb6cc6113726e89836",
+        label: "Page"
+      }
+    ];
+
+    async function sha256Hex(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function maskEmail(value) {
+      const at = value.indexOf("@");
+      if (at < 1) return "(unusable address)";
+      const local = value.slice(0, at);
+      const domain = value.slice(at + 1);
+      const shown = local.length <= 1 ? "*" : local[0] + "\u2022".repeat(Math.min(local.length - 1, 6));
+      return shown + "@" + domain;
+    }
+
+    async function verify() {
+      const list = document.getElementById("claim-list");
+      const renderedPurpose = document.querySelector("[data-canonical]");
+      let body = "";
+      for (const row of LINES) {
+        const hex = await sha256Hex(row.canonical);
+        let state = hex === row.expect ? "match" : "mismatch";
+        if (row.id === "claim#purpose" && renderedPurpose && renderedPurpose.getAttribute("data-canonical") !== row.canonical) {
+          state = "mismatch";
+        }
+        body += row.canonical + "\n";
+        const li = document.createElement("li");
+        const label = document.createElement("div");
+        label.className = "label";
+        label.append(row.label + " \u00b7 ");
+        const mark = document.createElement("span");
+        mark.className = "state " + state;
+        mark.textContent = state;
+        label.appendChild(mark);
+        const text = document.createElement("p");
+        text.textContent = row.canonical.includes("|text:")
+          ? row.canonical.split("|text:")[1]
+          : row.canonical;
+        const dig = document.createElement("p");
+        dig.className = "digest";
+        dig.textContent = hex;
+        li.append(label, text, dig);
+        list.appendChild(li);
+      }
+      const bodyHex = await sha256Hex(body);
+      const headHex = await sha256Hex(HEAD);
+      const offerOk = (await sha256Hex(LINES[0].canonical)) === LINES[0].expect;
+      document.getElementById("body-digest").textContent =
+        "body " + (bodyHex === EXPECT_BODY ? "match" : "mismatch") + " " + bodyHex +
+        " \u00b7 head " + (headHex === EXPECT_HEAD ? "match" : "mismatch") + " " + headHex;
+      document.getElementById("offer-state").textContent =
+        (offerOk && bodyHex === EXPECT_BODY ? "Offer hash match \u00b7 specified \u00b7 hold" : "Offer hash mismatch \u00b7 do not treat as sealed");
+    }
+
+    document.getElementById("notes-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const receipt = document.getElementById("receipt");
+      const honey = document.getElementById("company").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const consent = document.getElementById("consent").checked;
+
+      if (honey) {
+        receipt.className = "show";
+        receipt.innerHTML = "<p class='state hold'>Hold</p><p>Request ignored.</p>";
+        return;
+      }
+      if (!/[^\s@]+@[^\s@]+\.[^\s@]+/.test(email)) {
+        receipt.className = "show";
+        receipt.innerHTML = "<p class='state bad'>Rejected</p><p>That is not an address this form will hold.</p>";
+        return;
+      }
+      if (!consent) {
+        receipt.className = "show";
+        receipt.innerHTML = "<p class='state bad'>Rejected</p><p>The purpose box starts unchecked. Check it only if you want the monthly notes.</p>";
+        return;
+      }
+
+      const pending = "request#pending|purpose:void-monthly-notes|state:hold|optin:unconfirmed";
+      const now = new Date().toISOString();
+      const material = pending + "|" + email + "|" + now;
+      const requestHash = await sha256Hex(material);
+      const addressHash = await sha256Hex(email);
+
+      receipt.className = "show";
+      receipt.innerHTML =
+        "<p class='state hold'>Hold \u00b7 unconfirmed</p>" +
+        "<p>No mail was sent. No list grew. Address on this receipt: <code>" + maskEmail(email) + "</code></p>" +
+        "<p class='digest'>address sha256 " + addressHash + "</p>" +
+        "<p class='digest'>receipt sha256 " + requestHash + "</p>" +
+        "<p class='muted'>A matching digest is not a grant to send mail or to charge $49.</p>";
+    });
+
+    if (window.crypto && window.crypto.subtle) {
+      verify().catch(() => {
+        document.getElementById("offer-state").textContent = "Offer hash unverified";
+      });
+    } else {
+      document.getElementById("offer-state").textContent = "Offer hash unverified \u00b7 subtle crypto missing";
+    }
+  </script>
+</body>
+</html>

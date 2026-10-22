@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 702,
+ "counted": 703,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/state.js",
    "skills": 29,
    "direct": 4,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 4
   },
   {
@@ -48,28 +48,28 @@
    "file": "lib/ladder.js",
    "skills": 17,
    "direct": 10,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 2
   },
   {
    "file": "lib/keeper.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 3
   },
   {
@@ -83,49 +83,49 @@
    "file": "lib/rule-registry.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 11,
    "direct": 1,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/reactions.js",
    "skills": 10,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/autopsy.js",
    "skills": 10,
    "direct": 5,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 5
   },
   {
@@ -195,7 +195,7 @@
    "file": "lib/better.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 3
   },
   {
@@ -216,28 +216,28 @@
    "file": "lib/probe-log.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
@@ -1266,8 +1266,8 @@
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11,
-   "tests": 5
+   "dependants": 12,
+   "tests": 6
   },
   {
    "file": "lib/router.js",
@@ -1621,6 +1621,13 @@
   },
   {
    "file": "lib/page-picture.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/progress-chart.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2161,6 +2168,7 @@
   },
   "functions/api/will.js": {
    "imports": [
+    "lib/voice.js",
     "lib/persona.js",
     "lib/guard.js",
     "lib/actions.js",
@@ -2348,6 +2356,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -2575,6 +2584,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -2622,6 +2632,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -2703,6 +2714,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -2859,6 +2871,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -3021,6 +3034,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -3459,6 +3473,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -3562,6 +3577,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -3612,6 +3628,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -3668,6 +3685,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -3858,6 +3876,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -4367,6 +4386,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -4408,6 +4428,10 @@
     "functions/api/support.js",
     "functions/films/rss.js"
    ]
+  },
+  "lib/progress-chart.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/proposal.js": {
    "imports": [],
@@ -4502,6 +4526,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -4655,6 +4680,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/book-face.js",
@@ -4829,6 +4855,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -4932,6 +4959,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -5193,6 +5221,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/arena.js",
     "lib/bench-asks.js",
@@ -5508,6 +5537,7 @@
    "importedBy": [
     "functions/api/reflect.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/built-detail.js",
     "lib/self-context.js"
    ],
@@ -6612,6 +6642,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -6646,6 +6677,7 @@
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
+    "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -8193,7 +8225,9 @@
    "importedBy": []
   },
   "skills/social.js": {
-   "imports": [],
+   "imports": [
+    "skills/sticky.js"
+   ],
    "importedBy": []
   },
   "skills/sorry-rules.js": {
@@ -8362,7 +8396,9 @@
   },
   "skills/sticky.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/social.js"
+   ]
   },
   "skills/stigmergy-board.js": {
    "imports": [

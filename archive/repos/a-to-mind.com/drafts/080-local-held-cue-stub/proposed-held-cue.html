@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Held cue stub — candidate, not sealed</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f6f1e8; --hold: #8a3d2f; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --line: #4a433a; --paper: #1b1814; --hold: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.4rem; font-weight: 600; }
+    p, li { font-size: 0.95rem; }
+    .status { border: 1px solid var(--line); padding: 0.6rem 0.8rem; margin: 1rem 0; }
+    fieldset { border: 1px solid var(--line); margin: 0.8rem 0; }
+    label { display: block; margin: 0.25rem 0; }
+    button { font: inherit; padding: 0.35rem 0.7rem; }
+    #refusal { border-left: 3px solid var(--hold); padding-left: 0.7rem; }
+    code { font-size: 0.8rem; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Draft only. emit false. Not a live page.</p>
+    <h1>Held cue stub</h1>
+    <p>A sealed cue class hashes to a stub id. The cue is not replayed. A residue class is not a retrieved idea.</p>
+    <div class="status" id="status" role="status">status: unattested · seal: false</div>
+    <fieldset>
+      <legend>Cue class</legend>
+      <label><input type="radio" name="cue" value="unset" checked> unset</label>
+      <label><input type="radio" name="cue" value="theme-label"> theme-label</label>
+      <label><input type="radio" name="cue" value="sound-label"> sound-label</label>
+      <label><input type="radio" name="cue" value="scent-label"> scent-label</label>
+      <label><input type="radio" name="cue" value="declined"> declined</label>
+    </fieldset>
+    <fieldset>
+      <legend>Residue class</legend>
+      <label><input type="radio" name="residue" value="unset" checked> unset</label>
+      <label><input type="radio" name="residue" value="empty"> empty</label>
+      <label><input type="radio" name="residue" value="fragment-label"> fragment-label</label>
+      <label><input type="radio" name="residue" value="declined"> declined</label>
+    </fieldset>
+    <p id="refusal">A held cue is not a dream. No audio, timer, or diary line is available.</p>
+    <label><input type="checkbox" id="keep"> keep hash on this device only</label>
+    <p><button type="button" id="hold">Hash hypothesis</button></p>
+    <p>digest <code id="digest">39ce24c176d8a5b972bc4c599bc325b55c260cd21d75a1be004a6c722d37e600</code></p>
+    <p>Disconfirm locally if a cue is replayed, if a sentence is stored, or if the residue is scored against the cue. Disconfirm does not become a seal.</p>
+  </main>
+  <script>
+    (function () {
+      var DEFAULT = "39ce24c176d8a5b972bc4c599bc325b55c260cd21d75a1be004a6c722d37e600";
+      var cues = ["unset", "theme-label", "sound-label", "scent-label", "declined"];
+      var residues = ["unset", "empty", "fragment-label", "declined"];
+      function selected(name) {
+        var node = document.querySelector('input[name="' + name + '"]:checked');
+        return node ? node.value : "unset";
+      }
+      function canonical() {
+        var cue = selected("cue");
+        var residue = selected("residue");
+        if (cues.indexOf(cue) < 0) cue = "unset";
+        if (residues.indexOf(residue) < 0) residue = "unset";
+        return JSON.stringify({
+          cue: cue,
+          disconfirm: "held-cue-is-not-a-dream",
+          emit: false,
+          family: "private-incubation-log",
+          residue: residue,
+          seal: false,
+          slug: "local-held-cue-stub",
+          status: "unattested"
+        });
+      }
+      document.getElementById("hold").addEventListener("click", function () {
+        var text = canonical();
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+          var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          document.getElementById("digest").textContent = hex;
+          document.getElementById("status").textContent = "status: unattested · seal: false · hypothesis only";
+          document.getElementById("refusal").textContent = "A held cue is not a dream. The residue class is not a retrieved idea.";
+          if (document.getElementById("keep").checked) {
+            localStorage.setItem("void-held-cue-stub", hex);
+          }
+        });
+      });
+      document.getElementById("digest").textContent = DEFAULT;
+    }());
+  </script>
+</body>
+</html>

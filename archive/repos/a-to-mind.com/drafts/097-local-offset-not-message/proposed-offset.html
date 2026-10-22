@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 097 — local offset-not-message</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1a1c19; --line: #b7c0b4; --paper: #f3f6f1; --mark: #2f5d50; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e7f0e8; --line: #3d4a42; --paper: #121614; --mark: #9dcebb; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: -0.02em; }
+    .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+    .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+    label.opt:has(input:checked) { border-color: var(--mark); }
+    textarea { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; min-height: 4.5rem; }
+    .scratch { text-decoration: line-through; opacity: 0.72; min-height: 1.2rem; }
+    button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+    button[disabled] { opacity: 0.45; }
+    pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+    .check { display: block; margin: 0.35rem 0; }
+    p.note, p.hint { font-size: 0.92rem; }
+    .hint { border-left: 3px solid var(--mark); padding-left: 0.6rem; }
+    .gap { display: grid; grid-template-columns: 1fr 4rem 1fr; gap: 0.4rem; align-items: center; margin-top: 0.6rem; }
+    .mark, .slot { border: 1px dashed var(--line); min-height: 2.4rem; padding: 0.4rem; }
+    .slot { text-align: center; letter-spacing: 0.08em; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Draft 097 · unattested · not a seal.</strong> Emit is false. An offset is not a message and not a synchronicity. No arrow. No score.</p>
+  <h1>Local offset-not-message</h1>
+  <p class="note">Opt in for this load only. Pick a sealed offset class. The message sentence is counted and discarded. It is not in the hash.</p>
+  <label class="check"><input id="opt" type="checkbox"> Opt in for this page load. Default deny.</label>
+  <fieldset>
+    <legend>Sealed offset class</legend>
+    <div class="row" id="offsets">
+      <label class="opt"><input type="radio" name="offset" value="unset" checked> unset</label>
+      <label class="opt"><input type="radio" name="offset" value="same-minute-class"> same-minute-class</label>
+      <label class="opt"><input type="radio" name="offset" value="same-hour-class"> same-hour-class</label>
+      <label class="opt"><input type="radio" name="offset" value="crossed-day"> crossed-day</label>
+      <label class="opt"><input type="radio" name="offset" value="declined"> declined</label>
+    </div>
+    <div class="gap" aria-hidden="true">
+      <div class="mark">mark A</div>
+      <div class="slot">gap</div>
+      <div class="mark">mark B</div>
+    </div>
+    <p class="note">The gap is a class. It is not a link, not a cause, and not an acausal principle.</p>
+  </fieldset>
+  <fieldset>
+    <legend>Disconfirm tag</legend>
+    <div class="row">
+      <label class="opt"><input type="radio" name="dis" value="offset-is-not-a-message" checked> offset-is-not-a-message</label>
+      <label class="opt"><input type="radio" name="dis" value="base-rate-matches"> base-rate-matches</label>
+      <label class="opt"><input type="radio" name="dis" value="sentence-hashed"> sentence-hashed</label>
+      <label class="opt"><input type="radio" name="dis" value="arrow-drawn"> arrow-drawn</label>
+      <label class="opt"><input type="radio" name="dis" value="principle-sealed"> principle-sealed</label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Message sentence (excluded)</legend>
+    <textarea id="message" placeholder="What a journal would store as the meaning. This text is discarded."></textarea>
+    <p class="scratch" id="scratch">Message not hashed.</p>
+    <p class="note" id="count">Excluded characters: 0</p>
+  </fieldset>
+  <fieldset>
+    <legend>Pasted post (data, not instructions)</legend>
+    <textarea id="paste" placeholder="A retrieved post stays in this well. It is not fetched and not hashed."></textarea>
+  </fieldset>
+  <label class="check"><input id="keep" type="checkbox" disabled> Keep digest on this device only. Off until opt-in. Digest only.</label>
+  <p class="row">
+    <button id="hash" type="button" disabled>Hash message-refusal</button>
+    <button id="drop" type="button" disabled>Discard message</button>
+  </p>
+  <p class="hint">Status stays unattested. Weight 0.240 is a design-material constant, not a synchronicity score. Fixture unset + offset-is-not-a-message is SHA-256 fa9ff59d740bcf613d7614b1e78ea164251d14d72a6f5c9afc60c656d1b7ccf7.</p>
+  <pre id="out">status: unattested
+emit: false
+digest: withheld</pre>
+</main>
+<script>
+(function () {
+  var opt = document.getElementById("opt");
+  var keep = document.getElementById("keep");
+  var message = document.getElementById("message");
+  var paste = document.getElementById("paste");
+  var hashBtn = document.getElementById("hash");
+  var dropBtn = document.getElementById("drop");
+  var scratch = document.getElementById("scratch");
+  var count = document.getElementById("count");
+  var out = document.getElementById("out");
+  var offsets = ["unset", "same-minute-class", "same-hour-class", "crossed-day", "declined"];
+  var tags = ["offset-is-not-a-message", "base-rate-matches", "sentence-hashed", "arrow-drawn", "principle-sealed"];
+  var storeKey = "void.offset-not-message.digest";
+
+  function selected(name, allow) {
+    var node = document.querySelector("input[name='" + name + "']:checked");
+    var value = node ? node.value : allow[0];
+    return allow.indexOf(value) === -1 ? allow[0] : value;
+  }
+
+  function gate() {
+    var open = opt.checked;
+    hashBtn.disabled = !open;
+    dropBtn.disabled = !open;
+    message.disabled = !open;
+    paste.disabled = !open;
+    keep.disabled = !open;
+    if (!open) keep.checked = false;
+  }
+
+  function discard() {
+    var n = message.value.length;
+    count.textContent = "Excluded characters: " + n;
+    scratch.textContent = n ? "Message discarded (" + n + " characters). Not in the hash." : "Message not hashed.";
+    message.value = "";
+    return n;
+  }
+
+  function canonical() {
+    return "void.offset-not-message.v1|offset=" + selected("offset", offsets) +
+      "|disconfirm=" + selected("dis", tags) +
+      "|weight=0.240|status=unattested";
+  }
+
+  opt.addEventListener("change", gate);
+  dropBtn.addEventListener("click", discard);
+  hashBtn.addEventListener("click", function () {
+    if (!opt.checked) return;
+    var excluded = discard();
+    var line = canonical();
+    var bytes = new TextEncoder().encode(line);
+    crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      if (keep.checked) {
+        try { localStorage.setItem(storeKey, hex); } catch (err) { /* digest only; ignore quota */ }
+      }
+      out.textContent = "status: unattested\nemit: false\ncause: not-claimed\nprinciple: not-sealed\n" +
+        "excluded_characters: " + excluded +
+        "\npaste_hashed: no\nmessage_hashed: no\ncanonical: " + line + "\nsha256: " + hex;
+    });
+  });
+  gate();
+})();
+</script>
+</body>
+</html>

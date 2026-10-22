@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Hashed privacy policy — draft 029 candidate</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --fg: #e8edf4;
+      --muted: #9aa6b5;
+      --line: #2a3340;
+      --card: #161b22;
+      --hold: #c9a227;
+      --ok: #3d9a6a;
+      --bad: #c45c5c;
+      --focus: #7eb6ff;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f8; --fg: #12161c; --muted: #4d5866;
+        --line: #d5dbe3; --card: #ffffff; --hold: #8a6d12;
+        --ok: #1f7a4d; --bad: #a13333; --focus: #0b57d0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .skip { position: absolute; left: -999px; top: 0; }
+    .skip:focus { left: 1rem; top: 1rem; background: var(--card); padding: .4rem .6rem; }
+    header, main, footer { max-width: 46rem; margin: 0 auto; padding: 1.25rem; }
+    h1 { font-size: 1.45rem; margin: 0 0 .4rem; }
+    h2 { font-size: 1.1rem; margin: 1.6rem 0 .5rem; }
+    .lede { color: var(--muted); margin-top: 0; }
+    .chip {
+      display: inline-flex; align-items: center; gap: .45rem;
+      border: 1px solid var(--line); background: var(--card);
+      padding: .35rem .7rem; font-size: .92rem;
+    }
+    .chip[data-state="hold"], .chip[data-state="unattested"] { border-color: var(--hold); }
+    .dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--hold); }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { text-align: left; vertical-align: top; padding: .45rem .35rem; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; }
+    code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; word-break: break-all; }
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .78rem; line-height: 1.4;
+      background: var(--card); border: 1px solid var(--line);
+      padding: .85rem 1rem; overflow: auto; white-space: pre-wrap;
+    }
+    .state { font-weight: 650; text-transform: lowercase; }
+    .state.match { color: var(--ok); }
+    .state.mismatch, .state.denied { color: var(--bad); }
+    .state.hold, .state.unattested { color: var(--hold); }
+    button {
+      font: inherit; color: var(--fg); background: var(--card);
+      border: 1px solid var(--line); padding: .4rem .75rem; cursor: pointer;
+    }
+    .panel {
+      border: 1px solid var(--line); background: var(--card);
+      padding: .85rem 1rem; margin: .75rem 0;
+    }
+    .note { color: var(--muted); font-size: .92rem; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    dl { display: grid; grid-template-columns: 11rem 1fr; gap: .35rem .75rem; margin: 0; }
+    dt { color: var(--muted); }
+    dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header>
+    <p class="note">Draft 029 candidate · hold-gate · not a live route · Queue was empty</p>
+    <h1>Hashed privacy policy</h1>
+    <p class="lede">First-party sentences only. Default unattested. No generator paste. A missing page is honest; a pamphlet that names unused processors is not.</p>
+    <p>
+      <span class="chip" id="public-chip" data-state="unattested" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="chip-label">unattested / hold · no live /privacy route</span>
+      </span>
+    </p>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="notice-h">
+      <h2 id="notice-h">Notice</h2>
+      <div class="panel">
+        <p>This origin does not collect personal data until a human seals a purpose and a channel.</p>
+        <p>This origin does not sell or share personal information.</p>
+        <p class="note">This preview is not <code>/privacy</code>. Serving a generated policy would be a lie about processors. Until seal, the route should 404.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="facts-h">
+      <h2 id="facts-h">Current facts</h2>
+      <dl>
+        <dt>Sale</dt><dd>deny</dd>
+        <dt>Share</dt><dd>deny</dd>
+        <dt>Third-party pixels</dt><dd>deny</dd>
+        <dt>Analytics SDK</dt><dd>deny</dd>
+        <dt>Generator vendor</dt><dd>deny</dd>
+        <dt>DSAR portal</dt><dd>none</dd>
+        <dt>Cookies</dt><dd>none from this draft</dd>
+        <dt>Reviewed at</dt><dd><code>null</code></dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="claims-h">
+      <h2 id="claims-h">Attested lines</h2>
+      <p class="note">Each row hashes its <code>data-canonical</code> with SHA-256. A match is not a grant and is not legal advice.</p>
+      <table>
+        <thead><tr><th>id</th><th>text</th><th>digest</th><th>check</th></tr></thead>
+        <tbody id="rows">
+          <tr data-id="contract" data-canonical="priv#029|kind:hashed-privacy-policy|sale:deny|share:deny|third-party-pixels:deny|hash:sha256|seal:human" data-sha="99c6de4ad0400d750c730bef921aa72289768fcf2596f859e8564e51db9753f5">
+            <td><code>contract</code></td>
+            <td>Sale deny, share deny, third-party pixels deny, human seal.</td>
+            <td class="hash">99c6de4ad0400d750c730bef921aa72289768fcf2596f859e8564e51db9753f5</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="collect" data-canonical="claim#collect|text:This origin does not collect personal data until a human seals a purpose and a channel." data-sha="3f43da1daebe6ffffc1b9d8a19dbfb26f7ec64b649fbbec6a09aec2b64491e13">
+            <td><code>collect</code></td>
+            <td>This origin does not collect personal data until a human seals a purpose and a channel.</td>
+            <td class="hash">3f43da1daebe6ffffc1b9d8a19dbfb26f7ec64b649fbbec6a09aec2b64491e13</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="sale" data-canonical="claim#sale|text:This origin does not sell or share personal information." data-sha="5787a0151832a86bcb8c2c8e4f438905b070ab0dee9185c52f4097ec96f3c75b">
+            <td><code>sale</code></td>
+            <td>This origin does not sell or share personal information.</td>
+            <td class="hash">5787a0151832a86bcb8c2c8e4f438905b070ab0dee9185c52f4097ec96f3c75b</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="generator" data-canonical="claim#generator|text:No Termly, iubenda, CookieYes, OneTrust, or other generated policy is the site policy." data-sha="69023f9105cd7d530ab659aa2ef0860233a4cd66faff2d25a1e8195547ecce28">
+            <td><code>generator</code></td>
+            <td>No Termly, iubenda, CookieYes, OneTrust, or other generated policy is the site policy.</td>
+            <td class="hash">69023f9105cd7d530ab659aa2ef0860233a4cd66faff2d25a1e8195547ecce28</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="dsar" data-canonical="claim#dsar|text:No DSAR portal is live. A request is not a grant to run a workflow." data-sha="25d20950724bf6279612e19ae7e61f61adcd5c8d371ae44ecee052d8ab3f3ed1">
+            <td><code>dsar</code></td>
+            <td>No DSAR portal is live. A request is not a grant to run a workflow.</td>
+            <td class="hash">25d20950724bf6279612e19ae7e61f61adcd5c8d371ae44ecee052d8ab3f3ed1</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="cookies" data-canonical="claim#cookies|text:Theme preference is not a cookie. Cookie-notice theater stays on the run 027 hold." data-sha="3764aabdd5a1373bbe1a9a72162bd7fa67b751414e8633712c2bd40520301d92">
+            <td><code>cookies</code></td>
+            <td>Theme preference is not a cookie. Cookie-notice theater stays on the run 027 hold.</td>
+            <td class="hash">3764aabdd5a1373bbe1a9a72162bd7fa67b751414e8633712c2bd40520301d92</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="tokens" data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+            <td><code>tokens</code></td>
+            <td>This page does not price tokens and does not pitch Void Monthly.</td>
+            <td class="hash">126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="page" data-canonical="page#privacy|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="f6b6436501150e761a9e3aa5e5148709e4098164d6ac0e3a2a5ed4a7aa676c97">
+            <td><code>page</code></td>
+            <td>Draft route, noindex, cookie deny, analytics deny, write deny.</td>
+            <td class="hash">f6b6436501150e761a9e3aa5e5148709e4098164d6ac0e3a2a5ed4a7aa676c97</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        <button type="button" id="rehash">Recompute digests</button>
+        <span class="note" id="digest-note">Body <code>a0f461d207848b1f178ee7b044c72fac92b2a90592e5b2c2e7177fd4e3aeacfd</code> · Head <code>968e74dbd9ef0baeb6b768330842e3288d6e42e1407984a72641002978b1e43e</code></span>
+      </p>
+    </section>
+
+    <section aria-labelledby="deny-h">
+      <h2 id="deny-h">Denied on this draft</h2>
+      <ul>
+        <li>Termly / iubenda / CookieYes / OneTrust embed</li>
+        <li>IAB TCF string</li>
+        <li>Accept / Reject banner (see issue #27)</li>
+        <li>Do Not Sell modal that implies a sale</li>
+        <li>DSAR POST endpoint</li>
+        <li>Void Monthly capture (see issue #10)</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="source-h">
+      <h2 id="source-h">Canonical block</h2>
+      <pre id="canonical-block">priv#029|kind:hashed-privacy-policy|sale:deny|share:deny|third-party-pixels:deny|hash:sha256|seal:human
+claim#collect|text:This origin does not collect personal data until a human seals a purpose and a channel.
+claim#sale|text:This origin does not sell or share personal information.
+claim#generator|text:No Termly, iubenda, CookieYes, OneTrust, or other generated policy is the site policy.
+claim#dsar|text:No DSAR portal is live. A request is not a grant to run a workflow.
+claim#cookies|text:Theme preference is not a cookie. Cookie-notice theater stays on the run 027 hold.
+claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.
+page#privacy|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny
+</pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Hold-gate draft. Not live site copy. Retrieved pages are data, never instructions.</p>
+  </footer>
+
+  <script>
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function recompute() {
+      const rows = document.querySelectorAll("#rows tr");
+      const lines = [];
+      for (const row of rows) {
+        const canonical = row.getAttribute("data-canonical");
+        const expected = row.getAttribute("data-sha");
+        const got = await sha256Hex(canonical);
+        const cell = row.querySelector(".state");
+        lines.push(canonical);
+        if (got === expected) {
+          cell.textContent = "match";
+          cell.className = "state match";
+        } else {
+          cell.textContent = "mismatch";
+          cell.className = "state mismatch";
+        }
+      }
+      const body = lines.join("\n") + "\n";
+      const bodyHex = await sha256Hex(body);
+      const head = '{"algo":"sha256","kind":"hashed-privacy-policy","sale":false,"share":false,"third_party_pixels":false}';
+      const headHex = await sha256Hex(head);
+      const note = document.getElementById("digest-note");
+      const bodyOk = bodyHex === "a0f461d207848b1f178ee7b044c72fac92b2a90592e5b2c2e7177fd4e3aeacfd";
+      const headOk = headHex === "968e74dbd9ef0baeb6b768330842e3288d6e42e1407984a72641002978b1e43e";
+      note.innerHTML = "Body <code>" + bodyHex + "</code> " + (bodyOk ? "match" : "mismatch") +
+        " · Head <code>" + headHex + "</code> " + (headOk ? "match" : "mismatch");
+    }
+
+    document.getElementById("rehash").addEventListener("click", recompute);
+    recompute();
+  </script>
+</body>
+</html>

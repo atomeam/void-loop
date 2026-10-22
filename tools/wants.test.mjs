@@ -146,3 +146,14 @@ test('"growth speed" opens the wants card: its want-to-skill meter is the growth
   for (const a of ['growth speed', 'show your growth-speed gauge', 'growth gauge', "show verse's growth speed"]) assert.ok(w.match(a.toLowerCase(), a), a);
   for (const a of ['economic growth speed', 'growth rate of india', 'growth speed of bamboo']) assert.ok(!w.match(a.toLowerCase(), a), a);
 });
+test('reasoning trace: each ask carries the reflection that made it, each want where it came from (asked by Verse, 2026-10-21)', async () => {
+  const w = await import('../void-live-deploy/skills/wants.js');
+  const entries = [{ kind: 'build', shipped: 'Thing X [S1]', thoughts: 'I noticed A [S2].', better: 'B should change.', asks: [{ id: 'ask-1', ask: 'Build Y' }] }];
+  assert.deepEqual(w.traceOf({ id: 'ask-1', ask: 'Build Y' }, entries), ['Prompted by: "Thing X" had just shipped.', 'What I noticed: I noticed A.', 'What I said should change: B should change.']);
+  assert.deepEqual(w.traceOf({ ask: 'build y' }, entries).length, 3, 'matched by words when there is no id');
+  assert.deepEqual(w.traceOf({ ask: 'Other' }, entries), [], 'no kept reflection, no trace and nothing made up');
+  const html = w.cardHtml(w.cardModel({ will: { wants: [{ i_want: 'I want Z.', because: 'c', source: 'frontier' }] }, reflect: { asks: [{ id: 'ask-1', ask: 'Build Y', at: '2026-10-21' }], entries }, self: { open: [] } }), (s) => String(s));
+  assert.ok(html.includes('Why I want this') && html.includes('data-trace="3"') && html.includes('Where it came from: frontier.'));
+  for (const a of ['why do you want those upgrades', 'show the reasoning behind your wants', 'wants reasoning trace']) assert.ok(w.default.match(a, a), a);
+  assert.ok(!w.default.match('why do you want that', 'why do you want that'));
+});

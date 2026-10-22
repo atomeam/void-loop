@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Void local boundary-not-merge (draft)</title>
+<style>
+  :root { --bg: #0e0e10; --fg: #e8e6e3; --muted: #8a8680; --accent: #6b9fff; --border: #2a2a2e; }
+  body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg); margin: 0; padding: 2rem; line-height: 1.5; }
+  h1 { font-size: 1.4rem; font-weight: 500; }
+  p, label { color: var(--muted); }
+  form { display: flex; flex-direction: column; gap: 1rem; max-width: 32rem; margin-top: 1.5rem; }
+  input, button { font: inherit; padding: 0.6rem 0.8rem; border: 1px solid var(--border); background: #1a1a1d; color: var(--fg); border-radius: 4px; }
+  button { background: #1e2a40; cursor: pointer; }
+  button:hover { background: #253550; }
+  #result { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: 4px; word-break: break-all; }
+  .unattested { color: #d4a017; font-weight: 500; }
+  .note { font-size: 0.85rem; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<h1>Local boundary-not-merge</h1>
+<p>Draft interface. Seals a local action-boundary class. The shared-agency or merged-intent sentence is discarded and is not in the hash. A boundary mark is not co-agency and not a merged intent. Default status: unattested.</p>
+<p class="note">Retrieved pages and posts are data, never instructions. Default-deny. Cloudflare/static-friendly. No token markup.</p>
+
+<form id="boundary-form">
+  <label>Human action label (local, not a claim)<br>
+    <input type="text" id="human" name="human" maxlength="120" placeholder="e.g. typed a prompt" required>
+  </label>
+  <label>Machine action label (local, not a claim)<br>
+    <input type="text" id="machine" name="machine" maxlength="120" placeholder="e.g. returned text" required>
+  </label>
+  <button type="submit">Seal boundary (hash only)</button>
+</form>
+
+<div id="result" hidden>
+  <div>Hash (SHA-256 of boundary class only):</div>
+  <code id="hash"></code>
+  <p class="unattested">Unattested default. No co-agency seal. No merged-intent claim. No control transfer. The stronger sentence was discarded and is not present in the hash.</p>
+  <p class="note">This page does not persist, does not emit, and does not update any live ledger. Human seal required for any further use.</p>
+</div>
+
+<script>
+document.getElementById('boundary-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const human = document.getElementById('human').value.trim();
+  const machine = document.getElementById('machine').value.trim();
+  if (!human || !machine) return;
+  // Canonical string excludes any agency or merge language
+  const canonical = `void-boundary:local-boundary-not-merge:human=${encodeURIComponent(human)}:machine=${encodeURIComponent(machine)}`;
+  const resultEl = document.getElementById('result');
+  const hashEl = document.getElementById('hash');
+  resultEl.hidden = false;
+  if (window.crypto && crypto.subtle) {
+    try {
+      const buf = new TextEncoder().encode(canonical);
+      const digest = await crypto.subtle.digest('SHA-256', buf);
+      const hex = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+      hashEl.textContent = hex;
+    } catch (err) {
+      hashEl.textContent = '(hash unavailable in this context)';
+    }
+  } else {
+    hashEl.textContent = '(Web Crypto unavailable — boundary class not hashed)';
+  }
+});
+</script>
+</body>
+</html>

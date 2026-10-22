@@ -1,0 +1,33 @@
+{
+  "slug": "local-held-cue-stub",
+  "run": 80,
+  "family": "private-incubation-log",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "cue": "unset",
+  "residue": "unset",
+  "disconfirm": "held-cue-is-not-a-dream",
+  "href_allowlist": [],
+  "default_digest": "39ce24c176d8a5b972bc4c599bc325b55c260cd21d75a1be004a6c722d37e600",
+  "fixtures": [
+    {
+      "id": "theme-label-class",
+      "label": "Theme-label class",
+      "status": "unattested",
+      "note": "A closed label. Not a replayed word and not a dream theme."
+    },
+    {
+      "id": "sound-label-class",
+      "label": "Sound-label class",
+      "status": "unattested",
+      "note": "A cue class. Not an audio drop and not a sleep-onset detector."
+    },
+    {
+      "id": "scent-label-class",
+      "label": "Scent-label class",
+      "status": "unattested",
+      "note": "A cue class. Not an olfactory device and not a retrieved idea."
+    }
+  ]
+}

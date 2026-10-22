@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-031 Resonant Attention Graph Mind — Void Frontier</title>
+<style>
+:root {
+  --hue: 220;
+  --scale: 1;
+  --blur: 8px;
+  --cx: 50vw;
+  --cy: 42vh;
+}
+body {
+  margin: 0;
+  background: #0a0a16;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+#hud {
+  position: fixed;
+  left: var(--cx);
+  top: var(--cy);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  z-index: 10;
+  background: rgba(12,12,32,0.8);
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid hsla(var(--hue), 80%, 68%, 0.7);
+  backdrop-filter: blur(var(--blur));
+  transition: left 0.5s, top 0.5s, transform 0.4s, border-color 0.3s, filter 0.4s;
+  max-width: 300px;
+  filter: hue-rotate(0deg);
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  background: radial-gradient(circle at 50% 50%, #12122a, #050510);
+}
+button {
+  background: #2a2a5a;
+  color: #fff;
+  border: 1px solid #6a6aaa;
+  padding: 7px 14px;
+  border-radius: 8px;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+}
+button:hover { background: #3a3a70; }
+#status { font-size: 0.85rem; opacity: 0.9; margin-top: 10px; }
+.note { font-size: 0.7rem; margin-top: 8px; opacity: 0.6; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <strong>F-031 Resonant Attention Graph</strong>
+  <div id="status">Mind initializing…</div>
+  <button id="seal">Seal Attention</button>
+  <button id="reset">Reset Graph</button>
+  <div class="note">
+    Nodes form a spatial graph. Local Transformer-style attention (evolved in Worker) weights edges, applies forces, and morphs the HUD by focus/entropy. Pointer seeds energy; orientation biases phase. Audio resonates on dominant attention pairs.
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const hud = document.getElementById('hud');
+
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+window.addEventListener('resize', () => {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+});
+
+const N = 42;
+const nodes = [];
+function initNodes() {
+  nodes.length = 0;
+  for (let i = 0; i < N; i++) {
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random()-0.5)*0.4,
+      vy: (Math.random()-0.5)*0.4,
+      energy: Math.random()*0.4,
+      phase: Math.random()*Math.PI*2,
+      feature: [Math.random(), Math.random(), Math.random()]
+    });
+  }
+}
+initNodes();
+
+let attentionParams = {
+  qScale: 1.2, kScale: 1.0, vScale: 0.8,
+  temp: 0.8, forceGain: 0.015, damp: 0.96
+};
+
+let orient = {beta: 0, gamma: 0};
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = (e.beta || 0) / 90;
+    orient.gamma = (e.gamma || 0) / 90;
+  });
+}
+
+let pointer = {x: W/2, y: H/2, active: false};
+canvas.addEventListener('pointermove', e => {
+  pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+});
+canvas.addEventListener('pointerdown', e => {
+  pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+  // inject energy to nearest
+  let minD = 1e9, nearest = 0;
+  nodes.forEach((n,i) => {
+    const d = Math.hypot(n.x - e.clientX, n.y - e.clientY);
+    if (d < minD) { minD = d; nearest = i; }
+  });
+  if (minD < 80) nodes[nearest].energy = Math.min(1.5, nodes[nearest].energy + 0.6);
+});
+canvas.addEventListener('pointerup', () => pointer.active = false);
+canvas.addEventListener('pointerleave', () => pointer.active = false);
+
+// Audio resonance
+let audioCtx, oscs = [], gains = [];
+function startAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i = 0; i < 3; i++) {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = i === 0 ? 'sine' : (i === 1 ? 'triangle' : 'sawtooth');
+    o.frequency.value = 80 + i * 60;
+    g.gain.value = 0.015;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    oscs.push(o); gains.push(g);
+  }
+}
+document.body.addEventListener('click', startAudio, {once: true});
+
+// Worker: evolutionary attention mind
+const workerCode = `
+let pop = [];
+const POP = 6;
+function randParams() {
+  return {
+    qScale: 0.6 + Math.random()*1.2,
+    kScale: 0.5 + Math.random()*1.1,
+    vScale: 0.4 + Math.random()*1.0,
+    temp: 0.4 + Math.random()*1.0,
+    forceGain: 0.005 + Math.random()*0.03,
+    damp: 0.92 + Math.random()*0.06
+  };
+}
+function mutate(p) {
+  const m = {...p};
+  Object.keys(m).forEach(k => {
+    m[k] += (Math.random()-0.5) * (k==='damp' ? 0.02 : 0.15);
+    if (k==='temp') m[k] = Math.max(0.2, Math.min(1.8, m[k]));
+    else if (k==='damp') m[k] = Math.max(0.88, Math.min(0.995, m[k]));
+    else if (k==='forceGain') m[k] = Math.max(0.002, Math.min(0.05, m[k]));
+    else m[k] = Math.max(0.2, Math.min(2.5, m[k]));
+  });
+  return m;
+}
+function fitness(s) {
+  const focus = s.focus || 0;
+  const entropy = s.entropy || 0.5;
+  const interact = s.interact || 0;
+  const coherence = s.coherence || 0;
+  return focus * 0.35 + (1 - Math.abs(entropy-0.55)) * 0.25 + interact * 0.25 + coherence * 0.15;
+}
+self.onmessage = (e) => {
+  const {stats, current} = e.data;
+  if (!pop.length) {
+    pop = Array.from({length: POP}, () => ({p: randParams(), f: 0}));
+    if (current) pop[0].p = current;
+  }
+  const f = fitness(stats);
+  pop.forEach(p => { if (JSON.stringify(p.p) === JSON.stringify(current)) p.f = f; });
+  pop.sort((a,b) => b.f - a.f);
+  const best = pop[0];
+  const worst = pop[pop.length-1];
+  worst.p = mutate(best.p);
+  worst.f = 0;
+  self.postMessage({params: best.p, fitness: best.f});
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let mindFitness = 0.3;
+
+worker.onmessage = (e) => {
+  attentionParams = e.data.params;
+  mindFitness = e.data.fitness || mindFitness;
+};
+
+function computeAttention() {
+  const {qScale, kScale, vScale, temp} = attentionParams;
+  const scores = Array.from({length: N}, () => new Float32Array(N));
+  let totalAtt = 0;
+  let maxPair = 0;
+  let focusX = 0, focusY = 0, focusMass = 0;
+  const attSum = new Float32Array(N);
+
+  for (let i = 0; i < N; i++) {
+    const qi = nodes[i].feature.map(f => f * qScale);
+    let rowSum = 0;
+    for (let j = 0; j < N; j++) {
+      if (i === j) continue;
+      const kj = nodes[j].feature.map(f => f * kScale);
+      let dot = 0;
+      for (let d = 0; d < 3; d++) dot += qi[d] * kj[d];
+      // spatial bias
+      const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y) / Math.max(W,H);
+      dot -= dist * 0.8;
+      scores[i][j] = Math.exp(dot / (temp + 0.1));
+      rowSum += scores[i][j];
+    }
+    if (rowSum > 0) {
+      for (let j = 0; j < N; j++) scores[i][j] /= rowSum;
+      for (let j = 0; j < N; j++) {
+        attSum[j] += scores[i][j];
+        totalAtt += scores[i][j];
+        if (scores[i][j] > maxPair) maxPair = scores[i][j];
+        focusX += nodes[j].x * scores[i][j];
+        focusY += nodes[j].y * scores[i][j];
+        focusMass += scores[i][j];
+      }
+    }
+  }
+
+  // entropy proxy
+  let entropy = 0;
+  for (let i = 0; i < N; i++) {
+    const p = attSum[i] / (totalAtt + 1e-6);
+    if (p > 1e-6) entropy -= p * Math.log(p);
+  }
+  entropy /= Math.log(N);
+
+  const focus = focusMass > 0 ? 1 - Math.hypot(focusX/focusMass - W/2, focusY/focusMass - H/2) / (Math.hypot(W,H)/2) : 0.5;
+  const coherence = maxPair;
+  let interact = 0;
+  if (pointer.active) {
+    nodes.forEach(n => {
+      const d = Math.hypot(n.x - pointer.x, n.y - pointer.y);
+      if (d < 120) interact += Math.exp(-d/40) * n.energy;
+    });
+    interact = Math.min(1, interact / 3);
+  }
+
+  return {scores, entropy, focus, coherence, interact, focusX: focusMass?focusX/focusMass:W/2, focusY: focusMass?focusY/focusMass:H/2};
+}
+
+function step() {
+  const att = computeAttention();
+  const {forceGain, damp} = attentionParams;
+
+  // apply attention forces + damping + orientation
+  for (let i = 0; i < N; i++) {
+    let fx = 0, fy = 0;
+    for (let j = 0; j < N; j++) {
+      if (i === j) continue;
+      const a = att.scores[i][j];
+      if (a < 0.01) continue;
+      const dx = nodes[j].x - nodes[i].x;
+      const dy = nodes[j].y - nodes[i].y;
+      const dist = Math.hypot(dx, dy) + 1;
+      const dirx = dx / dist, diry = dy / dist;
+      fx += dirx * a * forceGain * 40;
+      fy += diry * a * forceGain * 40;
+    }
+    nodes[i].vx = (nodes[i].vx + fx) * damp;
+    nodes[i].vy = (nodes[i].vy + fy) * damp;
+    nodes[i].x += nodes[i].vx;
+    nodes[i].y += nodes[i].vy;
+    // bounds
+    if (nodes[i].x < 0 || nodes[i].x > W) nodes[i].vx *= -0.8;
+    if (nodes[i].y < 0 || nodes[i].y > H) nodes[i].vy *= -0.8;
+    nodes[i].x = Math.max(0, Math.min(W, nodes[i].x));
+    nodes[i].y = Math.max(0, Math.min(H, nodes[i].y));
+    // phase + energy decay + orientation
+    nodes[i].phase += 0.04 + nodes[i].energy * 0.05 + orient.gamma * 0.02;
+    nodes[i].energy *= 0.992;
+    if (pointer.active && Math.hypot(nodes[i].x - pointer.x, nodes[i].y - pointer.y) < 100) {
+      nodes[i].energy = Math.min(1.2, nodes[i].energy + 0.008);
+    }
+    // feature evolve slightly
+    nodes[i].feature[0] = (nodes[i].feature[0] + nodes[i].energy * 0.02 + Math.sin(nodes[i].phase)*0.01) % 1;
+  }
+
+  // morph
+  const hue = 180 + att.focus * 80 + mindFitness * 40;
+  const scale = 0.92 + att.coherence * 0.18;
+  const blur = 6 + att.entropy * 12;
+  document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--scale', scale);
+  document.documentElement.style.setProperty('--blur', blur + 'px');
+  const cx = (att.focusX / W * 100);
+  const cy = (att.focusY / H * 100);
+  document.documentElement.style.setProperty('--cx', cx + 'vw');
+  document.documentElement.style.setProperty('--cy', cy + 'vh');
+  hud.style.filter = `hue-rotate(${(att.entropy - 0.5)*40}deg)`;
+
+  // audio
+  if (oscs.length && audioCtx) {
+    oscs[0].frequency.setTargetAtTime(70 + att.focus * 140, audioCtx.currentTime, 0.15);
+    oscs[1].frequency.setTargetAtTime(120 + att.coherence * 200, audioCtx.currentTime, 0.2);
+    oscs[2].frequency.setTargetAtTime(50 + att.entropy * 90, audioCtx.currentTime, 0.25);
+    gains.forEach((g,i) => g.gain.setTargetAtTime(0.01 + mindFitness * 0.02, audioCtx.currentTime, 0.2));
+  }
+
+  if (Math.random() < 0.08) {
+    worker.postMessage({
+      stats: {focus: att.focus, entropy: att.entropy, interact: att.interact, coherence: att.coherence},
+      current: attentionParams
+    });
+  }
+
+  statusEl.textContent = `fit ${(mindFitness*100|0)/100}  focus ${(att.focus*100|0)/100}  ent ${(att.entropy*100|0)/100}  coh ${(att.coherence*100|0)/100}`;
+  return att;
+}
+
+function draw(att) {
+  ctx.fillStyle = 'rgba(10,10,22,0.22)';
+  ctx.fillRect(0, 0, W, H);
+
+  // edges
+  ctx.lineWidth = 1;
+  for (let i = 0; i < N; i++) {
+    for (let j = i+1; j < N; j++) {
+      const a = (att.scores[i][j] + att.scores[j][i]) * 0.5;
+      if (a < 0.04) continue;
+      const hue = 200 + a * 80 + mindFitness * 30;
+      ctx.strokeStyle = `hsla(${hue}, 75%, 62%, ${a * 0.7})`;
+      ctx.lineWidth = 0.5 + a * 3;
+      ctx.beginPath();
+      ctx.moveTo(nodes[i].x, nodes[i].y);
+      ctx.lineTo(nodes[j].x, nodes[j].y);
+      ctx.stroke();
+    }
+  }
+
+  // nodes
+  nodes.forEach((n, i) => {
+    const r = 3 + n.energy * 6;
+    const hue = 210 + n.energy * 50 + Math.sin(n.phase) * 20;
+    ctx.fillStyle = `hsla(${hue}, 85%, ${55 + n.energy*20}%, 0.85)`;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+    ctx.fill();
+    // phase ring
+    ctx.strokeStyle = `hsla(${hue+40}, 70%, 70%, 0.4)`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r + 3, n.phase, n.phase + Math.PI*1.2);
+    ctx.stroke();
+  });
+
+  // pointer hint
+  if (pointer.active) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(pointer.x, pointer.y, 40, 0, Math.PI*2);
+    ctx.stroke();
+  }
+}
+
+function loop() {
+  const att = step();
+  draw(att);
+  requestAnimationFrame(loop);
+}
+loop();
+
+document.getElementById('seal').onclick = async () => {
+  const data = JSON.stringify({params: attentionParams, fitness: mindFitness, t: Date.now()});
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  try {
+    const req = indexedDB.open('void-f031', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('seals', {keyPath: 'id'});
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction('seals', 'readwrite');
+      tx.objectStore('seals').put({id: hex, params: attentionParams, fitness: mindFitness, ts: Date.now()});
+      statusEl.textContent = `Sealed ${hex}`;
+    };
+  } catch(e) {
+    statusEl.textContent = `Seal ${hex} (no IDB)`;
+  }
+};
+document.getElementById('reset').onclick = () => { initNodes(); statusEl.textContent = 'Graph reset'; };
+</script>
+</body>
+</html>

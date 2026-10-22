@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T02:26:25Z",
-   "subject": "ritual-template: a habit sequence as one calendar file (asked by Verse)"
+   "at": "2026-10-22T03:05:32Z",
+   "subject": "Incident: the browser suite failed on bc59a260 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:25:44Z",
-   "subject": "grow-self: commit an empty tools/grow-lessons.json so the git add finds it; back to the one git add line the allowlist test reads (#1211)"
+   "at": "2026-10-22T03:02:44Z",
+   "subject": "Incident: the browser suite failed on d220b58f (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:24:40Z",
-   "subject": "Incident: the browser suite failed on 9b83e5d9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:02:31Z",
+   "subject": "MAP: name loop-library, loop-critic and its workflow (main's map-coverage was red)"
   },
   {
-   "at": "2026-10-22T02:22:21Z",
-   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:01:58Z",
+   "subject": "Incident: the browser suite failed on 2395085b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:21:23Z",
-   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:01:51Z",
+   "subject": "Incident: the browser suite failed on 96c8914b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:19:44Z",
-   "subject": "Incident: the browser suite failed on c28ae7a4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:01:11Z",
+   "subject": "Incident: the browser suite failed on 71fb7da6 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:19:26Z",
-   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:57:55Z",
+   "subject": "Incident: the browser suite failed on 17e3d26a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:18:09Z",
-   "subject": "Incident: the browser suite failed on 2c37c935 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:57:34Z",
+   "subject": "Incident: the browser suite failed on bc59a260 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:17:56Z",
-   "subject": "Incident: the browser suite failed on 965a8a1b (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:55:05Z",
+   "subject": "refresh: self.json, what.json"
   },
   {
-   "at": "2026-10-22T02:17:10Z",
-   "subject": "no ellipsis: the book's What's new keeps whole sentences, the book fits the window (dvh, room for the bar), and a check stops new ellipsis…"
+   "at": "2026-10-22T02:52:51Z",
+   "subject": "Incident: the browser suite failed on 2395085b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:15:10Z",
-   "subject": "Incident: the browser suite failed on e8d870a4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:52:48Z",
+   "subject": "self card: 'My progress, week by week' chart from the growth ledger (running total + weekly builds and skills) (#1224)"
   },
   {
-   "at": "2026-10-22T02:14:56Z",
-   "subject": "Incident: the browser suite failed on 77fab71b (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:52:30Z",
+   "subject": "deps.json"
   },
   {
-   "at": "2026-10-22T02:13:22Z",
-   "subject": "Incident: the browser suite failed on f0fde96b (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:52:04Z",
+   "subject": "loop: expected-value picking (lack x chance from result memory), wins + miss reasons kept in grow-lessons.json, per-family outcome scores…"
   },
   {
-   "at": "2026-10-22T02:13:12Z",
-   "subject": "showcase: 'I built this' names the newest build, and a preview is used up only when you open it (it was marked shown the moment it flashed…"
+   "at": "2026-10-22T02:51:58Z",
+   "subject": "Social: keep a post on the stage as a sticky note (asked by Verse); Verse's everything-app answer logged word for word; its asks queued in…"
   },
   {
-   "at": "2026-10-22T02:13:03Z",
-   "subject": "Incident: the browser suite failed on 1f25ead5 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:50:45Z",
+   "subject": "Incident: the browser suite failed on d4899e5f (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:12:36Z",
-   "subject": "self card: whole sentences (no ellipsis), what's built and improved skill by skill from the ledger, new phrases named in previews, a check…"
+   "at": "2026-10-22T02:49:50Z",
+   "subject": "wants: reasoning trace under each want and ask (asked by Verse)"
   },
   {
-   "at": "2026-10-22T02:12:24Z",
-   "subject": "Incident: the browser suite failed on cc841604 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:48:43Z",
+   "subject": "loop gaps: docs/LOOP-GAPS.md (Verse vs Voyager, Reflexion, Self-Refine, Generative Agents, DGM, AlphaEvolve...); skill library retrieval…"
   },
   {
-   "at": "2026-10-22T02:10:24Z",
-   "subject": "Incident: the browser suite failed on a72557b3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T02:47:56Z",
+   "subject": "Incident: the browser suite failed on 96c8914b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T02:10:19Z",
-   "subject": "reflect: drop asks the ledger already names as built and ask once more, so Verse comes up with new wants (every reflection repeated three…"
+   "at": "2026-10-22T02:46:37Z",
+   "subject": "archive/repos: index the five private early builds and what was stripped"
   },
   {
-   "at": "2026-10-22T02:09:06Z",
-   "subject": "grow-self: add only the files that exist (a missing tools/grow-lessons.json failed every hardening run since 15:43 UTC Oct 21); ledger…"
+   "at": "2026-10-22T02:46:29Z",
+   "subject": "archive/repos/autosalvage: workflows inert"
   }
  ],
  "builders": {

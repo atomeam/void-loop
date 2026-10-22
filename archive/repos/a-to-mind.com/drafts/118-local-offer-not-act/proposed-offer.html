@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offer is not an act — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e6;
+      --line: #c9c0b0;
+      --hold: #6e2e2a;
+      --muted: #5e584e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3ecdf;
+        --paper: #161410;
+        --line: #3a342c;
+        --hold: #e3b2a4;
+        --muted: #b7ad9e;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 ui-sans-serif, system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+    p { margin: 0.4rem 0; }
+    .meta, .note { color: var(--muted); font-size: 0.92rem; }
+    .status {
+      display: inline-block;
+      border: 1px solid var(--hold);
+      color: var(--hold);
+      padding: 0.1rem 0.45rem;
+      font: 0.78rem/1.4 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+    }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 1rem 0;
+      padding: 0.8rem;
+    }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea {
+      width: 100%;
+      min-height: 4.5rem;
+      box-sizing: border-box;
+      font: inherit;
+      background: transparent;
+      color: inherit;
+      border: 1px dashed var(--line);
+    }
+    .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .lane {
+      border: 1px solid var(--line);
+      min-height: 5.5rem;
+      padding: 0.6rem;
+    }
+    .lane strong { display: block; font-size: 0.85rem; }
+    .empty { color: var(--muted); }
+    button {
+      font: inherit;
+      background: transparent;
+      color: inherit;
+      border: 1px solid var(--ink);
+      padding: 0.35rem 0.7rem;
+    }
+    button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--hold);
+      outline-offset: 2px;
+    }
+    #receipt {
+      font: 0.85rem/1.4 ui-monospace, monospace;
+      white-space: pre-wrap;
+      border-top: 1px solid var(--line);
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+    }
+    @media (max-width: 36rem) { .lanes { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">drafts/118-local-offer-not-act · not a seal · not live copy</p>
+    <h1>Offer is not an act</h1>
+    <p><span class="status" id="status">unattested</span></p>
+    <p class="note">A sealed offer class hashes to an act-refusal id. The act sentence is discarded and is not in the hash. An offer mark is not an act and not a shared will.</p>
+
+    <fieldset>
+      <legend>Offer class</legend>
+      <label><input type="radio" name="cls" value="withheld" checked> withheld</label>
+      <label><input type="radio" name="cls" value="human-offer"> human-offer</label>
+      <label><input type="radio" name="cls" value="machine-offer"> machine-offer</label>
+    </fieldset>
+
+    <label for="act">Act sentence (discarded on seal, never hashed)</label>
+    <textarea id="act" autocomplete="off" spellcheck="false" placeholder="Type a sentence you do not want sealed."></textarea>
+    <p class="note" id="discard">Discard well empty.</p>
+
+    <div class="lanes" aria-label="Separate lanes">
+      <div class="lane" id="human-lane"><strong>Human lane</strong><span class="empty">no offer</span></div>
+      <div class="lane" id="machine-lane"><strong>Machine lane</strong><span class="empty">no offer</span></div>
+    </div>
+    <p class="note">No Act control. No Accept. No handoff. Filling one lane does not fill the other.</p>
+
+    <p><button type="button" id="seal">Seal offer class</button></p>
+    <div id="receipt" aria-live="polite">No seal yet. Status remains unattested.</div>
+    <p id="last-refusal" class="meta" aria-live="polite">Last act-refusal id: none yet.</p>
+    <p class="meta" id="credit">asked by Void, run 118.</p>
+  </main>
+  <script>
+    const PRE = "void-offer-not-act|v1|class=";
+    const SUF = "|status=unattested";
+    const receipt = document.getElementById("receipt");
+    const act = document.getElementById("act");
+    const discard = document.getElementById("discard");
+    const humanLane = document.getElementById("human-lane");
+    const machineLane = document.getElementById("machine-lane");
+
+    function selected() {
+      const node = document.querySelector('input[name="cls"]:checked');
+      return node ? node.value : "withheld";
+    }
+
+    function paint(cls) {
+      humanLane.innerHTML = "<strong>Human lane</strong><span class=\"empty\">no offer</span>";
+      machineLane.innerHTML = "<strong>Machine lane</strong><span class=\"empty\">no offer</span>";
+      if (cls === "human-offer") {
+        humanLane.innerHTML = "<strong>Human lane</strong><span>offer class only</span>";
+      } else if (cls === "machine-offer") {
+        machineLane.innerHTML = "<strong>Machine lane</strong><span>offer class only</span>";
+      }
+    }
+
+    async function sha16(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+    }
+
+    const lastEl = document.getElementById("last-refusal");
+    function showLast() {
+      let last = null;
+      try { last = localStorage.getItem("void.offer.lastActRefusalId"); } catch (e) {}
+      lastEl.textContent = "Last act-refusal id: " + (last || "none yet.");
+    }
+    showLast();
+
+    document.getElementById("seal").addEventListener("click", async () => {
+      const cls = selected();
+      const sentence = act.value;
+      act.value = "";
+      discard.textContent = sentence.trim()
+        ? "Act sentence discarded. Not in the preimage."
+        : "Discard well empty. Nothing entered the preimage.";
+      paint(cls);
+      const preimage = PRE + cls + SUF;
+      const id = await sha16(preimage);
+      receipt.textContent =
+        "status: unattested\n" +
+        "act-refusal id: " + id + "\n" +
+        "preimage: " + preimage + "\n" +
+        "act sentence in hash: no\n" +
+        "shared will: refused\n" +
+        "execute: absent";
+      try { localStorage.setItem("void.offer.lastActRefusalId", id); } catch (e) {}
+      showLast();
+    });
+  </script>
+</body>
+</html>

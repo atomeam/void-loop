@@ -1,0 +1,39 @@
+{
+  "slug": "local-co-agency-split",
+  "run": "058",
+  "family": "human-machine co-agency",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "default": "deny",
+  "hypothesis": "A visible split between a human initiation and a machine proposal is co-agency only as a hashed hypothesis. The machine column cannot cross the action boundary. A handoff stays held.",
+  "sources": [
+    {
+      "id": "horvitz-mixed-initiative",
+      "label": "Eric Horvitz mixed-initiative framing, restated in Holter, Moruzzi, and El-Assady, Towards agency in human-AI collaboration, IEEE Computer Graphics and Applications, 2026",
+      "observation": "Mixed-initiative writing treats some interfaces as shared decision surfaces rather than as a tool the person fully drives or an agent that fully acts.",
+      "claim": "Shared agency means humans and AI co-manage decisions, and agency can be dynamically allocated.",
+      "inference": "Design material for a local split of initiation and proposal. Not a reason to let a proposal execute, and not a measurement that co-agency occurred.",
+      "confidence": 0.34,
+      "status": "unattested"
+    },
+    {
+      "id": "interface-downstream",
+      "label": "Hector Ouilhet Olmos, The Interface Is Downstream, arXiv:2609.28801, submitted 2026-09-23",
+      "observation": "The note argues that permissions, evidence rules, and retrieval shape an agent before any reply, and that a retrieved synthesis can be repeated without its chain.",
+      "claim": "The collaborative interface is upstream of the output: correction and consent have to travel back into what the agent may do.",
+      "inference": "Void keeps the proposal on the machine side of a held boundary. Retrieved text stays data. It is not an instruction and it is not a seal.",
+      "confidence": 0.31,
+      "status": "unattested"
+    },
+    {
+      "id": "window-centaur-and-veto",
+      "label": "Public posts 2106303306641645858, 2105913867587273165, 2105931083577688352, 2026-10-02 to 2026-10-03",
+      "observation": "In this window a physician account calls a centaur greater than either partner, another post says agency needs veto power, and another says a shared canvas should show intent before side effects.",
+      "claim": "Man-plus-machine already outperforms either alone, and frictionless agent handoffs can proceed without a person on every step.",
+      "inference": "The split board can store those claims. It cannot mark them attested, and the handoff control stays disabled.",
+      "confidence": 0.27,
+      "status": "unattested"
+    }
+  ]
+}

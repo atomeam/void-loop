@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-pin-not-episode — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c8bfb0;
+      --hold: #8a3d2f;
+      --quiet: #5e584f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --paper: #1b1916; --line: #3c3832; --hold: #e0a090; --quiet: #b7b0a4; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .pin {
+      width: 0.7rem;
+      height: 0.7rem;
+      border: 2px solid var(--ink);
+      margin: 0.4rem 0 0.2rem;
+    }
+    .rail {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-pin-not-episode</h1>
+    <p>Draft only. A pin mark is not an episode and not a continuous anomalous event. Status stays unattested. The episode sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="pin-form">
+      <fieldset>
+        <legend>Pin class</legend>
+        <label><input type="radio" name="pin-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="pin-class" value="lone-pin"> lone-pin</label>
+        <label><input type="radio" name="pin-class" value="undated-pin"> undated-pin</label>
+        <label><input type="radio" name="pin-class" value="order-unknown"> order-unknown</label>
+        <label><input type="radio" name="pin-class" value="episode-empty"> episode-empty</label>
+        <label><input type="radio" name="pin-class" value="abstain"> abstain</label>
+      </fieldset>
+      <fieldset>
+        <legend>Pin seat</legend>
+        <div class="pin" aria-hidden="true"></div>
+        <p>One mark. No year field. Not an order. Not hashed as a date.</p>
+      </fieldset>
+      <div class="rail" aria-label="Empty episode rail">Episode rail stays empty. No next beat. No second pin.</div>
+      <p class="ids">Inert scan ids, not seats: 2108261357942698406, 2108350947072123227, 2108307494410018844, 2108258025605677386.</p>
+      <label for="episode">Episode sentence (cleared on seal, not hashed)</label>
+      <textarea id="episode" name="episode" autocomplete="off"></textarea>
+      <button type="submit">Seal pin class</button>
+    </form>
+    <p>Episode-refusal id</p>
+    <output id="refusal" for="pin-form">none</output>
+  </main>
+  <script>
+    const form = document.getElementById("pin-form");
+    const episode = document.getElementById("episode");
+    const refusal = document.getElementById("refusal");
+    const status = document.getElementById("status");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=pin-class]:checked");
+      if (!picked) {
+        refusal.textContent = "default-deny: no class";
+        return;
+      }
+      const preimage = "pin-not-episode|v1|" + picked.value + "|episode-refusal|status=unattested";
+      episode.value = "";
+      const bytes = new TextEncoder().encode(preimage);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal.textContent = hex;
+      status.textContent = "status: unattested";
+    });
+  </script>
+</body>
+</html>

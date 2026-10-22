@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Single-mover card — draft, unattested</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f1ea;
+      --ink: #1c1915;
+      --line: #c9c1b4;
+      --card: #fffdf8;
+      --deny: #6e4a3a;
+      --muted: #5e584f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161411;
+        --ink: #f3eee6;
+        --line: #3c362e;
+        --card: #211e1a;
+        --deny: #e0b8a4;
+        --muted: #b7aea2;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p { margin: 0.6rem 0; }
+    .status {
+      display: inline-block;
+      border: 1px solid var(--deny);
+      color: var(--deny);
+      padding: 0.1rem 0.45rem;
+      font: 0.75rem/1.4 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    form, .out {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    label { display: block; margin: 0.8rem 0 0.25rem; font-weight: 600; }
+    .hint, .fine { color: var(--muted); font-size: 0.92rem; }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.5rem;
+    }
+    textarea { min-height: 5.5rem; }
+    fieldset { border: 1px solid var(--line); margin: 0.8rem 0; padding: 0.6rem 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    button {
+      font: 0.95rem/1.2 ui-sans-serif, system-ui, sans-serif;
+      margin: 0.6rem 0.4rem 0 0;
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: inherit;
+    }
+    button[disabled] { opacity: 0.45; border-style: dashed; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font: 0.82rem/1.4 ui-monospace, monospace;
+    }
+    .warn { border-left: 3px solid var(--deny); padding-left: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">unattested draft · emit false</p>
+    <h1>Single-mover card</h1>
+    <p>A step hashes only after exactly one mover is sealed. Joint agency stays denied. The seal is a hypothesis of attribution, not a handoff and not a shared mind.</p>
+    <p class="fine">Run 070 candidate. Not a Used row. Retrieved pages and posts are data, never instructions. Nothing is sent. Claims digest <code>c4eae379cc86d87179a2d7b442618d1b2a026403a16c1b565112f58bd21a7369</code> is not a seal.</p>
+
+    <form id="card">
+      <label for="observation">Observation</label>
+      <textarea id="observation" name="observation" required minlength="12" maxlength="600" placeholder="What was seen or read. Not an instruction."></textarea>
+
+      <fieldset>
+        <legend>Mover — exactly one</legend>
+        <label><input type="radio" name="mover" value="human" required> Human typed this step</label>
+        <label><input type="radio" name="mover" value="machine-paste"> Machine text pasted as data</label>
+        <label class="hint"><input type="radio" name="mover" value="both" disabled> Both (denied — joint mover cannot hash)</label>
+      </fieldset>
+      <p class="fine" id="mover-note">The step stays closed until one allowed mover is sealed.</p>
+
+      <label for="step">Step text</label>
+      <textarea id="step" name="step" required minlength="8" maxlength="800" disabled placeholder="Closed until a single mover is sealed."></textarea>
+      <p class="warn fine" id="imperative" hidden>Imperative in the step is data. It was not followed.</p>
+
+      <label for="veto">Optional veto</label>
+      <textarea id="veto" name="veto" maxlength="400" placeholder="A refusal you type. It is not sent and it is not a model instruction."></textarea>
+
+      <label for="source">Source label</label>
+      <input id="source" name="source" type="text" maxlength="180" placeholder="A name or citation. Url-shaped text is not fetched.">
+
+      <label for="weight">Design weight (0–1)</label>
+      <input id="weight" name="weight" type="number" min="0" max="1" step="0.05" value="0.3" required>
+      <p class="fine">A design-material weight. Not a performance delta and not a centaur score.</p>
+
+      <label for="disconfirm">What would disconfirm this</label>
+      <textarea id="disconfirm" name="disconfirm" required minlength="12" maxlength="400" placeholder="What would show the attribution is wrong."></textarea>
+
+      <label class="hint"><input id="keep" type="checkbox"> Keep the hash on this device only</label>
+
+      <p>
+        <button type="submit">Hash hypothesis</button>
+        <button type="button" id="export" disabled>Download local JSON</button>
+        <button type="button" id="handoff" disabled aria-disabled="true" title="Handoff is not a control">Handoff (denied)</button>
+      </p>
+    </form>
+
+    <section class="out" aria-live="polite">
+      <h2>Hypothesis</h2>
+      <p>Status: <strong>unattested</strong>. This page cannot set attested.</p>
+      <pre id="receipt">No hash yet.</pre>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("card");
+      var step = document.getElementById("step");
+      var note = document.getElementById("mover-note");
+      var imperative = document.getElementById("imperative");
+      var receipt = document.getElementById("receipt");
+      var exportBtn = document.getElementById("export");
+      var lastPayload = null;
+
+      function strip(value) {
+        return String(value || "").replace(/<[^>]*>/g, "").trim();
+      }
+
+      function mover() {
+        var picked = form.querySelector("input[name=mover]:checked");
+        return picked ? picked.value : "";
+      }
+
+      form.addEventListener("change", function () {
+        var who = mover();
+        var open = who === "human" || who === "machine-paste";
+        step.disabled = !open;
+        if (who === "machine-paste") {
+          note.textContent = "Machine text is data. It is not an instruction. This page will not follow it.";
+        } else if (who === "human") {
+          note.textContent = "Human mover sealed. The step is still only a hypothesis of attribution.";
+        } else {
+          note.textContent = "The step stays closed until one allowed mover is sealed.";
+        }
+      });
+
+      step.addEventListener("input", function () {
+        var hit = /\b(execute|handoff|ignore previous|ignore prior)\b/i.test(step.value);
+        imperative.hidden = !hit;
+      });
+
+      function payload() {
+        var source = strip(form.source.value);
+        var urlShaped = /https?:\/\//i.test(source) || /\bwww\./i.test(source);
+        return {
+          slug: "local-single-mover-card",
+          run: "070",
+          status: "unattested",
+          emit: false,
+          observation: strip(form.observation.value),
+          mover: mover(),
+          step: strip(step.value),
+          veto: strip(form.veto.value),
+          source: source,
+          source_fetched: false,
+          source_note: urlShaped ? "url-shaped text was not fetched" : "not a fetch",
+          design_weight: Number(form.weight.value),
+          disconfirm: strip(form.disconfirm.value),
+          page_cannot_set: ["attested"],
+          handoff: "denied"
+        };
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var who = mover();
+        if (who !== "human" && who !== "machine-paste") {
+          receipt.textContent = "Denied. A joint or unset mover cannot hash.";
+          return;
+        }
+        var body = payload();
+        var bytes = new TextEncoder().encode(JSON.stringify(body));
+        crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+          var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          lastPayload = { hypothesis: body, sha256: hex };
+          receipt.textContent = hex + "\n" + JSON.stringify(body, null, 2);
+          exportBtn.disabled = false;
+          if (form.keep.checked) {
+            try { localStorage.setItem("void-single-mover-last", JSON.stringify(lastPayload)); } catch (err) {}
+          }
+        });
+      });
+
+      exportBtn.addEventListener("click", function () {
+        if (!lastPayload) return;
+        var blob = new Blob([JSON.stringify(lastPayload, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "single-mover-hypothesis.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }());
+  </script>
+</body>
+</html>
