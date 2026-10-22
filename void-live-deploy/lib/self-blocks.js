@@ -246,7 +246,7 @@ export function sinceSection(v, last, now = Date.now(), fam = null) {
     const moved = [d('asks built', f.built, last.built), counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
     lines.push({ t: 'p', lead: true, text: (moved.length ? moved.join(' · ') : 'No new counts') + (thoughts ? ' · ' + thoughts + ' new reflection' + (thoughts === 1 ? '' : 's') : '') + ', since you looked ' + ago(lastAt) + ' ago.' });
   } else lines.push({ t: 'p', lead: true, text: 'Your first look on this device. Next time this part says what changed since.' });
-  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) ? shortLine(sentence(r.what)) : sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + shortLine(sentence(r.ask)) : '') })) });
+  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) || sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + sentence(r.ask) : '') })) });
   else if (lastAt > 0 && !(+f.built > +last.built)) lines.push({ t: 'note', text: 'Nothing of mine was built since. I grow every 10 minutes; this card updates while it is open.' });
   return { id: 'since', title: lastAt > 0 ? 'Since you last looked' : 'Newest', open: true, count: newer.length ? newer.length + ' new' : '', log: false, blocks: lines };
 }
