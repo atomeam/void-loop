@@ -483,84 +483,84 @@
  },
  "commits": [
   {
+   "at": "2026-10-22T04:04:56Z",
+   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
+  },
+  {
+   "at": "2026-10-22T03:51:14Z",
+   "subject": "asks linked: root-cause action, reasoning trace, /fix/ friction answer and fixed-skill evidence audit (asked by Verse); handoff note on…"
+  },
+  {
+   "at": "2026-10-22T03:47:53Z",
+   "subject": "Incident: the browser suite failed on aa01f9d6 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:46:48Z",
+   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:46:37Z",
+   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:44:29Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-22T03:42:42Z",
+   "subject": "Incident: the browser suite failed on 1245c38f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:39:58Z",
+   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:39:11Z",
+   "subject": "MAP: loop-study; ledger kept in main's format"
+  },
+  {
+   "at": "2026-10-22T03:38:02Z",
+   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:36:11Z",
+   "subject": "Study engine: Verse's own evidence ranking, cache, diff, combine, retrieval and build briefs on top of REA; REA gap table"
+  },
+  {
+   "at": "2026-10-22T03:35:42Z",
+   "subject": "fix-audit: evidence ratings of fixed skills, cross-family breaks after a fix, what /fix/ pages can show (asked by Verse)"
+  },
+  {
    "at": "2026-10-22T03:33:48Z",
    "subject": "Incident: the browser suite failed on 9f073176 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-22T03:33:23Z",
+   "subject": "no-clip: spill check is for the walkthrough panel (the tome's boards sit outside its box by design)"
+  },
+  {
+   "at": "2026-10-22T03:33:12Z",
+   "subject": "showcase: the reaction row wraps instead of cutting its last emoji; no-clip checks the walkthrough panel for anything poking out"
+  },
+  {
+   "at": "2026-10-22T03:32:47Z",
+   "subject": "book: every page fits its sheet at any window size or zoom (no inner scroll, no cut lines); How to ask split over two pages…"
   },
   {
    "at": "2026-10-22T03:32:34Z",
    "subject": "Incident: the browser suite failed on 537ed375 (void-live-deploy/incidents.json)"
   },
   {
+   "at": "2026-10-22T03:32:15Z",
+   "subject": "loop studies before parity builds: loop-study files passive REA studies for parity picks (private best-at notes, findings to private…"
+  },
+  {
    "at": "2026-10-22T03:29:31Z",
    "subject": "Incident: the browser suite failed on 67903401 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T03:27:25Z",
-   "subject": "Incident: the browser suite failed on 1245c38f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:23:55Z",
-   "subject": "live check reverts: a failed MCP live run on main opens one revert PR (automerge, full checks decide; never pushes main)"
-  },
-  {
-   "at": "2026-10-22T03:22:43Z",
-   "subject": "Incident: the browser suite failed on b959542f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:22:21Z",
-   "subject": "showcase: recently built always shows; a device that had previewed every build saw no 'I built this' ever again. Builds verified in the…"
-  },
-  {
-   "at": "2026-10-22T03:21:39Z",
-   "subject": "self card: misses and page speed week by week, from the site tester's per-week counts and median load ms (no asks or words in the…"
-  },
-  {
-   "at": "2026-10-22T03:21:01Z",
-   "subject": "Incident: the browser suite failed on e4673039 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:19:29Z",
-   "subject": "strategy: nothing is removed or deferred, features evolve toward revenue/value; merged duplicates keep every phrase; revenue weight boosts…"
-  },
-  {
-   "at": "2026-10-22T03:17:47Z",
-   "subject": "Incident: the browser suite failed on 9f073176 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:14:44Z",
-   "subject": "docs/STRATEGY.md (owner directive paraphrased + guardrails), linked from TAGTEAM and handoff; want picker adds market reach: money and…"
-  },
-  {
-   "at": "2026-10-22T03:14:12Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-22T03:13:09Z",
-   "subject": "Incident: the browser suite failed on 96c8914b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:12:08Z",
-   "subject": "Incident: the browser suite failed on bec07a81 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:10:40Z",
-   "subject": "incident autopsy: remediation draft + send-to-builders action (asked by Verse)"
-  },
-  {
-   "at": "2026-10-22T03:10:18Z",
-   "subject": "Incident: the browser suite failed on 4c1a27ed (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:08:54Z",
-   "subject": "Incident: the browser suite failed on 0609fb9f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:07:11Z",
-   "subject": "Incident: the browser suite failed on 17e3d26a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T03:06:47Z",
-   "subject": "Incident: the browser suite failed on d4899e5f (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T03:29:27Z",
+   "subject": "deploy copies of void.html (main's were behind)"
   }
  ],
  "builders": {

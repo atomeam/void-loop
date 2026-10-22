@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 705,
+ "counted": 709,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -199,6 +199,27 @@
    "tests": 3
   },
   {
+   "file": "lib/game-kit.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/rally-rules.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-deck.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-find.js",
    "skills": 7,
    "direct": 4,
@@ -252,7 +273,7 @@
    "skills": 6,
    "direct": 1,
    "dependants": 9,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/card-share.js",
@@ -1203,7 +1224,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 11
   },
   {
@@ -1284,18 +1305,18 @@
    "tests": 5
   },
   {
+   "file": "lib/memory-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 0
-  },
-  {
-   "file": "lib/memory-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 2
   },
   {
    "file": "lib/privacy.js",
@@ -1600,13 +1621,6 @@
   },
   {
    "file": "lib/fuzzy.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/game-kit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2114,6 +2128,13 @@
     "lib/alt-pay.js",
     "lib/gumroad.js",
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/studies.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/memory-core.js"
    ],
    "importedBy": []
   },
@@ -2747,6 +2768,26 @@
     "skills/showcase.js"
    ]
   },
+  "lib/card-deck.js": {
+   "imports": [
+    "lib/game-kit.js",
+    "lib/rally-rules.js"
+   ],
+   "importedBy": [
+    "lib/card-share.js",
+    "skills/rally.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
+  },
   "lib/card-forge.js": {
    "imports": [
     "lib/art-rules.js",
@@ -2851,7 +2892,8 @@
   },
   "lib/card-share.js": {
    "imports": [
-    "lib/card-image.js"
+    "lib/card-image.js",
+    "lib/card-deck.js"
    ],
    "importedBy": [
     "lib/card-frame.js",
@@ -3408,7 +3450,22 @@
   },
   "lib/game-kit.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/card-deck.js",
+    "lib/rally-rules.js",
+    "skills/rally.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
   },
   "lib/go-ai.js": {
    "imports": [],
@@ -3448,6 +3505,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/store/[[path]].js",
+    "functions/api/studies.js",
     "functions/api/support.js",
     "functions/api/v01d-fixes.js",
     "functions/api/voice-reply.js",
@@ -3846,7 +3904,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/memory.js"
+    "functions/api/memory.js",
+    "functions/api/studies.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -4502,6 +4561,26 @@
     "lib/card-image.js",
     "skills/spectators.js",
     "skills/stage-image.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
+  },
+  "lib/rally-rules.js": {
+   "imports": [
+    "lib/game-kit.js"
+   ],
+   "importedBy": [
+    "lib/card-deck.js",
+    "skills/rally.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -7857,6 +7936,14 @@
     "skills/games.js",
     "skills/rebuild-map.js"
    ]
+  },
+  "skills/rally.js": {
+   "imports": [
+    "lib/rally-rules.js",
+    "lib/card-deck.js",
+    "lib/game-kit.js"
+   ],
+   "importedBy": []
   },
   "skills/rebuild-map.js": {
    "imports": [
