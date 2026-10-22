@@ -37,8 +37,13 @@ export function cardFrom(a = {}) {
   const words = b.split(/\s+/).filter(Boolean).length, rarity = RAR[String(a.rarity || '').toLowerCase()] != null ? String(a.rarity).toLowerCase() : src >= 3 ? 'uncommon' : 'common';
   const power = Math.max(1, Math.min(10, 2 + Math.min(4, Math.floor(Math.log2(words / 20 + 1))) + Math.min(2, src) + RAR[rarity]));
   const figures = count(/\d[\d,.]*/g, b), listed = b.split('\n').filter((l) => /^\s*(?:[-*•·]|\d+[.)])\s+\S/.test(l)).length;
-  const ability = src >= 2 ? 'backed' : figures >= 4 ? 'tally' : listed >= 3 ? 'rally' : words >= 250 ? 'deep' : /\?$|^(?:who|what|when|where|why|how|which|is|are|does|do|can)\b/i.test(t) ? 'spark' : words > 0 && words < 40 ? 'swift' : '';
-  return { id: 'c' + seedOf(t + '|' + b.slice(0, 400)).toString(36), name: t.slice(0, 80) || 'Answer', type, power, rarity, ability, words, src };
+  const asks = /\?$|^(?:who|what|when|where|why|how|which|is|are|does|do|can)\b/i.test(t) || /\?\s*$/m.test(b) || /^\s*[-*•·]\s*(?:who|what|when|where|why|how|which|is|are|does|do|can)\b/im.test(b);
+  const firstLine = (b.split('\n')[0] || '').split(/\s+/).filter(Boolean).length;
+  // every ability the text has earned, strongest evidence first; an answer plays the first, a Book card (spread) one of them chosen by its name, so
+  // a deck of Book pages (which all share the same shape: a line and a list of example asks) is not all one ability (asked 2026-10-22)
+  const earned = [src >= 2 || a.proven ? 'backed' : '', figures >= 4 ? 'tally' : '', listed >= 3 ? 'rally' : '', words >= 250 ? 'deep' : '', asks ? 'spark' : '', (words > 0 && words < 40) || (a.spread && firstLine > 0 && firstLine <= 10) ? 'swift' : ''].filter(Boolean);
+  const ability = !earned.length ? '' : a.spread ? earned[seedOf(t) % earned.length] : earned[0];
+  return { id: 'c' + seedOf(t + '|' + b.slice(0, 400)).toString(36), name: t.slice(0, 80) || 'Answer', type, power, rarity, ability, words, src, text: b.slice(0, 600) };
 }
 
 const shuffle = (list, r) => { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -97,7 +102,7 @@ function endRound(s) {
 
 // Verse's side. Level 1 plays its first card or passes; 2 plays to get just ahead and passes when ahead; 3 also saves cards when a round is lost
 // anyway; 4 ("Master") searches every line of the round with both hands open: it sees your hand, and the card says so.
-export const LEVELS = { 1: 'Easy', 2: 'Fair', 3: 'Sharp', 4: 'Master (sees your hand)' };
+export const LEVELS = { 1: 'Easy', 2: 'Fair', 3: 'Sharp', 4: 'Master (sees your hand)', 5: 'Planner (plays out practice games, never sees your hand)' };
 const value = (s) => (s.over ? (s.over.winner === 'verse' ? 1000 : s.over.winner === 'you' ? -1000 : 0) : (s.wins.verse - s.wins.you) * 100 + (s.hand.verse.length - s.hand.you.length) * 12 + score(s.row.verse) - score(s.row.you));
 function search(s, depth, roundAtStart) {
   if (s.over || depth === 0 || s.round !== roundAtStart) return { v: value(s) };
@@ -111,6 +116,7 @@ export function verseMove(s) {
   const mine = score(s.row.verse), yours = score(s.row.you), hand = s.hand.verse.slice().sort((a, b) => a.power - b.power);
   const lv = s.level || 2;
   if (lv <= 1) return hand.length && (mine <= yours || s.hand.verse.length > 6) ? { type: 'play', id: s.hand.verse[0].id } : { type: 'pass' };
+  if (lv === 5) return plannerMove(s);
   if (lv >= 4) return search(s, Math.min(6, 2 + Math.floor(12 / Math.max(2, s.hand.verse.length + s.hand.you.length)) * 2), s.round).m || { type: 'pass' };
   if (mine > yours && (s.passed.you || lv === 2)) return { type: 'pass' };
   const gap = yours - mine, mustWin = lv >= 3 && s.wins.you >= 1;
@@ -122,3 +128,35 @@ export function verseMove(s) {
 }
 /** the daily challenge's seed: the same for everyone on a UTC day. Pure. */
 export const dailySeed = (isoDay) => seedOf('verse-rally-' + String(isoDay).slice(0, 10));
+/** n cards spread over the five types and the abilities (a starter deck, Verse's deck, the daily decks): round-robin over type, then over ability
+ *  inside a type, each group shuffled by r. The cards themselves are unchanged; only which ones are dealt is balanced. Pure. */
+export function balancedPick(pool, n, r = rng(1)) {
+  const groups = new Map(); for (const c of shuffle(pool, r)) { const k = c.type; if (!groups.has(k)) groups.set(k, new Map()); const g = groups.get(k), a = c.ability || '-'; if (!g.has(a)) g.set(a, []); g.get(a).push(c); }
+  const out = [], seen = new Set(), types = TYPES.filter((t) => groups.has(t)), turn = new Map(types.map((t) => [t, 0]));
+  while (out.length < n && types.some((t) => [...groups.get(t).values()].some((l) => l.length))) {
+    for (const t of types) { if (out.length >= n) break; const g = groups.get(t), keys = [...g.keys()].filter((k) => g.get(k).length); if (!keys.length) continue;
+      const k = keys[turn.get(t) % keys.length]; turn.set(t, turn.get(t) + 1); const c = g.get(k).shift(); if (!seen.has(c.id)) { seen.add(c.id); out.push(c); } }
+  }
+  return out;
+}
+
+/** Planner (from Forge Duel's opponent): for each move, plays out quick practice games to the end of the match from a fair view: your hand is
+ *  reshuffled with your unseen deck first, so it never peeks. Picks the move that won most. Deterministic for a given state. Pure. */
+export function plannerMove(s0, sims = 30) {
+  const moves = legal(s0, 'verse'); if (moves.length < 2) return moves[0] || null;
+  const r = rng(seedOf(JSON.stringify([s0.seed, s0.round, s0.log.length]))); let best = null;
+  for (const m of moves) {
+    let won = 0;
+    for (let i = 0; i < sims; i++) {
+      let s = clone(s0); const pool = shuffle(s.hand.you.concat(s.deck.you), r); s.hand.you = pool.slice(0, s0.hand.you.length); s.deck.you = pool.slice(s0.hand.you.length);
+      s = apply(s, m); let guard = 0;
+      while (!s.over && guard++ < 80) { const side = s.turn, ms = legal(s, side); const pass = ms[ms.length - 1], plays = ms.slice(0, -1);
+        const behind = R_score(s, side) <= R_score(s, side === 'you' ? 'verse' : 'you');
+        s = apply(s, plays.length && (behind || r() < 0.3) ? plays[Math.floor(r() * plays.length)] : pass); }
+      won += s.over ? (s.over.winner === 'verse' ? 1 : s.over.winner === 'draw' ? 0.5 : 0) : 0.5;
+    }
+    if (!best || won > best.won) best = { m, won };
+  }
+  return best.m;
+}
+const R_score = (s, side) => score(s.row[side]);

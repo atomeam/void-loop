@@ -33,3 +33,16 @@ test('plain asks open it, look-alikes do not', () => {
   for (const a of skill.examples) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
+test('dealing is balanced across types and abilities, never repeats a card', () => {
+  const pool = []; for (const [t, b] of [['moon', 'the sky and stars'], ['paris', 'a city on a river'], ['bread', 'food recipe flour'], ['hamlet', 'a book by an author'], ['sum', 'math 1 2 3 4 5']]) for (let i = 0; i < 20; i++) pool.push(A(t + ' ' + i, b + ' ' + 'x '.repeat(i * 15) + (i % 2 ? '\n- a\n- b\n- c' : ''), i % 3));
+  const hand = R.balancedPick(pool, 12); assert.equal(hand.length, 12); assert.equal(new Set(hand.map((c) => c.id)).size, 12);
+  const per = {}; for (const c of hand) per[c.type] = (per[c.type] || 0) + 1; assert.equal(Object.keys(per).length, 5); assert.ok(Math.max(...Object.values(per)) <= 3);
+  assert.ok(new Set(hand.map((c) => c.ability)).size >= 3);
+});
+test('every older card shape folds into the one record', () => {
+  assert.equal(D.fromAny({ t: 'Tokyo', k: 'Place', b: 'Capital of Japan', src: [{ t: 'w' }] }).src, 1);
+  assert.equal(D.fromAny({ name: 'calc', power: 7, resistance: 5, income: 1, arrows: 2, abilities: ['proven'] }).game, 'Verse Duel');
+  assert.equal(D.fromAny({ key: 'weather', name: 'Weather', typeLine: 'Skill — Sky', adds: 'forecasts', isSkill: true }).kind, 'skill');
+  assert.equal(D.fromAny(R.cardFrom({ t: 'moon', b: 'sky' })).game, 'Verse Rally');
+  assert.equal(D.fromAny(null), null);
+});
