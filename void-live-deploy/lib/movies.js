@@ -50,7 +50,7 @@ const hostOf = (u) => { try { const x = new URL(u); return x.protocol === 'https
 /** an https url on one of the hosts, else '' (artwork and trailers come only from the sources' own CDNs). Pure. */
 export const onHost = (u, hosts) => { const h = hostOf(u); return h && hosts.some((x) => h === x || h.endsWith('.' + x)) ? String(u) : ''; };
 const APPLE_MEDIA = ['mzstatic.com'], APPLE_PAGES = ['apple.com'];
-const firstSentences = (s, n = 220) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); if (t.length <= n) return t; const cut = t.slice(0, n); const i = cut.lastIndexOf('. '); return (i > 80 ? cut.slice(0, i + 1) : cut.replace(/\s+\S*$/, '') + '…'); };
+const firstSentences = (s) => String(s || '').replace(/\s+/g, ' ').trim(); // the whole text (owner, 2026-10-21)
 
 /** the iTunes result that is this movie: same normalised title, and the year within one when both are known. Pure. */
 export function pickItunes(results, title, year) {

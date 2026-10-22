@@ -32,7 +32,7 @@ export const COMMANDS = [
 
 const NAMES = COMMANDS.map((c) => c.name);
 const out = (t, k = 'out') => ({ t: String(t), k });
-const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; };
+const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
 const asCount = (v, d) => { const n = parseInt(v, 10); return Number.isFinite(n) && n >= 1 ? Math.min(n, 50) : d; };
 
 /** split a typed line into the command word and the rest. Pure. */

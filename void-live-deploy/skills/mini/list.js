@@ -26,7 +26,7 @@ function drawPaper(c, title, rows, ink) {
     const y = ROW0 + i * ROWH + 14;
     g.strokeStyle = '#2b2b2e'; g.lineWidth = 3; g.strokeRect(36, y - 18, 36, 36);
     g.fillStyle = r.done ? '#7a7a80' : '#1d1d1f'; g.font = '46px "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive';
-    const text = r.text.length > 15 ? r.text.slice(0, 14) + '…' : r.text;
+    const text = r.text.length > 15 ? r.text.slice(0, 14) + '…' : r.text; // ellipsis-ok: drawn picture or short label, the full text is on the card
     g.fillText(text, 100, y);
     const t = ink && ink.i === i ? ink.t : (r.done ? 1 : 0);
     if (t > 0) { // the tick: down stroke then up stroke, drawn as far as t

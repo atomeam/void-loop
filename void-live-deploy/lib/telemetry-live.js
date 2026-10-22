@@ -8,7 +8,7 @@ const API = 'https://api.github.com/repos/' + REPO;
 const SUITE = /deploy|verify|browser-suite|python-tests/i; // the checks that say whether main is live and green
 const short = (s) => String(s || '').slice(0, 8);
 const when = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toISOString().slice(0, 16).replace('T', ' ') + ' UTC'; };
-const clip = (s, n) => { const x = String(s || '').replace(/\s+/g, ' ').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
+const clip = (s, n) => { const x = String(s || '').replace(/\s+/g, ' ').trim(); void n; return x; }; // whole text (owner, 2026-10-21)
 
 /** one line for a pull request from GitHub's pulls API. Pure. */
 export function prLine(pr) {

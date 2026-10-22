@@ -128,7 +128,7 @@ test('the tray (asked by Verse: grab a newly shipped skill from the walkthrough 
   assert.deepEqual(trayOf(steps, 0).map((x) => x.j), [1, 2, 3, 4, 5, 6]); assert.equal(TRAY, 6);
   assert.deepEqual(trayOf(steps, 8), [{ j: 9, line: 'step 9' }]); assert.deepEqual(trayOf(steps, 9), []);
   const long = trayOf([{ line: 'x' }, { line: 'the coral card reads the Florida Keys reef live, every hour of the day' }], 0)[0].line;
-  assert.ok(long.length <= 38 && long.endsWith('…'), long);
+  assert.ok(!long.endsWith('…'), long); // whole lines on the chips too (owner, 2026-10-21)
 });
 test('a drop moves the step\'s things to where it landed, kept inside the stage', async () => {
   const { dropDelta } = await import('../void-live-deploy/skills/showcase.js');

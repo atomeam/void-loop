@@ -44,7 +44,7 @@ export function layoutSheet(items, measure, page = PAGE) {
   const w = Math.floor((page.w - 2 * MARGIN - (cols - 1) * GAP) / cols), avail = page.h - HEAD - MARGIN - (rows - 1) * GAP;
   const h = Math.max(70, Math.min(260, Math.floor(avail / rows))), lineH = 30, room = Math.max(0, Math.floor((h - 62) / lineH));
   return items.map((it, i) => {
-    const lines = wrap(it.text, w - 32, (s) => measure(s, false)); if (lines.length > room) { lines.length = room; if (room) lines[room - 1] = lines[room - 1].replace(/\s*\S{0,2}$/, '') + '…'; }
+    const lines = wrap(it.text, w - 32, (s) => measure(s, false)); if (lines.length > room) { lines.length = room; if (room) lines[room - 1] = lines[room - 1].replace(/\s*\S{0,2}$/, '') + '…'; } // ellipsis-ok: drawn picture or short label, the full text is on the card
     const title = wrap(it.title, w - 32, (s) => measure(s, true))[0] || '';
     return { x: MARGIN + (i % cols) * (w + GAP), y: HEAD + Math.floor(i / cols) * (h + GAP), w, h, title, lines };
   });

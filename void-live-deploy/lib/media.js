@@ -120,7 +120,7 @@ export function pickShow(j, title, year) {
   if (!j || typeof j !== 'object' || normTitle(j.name) !== normTitle(title)) return null;
   const y = cleanYear(year), py = cleanYear(String(j.premiered || '').slice(0, 4)); if (y && py && Math.abs(py - y) > 1) return null;
   const seasons = (j._embedded && Array.isArray(j._embedded.seasons) ? j._embedded.seasons : []).filter((x) => x && x.number > 0), eps = seasons.reduce((n, x) => n + (+x.episodeOrder > 0 ? +x.episodeOrder : 0), 0);
-  const sum = strip(j.summary), cut = sum.length > 240 ? sum.slice(0, 240).replace(/\s+\S*$/, '') + '…' : sum, net = (j.network && j.network.name) || (j.webChannel && j.webChannel.name) || '';
+  const sum = strip(j.summary), cut = sum, net = (j.network && j.network.name) || (j.webChannel && j.webChannel.name) || '';
   return {
     title: cleanTitle(j.name), year: py, genres: (Array.isArray(j.genres) ? j.genres : []).map(cleanTitle).filter(Boolean).slice(0, 4), genre: cleanTitle((j.genres || [])[0] || ''), status: cleanTitle(j.status), network: cleanTitle(net),
     ended: cleanYear(String(j.ended || '').slice(0, 4)), overview: cut, seasons: seasons.length || null, episodes: eps || null, rating: j.rating && +j.rating.average > 0 ? Math.round(j.rating.average * 10) / 10 : null,

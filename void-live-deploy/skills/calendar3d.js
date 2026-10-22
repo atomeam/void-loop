@@ -49,7 +49,7 @@ function ensureStyle() {
     '.c3d-day:hover{background:#f6efe2}',
     '.c3d-day.today .n{color:#fff;background:#c23a2e;border-radius:999px;padding:0 5px;align-self:flex-start}',
     '.c3d-day.sel{background:#fff4d6;box-shadow:inset 0 0 0 2px #e0a43a}',
-    '.c3d-ev{font-size:9.5px;line-height:1.25;color:#1f3f8f;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.c3d-ev{font-size:9.5px;line-height:1.25;color:#1f3f8f;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}', // ellipsis-ok: drawn picture or short label, the full text is on the card
     '.c3d-more{font-size:9px;color:#8b877a}',
     // spiral rings over the top edge
     '.c3d-rings{position:absolute;left:14px;right:14px;top:-9px;height:24px;display:flex;justify-content:space-between;transform:translateZ(3px);pointer-events:none}',

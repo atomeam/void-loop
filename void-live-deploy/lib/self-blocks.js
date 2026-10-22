@@ -53,7 +53,7 @@ export function shortLine(t) {
   const s = String(t == null ? '' : t).replace(/\s+/g, ' ').trim();
   if (s.length <= SHORT) return s;
   const cut = s.slice(0, SHORT), at = cut.lastIndexOf(' ');
-  return (at > SHORT / 2 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, '') + '…';
+  return (at > SHORT / 2 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, '') + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
