@@ -435,6 +435,7 @@ async function fresh(...inits) {
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
   for (const init of inits) await ctx.addInitScript(init);
+  await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const w = document.getElementById('whisper'); if (w) new MutationObserver(() => { if (w.textContent) window.__whisperN = (window.__whisperN || 0) + 1; }).observe(w, { childList: true, characterData: true, subtree: true }); }); }); // ask() below: a whispered answer counts
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
   // asks below miss their fixed waits. tools/test_3d.mjs turns them on with fresh({ mini3d: true }).
@@ -489,8 +490,11 @@ async function fresh(...inits) {
   // empty cards in a dozen checks because the first answer took longer than 450-500 ms; each passed alone). An ask the page answered in
   // time costs nothing more; the page logs every answer in its loop log (LOOP_KEY), the same signal tools/bench.mjs waits on.
   const logged = (t, since) => p.evaluate(([q, s]) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim() === q.trim() && String(x.t) >= s); } catch (_) { return false; } }, [t, since]).catch(() => false);
-  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
-    if (!(await logged(t, since))) { await until(() => logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
+  // an ask answered by a whispered line (a greeting, "test") is not in the loop log: it counts as answered once the whisper spoke, so the slack
+  // below never outwaits the whisper's own 3.5 s and a check reading it finds it still there (2026-10-22: "hello" read "" after 4 s more)
+  const saidN = () => p.evaluate(() => window.__whisperN || 0).catch(() => 0);
+  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); const n0 = await saidN(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
+    if (!(await logged(t, since)) && (await saidN()) === n0) { await until(async () => (await saidN()) !== n0 || logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -4893,7 +4897,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO Verse')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split(/ADDS TO V(OID|ERSE)/i)[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
