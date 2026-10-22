@@ -4,7 +4,7 @@ const CACHE = 'void-shell-v1';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
-const CACHE_3D = 'void-3d-v1';
+const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vendor path (below), so it is dropped on activate
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
@@ -17,7 +17,14 @@ self.addEventListener('fetch', (e) => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
   if (is3d(url.pathname)) {
-    e.respondWith(caches.open(CACHE_3D).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => { if (res.ok && res.status === 200) c.put(req, res.clone()); return res; }))));
+    // a missing file comes back as the page's HTML with a 200 (the site's fallback), and a cache first copy of that would break
+    // every 3D board for that browser for good (issue #1114): only a real file is kept, and a kept HTML copy is dropped and refetched
+    const real = (res) => res && res.ok && res.status === 200 && !/text\/html/.test(res.headers.get('content-type') || '');
+    e.respondWith(caches.open(CACHE_3D).then((c) => c.match(req).then((hit) => {
+      if (real(hit)) return hit;
+      if (hit) c.delete(req);
+      return fetch(req).then((res) => { if (real(res)) c.put(req, res.clone()); return res; });
+    })));
     return;
   }
   const nav = req.mode === 'navigate';

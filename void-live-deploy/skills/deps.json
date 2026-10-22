@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 705,
+ "counted": 707,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -213,6 +213,13 @@
    "tests": 0
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 7,
+   "direct": 7,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/probe-log.js",
    "skills": 6,
    "direct": 1,
@@ -252,7 +259,7 @@
    "skills": 6,
    "direct": 1,
    "dependants": 9,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/card-share.js",
@@ -279,13 +286,6 @@
    "file": "lib/pack5-ui.js",
    "skills": 6,
    "direct": 5,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 6,
-   "direct": 6,
    "dependants": 6,
    "tests": 1
   },
@@ -1203,7 +1203,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 11
   },
   {
@@ -1284,18 +1284,18 @@
    "tests": 5
   },
   {
+   "file": "lib/memory-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 0
-  },
-  {
-   "file": "lib/memory-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 2
   },
   {
    "file": "lib/privacy.js",
@@ -2114,6 +2114,13 @@
     "lib/alt-pay.js",
     "lib/gumroad.js",
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/studies.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/memory-core.js"
    ],
    "importedBy": []
   },
@@ -3448,6 +3455,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/store/[[path]].js",
+    "functions/api/studies.js",
     "functions/api/support.js",
     "functions/api/v01d-fixes.js",
     "functions/api/voice-reply.js",
@@ -3846,7 +3854,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/memory.js"
+    "functions/api/memory.js",
+    "functions/api/studies.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -4903,6 +4912,7 @@
     "skills/games.js",
     "skills/languages.js",
     "skills/list-starters.js",
+    "skills/rooms.js",
     "skills/stage-out.js",
     "skills/time.js"
    ]
@@ -6797,6 +6807,7 @@
    "imports": [],
    "importedBy": [
     "skills/room.js",
+    "skills/rooms.js",
     "skills/walls.js"
    ]
   },
@@ -7299,7 +7310,7 @@
    "imports": [
     "skills/mini/tabletop.js",
     "skills/monopoly-rules.js",
-    "vendor/three-r180/addons/RoundedBoxGeometry.js"
+    "vendor/three-r180a/addons/RoundedBoxGeometry.js"
    ],
    "importedBy": []
   },
@@ -7953,6 +7964,17 @@
    "imports": [
     "skills/home.js",
     "skills/walls.js"
+   ],
+   "importedBy": [
+    "skills/rooms.js"
+   ]
+  },
+  "skills/rooms.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/room.js",
+    "skills/walls.js",
+    "skills/home.js"
    ],
    "importedBy": []
   },
@@ -8747,7 +8769,8 @@
     "skills/home.js"
    ],
    "importedBy": [
-    "skills/room.js"
+    "skills/room.js",
+    "skills/rooms.js"
    ]
   },
   "skills/wants.js": {

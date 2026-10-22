@@ -157,7 +157,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       && sig.now === 'true' && sig.busy === 'false' && sig.opacity === '1' && sig.events.length === 1 && sig.events[0].key === 't3' && sig.events[0].kind === 'sample' && sig.listed === true,
       JSON.stringify(sig));
     check('3D scene: a miniature mounts on demand (vendored three.js r180 and skills/mini/sample.js load only now) with ACES, sRGB, PCF soft shadows, a room environment map, contact shadows, orbit and zoom, and GLTFLoader with meshopt and KTX2; bad kinds are refused',
-      !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
+      !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180a\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
       JSON.stringify({ r, drawn, pix, hits, e: F.errors }));
     const moved = await F.p.evaluate(async () => {
       const m = await import('/skills/scene3d.js'); const a = document.getElementById('t3host'), b = document.createElement('div'); b.style.cssText = 'position:fixed;left:400px;top:40px;width:200px;height:200px'; document.body.appendChild(b);
