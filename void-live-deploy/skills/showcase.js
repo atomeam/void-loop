@@ -135,6 +135,16 @@ export function markShown(steps) {
   write(SHOWN_KEY, JSON.stringify(all.slice(-3000)));
 }
 export const VERIFIED_URL = '/claims-verified.json';
+/** how far back "recently built" reaches: what Verse built in these days stays one tap away even after it was previewed
+ *  (owner, 2026-10-21: "still not seeing i made this anymore": a device that had seen every build, or had said "show me everything",
+ *  had every ask in a2m.void.shown.v1, so nothing ever showed again and there was no way back to it) */
+export const RECENT_DAYS = 7;
+/** the verified playable builds of the last `days` days, newest first, previewed before or not. Pure. */
+export function recentOf(entries, verified, now = Date.now(), days = RECENT_DAYS) {
+  const after = new Date(now - days * 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+  return whatsNew(sinceLast(entries, after), { verified }).steps;
+}
+let recentSteps = null; // the last recent list, so the sparkle comes back when a walkthrough ends
 async function ledger() {
   const r = await fetch(LEDGER_URL, { cache: 'no-cache' });
   if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -222,6 +232,7 @@ function end(stageApi) {
   const s = document.getElementById('showcase-scrim'); if (s) s.remove();
   removeEventListener('keydown', tour.esc, true);
   tour = null;
+  if (recentSteps && recentSteps.length) bell(stageApi, recentSteps, { recent: true }); // recently built stays one tap away
 }
 
 // take away what the last step put up (Next), unless it was kept
@@ -371,22 +382,37 @@ export async function nudge(stageApi, note) {
   if (!floor) { write(SEEN_KEY, nowIso()); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: await verifiedSet() });
-  if (!steps.length) return 0;
+  const V = await verifiedSet();
+  const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: V });
+  recentSteps = recentOf(list, V);
+  if (!steps.length) {
+    // nothing unseen: what was built recently still shows, as a quiet line and the sparkle, never gone after one look
+    if (!recentSteps.length) return 0;
+    const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode !== 'recent') return 0;
+    if (old) old.remove();
+    bell(stageApi, recentSteps, { recent: true });
+    if (note && !note.querySelector('.showcase-pill')) pill(stageApi, note, recentSteps, 'Recently built: ', false);
+    return recentSteps.length;
+  }
   // marked shown only when it is seen through (the walkthrough starts): a line that flashed by while you typed used to use up every build,
   // so nothing was ever previewed again (owner, 2026-10-21: "I am not even seeing I built this previews")
+  const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode === 'recent') old.remove(); // something new outranks the recent sparkle
   if (!note) return steps.length;
+  if (note.querySelector('.showcase-pill')) note.textContent = '';
+  pill(stageApi, note, steps, 'I built this: ', true);
+  bell(stageApi, steps);
+  return steps.length;
+}
+// the quiet line: the newest thing by name and what it does, never only a count (owner, 2026-10-21: details on every preview)
+function pill(stageApi, note, steps, head, isNew) {
   const n = steps.length;
   const lead = document.createElement('span');
-  lead.className = 'showcase-pill';
-  // the newest thing by name and what it does, never only a count (owner, 2026-10-21: details on every preview)
-  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I built this: ' + steps[0].line + (n > 1 ? ' (and ' + (n - 1).toLocaleString('en') + ' more)' : '') + ' · ';
+  lead.className = 'showcase-pill'; lead.dataset.mode = isNew ? 'new' : 'recent';
+  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + head + steps[0].line + (n > 1 ? ' (and ' + (n - 1).toLocaleString('en') + ' more)' : '') + ' · ';
   const go = document.createElement('a');
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
-  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; markShown(steps); start(stageApi, steps); });
+  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; const b = document.getElementById('whatsnew-bell'); if (b) b.remove(); if (isNew) markShown(steps); start(stageApi, steps, { label: isNew ? 'Built while you were away' : 'Recently built' }); });
   note.textContent = ''; note.append(lead, go);
-  bell(stageApi, steps);
-  return n;
 }
 
 /** while the tab stays open, look again for what Verse built (owner, 2026-10-19: "its supposed to pop up when Verse builds something"): the
@@ -396,7 +422,7 @@ export async function nudge(stageApi, note) {
 export const WATCH_MS = 4 * 60 * 1000;
 export function watch(stageApi, note, ms = WATCH_MS) {
   if (typeof document === 'undefined' || watch.on) return; watch.on = true;
-  const look = () => { if (document.visibilityState !== 'visible' || tour || document.getElementById('whatsnew-bell')) return; nudge(stageApi, note).catch(() => {}); };
+  const look = () => { const b = document.getElementById('whatsnew-bell'); if (document.visibilityState !== 'visible' || tour || (b && b.dataset.mode !== 'recent')) return; nudge(stageApi, note).catch(() => {}); };
   setInterval(look, ms);
   document.addEventListener('visibilitychange', look);
 }
@@ -405,18 +431,20 @@ export function watch(stageApi, note, ms = WATCH_MS) {
  * notification icon on the stage to prevent users from having to type it"): a bell-less sparkle with the count, pulsing quietly; a tap
  * starts the same walkthrough as typing "what's new", and the icon and the quiet line both go. It appears only when something is new
  * (so a first visit and an empty page stay empty) and never moves anything. Pure DOM, nothing sent anywhere. */
-export function bell(stageApi, steps) {
+export function bell(stageApi, steps, { recent = false } = {}) {
   if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
   const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell';
-  const n = steps.length; b.dataset.count = String(n);
-  b.setAttribute('aria-label', (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
-  b.title = 'What\'s new: tap to see what Verse made';
+  const n = steps.length; b.dataset.count = String(n); b.dataset.mode = recent ? 'recent' : 'new';
+  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' Verse made this week: show me'
+    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
+  b.title = recent ? 'Recently built: tap to see what Verse made this week' : 'What\'s new: tap to see what Verse made';
   b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
     + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
     + '@media (prefers-reduced-motion:reduce){.whatsnew-bell,.whatsnew-bell svg{animation:none}}</style>'
     + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z" fill="currentColor"/></svg><b aria-hidden="true">' + (n > 99 ? '99+' : n) + '</b>'; // void-review: ok: static markup, the count is a number
-  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); markShown(steps); start(stageApi, steps); });
+  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); if (!recent) markShown(steps); start(stageApi, steps, { label: recent ? 'Recently built' : 'Built while you were away' }); });
+  if (recent) b.style.animation = 'none'; // seen before: still there, no longer pulsing for attention
   document.body.appendChild(b);
   return b;
 }
@@ -446,6 +474,8 @@ async function run(text, api) {
   const wip = fresh.waiting.length ? ' · ' + fresh.waiting.length + ' more in progress (not answering yet)' : '';
   // a thing is previewed once (owner, 2026-10-16): with nothing new there is no replay, only the count and the way to see it all
   if (!fresh.steps.length) {
+    const recent = recentOf(list, V);
+    if (recent.length) { recentSteps = recent; start(stageApi, recent, { label: 'Nothing unseen since you last looked · recently built' + wip }); return 'showcase'; }
     const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
     say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
     return 'showcase'; // it answered (the count and how to see it all): 'none' let the ask fall through to the encyclopedia, so claims-verify dropped "what's new"

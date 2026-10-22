@@ -35,6 +35,15 @@ console.log('loop-reach: ok');
 // revenue weight only boosts (owner, 2026-10-21): reach is never below 1, whatever the tags say
 assert.equal(reach('gift-store', { bad: { weight: -5, patterns: ['store'] } }) >= 1, true);
 console.log('loop-reach-boost: ok');
+import { parityPicks, toFile } from './loop-study.mjs';
+import { studiesAsMemories } from './loop-library.mjs';
+const PT = { money: { weight: 0.5, patterns: ['store'] }, parity: { weight: 0.25, patterns: ['calendar', 'map'] } };
+const pp = parityPicks([{ name: 'calendar' }, { name: 'gift-store' }, { name: 'map-card' }], PT).map((p) => p.name);
+assert.deepEqual(pp, ['calendar', 'map-card']);
+assert.deepEqual(toFile([{ name: 'calendar' }, { name: 'map' }], { calendar: 'https://x.example/', map: 'https://y.example/' }, ['map']), [{ skill: 'calendar', url: 'https://x.example/' }]);
+const sm = studiesAsMemories([{ name: 'Study: how does it do calendar', summary: 'studied x: 3 scripts', updated: '2026-10-21T00:00:00Z' }]);
+assert.equal(importance(sm[0]), 1); assert.ok(retrieve(sm, 'calendar invites', { now })[0]);
+console.log('loop-study: ok');
 import { refine } from './loop-refine.mjs';
 import { retryable } from './grow-lessons.mjs';
 assert.equal(refine('weather shows the forecast...').text, 'weather shows the forecast.');

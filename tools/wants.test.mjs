@@ -157,3 +157,11 @@ test('reasoning trace: each ask carries the reflection that made it, each want w
   for (const a of ['why do you want those upgrades', 'show the reasoning behind your wants', 'wants reasoning trace']) assert.ok(w.default.match(a, a), a);
   assert.ok(!w.default.match('why do you want that', 'why do you want that'));
 });
+test('"what is on your wishlist?" shows the ranked wishlist from self.json, not the build list (owner, 2026-10-21)', async () => {
+  const w = await import('../void-live-deploy/skills/wants.js');
+  for (const a of ['what is on your wishlist?', 'whats on your wish list', 'show your wishlist', "what's on verse's wishlist"]) assert.ok(w.default.match(a.toLowerCase(), a) && w.isWishlist(a), a);
+  for (const a of ['add milk to my wishlist', 'my amazon wishlist']) assert.ok(!w.default.match(a.toLowerCase(), a), a);
+  const h = w.wishlistHtml([{ rank: 1, item: 'Stay inside the free tier', free: 'move answers', value: 'high', why: 'free', cost: '$5' }], (s) => String(s));
+  assert.ok(h.includes('My wishlist') && h.includes('Free path: move answers') && h.includes('Why this rank: free') && !h.includes('$5'));
+  assert.ok(w.wishlistHtml(null, String).includes('could not read my wishlist'));
+});

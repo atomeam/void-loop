@@ -31,6 +31,7 @@ const server = http.createServer((req, res) => {
 }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 
+const EXP_N = (() => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')).families.reduce((n, f) => n + (f.skills || []).filter((x) => x.tier === 'experiment').length, 0); } catch (_) { return 1; } })();
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 // --only "<words>": run just the sections whose heading has all those words (and the short opening section every run shares),
 // so a builder tests the flow it touched in a minute instead of the whole suite (owner, 2026-10-11: the full suite runs on
@@ -2717,9 +2718,9 @@ try {
     const seenAfterFirst = await seen();
     verified = ['sticky note buy milk', 'make a counter']; // the live check ran: the counter answers now
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
-    const second = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
+    const second = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
     check('look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered',
-      !/while you were away/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I made 2 new things while you were away/.test(second),
+      !/I built this/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I built this: a counter you can tap \(and 1 more\)/.test(second),
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
@@ -2736,12 +2737,13 @@ try {
     await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
     const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    const first = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
-    // the line was seen and ignored: the next visit does not say it again
+    const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
+    // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
+    await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
-      /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
+      /I built this: a counter you can tap \(and 1 more\)/.test(first) && !/I built this/.test(second), JSON.stringify({ first, second }));
     await P.ctx.close();
   }
   if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Verse
@@ -2773,6 +2775,24 @@ try {
     const after = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 8000);
     check('look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new',
       !before && after === '1' && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-21: "still not seeing i made this anymore": a device that had previewed every build (or said "show me everything") had every ask
+  // in a2m.void.shown.v1, so no preview ever showed again; what was built this week stays one tap away, with its whole line, however often it was seen
+  if (want("look what I made: what was built recently always shows, even on a device that has seen everything")) {
+    const at = new Date(Date.now() - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+    const LEDGER = [{ at, by: 'verse', kind: 'build', what: 'ritual template', show: 'A routine becomes back-to-back daily calendar events in one file you can download', try: 'morning routine as calendar events' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-r')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['morning routine as calendar events'])); sessionStorage.setItem('sc-r', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['morning routine as calendar events'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bellOk = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.mode).catch(() => null), 20000);
+    const line = await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    const whole = await P.p.$eval('#away-note', (e) => e.scrollWidth <= e.clientWidth + 1 || getComputedStyle(e).whiteSpace !== 'nowrap').catch(() => false);
+    await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
+    check('look what I made: what was built recently always shows, even on a device that has seen everything: the sparkle stays (recent), the quiet line names the build in full, and a tap plays it',
+      bellOk === 'recent' && /Recently built: A routine becomes back-to-back daily calendar events in one file you can download/.test(line) && whole && /1 of 1/.test(bar) && !P.errors.length,
+      JSON.stringify({ bellOk, line, whole, bar, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
@@ -2847,7 +2867,7 @@ try {
     await ledger(P.ctx); await P.p.waitForTimeout(500);
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
-    r.pill = await until(async () => ((await note(P)).includes('I made 3 new things while you were away') ? await note(P) : ''), 6000);
+    r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
     await P.p.click('[data-showcase="show"]');
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
@@ -2936,7 +2956,7 @@ try {
     await P.ctx.route(/\/api\/miss(?:\?|$)/, (r) => { try { misses.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} r.fulfill({ status: 204, body: '' }); });
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    await until(async () => /while you were away/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
+    await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
     await P.p.click('[data-showcase="show"]');
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
@@ -5755,7 +5775,7 @@ try {
       const cs2 = await import('/lib/card-share.js'), ci = await import('/lib/card-image.js'), d = cs2.readCard(pg), img = cs2.imageData(pg, d), svg = ci.cardSvg(img);
       return { heads: heads.map((h) => h.textContent), hw: +cs(hd).fontWeight, hs: parseFloat(cs(hd).fontSize), ps: parseFloat(cs(body).fontSize), inSummary: heads.filter((h) => h.tagName === 'H3').every((h) => h.parentElement.tagName === 'SUMMARY'), before, after, back, inset,
         len: d.b.length, note: cs2.fullNote(d.b.length), allAsks: recentCount(d.b), detailNew: /built ask number 0[\s\S]*what the builder shipped/.test(d.b), detailOld: (d.b.match(/what the builder shipped/g) || []).length, tail: d.b.slice(-80),
-        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350"/g) || []).length, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
+        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350" height="\d+" rx="\d+" fill="rgba\(/g) || []).length /* the track of each family bar; a full bar (share 1) draws a second 350-wide rect */, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
         redesign: { evolved: pg.querySelectorAll('.vc-evolved-note').length, art: [...pg.querySelectorAll(':scope > .vc-art > img, :scope > .vc-art > svg')].filter((n) => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden' && n.getBoundingClientRect().width > 40).length,
           smallOverArt: [...pg.querySelectorAll(':scope > .vc-art *')].filter((n) => n.tagName !== 'svg' && n.closest('svg') === null && n.getBoundingClientRect().width > 0 && n.getBoundingClientRect().width < pg.querySelector(':scope > .vc-art').getBoundingClientRect().width * 0.6 && getComputedStyle(n).display !== 'none').map((n) => n.className && String(n.className)),
           open: [...pg.querySelectorAll('details.vs-sec')].filter((d) => d.open).map((d) => d.dataset.sec), quote: !!pg.querySelector('section[data-sec=words] > blockquote.vs-voice'), quoteBar: getComputedStyle(pg.querySelector('blockquote.vs-voice')).borderLeftWidth,
@@ -5770,7 +5790,7 @@ try {
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 13 && !S.errors.length, // 10 older builds' details and the 3 the lead shows
+        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
@@ -5858,7 +5878,7 @@ try {
       return { tiers: [...new Set([...pg.querySelectorAll('li[data-skill]')].filter(vis).map((li) => li.dataset.tier))], skills: [...pg.querySelectorAll('li[data-skill]')].filter(vis).length, fams: [...pg.querySelectorAll('.fh-family')].filter((f) => !f.hidden).length, pressed: pg.querySelector('[data-fh-filter][aria-pressed="true"]').dataset.fhFilter }; }, k);
     const exp = await pick('experiment'), pro = await pick('proven'), all = await pick('all');
     check('void asks batch 4: the family-health card\'s quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)',
-      exp.tiers.join() === 'experiment' && exp.skills > 0 && pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
+      (EXP_N ? exp.tiers.join() === 'experiment' && exp.skills > 0 : exp.skills === 0 && exp.pressed === 'experiment') && /* every experiment skill can be promoted (2026-10-21: none left) */ pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
       JSON.stringify({ exp, pro, all, errors: F.errors }));
     await F.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });

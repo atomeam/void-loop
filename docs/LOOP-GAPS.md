@@ -42,9 +42,10 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Meta search over agent designs | ADAS | missing | out of scope while the loop is model-free in CI |
 | Agent-computer interface: lint/test on every edit | SWE-agent, OpenHands | have | `tools/checks.mjs`, verify.yml browser suite |
 | Sandboxed execution | OpenHands | have | build job has no token and no network; write job only moves allowlisted files |
+| Study the leader before building a parity feature | STRATEGY.md, REA | **built** | `tools/loop-study.mjs` files a passive REA study for parity picks (private memory only); `loop-library --studies` retrieves them on the owner's machine |
 | Prompt/program optimisation against a metric | DSPy/MIPRO | missing | Verse's prompts are hand-edited; no metric-driven search |
 | Eval-driven development (benchmark gates merges) | eval practice | have | `bench.json`, `bench.best.json`, bench floors |
-| Canary + automatic rollback | SRE | partial | auto-revert on a red browser suite (`revert-target.mjs`); no staged canary, live-watch failure does not revert |
+| Canary + automatic rollback | SRE | **built** | red browser suite reverts (`revert-target.mjs`); a failed live check (MCP live) opens a revert PR (`live-revert.yml`); no staged canary yet |
 | Expected-value / bandit want picking | bandits | **built** | `lacks.mjs` orders by lack x chance x market reach (`tools/revenue-tags.json`, docs/STRATEGY.md) (Beta(1,1) mean of wins/misses, `grow-lessons.chance`); `familyScores` gives per-family outcomes |
 | Progress over time (proven, miss rate, speed) | eval practice | missing | no time series on the self card yet |
 

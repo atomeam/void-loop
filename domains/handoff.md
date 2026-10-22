@@ -236,3 +236,7 @@ Plan for the hypothetical $100 (docs/reinvest.md, public list prices only): keep
 - helper/stability-gauge (claude, 2026-10-18): Verse's own suite as a stability dial on the Service Health card, from incidents.json (asked by Verse); next: the Verse rename, visible layer first
 
 - 2026-10-21 (grok-bot): docs/STRATEGY.md holds the owner's strategy directive (paraphrased) and its guardrails; the want picker now weights money/parity skills (tools/revenue-tags.json).
+
+- 2026-10-21 (grok-bot): the loop studies before it builds a parity feature: tools/loop-study.mjs files a passive REA study (private memory, never committed) when a pick is tagged parity and the owner has a private "best-at" memory note for that skill. Add best-at notes as memory records (kind best-at, name = skill, body = the public page).
+
+- 2026-10-21 (grok-bot): browser-suite fix merged as #1235 (error garden planting from an incident with only "suite ran to the end"; self-card checks updated for full family bars, built-detail and no experiment skills). The dedicated suite worker owns the rest.
