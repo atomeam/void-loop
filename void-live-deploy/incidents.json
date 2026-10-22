@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T03:33:47.364Z",
-   "sha": "9f07317661f95cae3b4046186d157072a0769038",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39715660602",
+   "at": "2026-10-22T03:38:01.591Z",
+   "sha": "e46730391399c0ca48626a0c09cb250c7590f6e7",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39715775803",
    "suite": "browser suite on main",
    "checks": [
     "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
@@ -14,21 +14,13 @@
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/grow.mjs",
-    "tools/star-parallax.test.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
-    "void-live-deploy/skills/what.json",
-    "void-live-deploy/void.growth.json",
+    "docs/LOOP-GAPS.md",
+    "docs/STRATEGY.md",
+    "docs/TAGTEAM.md",
     "domains/handoff.md",
-    "tools/everything.test.mjs",
-    "void-live-deploy/functions/api/markets.js"
+    "tools/lacks.mjs",
+    "tools/loop-parts.test.mjs",
+    "tools/revenue-tags.json"
    ]
   },
   {
