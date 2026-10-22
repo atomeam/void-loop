@@ -453,6 +453,16 @@ export default {
     ]
    },
    {
+    "name": "resonant-membrane",
+    "examples": [
+     "resonant membrane",
+     "pluck the membrane",
+     "membrane mind",
+     "singing field",
+     "pluck the field"
+    ]
+   },
+   {
     "name": "vector-field-mind",
     "examples": [
      "show me a vector field mind",
