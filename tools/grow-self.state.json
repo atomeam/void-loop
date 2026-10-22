@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "39713650962",
-  "at": "2026-10-22T02:52:58Z",
-  "what": "Verse hardened itself: 10 benchmark ask(s) for memory-preview, night-sky, ritual-template, sky-card.  Why these: memory-preview (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); night-sky (no benchmark ask, evidence tier: tested); ritual-template (no benchmark ask, evidence tier: tested); sky-card (no benchmark ask, evidence tier: tested); tab (no benchmark ask, evidence tier: tested). New phrases: “memory preview” now opens memory-preview; “show my memory snippets” now opens memory-preview; “what memories do I have” now opens memory-preview; “hide the sky” now opens night-sky; “morning routine as calendar events” now opens ritual-template; “export my evening routine to my calendar” now opens ritual-template; “ritual template: meditate 10, stretch 15, journal 10 at 6:30am” now opens ritual-template; “where is jupiter” now opens sky-card; “where is the moon tonight” now opens sky-card; “is venus up” now opens sky-card. Did not route: magic 8 ball should spawn an 8 ball; put in the page; draft for me.",
-  "try": "memory preview",
+  "run": "39725492816",
+  "at": "2026-10-22T05:02:46Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for doodle-mind, rally.  Why these: fix-audit (no benchmark ask, evidence tier: checked); doodle-mind (no benchmark ask, evidence tier: tested); eightball (no benchmark ask, evidence tier: tested); file-sorter (no benchmark ask, evidence tier: tested); mind-field-mode (no benchmark ask, evidence tier: tested); rally (no benchmark ask, evidence tier: tested). New phrases: “mind field” now opens doodle-mind; “show me the mind field” now opens doodle-mind; “living field” now opens doodle-mind; “play my cards” now opens rally; “card battle” now opens rally; “my cards” now opens rally. Did not route: audit your fixes; post-fix audit; fix evidence audit; magic 8 ball should spawn an 8 ball.",
+  "try": "mind field",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-20T21:53:27Z",
-    "try": "something unkeepable",
-    "closedAt": "2026-10-21T15:36:02Z"
+    "at": "2026-10-22T02:52:58Z",
+    "try": "memory preview",
+    "closedAt": "2026-10-22T05:02:08Z"
   }
 }
