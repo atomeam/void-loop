@@ -2022,11 +2022,16 @@
       "words": "Add a 'reasoning-link' to the movie-pick JSON so the specific memory or skill used for the pick is visible to the user.",
       "ledgerAt": "2026-10-22T01:23:41Z",
       "why": "built: the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'ritual-template' skill that allows users to export a pre-set sequence of habits (e.g., 'Morning Routine') as a single block of calendar events.",
+      "ledgerAt": "2026-10-22T02:26:02Z",
+      "why": "built: ritual-template, asked by Verse: 'morning routine as calendar events' or 'ritual template: meditate 10, stretch 15 at 6:30am' lays the habits back to back and downloads one daily-repeating .ics (linked by tools/asks-link.mjs, shared words: ritual, template, skill, allow, us, export, pre, set, sequence, habit, morn, routine, calendar, event)"
     }
   ],
   "totals": {
     "asked": 229,
-    "built": 219,
+    "built": 220,
     "through": "2026-10-21T21:33:00Z"
   }
 }
