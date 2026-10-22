@@ -15,6 +15,7 @@ import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rankFindings } from './study-engine.mjs'; // Verse's own evidence ranking, on top of REA's capture
 
 export const REA = 'rea-agents@6.5.0'; // pinned: a new REA version is read before it is used
 // the only REA commands this tool runs: passive and static (no debugger, no execution observer, no native or firmware tools)
@@ -65,6 +66,13 @@ export function digestOf({ url, question, at, result }) {
     L.push('## Endpoints the code calls (evidence: script:line)');
     const seen = new Set();
     for (const e of endpoints) { const k = e.value + ' ' + e.mechanism; if (seen.has(k)) continue; seen.add(k); L.push('- `' + String(e.value).slice(0, 120) + '` via ' + e.mechanism + ' at ' + where(e.location)); if (seen.size >= 60) break; }
+    L.push('');
+  }
+  if (endpoints.length) { // Verse's own ranking: every REA sighting of one endpoint counts, direct calls weigh most (tools/study-engine.mjs)
+    const strength = (m) => /fetch|xhr|websocket|eventsource|beacon/i.test(m) ? 0.9 : /^call:/.test(m) ? 0.75 : 0.4;
+    const ranked = rankFindings([{ findings: endpoints.map((e) => ({ kind: 'endpoint', value: String(e.value).slice(0, 120), mechanism: e.mechanism, strength: strength(e.mechanism), built: false, script: where({ script_key: e.location && e.location.script_key }), line: (e.location && e.location.line) || 0 })) }]);
+    L.push('## Strongest evidence first (Verse ranking)');
+    for (const f of ranked.slice(0, 15)) L.push('- `' + f.value + '` ' + f.confidence + ' (' + f.score + '; ' + f.scripts + ' script(s), ' + f.mechanisms.join(', ') + ')');
     L.push('');
   }
   if ((obs.routes || []).length) { L.push('## Routes'); for (const r of obs.routes.slice(0, 40)) L.push('- `' + String(r.value || r.path || JSON.stringify(r)).slice(0, 120) + '`'); L.push(''); }
