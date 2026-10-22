@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-22T04:36:03.790Z",
+   "sha": "a3f93ab0158dd332a719231e488e9d44d405e61f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39722769532",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/test_void.mjs",
+    "docs/CARD-GAME.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/mind-field.test.mjs",
+    "tools/rally.test.mjs",
+    "tools/similar-index.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/card-deck.js",
+    "void-live-deploy/lib/card-share.js",
+    "void-live-deploy/lib/field-doodle.js",
+    "void-live-deploy/lib/field-stage.js"
+   ]
+  },
+  {
    "at": "2026-10-22T04:23:07.966Z",
    "sha": "545d9729fca639650c28993e1b5432f992fb317c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39721628049",
@@ -683,29 +709,6 @@
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/0400-triangulate",
     "void-live-deploy/skills/triangulate.js"
-   ]
-  },
-  {
-   "at": "2026-10-20T21:38:10.098Z",
-   "sha": "776bb7dc34952a5d216325e8c551ff4581602cc4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39499250821",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/lib/stage-tools.js",
-    "void-live-deploy/skills/dark-look.js",
-    "void-live-deploy/skills/light-look.js",
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
