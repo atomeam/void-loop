@@ -12,8 +12,9 @@ The owner's direction: Verse should be the best at what it does in every domain 
 - Look for neglected segments the leaders underserve.
 
 ## Phase III: modular and continuous
-- Each skill is a self-contained module that can be improved, swapped, or retired on its own.
-- Every change states what revenue or reach it serves. The want picker weighs this (`tools/revenue-tags.json`, `reach()` in `tools/lacks.mjs`).
+- Each skill is a self-contained module that evolves on its own. Nothing is ever removed or deferred: a feature only evolves toward more revenue or value.
+- Tightening that merges duplicate skills combines them into one evolved skill, and every phrase that worked before keeps working.
+- Every change states what revenue or reach it serves. The want picker weighs this (`tools/revenue-tags.json`, `reach()` in `tools/lacks.mjs`). Revenue weight only boosts a want (reach is never below 1); it never demotes or drops one.
 - The loop keeps iterating (`docs/LOOP-GAPS.md`): pick by expected value, verify live, revert on failure.
 
 ## Mandates

@@ -105,7 +105,7 @@ export function usable(ask) {
 export function reach(name, tags = {}) {
   let w = 1;
   for (const g of Object.values(tags || {})) if (g && Array.isArray(g.patterns) && g.patterns.some((p) => new RegExp('(^|-)' + p + '($|-)').test(name))) w += +g.weight || 0;
-  return w;
+  return Math.max(1, w); // boosts only: a tag never demotes or drops a want
 }
 
 /** the plan: the top n skills and, for each, up to PER_SKILL of its own examples not already in the benchmark, as candidate rows. Pure. */
