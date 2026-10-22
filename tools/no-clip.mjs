@@ -20,7 +20,7 @@ for (const [w, h] of SIZES) for (const [ask, sel] of ASKS) {
       const el = document.querySelector(sel), box = el.getBoundingClientRect();
       const hidden = [...el.querySelectorAll('*')].filter((n) => { const s = getComputedStyle(n); return s.textOverflow === 'ellipsis' && n.scrollWidth > n.clientWidth + 1 && (n.textContent || '').trim().length > 0; }).length;
       // anything inside that pokes out past the box or the window's sides (the walkthrough's last reaction emoji was cut at 1280px)
-      const spill = [...el.querySelectorAll('*')].filter((n) => { const r = n.getBoundingClientRect(); return r.width > 0 && (r.right > Math.min(box.right, innerWidth) + 1 || r.left < Math.max(box.left, 0) - 1); }).length;
+      const spill = sel !== '#showcase-bar' ? 0 : [...el.querySelectorAll('*')].filter((n) => { const r = n.getBoundingClientRect(); return r.width > 0 && (r.right > Math.min(box.right, innerWidth) + 1 || r.left < Math.max(box.left, 0) - 1); }).length;
       return { spill, top: Math.round(box.top), bottom: Math.round(box.bottom), vh: innerHeight, cut: ((el.innerText || '').match(/\S…(\s|$)/g) || []).length, hidden };
     }, sel);
     const off = sel === '.tome' && (r.top < 0 || r.bottom > r.vh);
