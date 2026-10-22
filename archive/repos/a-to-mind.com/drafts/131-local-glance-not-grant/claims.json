@@ -1,0 +1,26 @@
+{
+  "slug": "local-glance-not-grant",
+  "run": 131,
+  "family": "opt-in gesture or gaze as local input",
+  "status": "candidate-draft",
+  "default": "unattested",
+  "emit": false,
+  "hash_excludes": ["grant_sentence", "coordinate", "device_number", "post_text", "source_url", "engagement"],
+  "glances": [
+    {
+      "id": "g-look-not-commit",
+      "class": "mere-look-not-commit",
+      "label": "A look at a control is not a commit."
+    },
+    {
+      "id": "g-reveal-not-open",
+      "class": "look-does-not-reveal",
+      "label": "A look does not open extra options."
+    },
+    {
+      "id": "g-face-not-focus",
+      "class": "watched-face-not-focus",
+      "label": "A camera on the face is not a focus move."
+    }
+  ]
+}

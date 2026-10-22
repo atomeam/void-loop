@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F226 · WebXR Gaze MLP Sealed Agents</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; background:#0a0a12; color:#e8e8f0; font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+  #hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(10,10,20,.75); padding:8px 12px; border-radius:8px; max-width:320px; }
+  button { background:#2a2a4a; color:#fff; border:1px solid #555; padding:6px 12px; margin:2px; border-radius:4px; cursor:pointer; }
+  button:hover { background:#3a3a6a; }
+  #stage { position:relative; width:100vw; height:100vh; }
+  canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .agent {
+    position:absolute; width:72px; height:48px; border-radius:8px;
+    background:linear-gradient(135deg,#1a2a4a,#2a1a4a); border:1px solid #4a6aff;
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+    user-select:none; transition:transform .05s linear; box-shadow:0 0 12px rgba(74,106,255,.4);
+  }
+  .agent.leader { border-color:#ffcc44; box-shadow:0 0 18px rgba(255,204,68,.6); }
+  .status { font-size:12px; opacity:.8; margin-top:4px; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div><strong>F226 WebXR Gaze · Sealed MLP Agents</strong></div>
+  <div class="status" id="status">Pointer fallback active. Click Enter XR if available.</div>
+  <button id="xrBtn" disabled>Enter XR</button>
+  <button id="sealBtn">Seal Leader</button>
+  <button id="resetBtn">Reset</button>
+  <div class="status" id="fit">Fitness: —</div>
+</div>
+<div id="stage">
+  <canvas id="c"></canvas>
+</div>
+<script>
+const N = 6;
+const agents = [];
+let gaze = { x: window.innerWidth/2, y: window.innerHeight/2 };
+let leaderIdx = 0;
+let sealed = null;
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const fitEl = document.getElementById('fit');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Tiny MLP: 3 inputs (dx, dy, energy) → 6 hidden → 2 outputs (fx, fy)
+function createGenome() {
+  const w1 = Array.from({length:18}, () => (Math.random()-0.5)*0.8);
+  const b1 = Array.from({length:6}, () => (Math.random()-0.5)*0.2);
+  const w2 = Array.from({length:12}, () => (Math.random()-0.5)*0.8);
+  const b2 = Array.from({length:2}, () => (Math.random()-0.5)*0.2);
+  return { w1, b1, w2, b2 };
+}
+function mlpForward(g, x) {
+  const h = [];
+  for (let i = 0; i < 6; i++) {
+    let s = g.b1[i];
+    for (let j = 0; j < 3; j++) s += x[j] * g.w1[i*3 + j];
+    h[i] = Math.tanh(s);
+  }
+  const o = [];
+  for (let i = 0; i < 2; i++) {
+    let s = g.b2[i];
+    for (let j = 0; j < 6; j++) s += h[j] * g.w2[i*6 + j];
+    o[i] = Math.tanh(s) * 1.8;
+  }
+  return o;
+}
+function mutate(g, rate=0.15) {
+  const ng = JSON.parse(JSON.stringify(g));
+  for (const k of ['w1','b1','w2','b2']) {
+    for (let i = 0; i < ng[k].length; i++) {
+      if (Math.random() < rate) ng[k][i] += (Math.random()-0.5)*0.4;
+    }
+  }
+  return ng;
+}
+
+function spawnAgents() {
+  document.querySelectorAll('.agent').forEach(el => el.remove());
+  agents.length = 0;
+  for (let i = 0; i < N; i++) {
+    const el = document.createElement('div');
+    el.className = 'agent';
+    el.textContent = `A${i}`;
+    document.getElementById('stage').appendChild(el);
+    agents.push({
+      el, x: 100 + Math.random()*(window.innerWidth-200), y: 100 + Math.random()*(window.innerHeight-200),
+      vx: 0, vy: 0, genome: createGenome(), fitness: 0, energy: 1
+    });
+  }
+}
+spawnAgents();
+
+// IndexedDB seal
+const dbName = 'f226-seal';
+let db;
+const req = indexedDB.open(dbName, 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore('genomes', { keyPath: 'id' });
+req.onsuccess = e => { db = e.target.result; loadSeal(); };
+function sealLeader() {
+  if (!db) return;
+  const tx = db.transaction('genomes', 'readwrite');
+  tx.objectStore('genomes').put({ id: 'leader', genome: agents[leaderIdx].genome, ts: Date.now() });
+  statusEl.textContent = 'Leader genome sealed.';
+}
+function loadSeal() {
+  if (!db) return;
+  const tx = db.transaction('genomes', 'readonly');
+  const r = tx.objectStore('genomes').get('leader');
+  r.onsuccess = () => {
+    if (r.result) {
+      sealed = r.result.genome;
+      agents[0].genome = JSON.parse(JSON.stringify(sealed));
+      statusEl.textContent = 'Restored sealed leader genome.';
+    }
+  };
+}
+document.getElementById('sealBtn').onclick = sealLeader;
+document.getElementById('resetBtn').onclick = () => { spawnAgents(); statusEl.textContent = 'Reset.'; };
+
+// Pointer / mouse as gaze fallback
+window.addEventListener('pointermove', e => { gaze.x = e.clientX; gaze.y = e.clientY; });
+
+// DeviceOrientation optional
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (e.beta != null) {
+      gaze.x = window.innerWidth/2 + (e.gamma || 0) * 4;
+      gaze.y = window.innerHeight/2 + (e.beta - 45) * 4;
+    }
+  });
+}
+
+// WebXR
+let xrSession = null;
+const xrBtn = document.getElementById('xrBtn');
+if (navigator.xr) {
+  navigator.xr.isSessionSupported('immersive-vr').then(ok => {
+    if (ok) { xrBtn.disabled = false; statusEl.textContent = 'WebXR available.'; }
+  });
+}
+xrBtn.onclick = async () => {
+  if (!navigator.xr) return;
+  try {
+    xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor'] });
+    statusEl.textContent = 'XR session active — gaze from head pose.';
+    xrSession.addEventListener('end', () => { xrSession = null; statusEl.textContent = 'XR ended.'; });
+    const glCanvas = document.createElement('canvas');
+    const gl = glCanvas.getContext('webgl', { xrCompatible: true });
+    await gl.makeXRCompatible();
+    const baseLayer = new XRWebGLLayer(xrSession, gl);
+    xrSession.updateRenderState({ baseLayer });
+    const refSpace = await xrSession.requestReferenceSpace('local');
+    function onXRFrame(t, frame) {
+      const pose = frame.getViewerPose(refSpace);
+      if (pose) {
+        const m = pose.transform.matrix;
+        gaze.x = window.innerWidth/2 + m[8] * 200;
+        gaze.y = window.innerHeight/2 - m[9] * 200;
+      }
+      xrSession.requestAnimationFrame(onXRFrame);
+    }
+    xrSession.requestAnimationFrame(onXRFrame);
+  } catch (err) {
+    statusEl.textContent = 'XR failed: ' + err.message;
+  }
+};
+
+// Simulation loop
+let frame = 0;
+function step() {
+  frame++;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = '#ffcc44';
+  ctx.beginPath(); ctx.arc(gaze.x, gaze.y, 8, 0, Math.PI*2); ctx.stroke();
+
+  let bestFit = -Infinity, worstIdx = 0, worstFit = Infinity;
+  for (let i = 0; i < agents.length; i++) {
+    const a = agents[i];
+    const dx = (gaze.x - a.x) / W;
+    const dy = (gaze.y - a.y) / H;
+    const inp = [dx, dy, a.energy];
+    const force = mlpForward(a.genome, inp);
+    a.vx = a.vx * 0.85 + force[0] * 0.6;
+    a.vy = a.vy * 0.85 + force[1] * 0.6;
+    a.x += a.vx * 8;
+    a.y += a.vy * 8;
+    a.x = Math.max(40, Math.min(W-40, a.x));
+    a.y = Math.max(40, Math.min(H-40, a.y));
+    const dist = Math.hypot(gaze.x - a.x, gaze.y - a.y);
+    a.fitness = Math.max(0, 1 - dist / (Math.min(W,H)*0.6));
+    a.energy = 0.95 * a.energy + 0.05 * a.fitness;
+    if (a.fitness > bestFit) { bestFit = a.fitness; leaderIdx = i; }
+    if (a.fitness < worstFit) { worstFit = a.fitness; worstIdx = i; }
+    a.el.style.transform = `translate(${a.x-36}px,${a.y-24}px)`;
+    a.el.classList.toggle('leader', i === leaderIdx);
+    a.el.textContent = `A${i} ${a.fitness.toFixed(2)}`;
+    ctx.strokeStyle = i === leaderIdx ? '#ffcc44' : '#4a6aff';
+    ctx.globalAlpha = 0.35;
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x - a.vx*12, a.y - a.vy*12); ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  fitEl.textContent = `Leader A${leaderIdx} fit ${bestFit.toFixed(2)}`;
+
+  if (frame % 180 === 0 && worstIdx !== leaderIdx) {
+    agents[worstIdx].genome = mutate(agents[leaderIdx].genome);
+    statusEl.textContent = `Replaced A${worstIdx} with mutated leader.`;
+  }
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+</script>
+</body>
+</html>

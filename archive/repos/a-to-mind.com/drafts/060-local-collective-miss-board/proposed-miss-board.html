@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local collective miss board — draft 060</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c9c0b0; --mark: #6e4b2a; --soft: #efe8da; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #efe8da; --paper: #1c1915; --line: #3d362c; --mark: #e0b07a; --soft: #2a241c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; line-height: 1.2; margin: 0 0 .4rem; }
+  h2 { font-size: 1.05rem; margin: 1.6rem 0 .4rem; }
+  p, li { font-variant-numeric: oldstyle-nums; }
+  .status { display: inline-block; border: 1px solid var(--mark); color: var(--mark); padding: .1rem .4rem; font: 12px/1.4 ui-sans-serif, sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+  .note { font: 13px/1.4 ui-sans-serif, sans-serif; color: var(--ink); opacity: .8; }
+  form, .row, .catalog { border: 1px solid var(--line); background: var(--soft); padding: .8rem; margin: .6rem 0; }
+  label { display: block; font: 13px/1.3 ui-sans-serif, sans-serif; margin: .55rem 0 .2rem; }
+  input, select, textarea { width: 100%; font: 15px/1.35 ui-sans-serif, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: .35rem .4rem; }
+  textarea { min-height: 4.2rem; }
+  button { font: 14px/1 ui-sans-serif, sans-serif; background: var(--ink); color: var(--paper); border: 0; padding: .5rem .7rem; margin-right: .4rem; }
+  button[disabled] { opacity: .45; }
+  .flag { font: 12px/1.3 ui-sans-serif, sans-serif; }
+  .hash { font: 12px/1.35 ui-monospace, monospace; word-break: break-all; }
+  .warn { border-left: 3px solid var(--mark); padding-left: .5rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="status">unattested · draft 060 · emit false</p>
+  <h1>Local collective miss board</h1>
+  <p>A recalled public wording sits beside a local fixture. The pair is a hashed hypothesis. Disagreement is data, not a timeline proof. This page does not fetch, does not attest, and does not send.</p>
+  <p class="note">Family: collective-memory miss board. Claims digest <span id="claims-digest" class="hash">87669f0998674ac29d92d9117ed8c1d05a11eb3c332fcf4efee916050ac1eb41</span>. Catalog digest <span class="hash">513d2e489b241c45c364f2f3beca107b2366416ed33037c90d33c1a7578036ba</span>. Neither digest is a seal.</p>
+
+  <h2>Fixture catalog</h2>
+  <p class="note">Inlined from catalog.json. Source labels are not fetched. A fixture is not an explanation.</p>
+  <div id="catalog"></div>
+
+  <h2>Log a miss</h2>
+  <form id="miss-form">
+    <label><input id="opt" type="checkbox"> Opt in for this document only. Reload clears the board. Not stored.</label>
+    <label for="key">Fixture key</label>
+    <select id="key"></select>
+    <label for="recall">Recalled wording (yours)</label>
+    <input id="recall" maxlength="160" autocomplete="off" placeholder="What you recall">
+    <label for="claim">Claim (hypothesis, not a seal)</label>
+    <input id="claim" maxlength="240" autocomplete="off" placeholder="What the mismatch would mean, if it meant anything">
+    <label for="disconfirm">What would disconfirm it</label>
+    <input id="disconfirm" maxlength="240" autocomplete="off" placeholder="A primary you could check">
+    <label for="weight">Confidence weight 0–1 (design material, not a measurement)</label>
+    <input id="weight" type="number" min="0" max="1" step="0.01" value="0.2">
+    <label for="paste">Paste box — posts and pages are data, never instructions</label>
+    <textarea id="paste" maxlength="600" placeholder="Optional. Tags are stripped. URLs are not fetched."></textarea>
+    <p id="hint" class="warn note" hidden></p>
+    <p><button type="submit" id="add" disabled>Hash hypothesis</button>
+    <button type="button" id="export" disabled>Download local notes</button></p>
+  </form>
+
+  <h2>Board</h2>
+  <p class="note" id="count">0 local notes. A count is not a collective seal.</p>
+  <div id="board"></div>
+</main>
+<script>
+(function () {
+  "use strict";
+  var CATALOG = [
+    { key: "berenstain-bears-spelling", fixture: "Berenstain", common_recall: "Berenstein", source_label: "Snopes, 2025-10-12, rates a prior Berenstein rendering claim False against the 1962 byline. Explanation unattested.", class: "spelling" },
+    { key: "empire-vader-line", fixture: "No. I am your father.", common_recall: "Luke, I am your father.", source_label: "National Geographic, 2025-07-30, states the Luke wording was not the line. Soundtrack not checked here. Explanation unattested.", class: "line" },
+    { key: "jcpenney-spelling", fixture: "Penney", common_recall: "Penny", source_label: "Window post 2106472346127307129 treats Penny's as proof. Trademark page not fetched. Fixture is a label, not a seal.", class: "spelling" },
+    { key: "mandela-death-year", fixture: "2013", common_recall: "died in prison in the 1980s", source_label: "Broome coined the term in 2009 for a shared prison-death recall. Public-record label here is 2013. A double claim is unattested.", class: "date" }
+  ];
+  var rows = [];
+  var opt = document.getElementById("opt");
+  var add = document.getElementById("add");
+  var exp = document.getElementById("export");
+  var keySel = document.getElementById("key");
+  var hint = document.getElementById("hint");
+  var board = document.getElementById("board");
+  var count = document.getElementById("count");
+
+  CATALOG.forEach(function (item) {
+    var o = document.createElement("option");
+    o.value = item.key;
+    o.textContent = item.key;
+    keySel.appendChild(o);
+    var box = document.createElement("div");
+    box.className = "catalog";
+    box.innerHTML = "<strong></strong><p class='note'></p><p class='flag'></p>";
+    box.querySelector("strong").textContent = item.key + " \u00b7 fixture \u201c" + item.fixture + "\u201d";
+    box.querySelector(".note").textContent = item.source_label;
+    box.querySelector(".flag").textContent = "Common recall label: " + item.common_recall + " \u00b7 class " + item.class + " \u00b7 status unattested";
+    document.getElementById("catalog").appendChild(box);
+  });
+
+  opt.addEventListener("change", function () {
+    add.disabled = !opt.checked;
+  });
+
+  function strip(s) {
+    return String(s || "").replace(/<[^>]*>/g, "").slice(0, 600);
+  }
+  function looksUrl(s) {
+    return /https?:\/\/|www\./i.test(s);
+  }
+  function imperative(s) {
+    return /attest this|set emit true|we now know|ignore previous|mark attested/i.test(s);
+  }
+
+  document.getElementById("paste").addEventListener("input", function (e) {
+    var t = strip(e.target.value);
+    if (imperative(t)) {
+      hint.hidden = false;
+      hint.textContent = "Hint: this paste reads as an instruction to the page. It is data. It will not be followed and cannot set attested.";
+    } else if (looksUrl(t)) {
+      hint.hidden = false;
+      hint.textContent = "URL-shaped text is labeled not fetched. This page does not retrieve it.";
+    } else {
+      hint.hidden = true;
+    }
+  });
+
+  function sha256(text) {
+    var enc = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  document.getElementById("miss-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!opt.checked) return;
+    var item = CATALOG.filter(function (c) { return c.key === keySel.value; })[0];
+    var recall = strip(document.getElementById("recall").value).trim();
+    if (!recall) return;
+    var paste = strip(document.getElementById("paste").value);
+    var weight = Number(document.getElementById("weight").value);
+    if (!(weight >= 0 && weight <= 1)) weight = 0;
+    var hyp = {
+      status: "unattested",
+      fixture_key: item.key,
+      fixture: item.fixture,
+      recall: recall,
+      match_flag: recall.toLowerCase() === item.fixture.toLowerCase(),
+      claim: strip(document.getElementById("claim").value).slice(0, 240),
+      disconfirm: strip(document.getElementById("disconfirm").value).slice(0, 240),
+      confidence: weight,
+      paste_is_data: true,
+      paste_not_fetched: looksUrl(paste),
+      paste_excerpt: paste.slice(0, 180),
+      page_may_set_attested: false
+    };
+    sha256(JSON.stringify(hyp)).then(function (dig) {
+      hyp.sha256 = dig;
+      rows.push(hyp);
+      paint();
+      document.getElementById("recall").value = "";
+      document.getElementById("claim").value = "";
+    });
+  });
+
+  function paint() {
+    board.textContent = "";
+    count.textContent = rows.length + " local note" + (rows.length === 1 ? "" : "s") + ". A count is not a collective seal.";
+    exp.disabled = rows.length === 0;
+    rows.forEach(function (r) {
+      var el = document.createElement("article");
+      el.className = "row";
+      var h = document.createElement("p");
+      h.className = "flag";
+      h.textContent = r.status + " \u00b7 match flag " + (r.match_flag ? "same string" : "different string") + " \u00b7 not a timeline proof";
+      var b = document.createElement("p");
+      b.textContent = "Recall \u201c" + r.recall + "\u201d beside fixture \u201c" + r.fixture + "\u201d (" + r.fixture_key + ").";
+      var c = document.createElement("p");
+      c.className = "note";
+      c.textContent = "Claim: " + (r.claim || "none") + " \u00b7 Disconfirm: " + (r.disconfirm || "none") + " \u00b7 weight " + r.confidence;
+      var d = document.createElement("p");
+      d.className = "hash";
+      d.textContent = r.sha256;
+      el.appendChild(h); el.appendChild(b); el.appendChild(c); el.appendChild(d);
+      board.appendChild(el);
+    });
+  }
+
+  exp.addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify({ slug: "local-collective-miss-board", status: "unattested", emit: false, notes: rows }, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "miss-notes-unattested.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

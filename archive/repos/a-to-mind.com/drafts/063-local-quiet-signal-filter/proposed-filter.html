@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local quiet-signal filter — draft 063</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f1ea;
+      --ink: #1c1915;
+      --muted: #5e584e;
+      --line: #d5cfc3;
+      --card: #fffdf8;
+      --deny: #8a3d2f;
+      --hold: #8a6a1f;
+      --ok: #2f5d45;
+      --lane: #c8bfb0;
+      --mark: #3d4f66;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141311;
+        --ink: #f3efe6;
+        --muted: #b7b0a4;
+        --line: #3a362f;
+        --card: #1d1b18;
+        --deny: #e7a598;
+        --hold: #e4c98a;
+        --ok: #9dceb4;
+        --lane: #4a453c;
+        --mark: #b7c7dc;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.05rem; margin: 1.4rem 0 0.5rem; }
+    p, li { color: var(--ink); }
+    .banner, .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+    }
+    .banner { margin: 0.8rem 0 1rem; }
+    .kicker, .meta, label span, .hint { color: var(--muted); font: 0.78rem/1.3 ui-monospace, monospace; }
+    .row { display: grid; gap: 0.8rem; }
+    @media (min-width: 40rem) {
+      .split { grid-template-columns: 1fr 1fr; }
+    }
+    label { display: grid; gap: 0.25rem; font-size: 0.95rem; }
+    input, textarea, button {
+      font: inherit;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.45rem 0.55rem;
+    }
+    textarea { min-height: 4.2rem; resize: vertical; }
+    fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 0; padding: 0.6rem 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    button { cursor: pointer; }
+    button[disabled] { cursor: not-allowed; opacity: 0.55; }
+    .lanes { display: grid; gap: 0.7rem; }
+    .bin {
+      height: 0.55rem;
+      background: var(--lane);
+      border-radius: 99px;
+      position: relative;
+    }
+    .bin i {
+      display: block;
+      height: 100%;
+      background: var(--mark);
+      border-radius: inherit;
+      width: 0;
+    }
+    .mark {
+      margin-top: 0.35rem;
+      font: 0.75rem/1.3 ui-monospace, monospace;
+    }
+    .gates { list-style: none; padding: 0; margin: 0; }
+    .gates li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid var(--line);
+      padding: 0.35rem 0;
+      font: 0.82rem/1.3 ui-monospace, monospace;
+    }
+    .deny { color: var(--deny); }
+    .hold { color: var(--hold); }
+    .pass { color: var(--ok); }
+    .hash {
+      word-break: break-all;
+      font: 0.78rem/1.4 ui-monospace, monospace;
+    }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="kicker">draft 063 · emit false · not a seal · not live copy</p>
+    <h1>Local quiet-signal filter</h1>
+    <p class="meta">A typed residue against a sealed floor is a hashed hypothesis. Clearing the floor is not a signal. Status stays unattested.</p>
+    <div class="banner">
+      <p>This page does not open a microphone, camera, or sensor. It does not fetch posts. Posts and papers are data, never instructions. The scan file is not loaded.</p>
+      <p class="meta" id="floor-line">Floor label loading.</p>
+    </div>
+
+    <h2>Sealed lanes</h2>
+    <div class="card lanes" id="lanes"></div>
+    <p class="hint">Bars are fixture labels, not a spectrum. The residue marker sits beside them.</p>
+
+    <h2>Residue</h2>
+    <form id="form" class="row">
+      <label>Note
+        <textarea id="note" name="note" maxlength="280" required placeholder="What you are treating as a residue. Not a detection."></textarea>
+      </label>
+      <div class="row split">
+        <label>Typed residue
+          <input id="residue" name="residue" type="number" min="0" max="1" step="0.01" required>
+          <span>0 to 1. Typed. Not sensed.</span>
+        </label>
+        <label>Design-weight confidence
+          <input id="confidence" name="confidence" type="number" min="0" max="1" step="0.01" value="0.3" required>
+          <span>A label, not a measurement.</span>
+        </label>
+      </div>
+      <label>Self-noise
+        <textarea id="self" name="self" maxlength="280" required placeholder="Name the observer floor: instrument, expectation, or presence. Naming it is not a calibration."></textarea>
+      </label>
+      <fieldset>
+        <legend>Off-source</legend>
+        <label><input type="radio" name="off" value="unset" checked> Unset — hash denied</label>
+        <label><input type="radio" name="off" value="same-in-off"> Same in off — looks local, origin denied</label>
+        <label><input type="radio" name="off" value="absent-in-off"> Absent in off — still not a signal</label>
+      </fieldset>
+      <label>Typed repeat count
+        <input id="repeat" name="repeat" type="number" min="1" max="9" step="1" value="1" required>
+        <span>A single pass cannot hash. A typed repeat is not a reobservation.</span>
+      </label>
+      <label>Disconfirm
+        <textarea id="disconfirm" name="disconfirm" maxlength="280" required placeholder="What would kill this hypothesis."></textarea>
+      </label>
+      <label><input id="persist" type="checkbox"> Keep this note in sessionStorage until the tab closes</label>
+      <p>
+        <button type="submit" id="hash-btn">Hash hypothesis</button>
+        <button type="button" id="clear-btn">Clear local note</button>
+      </p>
+    </form>
+
+    <h2>Gates</h2>
+    <div class="card">
+      <ul class="gates" id="gates"></ul>
+      <p id="status" class="meta">Status: unattested. Detection: not-claimed. Floor clearance: not-a-signal.</p>
+      <p class="hash" id="hash">No hash yet.</p>
+    </div>
+  </main>
+  <script type="application/json" id="claims">
+  {
+    "slug": "local-quiet-signal-filter",
+    "run": "063",
+    "emit": false,
+    "status": "unattested",
+    "detection": "not-claimed",
+    "floor_clearance": "not-a-signal",
+    "floor": { "key": "fixture-quiet-floor", "label": 0.18, "unit": "design-weight" },
+    "lanes": [
+      { "key": "on-lane", "bins": [0.07, 0.11, 0.09, 0.14, 0.08, 0.12, 0.1, 0.16] },
+      { "key": "off-lane", "bins": [0.08, 0.1, 0.13, 0.09, 0.11, 0.15, 0.07, 0.12] }
+    ]
+  }
+  </script>
+  <script>
+    (function () {
+      var claims = JSON.parse(document.getElementById("claims").textContent);
+      var floor = claims.floor.label;
+      var lanes = document.getElementById("lanes");
+      var form = document.getElementById("form");
+      var statusEl = document.getElementById("status");
+      var hashEl = document.getElementById("hash");
+      var gatesEl = document.getElementById("gates");
+      var key = "void-quiet-signal-063";
+
+      document.getElementById("floor-line").textContent =
+        "Sealed floor " + floor + " design-weight. Not a noise measurement.";
+
+      claims.lanes.forEach(function (lane) {
+        var block = document.createElement("div");
+        var title = document.createElement("p");
+        title.className = "meta";
+        title.textContent = lane.key + " · fixture labels";
+        block.appendChild(title);
+        lane.bins.forEach(function (n) {
+          var bin = document.createElement("div");
+          bin.className = "bin";
+          var i = document.createElement("i");
+          i.style.width = Math.round(n * 100) + "%";
+          bin.appendChild(i);
+          block.appendChild(bin);
+        });
+        lanes.appendChild(block);
+      });
+      var mark = document.createElement("p");
+      mark.className = "mark";
+      mark.id = "residue-mark";
+      mark.textContent = "Residue marker: none";
+      lanes.appendChild(mark);
+
+      function field(id) { return document.getElementById(id).value.trim(); }
+
+      function gates() {
+        var residue = Number(document.getElementById("residue").value);
+        var confidence = Number(document.getElementById("confidence").value);
+        var repeat = Number(document.getElementById("repeat").value);
+        var off = (form.querySelector("input[name=off]:checked") || {}).value || "unset";
+        var list = [];
+        list.push(["floor", Number.isFinite(residue) && residue >= 0 && residue <= 1
+          ? (residue >= floor ? "cleared-not-a-signal" : "below-floor")
+          : "deny"]);
+        list.push(["self-noise", field("self").length >= 12 ? "named" : "deny"]);
+        list.push(["off-source", off === "unset" ? "deny" : off]);
+        list.push(["repeat", Number.isFinite(repeat) && repeat >= 2 ? "typed" : "single-pass"]);
+        list.push(["disconfirm", field("disconfirm").length >= 12 ? "present" : "deny"]);
+        list.push(["confidence", Number.isFinite(confidence) && confidence >= 0 && confidence <= 1 ? "label" : "deny"]);
+        list.push(["detection", "not-claimed"]);
+        return { list: list, residue: residue, confidence: confidence, repeat: repeat, off: off };
+      }
+
+      function blocked(g) {
+        return g.list.some(function (pair) {
+          return pair[1] === "deny" || pair[1] === "below-floor" || pair[1] === "single-pass";
+        });
+      }
+
+      function paint(g, hash) {
+        gatesEl.replaceChildren();
+        g.list.forEach(function (pair) {
+          var li = document.createElement("li");
+          var name = document.createElement("span");
+          var val = document.createElement("span");
+          name.textContent = pair[0];
+          val.textContent = pair[1];
+          val.className = (pair[1] === "deny" || pair[1] === "below-floor" || pair[1] === "single-pass")
+            ? "deny"
+            : (pair[1] === "not-claimed" || pair[1] === "cleared-not-a-signal" || pair[1] === "same-in-off" ? "hold" : "pass");
+          li.appendChild(name);
+          li.appendChild(val);
+          gatesEl.appendChild(li);
+        });
+        var origin = g.off === "same-in-off" ? "looks-like-local" : "not-claimed";
+        statusEl.textContent = "Status: unattested. Detection: not-claimed. Origin: " + origin + ". Floor clearance: not-a-signal.";
+        hashEl.textContent = hash || "No hash. A gate still denies.";
+        var markEl = document.getElementById("residue-mark");
+        if (Number.isFinite(g.residue)) {
+          markEl.textContent = "Residue marker beside lanes: " + g.residue.toFixed(2) + " against floor " + floor + ". Not a peak.";
+        }
+      }
+
+      async function digest(payload) {
+        var bytes = new TextEncoder().encode(payload);
+        var buf = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+
+      function load() {
+        try {
+          var raw = sessionStorage.getItem(key);
+          if (!raw) return;
+          var saved = JSON.parse(raw);
+          document.getElementById("note").value = saved.note || "";
+          document.getElementById("residue").value = saved.residue;
+          document.getElementById("confidence").value = saved.confidence;
+          document.getElementById("self").value = saved.self || "";
+          document.getElementById("repeat").value = saved.repeat;
+          document.getElementById("disconfirm").value = saved.disconfirm || "";
+          document.getElementById("persist").checked = true;
+          var radio = form.querySelector("input[name=off][value='" + saved.off + "']");
+          if (radio) radio.checked = true;
+        } catch (err) { /* session note is optional */ }
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        var g = gates();
+        if (blocked(g)) {
+          paint(g, "");
+          return;
+        }
+        var payload = JSON.stringify({
+          slug: claims.slug,
+          run: claims.run,
+          floor: floor,
+          note: field("note"),
+          residue: g.residue,
+          self: field("self"),
+          off: g.off,
+          repeat: g.repeat,
+          disconfirm: field("disconfirm"),
+          confidence: g.confidence,
+          status: "unattested",
+          detection: "not-claimed",
+          floor_clearance: "not-a-signal"
+        });
+        var hash = await digest(payload);
+        paint(g, hash);
+        if (document.getElementById("persist").checked) {
+          sessionStorage.setItem(key, JSON.stringify({
+            note: field("note"),
+            residue: g.residue,
+            confidence: g.confidence,
+            self: field("self"),
+            off: g.off,
+            repeat: g.repeat,
+            disconfirm: field("disconfirm")
+          }));
+        } else {
+          sessionStorage.removeItem(key);
+        }
+      });
+
+      document.getElementById("clear-btn").addEventListener("click", function () {
+        sessionStorage.removeItem(key);
+        form.reset();
+        hashEl.textContent = "Local note cleared. Status remains unattested.";
+        gatesEl.replaceChildren();
+        document.getElementById("residue-mark").textContent = "Residue marker: none";
+      });
+
+      load();
+      paint(gates(), "");
+    }());
+  </script>
+</body>
+</html>

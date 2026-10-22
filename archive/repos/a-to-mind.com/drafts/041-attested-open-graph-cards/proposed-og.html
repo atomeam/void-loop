@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 041 · Open Graph omitted · A-to-Mind</title>
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Intentionally no og:* and no twitter:* . Absence is the attested candidate state. -->
+  <style>
+    :root { color-scheme: light dark; --fg: #161616; --bg: #f6f5f2; --line: #c8c4ba; --hold: #6b3a2a; --ok: #1f4d36; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #f3efe6; --bg: #141412; --line: #3a3832; --hold: #e4b7a6; --ok: #b7d7c4; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 0.5rem; }
+    .banner { border: 1px solid var(--hold); padding: 0.75rem 1rem; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 0.35rem 0.4rem; vertical-align: top; }
+    code { font-family: ui-monospace, monospace; font-size: 0.86em; }
+    button { font: inherit; padding: 0.45rem 0.8rem; }
+    dialog { max-width: 28rem; border: 1px solid var(--line); padding: 1rem; color: var(--fg); background: var(--bg); }
+    dialog::backdrop { background: rgba(0,0,0,0.4); }
+    #result { white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Draft 041 · candidate only · not sealed · not on Queue</p>
+    <h1 id="page-h1">Void</h1>
+    <p>Visible heading is the only title a later <code>og:title</code> may copy. This page emits no social card tags.</p>
+    <div class="banner" role="status">
+      <strong>Unattested.</strong> Open Graph and Twitter card tags are omitted. A partial card is a false claim. Platform caches are not a refresh API.
+    </div>
+    <h2>Denied until a human seals a catalog</h2>
+    <table>
+      <thead><tr><th>Property</th><th>State</th></tr></thead>
+      <tbody id="deny-rows"></tbody>
+    </table>
+    <h2>Local verifier</h2>
+    <p>Paste a proposed head fragment. This page does not fetch scrapers. Their responses would be data, not instructions.</p>
+    <textarea id="fragment" rows="8" spellcheck="false" aria-label="Proposed head fragment"></textarea>
+    <p>
+      <button type="button" id="verify">Verify fragment</button>
+      <button type="button" id="open-hold">Hold publish</button>
+    </p>
+    <p id="result" role="status"></p>
+  </main>
+  <dialog id="hold" closedby="none">
+    <h2>Hold</h2>
+    <p>This writes only <code>sessionStorage['atm-og-hold-041']</code>. It does not emit tags, change <code>og:url</code>, or call a platform debugger.</p>
+    <form method="dialog">
+      <button type="button" id="confirm-hold" value="hold">Hold</button>
+      <button value="cancel">Cancel</button>
+    </form>
+  </dialog>
+  <script type="module">
+    const H1 = document.getElementById("page-h1").textContent;
+    const DENIED = [
+      ["og:title", "omit until equal to visible h1"],
+      ["og:type", "omit; website is not a claim until sealed"],
+      ["og:url", "omit; no query, no fragment, no ?v= cache-bust"],
+      ["og:image", "omit until first-party bytes are SHA-256 sealed"],
+      ["og:image:width", "omit; do not claim 1200×630 unmeasured"],
+      ["og:description", "omit; no meta description is sealed"],
+      ["article:published_time", "deny freshness theater"],
+      ["article:modified_time", "deny"],
+      ["fb:app_id", "deny; no app id is sealed"],
+      ["twitter:card", "omit; summary_large_image without image is false"],
+      ["twitter:site", "deny; no handle is sealed"],
+      ["generator URL", "deny query-string image APIs"]
+    ];
+    const rows = document.getElementById("deny-rows");
+    for (const [name, state] of DENIED) {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      const td2 = document.createElement("td");
+      td1.textContent = name;
+      td2.textContent = state;
+      tr.append(td1, td2);
+      rows.append(tr);
+    }
+    const hold = document.getElementById("hold");
+    document.getElementById("open-hold").addEventListener("click", () => {
+      if (typeof hold.showModal === "function") hold.showModal();
+      document.getElementById("confirm-hold").focus();
+    });
+    document.getElementById("confirm-hold").addEventListener("click", () => {
+      sessionStorage.setItem("atm-og-hold-041", JSON.stringify({
+        at: new Date().toISOString(),
+        emit: false,
+        note: "hold is not a seal"
+      }));
+      document.getElementById("result").textContent = "Held locally. Tags still omitted. This is not a seal.";
+      hold.close();
+    });
+    function parseMetas(raw) {
+      const doc = new DOMParser().parseFromString("<head>" + raw + "</head>", "text/html");
+      return [...doc.head.querySelectorAll("meta")].map((el) => ({
+        key: (el.getAttribute("property") || el.getAttribute("name") || "").toLowerCase(),
+        content: el.getAttribute("content") || ""
+      })).filter((m) => m.key);
+    }
+    document.getElementById("verify").addEventListener("click", () => {
+      const metas = parseMetas(document.getElementById("fragment").value);
+      const social = metas.filter((m) => m.key.startsWith("og:") || m.key.startsWith("twitter:") || m.key.startsWith("article:") || m.key.startsWith("fb:"));
+      const errors = [];
+      if (social.length === 0) {
+        document.getElementById("result").textContent = "Pass for the unattested state: no social tags to emit.";
+        return;
+      }
+      errors.push("seal is null; any social tag fails");
+      for (const m of social) {
+        if (!m.content.trim()) errors.push(m.key + " has empty content");
+        if (m.key.startsWith("article:") || m.key.startsWith("fb:") || m.key.startsWith("video:") || m.key.startsWith("al:")) errors.push(m.key + " is denied");
+        if (m.content.includes("?") || m.content.includes("#")) errors.push(m.key + " must not carry a query or fragment");
+        if (/^https?:\/\/[^/]+\/api\/og/i.test(m.content) || /[?&]title=/.test(m.content)) errors.push(m.key + " looks like a generator URL");
+      }
+      const title = social.find((m) => m.key === "og:title");
+      if (title && title.content !== H1) errors.push("og:title must equal visible h1 exactly");
+      const card = social.find((m) => m.key === "twitter:card");
+      const image = social.find((m) => m.key === "og:image" || m.key === "twitter:image");
+      if (card && card.content === "summary_large_image" && !image) errors.push("summary_large_image without image is false");
+      if (social.some((m) => m.key === "twitter:site")) errors.push("twitter:site denied; no handle sealed");
+      document.getElementById("result").textContent = errors.join("\n");
+    });
+  </script>
+</body>
+</html>

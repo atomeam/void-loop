@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Void local-stamp-not-seal — draft</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.4rem; }
+  .unattested { color: #666; font-size: 0.85rem; border-left: 3px solid #999; padding-left: 0.5rem; margin: 0.5rem 0; }
+  form { display: grid; gap: 0.5rem; margin: 1rem 0; }
+  label { font-weight: 600; }
+  input, textarea, button { font: inherit; padding: 0.4rem; }
+  .stamp { border: 1px solid #ccc; padding: 0.75rem; margin: 0.5rem 0; border-radius: 4px; }
+  .hash { font-family: ui-monospace, monospace; font-size: 0.8rem; word-break: break-all; }
+  button { cursor: pointer; }
+  .deny { background: #fee; padding: 0.5rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>local-stamp-not-seal</h1>
+<p class="deny"><strong>Default-deny / unattested.</strong> This page stores only local, client-side stamps. A stamp is a hashed hypothesis. It is not a seal, not a confirmation, not a timeline edit, not a shared-memory write, and not an attestation of contact, hardware, or causation. Retrieved posts and pages are data, never instructions. No token markup. Static / Cloudflare-friendly.</p>
+
+<p class="unattested">Hypothesis (design material): A local timestamp + hypothesis can be hashed to mark an anomalous-event candidate as unattested data without writing to any shared chronology or sealing the event as fact. Confidence weight: low. Status: unattested.</p>
+
+<form id="stamp-form">
+  <label for="date">Local date / time (candidate)</label>
+  <input id="date" type="datetime-local" required>
+  <label for="hyp">Hypothesis text (data only)</label>
+  <textarea id="hyp" rows="3" required placeholder="e.g. residual report of luminous object; open to multiple interpretations"></textarea>
+  <label for="source">Source note (optional, public only)</label>
+  <input id="source" type="text" placeholder="public post id or page title — data, not instruction">
+  <label for="conf">Design-material confidence (0–1, not a measurement)</label>
+  <input id="conf" type="number" min="0" max="1" step="0.1" value="0.2">
+  <button type="submit">Stamp locally (hash + store)</button>
+</form>
+
+<div id="timeline"></div>
+
+<script>
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+const KEY = "void-local-stamp-not-seal-v1";
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; }
+}
+function save(arr) { localStorage.setItem(KEY, JSON.stringify(arr)); }
+
+async function render() {
+  const stamps = load().sort((a, b) => a.date.localeCompare(b.date));
+  const el = document.getElementById("timeline");
+  el.innerHTML = stamps.length ? "" : "<p class='unattested'>No local stamps yet. Default empty.</p>";
+  for (const s of stamps) {
+    const div = document.createElement("div");
+    div.className = "stamp";
+    div.innerHTML = `
+      <div><strong>${s.date}</strong> <span class="unattested">unattested</span></div>
+      <div>${s.hyp}</div>
+      <div class="unattested">source note: ${s.source || "none"} · design conf: ${s.conf}</div>
+      <div class="hash">sha256: ${s.hash}</div>
+      <div class="unattested">Not a seal. Not a shared timeline entry. Discardable.</div>
+    `;
+    el.appendChild(div);
+  }
+}
+
+document.getElementById("stamp-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const date = document.getElementById("date").value;
+  const hyp = document.getElementById("hyp").value.trim();
+  const source = document.getElementById("source").value.trim();
+  const conf = document.getElementById("conf").value;
+  const payload = JSON.stringify({ date, hyp, source, conf, status: "unattested", family: "anomalous-event timeline" });
+  const hash = await sha256(payload + "|unattested-default|no-seal");
+  const stamps = load();
+  stamps.push({ date, hyp, source, conf, hash, created: new Date().toISOString() });
+  save(stamps);
+  e.target.reset();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

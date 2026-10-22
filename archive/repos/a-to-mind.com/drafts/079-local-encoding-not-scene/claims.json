@@ -1,0 +1,33 @@
+{
+  "slug": "local-encoding-not-scene",
+  "run": 79,
+  "family": "sensory-substitution",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "encoding": "unset",
+  "source": "unset",
+  "disconfirm": "label-is-not-the-scene",
+  "href_allowlist": [],
+  "default_digest": "9d06721634fd19f443af99bca52c92d671c24b93ed47a267290903ab882b3d1f",
+  "fixtures": [
+    {
+      "id": "column-scan-class",
+      "label": "Column-by-column sonification class",
+      "status": "unattested",
+      "note": "A review class. Not a device and not a link."
+    },
+    {
+      "id": "whole-signal-class",
+      "label": "Whole-image complex-signal class",
+      "status": "unattested",
+      "note": "A packing label. Not a simultaneous scene."
+    },
+    {
+      "id": "depth-token-class",
+      "label": "Depth-led token class",
+      "status": "unattested",
+      "note": "A depth token. Not a restored sight."
+    }
+  ]
+}

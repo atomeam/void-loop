@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-prelexical-not-capture (draft 148) — unattested</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; background: #0b0e14; color: #e6edf3; }
+h1 { font-size: 1.25rem; }
+.badge { display: inline-block; background: #3d1f1f; color: #f85149; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+button { background: #21262d; color: #e6edf3; border: 1px solid #30363d; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
+button:hover { background: #30363d; }
+textarea { width: 100%; min-height: 6rem; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 0.5rem; }
+#out { margin-top: 1rem; font-family: ui-monospace, monospace; word-break: break-all; }
+.note { color: #8b949e; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<h1>Pre-lexical mark <span class="badge">unattested</span></h1>
+<p class="note">Draft only. Default-deny. This control does not capture intent. It hashes a local class and discards any lexical sentence.</p>
+<p>Optional lexical expansion (will be discarded, never hashed):</p>
+<textarea id="lex" placeholder="Any words you might later attach are not part of the mark..."></textarea>
+<p><button id="mark" type="button">Mark pre-lexical class</button></p>
+<div id="out"></div>
+<script>
+async function sha256(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+document.getElementById('mark').addEventListener('click', async () => {
+  const ts = Date.now();
+  const input = ts + '|prelexical|unattested';
+  const id = await sha256(input);
+  const lex = document.getElementById('lex').value;
+  document.getElementById('out').innerHTML =
+    '<p><strong>Capture-refusal id:</strong><br>' + id + '</p>' +
+    '<p class="note">Input hashed: ' + input + '</p>' +
+    '<p class="note">Lexical discarded (not in hash): ' + (lex ? lex.length + ' chars' : 'empty') + '</p>' +
+    '<p class="badge">unattested — not a captured intent, not a token, not a seal</p>';
+  document.getElementById('lex').value = '';
+});
+</script>
+</body>
+</html>

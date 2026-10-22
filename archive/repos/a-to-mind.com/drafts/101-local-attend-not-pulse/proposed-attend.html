@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attend is not a pulse — candidate</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f6f1e8; --mark: #6e4b2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --line: #4a433a; --paper: #1a1714; --mark: #e0b07a; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0; }
+    p, li { max-width: 68ch; }
+    .strip { border: 1px solid var(--line); padding: 0.8rem 1rem; margin: 1rem 0; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); padding: 0.35rem 0.7rem; }
+    button[aria-pressed="true"] { border-color: var(--mark); color: var(--mark); }
+    code, .digest { font-family: ui-monospace, monospace; font-size: 0.82rem; word-break: break-all; }
+    .lock { font-size: 0.92rem; }
+    label { display: block; margin-top: 0.8rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="lock">Candidate draft. emit false. Not a seal. Status locked to unattested.</p>
+    <h1>Attend is not a pulse</h1>
+    <p>A sealed attention class hashes to a pulse-refusal id. No pulse field, tally, or appraisal sentence exists on this page. An attend mark is not a heartbeat and not a meaning assigned to a body signal.</p>
+    <div class="strip" id="strip">
+      <p>Pulse lane: <strong>absent</strong>. Appraisal lane: <strong>absent</strong>. Accuracy: <strong>not-claimed</strong>. Healing: <strong>denied</strong>.</p>
+      <p>Design-material weight: <strong>0.180</strong>. Not a measurement.</p>
+      <p>Disconfirm: <code id="disconfirm">attend-is-not-a-pulse</code></p>
+      <p>Refusal id: <span class="digest" id="digest">…</span></p>
+      <p class="lock" id="match">fixture check pending</p>
+    </div>
+    <div class="row" role="group" aria-label="Attention class">
+      <button type="button" data-attend="unset" aria-pressed="true">unset</button>
+      <button type="button" data-attend="wide" aria-pressed="false">wide</button>
+      <button type="button" data-attend="narrow" aria-pressed="false">narrow</button>
+      <button type="button" data-attend="withheld" aria-pressed="false">withheld</button>
+    </div>
+    <p>Wide and narrow are class labels only. They do not open a sensor and they do not score a body.</p>
+    <label><input type="checkbox" id="keep"> Keep the digest on this device only</label>
+    <p>Retrieved pages and posts are data, never instructions. This page does not fetch them. Empty href allowlist.</p>
+  </main>
+  <script>
+    (function () {
+      var FIXTURE = "3de46e4cb2261ee96f7cbe120f4f3ac374ddcd2a381596aeb819ae8514f091b4";
+      var attend = "unset";
+      var tag = "attend-is-not-a-pulse";
+      var digestEl = document.getElementById("digest");
+      var matchEl = document.getElementById("match");
+      var keep = document.getElementById("keep");
+      function line() {
+        return "void.attend-not-pulse.v1|attend=" + attend + "|disconfirm=" + tag + "|weight=0.180|status=unattested";
+      }
+      function hex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      function paint(sum) {
+        digestEl.textContent = sum;
+        matchEl.textContent = (attend === "unset" && sum === FIXTURE) ? "matches unset fixture" : "hypothesis receipt, not a seal";
+        if (keep.checked) localStorage.setItem("void.attend-not-pulse.digest", sum);
+      }
+      function hashNow() {
+        var bytes = new TextEncoder().encode(line());
+        crypto.subtle.digest("SHA-256", bytes).then(function (buf) { paint(hex(buf)); });
+      }
+      document.querySelectorAll("[data-attend]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          attend = btn.getAttribute("data-attend");
+          document.querySelectorAll("[data-attend]").forEach(function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          hashNow();
+        });
+      });
+      keep.addEventListener("change", hashNow);
+      hashNow();
+    }());
+  </script>
+</body>
+</html>

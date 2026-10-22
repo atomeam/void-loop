@@ -1,0 +1,26 @@
+{
+ "HL": true,
+ "webgl2": true,
+ "frames": 329,
+ "chars": 1209,
+ "textLen": 1209,
+ "firstQuarterBpc": 4.79,
+ "lastQuarterBpc": 0.17,
+ "maxHeight": 3.34,
+ "highlightRanges": [
+  68,
+  68,
+  63,
+  48,
+  32
+ ],
+ "ghost": "",
+ "stats": "bits/char 1.40 last 1.0 bits contexts 678 hesitation↔surprise r -0.03 (n=600) keys saved 0 teach it a page forget",
+ "tabTest": {
+  "ghostAfterPrefix": "mpty. ",
+  "tail": "r you.\nThe void is not empty. "
+ },
+ "errs": [
+  "Failed to load resource: the server responded with a status of 404 (File not found)"
+ ]
+}

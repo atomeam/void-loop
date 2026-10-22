@@ -1,0 +1,92 @@
+{
+  "kind": "page-weight-badge",
+  "run": "025",
+  "slug": "carbon-weight-badge",
+  "status": "specified",
+  "hold": true,
+  "algo": "sha256",
+  "model": "SWDMv4",
+  "live_scan": false,
+  "third_party": false,
+  "offset": false,
+  "autoflip": false,
+  "cookie": false,
+  "analytics": false,
+  "index": "noindex",
+  "route": "draft",
+  "coefficients": {
+    "kwh_per_gb": 0.194,
+    "grid_g_per_kwh": 494,
+    "grid_source": "Ember Climate 2023 world average as cited by 2026 SWDM v4 writeups",
+    "green_factor": 0,
+    "green_evidence_url": null,
+    "green_checked_at": null,
+    "note": "Data-centre 0.055 + network 0.059 + device 0.080 kWh/GB. green_factor stays 0 until a human seals a dated Green Web Foundation evidence URL."
+  },
+  "grade_bins": {
+    "source": "Common 2026 SWDM v4 scanner bins (Carbon Badge writeups). Not a certification.",
+    "A": "< 0.15 g",
+    "B": "0.15 – 0.30 g",
+    "C": "0.30 – 0.50 g",
+    "D": "0.50 – 0.75 g",
+    "E": "0.75 – 1.00 g",
+    "F": "> 1.00 g"
+  },
+  "snapshot": {
+    "page": "/",
+    "measured_at": null,
+    "transfer_bytes": null,
+    "co2e_g": null,
+    "grade": null,
+    "status": "unattested",
+    "hold": true,
+    "claim": "No sealed transfer-byte snapshot exists. The public badge must not invent grams or a letter."
+  },
+  "head": {
+    "canonical": "{\"algo\":\"sha256\",\"green_factor\":0,\"kind\":\"page-weight-badge\",\"live_scan\":false,\"model\":\"SWDMv4\",\"offset\":false}",
+    "sha256": "943a1d58a2d46ad24b6b865645c2249052af84e37824b42ea72b60b6ef224026"
+  },
+  "body_sha256": "29430200deef0f806f745e28dd0f6a2c5943a89a377ad7a537cddba965bffc41",
+  "lines": [
+    {
+      "id": "contract",
+      "canonical": "carbon#025|kind:page-weight-badge|model:SWDMv4|live-scan:deny|third-party:deny|offset:deny|hash:sha256|seal:human",
+      "sha256": "354f396e0840894c770b8dde71c281173aa4d058baf631f0d8cdc1cf90af6968"
+    },
+    {
+      "id": "weight",
+      "canonical": "claim#weight|text:This badge publishes sealed transfer bytes for a named snapshot. It does not measure this visit.",
+      "sha256": "4afa2041b53efcd78a2e0494f97d918dde1ac0d6f32d961a62fbd547bda3e12c"
+    },
+    {
+      "id": "model",
+      "canonical": "claim#model|text:CO2e is a Sustainable Web Design Model v4 estimate from sealed bytes, 0.194 kWh/GB, and 494 gCO2/kWh Ember 2023 world average. It is not a lab measurement.",
+      "sha256": "e81da337de2077d711758be24186f04b57753b6183eb5bcae94d071bfa045d1d"
+    },
+    {
+      "id": "green",
+      "canonical": "claim#green|text:green_factor is 0 unless a human seals a Green Web Foundation evidence URL and a dated check. This snapshot seals 0.",
+      "sha256": "417eac38e1b26eee257c9c7961d67395f042a05287b3b733c1f090bbc3a370db"
+    },
+    {
+      "id": "grade",
+      "canonical": "claim#grade|text:A letter is a bin of the model output. It is not a certification and not a percentile of the live web.",
+      "sha256": "26cd348a6051b05f708857c969b5c94cea0b0b04c34cae6b92d7bce2637ab16b"
+    },
+    {
+      "id": "deny",
+      "canonical": "claim#deny|text:No unpkg widget, no remote SVG, no Performance-API live counter, no tree offset, no subscribe.",
+      "sha256": "3fbe929f90bded5a99515b95f05b2b4b2d194a0fc52bd971a39a3a0ac964ff51"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page",
+      "canonical": "page#carbon|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "5918008c0e7308b89a0c63afb8f7ca27c858fdd29b527139c2b2a2b1a67eaf96"
+    }
+  ]
+}

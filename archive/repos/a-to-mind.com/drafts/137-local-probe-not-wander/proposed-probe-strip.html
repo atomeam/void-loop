@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-probe-not-wander — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1a1c1e;
+      --paper: #eef1f2;
+      --line: #b7c0c4;
+      --hold: #6d3a4a;
+      --quiet: #555e63;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #eef1f2; --paper: #16181a; --line: #3a4246; --hold: #e0b0bc; --quiet: #b4bcc0; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .probe {
+      width: 0.35rem;
+      height: 1.4rem;
+      margin: 0.7rem 0 0.2rem;
+      background: var(--ink);
+    }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-probe-not-wander</h1>
+    <p>Draft only. A probe mark is not a wander score and not a mind-wandering diagnosis. Status stays unattested. The wander sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="probe-form">
+      <fieldset>
+        <legend>Probe class</legend>
+        <label><input type="radio" name="probe-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="probe-class" value="unprobed"> unprobed</label>
+        <label><input type="radio" name="probe-class" value="mark-only"> mark-only</label>
+        <label><input type="radio" name="probe-class" value="off-task-blank"> off-task-blank</label>
+        <label><input type="radio" name="probe-class" value="no-score"> no-score</label>
+        <label><input type="radio" name="probe-class" value="abstain"> abstain</label>
+      </fieldset>
+      <fieldset>
+        <legend>Probe seat</legend>
+        <div class="probe" aria-hidden="true"></div>
+        <p>One short mark. No percent. Not a wander score. Not hashed as a diagnosis.</p>
+      </fieldset>
+      <div class="seat" aria-label="Empty wander seat">Wander seat stays empty. No score. No arousal gauge.</div>
+      <p class="ids">Inert scan ids, not seats: 2108533799336251710, 2108309396631523804, 2108267601285747053, 2108362829069717670.</p>
+      <label for="wander">Wander sentence (cleared on seal, not hashed)</label>
+      <textarea id="wander" name="wander" autocomplete="off"></textarea>
+      <button type="submit">Seal probe class</button>
+    </form>
+    <p>Wander-refusal id</p>
+    <output id="refusal" for="probe-form">none</output>
+  </main>
+  <script>
+    const form = document.getElementById("probe-form");
+    const wander = document.getElementById("wander");
+    const refusal = document.getElementById("refusal");
+    const status = document.getElementById("status");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=probe-class]:checked");
+      if (!picked) {
+        refusal.textContent = "default-deny: no class";
+        return;
+      }
+      const preimage = "probe-not-wander|v1|" + picked.value + "|wander-refusal|status=unattested";
+      wander.value = "";
+      const bytes = new TextEncoder().encode(preimage);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal.textContent = hex;
+      status.textContent = "status: unattested";
+    });
+  </script>
+</body>
+</html>

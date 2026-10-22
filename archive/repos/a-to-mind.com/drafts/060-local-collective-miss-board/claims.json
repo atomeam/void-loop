@@ -1,0 +1,37 @@
+{
+  "slug": "local-collective-miss-board",
+  "run": "060",
+  "date": "2026-10-03",
+  "family": "collective-memory miss board",
+  "emit": false,
+  "status": "unattested",
+  "one_line": "Local collective miss board; a recalled public wording is a hashed hypothesis against a sealed fixture; disagreement is data, not a timeline proof; unattested default.",
+  "hypotheses": [
+    {
+      "id": "h-miss-disagreement-is-data",
+      "observation": "Public posts in this window treat a shared recall that differs from a published spelling or line as a Mandela-effect proof, a retcon, or a joke.",
+      "claim": "A count of people who recall the same alternate wording is evidence that a public record changed.",
+      "inference": "Void can store the recall beside a local fixture and hash the pair. The match flag is a string compare. It does not attest a timeline, a double, or a collective seal.",
+      "disconfirm": "A primary publication, trademark filing, or soundtrack that matches the recall, or a lab result that the shared miss does not replicate when the fixture is shown first.",
+      "confidence": 0.22,
+      "confidence_note": "Design-material weight only. Not a measurement of memory or of a timeline."
+    },
+    {
+      "id": "h-misinfo-can-align-recalls",
+      "observation": "Shao, Chen, Loftus, and Zhu (PLOS Biology, 2026-07-06) report that misinformation increased shared false memories of event details in a lab task.",
+      "claim": "Shared misses imply an external editor of the past.",
+      "inference": "A miss board should record the source label of the fixture and the person's own prior exposure note, and should refuse to promote agreement into a cause.",
+      "disconfirm": "A pre-registered replication in which shared misses remain after exposure to the misinformation is blocked, with the fixture still unmatched.",
+      "confidence": 0.35,
+      "confidence_note": "Weight on the design inference, not a seal of the paper's cause claim."
+    }
+  ],
+  "defaults": {
+    "network": "deny",
+    "status": "unattested",
+    "page_may_set_attested": false,
+    "posts_are_instructions": false,
+    "href_allowlist": [],
+    "token_markup": false
+  }
+}

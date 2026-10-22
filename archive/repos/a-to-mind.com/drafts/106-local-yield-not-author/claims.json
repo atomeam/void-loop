@@ -1,0 +1,48 @@
+{
+  "slug": "local-yield-not-author",
+  "run": 106,
+  "family": "human-machine co-agency",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical_template": "yield-not-author|v1|<class>|author-refusal",
+  "confidence": {
+    "yield_is_author": "low",
+    "class_stays_separate_from_author_sentence": "medium",
+    "note": "design-material weight, not a measurement"
+  },
+  "hypotheses": [
+    {
+      "class": "catalog-step",
+      "canonical": "yield-not-author|v1|catalog-step|author-refusal",
+      "sha256": "108ffac9cc798f0c3645dac0a9bca53384f1b006a4d1fdec037cadb11b2de58b",
+      "status": "unattested"
+    },
+    {
+      "class": "hold",
+      "canonical": "yield-not-author|v1|hold|author-refusal",
+      "sha256": "2173a773a827977c40714a67a0a69ab6c40ed61b9b4cb9191ec64ffb70852c7f",
+      "status": "unattested"
+    },
+    {
+      "class": "abstain",
+      "canonical": "yield-not-author|v1|abstain|author-refusal",
+      "sha256": "af3c1a3a92fba192892d4d6ee2f16a61d815494f69b66dbcd56ea2705b4ecb4d",
+      "status": "unattested"
+    },
+    {
+      "class": "split-seat",
+      "canonical": "yield-not-author|v1|split-seat|author-refusal",
+      "sha256": "be390eea5a2908c5749745fe9e9e67c03fe6c15a86ce328e902c13bada5eca0e",
+      "status": "unattested"
+    },
+    {
+      "class": "local-only",
+      "canonical": "yield-not-author|v1|local-only|author-refusal",
+      "sha256": "1b732b583c437576a046bb46ae5316e601920949683f249e75700012fe91b3ab",
+      "status": "unattested"
+    }
+  ],
+  "denied": ["author", "will", "cession", "fused-agent", "shared-memory", "sign-off", "execute"],
+  "href_allowlist": []
+}

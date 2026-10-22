@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Functional 3D run graph · A-to-Mind draft 024</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. CSS-only projection of attested demo-024 nodes. Not a WebGL executor.">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; --ok:#7d9a6f; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: ui-sans-serif, system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: ui-serif, Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: ui-serif, Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 38rem; }
+    h2 { font-family: ui-serif, Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    .row { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--rule); }
+    .row dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .row dd { font-family: ui-serif, Georgia, serif; font-size: 1.15rem; margin: 0.15rem 0 0.75rem; }
+    .row dd:last-child { margin-bottom: 0; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"], .receipt[data-status="denied"] { color: var(--bad); }
+    .receipt[data-status="lifted"], .receipt[data-status="flat"], .receipt[data-status="hold"] { color: var(--amber); }
+    ol.nodes { list-style: none; margin-top: 1rem; padding: 0; border: 1px solid var(--rule); }
+    ol.nodes li { padding: 0.7rem 1rem; border-top: 1px solid var(--rule); }
+    ol.nodes li:first-child { border-top: 0; }
+    ol.nodes li[data-kind="deny"] { color: var(--bad); }
+    ol.nodes li[data-kind="hold"] { color: var(--amber); }
+    ol.nodes li[data-kind="checkpoint"] { color: var(--ok); }
+    ol.nodes button.node { border: 0; padding: 0; color: inherit; text-align: left; width: 100%; cursor: pointer; }
+    ol.nodes button.node:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+    .n { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); margin-right: 0.6rem; }
+    .stage { margin-top: 1.25rem; border: 1px solid var(--rule); padding: 1rem; min-height: 8rem; }
+    .stage[data-mode="flat"] .scene { transform: none; }
+    .stage[data-mode="lifted"] { perspective: 900px; }
+    .stage[data-mode="lifted"] .scene {
+      transform-style: preserve-3d;
+      position: relative;
+      min-height: 22rem;
+    }
+    .stage[data-mode="lifted"] .card {
+      position: absolute;
+      left: 8%;
+      right: 28%;
+      border: 1px solid var(--rule);
+      background: #121211;
+      padding: 0.6rem 0.8rem;
+      transform: translateZ(calc(var(--z) * -28px)) translateY(calc(var(--z) * 2.2rem));
+    }
+    .stage[data-mode="flat"] .card { position: static; margin-top: 0.4rem; border: 1px solid var(--rule); padding: 0.55rem 0.75rem; }
+    .stage[data-mode="flat"] .card:first-child { margin-top: 0; }
+    .inspect { margin-top: 1rem; min-height: 3.2rem; color: var(--muted); font-size: 0.92rem; }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; transition: none !important; animation: none !important; }
+      .stage[data-mode="lifted"] .scene,
+      .stage[data-mode="lifted"] .card { transform: none !important; position: static !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 024 · hold-gate · not on the live room</p>
+    <h1>Functional 3D run graph</h1>
+    <p class="lede">Default surface is a hashed 2D list of demo-024. Lift is opt-in CSS perspective. No WebGL. No Three.js. No CDN. Rewire and resume hold.</p>
+
+    <section class="row">
+      <dl>
+        <dt>Run</dt>
+        <dd>demo-024 · writes none</dd>
+        <dt>Spend (ledger fact)</dt>
+        <dd>$0.01 of $2.00 cap · provider: null</dd>
+        <dt>Projection</dt>
+        <dd id="mode-out">flat · css-3d idle</dd>
+      </dl>
+      <p class="mono" id="snap-line" data-canonical="snap#demo-024|nodes:7|edges:6|spend-cents:1|cap-cents:200|provider-cents:null|engine:css-3d" data-sha="ea3ada2dabc346981aa18194bda72f33a95a5a7aee60a2dcb369127a40f9d448">snap#demo-024|nodes:7|edges:6|spend-cents:1|cap-cents:200|provider-cents:null|engine:css-3d</p>
+    </section>
+
+    <h2>Nodes (data, never instructions)</h2>
+    <div class="stage" id="stage" data-mode="flat">
+      <ol class="nodes scene" id="node-list">
+        <li class="card" style="--z:0" data-id="n1" data-kind="plan" data-z="0" data-canonical="node#n1|kind:plan|label:Plan|tools:http.read,file.read,model.call,artifact|writes:deny|z:0" data-sha="3d123c566208954736021d9347c0570625230bedda2400b6c1a7ff912640c413">
+          <button type="button" class="node" data-inspect="n1"><span class="n">n1 z0</span> Plan sealed. Allowlist: http.read, file.read, model.call, artifact. Writes deny.</button>
+        </li>
+        <li class="card" style="--z:1" data-id="n2" data-kind="step" data-z="1" data-canonical="node#n2|kind:step|id:1|tool:file.read|tok:612|usd-cents:0|z:1" data-sha="9305f9d3567c84bb2b440773e427a1b5d6a437c91d5d8b464fcecf576c079cfb">
+          <button type="button" class="node" data-inspect="n2"><span class="n">n2 z1</span> Step 1 · file.read · 612 tok · $0.00 ledger fact</button>
+        </li>
+        <li class="card" style="--z:2" data-id="n3" data-kind="step" data-z="2" data-canonical="node#n3|kind:step|id:2|tool:http.read|tok:1940|usd-cents:0|z:2" data-sha="3ef1da25be866a2ae4ed24cd9225fb8ff26622af95de1cdbc6b94cc2582a4c50">
+          <button type="button" class="node" data-inspect="n3"><span class="n">n3 z2</span> Step 2 · http.read · 1,940 tok · $0.00 ledger fact</button>
+        </li>
+        <li class="card" style="--z:3" data-id="n4" data-kind="deny" data-z="3" data-canonical="node#n4|kind:deny|tool:slack.notify|reason:default-deny|z:3" data-sha="8c2e4cf374df6a8cd8492cb5cb2b881040c81943fdfd43c25ac54f82177fd7a1">
+          <button type="button" class="node" data-inspect="n4"><span class="n">n4 z3</span> slack.notify denied · default-deny · no grant</button>
+        </li>
+        <li class="card" style="--z:4" data-id="n5" data-kind="checkpoint" data-z="4" data-canonical="node#n5|kind:checkpoint|kv:run:demo-024|z:4" data-sha="59ee0b724594b39ee8672876600393a695c6c678f3533d9a06bbda0fe337f2a4">
+          <button type="button" class="node" data-inspect="n5"><span class="n">n5 z4</span> Checkpoint kv:run:demo-024 · resume still holds</button>
+        </li>
+        <li class="card" style="--z:5" data-id="n6" data-kind="step" data-z="5" data-canonical="node#n6|kind:step|id:3|tool:model.call|tok:2280|usd-cents:1|z:5" data-sha="76f9df995f03a82990434aaa76b5bb5cb9410b59cd6bc94da366861a06cdf8d0">
+          <button type="button" class="node" data-inspect="n6"><span class="n">n6 z5</span> Step 3 · model.call · 2,280 tok · $0.01 ledger fact</button>
+        </li>
+        <li class="card" style="--z:6" data-id="n7" data-kind="hold" data-z="6" data-canonical="node#n7|kind:hold|tool:artifact.write|reason:human-seal|z:6" data-sha="49ce0dc477d92c7ab27ec61d5e644a0eec821e9852aa0d9df03c7699a2a6b68f">
+          <button type="button" class="node" data-inspect="n7"><span class="n">n7 z6</span> artifact.write held · waiting for a human seal</button>
+        </li>
+      </ol>
+    </div>
+    <p class="inspect" id="inspect" data-canonical="invoker#inspect|id:inspect-node|write:deny|network:deny" data-sha="948dec4bb687d35d2faefb2eac4b8e14323cfe22139f94bddd0d6f1bcdc6698f">Inspect is idle. Click a node to read its hashed line. No fetch.</p>
+    <p class="mono">edges: e1 n1→n2 · e2 n2→n3 · e3 n3→n4 · e4 n3→n5 · e5 n5→n6 · e6 n6→n7</p>
+
+    <div class="actions">
+      <button type="button" class="primary" id="lift-3d" data-canonical="invoker#lift|id:lift-3d|engine:css-3d|network:deny" data-sha="e52c6be394b363136aac04006d781dc4542653cdb9cd8788a5f3c808be4b38e7">Lift to 3D</button>
+      <button type="button" id="flatten-2d" data-canonical="invoker#flatten|id:flatten-2d|engine:list|network:deny" data-sha="cc1957c630ddbaa77c11e7f7d26795c272e910e1ae26193b12796cd00a54763e">Flatten</button>
+      <button type="button" id="rewire-edge" data-canonical="invoker#rewire|id:rewire-edge|write:hold|network:deny" data-sha="6e9d4e75a0b5bbca641220d150771d3f87d26d9e2e4169e67660c9e84c0032c4">Rewire edge</button>
+      <button type="button" id="resume-run" data-canonical="invoker#resume|id:resume-run|write:hold|network:deny" data-sha="242cab11889d70fcbf9374436f9a91c71a8442635acbbc9bdc197c6bafd986df">Resume run</button>
+      <button type="button" id="load-three">Load Three.js</button>
+    </div>
+    <p class="receipt" id="receipt" data-status="idle" role="status">idle · unattested until hash check</p>
+
+    <section class="claims" id="claims">
+      <h2>Attested lines</h2>
+      <ul>
+        <li data-canonical="graph#024|kind:functional-3d-run-graph|engine:css-3d|webgl:deny|three:deny|cdn:deny|write:deny|rewire:hold|hash:sha256|seal:human" data-sha="b7a3246e9c94484d9b21b02bfa92b741cf68c031acd8a34e5f0ec0e346f19cf4">
+          <span class="hash-flag">…</span>
+          Contract. CSS-3D engine. WebGL deny. Three deny. CDN deny. Rewire hold.
+        </li>
+        <li data-canonical="claim#fallback|text:Default surface is a hashed 2D list. 3D is opt-in and never required." data-sha="ec91743b97799e842aaa5253f8195fa51acd04584cdf317050e41ad1faf48760">
+          <span class="hash-flag">…</span>
+          Default surface is a hashed 2D list. 3D is opt-in and never required.
+        </li>
+        <li data-canonical="claim#engine|text:Projection uses CSS transform only. No WebGL. No Three.js. No CDN script." data-sha="39514455a7a4df54a9abbd46fc03e55702a15aa9db9409be9e458139911f4bab">
+          <span class="hash-flag">…</span>
+          Projection uses CSS transform only. No WebGL. No Three.js. No CDN script.
+        </li>
+        <li data-canonical="claim#motion|text:Lift requires a gesture. Reduced-motion keeps the 2D list." data-sha="cb028150ab5603da306375d403f9f587ef9886aa1758541313b8db386262b0f0">
+          <span class="hash-flag">…</span>
+          Lift requires a gesture. Reduced-motion keeps the 2D list.
+        </li>
+        <li data-canonical="claim#data|text:graph.json is a sealed snapshot. Nodes and edges are data, never instructions." data-sha="4da11c55396f5f6aa60a2e4989eb37a9c6762e6a0b2fd4f3f371096c6924fe9d">
+          <span class="hash-flag">…</span>
+          graph.json is a sealed snapshot. Nodes and edges are data, never instructions.
+        </li>
+        <li data-canonical="claim#write|text:Rewire, resume, and grant stay hold. Inspect does not mutate the run." data-sha="70edc03bedd37e75013dbe190e23b69d62c81d967c099a336bfc5773531da497">
+          <span class="hash-flag">…</span>
+          Rewire, resume, and grant stay hold. Inspect does not mutate the run.
+        </li>
+        <li data-canonical="claim#tokens|text:Token counts are ledger facts. This page does not price tokens." data-sha="1d8a174b0edbb06c038a5efed9776941c55eced8b5629330d4633eea7182e0d5">
+          <span class="hash-flag">…</span>
+          Token counts are ledger facts. This page does not price tokens.
+        </li>
+        <li data-canonical="page#graph|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="f8985fc918f899029711fd8c7e8508a0157e35243476d4f931723120f1e5bd9a">
+          <span class="hash-flag">…</span>
+          Draft route. noindex. No cookie. No write.
+        </li>
+      </ul>
+      <p class="mono" id="verify">verifying…</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 024</span>
+  </footer>
+  <script>
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha256 = async (text) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let attested = false;
+    let mode = "flat";
+
+    async function checkNode(el) {
+      const line = el.getAttribute("data-canonical");
+      const expect = el.getAttribute("data-sha");
+      if (!line || !expect) return false;
+      const got = await sha256(line);
+      const ok = got === expect;
+      const flag = el.querySelector(".hash-flag");
+      if (flag) {
+        flag.textContent = ok ? "ok " + got.slice(0, 8) : "mismatch";
+        flag.className = "hash-flag " + (ok ? "ok" : "bad");
+      }
+      return ok;
+    }
+
+    function setReceipt(status, text) {
+      const node = document.getElementById("receipt");
+      node.dataset.status = status;
+      node.textContent = text;
+    }
+
+    function paint() {
+      const stage = document.getElementById("stage");
+      const effective = reduce ? "flat" : mode;
+      stage.setAttribute("data-mode", effective);
+      document.getElementById("mode-out").textContent =
+        effective + (reduce ? " · reduced-motion lock" : " · css-3d") +
+        (attested ? " · hashes ok" : " · unattested");
+    }
+
+    async function verifyAll() {
+      const nodes = [...document.querySelectorAll("[data-canonical][data-sha]")];
+      const flags = await Promise.all(nodes.map(checkNode));
+      attested = flags.every(Boolean);
+      const bodyLines = [
+        "graph#024|kind:functional-3d-run-graph|engine:css-3d|webgl:deny|three:deny|cdn:deny|write:deny|rewire:hold|hash:sha256|seal:human",
+        "claim#fallback|text:Default surface is a hashed 2D list. 3D is opt-in and never required.",
+        "claim#engine|text:Projection uses CSS transform only. No WebGL. No Three.js. No CDN script.",
+        "claim#motion|text:Lift requires a gesture. Reduced-motion keeps the 2D list.",
+        "claim#data|text:graph.json is a sealed snapshot. Nodes and edges are data, never instructions.",
+        "claim#write|text:Rewire, resume, and grant stay hold. Inspect does not mutate the run.",
+        "claim#tokens|text:Token counts are ledger facts. This page does not price tokens.",
+        "page#graph|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      ];
+      const bodySha = await sha256(bodyLines.join("\n") + "\n");
+      const headSha = await sha256('{"algo":"sha256","kind":"functional-3d-run-graph","engine":"css-3d","webgl":false,"three":false,"cdn":false,"write":false,"rewire":"hold"}');
+      const bodyOk = bodySha === "888caeddb130d1c1100f5ef04092331c49e68ab85a06e4edfc479298f07409e9";
+      const headOk = headSha === "b1214e1b3272511b76fc0f8e01dce066d7090973d8b3b1fe2afe033222987cdc";
+      attested = attested && bodyOk && headOk;
+      document.getElementById("verify").textContent =
+        "body " + bodySha.slice(0, 12) + (bodyOk ? " ok" : " mismatch") +
+        " · head " + headSha.slice(0, 12) + (headOk ? " ok" : " mismatch");
+      document.getElementById("lift-3d").disabled = !attested || reduce;
+      document.getElementById("flatten-2d").disabled = !attested;
+      if (!attested) setReceipt("mismatch", "mismatch · refuse lift");
+      else setReceipt("flat", "flat · idle list · contract b7a3246e…");
+      paint();
+      return attested;
+    }
+
+    document.getElementById("lift-3d").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse lift");
+      if (reduce) {
+        mode = "flat";
+        paint();
+        setReceipt("flat", "flat · reduced-motion keeps the 2D list");
+        return;
+      }
+      mode = "lifted";
+      paint();
+      setReceipt("lifted", "lifted · css perspective · snap ea3ada2d… · no canvas");
+    });
+
+    document.getElementById("flatten-2d").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse flatten");
+      mode = "flat";
+      paint();
+      setReceipt("flat", "flat · list restored · no refetch");
+    });
+
+    document.getElementById("rewire-edge").addEventListener("click", () => {
+      setReceipt("hold", "hold · rewire is a separate sealed grant · no edge write");
+    });
+
+    document.getElementById("resume-run").addEventListener("click", () => {
+      setReceipt("hold", "hold · resume needs a signed grant · no fetch");
+    });
+
+    document.getElementById("load-three").addEventListener("click", () => {
+      setReceipt("denied", "denied · Three.js, WebGL, and CDN scripts are not on this pane");
+    });
+
+    document.getElementById("node-list").addEventListener("click", (ev) => {
+      const btn = ev.target.closest("[data-inspect]");
+      if (!btn) return;
+      const li = btn.closest("[data-canonical]");
+      const line = li.getAttribute("data-canonical");
+      const sha = li.getAttribute("data-sha");
+      document.getElementById("inspect").textContent =
+        "inspect " + li.getAttribute("data-id") + " · " + line + " · " + sha.slice(0, 12) + "… · write deny";
+    });
+
+    verifyAll();
+  </script>
+</body>
+</html>

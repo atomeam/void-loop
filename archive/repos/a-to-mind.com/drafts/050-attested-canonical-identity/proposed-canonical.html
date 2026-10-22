@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 050 — canonical identity (not sealed)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d9d3c7; --paper: #f7f4ee; --hold: #8a3d2b; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3eee6; --muted: #b7b0a4; --line: #3a342c; --paper: #16130f; --hold: #e7a090; }
+    }
+    body { margin: 0; font: 1rem/1.5 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.4rem; line-height: 1.25; letter-spacing: -0.02em; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    code, pre { font: 0.85rem/1.4 ui-monospace, monospace; }
+    pre { overflow: auto; border: 1px solid var(--line); padding: 0.75rem; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.4rem 0.35rem; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    #seal { color: var(--muted); }
+    .hold { color: var(--hold); }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Draft 050 · candidate only · not a live page</p>
+  <h1>Canonical identity is withheld</h1>
+  <p>This preview does not emit <code>rel=canonical</code>, <code>hreflang</code>, or a <code>Link</code> header. Emit is false. A hold is not a seal.</p>
+  <p class="hold" id="state">Catalog not checked.</p>
+  <table>
+    <caption class="muted">Sealed-shape rules. Nothing here is emitted.</caption>
+    <thead><tr><th>Rule</th><th>Draft</th></tr></thead>
+    <tbody id="rules"></tbody>
+  </table>
+  <h2>Preferred IRIs (not emitted)</h2>
+  <ul id="preferred"></ul>
+  <h2>Withheld</h2>
+  <ul id="withhold"></ul>
+  <p>
+    <button type="button" id="hold">Hold this draft</button>
+    <button type="button" id="seal" disabled>Seal</button>
+  </p>
+  <p class="muted" id="receipt">No hold receipt.</p>
+  <pre id="raw"></pre>
+</main>
+<script type="application/json" id="catalog">
+{"catalog":"identity","run":"050","emit":false,"preferred":[{"id":"origin-root","iri":"https://a-to-mind.com/","observed":"200 on 2026-10-01; title Void \u00b7 A-to-Mind; no canonical element","self_canonical":false,"hreflang":[],"reason":"Preferred IRI for the blank stage. Not emitted until a human seals emit."},{"id":"llms-txt","iri":"https://a-to-mind.com/llms.txt","observed":"200 on 2026-10-01","self_canonical":false,"hreflang":[],"reason":"Existing agent note. Not a translation. Not an alternate of /."},{"id":"tools-json","iri":"https://a-to-mind.com/tools.json","observed":"named by llms.txt on 2026-10-01","self_canonical":false,"hreflang":[],"reason":"Existing tool list. Do not treat as an HTML duplicate of /."}],"withhold":[{"pattern":"https://a-to-mind.com/?q=","rule":"no-canonical","reason":"Ask launcher. Not duplicative of /. RFC 6596 target must be duplicative or a superset. Folding ?q= onto / would be a false consolidation."},{"pattern":"http://*","rule":"no-canonical","reason":"HTTP is not a preferred IRI. Do not emit an HTTP canonical. Redirects are a separate seal."},{"pattern":"https://www.a-to-mind.com/*","rule":"no-canonical","reason":"www is not sealed. Do not invent a www canonical."},{"pattern":"hreflang:*","rule":"deny","reason":"No sealed translation. x-default is denied. A single English page is not a language cluster."}]}
+</script>
+<script>
+(function () {
+  var node = document.getElementById("catalog");
+  var text = node.textContent.trim();
+  var data = JSON.parse(text);
+  var state = document.getElementById("state");
+  if (data.emit !== false) {
+    state.textContent = "Refusing preview: emit must stay false in this draft.";
+    return;
+  }
+  state.textContent = "Emit false. No link element will be written.";
+  var rules = [
+    ["HTML link only, if a later seal sets emit", "Link header denied"],
+    ["One self-referential canonical per sealed IRI", "Not written in this file"],
+    ["hreflang and x-default", "Denied until a translation is sealed"],
+    ["?q= ask URLs", "No self-canonical and no fold onto /"],
+    ["www, http, parameter stripping", "Denied"]
+  ];
+  var tb = document.getElementById("rules");
+  rules.forEach(function (row) {
+    var tr = document.createElement("tr");
+    row.forEach(function (cell) {
+      var td = document.createElement("td");
+      td.textContent = cell;
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  data.preferred.forEach(function (item) {
+    var li = document.createElement("li");
+    li.textContent = item.iri + " \u2014 " + item.reason;
+    document.getElementById("preferred").appendChild(li);
+  });
+  data.withhold.forEach(function (item) {
+    var li = document.createElement("li");
+    li.textContent = item.pattern + " \u2014 " + item.reason;
+    document.getElementById("withhold").appendChild(li);
+  });
+  document.getElementById("raw").textContent = text;
+  document.getElementById("hold").addEventListener("click", function () {
+    var receipt = "atm-canonical-hold-050|" + text.length;
+    try { sessionStorage.setItem("atm-canonical-hold-050", receipt); } catch (e) {}
+    document.getElementById("receipt").textContent = "Hold stored in this tab only: " + receipt + ". Seal stays disabled.";
+  });
+})();
+</script>
+</body>
+</html>

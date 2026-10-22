@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hush is not speech — draft 099</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --muted: #57534e; --line: #d6d3d1; --bg: #fafaf9; --card: #fff; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --muted: #a8a29e; --line: #44403c; --bg: #1c1917; --card: #292524; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.35rem; line-height: 1.3; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .card { border: 1px solid var(--line); background: var(--card); padding: 1rem; margin: 1rem 0; }
+    label { display: block; margin: 0.75rem 0 0.25rem; font-size: 0.9rem; }
+    select, textarea { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+    textarea { min-height: 5rem; }
+    button { font: inherit; margin-right: 0.5rem; margin-top: 0.5rem; }
+    code, .mono { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .flag { display: inline-block; border: 1px solid var(--line); padding: 0.1rem 0.4rem; margin-right: 0.3rem; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Draft 099 · candidate only · emit false · not a seal</p>
+  <h1>Local hush-not-speech</h1>
+  <p>A sealed hush class hashes to a speech-refusal id. The speech sentence is discarded and is not in the hash. A hush is not speech and not a decoded pass. Status stays unattested.</p>
+  <p class="muted">Family: quiet-signal filter. Does not reuse local-closed-gate, local-underfloor-stub, or local-quiet-signal-filter. No microphone. No AudioContext. No network fetch.</p>
+
+  <section class="card" aria-labelledby="card-title">
+    <h2 id="card-title">Hypothesis card</h2>
+    <p><span class="flag">status: unattested</span><span class="flag">decode: not-claimed</span><span class="flag">pass: refused</span><span class="flag">weight: 0.180</span></p>
+    <label for="hush">Hush class</label>
+    <select id="hush">
+      <option value="unset" selected>unset</option>
+      <option value="hush">hush</option>
+      <option value="leak">leak</option>
+      <option value="crowded">crowded</option>
+      <option value="declined">declined</option>
+    </select>
+    <label for="tag">Disconfirm tag</label>
+    <select id="tag">
+      <option value="hush-is-not-speech" selected>hush-is-not-speech</option>
+    </select>
+    <label for="speech">Speech sentence (discarded on hash)</label>
+    <textarea id="speech" placeholder="Typed text stays in this well. It is not hashed."></textarea>
+    <p id="well" class="muted">Well: empty. A URL-shaped paste is still not fetched.</p>
+    <p><label><input id="keep" type="checkbox"> Keep digest on this device only</label></p>
+    <button type="button" id="hash">Hash refusal</button>
+    <button type="button" id="reset">Reset to fixture</button>
+    <p>Speech-refusal id</p>
+    <p class="mono" id="digest">70bf510235710856e80c7f1f72461013d038af6964e6b9baf11d1479e7b44a4b</p>
+    <p class="muted" id="line">void.hush-not-speech.v1|hush=unset|disconfirm=hush-is-not-speech|weight=0.180|status=unattested</p>
+    <p class="muted" id="note">Fixture receipt. Not a seal. href_allowlist is empty.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var CLASSES = ["unset", "hush", "leak", "crowded", "declined"];
+  var TAG = "hush-is-not-speech";
+  var FIXTURE = "void.hush-not-speech.v1|hush=unset|disconfirm=hush-is-not-speech|weight=0.180|status=unattested";
+  var hush = document.getElementById("hush");
+  var speech = document.getElementById("speech");
+  var well = document.getElementById("well");
+  var digest = document.getElementById("digest");
+  var line = document.getElementById("line");
+  var note = document.getElementById("note");
+  var keep = document.getElementById("keep");
+
+  function showWell() {
+    var raw = speech.value || "";
+    var n = raw.length;
+    var urlish = /https?:\/\//i.test(raw);
+    well.textContent = "Well: " + n + " characters held, not hashed." + (urlish ? " URL-shaped text is not fetched." : "");
+  }
+
+  function canonical(cls) {
+    return "void.hush-not-speech.v1|hush=" + cls + "|disconfirm=" + TAG + "|weight=0.180|status=unattested";
+  }
+
+  function sha256(text) {
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", data).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function run() {
+    var cls = CLASSES.indexOf(hush.value) === -1 ? "unset" : hush.value;
+    var next = canonical(cls);
+    line.textContent = next;
+    showWell();
+    sha256(next).then(function (hex) {
+      digest.textContent = hex;
+      note.textContent = "Speech sentence discarded. Status locked unattested. Not a seal.";
+      try {
+        if (keep.checked) localStorage.setItem("void.hush-not-speech.digest", hex);
+        else localStorage.removeItem("void.hush-not-speech.digest");
+      } catch (e) { /* storage is optional */ }
+    });
+  }
+
+  speech.addEventListener("input", showWell);
+  document.getElementById("hash").addEventListener("click", run);
+  document.getElementById("reset").addEventListener("click", function () {
+    hush.value = "unset";
+    speech.value = "";
+    line.textContent = FIXTURE;
+    digest.textContent = "70bf510235710856e80c7f1f72461013d038af6964e6b9baf11d1479e7b44a4b";
+    note.textContent = "Fixture receipt. Not a seal. href_allowlist is empty.";
+    showWell();
+  });
+  showWell();
+})();
+</script>
+</body>
+</html>

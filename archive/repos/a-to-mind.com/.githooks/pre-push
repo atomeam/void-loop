@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Suggested-by: Void (run 118). Enable: git config core.hooksPath .githooks
+if true; then
+  tmp=$(mktemp); cp FEATURE_LEDGER.md "$tmp"
+  bash tools/check-ledger.sh "$tmp" || { rm -f "$tmp"; exit 1; }; rm -f "$tmp"
+fi

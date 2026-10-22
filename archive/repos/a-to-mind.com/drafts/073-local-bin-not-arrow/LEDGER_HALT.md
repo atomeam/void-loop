@@ -1,0 +1,7 @@
+## Halt (run 073)
+
+Queue was still empty on 2026-10-05. Run 073 did **not** invent a Used row and did **not** promote the run 027–072 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 061, slug `local-sync-not-cause-view`). Candidate draft only: `local-bin-not-arrow` in `drafts/073-local-bin-not-arrow/`. One-line: Local bin-not-arrow; two typed minute stamps that fall in the same allowlisted bin hash to a bin id; the card draws a refusal instead of an arrow; a shared bin is not a cause and not an acausal principle; unattested default. No hold-gate issue was opened. Live site copy was not changed. No bin card was added to a live page. No arrow, meaningful chip, acausal-principle seal, cause seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+Fringe row: | 073 | 2026-10-05 | correlation-not-causation sync view | local-bin-not-arrow | candidate, not used |
+
+Last 6 families before run 073 were collective-memory miss board, opt-in gesture or gaze as local input, human-machine co-agency, weak-signal hypothesis ledger, private incubation log, and sensory substitution. Run 073 reused correlation-not-causation sync view only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-bin-not-arrow` or `local-sync-not-cause-view`.

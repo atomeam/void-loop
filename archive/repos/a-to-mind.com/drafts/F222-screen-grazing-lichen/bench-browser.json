@@ -1,0 +1,33 @@
+{
+ "demo": {
+  "source": "demo",
+  "frames": 909,
+  "errColony": 35.351,
+  "errRandom": 65.284,
+  "budget": 501,
+  "shareError": null,
+  "repelCells": 0,
+  "stats": "source: demo   frames: 900   learning budget: 501 of 5760 cells per frame\nprediction error, colony-led learning (green): 35.35   same budget spent at random (pink): 65.28   46% less error"
+ },
+ "tabCapture": {
+  "source": "demo",
+  "frames": 455,
+  "errColony": 74.736,
+  "errRandom": 101.646,
+  "budget": 502,
+  "shareError": "NotReadableError: Could not start video source",
+  "repelCells": 0,
+  "stats": "source: demo   frames: 450   learning budget: 502 of 5760 cells per frame\nprediction error, colony-led learning (green): 74.74   same budget spent at random (pink): 101.65   26% less error"
+ },
+ "repel": {
+  "source": "demo",
+  "frames": 455,
+  "errColony": 97.114,
+  "errRandom": 101.646,
+  "budget": 506,
+  "shareError": null,
+  "repelCells": 3839,
+  "stats": "source: demo   frames: 450   learning budget: 507 of 5760 cells per frame\nprediction error, colony-led learning (green): 97.11   same budget spent at random (pink): 101.65   4% less error\navoiding #bcc8eb on 3813 cells"
+ },
+ "errs": []
+}

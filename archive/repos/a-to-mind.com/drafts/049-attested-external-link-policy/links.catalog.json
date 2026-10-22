@@ -1,0 +1,49 @@
+{
+  "slug": "attested-external-link-policy",
+  "run": "049",
+  "emit": false,
+  "reviewed_at": null,
+  "note": "Draft catalog. emit false withholds every outbound control. Rows are examples, not a live seal.",
+  "rules": {
+    "new_context_default": "deny",
+    "rel_opener": "deny",
+    "icon_as_warning": "deny",
+    "affiliate_wrapper": "deny",
+    "utm": "deny",
+    "interstitial": "deny",
+    "click_analytics": "deny",
+    "fetch_destination": "deny"
+  },
+  "links": [
+    {
+      "id": "llms",
+      "label": "llms.txt",
+      "href": "https://a-to-mind.com/llms.txt",
+      "same_origin": true,
+      "new_context": false,
+      "strip_referrer": false,
+      "disclose_host": false,
+      "example": true
+    },
+    {
+      "id": "agent-card",
+      "label": "agent card",
+      "href": "https://a-to-mind.com/.well-known/agent-card.md",
+      "same_origin": true,
+      "new_context": false,
+      "strip_referrer": false,
+      "disclose_host": false,
+      "example": true
+    },
+    {
+      "id": "html-living",
+      "label": "WHATWG HTML, following hyperlinks",
+      "href": "https://html.spec.whatwg.org/multipage/links.html#following-hyperlinks",
+      "same_origin": false,
+      "new_context": false,
+      "strip_referrer": true,
+      "disclose_host": true,
+      "example": true
+    }
+  ]
+}
