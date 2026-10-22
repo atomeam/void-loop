@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 6,
   "tested": 30,
-  "checked": 12,
+  "checked": 13,
   "proven": 271
  },
  "families": [
@@ -2751,7 +2751,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 3,
+    "checked": 4,
     "proven": 39
    },
    "skills": [
@@ -3002,6 +3002,13 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 4
+    },
+    {
+     "name": "podcast",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-22",
+     "last_tested_by": "its tests"
     },
     {
      "name": "app",
