@@ -2,41 +2,31 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-22T01:54:49.072Z",
-   "sha": "acb37c11148ee2393ec5de953a25ff614f4690a5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39706548087",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/store.products.json",
-    "drafts/fringe/anomalous-event-timeline-4.html",
-    "drafts/fringe/attention-7.html",
-    "drafts/fringe/correlation-view-6.html",
-    "drafts/fringe/human-machine-co-agency-8.html",
-    "drafts/fringe/interval-timing-8.html",
-    "drafts/fringe/miss-board-4.html",
-    "drafts/fringe/non-lexical-intent-5.html",
-    "drafts/fringe/opt-in-gesture-6.html",
-    "drafts/fringe/private-incubation-log-6.html",
-    "drafts/fringe/quiet-signal-filter-5.html"
-   ]
-  },
-  {
-   "at": "2026-10-22T01:31:59.992Z",
+   "at": "2026-10-22T01:57:04.703Z",
    "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute",
+    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
+    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "confirm line: visitors cannot send",
+    "confirm line: no = it does not run",
+    "confirm line: no answer = timeout, nothing runs",
+    "confirm line: changed request fails hard",
+    "paid: with a passkey, an outbound action still stops on the confirm line"
    ],
    "touched": [
     "docs/MAP.md",
@@ -805,6 +795,51 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/void.asks.json",
     "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-19T18:27:48.650Z",
+   "sha": "3cab42c94424d7bbb731d4a46c3cce4eddeafe45",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39298678677",
+   "suite": "browser suite on main",
+   "checks": [
+    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "confirm line: visitors cannot send",
+    "confirm line: no = it does not run",
+    "confirm line: no answer = timeout, nothing runs",
+    "confirm line: changed request fails hard",
+    "paid: with a passkey, an outbound action still stops on the confirm line",
+    "remember me on a device that already has your passkey signs in (no second Verse)",
+    "paid: the tier comes from the server; only \"paid\" counts (anything else reads as free)",
+    "sign out: your Verse leaves this device and stays on the server"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/robot-asks.mjs",
+    "tools/self-blocks.test.mjs",
+    "tools/test_void.mjs",
+    "tools/will.py",
+    "tools/will_test.py",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/self-blocks.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html"
    ]
   }
  ]
