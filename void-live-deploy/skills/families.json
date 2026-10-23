@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 1,
-  "tested": 29,
-  "checked": 13,
-  "proven": 281
+  "tested": 28,
+  "checked": 12,
+  "proven": 283
  },
  "families": [
   {
@@ -428,9 +428,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 28
+    "proven": 29
    },
    "skills": [
     {
@@ -669,10 +669,12 @@
     },
     {
      "name": "gamebox",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 2
     },
     {
@@ -871,16 +873,18 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 1,
-    "proven": 16
+    "checked": 0,
+    "proven": 17
    },
    "skills": [
     {
      "name": "is-it",
-     "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "calendar-file",

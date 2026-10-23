@@ -483,7 +483,27 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:16:32Z",
+   "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:10:50Z",
+   "subject": "Incident: the browser suite failed on f2d60658 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:05:47Z",
+   "subject": "Incident: the browser suite failed on 7adc40b1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:03:46Z",
+   "subject": "Incident: the browser suite failed on c9f4423b (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-23T21:59:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:59:01Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -509,6 +529,10 @@
   {
    "at": "2026-10-23T21:53:22Z",
    "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T21:51:17Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for is-it, gamebox"
   },
   {
    "at": "2026-10-23T21:48:56Z",
@@ -537,30 +561,6 @@
   {
    "at": "2026-10-23T21:38:37Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:38:29Z",
-   "subject": "finish: a commit step with nothing new to commit passes"
-  },
-  {
-   "at": "2026-10-23T21:37:24Z",
-   "subject": "merge-main: the skill index keeps its own name-by-name settle; regen writes it again after"
-  },
-  {
-   "at": "2026-10-23T21:36:59Z",
-   "subject": "Incident: the browser suite failed on 1e880882 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:36:50Z",
-   "subject": "merge-main regenerates every generated file after a merge, not only the families and the book"
-  },
-  {
-   "at": "2026-10-23T21:36:13Z",
-   "subject": "Regenerate the dependency map after the merge"
-  },
-  {
-   "at": "2026-10-23T21:31:48Z",
-   "subject": "The fast checks run the extension, sky, glyph and art-pixel browser checks only when the files they cover changed (main runs them all)"
   }
  ],
  "builders": {
