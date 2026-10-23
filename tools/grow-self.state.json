@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40024401176",
-  "at": "2026-10-23T21:08:29Z",
-  "what": "Verse hardened itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode.  Why these: fix-audit (no benchmark ask, evidence tier: checked); echo-field (no benchmark ask, evidence tier: experiment); gaze-chase (no benchmark ask, evidence tier: experiment); gpu-swarm (no benchmark ask, evidence tier: experiment); hand-arena (no benchmark ask, evidence tier: experiment); tilt-arena-mode (no benchmark ask, evidence tier: experiment). New phrases: “audit your fixes” now opens fix-audit; “post-fix audit” now opens fix-audit; “fix evidence audit” now opens fix-audit; “echo field” now opens echo-field; “show me the echo field” now opens echo-field; “acoustic lattice” now opens echo-field; “gaze chase” now opens gaze-chase; “look to steer” now opens gaze-chase; “steer with my gaze” now opens gaze-chase; “gpu swarm” now opens gpu-swarm; “show me the gpu swarm” now opens gpu-swarm; “webgpu swarm” now opens gpu-swarm; “hand arena” now opens hand-arena; “steer with my hand” now opens hand-arena; “hand tracking arena” now opens hand-arena; “tilt arena modes” now opens tilt-arena-mode; “tilt arena gaze” now opens tilt-arena-mode; “tilt arena in hand mode” now opens tilt-arena-mode.",
-  "try": "audit your fixes",
+  "run": "40029273208",
+  "at": "2026-10-23T21:50:59Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for is-it, gamebox.  Why these: tab (no benchmark ask, evidence tier: tested, 7 failed runs name it); tilt-mode (no benchmark ask, evidence tier: experiment); is-it (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); file-sorter (no benchmark ask, evidence tier: tested); gamebox (no benchmark ask, evidence tier: tested). New phrases: “is it christmas” now opens is-it; “is it christmas yet?” now opens is-it; “is it friday” now opens is-it; “game box” now opens gamebox; “games” now opens gamebox; “show me the games” now opens gamebox. Did not route: put in the page; draft for me; tilt arena; genome arena.",
+  "try": "is it christmas",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-22T05:02:46Z",
-    "try": "mind field",
-    "closedAt": "2026-10-23T21:07:56Z"
+    "at": "2026-10-23T21:08:29Z",
+    "try": "audit your fixes",
+    "closedAt": "2026-10-23T21:50:26Z"
   }
 }
