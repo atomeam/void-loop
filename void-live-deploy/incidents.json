@@ -2,6 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T23:40:28.588Z",
+   "sha": "7c204cbec84cdeae875bfbedbe085b429b2964c9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40039855943",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/skills/tower.js"
+   ]
+  },
+  {
    "at": "2026-10-23T23:32:59.097Z",
    "sha": "ba8b2ef1f99f5274b1a4fcf83882b3b9163b2092",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40039356780",
@@ -623,41 +637,6 @@
     "tools/grow-self.state.json",
     "tools/lap-items.mjs",
     "tools/lap.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-22T06:14:50.385Z",
-   "sha": "541c37c75c654110d52a962fe72237622f9b7575",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39729561247",
-   "suite": "browser suite on main",
-   "checks": [
-    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "docs/LOOP-GAPS.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/lap-items.mjs",
-    "tools/lap.test.mjs",
-    "tools/tower-gate.mjs",
-    "tools/tower.test.mjs",
-    "void-live-deploy/functions/api/will.js",
-    "void-live-deploy/lap.items.json",
-    "void-live-deploy/lib/lap.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0071-tower"
    ]
   }
  ]
