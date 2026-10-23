@@ -4009,9 +4009,9 @@
    "title": "Showcase",
    "line": "\"look what I made\": verse puts what it built since you were last here on the right, as a carousel",
    "examples": [
-    "look what I made",
     "show me what you made",
-    "what's new"
+    "what's new",
+    "what's new pussycat"
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
@@ -8101,7 +8101,7 @@
     {
      "rank": 163,
      "name": "showcase",
-     "catches": "look what I made"
+     "catches": "show me what you made"
     },
     {
      "rank": 164,

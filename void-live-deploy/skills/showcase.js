@@ -24,6 +24,9 @@ export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visi
 export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
+// the ask wants the walkthrough (the phrases the catalog already publishes; a near miss like "what's new in the news" keeps its own skill)
+const WALK = (t) => String(t || '').trim().toLowerCase().replace(/[\u2019']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const WALK_RE = /^(?:please\s+)?(?:show me what you(?:'ve|'re)? (?:made|built|did)|show me everything you(?:'ve)? (?:made|built)|what did you make for me|what's new(?: pussycat)?|what is new(?: pussycat)?|look what you (?:did|made))$/;
 const DISMISS_ON_DONE = false;
 
 export function markRecentDismissed(iso) {
@@ -263,3 +266,23 @@ export function mountShowcase(stageApi, tour, options = {}) {
 
   return { unmount };
 }
+
+// "look what I made": the ledger's recent work, walked on the stage through the carousel (the book's day links use mountShowcase too)
+async function run(text, api) {
+  const led = await fetchLedger().catch(() => null);
+  const all = /everything|all of (it|them)/i.test(String(text || ''));
+  const tour = buildRecentTour(led, all ? '' : getSeenIso());
+  if (!tour) {
+    try { api.showPage((p) => { p.innerHTML = '<h2>Recently built</h2><div class="sub">nothing new since you were last here</div>'; }); } catch (_) {}
+    return 'showcase';
+  }
+  try { mountShowcase(api.stage, tour); } catch (_) {}
+  return 'showcase';
+}
+export default {
+  name: 'showcase',
+  examples: ['show me what you made', "what's new", "what's new pussycat", 'what did you make for me', 'look what you did', 'show me everything you made'],
+  nearMisses: ["what's new in the news", 'show me what you can do', 'what did you make for dinner'],
+  match(lower, text) { return WALK_RE.test(WALK(text || lower)); },
+  run,
+};
