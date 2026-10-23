@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T23:01:45Z",
+   "subject": "Tower gate: a tie at the ideal score (0 px overflow, every load answered) passes as equal-and-better; --rescore applies the rule to stored…"
+  },
+  {
+   "at": "2026-10-23T23:00:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T23:00:31Z",
    "subject": "Argon's verdicts on the tower: design polish, history and unit and scientific modes beat calculator.net, signed and dated…"
   },
@@ -552,14 +560,6 @@
   },
   {
    "at": "2026-10-23T22:28:23Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:26:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:24:15Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
