@@ -27,7 +27,10 @@ export function readiness(gh, repo, pr) {
   if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${failed.html_url}` };
   // the one wait: Verse's own review, which reports in seconds (a PR from before that check falls back on the suite)
   const gate = runs.find((r) => r.name === 'void-review') || runs.find((r) => r.name === 'test-and-deploy');
-  if (!gate || gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: (gate ? gate.name : 'void-review') + ' not finished' };
+  // no review run at all on this head: a PR opened or pushed with the workflow's token (Verse's own PRs: grow-self, propose-fix) starts
+  // no pull_request run, so it would wait forever; noReview tells automerge.mjs to dispatch Verse's review on it (2026-10-23, #1289 sat 40 min)
+  if (!gate) { const quiet = Date.now() - Date.parse(p.updated_at || 0) > 180000; return { ...base, state: 'wait', why: 'void-review never started on this head', noReview: quiet, branch: p.head && p.head.ref }; }
+  if (gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: gate.name + ' not finished' };
   // the extras: whatever CodeRabbit has posted by now is reported, never waited on and never a stop
   const reviews = (gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`) || []).filter((r) => r.user && r.user.login === CR && r.commit_id === sha);
   const rc = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`) || [];
