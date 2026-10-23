@@ -1,0 +1,73 @@
+# Verse Out Loud, Verse's own podcast (owner, 2026-10-21: "Verse should make its own podcast"). Once a week (Monday 14:17 UTC) and
+# on demand (Run workflow; "force" makes one even if the last is under 6 days old), tools/podcast.mjs reads the week from the public
+# record (growth ledger, proven asks, Verse's daily readout, incident log), voices it with Piper (open-source TTS, MIT, runs here:
+# no account, no API, no cost; two voices, Verse and the Critic) and ffmpeg, and commits the mp3 (~1 MB), transcript, episodes.json and
+# podcast/rss.xml to main; the deploy puts them on a-to-mind.com/podcast/. About 3 Actions minutes a week. No secrets needed.
+name: Verse Out Loud (podcast)
+
+on:
+  schedule:
+    - cron: '17 14 * * 1'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Make an episode even if the last one is under 6 days old'
+        type: boolean
+        default: false
+
+concurrency:
+  group: verse-podcast
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Piper and ffmpeg
+        run: |
+          pip install --quiet piper-tts
+          sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: The two voices (cached)
+        id: voices
+        uses: actions/cache@v4
+        with:
+          path: ~/piper-voices
+          key: piper-voices-lessac-ryan-medium-v1
+      - name: Download the voices
+        if: steps.voices.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/piper-voices && cd ~/piper-voices
+          for v in lessac ryan; do
+            for ext in onnx onnx.json; do
+              curl -fsSL -o "en_US-$v-medium.$ext" "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/$v/medium/en_US-$v-medium.$ext"
+            done
+          done
+      - name: Make the episode
+        env:
+          PIPER: python -m piper
+        run: node tools/podcast.mjs --make --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Put it on main
+        run: |
+          git add void-live-deploy/podcast
+          git diff --cached --quiet && { echo "no new episode"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Verse Out Loud: a new episode, read from the week's record"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1
