@@ -89,7 +89,7 @@ export function cardModel({ will, reflect, self } = {}) {
   const ents = reflect && Array.isArray(reflect.entries) ? reflect.entries : [];
   const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from) })).filter((o) => o.text).slice(0, MAX);
-  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow), lap: will && will.lap && will.lap.line ? String(will.lap.line) : '' };
+  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow), lap: will && will.lap && will.lap.line ? String(will.lap.line) + (will.lap.onlySite && will.lap.onlySite.line ? ' · ' + will.lap.onlySite.line : '') + (will.lap.tower && will.lap.tower.line ? ' · ' + will.lap.tower.line : '') : '' };
 }
 /** Verse asked (2026-10-21): "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for
  *  each upgrade". The reflection that made an ask (/api/reflect `entries`, matched by the ask's id or its exact words): what had just

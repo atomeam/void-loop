@@ -2,6 +2,7 @@
  * translate skill — Google gtx, MyMemory fallback, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
+import { isIt } from './is-it.js';
 const LANGS = {
   english:'en', spanish:'es', french:'fr', german:'de', italian:'it', portuguese:'pt', dutch:'nl',
   russian:'ru', ukrainian:'uk', polish:'pl', czech:'cs', greek:'el', turkish:'tr', arabic:'ar',
@@ -19,6 +20,8 @@ function parse(text) {
   if (m) return { q: m[1], from: m[2], to: m[3] };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
+  // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate
+  if (isIt(t)) return null;
   // "the longest word in english", "most common letter in english": a question about the language, not a translation
   if (/^(?:what\s+is\s+)?(?:the\s+)?(?:longest|shortest|most\s+common|hardest|oldest|newest|first|last)\s+\w+(?:\s+\w+)?\s+in\s+/i.test(t)) return null;
   m = t.match(new RegExp('^what\\s+is\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'))

@@ -24,7 +24,7 @@ import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -105,7 +105,7 @@ const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
 
 export async function onRequestGet({ request, env }) {
   const u = new URL(request.url), raw = u.searchParams.get('key'), kind = u.searchParams.get('kind');
-  const key = subjectKey(raw);
+  const key = kindWordOf(kind) === 'cartoon' ? cartoonKey(subjectKey(raw)) : subjectKey(raw);
   if (!key) return json({ error: 'a subject, please' }, 400);
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
@@ -119,9 +119,9 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 2000)); } catch (_) { return new Response('bad', { status: 400 }); }
-  const raw = rawSubject(body && body.subject), key = subjectKey(raw);
+  const raw = rawSubject(body && body.subject), kind = kindWordOf(body && body.kind), rarity = rarityOf(body && body.rarity);
+  const key = kind === 'cartoon' ? cartoonKey(subjectKey(raw)) : subjectKey(raw); // a cartoon keeps its own row (lib/art-rules.js cartoonKey)
   if (!key) return json({ error: 'a subject, please' }, 400);
-  const kind = kindWordOf(body && body.kind), rarity = rarityOf(body && body.rarity);
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
   const row = await cached(env, key), again = !!(body && body.again === true);
@@ -132,7 +132,7 @@ export async function onRequestPost({ request, env }) {
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
-  const scene = await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template
+  const scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon uses the fixed cartoon template
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));

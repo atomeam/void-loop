@@ -56,9 +56,9 @@ export const GAMES = [
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?board\s+games$/.test(t)) return { kind: 'rack' }; // a bare "games" is the Game Box's (skills/gamebox.js)
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+)?(?:games?\s+(?:card|picker|menu|list)|board\s+games?\s+card)$|^(?:pick|choose)\s+a\s+(?:board\s+)?game$/.test(t)) return { kind: 'rack' };
-  if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?board\s+games$/.test(t)) return { kind: 'rack' }; // "show me the games" is the Game Box's
   // a board game Verse can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.
   const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
@@ -164,7 +164,8 @@ export default {
   rackOf,
   parodyOf,
   GAMES,
-  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
+  // "games" and "show me the games" open the Game Box now (skills/gamebox.js, 2026-10-22), which lists this shelf as "play a game"
+  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,

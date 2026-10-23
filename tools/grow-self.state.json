@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "39725492816",
-  "at": "2026-10-22T05:02:46Z",
-  "what": "Verse hardened itself: 6 benchmark ask(s) for doodle-mind, rally.  Why these: fix-audit (no benchmark ask, evidence tier: checked); doodle-mind (no benchmark ask, evidence tier: tested); eightball (no benchmark ask, evidence tier: tested); file-sorter (no benchmark ask, evidence tier: tested); mind-field-mode (no benchmark ask, evidence tier: tested); rally (no benchmark ask, evidence tier: tested). New phrases: “mind field” now opens doodle-mind; “show me the mind field” now opens doodle-mind; “living field” now opens doodle-mind; “play my cards” now opens rally; “card battle” now opens rally; “my cards” now opens rally. Did not route: audit your fixes; post-fix audit; fix evidence audit; magic 8 ball should spawn an 8 ball.",
-  "try": "mind field",
+  "run": "40024401176",
+  "at": "2026-10-23T21:08:29Z",
+  "what": "Verse hardened itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode.  Why these: fix-audit (no benchmark ask, evidence tier: checked); echo-field (no benchmark ask, evidence tier: experiment); gaze-chase (no benchmark ask, evidence tier: experiment); gpu-swarm (no benchmark ask, evidence tier: experiment); hand-arena (no benchmark ask, evidence tier: experiment); tilt-arena-mode (no benchmark ask, evidence tier: experiment). New phrases: “audit your fixes” now opens fix-audit; “post-fix audit” now opens fix-audit; “fix evidence audit” now opens fix-audit; “echo field” now opens echo-field; “show me the echo field” now opens echo-field; “acoustic lattice” now opens echo-field; “gaze chase” now opens gaze-chase; “look to steer” now opens gaze-chase; “steer with my gaze” now opens gaze-chase; “gpu swarm” now opens gpu-swarm; “show me the gpu swarm” now opens gpu-swarm; “webgpu swarm” now opens gpu-swarm; “hand arena” now opens hand-arena; “steer with my hand” now opens hand-arena; “hand tracking arena” now opens hand-arena; “tilt arena modes” now opens tilt-arena-mode; “tilt arena gaze” now opens tilt-arena-mode; “tilt arena in hand mode” now opens tilt-arena-mode.",
+  "try": "audit your fixes",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-22T02:52:58Z",
-    "try": "memory preview",
-    "closedAt": "2026-10-22T05:02:08Z"
+    "at": "2026-10-22T05:02:46Z",
+    "try": "mind field",
+    "closedAt": "2026-10-23T21:07:56Z"
   }
 }

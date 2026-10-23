@@ -119,6 +119,14 @@ jobs:
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
+      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here
+      - name: 3D frame times (perf3d)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 2
+        run: node tools/perf3d.test.mjs
+      - name: Every game played as four kinds of player (persona playtest)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
+        run: node tools/persona-playtest.mjs
+
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true

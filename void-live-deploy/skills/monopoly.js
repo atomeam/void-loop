@@ -7,6 +7,7 @@
  */
 import * as M from './monopoly-rules.js';
 import { lift3d } from './lift3d.js';
+import { rollDice } from '../lib/table-tools.js'; // the Game Box's dice (2026-10-22): your rolls use the box's fair dice; Verse's seats roll inside the rules as before
 
 // VoidQuest (domains/void.canon.md): Verse's own space version of the property game, after Solar Quest, Verse as the rival.
 // "play voidquest" and "play solar quest" open it; it plays on the same rules (monopoly-rules.js) with its own board.
@@ -84,7 +85,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   const money = document.createElement('div'); money.className = 'mono-money mono-players'; money.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px;font-variant-numeric:tabular-nums;margin:6px 0';
   const acts = document.createElement('div'); acts.className = 'mono-acts'; acts.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:6px 0';
   const btn = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn ' + cls; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
-  const rollB = btn('Roll', 'mono-roll g-primary', () => act(M.roll(th.state)));
+  const rollB = btn('Roll', 'mono-roll g-primary', () => act(M.roll(th.state, rollDice(2, 6).rolls)));
   const buyB = btn('Buy', 'mono-buy', () => act(M.buy(th.state, true)));
   const skipB = btn('Don’t buy', 'mono-skip', () => act(M.buy(th.state, false)));
   const jailB = btn('Pay 50 to leave Jail', 'mono-jail', () => act(M.payJail(th.state)));

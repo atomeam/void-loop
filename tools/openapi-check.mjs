@@ -12,6 +12,8 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",
+  '/api/tally': "everyone's tally under the coin: a closed list (coin: heads, tails) and a small count in, integer counts (today and all time) out, rate limited per hashed client (functions/api/tally.js, lib/tally.js, docs/playbooks/open-endpoint-closed-list.md); the page is the only caller",
   '/api/react': "the showcase's reaction bar: a closed list of six reactions and a showcase slug in, integer counts out, rate limited per hashed client (functions/api/react.js, lib/reactions.js, docs/playbooks/open-endpoint-closed-list.md); the page is the only caller",
   '/api/store/{[path}]': "the /store page's own API: catalog, checkout, receipts and signed downloads (functions/api/store/[[path]].js, docs/store.md)",
   '/api/merge': "the merge card's own API: two idea names in, a cached model-written name and line out; the page is the only caller (functions/api/merge.js, skills/merge.js)",

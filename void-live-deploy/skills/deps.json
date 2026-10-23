@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 731,
+ "counted": 744,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -84,7 +84,7 @@
    "skills": 17,
    "direct": 0,
    "dependants": 40,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/ladder.js",
@@ -129,18 +129,18 @@
    "tests": 4
   },
   {
+   "file": "lib/reactions.js",
+   "skills": 12,
+   "direct": 1,
+   "dependants": 33,
+   "tests": 1
+  },
+  {
    "file": "lib/corrections.js",
    "skills": 11,
    "direct": 0,
    "dependants": 30,
    "tests": 2
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 11,
-   "direct": 1,
-   "dependants": 30,
-   "tests": 1
   },
   {
    "file": "lib/autopsy.js",
@@ -185,6 +185,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 9,
+   "direct": 9,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
@@ -209,13 +216,6 @@
    "file": "lib/field-worker.js",
    "skills": 8,
    "direct": 6,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 8,
-   "direct": 8,
    "dependants": 8,
    "tests": 1
   },
@@ -521,6 +521,13 @@
    "tests": 1
   },
   {
+   "file": "lib/share.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 2
+  },
+  {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
@@ -543,6 +550,13 @@
   },
   {
    "file": "lib/field-vector.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/share-client.js",
    "skills": 3,
    "direct": 1,
    "dependants": 4,
@@ -636,6 +650,13 @@
    "file": "lib/studio-card.js",
    "skills": 3,
    "direct": 3,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/table-tools.js",
+   "skills": 3,
+   "direct": 2,
    "dependants": 3,
    "tests": 1
   },
@@ -892,6 +913,20 @@
    "tests": 1
   },
   {
+   "file": "lib/tally.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/v01d-fixes.js",
    "skills": 1,
    "direct": 1,
@@ -1095,6 +1130,13 @@
    "tests": 1
   },
   {
+   "file": "lib/page-fit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 0
+  },
+  {
    "file": "lib/pdf-qa.js",
    "skills": 1,
    "direct": 1,
@@ -1273,8 +1315,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 44,
-   "tests": 11
+   "dependants": 45,
+   "tests": 12
   },
   {
    "file": "lib/models.js",
@@ -1464,13 +1506,6 @@
    "direct": 0,
    "dependants": 3,
    "tests": 1
-  },
-  {
-   "file": "lib/share.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/approval-core.js",
@@ -1744,13 +1779,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
-  },
-  {
-   "file": "lib/share-client.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
   },
   {
    "file": "lib/speak.js",
@@ -2211,6 +2239,13 @@
     "functions/films/rss.js"
    ]
   },
+  "functions/api/tally.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/tally.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/v01d-fixes.js": {
    "imports": [
     "lib/guard.js",
@@ -2261,6 +2296,7 @@
     "lib/shortfall.js",
     "lib/models.js",
     "lib/honest.js",
+    "lib/tower.js",
     "lib/lap.js",
     "lib/will-guard.js"
    ],
@@ -2275,6 +2311,12 @@
   "functions/films/rss.js": {
    "imports": [
     "functions/api/films.js"
+   ],
+   "importedBy": []
+  },
+  "functions/is-it/[what].js": {
+   "imports": [
+    "skills/is-it.js"
    ],
    "importedBy": []
   },
@@ -3650,6 +3692,7 @@
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
     "functions/api/support.js",
+    "functions/api/tally.js",
     "functions/api/v01d-fixes.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -4344,6 +4387,12 @@
     "skills/stage-out.js"
    ]
   },
+  "lib/page-fit.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gamebox.js"
+   ]
+  },
   "lib/page-picture.js": {
    "imports": [],
    "importedBy": []
@@ -4811,6 +4860,7 @@
     "functions/api/react.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
+    "lib/tally.js",
     "skills/showcase.js"
    ],
    "reachedBy": [
@@ -4821,6 +4871,7 @@
     "functions/api/merge.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/tally.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -4830,6 +4881,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/coin.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
@@ -5086,7 +5138,14 @@
    "imports": [
     "lib/share.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/is-it.js"
+   ],
+   "reachedBy": [
+    "functions/is-it/[what].js",
+    "skills/languages.js",
+    "skills/translate.js"
+   ]
   },
   "lib/share.js": {
    "imports": [],
@@ -5094,6 +5153,12 @@
     "functions/api/share/[room].js",
     "functions/api/share/index.js",
     "lib/share-client.js"
+   ],
+   "reachedBy": [
+    "functions/is-it/[what].js",
+    "skills/is-it.js",
+    "skills/languages.js",
+    "skills/translate.js"
    ]
   },
   "lib/shared-routines.js": {
@@ -5182,6 +5247,7 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/rooms.js",
     "skills/stage-out.js",
     "skills/tilt-arena.js",
     "skills/time.js"
@@ -5664,6 +5730,25 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/table-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gamebox.js",
+    "skills/monopoly.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "lib/tally.js": {
+   "imports": [
+    "lib/reactions.js"
+   ],
+   "importedBy": [
+    "functions/api/tally.js",
+    "skills/coin.js"
+   ]
+  },
   "lib/tasks.js": {
    "imports": [
     "lib/date-words.js"
@@ -5857,6 +5942,13 @@
     "lib/about-skill.js",
     "skills/about-skill.js",
     "skills/own-parts.js"
+   ]
+  },
+  "lib/tower.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js",
+    "skills/tower.js"
    ]
   },
   "lib/used.js": {
@@ -6382,6 +6474,12 @@
   "skills/codex.js": {
    "imports": [
     "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/coin.js": {
+   "imports": [
+    "lib/tally.js"
    ],
    "importedBy": []
   },
@@ -6957,6 +7055,13 @@
     "skills/games.js"
    ]
   },
+  "skills/gamebox.js": {
+   "imports": [
+    "lib/table-tools.js",
+    "lib/page-fit.js"
+   ],
+   "importedBy": []
+  },
   "skills/games.js": {
    "imports": [
     "lib/skill-family.js",
@@ -7204,6 +7309,7 @@
    "imports": [],
    "importedBy": [
     "skills/room.js",
+    "skills/rooms.js",
     "skills/walls.js"
    ]
   },
@@ -7306,6 +7412,18 @@
   "skills/invite.js": {
    "imports": [],
    "importedBy": []
+  },
+  "skills/is-it.js": {
+   "imports": [
+    "lib/share-client.js"
+   ],
+   "importedBy": [
+    "functions/is-it/[what].js",
+    "skills/translate.js"
+   ],
+   "reachedBy": [
+    "skills/languages.js"
+   ]
   },
   "skills/joke.js": {
    "imports": [],
@@ -7742,7 +7860,7 @@
    "imports": [
     "skills/mini/tabletop.js",
     "skills/monopoly-rules.js",
-    "vendor/three-r180/addons/RoundedBoxGeometry.js"
+    "vendor/three-r180a/addons/RoundedBoxGeometry.js"
    ],
    "importedBy": []
   },
@@ -7880,6 +7998,7 @@
    "imports": [
     "skills/monopoly-rules.js",
     "skills/lift3d.js",
+    "lib/table-tools.js",
     "lib/card-deck.js"
    ],
    "importedBy": [
@@ -8299,6 +8418,10 @@
     "skills/goal.js"
    ]
   },
+  "skills/quote.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/rack.js": {
    "imports": [
     "skills/side-card.js",
@@ -8432,6 +8555,17 @@
    "imports": [
     "skills/home.js",
     "skills/walls.js"
+   ],
+   "importedBy": [
+    "skills/rooms.js"
+   ]
+  },
+  "skills/rooms.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/room.js",
+    "skills/walls.js",
+    "skills/home.js"
    ],
    "importedBy": []
   },
@@ -9166,8 +9300,16 @@
    ],
    "importedBy": []
   },
+  "skills/tower.js": {
+   "imports": [
+    "lib/tower.js"
+   ],
+   "importedBy": []
+  },
   "skills/translate.js": {
-   "imports": [],
+   "imports": [
+    "skills/is-it.js"
+   ],
    "importedBy": [
     "skills/languages.js"
    ]
@@ -9273,7 +9415,8 @@
     "skills/home.js"
    ],
    "importedBy": [
-    "skills/room.js"
+    "skills/room.js",
+    "skills/rooms.js"
    ]
   },
   "skills/wants.js": {
