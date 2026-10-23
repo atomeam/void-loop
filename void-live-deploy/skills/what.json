@@ -36,6 +36,7 @@
  "chess": "A real wooden chess set on the stage, played against Verse",
  "clock": "The clock on the stage: \"make a clock\", \"a big red clock\", \"make the clock bigger\", \"24 hour\", \"hide…",
  "codex": "The Living Codex: \"file this in the codex\" keeps the card or answer you are looking at (or your last one) in…",
+ "coin": "A coin flip that lands at once and looks like a coin",
  "collectible": "\"make a collectible card of a dragon\", \"mint a card of the moon\", \"collectible card of tokyo\"",
  "collide": "Flags two things that sit on the same spot",
  "connect4": "Connect Four against Verse: \"play connect 4\", \"connect four\", \"four in a row\"",

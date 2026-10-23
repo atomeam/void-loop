@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 739,
+ "counted": 742,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -129,18 +129,18 @@
    "tests": 4
   },
   {
+   "file": "lib/reactions.js",
+   "skills": 11,
+   "direct": 1,
+   "dependants": 32,
+   "tests": 1
+  },
+  {
    "file": "lib/corrections.js",
    "skills": 11,
    "direct": 0,
    "dependants": 30,
    "tests": 2
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 11,
-   "direct": 1,
-   "dependants": 30,
-   "tests": 1
   },
   {
    "file": "lib/autopsy.js",
@@ -1294,8 +1294,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 44,
-   "tests": 11
+   "dependants": 45,
+   "tests": 12
   },
   {
    "file": "lib/models.js",
@@ -1618,6 +1618,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/tally.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/will-guard.js",
@@ -2231,6 +2238,13 @@
     "functions/api/film-views.js",
     "functions/films/rss.js"
    ]
+  },
+  "functions/api/tally.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/tally.js"
+   ],
+   "importedBy": []
   },
   "functions/api/v01d-fixes.js": {
    "imports": [
@@ -3678,6 +3692,7 @@
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
     "functions/api/support.js",
+    "functions/api/tally.js",
     "functions/api/v01d-fixes.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -4845,6 +4860,7 @@
     "functions/api/react.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
+    "lib/tally.js",
     "skills/showcase.js"
    ],
    "reachedBy": [
@@ -4855,6 +4871,7 @@
     "functions/api/merge.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/tally.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -5708,6 +5725,14 @@
     "skills/games.js"
    ]
   },
+  "lib/tally.js": {
+   "imports": [
+    "lib/reactions.js"
+   ],
+   "importedBy": [
+    "functions/api/tally.js"
+   ]
+  },
   "lib/tasks.js": {
    "imports": [
     "lib/date-words.js"
@@ -6434,6 +6459,10 @@
    "imports": [
     "lib/stage-pack-c.js"
    ],
+   "importedBy": []
+  },
+  "skills/coin.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/collectible.js": {

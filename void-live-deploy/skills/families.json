@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 6,
   "tested": 30,
-  "checked": 13,
+  "checked": 14,
   "proven": 274
  },
  "families": [
@@ -424,10 +424,17 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 0,
+    "checked": 1,
     "proven": 28
    },
    "skills": [
+    {
+     "name": "coin",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-23",
+     "last_tested_by": "the daily smoke test"
+    },
     {
      "name": "aggravation",
      "tier": "proven",
