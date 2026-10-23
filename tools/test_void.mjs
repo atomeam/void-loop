@@ -595,6 +595,49 @@ try {
       !!dragon && /🐉/.test(dragon.pic) && /used up/.test(dragon.status) && !P.errors.length, JSON.stringify({ dragon, errors: P.errors }));
     await P.ctx.close();
   }
+  // the coin flip sites (scout report, 2026-10-23: a 3-second fake wait, ads, paragraphs of text): a coin that lands at once, with a quiet tally
+  if (want("coin: flip a coin lands a 3D coin on its face at once, says the side, keeps this visit's tally, and a tap flips it again")) {
+    const P = await fresh(); const t0 = Date.now(); await P.ask('flip a coin', 400);
+    const read = () => P.p.$eval('.vpage.on', (c) => ({ coins: c.querySelectorAll('.coin').length, word: (c.querySelector('.coin-word') || {}).textContent || '', tally: (c.querySelector('.coin-tally') || {}).textContent || '', label: (c.querySelector('.coin') || { getAttribute: () => '' }).getAttribute('aria-label') })).catch(() => null);
+    const one = await until(async () => { const r = await read(); return r && /^(?:Heads|Tails)$/.test(r.word) ? r : null; }, 6000), ms = Date.now() - t0;
+    await P.p.click('.vpage.on .coin'); await P.p.waitForTimeout(500); const two = await read();
+    check('coin: "flip a coin" shows one coin and Heads or Tails at once (no fake wait), the coin labelled with its side, the tally counting 1 flip, and a tap on the coin flips again (2 flips)',
+      !!one && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
+    await P.ask('flip 5 coins', 900); const five = await read();
+    check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
+    await P.ctx.close();
+  }
+  // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
+  if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
+    const P = await fresh(); const posts = [];
+    await P.ctx.route(/\/api\/tally(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50001, tails: 48310 }, today: { heads: 612, tails: 592 } } }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50000, tails: 48310 }, today: { heads: 611, tails: 592 } } }) }); });
+    await P.ask('flip a coin', 1200);
+    const line = await until(async () => P.p.$eval('.vpage.on .coin-everyone', (e) => (e.hidden ? '' : e.textContent)).catch(() => ''), 6000);
+    check('coin: everyone\'s flips: "Everyone today: 51% heads of 1,204 flips · all time 50.9% heads of 98,311" under the tally, read from /api/tally, and the flip was posted as one heads or tails with n 1',
+      /^Everyone today: 51% heads of 1,20[34] flips · all time 50\.9% heads of 98,31[01]$/.test(line) && posts.length === 1 && posts[0].of === 'coin' && /^(?:heads|tails)$/.test(posts[0].v) && posts[0].n === 1 && !P.errors.length, JSON.stringify({ line, posts, errors: P.errors }));
+    await P.ctx.close();
+    const Q = await fresh(); await Q.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
+    await Q.ask('flip a coin', 1500); const hidden = await Q.p.$eval('.vpage.on .coin-everyone', (e) => e.hidden).catch(() => null);
+    check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
+    await Q.ctx.close();
+  }
+  // everyone here (owner, 2026-10-23: the live crowd of visitors' flags on the is-it card): a public room on the relay; with the relay not switched on,
+  // tabs in one browser share it through a BroadcastChannel, which is what this check uses: two pages in one context
+  if (want("is it: everyone here: two tabs on the is-it card see each other's flag, ripple and count")) {
+    const P = await fresh(() => { try { localStorage.setItem('a2m.void.isit.crowd.v1', '1'); } catch (_) {} });
+    await P.ctx.route(/\/api\/share\//, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"the live relay is not switched on yet"}' }));
+    await P.ask('is it christmas?', 1500);
+    const p2 = await P.ctx.newPage(); await p2.goto(P.p.url()); await p2.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+    await p2.fill('#input', 'is it christmas?'); await p2.keyboard.press('Enter'); await p2.waitForTimeout(1500);
+    const count1 = await until(async () => { const t = await P.p.$eval('.vpage.on .is-it-crowd-status', (e) => e.textContent).catch(() => ''); return /2 people here/.test(t) ? t : ''; }, 8000);
+    const box2 = await p2.$('.vpage.on .is-it-stage'); const bb = box2 && await box2.boundingBox();
+    if (bb) { await p2.mouse.move(bb.x + bb.width * 0.3, bb.y + bb.height * 0.4); await p2.mouse.move(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); await p2.waitForTimeout(200); await p2.mouse.click(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); }
+    const peer = await until(async () => P.p.$eval('.vpage.on .is-it-peer', (e) => e.textContent).catch(() => ''), 6000);
+    const ripple = await until(async () => P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0), 4000);
+    check('is it: everyone here: the first tab says "2 people here right now", shows the second tab\'s marker at its pointer, and plays its tap as a ripple; no page errors',
+      !!count1 && !!peer && ripple > 0 && !P.errors.length, JSON.stringify({ count1, peer, ripple, errors: P.errors }));
+    await p2.close(); await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
@@ -1555,12 +1598,13 @@ try {
   // The country card shows the time there now, also when REST Countries does not answer (owner, 2026-10-15: "population of Japan"
   // fell back to the built-in list and showed no time at all, though the build note said country cards show the time).
   if (want('country card: the time there now, from the built-in zones, with or without REST Countries')) { const K = await fresh();
-    await K.ctx.route(/restcountries\.com/, (r) => r.abort());
+    await K.ctx.route(/query\.wikidata\.org/, (r) => r.abort()); // the live source (REST Countries until its keyless API went, 2026-10)
     await K.ask('population of Japan', 7500);
     await until(async () => /didn.t answer/.test(await K.page()), 9000); const down = await K.page();
-    await K.ctx.unroute(/restcountries\.com/);
-    await K.ctx.route(/restcountries\.com/, (r) => r.fulfill(json([{ name: { common: 'Japan', official: 'Japan' }, capital: ['Tokyo'], population: 123000000, currencies: { JPY: { name: 'Japanese yen', symbol: '¥' } }, languages: { jpn: 'Japanese' }, area: 377930, continents: ['Asia'], timezones: ['UTC+09:00'], flag: '' }])));
-    await K.ask('capital of Japan', 1500); await until(async () => /Source: REST Countries/.test(await K.page()), 4000); const up = await K.page();
+    await K.ctx.unroute(/query\.wikidata\.org/);
+    const wd = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, { type: 'literal', value: String(v) }]));
+    await K.ctx.route(/query\.wikidata\.org/, (r) => r.fulfill({ ...json({ results: { bindings: [wd({ c: 'http://www.wikidata.org/entity/Q17', name: 'Japan', capitals: 'Tokyo', population: 123000000, currencies: 'Japanese yen', languages: 'Japanese', area: 377930, continents: 'Asia', timezones: 'UTC+09:00', cca2: 'JP' })] } }), headers: { 'access-control-allow-origin': '*' } }));
+    await K.ask('capital of Japan', 1500); await until(async () => /Source: Wikidata/.test(await K.page()), 4000); const up = await K.page();
     const clock = /\d{1,2}:\d\d [AP]M \w{3} in Tokyo, UTC\+09:00/;
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
@@ -3977,7 +4021,7 @@ try {
     const namesE = Array.from(new Set(Array.from(figSrcE.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBE = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesE.map((n) => n + '=U').join(',') + ';';
-    await E.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
+    await E.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
@@ -4607,7 +4651,7 @@ try {
     const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
-    await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
+    await W.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
     for (const a of ['summon a cloud', 'summon a flower', 'summon a zombie', 'summon a brain']) await W.ask(a, 1500);
     const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
     await W.p.close();
@@ -4821,7 +4865,7 @@ try {
     const namesM = Array.from(new Set(Array.from(figSrcM.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBM = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesM.map((n) => n + '=U').join(',') + ';';
-    await M.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
+    await M.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
     const posted = [];
     await M.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const q = r.request();
       if (q.method() === 'POST') { posted.push({ auth: q.headers().authorization || '', b: JSON.parse(q.postData() || '{}') }); return r.fulfill(json({ id: 'act-scene-1' })); }
@@ -5075,7 +5119,7 @@ try {
     const namesL = Array.from(new Set(Array.from(figSrcL.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBL = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesL.map((n) => n + '=U').join(',') + ';';
-    await L.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
+    await L.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
     await L.ask('summon a zombie', 1200);
     const live = await until(async () => { const v = await L.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 6000);
     let hid = false; await L.p.evaluate(() => { window.__hid = 0; document.addEventListener('visibilitychange', () => { window.__hid += 1; }); window.addEventListener('pagehide', () => { window.__hid += 1; }); });
@@ -8917,7 +8961,7 @@ try {
     const freeSpot = B3.pickTarget(world, rng);
     check('figures (#17): the brain walks around a card to reach the far side without entering it, turns to look at a nearby cursor, and holds a still pose with reduced motion; a new figure lands on a free spot',
       reached && inside === 0 && nb.mode === 'notice' && nb.yaw > 0.1 && nb.lookX > 0.3 && sb.x === 600 && sb.y === 500 && sb.mode === 'still' && !B3.insideAny(freeSpot.x, freeSpot.y, [card], 20)
-      && B3.THREE_URL === '/vendor/three-r180/build/three.module.min.js',
+      && B3.THREE_URL === '/vendor/three-r180a/build/three.module.min.js',
       JSON.stringify({ reached, inside, at: [Math.round(fb.x), Math.round(fb.y)], notice: nb.mode, yaw: nb.yaw, still: [sb.x, sb.y, sb.mode], url: B3.THREE_URL }));
     // In the browser three.js is a stand-in module (every class a harmless stub) built from the names figures3d.js uses.
     const names = Array.from(new Set(Array.from(figSrc.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
@@ -8926,7 +8970,7 @@ try {
     const withThree = async (T) => {
       const hits = [];
       T.p.on('request', (r) => { const u = r.url(); if (/three-r180|three\.module|figures3d|stage3d/.test(u)) hits.push(u.replace(/^.*\/\/[^/]+/, '')); });
-      await T.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
+      await T.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
       return hits;
     };
     const F = await fresh(); const hits = await withThree(F);
@@ -8945,7 +8989,7 @@ try {
     const moved = await until(async () => { const v = await s3(); const q = v && v.figures[0]; return q && p0 && Math.hypot(q.x - p0.x, q.y - p0.y) > 3 ? q : false; }, 6000);
     const canvas = await F.p.evaluate(() => { const c = document.getElementById('void-3d'), s = c && getComputedStyle(c); return c ? { pe: s.pointerEvents, z: s.zIndex, before: c.nextElementSibling && c.nextElementSibling.id } : null; });
     check('figures (#17): "summon a sprite" puts one figure on the stage (a stage item in this browser), loads figures3d.js and the pinned three.js only now, adds a click-through canvas behind the cards, and the figure roams',
-      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u))
+      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /\/vendor\/three-r180a\/build\/three\.module\.min\.js$/.test(u))
       && canvas && canvas.pe === 'none' && canvas.z === '0' && canvas.before === 'stage' && !!moved && /sprite/.test(said) && !F.errors.length,
       JSON.stringify({ up, hits, canvas, moved, said, e: F.errors }));
     await F.ask('bring a friend', 600);
@@ -9028,7 +9072,7 @@ try {
     const names18 = Array.from(new Set(Array.from(figSrc18.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB18 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names18.map((n) => n + '=U').join(',') + ';';
-    await A18.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
+    await A18.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
     await A18.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
@@ -9153,7 +9197,7 @@ try {
     const names19 = Array.from(new Set(Array.from(figSrc19.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB19 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names19.map((n) => n + '=U').join(',') + ';';
-    await A19.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
+    await A19.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
     await A19.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));

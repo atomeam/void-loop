@@ -208,6 +208,30 @@
     "adam-20261015-pay-a-share": {
       "decision": "built",
       "why": "Adam 2026-10-15: pay a percentage, get that percentage. For a pay-what-you-want product with an appraised price (pwyw and cents > 0), paying p% of the price unlocks the first ceil(p% x N) of its N paid items in a stable order (README and other free items first and always included, then V01D's value order, starter items first); any payment gets at least one item, 100% or more unlocks everything. Decided server-side only from the provider-verified amount (Stripe's signed amount_total; Gumroad's keyed ping price, read back from Gumroad's API when GUMROAD_ACCESS_TOKEN is set), never from client input or chat; price-lock rules still apply. Delivery: a signed per-purchase link to a zip built from the unlocked items in R2. Upgrade: pay the difference later, credited by order id (store_credits). Truly free products (price 0) stay fully free. lib/pay-share.js, tests tools/pay-share.test.mjs."
+    },
+    "ask-20261022-0420-3": {
+      "decision": "built",
+      "why": "built in lists run 5 (2026-10-22): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play the way a person meets them (their examples through the real routing order, their cards against a stand-in service), so with their benchmark asks each meets the proven rule; Words and the world is 28 of 28 proven. The country and sport cards' dead live sources were replaced the same run (Wikidata; TheSportsDB's new public key with Wikipedia second)."
+    },
+    "ask-20261022-0420-2": {
+      "decision": "built",
+      "why": "already built 2026-10-18 (b5150302): lib/churn.js finds files changed more than 12 times in 7 days and lib/will-guard.js pickWant skips a want that names one, saying so on the card; duplicate, nothing new to build (lists run 5)"
+    },
+    "ask-20261022-0420-1": {
+      "decision": "queued",
+      "why": "the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (the router and limits, domains/handoff.md); handed to Claude with the reason: answer runs gpt-oss-120b and the free Workers AI allowance is 10k neurons a day (Up for grabs, wishlist #1). Lists run 5"
+    },
+    "ask-20261021-2133-1": {
+      "decision": "built",
+      "why": "built in lists run 3 (2026-10-21): the Deciding family is 3 of 3 proven (decide-cards and triangulate tests and benchmark asks)"
+    },
+    "ask-20261021-2133-2": {
+      "decision": "built",
+      "why": "built in lists run 3 (2026-10-21): 'preview my memory' inside the memory-graph card (tools/memory-preview.test.mjs)"
+    },
+    "ask-20261021-2133-3": {
+      "decision": "built",
+      "why": "built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main"
     }
   },
   "ask-20261013-1850-1": {
