@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:58:34Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
+  },
+  {
+   "at": "2026-10-23T21:56:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:53:22Z",
    "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
   },
@@ -553,18 +561,14 @@
   {
    "at": "2026-10-23T21:20:27Z",
    "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
-  },
-  {
-   "at": "2026-10-23T21:19:11Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-10-23T21:15:24Z",
-   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
+    "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
+   },
    {
     "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
     "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
@@ -584,10 +588,6 @@
    {
     "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
     "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
-   },
-   {
-    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
-    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
    }
   ],
   "ladders": [

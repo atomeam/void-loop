@@ -43,7 +43,7 @@ export default async function build(ctx, data) {
 
 | field | what it is |
 |---|---|
-| `THREE` | three.js r180 (vendored at `/vendor/three-r180/`) |
+| `THREE` | three.js r180 (vendored at `/vendor/three-r180a/`) |
 | `lib` | add-ons: `GLTFLoader`, `OrbitControls`, `RoomEnvironment`, `MeshoptDecoder`, `KTX2Loader`, blur shaders |
 | `scene`, `root`, `camera`, `controls` | this miniature's own scene, the group to fill, its camera, its orbit controls |
 | `keyLight`, `sky` | warm shadow-casting key light and cool hemisphere fill; adjust intensity or colour for mood (night, storm) |
