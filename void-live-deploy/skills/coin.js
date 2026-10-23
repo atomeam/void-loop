@@ -77,7 +77,7 @@ function run(text, api) {
     .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); return null; } return r.ok ? r.json() : null; }).then(showEvery).catch(() => {}); };
   const coins = Array.from({ length: ask.n }, () => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', st.rim);
-    b.innerHTML = '<span class="fc h" style="background:' + st.face + ';color:' + st.ink + '">' + st.h + '</span><span class="fc t" style="background:' + st.face + ';color:' + st.ink + '">' + st.t + '</span>';
+    b.innerHTML = '<span class="fc h" style="background:' + st.face + ';color:' + st.ink + '">' + st.h + '</span><span class="fc t" style="background:' + st.face + ';color:' + st.ink + '">' + st.t + '</span>'; // void-review: ok (st.* are constants from STYLES, never user text)
     row.appendChild(b); return b;
   });
   const showTally = (v) => { tally.textContent = 'Heads ' + v.h.toLocaleString('en') + ' · Tails ' + v.t.toLocaleString('en') + (v.h + v.t ? ' · ' + Math.round((100 * v.h) / (v.h + v.t)) + '% heads this visit' : ''); };
