@@ -34,7 +34,6 @@ const WHAT = {
   air: 'air quality',
   uv: 'UV index',
   quake: 'recent earthquakes',
-  pollen: 'pollen',
   spanish: 'answers in Spanish',
   translate: 'translation',
   'rebuild-map': 'assimilation map (what is being rebuilt as Verse)',
