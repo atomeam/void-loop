@@ -638,6 +638,21 @@ try {
       !!count1 && !!peer && ripple > 0 && !P.errors.length, JSON.stringify({ count1, peer, ripple, errors: P.errors }));
     await p2.close(); await P.ctx.close();
   }
+  // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
+  if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
+    const P = await fresh(); let hits = 0, beaten = false;
+    const all = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'history', 'unit and scientific modes'];
+    await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: Object.fromEntries(all.map((a) => [a, { verdict: 'better', evidence: 'stub' }])) } : {} }) }); });
+    await P.p.evaluate(() => { window.__towerPollMs = 400; });
+    await P.ask('the tower', 600);
+    const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
+    const before = await line(); beaten = true;
+    const after = await until(async () => { const r = await line(); return r && /calculator\.net is beaten/.test(r.live) ? r : null; }, 6000);
+    check('tower: the open card picked up a beaten floor on its own and said so ("calculator.net is beaten", the marker moved), with a fresh "updated" time', !!before && !!after && /11 of 11/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
+    check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
+    await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);

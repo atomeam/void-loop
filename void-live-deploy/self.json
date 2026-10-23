@@ -483,12 +483,16 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:51:01Z",
+   "subject": "Inventory: drop the older bare pollen entry that overrode the new description"
+  },
+  {
    "at": "2026-10-23T22:48:50Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-23T22:38:51Z",
-   "subject": "Verse hardens itself: 6 benchmark ask(s) for podcast, mind-field-mode"
+   "at": "2026-10-23T22:39:28Z",
+   "subject": "Inventory: describe the six family skills that arrived with no line (games, time, rooms, dates, stage-out, pollen), so main's inventory…"
   },
   {
    "at": "2026-10-23T22:38:38Z",
@@ -515,8 +519,16 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-23T22:28:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:28:53Z",
    "subject": "Verse hardens itself: 3 benchmark ask(s) for tilt-mode, file-sorter"
+  },
+  {
+   "at": "2026-10-23T22:28:36Z",
+   "subject": "The tower card updates itself while it is open: it re-reads the evidence every 30 seconds and on returning to the tab, flashes the floor…"
   },
   {
    "at": "2026-10-23T22:28:23Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-23T22:05:47Z",
    "subject": "Incident: the browser suite failed on 7adc40b1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T22:03:46Z",
-   "subject": "Incident: the browser suite failed on c9f4423b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:59:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:59:01Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
