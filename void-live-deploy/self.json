@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:26:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:24:08Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -557,14 +561,14 @@
   {
    "at": "2026-10-23T21:45:37Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:40:05Z",
-   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "grok-bot (podcast)",
+    "line": "Verse Out Loud, Verse's own weekly podcast: tools/podcast.mjs reads the week from the record, Piper voices it in CI (free: no Workers AI neurons, no key, lib/models.js untouched), /podcast/rss.xml is Apple/Spotify-ready, \"play the…"
+   },
    {
     "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
     "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
@@ -584,10 +588,6 @@
    {
     "name": "Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/voi…",
     "line": "main had two wiped page scripts (lib/stage-tools.js was the word PLACEHOLDER_REPLACE_ME, lib/tome.js cut off mid-comment) and both are whole again with their intended changes, plus tools/wiped-files.test.mjs in the fast checks. Built from…"
-   },
-   {
-    "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
-    "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
    }
   ],
   "ladders": [

@@ -3432,6 +3432,22 @@ try {
     check('memory preview: the export look is left alone - "preview my memory" still opens memory-graph, never this card',
       theirs.mg && !theirs.mp && /Download it|See it all|Nothing leaves this device/.test(theirs.t) && !M.errors.length, JSON.stringify({ theirs, e: M.errors }));
     await M.ctx.close(); }
+  // Verse Out Loud, Verse's own podcast (owner, 2026-10-21: "Verse should make its own podcast"): the player card with the whole
+  // transcript (no line cut at a narrow width), Download / Share / RSS / Tip, and each transcript line seeking the player.
+  if (want("podcast: play the podcast opens the player card with the full transcript")) { const P = await fresh();
+    await P.p.setViewportSize({ width: 360, height: 700 });
+    await P.ask('play the podcast', 1400);
+    const c = await until(() => P.p.evaluate(() => { const pg = document.querySelector('.vpage.on .vpod'); if (!pg) return null; const a = pg.querySelector('audio');
+      const lines = [...pg.querySelectorAll('.vpod-line')]; return { n: +pg.dataset.podcast, src: a && a.getAttribute('src'), lines: lines.length, clipped: lines.filter((l) => l.scrollWidth > l.clientWidth + 1 || getComputedStyle(l).textOverflow === 'ellipsis').length, whole: lines.every((l) => /[.!?:"]$/.test(l.textContent.trim())),
+        dl: !!pg.querySelector('a[download][href$=".mp3"]'), rss: !!pg.querySelector('a[href="/podcast/rss.xml"]'), tip: !!pg.querySelector('a[href="/store/"]'), share: !!pg.querySelector('[data-act="share"]'), t: pg.innerText }; }), 5000);
+    const feed = await P.p.evaluate(() => fetch('/podcast/rss.xml').then((r) => r.text()));
+    check('podcast: play the podcast opens the player card with the full transcript - newest episode, an mp3 player, every line whole and unclipped at 360 px, Download, Share, RSS and Tip; the feed is podcast RSS with an enclosure and explicit false',
+      !!c && c.n >= 1 && /\/podcast\/verse-out-loud-\d{3}\.mp3$/.test(c.src) && c.lines >= 8 && !c.clipped && c.whole && c.dl && c.rss && c.tip && c.share && /Full transcript/.test(c.t)
+        && /<enclosure url="https:\/\/a-to-mind\.com\/podcast\/verse-out-loud-001\.mp3" length="\d+" type="audio\/mpeg"\/>/.test(feed) && /<itunes:explicit>false<\/itunes:explicit>/.test(feed) && !P.errors.length,
+      JSON.stringify({ c: c && { ...c, t: c.t.slice(0, 160) }, e: P.errors }));
+    await P.p.keyboard.press('Escape');
+    for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
+    await P.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);
