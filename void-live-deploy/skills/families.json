@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 1,
   "tested": 29,
-  "checked": 12,
+  "checked": 13,
   "proven": 283
  },
  "families": [
@@ -2812,7 +2812,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 2,
+    "checked": 3,
     "proven": 40
    },
    "skills": [
@@ -3231,6 +3231,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 5
+    },
+    {
+     "name": "podcast",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-23",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
