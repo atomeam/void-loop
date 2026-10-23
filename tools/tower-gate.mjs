@@ -7,6 +7,9 @@
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS } from '../void-live-deploy/lib/tower.js';
+import { called } from './tower-verdict.mjs';
+// the one-tool floors: a single utility each, where answering the floor's ask with Verse's own skill is the whole job
+export const ONE_TOOL = new Set(['is it', 'coin flip', 'random number', 'word count', 'calculator', 'stopwatch', 'unit converter', 'password', 'time zones', 'colour', 'encoder']);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -34,8 +37,8 @@ export function record(prev, v, verse, best, evidence, at) {
   return { verdict: v, verse, best, evidence, at, ...(v === 'worse' && prev && (ok(prev.verdict) || prev.was) ? { was: prev.was || prev.verdict } : {}) };
 }
 
-async function measure(browser, url, tag) {
-  const times = [], ok = []; let mobile = null, a11y = null;
+async function measure(browser, url, tag, ask) {
+  const times = [], ok = []; let mobile = null, a11y = null, skill = null;
   for (let i = 0; i < 3; i++) {
     const p = await browser.newPage({ viewport: { width: 390, height: 800 } }); const t0 = Date.now();
     try { const r = await p.goto(url, { waitUntil: 'networkidle', timeout: 45000 }); ok.push(r && r.ok() ? 1 : 0); times.push(Date.now() - t0); } catch (_) { ok.push(0); }
@@ -43,13 +46,15 @@ async function measure(browser, url, tag) {
       try {
         mobile = await p.evaluate(() => Math.max(0, document.documentElement.scrollWidth - innerWidth));
         a11y = await p.evaluate(() => [...document.querySelectorAll('button,a[href]')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length + [...document.querySelectorAll('img')].filter((e) => e.offsetParent && !e.hasAttribute('alt')).length);
+        // which of Verse's own skills answered the ask (the page logs 'skill:<name>'; nothing logged, or the model, is not a skill)
+        if (ask) for (let w = 0; w < 20 && !skill; w++) { skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^skill:/.test(x.note || '')); return e ? e.note.slice(6) : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!skill) await p.waitForTimeout(500); }
         fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') });
       } catch (_) { /* measured what it could */ }
     }
     await p.close();
   }
   times.sort((a, b) => a - b);
-  return { speed: times.length ? times[Math.floor(times.length / 2)] : NaN, reliability: ok.reduce((a, b) => a + b, 0), mobile, a11y };
+  return { speed: times.length ? times[Math.floor(times.length / 2)] : NaN, reliability: ok.reduce((a, b) => a + b, 0), mobile, a11y, skill };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -64,7 +69,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString();
-  const v = await measure(b, VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse'), s = await measure(b, f.url, slug + '-site');
+  const v = await measure(b, VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', f.ask), s = await measure(b, f.url, slug + '-site');
   await b.close();
   const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), ev = (data.floors[f.id] = data.floors[f.id] || {});
   const put = (aspect, a, c, unit) => { const m = MEASURES[aspect]; ev[aspect] = record(ev[aspect], verdict(a, c, m.hi, m.ideal), a, c, 'Verse ' + a + unit + ' vs ' + f.site + ' ' + c + unit, at); };
@@ -72,6 +77,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   put('reliability', v.reliability, s.reliability, ' of 3 loads answered');
   put('mobile', v.mobile, s.mobile, ' px sideways overflow at 390 px');
   put('accessibility', v.a11y, s.a11y, ' unnamed controls or images');
+  // autonomous (owner, 2026-10-23: "this is an autonomous operation"): a one-tool floor falls by itself when one of Verse's own skills
+  // answers the floor's ask on the live site; the call is signed by verse and a later measurement never overturns it
+  if (v.skill && ONE_TOOL.has(f.id)) { data.floors[f.id] = called(f, ev, 'verse', 'Verse\'s own ' + v.skill + ' skill answered "' + f.ask + '" on the live site', at); console.log(f.site + ': called beaten (skill ' + v.skill + ')'); }
+  else if (ONE_TOOL.has(f.id)) console.log(f.site + ': no skill of Verse answered "' + f.ask + '"; not called');
   fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
-  for (const [k, r] of Object.entries(ev)) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
+  for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
 }

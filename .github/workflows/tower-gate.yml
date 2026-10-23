@@ -37,7 +37,7 @@ jobs:
           TOWER_PRIVATE: ${{ runner.temp }}/tower-private
           CHROME_PATH: /usr/bin/google-chrome
         run: |
-          for f in "is it" "coin flip" "random number" "word count" "calculator"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
+          for f in "is it" "coin flip" "random number" "word count" "calculator" "stopwatch" "unit converter" "password" "time zones" "colour" "encoder"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}
@@ -45,6 +45,6 @@ jobs:
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add void-live-deploy/tower.evidence.json
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -q -m "Tower gate: speed, mobile, accessibility and reliability measured against the live sites of the early floors"
+          git commit -q -m "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
           git push -q origin HEAD:main
           gh workflow run deploy.yml --ref main -f after_merge=true
