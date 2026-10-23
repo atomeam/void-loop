@@ -25,7 +25,7 @@ const EMOJI = { cat: '🐱', kitten: '🐱', dog: '🐶', puppy: '🐶', dragon:
   hamster: '🐹', chicken: '🐔', wizard: '🧙', pirate: '🏴‍☠️', astronaut: '🧑‍🚀', volcano: '🌋', cactus: '🌵', mushroom: '🍄', snowman: '⛄', clown: '🤡' };
 
 const SHAPE = /^(?:[a-z]+\s+){0,2}(?:circle|line|square|triangle|rectangle|rect|star|heart|oval|dot|hexagon|pentagon|diamond|shape)s?$/;
-const NOT_A_SUBJECT = /^(?:cards?|line chart|chart|graph|map|diagram|breath|blank|conclusion|straws?|number|canvas|brush|layer|arrow|me|something|anything)\b|^(?:cartoons?|toons?)$/;
+const NOT_A_SUBJECT = /^(?:cards?|line chart|chart|graph|map|diagram|breath|blank|conclusion|straws?|number|canvas|brush|layer|arrow|me|something|anything|with|on|in|into|using|from|for)\b|^(?:cartoons?|toons?)$/;
 const LEAD = /^(?:please\s+)?(?:can you\s+)?(?:cartoon version of |cartoon of |(?:draw|make|give|show)\s+(?:me\s+)?(?:a |an )?(?:cartoon|toon)\s+(?:version\s+)?(?:of\s+)?|draw (?:me )?(?:a |an )?(?:toon )?(?:picture of |drawing of )?|(?:a )?cartoon (?!network|series|show|character)(?:version of )?)(.+)$/;
 
 /** the subject of a cartoon ask, or null when the ask is not one. Pure. */
@@ -98,7 +98,7 @@ function mount(th, stageApi) {
   const status = document.createElement('div');
   status.className = 'cartoon-status';
   status.style.cssText = 'margin-top:6px;font-size:12px;color:#5b5446';
-  status.textContent = 'Painting a cartoon ' + (th.subject || '') + '…';
+  status.textContent = 'Painting a cartoon ' + (th.subject || '') + ' now.';
   const again = document.createElement('button');
   again.type = 'button'; again.textContent = 'Paint it'; again.hidden = true;
   again.style.cssText = 'margin-top:6px;font:inherit;font-size:12px;border:2px solid #1d1d1d;border-radius:999px;background:#fff;color:#1d1d1d;-webkit-text-fill-color:#1d1d1d;opacity:1;padding:3px 12px;cursor:pointer;font-weight:700';
@@ -115,7 +115,7 @@ function mount(th, stageApi) {
     } else if (r.why === 'none') { status.textContent = 'Not painted yet.'; again.hidden = false; }
     else { status.textContent = plateLine(r.why); again.hidden = !/^(?:busy|slow|unreachable)$/.test(r.why || 'busy'); }
   };
-  again.addEventListener('click', (e) => { e.stopPropagation(); status.textContent = 'Painting…'; again.hidden = true; painted.delete(th.subject); paint(th.subject, true).then(show); });
+  again.addEventListener('click', (e) => { e.stopPropagation(); status.textContent = 'Painting it now.'; again.hidden = true; painted.delete(th.subject); paint(th.subject, true).then(show); });
   const post = !!th.fresh; th.fresh = false; // a new ask paints (the forge returns the kept picture when it exists); a reload only reads
   paint(th.subject, post).then(show);
 }
