@@ -96,6 +96,8 @@ export function filterRecentWork(ledger, seenIso) {
     if (e.ask && shown.has(e.ask)) continue;
     out.push(e);
   }
+  // newest first: the ledger is append-only, oldest first, and the tour calls its first step the newest
+  out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
   return out;
 }
 

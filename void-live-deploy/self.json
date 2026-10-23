@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T00:38:03Z",
+   "subject": "Fix the showcase break: guide.js walks the carousel, showcase keeps its skill contract"
+  },
+  {
    "at": "2026-10-23T00:18:00Z",
    "subject": "Register the quote skill: order file at 1795, a family, and the cards regenerated"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T06:06:45Z",
    "subject": "Incident: the browser suite failed on 0e51c6a8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T06:03:17Z",
-   "subject": "Incident: the browser suite failed on 1c6d7062 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
