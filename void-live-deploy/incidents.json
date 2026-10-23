@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T22:05:47.385Z",
+   "sha": "7adc40b1cadcf77b3a9400a876d6928c87d21b05",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40030390972",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/convergence.md",
+    "docs/licenses.md",
+    "docs/miniatures.md",
+    "domains/handoff.md",
+    "domains/lists.metrics.json",
+    "domains/void.decisions.json",
+    "tools/bench.mjs",
+    "tools/checks.mjs",
+    "tools/country-wikidata.test.mjs",
+    "tools/rooms-family.test.mjs",
+    "tools/sw-3d-cache.test.mjs",
+    "tools/test_3d.mjs",
+    "tools/test_void.mjs",
+    "tools/vendor-three.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-23T22:03:46.625Z",
    "sha": "c9f4423be310c25ce54d7173b6f8fd4fdc92dcfe",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40030222940",
@@ -775,32 +803,6 @@
    "touched": [
     "domains/handoff.md",
     "void-live-deploy/void.asks.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T03:47:53.166Z",
-   "sha": "aa01f9d6efa9943bc42740f4985e3a82ee1e0340",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39717729915",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/error-garden.js",
-    ".github/workflows/live-revert.yml",
-    ".github/workflows/rea-study.yml",
-    "docs/LOOP-GAPS.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/live-revert.test.mjs",
-    "tools/loop-library.mjs",
-    "tools/loop-parts.test.mjs",
-    "tools/loop-study.mjs",
-    "tools/rea-study.mjs",
-    "tools/social.test.mjs",
-    "tools/untested.json"
    ]
   }
  ]
