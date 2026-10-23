@@ -50,6 +50,8 @@ export function wordFor(yes, langs = ['en']) {
   for (const l of [].concat(langs || [])) { const k = String(l || '').toLowerCase().split('-')[0]; if (WORDS[k]) return { word: WORDS[k][yes ? 0 : 1], lang: k }; }
   return { word: yes ? 'YES' : 'NO', lang: 'en' };
 }
+/** the two-letter region of a language tag ("en-CA" -> "CA"), or '' when it names none. Pure. */
+export const regionOf = (tag) => ((/^[a-z]{2,3}[-_]([a-z]{2})\b/i.exec(String(tag || '')) || [])[1] || '').toUpperCase();
 /** the flag of the visitor's region from their language tag ("en-CA" -> 🇨🇦), or '' when the tag names no region. Pure. */
 export function flagOf(tag) {
   const r = (/^[a-z]{2,3}[-_]([a-z]{2})\b/i.exec(String(tag || '')) || [])[1];
@@ -151,6 +153,41 @@ function run(text, api) {
     box.addEventListener('contextmenu', (e) => { e.preventDefault(); stamp(e); });
     box.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') hold = setTimeout(() => stamp(e), 550); });
     for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) box.addEventListener(ev, () => clearTimeout(hold));
+    // everyone here (owner, 2026-10-23: the live crowd of visitors' flags; the scout's teardown: on Christmas week the old site showed everyone's flag
+    // moving live): a public room on the relay (lib/share.js PUBLIC_ROOMS 'is-it', lib/share-client.js). On 24 to 26 December the card joins by itself;
+    // any other day a small "Everyone here" switch joins it, remembered on this device. What passes is a closed list: a place with a two-letter
+    // region (from the device's own language setting, never the network), a ripple, a stamp; nothing typed ever does. The flags of the others are
+    // drawn at their places inside this box; their ripples and stamps play here as yours do. With the relay not switched on, tabs in this browser share.
+    const CROWD_KEY = 'a2m.void.isit.crowd.v1', region = regionOf((nav.languages && nav.languages.find((l) => /-/.test(l))) || nav.language || '');
+    const d0 = new Date(), festiveWeek = a.festive && d0.getMonth() === 11 && d0.getDate() >= 24 && d0.getDate() <= 26;
+    let wantCrowd = festiveWeek; try { if (localStorage.getItem(CROWD_KEY) === '1') wantCrowd = true; if (localStorage.getItem(CROWD_KEY) === '0' && !festiveWeek) wantCrowd = false; } catch (_) {}
+    const crowdLine = document.createElement('p'); crowdLine.className = 'is-it-crowd'; crowdLine.style.cssText = 'text-align:center;font-size:13px;opacity:.85;margin:4px 0';
+    const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'is-it-crowd-switch'; sw.style.cssText = 'font:inherit;font-size:12px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:2px 10px;cursor:pointer;opacity:.8';
+    const status = document.createElement('span'); status.className = 'is-it-crowd-status'; status.style.marginLeft = '8px';
+    crowdLine.append(sw, status); const srcLine = el.querySelector('.src'); if (srcLine) srcLine.before(crowdLine); else box.after(crowdLine);
+    const others = new Map(); let crowd = null;
+    const place = (x, y) => ({ left: (x * box.clientWidth) + 'px', top: (y * box.clientHeight) + 'px' });
+    const presence = (id, x, y, fl) => { let f = others.get(id); if (!f) { f = document.createElement('span'); f.className = 'is-it-peer'; f.style.cssText = 'position:absolute;font-size:22px;pointer-events:none;transition:left .25s linear,top .25s linear;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))'; f.setAttribute('aria-hidden', 'true'); box.appendChild(f); others.set(id, f); } f.textContent = fl ? flagOf('xx-' + fl) : '·'; Object.assign(f.style, place(x, y)); };
+    const gone = (id) => { const f = others.get(id); if (f) f.remove(); others.delete(id); };
+    const atUnit = (x, y, cls, txt) => { const d = document.createElement('span'); d.className = cls; d.textContent = txt || ''; Object.assign(d.style, place(x, y)); box.appendChild(d); setTimeout(() => d.remove(), cls === 'is-it-stamp' ? 4100 : 900); };
+    const count = (n) => { status.textContent = n > 1 ? n.toLocaleString('en') + ' people here right now' : 'only you here right now'; };
+    const unit = (e) => { const r = box.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]; };
+    const leaveCrowd = () => { if (crowd) { try { crowd.leave(); } catch (_) {} crowd = null; } for (const id of [...others.keys()]) gone(id); status.textContent = ''; sw.textContent = 'Everyone here'; sw.setAttribute('aria-pressed', 'false'); };
+    const joinCrowd = () => {
+      sw.textContent = 'Everyone here: on'; sw.setAttribute('aria-pressed', 'true'); status.textContent = 'joining…';
+      import('/lib/share-client.js').then((m) => {
+        if (!box.isConnected) return;
+        crowd = m.join('public-is-it', { summon() {}, presence, gone, count, ripple: (id, x, y) => atUnit(x, y, 'is-it-ripple'), stamp: (id, x, y, fl) => atUnit(x, y, 'is-it-stamp', flagOf('xx-' + fl)), note: (t) => { status.textContent = /not switched on/.test(t) ? 'live crowd not switched on yet: tabs in this browser share it' : status.textContent; } });
+        let last = 0;
+        box.addEventListener('pointermove', (e) => { const t = Date.now(); if (!crowd || t - last < 60) return; last = t; const [x, y] = unit(e); crowd.cursor(x, y, region || undefined); }, { passive: true });
+      }).catch(() => { status.textContent = 'the crowd could not start in this browser'; });
+    };
+    box.addEventListener('click', (e) => { if (crowd) { const [x, y] = unit(e); crowd.ripple(x, y); } });
+    box.addEventListener('contextmenu', (e) => { if (crowd && region) { const [x, y] = unit(e); crowd.stamp(x, y, region); } });
+    sw.addEventListener('click', (e) => { e.stopPropagation(); if (crowd) { leaveCrowd(); try { localStorage.setItem(CROWD_KEY, '0'); } catch (_) {} } else { joinCrowd(); try { localStorage.setItem(CROWD_KEY, '1'); } catch (_) {} } });
+    sw.textContent = 'Everyone here'; sw.setAttribute('aria-pressed', 'false');
+    if (wantCrowd) joinCrowd();
+    const watch = new MutationObserver(() => { if (!box.isConnected) { leaveCrowd(); watch.disconnect(); } }); watch.observe(document.body, { childList: true });
     // Christmas Eve, Christmas Day and Boxing Day: snow over the word
     const now = new Date();
     if (a.festive && now.getMonth() === 11 && now.getDate() >= 24 && now.getDate() <= 26) for (let i = 0; i < 24; i++) { const f = document.createElement('span'); f.className = 'is-it-snow'; f.textContent = '❄'; f.style.left = (i * 4.2) + '%'; f.style.fontSize = (8 + (i * 7) % 12) + 'px'; f.style.animationDuration = (4 + (i * 13) % 6) + 's'; f.style.animationDelay = (-(i * 7) % 5) + 's'; box.appendChild(f); }

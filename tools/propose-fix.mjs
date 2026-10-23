@@ -19,7 +19,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
-import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf } from '../void-live-deploy/lib/propose-fix.js';
+import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf, MAX_SOURCE } from '../void-live-deploy/lib/propose-fix.js';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
@@ -55,6 +55,15 @@ export const retryable = (status) => status === 502 || status === 503 || status 
 export const RETRY_MS = 8000;
 /** The job's state after an attempt: 'done' when the fix passed (its pull request carries it), 'failed' when a step stopped it. Pure. */
 export const stateFor = (result) => (result && result.passed ? 'done' : 'failed');
+/** The part of a skill file the model is sent: the whole file when it fits, else its head and its tail (where match() and the examples live) with a
+ *  clipped marker between, at most `max` characters. The route's guard caps the body at 40,000 bytes and the model is shown at most MAX_SOURCE
+ *  (lib/propose-fix.js), so until 2026-10-23 every skill file over ~39 KB made the POST a 413 and the job stayed open at the cap for days. Pure. */
+export function sourceWindow(source, max = MAX_SOURCE) {
+  const src = String(source || '');
+  if (src.length <= max) return src;
+  const marker = '\n// … (clipped: the middle of the file is not shown) …\n', head = Math.floor((max - marker.length) / 3), tail = max - marker.length - head;
+  return src.slice(0, head) + marker + src.slice(src.length - tail);
+}
 /** The queue note after an attempt: which step stopped it, or where the fix went; counts and step names only. */
 export function noteFor(result) {
   if (result.passed) return 'Verse proposed a fix that passed ' + stepsFor(result.mode).join(', ') + ' (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ' in skills/' + result.skill + '.js); it went onto main when Verse was sure (0.8 or more), else its v01d/fix- branch waits for the owner';
@@ -80,8 +89,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (direct) miss = { ask: opt('--ask'), skill: opt('--skill'), want: 'skill:' + opt('--skill') };
     else { job = pickJob(await api('/api/queue'), opt('--job') || ''); if (!job) { console.log('no open probe: job to work on'); process.exit(3); } miss = jobAsk(job); }
   } catch (e) { console.error('propose-fix: the queue was not read: ' + e.message); process.exit(3); }
+  // a job that cannot be worked leaves the open list with the reason (2026-10-23: a 413 on the POST exited here without marking the job, so the
+  // same four over-size jobs sat at the probe cap for days and no new miss was ever queued: the loop starved itself)
+  const bail = async (why) => { console.error('propose-fix: ' + why); if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, state: 'failed', note: ('Verse proposed nothing: ' + why).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } } process.exit(3); };
   const file = join(root, 'void-live-deploy', 'skills', miss.skill + '.js');
-  if (!existsSync(file)) { console.error('propose-fix: no skill file for ' + miss.skill); process.exit(3); }
+  if (!existsSync(file)) await bail('no skill file for ' + miss.skill);
   const source = readFileSync(file, 'utf8');
   let proposal;
   const brain = opt('--brain') === 'claude' ? 'claude' : 'v01d';
@@ -91,10 +103,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const { proposeWithClaude } = await import('./claude-brain.mjs');
       proposal = await proposeWithClaude({ ask: miss.ask, skill: miss.skill, source, mode: miss.mode, said: miss.mode === 'narrow' ? (job && job.note) || '' : '' });
       delete process.env.ANTHROPIC_API_KEY; // the checks below run the edited skill: none of them gets the key
-    } else proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source, ...(miss.mode === 'narrow' ? { mode: 'narrow', said: job && job.note } : {}) });
-  } catch (e) { console.error('propose-fix: ' + (brain === 'claude' ? 'Claude' : 'Verse') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
+    } else proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source: sourceWindow(source), ...(miss.mode === 'narrow' ? { mode: 'narrow', said: job && job.note } : {}) });
+  } catch (e) { await bail((brain === 'claude' ? 'Claude' : 'Verse') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); }
   const next = applyEdits(source, proposal.edits);
-  if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
+  if (!next) await bail('the edits do not apply to the file as it stands');
   const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
     title: miss.mode === 'narrow' ? 'Verse\'s ' + miss.skill + ' skill lets go of "' + miss.ask + '" (a correction)' : 'Verse fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"', passed: false, failed: '', detail: '' };
   let committed = false;

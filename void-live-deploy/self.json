@@ -483,6 +483,62 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:59:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:58:34Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
+  },
+  {
+   "at": "2026-10-23T21:58:18Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
+  },
+  {
+   "at": "2026-10-23T21:56:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:56:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:56:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:53:22Z",
+   "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T21:48:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:48:50Z",
+   "subject": "Verse's fix loop was starving itself: an over-size skill file made every propose-fix POST a 413 and the job never left the probe cap; the…"
+  },
+  {
+   "at": "2026-10-23T21:45:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:45:44Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:45:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:40:05Z",
+   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T21:38:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:38:29Z",
    "subject": "finish: a commit step with nothing new to commit passes"
   },
@@ -499,72 +555,20 @@
    "subject": "merge-main regenerates every generated file after a merge, not only the families and the book"
   },
   {
+   "at": "2026-10-23T21:36:13Z",
+   "subject": "Regenerate the dependency map after the merge"
+  },
+  {
    "at": "2026-10-23T21:31:48Z",
    "subject": "The fast checks run the extension, sky, glyph and art-pixel browser checks only when the files they cover changed (main runs them all)"
-  },
-  {
-   "at": "2026-10-23T21:31:33Z",
-   "subject": "Fast checks: the extension, sky, glyph and art-pixel browser checks run only when the files they cover changed"
-  },
-  {
-   "at": "2026-10-23T21:28:25Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-23T21:19:11Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-10-23T21:14:12Z",
-   "subject": "Incident: the browser suite failed on bdd73151 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:13:04Z",
-   "subject": "Incident: the browser suite failed on 305ce797 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:10:45Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T21:08:46Z",
-   "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
-  },
-  {
-   "at": "2026-10-23T20:54:46Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T20:52:13Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-23T20:39:23Z",
-   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
-  },
-  {
-   "at": "2026-10-23T20:26:18Z",
-   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
-  },
-  {
-   "at": "2026-10-23T20:07:15Z",
-   "subject": "Unblock the fast checks: three skill overlaps narrowed (rack, video-play, cartoon), the similar-ask index regenerated, and tests for five…"
-  },
-  {
-   "at": "2026-10-23T18:18:56Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-10-23T15:54:56Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-23T12:46:35Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
+    "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
+   },
    {
     "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
     "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
@@ -584,10 +588,6 @@
    {
     "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
     "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
-   },
-   {
-    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
-    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
    }
   ],
   "ladders": [
