@@ -13,7 +13,7 @@ test('the marker never passes a floor whose gate fails, and a regression un-beat
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.marker, 2); // measured floors sort first by gap
   const r = record({ verdict: 'better' }, 'worse', 900, 500, 'e', 'now'); assert.equal(r.was, 'better');
   ev[FLOORS[1].id].speed = r; t = tower([], ev); assert.equal(t.marker, 1); assert.equal(t.floors[0].regressed.length, 1);
-  assert.match(towerLine(t), /^Tower: floor 1 of 24 \(/);
+  assert.match(towerLine(t), new RegExp('^Tower: floor 1 of ' + FLOORS.length + ' \\('));
 });
 test('verdicts come from numbers only', () => {
   assert.equal(verdict(100, 200), 'better'); assert.equal(verdict(3, 3, true), 'equal'); assert.equal(verdict(NaN, 1), 'unverified');
@@ -23,7 +23,7 @@ test('the tower skill answers its asks and not near misses', async () => {
   for (const a of sk.examples) assert.equal(sk.match(a.toLowerCase(), a), true, a);
   for (const a of sk.nearMisses) assert.equal(sk.match(a.toLowerCase(), a), false, a);
   const t = tower([], {}), h = sk.towerHtml(t, (s) => String(s));
-  assert.equal((h.match(/class="tower-floor"/g) || []).length, 24); assert.doesNotMatch(h, /<img|logo/i);
+  assert.equal((h.match(/class="tower-floor"/g) || []).length, FLOORS.length); assert.doesNotMatch(h, /<img|logo/i);
   assert.match(sk.detailText(t.floors[0]), /^0 of 11 aspects beaten on /);
 });
 test('the live card tells what moved between two polls', async () => {
@@ -31,8 +31,8 @@ test('the live card tells what moved between two polls', async () => {
   const a = tower([], {}), ev = { [FLOORS[0].id]: Object.fromEntries(aspectsOf(FLOORS[0]).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
-  assert.match(said, /calculator\.net is beaten\./); assert.match(said, /marker moved to floor 2/);
-  assert.match(sk.changes(b, a).join(' '), /calculator\.net slipped\./);
+  assert.match(said, /isitchristmas\.com is beaten\./); assert.match(said, /marker moved to floor 2/);
+  assert.match(sk.changes(b, a).join(' '), /isitchristmas\.com slipped\./);
   assert.deepEqual(sk.changes(null, b), []);
 });
 

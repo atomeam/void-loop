@@ -12,8 +12,20 @@
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
 export const FLOORS = [
+  // the tutorial floors (2026-10-23): one-trick sites, the first fights, so the climb starts where a whole site can be out-done
+  { id: 'is it', site: 'isitchristmas.com', url: 'https://isitchristmas.com/', ask: 'is it christmas?', label: 'Is it…?', glyph: '?', extra: ['big answer', 'local language'] },
+  { id: 'coin flip', site: 'justflipacoin.com', url: 'https://justflipacoin.com/', ask: 'flip a coin', label: 'Coin flip', glyph: '◐', extra: ['flip animation', 'flip history'] },
+  { id: 'random number', site: 'random.org', url: 'https://www.random.org/', ask: 'random number 1-100', label: 'Random number', glyph: '#', extra: ['range choice', 'true randomness'] },
+  { id: 'word count', site: 'wordcounter.net', url: 'https://wordcounter.net/', ask: 'word count: the quick brown fox', label: 'Word count', glyph: '¶', extra: ['live counting', 'characters and sentences'] },
   { id: 'calculator', site: 'calculator.net', url: 'https://www.calculator.net/', ask: 'what is 17% of 240', label: 'Calculator', glyph: '÷', extra: ['history', 'unit and scientific modes'] },
-  { id: 'timer and clock', site: 'timeanddate.com', url: 'https://www.timeanddate.com/', ask: 'set a timer for 5 minutes', label: 'Timer and clock', glyph: '◷', extra: ['alarms', 'world time'] },
+  // the single-tool rungs (owner, 2026-10-23): one utility each, the fights after the tutorial; 'stopwatch' is the old 'timer and clock'
+  // floor (aka keeps its coverage row and any evidence under the old id)
+  { id: 'stopwatch', aka: 'timer and clock', site: 'online-stopwatch.com', url: 'https://www.online-stopwatch.com/', ask: 'set a timer for 10 minutes', label: 'Stopwatch and timer', glyph: '◷', extra: ['alarms', 'laps'] },
+  { id: 'unit converter', site: 'unitconverters.net', url: 'https://www.unitconverters.net/', ask: '100 c to f', label: 'Unit converter', glyph: '⇄', extra: ['unit breadth', 'both directions'] },
+  { id: 'password', site: 'passwordsgenerator.net', url: 'https://passwordsgenerator.net/', ask: 'generate a password', label: 'Password generator', glyph: '⚿', extra: ['length and character choice', 'strength shown'] },
+  { id: 'time zones', site: 'timeanddate.com', url: 'https://www.timeanddate.com/', ask: 'time in tokyo', label: 'Time zones', glyph: '◴', extra: ['world time', 'meeting planner'] },
+  { id: 'colour', site: 'color-hex.com', url: 'https://www.color-hex.com/', ask: '#ff5733', label: 'Colour picker', glyph: '◉', extra: ['every colour model', 'shades and palettes'] },
+  { id: 'encoder', site: 'base64encode.org', url: 'https://www.base64encode.org/', ask: 'base64 encode hello', label: 'Encoder', glyph: '⌗', extra: ['decode too', 'files and character sets'] },
   { id: 'weather', site: 'weather.gov', url: 'https://www.weather.gov/', ask: 'weather in boston', label: 'Weather', glyph: '☂', extra: ['hourly and daily forecast', 'alerts', 'radar'] },
   { id: 'translate', site: 'Google Translate', url: 'https://translate.google.com/', ask: 'translate hello to spanish', label: 'Translate', glyph: '⇄', extra: ['language count', 'speech in and out', 'camera text'] },
   { id: 'recipes', site: 'Allrecipes', url: 'https://www.allrecipes.com/', ask: 'pancake recipe', label: 'Recipes', glyph: '◒', extra: ['search by ingredient', 'scaling', 'step mode'] },
@@ -36,13 +48,19 @@ export const FLOORS = [
   { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', extra: ['feed', 'following', 'posting and replies'] },
   { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', extra: ['sending and receiving', 'spam filtering', 'search'] },
   { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', extra: ['web coverage', 'freshness', 'answer quality'] },
+  // the top of the tower (owner, 2026-10-23: "Github and claude ar on the tower too"): where Verse's own code lives, and the final boss
+  { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
+  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
 ];
 export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || []);
+// a floor's checklist plus anything its evidence names beyond it: a site that gains a feature Verse lacks (tools/tower-verdict.mjs --lost)
+// adds that aspect, and the floor is not beaten until Verse has it too
+const checklist = (f, ev) => { const all = aspectsOf(f); for (const k of Object.keys(ev || {})) if (!all.includes(k)) all.push(k); return all; };
 const OK = new Set(['better', 'equal-and-better']);
 
 /** one floor's gate from its evidence ({ [aspect]: { verdict, verse, best, at, evidence } }): beaten only when every aspect passes with evidence. Pure. */
 export function gate(floor, ev = {}) {
-  const all = aspectsOf(floor), passed = all.filter((a) => ev[a] && OK.has(ev[a].verdict) && ev[a].evidence);
+  const all = checklist(floor, ev), passed = all.filter((a) => ev[a] && OK.has(ev[a].verdict) && ev[a].evidence);
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
   return { measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed };
 }
@@ -51,9 +69,14 @@ export function gate(floor, ev = {}) {
  *  whose gate fails (floors above it can be worked on, even beaten, but the marker does not pass a floor that is not). Pure. */
 export function tower(onlySite = [], evidence = {}) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
-  const floors = FLOORS.map((f, i) => { const g = gate(f, (evidence || {})[f.id] || {}), c = cov.get(f.id) || {}; return { ...f, floor: i + 1, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  // a renamed floor (aka) still finds its coverage row and its evidence under the old id
+  const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
+  const floors = FLOORS.map((f, i) => { const g = gate(f, under(evidence, f) || {}), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, floor: i + 1, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
   // easiest to hardest by measured gap: floors with any head-to-head evidence sort by aspects still lost; the rest keep the provisional order
-  floors.sort((a, b) => ((a.measured ? a.m - a.n : 1e3) - (b.measured ? b.m - b.n : 1e3)) || a.floor - b.floor); floors.forEach((f, i) => { f.floor = i + 1; });
+  // (a floor counts as measured for the order only when every aspect has a verdict: a few automated rows on a higher floor do not lift it
+  // over the unmeasured floors below it)
+  const whole = (f) => f.measured && f.left.every((a) => (under(evidence, f) || {})[a]);
+  floors.sort((a, b) => ((whole(a) ? a.m - a.n : 1e3) - (whole(b) ? b.m - b.n : 1e3)) || a.floor - b.floor); floors.forEach((f, i) => { f.floor = i + 1; });
   const at = floors.findIndex((f) => !f.beaten), marker = at < 0 ? floors.length : at;
   for (const f of floors) f.state = f.floor - 1 < marker ? 'beaten' : f.floor - 1 === marker ? 'current' : 'ahead';
   return { floors, marker: marker + 1, beaten: floors.filter((f) => f.beaten).length, total: floors.length };

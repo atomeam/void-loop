@@ -483,6 +483,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T23:06:25Z",
+   "subject": "Incident: the browser suite failed on a7f7392a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T23:04:43Z",
+   "subject": "Incident: the browser suite failed on 6a7522bd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T23:03:29Z",
+   "subject": "deploy-direct: deploy a-to-mind.com from this machine with wrangler, no GitHub in the path (owner, 2026-10-23); needs…"
+  },
+  {
+   "at": "2026-10-23T23:02:10Z",
+   "subject": "Incident: the browser suite failed on ed9fba8e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T23:02:03Z",
+   "subject": "Regenerate self.json after the merge"
+  },
+  {
    "at": "2026-10-23T23:01:45Z",
    "subject": "Tower gate: a tie at the ideal score (0 px overflow, every load answered) passes as equal-and-better; --rescore applies the rule to stored…"
   },
@@ -541,26 +561,6 @@
   {
    "at": "2026-10-23T22:34:21Z",
    "subject": "Incident: the browser suite failed on 485feb26 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T22:29:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:28:54Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:28:53Z",
-   "subject": "Verse hardens itself: 3 benchmark ask(s) for tilt-mode, file-sorter"
-  },
-  {
-   "at": "2026-10-23T22:28:36Z",
-   "subject": "The tower card updates itself while it is open: it re-reads the evidence every 30 seconds and on returning to the tab, flashes the floor…"
-  },
-  {
-   "at": "2026-10-23T22:28:23Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
