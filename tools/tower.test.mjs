@@ -35,3 +35,11 @@ test('the live card tells what moved between two polls', async () => {
   assert.match(sk.changes(b, a).join(' '), /calculator\.net slipped\./);
   assert.deepEqual(sk.changes(null, b), []);
 });
+
+test('a tie at the ideal score passes as equal-and-better; any other tie, or speed, stays equal', async () => {
+  const { verdict, rescore } = await import('./tower-gate.mjs');
+  assert.equal(verdict(0, 0, false, 0), 'equal-and-better'); assert.equal(verdict(3, 3, true, 3), 'equal-and-better');
+  assert.equal(verdict(2, 2, true, 3), 'equal'); assert.equal(verdict(900, 900, false), 'equal'); assert.equal(verdict(1, 0, false, 0), 'worse');
+  const r = rescore({ mobile: { verdict: 'equal', verse: 0, best: 0, evidence: 'e' }, reliability: { verdict: 'equal', verse: 3, best: 3, evidence: 'e' }, speed: { verdict: 'worse', verse: 3341, best: 908, evidence: 'e' }, history: { verdict: 'better', evidence: 'argon' } });
+  assert.equal(r.mobile.verdict, 'equal-and-better'); assert.equal(r.reliability.verdict, 'equal-and-better'); assert.equal(r.speed.verdict, 'worse'); assert.equal(r.history.verdict, 'better');
+});

@@ -10,14 +10,14 @@
     "at": "2026-10-22T05:25:20.699Z"
    },
    "reliability": {
-    "verdict": "equal",
+    "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
     "at": "2026-10-22T05:25:20.699Z"
    },
    "mobile": {
-    "verdict": "equal",
+    "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",

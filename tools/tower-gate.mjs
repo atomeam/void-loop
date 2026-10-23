@@ -12,10 +12,20 @@ const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = 
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
 
 /** a verdict from two numbers: lower is better unless higher is. Pure. */
-export function verdict(verse, best, higherBetter = false) {
+// ideal: the best score that exists (0 px overflow, every load answered, no unnamed control). When both sites sit at it there is
+// nothing left to beat, so the tie passes as 'equal-and-better' (lib/tower.js); any other tie stays 'equal' and does not pass.
+export function verdict(verse, best, higherBetter = false, ideal) {
   if (!Number.isFinite(verse) || !Number.isFinite(best)) return 'unverified';
-  if (verse === best) return 'equal';
+  if (verse === best) return ideal !== undefined && verse === ideal ? 'equal-and-better' : 'equal';
   return (higherBetter ? verse > best : verse < best) ? 'better' : 'worse';
+}
+/** what each measured aspect is: whether higher is better and its ideal score (none for speed: faster is always possible) */
+export const MEASURES = Object.freeze({ speed: { hi: false }, reliability: { hi: true, ideal: 3 }, mobile: { hi: false, ideal: 0 }, accessibility: { hi: false, ideal: 0 } });
+/** stored measured rows scored again by today's rule, numbers unchanged (no site is loaded). Pure. */
+export function rescore(rows = {}) {
+  const out = { ...rows };
+  for (const [a, m] of Object.entries(MEASURES)) { const r = rows[a]; if (r && Number.isFinite(r.verse) && Number.isFinite(r.best)) out[a] = { ...r, verdict: verdict(r.verse, r.best, m.hi, m.ideal) }; }
+  return out;
 }
 /** the stored row, keeping what a pass was when it is now worse (a regression un-beats the floor). Pure. */
 export function record(prev, v, verse, best, evidence, at) {
@@ -42,19 +52,25 @@ async function measure(browser, url, tag) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const id = process.argv.slice(2).join(' '), f = FLOORS.find((x) => x.id === id);
+  const argv = process.argv.slice(2), only = argv.includes('--rescore'), id = argv.filter((a) => a !== '--rescore').join(' '), f = FLOORS.find((x) => x.id === id);
   if (!f) { console.error('no floor ' + id + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
+  if (only) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
+    const data = JSON.parse(fs.readFileSync(FILE, 'utf8')); data.floors[f.id] = rescore(data.floors[f.id]);
+    fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
+    for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(26) + r.verdict);
+    process.exit(0);
+  }
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString();
   const v = await measure(b, VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse'), s = await measure(b, f.url, slug + '-site');
   await b.close();
   const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), ev = (data.floors[f.id] = data.floors[f.id] || {});
-  const put = (aspect, a, c, hi, unit) => { ev[aspect] = record(ev[aspect], verdict(a, c, hi), a, c, 'Verse ' + a + unit + ' vs ' + f.site + ' ' + c + unit, at); };
-  put('speed', v.speed, s.speed, false, ' ms to network idle (median of 3, phone width)');
-  put('reliability', v.reliability, s.reliability, true, ' of 3 loads answered');
-  put('mobile', v.mobile, s.mobile, false, ' px sideways overflow at 390 px');
-  put('accessibility', v.a11y, s.a11y, false, ' unnamed controls or images');
+  const put = (aspect, a, c, unit) => { const m = MEASURES[aspect]; ev[aspect] = record(ev[aspect], verdict(a, c, m.hi, m.ideal), a, c, 'Verse ' + a + unit + ' vs ' + f.site + ' ' + c + unit, at); };
+  put('speed', v.speed, s.speed, ' ms to network idle (median of 3, phone width)');
+  put('reliability', v.reliability, s.reliability, ' of 3 loads answered');
+  put('mobile', v.mobile, s.mobile, ' px sideways overflow at 390 px');
+  put('accessibility', v.a11y, s.a11y, ' unnamed controls or images');
   fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
   for (const [k, r] of Object.entries(ev)) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
 }
