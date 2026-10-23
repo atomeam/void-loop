@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T05:40:46Z",
-   "subject": "Game Box takes 'games' and 'show me the games'; the shelf keeps 'play a game' and its other words"
+   "at": "2026-10-23T00:42:45Z",
+   "subject": "The walkthrough walks newest first, and its test covers the carousel"
   },
   {
-   "at": "2026-10-22T05:36:23Z",
-   "subject": "Incident: the browser suite failed on 1e12c2fa (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T00:38:03Z",
+   "subject": "Fix the showcase break: guide.js walks the carousel, showcase keeps its skill contract"
   },
   {
-   "at": "2026-10-22T05:35:37Z",
-   "subject": "Game Box: a first line short enough to show whole"
+   "at": "2026-10-23T00:18:00Z",
+   "subject": "Register the quote skill: order file at 1795, a family, and the cards regenerated"
   },
   {
-   "at": "2026-10-22T05:35:27Z",
-   "subject": "Game Box: every game and the table tools in one box (dice of any size with a 3D roll, coin, number picker, answer orb, card deck, timer…"
+   "at": "2026-10-22T22:31:28Z",
+   "subject": "Incident: the browser suite failed on 96b77c63 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:34:21Z",
-   "subject": "field cards: the field's breathing scale moves the canvas, not the controls, so Law, Mode and the other buttons hold still to be tapped…"
+   "at": "2026-10-22T22:17:58Z",
+   "subject": "Add quote skill: random inspirational quotes. Mark inbox row building. (#1280)"
   },
   {
-   "at": "2026-10-22T05:32:28Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-22T21:28:10Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-22T05:28:16Z",
-   "subject": "suite: the self card checks follow the whole-text copy (no 8000 cap) and the full-line picture (taller than 1600 px)"
+   "at": "2026-10-22T20:36:03Z",
+   "subject": "Incident: the browser suite failed on 04aa2147 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:27:28Z",
-   "subject": "self card: a first look no longer empties 'What got built' into the lead; the asks-batch check accepts the detail without a repeated 'I…"
+   "at": "2026-10-22T20:27:50Z",
+   "subject": "Update showcase.js"
   },
   {
-   "at": "2026-10-22T05:26:17Z",
-   "subject": "Revert \"Merge pull request #1262 from atomeam/cards-forge-fix\""
+   "at": "2026-10-22T18:31:15Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
   {
-   "at": "2026-10-22T05:24:51Z",
-   "subject": "collectible: the card is marked collectible and gets its variant strip again (a comment had swallowed those two statements)"
+   "at": "2026-10-22T18:23:08Z",
+   "subject": "Verse fixes its cartoon skill: learn to handle \"draw a toon cat\""
   },
   {
-   "at": "2026-10-22T05:24:48Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-22T17:33:36Z",
+   "subject": "Verse fixes its print-file skill: learn to handle \"print file for gear assembly\""
   },
   {
-   "at": "2026-10-22T05:24:43Z",
-   "subject": "Mind Field gains a pluckable Resonant Membrane mode, the attention probes answer by name, and a Play and explore spot on the…"
+   "at": "2026-10-22T16:01:30Z",
+   "subject": "reinvest: today's plan for Verse's money"
   },
   {
-   "at": "2026-10-22T05:22:22Z",
-   "subject": "verify: a head that only writes the incident record is not tested or recorded again, so one red head no longer breeds an incident per…"
+   "at": "2026-10-22T13:07:05Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-10-22T05:21:11Z",
-   "subject": "suite: feelings check reads Verse's new plain self-talk; the card button group may carry share and save after copy/save card; the…"
+   "at": "2026-10-22T12:31:55Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-10-22T05:21:05Z",
-   "subject": "Incident: the browser suite failed on ad53c59a (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T12:30:52Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
   },
   {
-   "at": "2026-10-22T05:20:01Z",
-   "subject": "Lap 1 is a full overhaul: playtest and best-site comparison per item, most used first (home, ask, cards, book, games)"
+   "at": "2026-10-22T12:29:08Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-10-22T05:18:39Z",
-   "subject": "Glitch swap: widen the eased window so it lasts 300-500 ms at every cycle length; check both ends of the 8-12 s range"
+   "at": "2026-10-22T12:23:34Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-10-22T05:17:47Z",
-   "subject": "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-22T06:19:34Z",
+   "subject": "Incident: the browser suite failed on 92ceefb6 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:16:53Z",
-   "subject": "Spotter: 8 check(s) healed with no revert after ad53c59aef5394d39cecb602c54345bb10420ab0 (tools/flakes.json)"
+   "at": "2026-10-22T06:14:50Z",
+   "subject": "Incident: the browser suite failed on 541c37c7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:15:48Z",
-   "subject": "Deeds and drawn chance cards join the saved-cards record; the lap loop goes around every item (skills, surfaces, docs, archives, tools…"
+   "at": "2026-10-22T06:12:36Z",
+   "subject": "Incident: the browser suite failed on 341312cd (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
