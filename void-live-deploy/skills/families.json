@@ -436,7 +436,7 @@
     {
      "name": "coin",
      "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test"
     },
@@ -878,7 +878,7 @@
     {
      "name": "is-it",
      "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "why": "a self-test, 7 browser-suite mentions",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test"
     },

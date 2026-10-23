@@ -607,6 +607,37 @@ try {
     check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
     await P.ctx.close();
   }
+  // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
+  if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
+    const P = await fresh(); const posts = [];
+    await P.ctx.route(/\/api\/tally(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50001, tails: 48310 }, today: { heads: 612, tails: 592 } } }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50000, tails: 48310 }, today: { heads: 611, tails: 592 } } }) }); });
+    await P.ask('flip a coin', 1200);
+    const line = await until(async () => P.p.$eval('.vpage.on .coin-everyone', (e) => (e.hidden ? '' : e.textContent)).catch(() => ''), 6000);
+    check('coin: everyone\'s flips: "Everyone today: 51% heads of 1,204 flips · all time 50.9% heads of 98,311" under the tally, read from /api/tally, and the flip was posted as one heads or tails with n 1',
+      /^Everyone today: 51% heads of 1,20[34] flips · all time 50\.9% heads of 98,31[01]$/.test(line) && posts.length === 1 && posts[0].of === 'coin' && /^(?:heads|tails)$/.test(posts[0].v) && posts[0].n === 1 && !P.errors.length, JSON.stringify({ line, posts, errors: P.errors }));
+    await P.ctx.close();
+    const Q = await fresh(); await Q.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
+    await Q.ask('flip a coin', 1500); const hidden = await Q.p.$eval('.vpage.on .coin-everyone', (e) => e.hidden).catch(() => null);
+    check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
+    await Q.ctx.close();
+  }
+  // everyone here (owner, 2026-10-23: the live crowd of visitors' flags on the is-it card): a public room on the relay; with the relay not switched on,
+  // tabs in one browser share it through a BroadcastChannel, which is what this check uses: two pages in one context
+  if (want("is it: everyone here: two tabs on the is-it card see each other's flag, ripple and count")) {
+    const P = await fresh(() => { try { localStorage.setItem('a2m.void.isit.crowd.v1', '1'); } catch (_) {} });
+    await P.ctx.route(/\/api\/share\//, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"the live relay is not switched on yet"}' }));
+    await P.ask('is it christmas?', 1500);
+    const p2 = await P.ctx.newPage(); await p2.goto(P.p.url()); await p2.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+    await p2.fill('#input', 'is it christmas?'); await p2.keyboard.press('Enter'); await p2.waitForTimeout(1500);
+    const count1 = await until(async () => { const t = await P.p.$eval('.vpage.on .is-it-crowd-status', (e) => e.textContent).catch(() => ''); return /2 people here/.test(t) ? t : ''; }, 8000);
+    const box2 = await p2.$('.vpage.on .is-it-stage'); const bb = box2 && await box2.boundingBox();
+    if (bb) { await p2.mouse.move(bb.x + bb.width * 0.3, bb.y + bb.height * 0.4); await p2.mouse.move(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); await p2.waitForTimeout(200); await p2.mouse.click(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); }
+    const peer = await until(async () => P.p.$eval('.vpage.on .is-it-peer', (e) => e.textContent).catch(() => ''), 6000);
+    const ripple = await until(async () => P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0), 4000);
+    check('is it: everyone here: the first tab says "2 people here right now", shows the second tab\'s marker at its pointer, and plays its tap as a ripple; no page errors',
+      !!count1 && !!peer && ripple > 0 && !P.errors.length, JSON.stringify({ count1, peer, ripple, errors: P.errors }));
+    await p2.close(); await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
