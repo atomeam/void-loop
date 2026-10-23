@@ -548,10 +548,27 @@ try {
     await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
     const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
     check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
-    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
-    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'cartoon'), 8000);
+    check('body: the tap puts a 2D cartoon of the word on the stage', (await B.state()).some((x) => x.kind === 'cartoon' && picAsk.endsWith(' ' + x.subject)), JSON.stringify((await B.state()).map((x) => x.kind + ':' + (x.subject || ''))));
     check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
     await B.ctx.close(); }
+  // owner, 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"; "cartoons should be 2d": a cartoon ask
+  // draws THAT subject as a flat 2D cartoon (no 3D figure, no stock lump): the emoji at once, then the Art Forge's painted cartoon of it
+  if (want("cartoon: draw a cartoon cat puts a 2D cartoon of a cat on the stage, its own painting swapped in, and says why when none comes")) {
+    const P = await fresh(); const posts = [];
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'cartoon ' + b.subject, img: PNG }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('draw a cartoon cat', 1500);
+    const cat = await until(async () => P.p.$eval('.cartoon-card[data-subject="cat"]', (e) => ({ head: e.querySelector('div').textContent, alt: (e.querySelector('.cartoon-pic img') || {}).alt || '', status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    const figs = (await P.state()).filter((x) => x.kind === 'figure' || x.kind === 'fig3d').length;
+    check('cartoon: "draw a cartoon cat" puts one flat card for a cat on the stage, asks the forge for a cartoon of a cat, and shows the painting it got (alt names the cat); no 3D figure',
+      !!cat && /cartoon cat/i.test(cat.head) && /2D cartoon of cat/.test(cat.alt) && !cat.status && posts.some((b) => b.subject === 'cat' && b.kind === 'cartoon') && figs === 0, JSON.stringify({ cat, posts, figs }));
+    await P.ask('make a cartoon of a dragon', 1500);
+    const dragon = await until(async () => P.p.$eval('.cartoon-card[data-subject="dragon"]', (e) => ({ pic: e.querySelector('.cartoon-pic').textContent, status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    check('cartoon: with no painting left today the dragon card still draws a dragon (its emoji) and says plainly why the painting waits',
+      !!dragon && /🐉/.test(dragon.pic) && /used up/.test(dragon.status) && !P.errors.length, JSON.stringify({ dragon, errors: P.errors }));
+    await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
