@@ -3,47 +3,73 @@
  "floors": {
   "calculator": {
    "speed": {
-    "verdict": "worse",
-    "verse": 3036,
-    "best": 776,
-    "evidence": "Verse 3036 ms to network idle (median of 3, phone width) vs calculator.net 776 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-23T23:20:13.691Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z",
+    "was": "worse"
    },
    "reliability": {
-    "verdict": "equal-and-better",
-    "verse": 3,
-    "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-23T23:20:13.691Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z",
+    "was": "equal-and-better"
    },
    "mobile": {
-    "verdict": "equal-and-better",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-23T23:20:13.691Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z",
+    "was": "equal-and-better"
    },
    "accessibility": {
     "verdict": "better",
-    "verse": 0,
-    "best": 6,
-    "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
-    "at": "2026-10-23T23:20:13.691Z"
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
    },
    "design polish": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
-    "at": "2026-10-23T23:00:16Z"
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
    },
    "history": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
-    "at": "2026-10-23T23:00:16Z"
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
    },
    "unit and scientific modes": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
-    "at": "2026-10-23T23:00:16Z"
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: calculator",
+    "at": "2026-10-23T23:22:07Z"
    }
   },
   "is it": {
@@ -281,6 +307,278 @@
     "called": true,
     "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
     "at": "2026-10-23T23:19:55.223Z"
+   }
+  },
+  "stopwatch": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "alarms": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "laps": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: stopwatch",
+    "at": "2026-10-23T23:22:07Z"
+   }
+  },
+  "unit converter": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "unit breadth": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "both directions": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: unit converter",
+    "at": "2026-10-23T23:22:07Z"
+   }
+  },
+  "password": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "length and character choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "strength shown": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: password",
+    "at": "2026-10-23T23:22:07Z"
+   }
+  },
+  "encoder": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "decode too": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
+   },
+   "files and character sets": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
+    "at": "2026-10-23T23:22:07Z"
    }
   }
  }

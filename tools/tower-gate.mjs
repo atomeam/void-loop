@@ -47,7 +47,7 @@ async function measure(browser, url, tag, ask) {
         mobile = await p.evaluate(() => Math.max(0, document.documentElement.scrollWidth - innerWidth));
         a11y = await p.evaluate(() => [...document.querySelectorAll('button,a[href]')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length + [...document.querySelectorAll('img')].filter((e) => e.offsetParent && !e.hasAttribute('alt')).length);
         // which of Verse's own skills answered the ask (the page logs 'skill:<name>'; nothing logged, or the model, is not a skill)
-        if (ask) for (let w = 0; w < 20 && !skill; w++) { skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^skill:/.test(x.note || '')); return e ? e.note.slice(6) : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!skill) await p.waitForTimeout(500); }
+        if (ask) for (let w = 0; w < 20 && !skill; w++) { skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^(skill:|calc$|chance$)/.test(x.note || '')); return e ? e.note.replace(/^skill:/, '') : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!skill) await p.waitForTimeout(500); }
         fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') });
       } catch (_) { /* measured what it could */ }
     }
