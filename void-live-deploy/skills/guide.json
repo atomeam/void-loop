@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 10,
+    "experiment": 0,
+    "tested": 11,
     "checked": 1,
     "proven": 32
    },
@@ -127,8 +127,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 6,
+    "tested": 3,
+    "checked": 7,
     "proven": 87
    },
    "from": 190,
@@ -965,8 +965,9 @@
     "genome arena",
     "tilt game"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 44
   },
   {
@@ -3714,8 +3715,9 @@
     "what kind of files are these: README.md, config.yaml",
     "classify files: main.go, notes.txt"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 192
   },
   {
