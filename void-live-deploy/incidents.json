@@ -2,6 +2,24 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T23:25:10.238Z",
+   "sha": "eecedfb017bedafc4552d38c0567778f4bd1c0d0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40038639825",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/tower-gate.mjs",
+    "tools/tower-verdict.mjs",
+    "tools/tower-verdict.test.mjs",
+    "void-live-deploy/skills/tower.js",
+    "void-live-deploy/tower.evidence.json"
+   ]
+  },
+  {
    "at": "2026-10-23T23:23:52.836Z",
    "sha": "17c787042d3a16cfdde2ac06c9766f5329af2203",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40038611191",
@@ -709,27 +727,6 @@
     "void-live-deploy/lap.items.json",
     "void-live-deploy/lib/lap.js",
     "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T05:56:01.425Z",
-   "sha": "bc5e2a329b35a0cb60c682f91a28a7be2980f589",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39727418259",
-   "suite": "browser suite on main",
-   "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse",
-    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/glitch-titles.mjs",
-    "void-live-deploy/films/index.html",
-    "void-live-deploy/skills/films.js"
    ]
   }
  ]
