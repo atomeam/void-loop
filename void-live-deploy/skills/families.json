@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 6,
-  "tested": 31,
+  "tested": 30,
   "checked": 12,
-  "proven": 273
+  "proven": 274
  },
  "families": [
   {
@@ -60,7 +60,7 @@
     {
      "name": "figure",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -96,7 +96,7 @@
     {
      "name": "cartoon",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -487,7 +487,7 @@
     {
      "name": "checkers",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -1219,7 +1219,7 @@
     {
      "name": "sleep",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 14 real asks in the benchmark",
+     "why": "a self-test, 3 browser-suite mentions, 14 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1314,9 +1314,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 7,
     "checked": 0,
-    "proven": 21
+    "proven": 22
    },
    "sources": {
     "read": 21,
@@ -1443,11 +1443,12 @@
     },
     {
      "name": "video-play",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6
     },
     {
@@ -1850,7 +1851,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 8 live findings, 2026-10-22",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 9 live findings, 2026-10-23",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,

@@ -84,7 +84,7 @@
    "skills": 17,
    "direct": 0,
    "dependants": 40,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/ladder.js",

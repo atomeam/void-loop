@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 7,
     "checked": 0,
-    "proven": 21
+    "proven": 22
    },
    "from": 152,
    "to": 181
@@ -399,7 +399,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the making things, this one is trusted enough to be taught. It has not failed a reader yet.",
    "glow": 100,
    "n": 10
@@ -460,14 +460,14 @@
    "chapter": "make",
    "name": "cartoon",
    "title": "Cartoon",
-   "line": "Cartoon version of a hard subject",
+   "line": "A 2D cartoon drawing of what you name",
    "examples": [
-    "cartoon version of a plague",
-    "cartoon version of a shipwreck",
-    "cartoon version of gg allin"
+    "draw a cartoon cat",
+    "cartoon version of a dog",
+    "make a cartoon of a dragon"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the making things; set down here after it answered true 3 times. The void remembers each asking.",
    "glow": 100,
    "n": 14
@@ -1276,7 +1276,7 @@
     "lets play checkers"
    ],
    "tier": "proven",
-   "why": "5 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the games, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 59,
@@ -2759,7 +2759,7 @@
     "if i go to bed at 11pm when should i wake up"
    ],
    "tier": "proven",
-   "why": "3 browser-suite mentions, 14 real asks in the benchmark",
+   "why": "a self-test, 3 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Not a boast but a record: 14 askings, each one answered. Turn the page when you are done.",
    "glow": 100,
    "n": 142
@@ -3051,8 +3051,9 @@
     "watch the apollo 11 landing",
     "put on lofi hip hop"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. Turn the page when you are done.",
    "glow": 100,
    "n": 158
   },
@@ -3464,7 +3465,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 8 live findings, 2026-10-22",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 9 live findings, 2026-10-23",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 183
@@ -8000,7 +8001,7 @@
     {
      "rank": 146,
      "name": "cartoon",
-     "catches": "cartoon version of a plague"
+     "catches": "draw a cartoon cat"
     },
     {
      "rank": 147,
