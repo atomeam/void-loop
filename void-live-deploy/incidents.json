@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T23:32:07.388Z",
+   "sha": "8a265fc743332ad2382eb82122375890df757a7e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40038942347",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml",
+    "tools/tower-gate.mjs"
+   ]
+  },
+  {
    "at": "2026-10-23T23:30:28.548Z",
    "sha": "628e6ffe81fd4d0ffeca7cf8dda5c6e01bc39c15",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40039287608",
@@ -662,39 +677,6 @@
     "docs/TAGTEAM.md",
     "domains/handoff.md",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-22T06:06:45.368Z",
-   "sha": "0e51c6a8a23fdefa410f0eff5491d895457058de",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39728950222",
-   "suite": "browser suite on main",
-   "checks": [
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    ".github/workflows/verify.yml",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/field-stage.js",
-    "void-live-deploy/lib/self-blocks.js",
-    "void-live-deploy/skills/collectible.js"
    ]
   }
  ]
