@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:58:34Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
+  },
+  {
+   "at": "2026-10-23T21:56:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:56:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:53:22Z",
    "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
   },
@@ -496,6 +508,10 @@
   },
   {
    "at": "2026-10-23T21:45:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:45:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -523,6 +539,10 @@
    "subject": "merge-main regenerates every generated file after a merge, not only the families and the book"
   },
   {
+   "at": "2026-10-23T21:36:13Z",
+   "subject": "Regenerate the dependency map after the merge"
+  },
+  {
    "at": "2026-10-23T21:31:48Z",
    "subject": "The fast checks run the extension, sky, glyph and art-pixel browser checks only when the files they cover changed (main runs them all)"
   },
@@ -531,35 +551,15 @@
    "subject": "Fast checks: the extension, sky, glyph and art-pixel browser checks run only when the files they cover changed"
   },
   {
-   "at": "2026-10-23T21:28:25Z",
+   "at": "2026-10-23T21:30:57Z",
    "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-23T21:19:11Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
+   "at": "2026-10-23T21:30:53Z",
+   "subject": "Everyone's flips under the coin and a live crowd of flags on the is-it card: two open endpoints with closed lists on the relay and D1"
   },
   {
-   "at": "2026-10-23T21:14:12Z",
-   "subject": "Incident: the browser suite failed on bdd73151 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:13:04Z",
-   "subject": "Incident: the browser suite failed on 305ce797 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:10:45Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T21:08:46Z",
-   "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
-  },
-  {
-   "at": "2026-10-23T20:54:46Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T20:52:13Z",
+   "at": "2026-10-23T21:28:25Z",
    "subject": "Regenerate the families and the book after the merge"
   }
  ],
