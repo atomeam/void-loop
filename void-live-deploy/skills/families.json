@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 1,
-  "tested": 35,
-  "checked": 13,
-  "proven": 275
+  "tested": 29,
+  "checked": 12,
+  "proven": 281
  },
  "families": [
   {
@@ -429,17 +429,10 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 1,
+    "checked": 0,
     "proven": 28
    },
    "skills": [
-    {
-     "name": "coin",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
-     "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
-    },
     {
      "name": "aggravation",
      "tier": "proven",
@@ -1333,26 +1326,20 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 7,
+    "tested": 1,
     "checked": 0,
-    "proven": 22
+    "proven": 28
    },
    "sources": {
     "read": 21,
     "named": 19,
-    "second": 10,
+    "second": 11,
     "answered": 0,
-    "points": 1.38,
+    "points": 1.43,
     "one_live_from_proven": [
-     "news",
-     "joke",
-     "quote",
-     "book",
-     "show",
-     "sport",
-     "senolytic"
+     "quote"
     ],
-    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.38 of 3 on average). One kept live answer each would make 7 more proven: news, joke, quote, book, show, sport and 1 more."
+    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 11 have a second source, 0 have a kept live answer from it (1.43 of 3 on average). One kept live answer each would make 1 more proven: quote."
    },
    "skills": [
     {
@@ -1561,11 +1548,12 @@
     },
     {
      "name": "news",
-     "tier": "tested",
-     "why": "9 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 9 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
@@ -1577,17 +1565,17 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: algolia.com, wikipedia.org, ycombinator.com; named on the card; a second source; no kept live answer yet. One kept live answer from algolia.com would make it proven"
+      "words": "source 2 of 3: algolia.com, wikipedia.org, ycombinator.com; named on the card; a second source; no kept live answer yet"
      }
     },
     {
      "name": "joke",
-     "tier": "tested",
-     "why": "9 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 9 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
@@ -1597,8 +1585,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: icanhazdadjoke.com; named on the card; no second source; no kept live answer yet. One kept live answer from icanhazdadjoke.com would make it proven"
+      "words": "source 1 of 3: icanhazdadjoke.com; named on the card; no second source; no kept live answer yet"
      }
     },
     {
@@ -1680,11 +1667,12 @@
     },
     {
      "name": "book",
-     "tier": "tested",
-     "why": "5 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
@@ -1694,17 +1682,17 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: openlibrary.org; named on the card; no second source; no kept live answer yet. One kept live answer from openlibrary.org would make it proven"
+      "words": "source 1 of 3: openlibrary.org; named on the card; no second source; no kept live answer yet"
      }
     },
     {
      "name": "show",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
@@ -1714,28 +1702,28 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: tvmaze.com; named on the card; no second source; no kept live answer yet. One kept live answer from tvmaze.com would make it proven"
+      "words": "source 1 of 3: tvmaze.com; named on the card; no second source; no kept live answer yet"
      }
     },
     {
      "name": "sport",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
-       "thesportsdb.com"
+       "thesportsdb.com",
+       "wikipedia.org"
       ],
       "named": true,
-      "second": false,
+      "second": true,
       "answered": false,
-      "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: thesportsdb.com; named on the card; no second source; no kept live answer yet. One kept live answer from thesportsdb.com would make it proven"
+      "points": 2,
+      "words": "source 2 of 3: thesportsdb.com, wikipedia.org; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1770,11 +1758,12 @@
     },
     {
      "name": "senolytic",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 6,
      "source": {
       "sites": [
@@ -1784,8 +1773,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: clinicaltrials.gov; named on the card; no second source; no kept live answer yet. One kept live answer from clinicaltrials.gov would make it proven"
+      "words": "source 1 of 3: clinicaltrials.gov; named on the card; no second source; no kept live answer yet"
      }
     },
     {

@@ -57,14 +57,14 @@ export const SKILL_TOOLS = [
   ]
  },
  {
-  "skill": "pick-for-me",
-  "tool": "skill_pick_for_me",
+  "skill": "joke",
+  "tool": "skill_joke",
   "family": "words",
   "familyName": "Words and the world",
   "examples": [
-   "surprise me",
-   "pick something cozy",
-   "pick for me"
+   "tell me a joke",
+   "make me laugh",
+   "tell me a dad joke"
   ]
  },
  {

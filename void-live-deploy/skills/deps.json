@@ -185,6 +185,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 9,
+   "direct": 9,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
@@ -209,13 +216,6 @@
    "file": "lib/field-worker.js",
    "skills": 8,
    "direct": 6,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 8,
-   "direct": 8,
    "dependants": 8,
    "tests": 1
   },
@@ -5216,6 +5216,7 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/rooms.js",
     "skills/stage-out.js",
     "skills/tilt-arena.js",
     "skills/time.js"
@@ -7266,6 +7267,7 @@
    "imports": [],
    "importedBy": [
     "skills/room.js",
+    "skills/rooms.js",
     "skills/walls.js"
    ]
   },
@@ -7814,7 +7816,7 @@
    "imports": [
     "skills/mini/tabletop.js",
     "skills/monopoly-rules.js",
-    "vendor/three-r180/addons/RoundedBoxGeometry.js"
+    "vendor/three-r180a/addons/RoundedBoxGeometry.js"
    ],
    "importedBy": []
   },
@@ -8505,6 +8507,17 @@
    "imports": [
     "skills/home.js",
     "skills/walls.js"
+   ],
+   "importedBy": [
+    "skills/rooms.js"
+   ]
+  },
+  "skills/rooms.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/room.js",
+    "skills/walls.js",
+    "skills/home.js"
    ],
    "importedBy": []
   },
@@ -9354,7 +9367,8 @@
     "skills/home.js"
    ],
    "importedBy": [
-    "skills/room.js"
+    "skills/room.js",
+    "skills/rooms.js"
    ]
   },
   "skills/wants.js": {

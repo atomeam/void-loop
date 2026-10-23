@@ -16,11 +16,11 @@
  * drag, a covered card stays covered, and the page never runs out of WebGL contexts however many cards have miniatures.
  * Light: ACES filmic tone mapping, sRGB output, a PMREM RoomEnvironment for reflections, a warm key light casting soft
  * PCF shadows, a cool sky fill, and blurred contact shadows under the model. Models: GLTFLoader with meshopt and KTX2.
- * three.js r180 is vendored under /vendor/three-r180 (add-ons import it by relative path, so they resolve without an importmap).
+ * three.js r180 is vendored under /vendor/three-r180a (add-ons import it by relative path, so they resolve without an importmap).
  */
 import * as guard from './guard3d.js';
 import { heroView, inspectPrompt } from '../lib/hero-view.js';
-const V = '/vendor/three-r180/';
+const V = '/vendor/three-r180a/';
 export const THREE_URL = V + 'build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
 const KIND_RE = /^[a-z0-9][a-z0-9-]{0,40}$/;
