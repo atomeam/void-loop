@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T21:36:58.952Z",
+   "sha": "1e880882fd121c6ced9ab063adc001de8fc91191",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40027136265",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-23T21:14:12.421Z",
    "sha": "bdd731518f7b8251ebc5b41766f5aa7f282197a4",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40022739508",
@@ -802,20 +822,6 @@
     "void-live-deploy/skills/order/1765-ritual-template",
     "void-live-deploy/skills/ritual-template.js",
     "void-live-deploy/skills/what.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:32:06.985Z",
-   "sha": "77fab71bf9ea88102ddd6e79440f86d06e72f305",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39709894354",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/functions/api/reflect.js"
    ]
   }
  ]
