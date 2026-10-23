@@ -6770,5 +6770,7 @@
   {"ask": "the tower", "want": "skill:tower"},
   {"ask": "verse tower", "want": "skill:tower"},
   {"ask": "which sites have you beaten", "want": "skill:tower"},
-  {"ask": "inspirational quote", "want": "skill:quote"}
+  {"ask": "inspirational quote", "want": "skill:quote"},
+  {"ask": "resonant membrane", "want": "skill:resonant-membrane"},
+  {"ask": "modes of mind field", "want": "skill:similar"}
 ]
