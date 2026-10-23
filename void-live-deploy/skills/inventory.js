@@ -16,6 +16,11 @@ export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families |
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
+  games: 'the games Verse can play with you, one place for all of them',
+  time: 'timers and clocks, the sky, weather and earth, and the time around the world, in one family',
+  rooms: 'the room project in one card: paint, flooring, wallpaper, drywall and baseboard, with a price on each line',
+  dates: 'the calendar, today, public holidays and countdowns, in one family',
+  'stage-out': 'the stage on paper or file: the one-page print sheet and exports (JSON, email-ready text, print view)',
   'mind-field': 'Mind Field: eight living field minds in one card with a Mode switcher (Doodle Mind, Echo Field, swarm, flow, listen, grow, attention, living cards)',
   'tilt-arena': 'Tilt Arena: little learning agents chase what you steer, in four modes (Tilt, Gaze Chase, GPU Swarm, Hand Arena)',
   similar: 'what is similar: the modes and siblings of any combined skill',
@@ -28,7 +33,7 @@ const WHAT = {
   air: 'air quality',
   uv: 'UV index',
   quake: 'recent earthquakes',
-  pollen: 'pollen',
+  pollen: 'pollen counts and the allergy forecast for a place (Open-Meteo, no key)',
   spanish: 'answers in Spanish',
   translate: 'translation',
   'rebuild-map': 'assimilation map (what is being rebuilt as Verse)',
