@@ -22,6 +22,14 @@ const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).fi
 // against main, with --all, or in CI; every merge to main runs both in verify.yml (owner, 2026-10-23: "are the 11 minute checks neccassary")
 const ALL = args.includes('--all') || !!process.env.CI;
 const ONLY_WHEN = {
+  // the extension's two browser cases: the extension, the tab card, the page
+  'test_extension.mjs': /^extension\/|void\.html$|skills\/tab\.js|lib\/(?:extension|tab|stale-tab)|test_extension/,
+  // the sky world in a real browser: the sky skills, the sky lib, the page
+  'test_sky.mjs': /void\.html$|skills\/(?:sky|night-sky|sky-card|moon|moontonight|suntimes|aurora|constellation|meteors|eclipse)|lib\/sky|test_sky/,
+  // the cross-sense board draft
+  'test_glyphs.mjs': /sensory-substitution|test_glyphs/,
+  // the card art on pixels: the art, the forge, the miniatures, the page
+  'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
 };
