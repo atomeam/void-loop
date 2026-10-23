@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:52:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T22:51:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:51:01Z",
    "subject": "Inventory: drop the older bare pollen entry that overrode the new description"
   },
@@ -493,6 +501,10 @@
   {
    "at": "2026-10-23T22:39:28Z",
    "subject": "Inventory: describe the six family skills that arrived with no line (games, time, rooms, dates, stage-out, pollen), so main's inventory…"
+  },
+  {
+   "at": "2026-10-23T22:38:51Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for podcast, mind-field-mode"
   },
   {
    "at": "2026-10-23T22:38:38Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-23T22:24:08Z",
    "subject": "Automerge starts Verse's review itself on a labelled PR that has had none for 3 minutes (PRs Verse opens with the Actions token start no…"
-  },
-  {
-   "at": "2026-10-23T22:16:32Z",
-   "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T22:10:50Z",
-   "subject": "Incident: the browser suite failed on f2d60658 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T22:05:47Z",
-   "subject": "Incident: the browser suite failed on 7adc40b1 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
