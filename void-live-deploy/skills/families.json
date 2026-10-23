@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-23",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 1,
-  "tested": 28,
-  "checked": 13,
+  "experiment": 0,
+  "tested": 29,
+  "checked": 14,
   "proven": 283
  },
  "families": [
@@ -24,8 +24,8 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 1,
-    "tested": 10,
+    "experiment": 0,
+    "tested": 11,
     "checked": 1,
     "proven": 32
    },
@@ -360,11 +360,12 @@
     },
     {
      "name": "tilt-mode",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "gaze-chase",
@@ -1929,8 +1930,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 6,
+    "tested": 3,
+    "checked": 7,
     "proven": 87
    },
    "skills": [
@@ -1944,10 +1945,12 @@
     },
     {
      "name": "file-sorter",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 2
     },
     {
@@ -2811,18 +2814,17 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 3,
     "proven": 40
    },
    "skills": [
     {
      "name": "tower",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-23",
      "streak": 2
     },
     {
@@ -3232,6 +3234,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 5
+    },
+    {
+     "name": "podcast",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-23",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },

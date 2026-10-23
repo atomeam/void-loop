@@ -26,6 +26,10 @@ ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')]
 ok(R({ checks: [run('void-review')] }).state === 'merge', 'suite not started yet: merge, no wait');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, no wait');
 ok(R({ checks: [] }).state === 'wait', 'no check reported yet: wait for Verse\'s review');
+ok(R({ checks: [], pr: { updated_at: new Date().toISOString(), head: { sha: SHA, ref: 'b' } } }).noReview === false, 'a PR seconds old with no review yet: wait, do not dispatch one (its own run is coming)');
+{ const r = R({ checks: [], pr: { updated_at: '2026-10-09T12:00:00Z', head: { sha: SHA, ref: 'verse/harden-x' } } }); ok(r.state === 'wait' && r.noReview === true && r.branch === 'verse/harden-x', 'a quiet PR with no review at all (opened by the workflow token): dispatch Verse\'s review on its branch'); }
+ok(!R({ checks: [run('void-review', null, 'in_progress')] }).noReview, 'a review already running: never dispatch another');
+
 ok(R({ checks: [run('test-and-deploy', 'failure'), run('void-review')] }).state === 'stop', 'suite failed: stop');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', 'failure')] }).state === 'stop', 'bench failed: stop');
 ok(R({ checks: [run('test-and-deploy')] }).state === 'merge', 'a PR from before the void-review check: the suite decides');
