@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T22:38:38.229Z",
+   "sha": "b77ab65d72d9a2b9da6c2711d26af6fbe25d17a8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40034064420",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-23T22:38:02.698Z",
    "sha": "846f2c3a9915ec0637196e2baf9f2cde9b06d37d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40033923045",
@@ -781,39 +802,6 @@
     "tools/no-clip.mjs",
     "tools/persona-playtest.mjs",
     "tools/revert-target.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-22T05:09:56.284Z",
-   "sha": "a242f6e8fe66da33680a641ab79017ea84932505",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39724392862",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "check timeout: no check finished within 300 s",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
-   ],
-   "touched": [
-    "docs/COMPLETENESS.md",
-    "docs/LOOP-GAPS.md",
-    "tools/checks.mjs",
-    "tools/completeness-rules.json",
-    "tools/completeness.mjs",
-    "tools/completeness.test.mjs",
-    "tools/expectations.mjs",
-    "tools/persona-playtest.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/battleship.js",
-    "void-live-deploy/skills/connect4.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/duel.js",
-    "void-live-deploy/skills/game-rules-line.js",
-    "void-live-deploy/skills/monopoly-rules.js"
    ]
   }
  ]
