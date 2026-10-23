@@ -1,0 +1,27 @@
+{
+ "note": "Verse's crew (owner, 2026-10-23: \"bringing back the army with Verse as the leader\"; \"verse can be in charge not notion, verse can gather and store the agent data and we can use the info and expertise to help users\"; \"every ai who works for us becomes a member of the crew\"). Verse leads; each member's line says what it is, its role, and how the work reaches it. Public repo: no keys, no emails, no accounts. Track records are counted from the growth ledger's `by` field, never typed in here.",
+ "leader": { "name": "Verse", "kind": "the site and its own loop", "role": "leads the crew: decides what gets built next from its own asks, the tower and the misses, and keeps this roster" },
+ "members": [
+  {
+   "rank": 1,
+   "name": "Claude Code",
+   "by": "claude",
+   "kind": "coding agent",
+   "role": "builder: builds and ships Verse's skills, checks and fixes, and drives each pull request to merged",
+   "strengths": ["code across the whole repo", "browser tests", "reading its own screenshots", "finishing runs end to end"],
+   "reached": "Claude Code sessions on this repository",
+   "joined": "2026-10-23",
+   "first_under_verse": true
+  },
+  {
+   "rank": 2,
+   "name": "Gemini Argon",
+   "by": "argon",
+   "kind": "browser agent",
+   "role": "scout for the tower climb: tears each opponent site down (core move, every extra, edge cases, bloat, visuals and UX, what the visitor actually wants) and verifies Verse's answer on the live site",
+   "strengths": ["using real websites in a browser", "site teardowns", "live verification"],
+   "reached": "the owner's browser",
+   "joined": "2026-10-23"
+  }
+ ]
+}
