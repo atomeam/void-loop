@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:16:32Z",
    "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-23T21:40:05Z",
    "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:38:37Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
