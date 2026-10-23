@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:40:05Z",
+   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T21:38:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:38:29Z",
    "subject": "finish: a commit step with nothing new to commit passes"
   },
@@ -499,6 +507,10 @@
    "subject": "merge-main regenerates every generated file after a merge, not only the families and the book"
   },
   {
+   "at": "2026-10-23T21:36:13Z",
+   "subject": "Regenerate the dependency map after the merge"
+  },
+  {
    "at": "2026-10-23T21:31:48Z",
    "subject": "The fast checks run the extension, sky, glyph and art-pixel browser checks only when the files they cover changed (main runs them all)"
   },
@@ -507,12 +519,32 @@
    "subject": "Fast checks: the extension, sky, glyph and art-pixel browser checks run only when the files they cover changed"
   },
   {
+   "at": "2026-10-23T21:30:57Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-23T21:30:53Z",
+   "subject": "Everyone's flips under the coin and a live crowd of flags on the is-it card: two open endpoints with closed lists on the relay and D1"
+  },
+  {
    "at": "2026-10-23T21:28:25Z",
    "subject": "Regenerate the families and the book after the merge"
   },
   {
+   "at": "2026-10-23T21:23:36Z",
+   "subject": "Everyone's tally (/api/tally) and a public crowd room on the relay: the server halves and their tests"
+  },
+  {
+   "at": "2026-10-23T21:20:27Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
+  },
+  {
    "at": "2026-10-23T21:19:11Z",
    "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-10-23T21:15:24Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
   },
   {
    "at": "2026-10-23T21:14:12Z",
@@ -529,38 +561,6 @@
   {
    "at": "2026-10-23T21:08:46Z",
    "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
-  },
-  {
-   "at": "2026-10-23T20:54:46Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T20:52:13Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-23T20:39:23Z",
-   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
-  },
-  {
-   "at": "2026-10-23T20:26:18Z",
-   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
-  },
-  {
-   "at": "2026-10-23T20:07:15Z",
-   "subject": "Unblock the fast checks: three skill overlaps narrowed (rack, video-play, cartoon), the similar-ask index regenerated, and tests for five…"
-  },
-  {
-   "at": "2026-10-23T18:18:56Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-10-23T15:54:56Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-23T12:46:35Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   }
  ],
  "builders": {
