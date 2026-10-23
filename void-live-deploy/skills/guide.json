@@ -141,8 +141,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 3,
+    "tested": 3,
+    "checked": 4,
     "proven": 40
    },
    "from": 288,
@@ -5363,8 +5363,8 @@
     "verse tower",
     "which sites have you beaten"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 3 browser-suite mentions",
    "n": 289
   },
   {

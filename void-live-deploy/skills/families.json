@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 29,
-  "checked": 14,
+  "tested": 28,
+  "checked": 15,
   "proven": 283
  },
  "families": [
@@ -2814,17 +2814,18 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 3,
+    "tested": 3,
+    "checked": 4,
     "proven": 40
    },
    "skills": [
     {
      "name": "tower",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-23",
      "streak": 2
     },
     {
