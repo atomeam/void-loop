@@ -46,3 +46,17 @@ test('overlaps settled: a bare "games" is the Game Box\'s, "board games" stays t
   assert.ok(!takes(cartoon, 'draw a big blue circle'));
   assert.ok(takes(cartoon, 'draw a toon cat'));
 });
+
+test('cartoon: a 2D cartoon of the subject asked for, painted in its own cartoon style and kept under its own key', async () => {
+  const { cartoonOf, cartoonTake } = await import('../void-live-deploy/skills/cartoon.js');
+  const { artPrompt, cartoonKey, kindWordOf } = await import('../void-live-deploy/lib/art-rules.js');
+  for (const [ask, subject] of [['draw a cartoon cat', 'cat'], ['cartoon version of a dog', 'dog'], ['make a cartoon of a dragon', 'dragon'], ['draw a toon cat', 'cat'], ['cartoon of my cat', 'cat'], ['draw me a robot', 'robot'], ['draw a picture of a horse', 'horse']]) assert.equal((cartoonOf(ask) || {}).subject, subject, ask);
+  for (const ask of ['draw a cartoon', 'cartoon network', 'what is a cartoon', 'draw a card', 'draw a line chart for sales', 'let me draw']) assert.equal(cartoonOf(ask), null, ask);
+  assert.equal(cartoonTake('cat').emoji, '🐱');
+  assert.equal(cartoonTake('dragon').name, 'Cartoon dragon');
+  assert.equal(kindWordOf('cartoon'), 'cartoon');
+  assert.equal(cartoonKey('cat'), 'cartoon cat');
+  const p = artPrompt('cartoon cat', 'cartoon');
+  assert.match(p, /^a cat as a flat 2D cartoon drawing/);
+  assert.doesNotMatch(p, /tarot|arcane|photoreal|cinematic/);
+});

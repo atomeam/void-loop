@@ -399,7 +399,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the making things, this one is trusted enough to be taught. It has not failed a reader yet.",
    "glow": 100,
    "n": 10
@@ -460,14 +460,14 @@
    "chapter": "make",
    "name": "cartoon",
    "title": "Cartoon",
-   "line": "Cartoon version of a hard subject",
+   "line": "A 2D cartoon drawing of what you name",
    "examples": [
-    "cartoon version of a plague",
-    "cartoon version of a shipwreck",
-    "cartoon version of gg allin"
+    "draw a cartoon cat",
+    "cartoon version of a dog",
+    "make a cartoon of a dragon"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the making things; set down here after it answered true 3 times. The void remembers each asking.",
    "glow": 100,
    "n": 14
@@ -8001,7 +8001,7 @@
     {
      "rank": 146,
      "name": "cartoon",
-     "catches": "cartoon version of a plague"
+     "catches": "draw a cartoon cat"
     },
     {
      "rank": 147,
