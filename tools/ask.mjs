@@ -29,6 +29,7 @@ for (const a of asks) {
   // what the pictures say: the alt text and labels of what is on the stage and the open page (a picture's subject is not in innerText)
   const pics = await page.evaluate(() => [...document.querySelectorAll('#stage [alt], #stage [aria-label], #stage [data-subject], .vpage.on [alt]')].map((e) => e.getAttribute('alt') || e.getAttribute('aria-label') || e.getAttribute('data-subject')).filter(Boolean).slice(-8).join(' / ')).catch(() => '');
   const dir = process.env.ASK_SHOTS || os.tmpdir(), shot = path.join(dir, 'ask-' + a.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) + '.png');
+  try { fs.mkdirSync(dir, { recursive: true }); } catch (_) {} // ASK_SHOTS may name a folder that does not exist yet
   const looked = await page.screenshot({ path: shot }).then(() => shot).catch(() => '');
   console.log('> ' + a + '\n  by: ' + (last ? last.note || '(no note)' : '(nothing logged)') + (said ? '\n  said: ' + said.trim().slice(0, 200) : '') + '\n  shows: ' + shown.replace(/\s*\n\s*/g, ' / ').trim().slice(0, 300) + (pics ? '\n  pictures: ' + pics.slice(0, 200) : '') + (looked ? '\n  look: ' + looked : '') + (errs.length ? '\n  ERROR: ' + errs.join(' | ') : ''));
   await page.keyboard.press('Escape').catch(() => {});
