@@ -125,6 +125,21 @@ export function buildRecentTour(ledger, seenIso) {
   };
 }
 
+/**
+ * What may be played as built (Adam, 2026-10-15: Verse never claims a build that does not answer): an entry the walk covers
+ * becomes a step only when its ask is on claims-verified.json; the rest are in progress, never claimed. Pure.
+ */
+export function whatsNew(entries, { verified = new Set(), seenIso = '' } = {}) {
+  const steps = [], waiting = [];
+  for (const e of filterRecentWork(entries, seenIso)) {
+    const s = stepFromLedgerEntry(e);
+    const ask = (s.ask || String(e.try || '').trim());
+    const step = { ...s, ask };
+    if (ask && verified.has(ask)) steps.push(step); else waiting.push(step);
+  }
+  return { steps, waiting };
+}
+
 export function mountShowcase(stageApi, tour, options = {}) {
   const onDone = options.onDone || (() => {});
   if (!tour?.steps?.length) return { unmount() {} };

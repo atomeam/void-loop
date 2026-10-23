@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T00:42:45Z",
+   "subject": "The walkthrough walks newest first, and its test covers the carousel"
+  },
+  {
    "at": "2026-10-23T00:38:03Z",
    "subject": "Fix the showcase break: guide.js walks the carousel, showcase keeps its skill contract"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-22T06:12:36Z",
    "subject": "Incident: the browser suite failed on 341312cd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-22T06:06:45Z",
-   "subject": "Incident: the browser suite failed on 0e51c6a8 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
