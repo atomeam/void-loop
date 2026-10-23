@@ -483,6 +483,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:38:38Z",
+   "subject": "Incident: the browser suite failed on b77ab65d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:38:37Z",
+   "subject": "Inventory: describe the six family skills that arrived with no line (games, time, rooms, dates, stage-out, pollen), so main's inventory…"
+  },
+  {
+   "at": "2026-10-23T22:38:02Z",
+   "subject": "Incident: the browser suite failed on 846f2c3a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:35:49Z",
+   "subject": "Incident: the browser suite failed on 59279e02 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:34:21Z",
+   "subject": "Incident: the browser suite failed on 485feb26 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:29:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:28:53Z",
    "subject": "Verse hardens itself: 3 benchmark ask(s) for tilt-mode, file-sorter"
   },
@@ -495,8 +519,16 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-23T22:24:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:24:08Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T22:24:08Z",
+   "subject": "Automerge starts Verse's review itself on a labelled PR that has had none for 3 minutes (PRs Verse opens with the Actions token start no…"
   },
   {
    "at": "2026-10-23T22:16:32Z",
@@ -529,38 +561,6 @@
   {
    "at": "2026-10-23T21:58:18Z",
    "subject": "coin: mark the style-constant innerHTML as reviewed"
-  },
-  {
-   "at": "2026-10-23T21:56:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:56:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:56:01Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:53:22Z",
-   "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:51:17Z",
-   "subject": "Verse hardens itself: 6 benchmark ask(s) for is-it, gamebox"
-  },
-  {
-   "at": "2026-10-23T21:48:56Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:48:50Z",
-   "subject": "Verse's fix loop was starving itself: an over-size skill file made every propose-fix POST a 413 and the job never left the probe cap; the…"
-  },
-  {
-   "at": "2026-10-23T21:45:55Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
