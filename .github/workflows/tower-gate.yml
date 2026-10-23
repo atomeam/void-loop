@@ -46,5 +46,6 @@ jobs:
           git add void-live-deploy/tower.evidence.json
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-          git push -q origin HEAD:main
+          # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true
