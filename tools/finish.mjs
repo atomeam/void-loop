@@ -162,6 +162,9 @@ function openPr(a) {
 function main(argv) {
   const a = parseArgs(argv.slice(2));
   if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--about "..."] [--asked ask-…] [--job <id>] [--dry] [--from N]'); return 2; }
+  // the ledger's limits, checked before any step runs (a show line one character over used to surface only after the browser check, 2026-10-23)
+  if (a.show && (a.show.length < 1 || a.show.length > 70)) { console.error('finish: --show must be 1 to 70 characters (it is ' + a.show.length + ')'); return 2; }
+  if (a.try && (a.try.length < 1 || a.try.length > 120)) { console.error('finish: --try must be 1 to 120 characters (it is ' + a.try.length + ')'); return 2; }
   if (!a.try && (a.kind === 'grow' || a.kind === 'build') && a.from === 0) console.log('finish: no --try: the "look what I made" walkthrough cannot show this one on the stage (add --show "plain words" --try "an ask that shows it" if people can see it)');
   for (const [i, [label, step]] of steps(a).entries()) {
     const shown = typeof step === 'function' ? '' : ': ' + [step[0] === process.execPath ? 'node' : step[0], ...step[1].map((x) => x.replace(root + '/', ''))].join(' ');

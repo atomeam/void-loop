@@ -32,6 +32,7 @@ export function coinOf(text) {
 /** a fair or weighted flip from the device's crypto random (a uniform number in [0, 1)); true is heads. */
 export function flip(p = 0.5, rand = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; }) { return rand() < p; }
 
+import { coinLine } from '../lib/tally.js';
 const KEY = 'a2m.void.coin.v1'; // this visit's tally and the sound choice, in sessionStorage / localStorage
 const tallyRead = () => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || '{}'); return { h: v.h | 0, t: v.t | 0 }; } catch (_) { return { h: 0, t: 0 }; } };
 const tallyWrite = (v) => { try { sessionStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
@@ -61,12 +62,19 @@ function run(text, api) {
   let spins = 0;
   const el = showPage((card) => {
     card.innerHTML = CSS + '<h2>' + esc(ask.for ? 'Coin for ' + ask.for : ask.n > 1 ? ask.n + ' coins' : 'Coin') + '</h2>'
-      + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"></div>'
+      + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"></div><div class="coin-everyone" hidden></div>'
       + '<div class="coin-tools"><button type="button" class="coin-again">Flip again</button><button type="button" class="coin-sound"></button><button type="button" class="coin-reset">Reset tally</button></div>'
       + '<div class="src">' + (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network</div>';
   });
   if (!el || !el.querySelector) return 'coin';
   const row = el.querySelector('.coin-row'), word = el.querySelector('.coin-word'), tally = el.querySelector('.coin-tally'), snd = el.querySelector('.coin-sound');
+  // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally (lib/tally.js: a closed list, integers back), hidden
+  // until the first read works; each flip is one small POST per side; a 429 rests the posts for its Retry-After. Nothing from the server is drawn but numbers.
+  const every = el.querySelector('.coin-everyone'); every.className += ' coin-tally'; let restUntil = 0;
+  const showEvery = (j) => { const line = j && j.ok && j.counts ? coinLine(j.counts) : ''; if (line) { every.textContent = line; every.hidden = false; } };
+  fetch('/api/tally?of=coin', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then(showEvery).catch(() => {});
+  const tell = (v, n) => { if (!n || Date.now() < restUntil) return; fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
+    .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); return null; } return r.ok ? r.json() : null; }).then(showEvery).catch(() => {}); };
   const coins = Array.from({ length: ask.n }, () => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', st.rim);
     b.innerHTML = '<span class="fc h" style="background:' + st.face + ';color:' + st.ink + '">' + st.h + '</span><span class="fc t" style="background:' + st.face + ';color:' + st.ink + '">' + st.t + '</span>';
@@ -77,6 +85,7 @@ function run(text, api) {
     spins += 2; // each flip turns every coin a full turn more, so it visibly flips, then lands on its face: a third of a second, no fake wait
     const res = coins.map((c) => { const h = flip(ask.p); c.style.transform = 'rotateY(' + (spins * 180 + (h ? 0 : 180)) + 'deg)'; c.setAttribute('aria-label', h ? 'Heads' : 'Tails'); return h; });
     const nh = res.filter(Boolean).length, v = tallyRead(); v.h += nh; v.t += res.length - nh; tallyWrite(v);
+    tell('heads', nh); tell('tails', res.length - nh);
     word.textContent = ask.n === 1 ? (res[0] ? 'Heads' : 'Tails') : nh + ' heads, ' + (res.length - nh) + ' tails';
     showTally(v);
     if (soundOn()) ring();
