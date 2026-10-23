@@ -6760,5 +6760,11 @@
   {"ask": "show me the games", "want": "skill:gamebox"},
   {"ask": "genome arena", "want": "skill:tilt-mode"},
   {"ask": "tilt game", "want": "skill:tilt-mode"},
-  {"ask": "classify files: main.go, notes.txt", "want": "skill:file-sorter"}
+  {"ask": "classify files: main.go, notes.txt", "want": "skill:file-sorter"},
+  {"ask": "play the podcast", "want": "skill:podcast"},
+  {"ask": "latest episode", "want": "skill:podcast"},
+  {"ask": "verse podcast", "want": "skill:podcast"},
+  {"ask": "mind field swarm", "want": "skill:mind-field-mode"},
+  {"ask": "listen field", "want": "skill:mind-field-mode"},
+  {"ask": "swarm field", "want": "skill:mind-field-mode"}
 ]
