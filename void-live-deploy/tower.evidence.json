@@ -45,6 +45,25 @@
     "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
     "at": "2026-10-23T23:00:16Z"
    }
+  },
+  "is it": {
+   "design polish": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse's glowing full-canvas answer, instant, beats the site's flat text; its crowd flags come from the browser's language, not ip",
+    "at": "2026-10-23T23:12:40Z"
+   }
+  },
+  "coin flip": {
+   "design polish": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse's 3d coin with physics beats the site's 2d image flip; the global tally updates in the background with no page refresh",
+    "at": "2026-10-23T23:12:40Z"
+   },
+   "flip animation": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse's 3d coin with physics beats the site's 2d image flip; the global tally updates in the background with no page refresh",
+    "at": "2026-10-23T23:12:40Z"
+   }
   }
  }
 }
