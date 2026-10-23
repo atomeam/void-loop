@@ -17,11 +17,18 @@ const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pip
 
 sh('git fetch -q origin main');
 // the families and the book are generated from the tree: after a merge they are written again, and committed if the text moved (two branches that each added a skill leave both stale without a conflict)
-const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json'];
+// every generated file (tools/refresh.mjs writes them in order: the index, the dependency map, what.json, the families, the book, self.json, the asks'
+// links, the bench alarms): after a merge each is written again from the merged tree and committed if it moved. Before 2026-10-23 only the families and
+// the book were, so nearly every finish after a merge stopped at the fast checks on a stale deps.json or what.json and had to be resumed by hand.
+// (the skill index is settled name by name below, never taken from one side, so it is not in this list; regen() still writes it again after)
+const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/deps.json',
+  'void-live-deploy/skills/what.json', 'void-live-deploy/self.json', 'void-live-deploy/void.asks.json', 'void-live-deploy/lib/similar-index.js', 'void-live-deploy/skills/bench-alarms.json'];
+const REGEN = GENERATED.concat('void-live-deploy/skills/index.json');
 function regen() {
-  if (!existsSync(resolve(process.cwd(), 'tools', 'guide.mjs'))) return;
-  for (const t of ['families.mjs', 'guide.mjs']) { try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', t)], { stdio: 'ignore' }); } catch (e) { console.error('tools/' + t + ' failed after the merge (' + (e.status || e.message) + '): the check will say why'); } }
-  try { sh(`git add ${GENERATED.join(' ')}`); if (sh('git diff --cached --name-only')) { sh('git commit -q -m "Regenerate the families and the book after the merge"'); console.log('regenerated families.json and guide.json'); } } catch (_) {}
+  if (!existsSync(resolve(process.cwd(), 'tools', 'refresh.mjs'))) return;
+  try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', 'refresh.mjs'), '--keep-going'], { stdio: 'ignore' }); } catch (e) { console.error('tools/refresh.mjs failed after the merge (' + (e.status || e.message) + '): the check will say why'); }
+  try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', 'similar-index.mjs')], { stdio: 'ignore' }); } catch (_) {}
+  try { sh(`git add ${REGEN.filter((f) => existsSync(resolve(process.cwd(), f))).join(' ')}`); if (sh('git diff --cached --name-only')) { sh('git commit -q -m "Regenerate the generated files after the merge"'); console.log('regenerated the generated files after the merge'); } } catch (_) {}
 }
 try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no conflicts)'); regen(); process.exit(0); } catch (_) {}
 
