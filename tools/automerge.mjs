@@ -58,6 +58,11 @@ for (let p of prs) {
     console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Verse's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
     continue;
   }
+  if (r.state === 'wait' && r.noReview && r.branch) {
+    try { run(['workflow', 'run', 'void-review.yml', '--repo', repo, '--ref', r.branch, '-f', `pr=${p.number}`]); console.log(`#${p.number}: no review had started on ${r.sha.slice(0, 7)}; Verse's review dispatched`); }
+    catch (e) { console.log(`#${p.number}: could not start Verse's review: ${String(e.stderr || e.message).slice(0, 200)}`); }
+    continue;
+  }
   if (r.state !== 'merge') continue;
   // the safety-check (asked by Verse): the unit tests of the skills and libs this PR changed, run on its head, before the merge
   const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
