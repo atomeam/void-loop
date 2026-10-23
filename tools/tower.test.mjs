@@ -26,3 +26,12 @@ test('the tower skill answers its asks and not near misses', async () => {
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 24); assert.doesNotMatch(h, /<img|logo/i);
   assert.match(sk.detailText(t.floors[0]), /^0 of 11 aspects beaten on /);
 });
+test('the live card tells what moved between two polls', async () => {
+  const sk = (await import('../void-live-deploy/skills/tower.js')).default;
+  const a = tower([], {}), ev = { [FLOORS[0].id]: Object.fromEntries(aspectsOf(FLOORS[0]).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
+  assert.deepEqual(sk.changes(a, a), []);
+  const said = sk.changes(a, b).join(' ');
+  assert.match(said, /calculator\.net is beaten\./); assert.match(said, /marker moved to floor 2/);
+  assert.match(sk.changes(b, a).join(' '), /calculator\.net slipped\./);
+  assert.deepEqual(sk.changes(null, b), []);
+});
