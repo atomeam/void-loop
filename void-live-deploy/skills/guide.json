@@ -3464,7 +3464,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 8 live findings, 2026-10-22",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 9 live findings, 2026-10-23",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 183
@@ -4009,9 +4009,9 @@
    "title": "Showcase",
    "line": "\"look what I made\": verse puts what it built since you were last here on the right, as a carousel",
    "examples": [
-    "look what I made",
     "show me what you made",
-    "what's new"
+    "what's new",
+    "what's new pussycat"
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
@@ -8101,7 +8101,7 @@
     {
      "rank": 163,
      "name": "showcase",
-     "catches": "look what I made"
+     "catches": "show me what you made"
     },
     {
      "rank": 164,
