@@ -133,10 +133,10 @@ async function news() {
 async function previews() {
   const els = [...document.querySelectorAll('[data-glb]')]; if (!els.length) return;
   try {
-    const THREE = await import('/vendor/three-r180/build/three.module.min.js');
-    const { GLTFLoader } = await import('/vendor/three-r180/addons/GLTFLoader.js');
-    const { MeshoptDecoder } = await import('/vendor/three-r180/addons/meshopt_decoder.module.js');
-    const { RoomEnvironment } = await import('/vendor/three-r180/addons/RoomEnvironment.js');
+    const THREE = await import('/vendor/three-r180a/build/three.module.min.js');
+    const { GLTFLoader } = await import('/vendor/three-r180a/addons/GLTFLoader.js');
+    const { MeshoptDecoder } = await import('/vendor/three-r180a/addons/meshopt_decoder.module.js');
+    const { RoomEnvironment } = await import('/vendor/three-r180a/addons/RoomEnvironment.js');
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder), cache = {};
     for (const el of els) {
       const url = el.dataset.glb, w = el.clientWidth, h = el.clientHeight;

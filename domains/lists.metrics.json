@@ -207,6 +207,78 @@
      "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
     }
    ]
+  },
+  {
+   "at": "2026-10-22T04:55:00Z",
+   "run": 5,
+   "closed": 8,
+   "touched": 9,
+   "pct_blocked": 11.1,
+   "top_block": "the answer path's model is in lib/models.js, which is Claude's (router and limits): handed to Claude, nothing waits on Adam",
+   "dup_rate": 0.17,
+   "median_days": 4.0,
+   "asks_open_start": 6,
+   "asks_open_end": 3,
+   "items": [
+    {
+     "what": "three.js served as the page's HTML on live: Cloudflare's edge kept a year-long 'immutable' copy of the fallback page under /vendor/three-r180/build/three.module.min.js from when the file was missing (2026-10-15), so fresh browsers got 'Failed to load module script' and every 3D board fell back (11 of the site tester's 12 failures on 2026-10-22). The library moved to /vendor/three-r180a/ (a path no edge holds), and the service worker no longer keeps an HTML answer as a 3D file (cache void-3d-v2); tools/sw-3d-cache.test.mjs",
+     "list": "site tester (issue #1114, tester log)",
+     "status": "built",
+     "issue": "https://github.com/atomeam/void-loop/issues/1114"
+    },
+    {
+     "what": "the country card's live source was dead: REST Countries retired its keyless v3.1 API (a redirect to a deprecation note, a CORS error in the browser), so 'population of Japan' showed only the built-in capital. Now one keyless Wikidata query (population, capital, currency, languages, area, continent, borders, calling code, driving side, time zones), the built-in lists filling any gap; tools/country-wikidata.test.mjs, the browser suite and the benchmark stub follow",
+     "list": "site tester (issue #1063)",
+     "status": "built (keyless workaround)",
+     "issue": "https://github.com/atomeam/void-loop/issues/1063"
+    },
+    {
+     "what": "the sport card's source was refused: TheSportsDB retired its old public key '3'. It uses the new public key '123', picks the team of the league asked for ('nfl team chiefs' is Kansas City, not the rugby side), and falls back to the team's Wikipedia summary",
+     "list": "site tester (issue #1048)",
+     "status": "built (keyless workaround)",
+     "issue": "https://github.com/atomeam/void-loop/issues/1048"
+    },
+    {
+     "what": "Words and the world: 28 of 28 proven (was 20): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play like a person meets them",
+     "list": "void.asks.json (Verse's ask of 2026-10-22, ask-20261022-0420-3)",
+     "status": "built"
+    },
+    {
+     "what": "the 'suggested builder' tag on digest items was built at 03:18 UTC but its ledger line named the ask in short, so the matcher left it open: linked in void.asks.json; decisions recorded for the three 2026-10-21 asks run 2 and 3 built",
+     "list": "void.asks.json",
+     "status": "built (linked)"
+    },
+    {
+     "what": "room, walls and home are one routing place, skills/rooms.js at rank 0370 (room and home both took 'paint and carpet a 12x14 room'); route snapshot over 5,034 asks: 0 moved, 0 new misses; tools/rooms-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged three)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "churn cap (stop proposing changes to a file changed more than N times in M days)",
+     "list": "void.asks.json (ask-20261022-0420-2)",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/b5150302"
+    },
+    {
+     "what": "four site-test issues for one slow load or one low frame count (#1022, #1024, #1026, #1028) are already handled by the tester's retake rule (a slow page or low fps counts only when the second sample agrees)",
+     "list": "site tester",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/tools/site-test.mjs"
+    },
+    {
+     "what": "answer generation from gpt-oss-120b to Gemma to stay inside the free 10k neurons a day",
+     "list": "void.asks.json (ask-20261022-0420-1) and Up for grabs (wishlist #1)",
+     "status": "blocked",
+     "reason": "the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (router and limits, domains/handoff.md), and the 2026-10-10 bake-off picked gpt-oss for quality",
+     "unblock": "Claude switches PATH_MODELS.answer to FREE_MODEL (or splits by ask length) and checks the answer quality bench",
+     "who": "Claude",
+     "tried": [
+      "the free model is already the default for merge, will, digest and figurescript; only answer and review use gpt-oss-120b",
+      "no Adam action needed: no paid plan, no sign-in"
+     ]
+    }
+   ]
   }
  ]
 }
