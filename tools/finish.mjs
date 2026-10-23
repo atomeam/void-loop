@@ -131,7 +131,7 @@ export function steps(a) {
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
     // a new skill file is registered before it is committed (Verse's ask: the skills/ manifest registers every new skill; the fast checks then run the router test on it)
     // the book's pages and the families they come from are generated: written here so a new skill is in the book's index without a manual step (owner, 2026-10-17: the book shows every update immediately)
-    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
+    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || (spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: root }).status === 0 ? (console.log('  nothing new to commit: already committed'), 0) : git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : []))))], // a tree committed by hand is not a failure (2026-10-23)
     ['bring main in', node('merge-main.mjs')],
     ['fast checks', node('checks.mjs')],
     ['push', node('push.mjs')],
