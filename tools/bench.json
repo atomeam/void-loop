@@ -6751,5 +6751,14 @@
   {"ask": "hand tracking arena", "want": "skill:hand-arena"},
   {"ask": "tilt arena modes", "want": "skill:tilt-arena-mode"},
   {"ask": "tilt arena gaze", "want": "skill:tilt-arena-mode"},
-  {"ask": "tilt arena in hand mode", "want": "skill:tilt-arena-mode"}
+  {"ask": "tilt arena in hand mode", "want": "skill:tilt-arena-mode"},
+  {"ask": "is it christmas", "want": "skill:is-it"},
+  {"ask": "is it christmas yet?", "want": "skill:is-it"},
+  {"ask": "is it friday", "want": "skill:is-it"},
+  {"ask": "game box", "want": "skill:gamebox"},
+  {"ask": "games", "want": "skill:gamebox"},
+  {"ask": "show me the games", "want": "skill:gamebox"},
+  {"ask": "genome arena", "want": "skill:tilt-mode"},
+  {"ask": "tilt game", "want": "skill:tilt-mode"},
+  {"ask": "classify files: main.go, notes.txt", "want": "skill:file-sorter"}
 ]

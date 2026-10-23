@@ -47,3 +47,11 @@
   Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=300
+
+/podcast/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=600
+
+/podcast/*.mp3
+  Content-Type: audio/mpeg
+  Access-Control-Allow-Origin: *
