@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 28
+    "proven": 29
    },
    "from": 51,
    "to": 83
@@ -58,8 +58,8 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 1,
-    "proven": 16
+    "checked": 0,
+    "proven": 17
    },
    "from": 104,
    "to": 124
@@ -1689,8 +1689,10 @@
     "games",
     "show me the games"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. Turn the page when you are done.",
+   "glow": 100,
    "n": 80
   },
   {
@@ -2131,8 +2133,10 @@
     "is it christmas yet?",
     "is it friday"
    ],
-   "tier": "checked",
-   "why": "a self-test, 7 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the time; set down here after it answered true 3 times. Let the stage be the proof.",
+   "glow": 100,
    "n": 105
   },
   {
@@ -4257,7 +4261,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 3 askings, each one answered. Turn the page when you are done.",
+   "flavor": "Keep this page; the stage are built on it. Turn the page when you are done.",
    "glow": 100,
    "n": 225
   },
@@ -5270,7 +5274,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. Turn the page when you are done.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
    "glow": 100,
    "n": 286
   },
