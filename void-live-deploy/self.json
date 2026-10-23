@@ -483,12 +483,32 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:30:57Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-23T21:30:53Z",
+   "subject": "Everyone's flips under the coin and a live crowd of flags on the is-it card: two open endpoints with closed lists on the relay and D1"
+  },
+  {
+   "at": "2026-10-23T21:28:25Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
    "at": "2026-10-23T21:23:36Z",
    "subject": "Everyone's tally (/api/tally) and a public crowd room on the relay: the server halves and their tests"
   },
   {
+   "at": "2026-10-23T21:20:27Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
+  },
+  {
    "at": "2026-10-23T21:19:11Z",
    "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-10-23T21:15:24Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
   },
   {
    "at": "2026-10-23T21:14:12Z",
@@ -501,6 +521,10 @@
   {
    "at": "2026-10-23T21:10:45Z",
    "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
+  },
+  {
+   "at": "2026-10-23T21:08:46Z",
+   "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
   },
   {
    "at": "2026-10-23T20:54:46Z",
@@ -537,30 +561,6 @@
   {
    "at": "2026-10-23T12:12:23Z",
    "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-23T12:12:01Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-23T12:09:16Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-23T12:05:26Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-10-23T01:06:34Z",
-   "subject": "Incident: the browser suite failed on bf53ccc1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T00:49:24Z",
-   "subject": "Restore whatsNew: the walk plays only a build whose ask answered, and the book uses the same rule"
-  },
-  {
-   "at": "2026-10-23T00:42:45Z",
-   "subject": "The walkthrough walks newest first, and its test covers the carousel"
   }
  ],
  "builders": {
