@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:40:05Z",
+   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T21:38:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:38:29Z",
    "subject": "finish: a commit step with nothing new to commit passes"
   },
@@ -553,18 +561,14 @@
   {
    "at": "2026-10-23T18:18:56Z",
    "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-10-23T15:54:56Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-23T12:46:35Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
+    "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
+   },
    {
     "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
     "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
@@ -584,10 +588,6 @@
    {
     "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
     "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
-   },
-   {
-    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
-    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
    }
   ],
   "ladders": [
