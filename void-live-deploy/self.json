@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:58:18Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
+  },
+  {
+   "at": "2026-10-23T21:56:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:56:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T21:53:22Z",
    "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
   },
@@ -496,6 +508,10 @@
   },
   {
    "at": "2026-10-23T21:45:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T21:45:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -535,32 +551,16 @@
    "subject": "Regenerate the families and the book after the merge"
   },
   {
+   "at": "2026-10-23T21:20:27Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
+  },
+  {
    "at": "2026-10-23T21:19:11Z",
    "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-23T21:14:12Z",
-   "subject": "Incident: the browser suite failed on bdd73151 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:13:04Z",
-   "subject": "Incident: the browser suite failed on 305ce797 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:10:45Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T21:08:46Z",
-   "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
-  },
-  {
-   "at": "2026-10-23T20:54:46Z",
-   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
-  },
-  {
-   "at": "2026-10-23T20:52:13Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-23T21:15:24Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
   }
  ],
  "builders": {
