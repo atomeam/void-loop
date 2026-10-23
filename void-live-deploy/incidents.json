@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T22:16:32.669Z",
+   "sha": "86794bb41882b25453d4a79afcd3976907d845e0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40030671619",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/coin.test.mjs",
+    "tools/families.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/coin.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/0011-coin",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-23T22:10:49.732Z",
    "sha": "f2d60658608d1c67e729869de17a2bad08f4f312",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40031029837",
@@ -791,32 +819,6 @@
     "void-live-deploy/lib/card-share.js",
     "void-live-deploy/lib/field-doodle.js",
     "void-live-deploy/lib/field-stage.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T04:23:07.966Z",
-   "sha": "545d9729fca639650c28993e1b5432f992fb317c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39721628049",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/REA-GAPS.md",
-    "docs/playbooks/study-with-rea.md",
-    "tools/checks.mjs",
-    "tools/lacks.mjs",
-    "tools/lacks.test.mjs",
-    "tools/loop-study.mjs",
-    "tools/rea-study.mjs",
-    "tools/rea-study.test.mjs",
-    "tools/studies-api.test.mjs",
-    "tools/study-engine.mjs",
-    "tools/study-engine.test.mjs",
-    "void-live-deploy/functions/api/studies.js",
-    "void-live-deploy/studies.html",
-    "docs/MAP.md",
-    "domains/void.agents.log.md"
    ]
   }
  ]
