@@ -495,6 +495,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:23:48Z",
+   "subject": "Three stale PRs closed as superseded, their salvageable parts shelved: #1187 (showcase placeholder; main's carousel and #1282 name each…"
+  },
+  {
+   "at": "2026-10-23T22:23:46Z",
+   "subject": "inventory: describe the six skills that had no line (games, time, rooms, dates, stage-out, pollen)"
+  },
+  {
+   "at": "2026-10-23T22:16:32Z",
+   "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:10:50Z",
+   "subject": "Incident: the browser suite failed on f2d60658 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T22:07:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:07:42Z",
    "subject": "Three stale PRs closed as superseded, their salvageable parts shelved: #1187 (showcase placeholder; main's carousel and #1282 name each…"
   },
@@ -553,26 +573,6 @@
   {
    "at": "2026-10-23T21:48:50Z",
    "subject": "Verse's fix loop was starving itself: an over-size skill file made every propose-fix POST a 413 and the job never left the probe cap; the…"
-  },
-  {
-   "at": "2026-10-23T21:45:55Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:45:44Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:45:37Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:40:05Z",
-   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T21:38:37Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
