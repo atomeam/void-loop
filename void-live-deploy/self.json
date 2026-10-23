@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T21:20:27Z",
+   "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
+  },
+  {
+   "at": "2026-10-23T21:19:11Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
    "at": "2026-10-23T21:15:24Z",
    "subject": "A coin flip that lands at once: a 3D coin, the side in big type, a tally for this visit; and the fast checks skip the two slow browser…"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-23T00:38:03Z",
    "subject": "Fix the showcase break: guide.js walks the carousel, showcase keeps its skill contract"
-  },
-  {
-   "at": "2026-10-23T00:18:00Z",
-   "subject": "Register the quote skill: order file at 1795, a family, and the cards regenerated"
-  },
-  {
-   "at": "2026-10-22T22:31:28Z",
-   "subject": "Incident: the browser suite failed on 96b77c63 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

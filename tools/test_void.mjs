@@ -552,6 +552,32 @@ try {
     check('body: the tap puts a 2D cartoon of the word on the stage', (await B.state()).some((x) => x.kind === 'cartoon' && picAsk.endsWith(' ' + x.subject)), JSON.stringify((await B.state()).map((x) => x.kind + ':' + (x.subject || ''))));
     check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
     await B.ctx.close(); }
+  // the one-word day sites (owner, 2026-10-23: "the absolute bottom rung ... isitchristmas.com"): Verse answers from the device's clock, one giant word
+  if (want("is it: is it christmas? answers one giant YES or NO from the device's clock, whole on the card, with when it next is")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const got = await until(async () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', text: c.innerText }; }).catch(() => null), 8000);
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel above it, and says when Christmas is',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the one-word day sites (scout report, 2026-10-23: isitchristmas.com): Verse answers from the device's clock, one giant word in the visitor's language,
+  // the live countdown, today's date, a ripple on a tap and the visitor's flag stamped with a right-click
+  if (want("is it: is it christmas? answers one giant word from the device's clock, whole on the card, with a live countdown, a ripple and a flag stamp")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const read = () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'), left = c.querySelector('.is-it-left'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', left: left ? left.textContent : '', text: c.innerText }; }).catch(() => null);
+    const got = await until(read, 8000); await P.p.waitForTimeout(2200); const later = await read();
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel, says when Christmas is and today\'s date, and its countdown ticks',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && /Today is \w+day, \w+ \d+, \d{4}/.test(got.text) && (want === 'YES' || (/seconds? to go/.test(got.left) && later && later.left !== got.left)) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 200), later: later && later.left }));
+    const box = await P.p.$('.vpage.on .is-it-stage'); const bb = box && await box.boundingBox();
+    if (bb) { await P.p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); }
+    const ripple = await P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0);
+    if (bb) { await P.p.mouse.click(bb.x + 40, bb.y + 30, { button: 'right' }); }
+    const stamp = await P.p.$$eval('.vpage.on .is-it-stamp', (r) => r.length).catch(() => 0);
+    check('is it: a tap on the word makes a ripple there and a right-click stamps a flag, with no page errors', ripple > 0 && stamp > 0 && !P.errors.length, JSON.stringify({ ripple, stamp, errors: P.errors }));
+    await P.ctx.close();
+  }
   // owner, 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"; "cartoons should be 2d": a cartoon ask
   // draws THAT subject as a flat 2D cartoon (no 3D figure, no stock lump): the emoji at once, then the Art Forge's painted cartoon of it
   if (want("cartoon: draw a cartoon cat puts a 2D cartoon of a cat on the stage, its own painting swapped in, and says why when none comes")) {

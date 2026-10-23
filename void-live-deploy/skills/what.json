@@ -132,6 +132,7 @@
  "interrupt-priority": "\"set priority deep|normal|interruptible\", \"show deferred\"",
  "inventory": "Feeds agents and anyone who asks with \"already built\" rows so they reuse before rebuilding",
  "invite": "Bring someone into your Verse",
+ "is-it": "The yes-or-no day question, answered the way isitchristmas.com does it, one giant word",
  "joke": "A clean, family-friendly joke from icanhazdadjoke",
  "kept": "An answer you kept on the stage: \"keep this\" puts the open answer up as a card, \"call this my tip\" names it…",
  "know": "Verse's self-knowledge, readable: \"what is voidquest\", \"which games do you know\", \"which miniatures do you…",
