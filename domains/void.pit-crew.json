@@ -1,12 +1,12 @@
 {
-  "at": "2026-10-22T12:30:52.362Z",
+  "at": "2026-10-23T12:12:01.594Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261021-2133-3",
-      "ask": "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main.",
-      "target": "voice:ask-20261021-2133-3"
+      "id": "ask-20261022-2128-2",
+      "ask": "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days",
+      "target": "voice:ask-20261022-2128-2"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
