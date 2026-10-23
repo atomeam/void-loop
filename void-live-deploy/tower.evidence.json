@@ -49,20 +49,137 @@
   "is it": {
    "design polish": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse's glowing full-canvas answer, instant, beats the site's flat text; its crowd flags come from the browser's language, not ip",
-    "at": "2026-10-23T23:12:40Z"
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "big answer": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "local language": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
+    "at": "2026-10-23T23:15:31Z"
    }
   },
   "coin flip": {
    "design polish": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse's 3d coin with physics beats the site's 2d image flip; the global tally updates in the background with no page refresh",
-    "at": "2026-10-23T23:12:40Z"
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
    },
    "flip animation": {
     "verdict": "better",
-    "evidence": "verified by argon on 2026-10-23: live comparison: verse's 3d coin with physics beats the site's 2d image flip; the global tally updates in the background with no page refresh",
-    "at": "2026-10-23T23:12:40Z"
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
+   },
+   "flip history": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
+    "at": "2026-10-23T23:15:31Z"
    }
   }
  }

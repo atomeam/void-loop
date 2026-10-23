@@ -29,6 +29,7 @@ export function rescore(rows = {}) {
 }
 /** the stored row, keeping what a pass was when it is now worse (a regression un-beats the floor). Pure. */
 export function record(prev, v, verse, best, evidence, at) {
+  if (prev && prev.called) return prev; // the scout called this floor beaten (tools/tower-verdict.mjs --beaten): a measurement never overturns the call
   const ok = (x) => x === 'better' || x === 'equal-and-better';
   return { verdict: v, verse, best, evidence, at, ...(v === 'worse' && prev && (ok(prev.verdict) || prev.was) ? { was: prev.was || prev.verdict } : {}) };
 }

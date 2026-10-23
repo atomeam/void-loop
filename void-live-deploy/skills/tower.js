@@ -21,7 +21,7 @@ export function towerHtml(t, esc) {
   }).join('');
   return '<h3 style="margin:0 0 4px">The tower</h3><div class="tower-line">' + esc(towerLine(t)) + '</div><div class="tower-stack" style="max-width:560px">' + floors + '</div>'
     + '<div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere"></div>'
-    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A floor counts as beaten only when every aspect is verified better in a head-to-head check against the live site.</div>';
+    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A floor falls when Verse\'s scout calls it, or when every aspect is measured or judged better.</div>';
 }
 export function detailText(f) {
   return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. Verse skills here: ' + (f.skills.length ? f.skills.join(', ') : 'none yet') + '. '
