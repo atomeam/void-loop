@@ -10,19 +10,17 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-22. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-23. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit (daily, 2026-10-22) `ask-20261022-2128-1`
-- Implement a churn cap to stop proposing changes to files that have changed more than N times in M days *(small)* (daily, 2026-10-22) `ask-20261022-2128-2`
-- Strengthen the Words and the world skill family to increase the number of proven skills (daily, 2026-10-22) `ask-20261022-2128-3`
+- Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit *(small)* (daily, 2026-10-23) `ask-20261023-2119-1`
+- Move non-V01D workers off the shared namespace to reduce KV writes *(small)* (daily, 2026-10-23) `ask-20261023-2119-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261022-2128-1` queued, not decided yet
-- `ask-20261022-2128-2` queued, not decided yet
-- `ask-20261022-2128-3` queued, not decided yet
+- `ask-20261023-2119-1` queued, not decided yet
+- `ask-20261023-2119-2` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -4430,6 +4428,137 @@ Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k 
 > **Next video trick:** A tilt and sound effect that triggers after a tap in the new Draw mode [S2].
 
 Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days" (small); "Strengthen the Words and the world skill family to increase the number of proven skills"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T22:19:58.747Z -->
+### 2026-10-22 22:19 UTC · after a build
+
+**Asked:** This just shipped: "Add quote skill: random inspirational quotes. Mark inbox row building.". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input and a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** A video skill effect that uses a specific oEmbed API to ensure Rumble videos embed correctly [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:07.024Z -->
+### 2026-10-23 00:52 UTC · after a build
+
+**Asked:** This just shipped: "Register the quote skill: order file at 1795, a family, and the cards regenerated". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** a 3D miniature of a spinning gear that reacts to cursor movement [Cards with a live 3D miniature of themselves]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:19.037Z -->
+### 2026-10-23 00:52 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system has undergone significant growth in the last 7 days, adding 207 new capabilities and 118 fixes [S2]. Current operational focus is managing resource limits for Workers AI and KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Weakest operational area:** The 'Words and the world' family is the least proven, with 29 skills total and only 21 proven [S4]. Specific least-checked skills include image, echo-field, resonant-membrane, mind-field-mode, tilt-arena-mode, tilt-mode, gaze-chase, and gpu-swarm [S4].
+>
+> **Next targeted capability:** Go, as it is listed among the playable games [Games list].
+>
+> **Next video trick:** An effect that uses the 'zoom-figure' skill to create a dynamic scale transition during video playback.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:32.097Z -->
+### 2026-10-23 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Cartoons are real 2D cartoons of what you name; every finish checks its result is about the ask; fast checks unblocked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped 2D cartoons that check results against the ask and unblocked fast checks [Shipment]. Current operational focus remains on managing resource limits for Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to move KV writes below 1k/day [S1, S3].
+>
+> **Next video trick:** A 2D cartoon of a spinning 3D miniature card to bridge the 'cartoon' and 'stage-fx' skills.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:40.873Z -->
+### 2026-10-23 20:55 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. Recent growth includes 184 new capabilities and 95 fixes, specifically hardening the system and unblocking fast checks [S2]. Operational focus is currently on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven family with 44 skills, only 32 of which are proven [S4].
+>
+> **Next targeted capability:** Go, as it is one of the pure classics that keeps its real name [S1].
+>
+> **Next video trick:** A video effect where a user's gesture triggers a 3D particle explosion on a miniature card.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:57:25.626Z -->
+### 2026-10-23 20:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse hardens itself: nothing to add this cycle". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle where nothing new was added, but 184 new capabilities and 95 fixes were integrated to unblock fast checks and harden the system [S2]. Current operational priorities focus on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S1, S2, S3]. Move non-V01D workers off the shared namespace to reduce KV writes [S1, S2, S3].
+>
+> **Next video trick:** A 3D miniature animation of a 'star' to expand the visual library of the stage [S1, S3].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T21:19:10.613Z -->
+### 2026-10-23 21:19 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle integrating 184 new capabilities and 95 fixes [S2]. Current operational priorities are resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, containing 44 skills with only 32 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is to fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** Learn a glitch-transition effect for video clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit" (small); "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
 
 *Verse flagged this one for Adam.*
 

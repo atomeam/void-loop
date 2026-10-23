@@ -18,6 +18,23 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
+// the two browser checks that take most of a run (persona-playtest ~5 min, perf3d ~5 min) run here only when a file they cover changed
+// against main, with --all, or in CI; every merge to main runs both in verify.yml (owner, 2026-10-23: "are the 11 minute checks neccassary")
+const ALL = args.includes('--all') || !!process.env.CI;
+const ONLY_WHEN = {
+  'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
+  'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
+};
+let changed; // the files this branch changed against main, read once when first asked (root is set further down)
+const changedVsMain = () => {
+  if (changed !== undefined) return changed;
+  const git = (a) => spawnSync('git', a, { cwd: resolve(here, '..'), encoding: 'utf8' });
+  const base = git(['merge-base', 'HEAD', 'origin/main']).stdout.trim();
+  if (!base) return (changed = null); // no main to compare with: run everything
+  return (changed = [...new Set([git(['diff', '--name-only', base]).stdout, git(['diff', '--name-only', '--cached']).stdout].join('\n').split('\n').filter(Boolean))]);
+};
+/** why a slow check is skipped this run, or '' when it runs. */
+const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => ONLY_WHEN[file].test(f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
 const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
@@ -30,7 +47,7 @@ const jobs = [];
 const add = (name, fn, browser = false) => { jobs.push({ name, fn, browser }); };
 // a failed script says which cases failed (its first FAIL lines), not only its last line: a flaky browser case was "36/37 passed" with no way to tell which (2026-10-18)
 const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
-const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
+const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)]) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
