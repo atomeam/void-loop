@@ -18,6 +18,31 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
+// the two browser checks that take most of a run (persona-playtest ~5 min, perf3d ~5 min) run here only when a file they cover changed
+// against main, with --all, or in CI; every merge to main runs both in verify.yml (owner, 2026-10-23: "are the 11 minute checks neccassary")
+const ALL = args.includes('--all') || !!process.env.CI;
+const ONLY_WHEN = {
+  // the extension's two browser cases: the extension, the tab card, the page
+  'test_extension.mjs': /^extension\/|void\.html$|skills\/tab\.js|lib\/(?:extension|tab|stale-tab)|test_extension/,
+  // the sky world in a real browser: the sky skills, the sky lib, the page
+  'test_sky.mjs': /void\.html$|skills\/(?:sky|night-sky|sky-card|moon|moontonight|suntimes|aurora|constellation|meteors|eclipse)|lib\/sky|test_sky/,
+  // the cross-sense board draft
+  'test_glyphs.mjs': /sensory-substitution|test_glyphs/,
+  // the card art on pixels: the art, the forge, the miniatures, the page
+  'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
+  'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
+  'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
+};
+let changed; // the files this branch changed against main, read once when first asked (root is set further down)
+const changedVsMain = () => {
+  if (changed !== undefined) return changed;
+  const git = (a) => spawnSync('git', a, { cwd: resolve(here, '..'), encoding: 'utf8' });
+  const base = git(['merge-base', 'HEAD', 'origin/main']).stdout.trim();
+  if (!base) return (changed = null); // no main to compare with: run everything
+  return (changed = [...new Set([git(['diff', '--name-only', base]).stdout, git(['diff', '--name-only', '--cached']).stdout].join('\n').split('\n').filter(Boolean))]);
+};
+/** why a slow check is skipped this run, or '' when it runs. */
+const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => ONLY_WHEN[file].test(f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
 const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
@@ -30,7 +55,7 @@ const jobs = [];
 const add = (name, fn, browser = false) => { jobs.push({ name, fn, browser }); };
 // a failed script says which cases failed (its first FAIL lines), not only its last line: a flaky browser case was "36/37 passed" with no way to tell which (2026-10-18)
 const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
-const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
+const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)]) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
@@ -48,6 +73,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
+  ['rooms-family', 'rooms-family.test.mjs'],
   ['mind-field', 'mind-field.test.mjs'],
   ['tilt-arena', 'tilt-arena.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
@@ -180,6 +206,8 @@ for (const [name, file] of [
   ['meals', 'meals.test.mjs'],
   ['worldtime-parse', 'worldtime-parse.test.mjs'],
   ['country-parse', 'country-parse.test.mjs'],
+  ['country-wikidata', 'country-wikidata.test.mjs'], // the country card's live source is Wikidata since REST Countries retired its keyless API (issue #1063)
+  ['words-family', 'words-family.test.mjs'], // Words and the world: joke, news, book, show, sport, senolytic, video-play checked like a person meets them (Verse's ask)
   ['sky-skills', 'sky-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
@@ -212,6 +240,7 @@ for (const [name, file] of [
   ['star-parallax', 'star-parallax.test.mjs'],
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
+  ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
@@ -373,6 +402,7 @@ for (const [name, file] of [
   ['merge-route', 'merge-route.test.mjs'],
   ['card-art-route', 'card-art-route.test.mjs'],
   ['react', 'react.test.mjs'],
+  ['tally', 'tally.test.mjs'],
   ['card-subject', 'card-subject.test.mjs'],
   ['page-picture', 'page-picture.test.mjs'],
   ['card-forge', 'card-forge.test.mjs'],

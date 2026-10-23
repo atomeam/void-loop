@@ -24,6 +24,9 @@ export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visi
 export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
+// the ask wants the walkthrough (the phrases the catalog already publishes; a near miss like "what's new in the news" keeps its own skill)
+const WALK = (t) => String(t || '').trim().toLowerCase().replace(/[\u2019']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const WALK_RE = /^(?:please\s+)?(?:show me what you(?:'ve|'re)? (?:made|built|did)|show me everything you(?:'ve)? (?:made|built)|what did you make for me|what's new(?: pussycat)?|what is new(?: pussycat)?|look what you (?:did|made))$/;
 const DISMISS_ON_DONE = false;
 
 export function markRecentDismissed(iso) {
@@ -93,6 +96,8 @@ export function filterRecentWork(ledger, seenIso) {
     if (e.ask && shown.has(e.ask)) continue;
     out.push(e);
   }
+  // newest first: the ledger is append-only, oldest first, and the tour calls its first step the newest
+  out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
   return out;
 }
 
@@ -118,6 +123,21 @@ export function buildRecentTour(ledger, seenIso) {
     newestIso: entries[0]?.at || '',
     steps,
   };
+}
+
+/**
+ * What may be played as built (Adam, 2026-10-15: Verse never claims a build that does not answer): an entry the walk covers
+ * becomes a step only when its ask is on claims-verified.json; the rest are in progress, never claimed. Pure.
+ */
+export function whatsNew(entries, { verified = new Set(), seenIso = '' } = {}) {
+  const steps = [], waiting = [];
+  for (const e of filterRecentWork(entries, seenIso)) {
+    const s = stepFromLedgerEntry(e);
+    const ask = (s.ask || String(e.try || '').trim());
+    const step = { ...s, ask };
+    if (ask && verified.has(ask)) steps.push(step); else waiting.push(step);
+  }
+  return { steps, waiting };
 }
 
 export function mountShowcase(stageApi, tour, options = {}) {
@@ -263,3 +283,23 @@ export function mountShowcase(stageApi, tour, options = {}) {
 
   return { unmount };
 }
+
+// "look what I made": the ledger's recent work, walked on the stage through the carousel (the book's day links use mountShowcase too)
+async function run(text, api) {
+  const led = await fetchLedger().catch(() => null);
+  const all = /everything|all of (it|them)/i.test(String(text || ''));
+  const tour = buildRecentTour(led, all ? '' : getSeenIso());
+  if (!tour) {
+    try { api.showPage((p) => { p.innerHTML = '<h2>Recently built</h2><div class="sub">nothing new since you were last here</div>'; }); } catch (_) {}
+    return 'showcase';
+  }
+  try { mountShowcase(api.stage, tour); } catch (_) {}
+  return 'showcase';
+}
+export default {
+  name: 'showcase',
+  examples: ['show me what you made', "what's new", "what's new pussycat", 'what did you make for me', 'look what you did', 'show me everything you made'],
+  nearMisses: ["what's new in the news", 'show me what you can do', 'what did you make for dinner'],
+  match(lower, text) { return WALK_RE.test(WALK(text || lower)); },
+  run,
+};

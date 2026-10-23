@@ -67,3 +67,10 @@ Everything marked `verify` is unknown, not condemned. A session with the Cloudfl
 ## What is connected to Claude today
 
 Read access to the Cloudflare account (Workers, D1, KV, R2 — not Pages). The repo, attached to cloud sessions. Slack, Notion, Google Drive, Linear, Vercel, Zapier, Figma, Atlassian are available but none holds Verse's truth and none should. The one connection that matters is the repo; after that, the Cloudflare API token in the repo's Actions secrets does the deploying.
+
+## The live relay (void-share), switching it on (2026-10-23)
+The crowd on the is-it card and "invite someone" both run on the `ShareRoom` Durable Object in `share-worker/`. The code is on main, but the Pages project
+is not bound to it yet, so `/api/share/<room>` answers 503 "not switched on yet" and the page falls back to tabs in one browser. Two owner steps switch it on:
+1. Repo secret `CLOUDFLARE_WORKERS_TOKEN` (an API token with only *Workers Scripts: Edit*): `deploy-workers.yml` then deploys `void-share` on every merge that touches it (or run the workflow by hand once).
+2. Bind the Pages project to it: Cloudflare dashboard → Pages → a-to-mind → Settings → Bindings → Durable Object: name `SHARE`, class `ShareRoom`, script `void-share` (production and preview). Nothing else changes; the next load of the is-it card joins live.
+Nothing is stored in the Durable Object; a room is gone when its last tab closes. Cost: one Durable Object request per tab join and the messages while open.

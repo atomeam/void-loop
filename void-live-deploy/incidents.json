@@ -2,6 +2,269 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T22:16:32.669Z",
+   "sha": "86794bb41882b25453d4a79afcd3976907d845e0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40030671619",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/coin.test.mjs",
+    "tools/families.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/coin.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/0011-coin",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T22:10:49.732Z",
+   "sha": "f2d60658608d1c67e729869de17a2bad08f4f312",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40031029837",
+   "suite": "browser suite on main",
+   "checks": [
+    "tools pack 8: the PIN lock card says it is a casual lock, keeps a hash (never the PIN) on this device, locks on \"lock now\", refuses a wrong PIN, opens on the right one, and \"auto lock after 1 minute\" locks after the idle time",
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "BASE.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "share-worker/index.js",
+    "tools/checks.mjs",
+    "tools/finish.mjs",
+    "tools/openapi-check.mjs",
+    "tools/share.test.mjs",
+    "tools/tally.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/functions/api/tally.js",
+    "void-live-deploy/lib/guard.js",
+    "void-live-deploy/lib/share-client.js",
+    "void-live-deploy/lib/share.js",
+    "void-live-deploy/lib/tally.js"
+   ]
+  },
+  {
+   "at": "2026-10-23T22:05:47.385Z",
+   "sha": "7adc40b1cadcf77b3a9400a876d6928c87d21b05",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40030390972",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/convergence.md",
+    "docs/licenses.md",
+    "docs/miniatures.md",
+    "domains/handoff.md",
+    "domains/lists.metrics.json",
+    "domains/void.decisions.json",
+    "tools/bench.mjs",
+    "tools/checks.mjs",
+    "tools/country-wikidata.test.mjs",
+    "tools/rooms-family.test.mjs",
+    "tools/sw-3d-cache.test.mjs",
+    "tools/test_3d.mjs",
+    "tools/test_void.mjs",
+    "tools/vendor-three.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-23T22:03:46.625Z",
+   "sha": "c9f4423be310c25ce54d7173b6f8fd4fdc92dcfe",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40030222940",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/playbooks/probe-and-fix.md",
+    "domains/void.agents.log.md",
+    "tools/propose-fix.mjs",
+    "tools/propose-fix.test.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:53:21.850Z",
+   "sha": "9c456af5716fa7fdea5cd57b17f5d3be9449b8ed",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40029048597",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/finish.mjs",
+    "tools/merge-main.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:40:05.381Z",
+   "sha": "9de73d81cb48fdedf266c72f347e0d46f412cfde",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40026215286",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/verify.yml",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.crew.json",
+    "tools/ask.mjs",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/is-it.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/is-it.js"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:36:58.952Z",
+   "sha": "1e880882fd121c6ced9ab063adc001de8fc91191",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40027136265",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:14:12.421Z",
+   "sha": "bdd731518f7b8251ebc5b41766f5aa7f282197a4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40022739508",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    ".claude/skills/void-run/SKILL.md",
+    "AGENTS.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/ask.mjs",
+    "tools/finish.mjs",
+    "tools/finish.test.mjs",
+    "tools/openapi-check.mjs",
+    "tools/skill-matchers.test.mjs",
+    "tools/test_void.mjs",
+    "tools/untested.json",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/art-rules.js",
+    "void-live-deploy/lib/guard.js"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:13:04.484Z",
+   "sha": "305ce7971d7a14dc983753babdc3a7a0ea9b53b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40022884409",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T01:06:33.896Z",
+   "sha": "bf53ccc17673cb4795515fefeb9e8b0d19e4c2d4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39880517903",
+   "suite": "browser suite on main",
+   "checks": [
+    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
+    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
+    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
+    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/families.mjs",
+    "tools/showcase.test.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/order/1795-quote",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T22:31:28.587Z",
+   "sha": "96b77c6315aa7ba8c6b91631c50e12864f5345b0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39863917495",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+   ],
+   "touched": [
+    "domains/growth-inbox.md",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/quote.js"
+   ]
+  },
+  {
    "at": "2026-10-22T20:36:03.776Z",
    "sha": "04aa214782a49ecbab362ca56ddd823c5e210f97",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39849069730",
@@ -556,303 +819,6 @@
     "void-live-deploy/lib/card-share.js",
     "void-live-deploy/lib/field-doodle.js",
     "void-live-deploy/lib/field-stage.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T04:23:07.966Z",
-   "sha": "545d9729fca639650c28993e1b5432f992fb317c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39721628049",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/REA-GAPS.md",
-    "docs/playbooks/study-with-rea.md",
-    "tools/checks.mjs",
-    "tools/lacks.mjs",
-    "tools/lacks.test.mjs",
-    "tools/loop-study.mjs",
-    "tools/rea-study.mjs",
-    "tools/rea-study.test.mjs",
-    "tools/studies-api.test.mjs",
-    "tools/study-engine.mjs",
-    "tools/study-engine.test.mjs",
-    "void-live-deploy/functions/api/studies.js",
-    "void-live-deploy/studies.html",
-    "docs/MAP.md",
-    "domains/void.agents.log.md"
-   ]
-  },
-  {
-   "at": "2026-10-22T04:15:25.571Z",
-   "sha": "f3dabbf1ce546fb89196c55c371e68d91adff487",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39719352831",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/handoff.md",
-    "void-live-deploy/void.asks.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T03:47:53.166Z",
-   "sha": "aa01f9d6efa9943bc42740f4985e3a82ee1e0340",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39717729915",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/error-garden.js",
-    ".github/workflows/live-revert.yml",
-    ".github/workflows/rea-study.yml",
-    "docs/LOOP-GAPS.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/live-revert.test.mjs",
-    "tools/loop-library.mjs",
-    "tools/loop-parts.test.mjs",
-    "tools/loop-study.mjs",
-    "tools/rea-study.mjs",
-    "tools/social.test.mjs",
-    "tools/untested.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T03:33:47.364Z",
-   "sha": "9f07317661f95cae3b4046186d157072a0769038",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39715660602",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it",
-    "look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor's first move brings \"I made 3 new things while you were away · show me\"; \"show me\" puts the newest (a paper sticky) on the stage with \"1 of 3\", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; \"what's new\" afterwards replays nothing and says so with the count; \"show me everything you made\" walks all 4 by name",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/grow.mjs",
-    "tools/star-parallax.test.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
-    "void-live-deploy/skills/what.json",
-    "void-live-deploy/void.growth.json",
-    "domains/handoff.md",
-    "tools/everything.test.mjs",
-    "void-live-deploy/functions/api/markets.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T03:13:08.049Z",
-   "sha": "96c8914b181799c24bdf1134d1d537da2b442433",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39712898523",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml",
-    "tools/backfill-hardened.mjs",
-    "void-live-deploy/lib/built-detail.js",
-    "void-live-deploy/skills/showcase.js",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:37:43.337Z",
-   "sha": "2395085be48e769794c9a81c5ec1898c9a7cf539",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39711958842",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/ritual.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/ritual.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1765-ritual-template",
-    "void-live-deploy/skills/ritual-template.js",
-    "void-live-deploy/skills/what.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:32:06.985Z",
-   "sha": "77fab71bf9ea88102ddd6e79440f86d06e72f305",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39709894354",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/functions/api/reflect.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:07:10.982Z",
-   "sha": "965a8a1b6316c6a8cf1dca3fb3da5551a080d8de",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39707829470",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/skills/fly.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T01:48:12.483Z",
-   "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/families.mjs",
-    "tools/heavy.mjs",
-    "tools/memory-graph.test.mjs",
-    "tools/memory-preview.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/memory-preview.js",
-    "void-live-deploy/skills/order/0476-memory-preview"
-   ]
-  },
-  {
-   "at": "2026-10-22T00:44:29.131Z",
-   "sha": "7143ee3e50701500e8e3a44964136c34b7f0c0ba",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39698813750",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    "domains/forethinkers/experiments/semaglutide-baseline-tertiles.csv",
-    "domains/forethinkers/experiments/semaglutide-baseline-tertiles.py",
-    "domains/forethinkers/index.md",
-    "domains/forethinkers/run-log.md",
-    "domains/forethinkers/tracks/life-extension.md"
-   ]
-  },
-  {
-   "at": "2026-10-21T23:03:48.154Z",
-   "sha": "f836c4b73b7b8de4b81863b8738f83bb718c454f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39687723652",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "remember me on a device that already has your passkey signs in (no second Verse)"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "docs/store-changelog.md",
-    "domains/growth-inbox.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/store.clips.jsonl",
-    "domains/store.products.json",
-    "domains/store.queue.jsonl",
-    "domains/void.decisions.json",
-    "tools/asks-link.json",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "tools/decide-cards.test.mjs",
-    "tools/list-starters-family.test.mjs"
    ]
   }
  ]

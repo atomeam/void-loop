@@ -7,8 +7,8 @@ import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
 export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
-export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument' };
-const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill' };
+export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon' };
+const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a halo of arcane sigils', rare: 'warm gold light, floating glyphs', uncommon: 'cool silver light, faint runes', common: 'moody indigo light, soft mist' };
 
 /** the kind word we accept from the page: one of KINDS' keys, 'person' (refused), or 'answer'. Pure. */
@@ -88,8 +88,15 @@ export function directedPrompt(scene, rarity = 'common') {
   return scene + ', ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 
+// a cartoon (skills/cartoon.js, owner 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"): "draw a cartoon cat"
+// is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
+export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, big friendly expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, children\'s picture-book style';
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. Pure. */
+export const cartoonKey = (key) => (key ? 'cartoon ' + key : '');
+
 /** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
+  if (kindWordOf(kind) === 'cartoon') return 'a ' + String(key).replace(/^cartoon /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
   return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 

@@ -156,9 +156,9 @@ export default {
      "parody of monopoly",
      "parody games",
      "is reversi public domain",
-     "games",
      "what games do you have",
-     "play a game"
+     "play a game",
+     "let's play a game"
     ]
    },
    {
@@ -349,6 +349,41 @@ export default {
      "how do you say thank you in Japanese",
      "good morning in French",
      "what is cat in German"
+    ]
+   }
+  ],
+  "rooms": [
+   {
+    "name": "room",
+    "examples": [
+     "redo a 12x14 room",
+     "what do i need to redo a 12x14 bedroom",
+     "paint and carpet a 12x14 room",
+     "paint and new laminate for a 10x12 bedroom at $40 a gallon and $3 a sq ft",
+     "wallpaper and carpet for a 12x12 room",
+     "drywall paint and flooring for a 12x14 room and the ceiling"
+    ]
+   },
+   {
+    "name": "walls",
+    "examples": [
+     "how many rolls of wallpaper for a 12x14 room",
+     "how much wallpaper do i need for a 10x12 bedroom with 9 foot ceilings",
+     "wallpaper for an accent wall 12 feet wide",
+     "how many rolls of wallpaper for a 4 by 3 metre room with a 64 cm repeat",
+     "wallpaper calculator",
+     "how many sheets of drywall for a 12x14 room"
+    ]
+   },
+   {
+    "name": "home",
+    "examples": [
+     "how much paint do i need for a 12x14 room",
+     "paint for a 10x12 bedroom with 9 foot ceilings",
+     "how many gallons of paint for a 12 by 14 room with 2 doors and 3 windows",
+     "paint a 12x14 room and the ceiling",
+     "how much paint for a 4 by 5 metre room",
+     "paint calculator"
     ]
    }
   ],

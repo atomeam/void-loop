@@ -6,9 +6,10 @@
 import { Room } from '../void-live-deploy/lib/share.js';
 
 export class ShareRoom {
-  constructor(state, env) { this.state = state; this.room = new Room(); }
+  constructor(state, env) { this.state = state; this.room = null; } // made on the first socket: a public name gets the public room (its size, the crowd's moves only)
   // one tab's socket into the room; null (and the socket closed with 4001) when the room is full
-  accept(server) {
+  accept(server, name = '') {
+    if (!this.room) this.room = Room.forPublic(name) || new Room();
     server.accept();
     const id = this.room.join((m) => server.send(JSON.stringify(m)));
     if (!id) { try { server.close(4001, 'this Verse is full'); } catch (_) {} return null; }
@@ -21,7 +22,7 @@ export class ShareRoom {
   async fetch(request) {
     if ((request.headers.get('upgrade') || '').toLowerCase() !== 'websocket') return new Response('a WebSocket only', { status: 426 });
     const [client, server] = Object.values(new WebSocketPair());
-    this.accept(server);
+    this.accept(server, decodeURIComponent(new URL(request.url).pathname.split('/').pop() || ''));
     return new Response(null, { status: 101, webSocket: client });
   }
 }
