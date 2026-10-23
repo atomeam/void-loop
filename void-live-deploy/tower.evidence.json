@@ -29,6 +29,21 @@
     "best": 6,
     "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
     "at": "2026-10-22T05:25:20.699Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
+    "at": "2026-10-23T23:00:16Z"
+   },
+   "history": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
+    "at": "2026-10-23T23:00:16Z"
+   },
+   "unit and scientific modes": {
+    "verdict": "better",
+    "evidence": "verified by argon on 2026-10-23: live comparison: verse answers sums, units and scientific asks from one box with no ads or extra pages, and keeps recent asks across visits; calculator.net splits modes across pages",
+    "at": "2026-10-23T23:00:16Z"
    }
   }
  }
