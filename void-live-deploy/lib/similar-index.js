@@ -156,9 +156,9 @@ export default {
      "parody of monopoly",
      "parody games",
      "is reversi public domain",
-     "games",
      "what games do you have",
-     "play a game"
+     "play a game",
+     "let's play a game"
     ]
    },
    {

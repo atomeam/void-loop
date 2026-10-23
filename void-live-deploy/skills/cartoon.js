@@ -16,6 +16,8 @@ export function cartoonOf(text) {
   const t = CLEAN(text);
   const m = t.match(/^(?:please\s+)?(?:cartoon version of (?:a |an |the )?|draw a (?:toon )?)(.+)$/);
   if (!m) return null;
+  // a plain shape ("draw a circle") is the shape skill's
+  if (/^(?:[a-z]+\s+){0,2}(?:circle|line|square|triangle|rectangle|rect|star|heart|oval|dot|hexagon|pentagon|diamond|shape)s?$/.test(m[1])) return null;
   const subject = m[1].replace(/^hard subject$/, 'shipwreck');
   return { subject };
 }
