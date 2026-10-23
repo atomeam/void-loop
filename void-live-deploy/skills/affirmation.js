@@ -1,42 +1,42 @@
 /**
- * affirmation skill — a short, positive line when asked.
- * "give me an affirmation", "daily affirmation", "say something nice".
- * Empty surface stays empty: no ask, no card.
+ * affirmation skill — a random positive affirmation (local list, no key)
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "tell me an affirmation", "random affirmation", "give me an affirmation".
  */
-const LINES = [
-  'You are enough, right now.',
-  'Small steps still move you forward.',
-  'You have handled hard things before.',
-  'Today is a new page.',
-  'You are allowed to take a breath.',
-  'Progress counts, even when it is quiet.',
-  'You belong here.',
-  'One kind choice at a time is enough.'
+const AFFIRMATIONS = [
+  'I am capable of amazing things.',
+  'I choose to be kind to myself today.',
+  'My potential is limitless.',
+  'I trust the process of life.',
+  'I am enough, just as I am.',
+  'Every day I grow stronger.',
+  'I attract positive energy.',
+  'I am worthy of love and respect.',
+  'Challenges help me grow.',
+  'I am grateful for this moment.'
 ];
 
 export function isAffirmation(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
-  return /^(?:please\s+)?(?:give\s+me\s+(?:an\s+|a\s+)?affirmation|daily\s+affirmation|an\s+affirmation|say\s+something\s+nice|tell\s+me\s+something\s+nice)$/.test(t);
+  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:positive\s+)?affirmation|(?:another|a|random|positive)\s+affirmation|affirmation(?:\s+please)?|give\s+me\s+(?:an?\s+)?affirmation|random\s+affirmation)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
-
-function pick() { return LINES[Math.floor(Math.random() * LINES.length)]; }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  if (!isAffirmation(text)) return 'none';
-  const line = pick();
-  showPage((p) => { p.innerHTML = '<h2>An affirmation</h2><p style="font-size:22px;line-height:1.45;font-weight:300">' + esc(line) + '</p><div class="sub">say it again for another</div>'; });
+  const msg = AFFIRMATIONS[Math.floor(Math.random() * AFFIRMATIONS.length)];
+  showPage((p) => {
+    p.innerHTML = '<h2>An affirmation</h2><p style="font-size:22px;line-height:1.45;font-weight:300;font-style:italic">' + esc(msg) + '</p><div class="sub">say “another affirmation” for one more</div>';
+  });
   return 'affirmation';
 }
 
 export default {
   name: 'affirmation',
-  examples: ['give me an affirmation', 'daily affirmation', 'say something nice'],
-  nearMisses: ['what is an affirmation', 'affirmation meaning', 'negative affirmation'],
+  examples: ['tell me an affirmation', 'random affirmation', 'give me an affirmation', 'another affirmation'],
+  nearMisses: ['what is an affirmation', 'affirmation of the day news'],
   match(lower, text) { return isAffirmation(text); },
   run,
   suite() {
-    const ok = isAffirmation('give me an affirmation') && !isAffirmation('what is an affirmation') && LINES.length > 0;
-    return { ok, got: LINES[0] };
-  },
+    const ok = isAffirmation('tell me an affirmation') && isAffirmation('random affirmation') && !isAffirmation('news affirmation');
+    return { ok, got: 'match works' };
+  }
 };
