@@ -1,0 +1,50 @@
+# The tower's automatic checks (tools/tower-gate.mjs) after every main deploy: Verse against the live site of each early floor, at phone
+# width, for speed, mobile, accessibility and reliability. The session container cannot reach the sites; this runner can. Passive page
+# loads only. A changed verdict is committed to main as "Tower gate: ..." and the deploy started, so the live tower card moves by itself;
+# the deploy of that commit does not start this again (the head commit says so).
+name: Tower gate
+
+on:
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # commit the verdicts
+  actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
+
+concurrency:
+  group: tower-gate
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.workflow_run.head_commit.message, 'Tower gate:'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Measure the early floors against their live sites
+        env:
+          TOWER_PRIVATE: ${{ runner.temp }}/tower-private
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          for f in "is it" "coin flip" "random number" "word count" "calculator"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
+      - name: Commit the verdicts and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.evidence.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower gate: speed, mobile, accessibility and reliability measured against the live sites of the early floors"
+          git push -q origin HEAD:main
+          gh workflow run deploy.yml --ref main -f after_merge=true
