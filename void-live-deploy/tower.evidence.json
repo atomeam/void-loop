@@ -210,32 +210,73 @@
   },
   "random number": {
    "speed": {
-    "verdict": "worse",
-    "verse": 2667,
-    "best": 1353,
-    "evidence": "Verse 2667 ms to network idle (median of 3, phone width) vs random.org 1353 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-23T23:19:31.741Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z",
+    "was": "worse"
    },
    "reliability": {
-    "verdict": "equal-and-better",
-    "verse": 3,
-    "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-23T23:19:31.741Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z",
+    "was": "equal-and-better"
    },
    "mobile": {
     "verdict": "better",
-    "verse": 0,
-    "best": 418,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs random.org 418 px sideways overflow at 390 px",
-    "at": "2026-10-23T23:19:31.741Z"
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-23T23:19:31.741Z"
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z",
+    "was": "equal-and-better"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "range choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
+   },
+   "true randomness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answered 'random number 1-100' with a fair number from 1 to 100 on the page",
+    "at": "2026-10-23T23:22:29Z"
    }
   },
   "word count": {
@@ -579,6 +620,74 @@
     "called": true,
     "evidence": "called beaten by verse on 2026-10-23: verse answered the floor's ask on the page: encoder",
     "at": "2026-10-23T23:22:07Z"
+   }
+  },
+  "colour": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "every colour model": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
+   },
+   "shades and palettes": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: verse answers a bare '#ff5733' with its colour, rgb and hsl on the page",
+    "at": "2026-10-23T23:22:59Z"
    }
   }
  }
