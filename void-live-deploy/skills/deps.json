@@ -6835,6 +6835,10 @@
    ],
    "importedBy": []
   },
+  "skills/fact.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/family-gravity.js": {
    "imports": [
     "lib/field-cards.js",

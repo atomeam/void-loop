@@ -483,92 +483,88 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T05:37:12Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-23T22:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:37:01Z",
-   "subject": "Podcast: rerun the checks after the branch caught up with main"
+   "at": "2026-10-23T22:16:32Z",
+   "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:36:23Z",
-   "subject": "Incident: the browser suite failed on 1e12c2fa (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T22:10:50Z",
+   "subject": "Incident: the browser suite failed on f2d60658 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:34:21Z",
-   "subject": "field cards: the field's breathing scale moves the canvas, not the controls, so Law, Mode and the other buttons hold still to be tapped…"
+   "at": "2026-10-23T22:05:47Z",
+   "subject": "Incident: the browser suite failed on 7adc40b1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:32:34Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-23T22:03:46Z",
+   "subject": "Incident: the browser suite failed on c9f4423b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:32:28Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-23T21:59:08Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:28:16Z",
-   "subject": "suite: the self card checks follow the whole-text copy (no 8000 cap) and the full-line picture (taller than 1600 px)"
+   "at": "2026-10-23T21:59:01Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:27:28Z",
-   "subject": "self card: a first look no longer empties 'What got built' into the lead; the asks-batch check accepts the detail without a repeated 'I…"
+   "at": "2026-10-23T21:58:34Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
   },
   {
-   "at": "2026-10-22T05:26:17Z",
-   "subject": "Revert \"Merge pull request #1262 from atomeam/cards-forge-fix\""
+   "at": "2026-10-23T21:58:18Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
   },
   {
-   "at": "2026-10-22T05:24:51Z",
-   "subject": "collectible: the card is marked collectible and gets its variant strip again (a comment had swallowed those two statements)"
+   "at": "2026-10-23T21:56:18Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:24:48Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-23T21:56:07Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:24:43Z",
-   "subject": "Mind Field gains a pluckable Resonant Membrane mode, the attention probes answer by name, and a Play and explore spot on the…"
+   "at": "2026-10-23T21:56:01Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:22:22Z",
-   "subject": "verify: a head that only writes the incident record is not tested or recorded again, so one red head no longer breeds an incident per…"
+   "at": "2026-10-23T21:53:22Z",
+   "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:21:11Z",
-   "subject": "suite: feelings check reads Verse's new plain self-talk; the card button group may carry share and save after copy/save card; the…"
+   "at": "2026-10-23T21:51:17Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for is-it, gamebox"
   },
   {
-   "at": "2026-10-22T05:21:05Z",
-   "subject": "Incident: the browser suite failed on ad53c59a (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:48:56Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:20:01Z",
-   "subject": "Lap 1 is a full overhaul: playtest and best-site comparison per item, most used first (home, ask, cards, book, games)"
+   "at": "2026-10-23T21:48:50Z",
+   "subject": "Verse's fix loop was starving itself: an over-size skill file made every propose-fix POST a 413 and the job never left the probe cap; the…"
   },
   {
-   "at": "2026-10-22T05:18:39Z",
-   "subject": "Glitch swap: widen the eased window so it lasts 300-500 ms at every cycle length; check both ends of the 8-12 s range"
+   "at": "2026-10-23T21:45:55Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:17:47Z",
-   "subject": "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:45:44Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:16:53Z",
-   "subject": "Spotter: 8 check(s) healed with no revert after ad53c59aef5394d39cecb602c54345bb10420ab0 (tools/flakes.json)"
+   "at": "2026-10-23T21:45:37Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:16:27Z",
-   "subject": "Podcast: run ffmpeg, ffprobe and Piper with argument lists instead of a shell; episode 1 remade"
+   "at": "2026-10-23T21:40:05Z",
+   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
-   {
-    "name": "grok-bot (podcast)",
-    "line": "Verse Out Loud, Verse's own weekly podcast: tools/podcast.mjs reads the week from the record, Piper voices it in CI (free: no Workers AI neurons, no key, lib/models.js untouched), /podcast/rss.xml is Apple/Spotify-ready, \"play the…"
-   },
    {
     "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
     "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
@@ -588,6 +584,10 @@
    {
     "name": "Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/voi…",
     "line": "main had two wiped page scripts (lib/stage-tools.js was the word PLACEHOLDER_REPLACE_ME, lib/tome.js cut off mid-comment) and both are whole again with their intended changes, plus tools/wiped-files.test.mjs in the fast checks. Built from…"
+   },
+   {
+    "name": "The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)",
+    "line": "the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is…"
    }
   ],
   "ladders": [

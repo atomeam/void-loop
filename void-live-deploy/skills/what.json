@@ -84,6 +84,7 @@
  "error-garden": "\"plant my mistake: <text>\" puts a mistake in a garden on the stage as a sprout",
  "event-countdown": "How long until a named event: \"how many hours til gta6\", \"how long until the world cup starts\", \"countdown to…",
  "extinction": "The mass extinction: \"mass extinction\" opens one card that asks you to type the word extinct; nothing happens…",
+ "fact": "A random fun fact from a public API",
  "family-gravity": "Stage things whose skills share a family drift gently toward each other",
  "family-health": "\"show me your skill families\", \"family health\", \"how healthy are your skills\": every skill family and how far…",
  "feelings": "Asks about Verse's own heart and mind, answered in its own plain words, here, with no model and no web search",
