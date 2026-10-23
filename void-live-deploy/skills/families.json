@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-23",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 6,
-  "tested": 30,
-  "checked": 14,
-  "proven": 274
+  "experiment": 1,
+  "tested": 35,
+  "checked": 12,
+  "proven": 275
  },
  "families": [
   {
@@ -24,8 +24,8 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 6,
-    "tested": 5,
+    "experiment": 1,
+    "tested": 10,
     "checked": 1,
     "proven": 32
    },
@@ -328,11 +328,12 @@
     },
     {
      "name": "echo-field",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "resonant-membrane",
@@ -350,11 +351,12 @@
     },
     {
      "name": "tilt-arena-mode",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "tilt-mode",
@@ -366,27 +368,30 @@
     },
     {
      "name": "gaze-chase",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "gpu-swarm",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "hand-arena",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-22"
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "veto-council",
@@ -424,17 +429,10 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 1,
+    "checked": 0,
     "proven": 28
    },
    "skills": [
-    {
-     "name": "coin",
-     "tier": "checked",
-     "why": "a self-test, 6 browser-suite mentions",
-     "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
-    },
     {
      "name": "aggravation",
      "tier": "proven",
@@ -873,7 +871,7 @@
     {
      "name": "is-it",
      "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
+     "why": "a self-test, 5 browser-suite mentions",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test"
     },
@@ -2789,8 +2787,8 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
-    "proven": 39
+    "checked": 2,
+    "proven": 40
    },
    "skills": [
     {
@@ -3078,10 +3076,12 @@
     },
     {
      "name": "fix-audit",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23",
      "streak": 2
     },
     {
