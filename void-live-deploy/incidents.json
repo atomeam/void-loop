@@ -2,6 +2,35 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T22:38:02.698Z",
+   "sha": "846f2c3a9915ec0637196e2baf9f2cde9b06d37d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40033923045",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    ".github/workflows/verse-podcast.yml",
+    "docs/MAP.md",
+    "docs/PODCAST.md",
+    "docs/playbooks/podcast.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/podcast.mjs",
+    "tools/podcast.test.mjs",
+    "tools/skill-overlap.json",
+    "tools/test_void.mjs",
+    "void-live-deploy/_headers",
+    "void-live-deploy/podcast/cover.jpg",
+    "void-live-deploy/podcast/episodes.json"
+   ]
+  },
+  {
    "at": "2026-10-23T22:35:49.588Z",
    "sha": "59279e025daa7c2fe98a3fa6367c386d18965d84",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40033732857",
@@ -785,38 +814,6 @@
     "void-live-deploy/skills/duel.js",
     "void-live-deploy/skills/game-rules-line.js",
     "void-live-deploy/skills/monopoly-rules.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T05:06:28.918Z",
-   "sha": "a012b6c7282bf8ba927a65d9f4d90b88e021a1b4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39724184564",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "check timeout: no check finished within 300 s",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
-   ],
-   "touched": [
-    "tools/checks.mjs",
-    "tools/glitch-titles.mjs",
-    "tools/no-clip.mjs",
-    "void-live-deploy/films/index.html",
-    "void-live-deploy/skills/films.js",
-    ".github/workflows/verify.yml",
-    "docs/CARD-GAME.md",
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/card-quality.mjs",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/incident-log.mjs",
-    "tools/incident-log.test.mjs",
-    "tools/mind-field.test.mjs"
    ]
   }
  ]
