@@ -4,31 +4,31 @@
   "calculator": {
    "speed": {
     "verdict": "worse",
-    "verse": 3341,
-    "best": 908,
-    "evidence": "Verse 3341 ms to network idle (median of 3, phone width) vs calculator.net 908 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-22T05:25:20.699Z"
+    "verse": 3036,
+    "best": 776,
+    "evidence": "Verse 3036 ms to network idle (median of 3, phone width) vs calculator.net 776 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-23T23:20:13.691Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-22T05:25:20.699Z"
+    "at": "2026-10-23T23:20:13.691Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-22T05:25:20.699Z"
+    "at": "2026-10-23T23:20:13.691Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
     "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
-    "at": "2026-10-22T05:25:20.699Z"
+    "at": "2026-10-23T23:20:13.691Z"
    },
    "design polish": {
     "verdict": "better",
@@ -50,136 +50,237 @@
    "design polish": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "speed": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "accuracy": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "completeness": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "mobile": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "accessibility": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "offline": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "sharing": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "reliability": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "big answer": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    },
    "local language": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's is-it card beats isitchristmas.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-23T23:18:59.416Z"
    }
   },
   "coin flip": {
    "design polish": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "flip animation": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "speed": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "accuracy": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "completeness": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "mobile": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "accessibility": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "offline": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "sharing": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "reliability": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
    },
    "flip history": {
     "verdict": "better",
     "called": true,
-    "evidence": "called beaten by argon on 2026-10-23: owner's call on argon's live comparison: verse's 3d coin and global tally beat justflipacoin.com",
-    "at": "2026-10-23T23:15:31Z"
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-23T23:19:16.265Z"
+   }
+  },
+  "random number": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 2667,
+    "best": 1353,
+    "evidence": "Verse 2667 ms to network idle (median of 3, phone width) vs random.org 1353 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-23T23:19:31.741Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs random.org 3 of 3 loads answered",
+    "at": "2026-10-23T23:19:31.741Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 418,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs random.org 418 px sideways overflow at 390 px",
+    "at": "2026-10-23T23:19:31.741Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs random.org 0 unnamed controls or images",
+    "at": "2026-10-23T23:19:31.741Z"
+   }
+  },
+  "word count": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z",
+    "was": "worse"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z",
+    "was": "equal-and-better"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z",
+    "was": "equal-and-better"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "live counting": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
+   },
+   "characters and sentences": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-23: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-23T23:19:55.223Z"
    }
   }
  }
