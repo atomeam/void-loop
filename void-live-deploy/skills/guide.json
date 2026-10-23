@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 6,
-    "tested": 5,
+    "experiment": 1,
+    "tested": 10,
     "checked": 1,
     "proven": 32
    },
@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
-    "proven": 39
+    "checked": 2,
+    "proven": 40
    },
    "from": 286,
    "to": 332
@@ -903,8 +903,9 @@
     "show me the echo field",
     "acoustic lattice"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 40
   },
   {
@@ -948,8 +949,9 @@
     "tilt arena gaze",
     "tilt arena in hand mode"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 43
   },
   {
@@ -978,8 +980,9 @@
     "look to steer",
     "steer with my gaze"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 45
   },
   {
@@ -993,8 +996,9 @@
     "show me the gpu swarm",
     "webgpu swarm"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 46
   },
   {
@@ -1008,8 +1012,9 @@
     "steer with my hand",
     "hand tracking arena"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 47
   },
   {
@@ -5836,8 +5841,10 @@
     "post-fix audit",
     "fix evidence audit"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. So it is written.",
+   "glow": 100,
    "n": 318
   },
   {
