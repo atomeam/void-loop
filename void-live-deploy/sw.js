@@ -1,6 +1,6 @@
 // Verse's service worker: lets the installed app open offline. Network first, always,
 // so every deploy shows up on the next load; the cache is only a fallback. /api is never touched.
-const CACHE = 'void-shell-v1';
+const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
@@ -28,8 +28,12 @@ self.addEventListener('fetch', (e) => {
     return;
   }
   const nav = req.mode === 'navigate';
-  if (!nav && !url.pathname.startsWith('/skills/') && !SHELL.includes(url.pathname)) return;
-  e.respondWith(fetch(req).then((res) => {
+  const code = url.pathname.startsWith('/skills/') || url.pathname.startsWith('/lib/');
+  if (!nav && !code && !SHELL.includes(url.pathname)) return;
+  // skill and card code is re-checked with the server on every load (owner, 2026-10-22: the films card still read "VERSE F   I   LMS"
+  // hours after the fix): Cloudflare stretches .js browser caching to 4 hours whatever _headers says, so a plain fetch kept the old file.
+  // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load.
+  e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
     if (res.ok && (!nav || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(nav ? '/' : req, copy)); }
     return res;

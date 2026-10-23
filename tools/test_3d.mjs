@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
-await acquireHeavy('3D tests (test_3d.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
+// one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits. Only when run on its own: tools/test_void.mjs
+// imports this file while it holds the lock itself, and the import then waited on its own process until the suite's five-minute stall timer
+// ended the shard red (every shard with 3D blocks, since 2026-10-17)
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'))) await acquireHeavy('3D tests (test_3d.mjs)');
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const until = async (fn, ms = 8000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };

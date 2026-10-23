@@ -10,19 +10,17 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-21. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-23. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Develop and test new skills for the Deciding family to increase its proven skill count. (daily, 2026-10-21) `ask-20261021-2133-1`
-- Implement a 'memory-preview' UI component to show user input snippets. (daily, 2026-10-21) `ask-20261021-2133-2`
-- Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main. *(small)* (daily, 2026-10-21) `ask-20261021-2133-3`
+- Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit *(small)* (daily, 2026-10-23) `ask-20261023-2119-1`
+- Move non-V01D workers off the shared namespace to reduce KV writes *(small)* (daily, 2026-10-23) `ask-20261023-2119-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261021-2133-1` queued, not decided yet
-- `ask-20261021-2133-2` queued, not decided yet
-- `ask-20261021-2133-3` queued, not decided yet
+- `ask-20261023-2119-1` queued, not decided yet
+- `ask-20261023-2119-2` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -4078,6 +4076,489 @@ Asks: "Develop and test new skills for the Deciding family to increase its prove
 > **Next video trick:** I do not know this information.
 
 Asks: "Develop and test new skills for the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to show user input snippets."; "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:01:16.632Z -->
+### 2026-10-22 05:01 UTC · after a build
+
+**Asked:** This just shipped: "Cards: Forge Duel folded into Verse Rally, resume fix, no inner scroll on phones, varied Book abilities". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system has recently shipped updates to the Forge Duel (now folded into Verse Rally), resume fixes, phone scroll behavior, and varied Book abilities [Just shipped]. The system is currently managing the growth inbox and addressing neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Address the neuron limit and churn cap asks, which have been requested 13 and 16 times respectively, to stabilize the build loop and stay within the 10k/day free limit [S2]. Strengthening the 'Words and the world' family is necessary as it is the least proven family [S3].
+>
+> **Next video trick:** Learn to implement a video skill that plays YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, or Odysee videos inline [Recently shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that change more than N times in M days."; "Strengthen the 'Words and the world' skill family by building out its unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:01:29.796Z -->
+### 2026-10-22 05:01 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system is currently managing the growth inbox and addressing neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma and implementing churn caps to stabilize the build loop and stay within the 10k/day free limit [S2, S3].
+>
+> **Weakest operational area:** The 'Words and the world' skill family is the least proven, with 28 skills and only 21 proven [S3, S4].
+>
+> **Next targeted capability:** Strengthen the 'Words and the world' skill family by building out its unproven skills [S3].
+>
+> **Next video trick:** Add a motion blur or light-streak effect to video skills for new clips [not supported by facts]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that change more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building out its unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:04:35.301Z -->
+### 2026-10-22 05:04 UTC · after a build
+
+**Asked:** This just shipped: "Forge Duel: built-in card texts are plain facts, no claims about Verse". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system is managing the growth inbox and addressing neuron limits and churn caps [S2]. The 'Words and the world' family is currently the least proven family [S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k/day free limit and implement churn caps to stabilize the build loop [S2]. Strengthen the 'Words and the world' family to increase the count of proven skills [S2].
+>
+> **Next video trick:** A video effect that utilizes the new YouTube, Rumble, or Vimeo inline playback skills for clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' family." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:09:27.230Z -->
+### 2026-10-22 05:09 UTC · after a build
+
+**Asked:** This just shipped: "browser suite: 3D blocks no longer deadlock on the heavy lock (runner stalls)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, 271 of which are proven [S1, S3]. The system recently shipped a fix for the browser suite to prevent 3D blocks from deadlocking on a heavy lock [Shipped]. Current operational focus is on managing the growth inbox, addressing neuron limits, and stabilizing the build loop via churn caps [S1, S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps to prevent proposing changes to files that have changed more than N times in M days [S2]. Strengthen the 'Words and the world' family, which is currently the least proven family with only 21 of 28 skills proven [S3].
+>
+> **Next video trick:** Learn to use the YouTube Data API or official embeds to ensure seamless video playback for the video skill [Wishlist #5].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit." (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:17:46.355Z -->
+### 2026-10-22 05:17 UTC · after a build
+
+**Asked:** This just shipped: "Films card title: reach returning visitors, guard mixed titles, rarer slower glitch". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently proven [S1, S3]. Recent shipping includes a Films card title update to reach returning visitors and guard mixed titles [Shipped]. Current operational focus involves managing the growth inbox, addressing neuron limits, and stabilizing the build loop [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit and implementing churn caps to stabilize the build loop [S2]. Strengthening the 'Words and the world' family is also required as it is the least proven family [S3].
+>
+> **Next video trick:** Learn a new video effect for a clip [Next trick].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit." (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:19:24.973Z -->
+### 2026-10-22 05:19 UTC · after a build
+
+**Asked:** This just shipped: "Deeds and chance cards in saved cards; the full-cycle lap loop over everything". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 currently proven [S1, S3]. The system recently shipped 'Deeds and chance cards in saved cards; the full-cycle lap loop over everything' [Shipped]. Operational focus is currently on managing the growth inbox, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit and implement churn caps to stabilize the build loop [S2]. Strengthening the 'Words and the world' family is also required as it is the least proven family [S3].
+>
+> **Next video trick:** A video skill effect that uses the Rumble embed pattern to play a specific timestamped clip [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:21:14.895Z -->
+### 2026-10-22 05:21 UTC · after a build
+
+**Asked:** This just shipped: "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, of which 271 are proven [S1, S3]. The system recently shipped 'Deeds and chance cards in saved cards; the full-cycle lap loop over everything' [Shipped] and an incident report regarding a browser suite failure on cec088f7 [Just shipped]. Current operational focus is on managing growth inbox items, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2]. Implement churn caps to prevent proposing changes to files that have changed more than N times in M days [S2].
+>
+> **Next video trick:** I do not have information on a new video trick to learn for its own clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:23:04.277Z -->
+### 2026-10-22 05:23 UTC · after a build
+
+**Asked:** This just shipped: "Glitch swap lasts 300-500 ms at every cycle length". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, of which 271 are proven [S1, S3]. Recent shipping includes 'Glitch swap lasts 300-500 ms at every cycle length' and the absorption of every repo on the account into the Verse codebase [Shipped, S2]. Current operational focus is on managing the growth inbox, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit and implement churn caps to prevent repetitive file change proposals [S2]. Strengthen the 'Words and the world' skill family to increase the number of proven skills [S2].
+>
+> **Next video trick:** I do not have information regarding a new video trick to learn for clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:24:48.634Z -->
+### 2026-10-22 05:24 UTC · after a build
+
+**Asked:** This just shipped: "Lap 1 is a full overhaul, most used first". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system has recently completed a significant overhaul labeled 'Lap 1', prioritizing the most used components [Shipped]. Operational focus is currently directed toward managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video skill effect that uses the official YouTube IFrame player for seamless inline playback [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:34:39.886Z -->
+### 2026-10-22 05:34 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Merge pull request #1262 from atomeam/cards-forge-fix"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, of which 271 are rated as proven [S1, S3]. The system recently completed 'Lap 1' and is currently focused on managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2]. Recent activity includes the shipping of the 'Verse Remix Kit' and a revert of pull request #1262 [Shipped].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video effect for the 'video' skill to render custom frame-rate overlays on YouTube or Vimeo embeds [video skill: play any YouTube...].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:38:01.282Z -->
+### 2026-10-22 05:38 UTC · after a build
+
+**Asked:** This just shipped: "Mind Field: Resonant Membrane mode, attention probes by name, and a spot on what-can-you-do". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, of which 271 are proven [S1, S3]. The system is currently focused on managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2]. Recent activity includes the shipping of the 'Verse Remix Kit' and 'Mind Field: Resonant Membrane mode, attention probes by name, and a spot on what-can-you-do' [Shipped, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** Learn a video trick that uses an official embed (e.g., YouTube IFrame player) to play video inline on the stage [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:41:23.925Z -->
+### 2026-10-22 05:41 UTC · after a build
+
+**Asked:** This just shipped: "Verse hardens itself: 6 benchmark ask(s) for doodle-mind, rally". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, of which 271 are proven [S1, S3]. The system recently shipped benchmark asks for doodle-mind and rally [Shipped], and has successfully absorbed and connected every repo on the account into the Verse codebase [S2]. Current operations focus on managing the growth inbox, stabilizing the build loop, and maintaining neuron limits [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** Learn a new video effect for the films skill to enhance inline playback [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:43:56.675Z -->
+### 2026-10-22 05:43 UTC · after a build
+
+**Asked:** This just shipped: "Add one prioritized next-steps list; home page never cuts words and fits phones". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, with 273 skills currently rated as proven [S1, S3]. Recent shipments include a prioritized next-steps list and mobile-responsive home page text [Shipped]. The system has successfully absorbed and connected every repo on the account into the Verse codebase [S2].
+>
+> **How I would make it better:** The builders should prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2]. Additionally, implementing churn caps for the build loop is necessary to prevent repetitive change proposals for files changing more than N times in M days [S2].
+>
+> **Next video trick:** Learn to use the official YouTube IFrame player for inline video skills [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:46:51.091Z -->
+### 2026-10-22 05:46 UTC · after a build
+
+**Asked:** This just shipped: "Films: no cut words in shorts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 320 skills across 12 families, with 273 skills rated as proven [S1, S3]. Recent shipments include the 'Films: no cut words in shorts' update and the absorption of every repo on the account into the Verse codebase [S2]. The system is currently managing a growth inbox with several high-frequency open asks [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the Workers AI 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** An effect that uses the 'zoom-figure' or 'stage-fx' skills to create a new visual transition for video clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' family to increase the proven count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:48:28.376Z -->
+### 2026-10-22 05:48 UTC · after a build
+
+**Asked:** This just shipped: "Game Box: every game and the table tools in one box". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 321 skills across 12 families, of which 273 are proven [S1, S3]. The recent shipment of 'Game Box' consolidates every game and table tools into one box. The system is currently managing a growth inbox with high-frequency open asks, specifically regarding neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the Workers AI 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** A video skill that uses the YouTube IFrame player to play content inline [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T17:35:21.870Z -->
+### 2026-10-22 17:35 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its print-file skill: learn to handle "print file for gear assembly"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 321 skills across 12 families, of which 273 are proven [S1, S3]. The system recently shipped a fix for the print-file skill to handle gear assembly requests and completed the 'Absorb and connect every repo' ask [S2, S3]. Current operations are focused on managing the growth inbox, specifically addressing neuron limits and build loop churn [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files changing more than N times in M days [S2].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T17:35:28.124Z -->
+### 2026-10-22 17:35 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 321 skills across 12 families, with 273 skills currently proven [S1, S3, S4]. Recent growth includes 207 new capabilities and 119 fixes, including the completion of the 'Absorb and connect every repo' ask [S2]. Current operations prioritize managing neuron limits, build loop churn, and strengthening the 'Words and the world' skill family [S2, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2, S3]. Implement churn caps to prevent repetitive change proposals for files changing more than N times in M days [S2, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, with 32 proven skills out of 44 [S4].
+>
+> **Next targeted capability:** Build unproven skills within the 'Words and the world' family to increase the proven count [S3].
+>
+> **Next video trick:** A tilt-and-sound effect triggered after a tap on a Mind Field mode [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building more unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T18:24:53.485Z -->
+### 2026-10-22 18:24 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its cartoon skill: learn to handle "draw a toon cat"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a growing skill index of 321 entries across 12 families [S1]. Recent activity includes the successful completion of the 'Absorb and connect every repo' ask and the fixing of the cartoon skill to handle requests like 'draw a toon cat' [S2, S2]. The system is currently managing technical constraints such as neuron limits and build loop churn [S2, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video skill that plays YouTube, Rumble, or Twitch videos inline [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building more unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T20:29:32.150Z -->
+### 2026-10-22 20:29 UTC · after a build
+
+**Asked:** This just shipped: "Update showcase.js". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a skill index of 321 entries across 12 families [S1]. The system has recently completed the 'Absorb and connect every repo' ask and updated 'showcase.js' [S1, S2]. Current operational focus is managing technical constraints like the 10k neurons/day Workers AI limit and implementing churn caps [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the free 10k neurons/day limit [S1, S2]. Implement churn caps for the build loop to stop repetitive change proposals for frequently modified files [S1, S2].
+>
+> **Next video trick:** A 3D miniature of a 'smoke ring' to test the forge's mesh blending [Making things]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit" (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days"; "Strengthen the 'Words and the world' skill family by building more unproven skills"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T21:28:09.363Z -->
+### 2026-10-22 21:28 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input and a skill index of 321 entries across 12 families [S1]. The system has recently absorbed and connected every repo on the account and updated showcase.js [S1, S2]. Current operational focus is managing technical constraints like the 10k neurons/day Workers AI limit and implementing churn caps [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the free 10k neurons/day limit and implement churn caps for the build loop to stop repetitive change proposals for frequently modified files [S1, S2].
+>
+> **Weakest operational area:** The Making things family is the least proven, with 44 skills total and only 32 proven [S4].
+>
+> **Next targeted capability:** Strengthen the Words and the world skill family by building more unproven skills [S3].
+>
+> **Next video trick:** A tilt and sound effect that triggers after a tap in the new Draw mode [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days" (small); "Strengthen the Words and the world skill family to increase the number of proven skills"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T22:19:58.747Z -->
+### 2026-10-22 22:19 UTC · after a build
+
+**Asked:** This just shipped: "Add quote skill: random inspirational quotes. Mark inbox row building.". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input and a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** A video skill effect that uses a specific oEmbed API to ensure Rumble videos embed correctly [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:07.024Z -->
+### 2026-10-23 00:52 UTC · after a build
+
+**Asked:** This just shipped: "Register the quote skill: order file at 1795, a family, and the cards regenerated". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** a 3D miniature of a spinning gear that reacts to cursor movement [Cards with a live 3D miniature of themselves]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:19.037Z -->
+### 2026-10-23 00:52 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system has undergone significant growth in the last 7 days, adding 207 new capabilities and 118 fixes [S2]. Current operational focus is managing resource limits for Workers AI and KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Weakest operational area:** The 'Words and the world' family is the least proven, with 29 skills total and only 21 proven [S4]. Specific least-checked skills include image, echo-field, resonant-membrane, mind-field-mode, tilt-arena-mode, tilt-mode, gaze-chase, and gpu-swarm [S4].
+>
+> **Next targeted capability:** Go, as it is listed among the playable games [Games list].
+>
+> **Next video trick:** An effect that uses the 'zoom-figure' skill to create a dynamic scale transition during video playback.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:32.097Z -->
+### 2026-10-23 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Cartoons are real 2D cartoons of what you name; every finish checks its result is about the ask; fast checks unblocked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped 2D cartoons that check results against the ask and unblocked fast checks [Shipment]. Current operational focus remains on managing resource limits for Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to move KV writes below 1k/day [S1, S3].
+>
+> **Next video trick:** A 2D cartoon of a spinning 3D miniature card to bridge the 'cartoon' and 'stage-fx' skills.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:40.873Z -->
+### 2026-10-23 20:55 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. Recent growth includes 184 new capabilities and 95 fixes, specifically hardening the system and unblocking fast checks [S2]. Operational focus is currently on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven family with 44 skills, only 32 of which are proven [S4].
+>
+> **Next targeted capability:** Go, as it is one of the pure classics that keeps its real name [S1].
+>
+> **Next video trick:** A video effect where a user's gesture triggers a 3D particle explosion on a miniature card.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:57:25.626Z -->
+### 2026-10-23 20:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse hardens itself: nothing to add this cycle". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle where nothing new was added, but 184 new capabilities and 95 fixes were integrated to unblock fast checks and harden the system [S2]. Current operational priorities focus on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S1, S2, S3]. Move non-V01D workers off the shared namespace to reduce KV writes [S1, S2, S3].
+>
+> **Next video trick:** A 3D miniature animation of a 'star' to expand the visual library of the stage [S1, S3].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T21:19:10.613Z -->
+### 2026-10-23 21:19 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle integrating 184 new capabilities and 95 fixes [S2]. Current operational priorities are resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, containing 44 skills with only 32 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is to fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** Learn a glitch-transition effect for video clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit" (small); "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
 
 *Verse flagged this one for Adam.*
 

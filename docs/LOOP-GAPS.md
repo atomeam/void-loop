@@ -69,3 +69,45 @@ Adam: "Verse needs to learn to check things it can't think of yet." For the five
 | Mutation and fuzz testing of asks | **built** | `fuzz()` in `tools/completeness.mjs`, run on every game |
 | Vision critic on persona screenshots | missing | screenshots are saved; no automatic look-and-judge pass yet |
 | The same approach for skills that are not games | missing | next |
+
+## The lap loop: everything, around and around (owner, 2026-10-22)
+
+Nothing is ever finished; everything upgrades for ever. No item is marked done anywhere: each keeps a rolling next upgrade.
+
+- **What a lap covers:** every item in `void-live-deploy/lap.items.json` (written by `node tools/lap-items.mjs --write`): each skill, the
+  surfaces (games, cards, the book, the store, films, the podcast, Mind Field, Tilt Arena, the loop itself), every doc, every archived repo in
+  `archive/repos/` (its reusable parts), every check and tool, every business plan in `domains/` and the Forethinkers research. Plans and
+  research get one concrete improvement each per lap, never an external action. On 2026-10-22 that is 675 items.
+- **Order:** a lap goes around every item one by one (fix gaps, add basics, apply every discovered rule), then adds 100 new features (the
+  will's own wants: studies, Grok drafts, frontier ideas), then the next lap starts over the whole, now bigger, set. Items can be weighted
+  within a lap (rarely used, earning, stale: `staleness()` is one point per week since the last upgrade), but every item is touched each lap.
+  An item added mid-lap joins this lap's tail.
+- **Measurably better:** each upgrade records the item's facts before (counts only, such as lines, tests, examples, sections, reused parts).
+  The next lap compares them (`compare()`, `lapProgress()`): an item is better only when a fact rose and none fell.
+- **Resume:** the position is kept in `void_kv` row `lap` by `functions/api/will.js`, and moves on only when a job is queued, so an
+  interruption resumes at the same item.
+- **Public tracker (counts only):** `GET /api/will?lap=1`, and the will card shows the line, e.g. "Lap 2: upgraded 140 of 316 items, 37 of
+  100 new this lap". Code: `void-live-deploy/lib/lap.js`, tested by `tools/lap.test.mjs` in `tools/checks.mjs`.
+
+**Lap 1 is a full overhaul** (owner, 2026-10-22: "everything needs an overhaul again"): each item gets a persona playtest
+(`tools/persona-playtest.mjs`: new player, power user, phone, screen reader) and a best-site comparison, then whatever is weak is rebuilt:
+layout, completeness, clarity, speed, beauty in the void look, phone, no cut-off text. Order: the home page, the ask flow, cards, the book,
+then games, then the rest (`overhaulWeights()` in `lib/lap.js`). Each item ships as its own small PR, and the tracker line is posted after each batch.
+
+**The only site you need** (owner, 2026-10-22: "a-to-mind should be the only website you need"): `tools/lap-items.mjs` lists 24 popular
+site categories (search, video, social, email, shopping, news, maps, weather, music, chat, docs and notes, translate, calendar, photos,
+games, finance, sports, recipes, calculator, timer and clock, learning, podcasts, travel, jobs), most used first, with the Verse skills that
+cover each. Status from facts only: missing (no skill), partial (one skill, or none tested), replaced (two or more skills, one tested).
+Each category is a lap item (`site:<category>`) weighted right after the most-used surfaces, so every lap shrinks missing and upgrades
+partial. 2026-10-22: 7 replaced, 12 partial, 5 missing (email, chat, podcasts, travel, jobs). Public at `GET /api/will?lap=1` (`onlySite`).
+
+**The tower** (owner, 2026-10-22): the only-site-you-need list as a fighting-game ladder ("the tower", "verse tower", "which sites have you
+beaten"; `skills/tower.js`, `lib/tower.js`). Each of 24 floors is one real site, named in plain text only as a comparison (no logos, brand
+art or styling, no affiliation implied; Verse's skills keep their own names). Hard gate: a floor is beaten only when every aspect on its
+checklist (9 common: speed, accuracy, completeness, mobile, accessibility, offline, sharing, design polish, reliability, plus the site's own)
+is verified better in an automated head-to-head against the live site (`tools/tower-gate.mjs` writes `tower.evidence.json`: verdicts and
+numbers; screenshots stay private outside the repo). A pass that turns worse keeps `was` and un-beats the floor. The marker never passes a
+floor whose gate fails. Floors with evidence sort easiest to hardest by measured gap. Automated today: speed, reliability, mobile,
+accessibility; every other aspect is unverified until its check exists, so it never counts. First real run (2026-10-22, calculator floor):
+accessibility better, reliability and mobile equal (not a win), speed worse (Verse 3341 ms vs 908 ms). 0 of 11 aspects beaten.
+The detailed per-site checklists come from passive study (loop-study / rea-study) and stay in private memory.

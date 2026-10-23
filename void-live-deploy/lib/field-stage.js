@@ -2,7 +2,7 @@
 // mountField(th, stageApi, idea) puts a small Canvas2D card on the stage and runs the idea's step law on it:
 //   - one requestAnimationFrame loop, paused while the tab is hidden and gone when the card leaves the page;
 //     with prefers-reduced-motion the field is warmed up once and then moves only when you touch it (no loop);
-//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale and shift of the card's body,
+//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale of the card's field and a shift,
 //     a blur on the canvas): never the page around it;
 //   - sound stays OFF until you tap "Sound on" (a Web Audio spectrum drone that follows the metrics); no Web Audio: the button says so;
 //   - "Tilt" asks for the device orientation only on a tap (iOS asks permission, others just start); no sensor: the button says so;
@@ -91,7 +91,7 @@ export function mountField(th, stageApi, idea) {
   if (idea.vars) cv.style.filter = 'contrast(calc(0.9 + var(--ink-density, 0) * 0.6)) blur(calc((1 - var(--ink-density, 0)) * 0.7px))'; // --ink-density: sharp and high-contrast when high, soft charcoal when low
   const g = cv.getContext('2d'); if (g) g.scale(dpr, dpr);
   q('.ff-frame').appendChild(cv);
-  const body = q('.ff-body'), hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
+  const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
 
@@ -108,7 +108,7 @@ export function mountField(th, stageApi, idea) {
   const morph = () => {
     metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
-    body.style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter;
+    q('.ff-frame').style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter; // the field breathes, the buttons hold still under a finger (a scaled body kept Law, Mode and New game moving)
     for (const [k, v] of Object.entries({ ...css.vars, ...extra })) el.style.setProperty(k, v);
     if (extra['--ink-density'] != null) el.dataset.ink = extra['--ink-density'];
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
@@ -151,23 +151,27 @@ export function mountField(th, stageApi, idea) {
   if (typeof idea.mount === 'function') { try { hook = idea.mount({ el, q, th, input, cv, W, H, tick, redraw: () => { morph(); draw(); }, still: () => still }) || null; } catch (_) { hook = null; } }
   // Mind Field (owner, 2026-10-21: "combine anything that can be without taking away"): a mode's card switches to any other mode in
   // place; the old card leaves and the new one opens where it was, by the new mode's own ask (so its words, log and tests are its own)
-  if (isMode(idea.id)) {
+  // a family of its own (Tilt Arena) passes idea.modes = { list, label, ask(m) } and gets the same switcher
+  const MT = idea.modes || (isMode(idea.id) ? { list: MODES, label: 'Mind Field mode', ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) } : null);
+  if (MT) {
     const row = document.createElement('label'), pick = document.createElement('select');
     row.className = 'mf-mode-row'; row.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%;font-size:12px';
-    row.append('Mode', pick); pick.className = 'mf-mode'; pick.setAttribute('aria-label', 'Mind Field mode');
+    row.append('Mode', pick); pick.className = 'mf-mode'; pick.setAttribute('aria-label', MT.label);
     pick.style.cssText = 'max-width:100%;min-width:0;font:inherit;font-size:12px;padding:3px 6px;border-radius:7px;background:rgba(0,0,0,.25);color:inherit;border:1px solid rgba(255,255,255,.25)';
-    for (const m of MODES) { const o = document.createElement('option'); o.value = m.id; o.textContent = m.title; o.selected = m.id === idea.id; pick.appendChild(o); }
+    for (const m of MT.list) { const o = document.createElement('option'); o.value = m.id; o.textContent = m.title; o.selected = m.id === idea.id; pick.appendChild(o); }
     for (const n of [row, pick]) n.addEventListener('pointerdown', (e) => e.stopPropagation());
     pick.addEventListener('change', () => {
-      const m = MODES.find((x) => x.id === pick.value); if (!m || m.id === idea.id || !stageApi.ask) return;
+      const m = MT.list.find((x) => x.id === pick.value); if (!m || m.id === idea.id || !stageApi.ask) return;
       const things = stageApi.things(), at = { x: th.x, y: th.y };
       delete things[th.id]; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
-      Promise.resolve(stageApi.ask(m.id === 'doodle-mind' ? 'mind field' : m.ask)).then(() => {
+      Promise.resolve(stageApi.ask(MT.ask(m))).then(() => {
         const now = Object.values(stageApi.things()).filter((t) => t.kind === m.id).pop(); if (!now) return;
         now.x = at.x; now.y = at.y; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
       }).catch(() => {});
     });
     q('.ff-btns').prepend(row); el.dataset.mode = idea.id;
+    const cur = MT.list.find((x) => x.id === idea.id);
+    if (cur && cur.link) { const a = document.createElement('a'); a.href = cur.link.href; a.target = '_blank'; a.rel = 'noopener'; a.className = 'mf-link'; a.textContent = cur.link.text; a.style.cssText = 'font-size:12px;max-width:100%'; q('.ff-btns').appendChild(a); }
   }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';

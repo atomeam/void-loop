@@ -93,6 +93,9 @@ function rbEnable(stageApi) {
   const local = (e) => { const r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   st.addEventListener('pointerdown', (e) => {
     if (!rbOn || e.target !== st || e.button > 0) return;
+    // a band drag is not a text selection: without this the drag selects the cards' words, and the next drag that starts inside
+    // that selection becomes a native drag of the text (dragstart, then pointercancel), so it never picks anything
+    e.preventDefault(); try { doc.getSelection().removeAllRanges(); } catch (_) {}
     start = local(e);
     box = doc.createElement('div'); box.className = 'rb-box';
     box.style.cssText = 'position:absolute;border:1px dashed #ffd166;background:rgba(255,209,102,.12);pointer-events:none;z-index:30;left:' + start.x + 'px;top:' + start.y + 'px;width:0;height:0';

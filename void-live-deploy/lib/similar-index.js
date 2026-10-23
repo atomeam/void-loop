@@ -156,9 +156,9 @@ export default {
      "parody of monopoly",
      "parody games",
      "is reversi public domain",
-     "games",
      "what games do you have",
-     "play a game"
+     "play a game",
+     "let's play a game"
     ]
    },
    {
@@ -443,6 +443,26 @@ export default {
     ]
    },
    {
+    "name": "echo-field",
+    "examples": [
+     "echo field",
+     "show me the echo field",
+     "acoustic lattice",
+     "echo orbs",
+     "voice field"
+    ]
+   },
+   {
+    "name": "resonant-membrane",
+    "examples": [
+     "resonant membrane",
+     "pluck the membrane",
+     "membrane mind",
+     "singing field",
+     "pluck the field"
+    ]
+   },
+   {
     "name": "vector-field-mind",
     "examples": [
      "show me a vector field mind",
@@ -500,6 +520,53 @@ export default {
      "show me the swarm mind",
      "competitive minds",
      "resonance seeking agents"
+    ]
+   }
+  ],
+  "tilt-arena": [
+   {
+    "name": "tilt-arena-mode",
+    "examples": [
+     "tilt arena modes",
+     "tilt arena gaze",
+     "tilt arena in hand mode",
+     "swarm arena",
+     "save the arena",
+     "tilt arena gpu swarm"
+    ]
+   },
+   {
+    "name": "tilt-mode",
+    "examples": [
+     "tilt arena",
+     "genome arena",
+     "tilt game",
+     "agent arena"
+    ]
+   },
+   {
+    "name": "gaze-chase",
+    "examples": [
+     "gaze chase",
+     "look to steer",
+     "steer with my gaze"
+    ]
+   },
+   {
+    "name": "gpu-swarm",
+    "examples": [
+     "gpu swarm",
+     "show me the gpu swarm",
+     "webgpu swarm",
+     "gpu arena"
+    ]
+   },
+   {
+    "name": "hand-arena",
+    "examples": [
+     "hand arena",
+     "steer with my hand",
+     "hand tracking arena"
     ]
    }
   ],

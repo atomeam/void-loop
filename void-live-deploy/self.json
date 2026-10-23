@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T04:40:45Z",
-   "subject": "File sorter: a short whole-sentence book line"
+   "at": "2026-10-23T21:38:29Z",
+   "subject": "finish: a commit step with nothing new to commit passes"
   },
   {
-   "at": "2026-10-22T04:29:54Z",
-   "subject": "One countdown parses show-countdown asks without overlap; file sorter test and family; refresh generated files"
+   "at": "2026-10-23T21:37:24Z",
+   "subject": "merge-main: the skill index keeps its own name-by-name settle; regen writes it again after"
   },
   {
-   "at": "2026-10-22T04:29:45Z",
-   "subject": "Tighten: honest self-talk (no claimed feelings), one countdown for show-countdown asks, file sorter from the archived autosalvage rules…"
+   "at": "2026-10-23T21:36:59Z",
+   "subject": "Incident: the browser suite failed on 1e880882 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T04:25:33Z",
-   "subject": "void.html: ?open=all survives the ?q= cleanup (the page source; index.html is its deploy copy) so the full self card link opens every block"
+   "at": "2026-10-23T21:36:50Z",
+   "subject": "merge-main regenerates every generated file after a merge, not only the families and the book"
   },
   {
-   "at": "2026-10-22T04:25:01Z",
-   "subject": "rally: mark the fixed page heading as reviewed"
+   "at": "2026-10-23T21:31:48Z",
+   "subject": "The fast checks run the extension, sky, glyph and art-pixel browser checks only when the files they cover changed (main runs them all)"
   },
   {
-   "at": "2026-10-22T04:23:08Z",
-   "subject": "Incident: the browser suite failed on 545d9729 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:31:33Z",
+   "subject": "Fast checks: the extension, sky, glyph and art-pixel browser checks run only when the files they cover changed"
   },
   {
-   "at": "2026-10-22T04:23:00Z",
-   "subject": "browser suite: a whispered answer counts as answered (the 4 s slack outwaited the whisper's 3.5 s: 'hello'/'sup' read empty in top misses…"
+   "at": "2026-10-23T21:28:25Z",
+   "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-22T04:22:25Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:19:11Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-22T04:21:57Z",
-   "subject": "Incident: the browser suite failed on 53c2a60a (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:14:12Z",
+   "subject": "Incident: the browser suite failed on bdd73151 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T04:21:24Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:13:04Z",
+   "subject": "Incident: the browser suite failed on 305ce797 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T04:21:05Z",
-   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:10:45Z",
+   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
   },
   {
-   "at": "2026-10-22T04:15:57Z",
-   "subject": "card-image test: the self picture holds every word (owner, 2026-10-22: no cut-off), grows instead of '…'"
+   "at": "2026-10-23T21:08:46Z",
+   "subject": "Verse hardens itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode"
   },
   {
-   "at": "2026-10-22T04:15:26Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T20:54:46Z",
+   "subject": "Is it…? One giant glowing YES or NO for any day, from your own clock, in your language, with a live countdown; and the crew roster with…"
   },
   {
-   "at": "2026-10-22T04:09:52Z",
-   "subject": "Incident: the browser suite failed on 566e14e0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T20:52:13Z",
+   "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-22T04:09:26Z",
-   "subject": "Incident: the browser suite failed on 3af95214 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T20:39:23Z",
+   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
   },
   {
-   "at": "2026-10-22T04:05:27Z",
-   "subject": "Incident: the browser suite failed on ffaa62b0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T20:26:18Z",
+   "subject": "Cartoons are real 2D cartoons of what you name, and every finish checks its result is about the ask"
   },
   {
-   "at": "2026-10-22T04:04:56Z",
-   "subject": "cards: one card record for every card, a searchable saved-cards binder, and Verse Rally, a best-of-three card game played with the cards…"
+   "at": "2026-10-23T20:07:15Z",
+   "subject": "Unblock the fast checks: three skill overlaps narrowed (rack, video-play, cartoon), the similar-ask index regenerated, and tests for five…"
   },
   {
-   "at": "2026-10-22T04:02:51Z",
-   "subject": "self card: whole text in copy/save (no 8000 cap, no empty bullets, no cut lines), picture wraps every line with no ellipsis and strips…"
+   "at": "2026-10-23T18:18:56Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
   {
-   "at": "2026-10-22T03:59:38Z",
-   "subject": "Incident: the browser suite failed on f3dabbf1 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T15:54:56Z",
+   "subject": "reinvest: today's plan for Verse's money"
   },
   {
-   "at": "2026-10-22T03:59:35Z",
-   "subject": "cards: a share button on every card with a link that reopens it, plus a live card quality audit across kinds and sizes"
+   "at": "2026-10-23T12:46:35Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   }
  ],
  "builders": {

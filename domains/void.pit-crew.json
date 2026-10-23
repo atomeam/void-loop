@@ -1,17 +1,12 @@
 {
-  "at": "2026-10-21T12:28:20.564Z",
+  "at": "2026-10-23T12:12:01.594Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261020-2131-2",
-      "ask": "Implement a 'memory-preview' UI component to allow users to see memory snippets.",
-      "target": "voice:ask-20261020-2131-2"
-    },
-    {
-      "id": "ask-20261020-2131-3",
-      "ask": "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage.",
-      "target": "voice:ask-20261020-2131-3"
+      "id": "ask-20261022-2128-2",
+      "ask": "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days",
+      "target": "voice:ask-20261022-2128-2"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."

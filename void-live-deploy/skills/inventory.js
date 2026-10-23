@@ -16,7 +16,8 @@ export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families |
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
-  'mind-field': 'Mind Field: seven living field minds in one card with a Mode switcher (draw, swarm, flow, listen, grow, attention, living cards)',
+  'mind-field': 'Mind Field: eight living field minds in one card with a Mode switcher (Doodle Mind, Echo Field, swarm, flow, listen, grow, attention, living cards)',
+  'tilt-arena': 'Tilt Arena: little learning agents chase what you steer, in four modes (Tilt, Gaze Chase, GPU Swarm, Hand Arena)',
   similar: 'what is similar: the modes and siblings of any combined skill',
   'list-starters': 'ready-made lists: packing, chores, bills and guests, and starter templates for shopping, agendas and more',
   languages: 'answer in Spanish and translate anything',

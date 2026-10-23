@@ -47,6 +47,11 @@ jobs:
           if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
+          # a head that only writes the incident record (the incident job's own commit, tested when an automerge started this
+          # on "main" just after it landed) carries no code: testing it only re-ran the parent's red and wrote one more incident
+          if [ "$(git diff --name-only HEAD~1 HEAD)" = "void-live-deploy/incidents.json" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
         id: fast
@@ -93,6 +98,11 @@ jobs:
           if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
+          # a head that only writes the incident record (the incident job's own commit, tested when an automerge started this
+          # on "main" just after it landed) carries no code: testing it only re-ran the parent's red and wrote one more incident
+          if [ "$(git diff --name-only HEAD~1 HEAD)" = "void-live-deploy/incidents.json" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Test what shipped (shard ${{ matrix.shard }} of 3 of the full suite)
         id: test
@@ -108,6 +118,14 @@ jobs:
       - name: CSP smoke (hashes as deployed)
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
+
+      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here
+      - name: 3D frame times (perf3d)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 2
+        run: node tools/perf3d.test.mjs
+      - name: Every game played as four kinds of player (persona playtest)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
+        run: node tools/persona-playtest.mjs
 
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
         if: failure() && steps.test.outcome == 'failure'
@@ -226,6 +244,7 @@ jobs:
           tested="${{ github.sha }}"
           run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           git log -1 --format=%B "$tested" | grep -q '^Verse-auto-revert:' && { echo "automatic revert: not recorded"; exit 0; }
+          [ "$(git diff --name-only "$tested~1" "$tested")" = "void-live-deploy/incidents.json" ] && { echo "only the incident record changed: not tested, not recorded"; exit 0; }
           if [ "${{ needs.browser-suite.result }}" = failure ]; then
             cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true
             node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt || true

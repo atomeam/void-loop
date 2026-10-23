@@ -548,10 +548,53 @@ try {
     await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
     const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
     check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
-    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
-    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'cartoon'), 8000);
+    check('body: the tap puts a 2D cartoon of the word on the stage', (await B.state()).some((x) => x.kind === 'cartoon' && picAsk.endsWith(' ' + x.subject)), JSON.stringify((await B.state()).map((x) => x.kind + ':' + (x.subject || ''))));
     check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
     await B.ctx.close(); }
+  // the one-word day sites (owner, 2026-10-23: "the absolute bottom rung ... isitchristmas.com"): Verse answers from the device's clock, one giant word
+  if (want("is it: is it christmas? answers one giant YES or NO from the device's clock, whole on the card, with when it next is")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const got = await until(async () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', text: c.innerText }; }).catch(() => null), 8000);
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel above it, and says when Christmas is',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the one-word day sites (scout report, 2026-10-23: isitchristmas.com): Verse answers from the device's clock, one giant word in the visitor's language,
+  // the live countdown, today's date, a ripple on a tap and the visitor's flag stamped with a right-click
+  if (want("is it: is it christmas? answers one giant word from the device's clock, whole on the card, with a live countdown, a ripple and a flag stamp")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const read = () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'), left = c.querySelector('.is-it-left'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', left: left ? left.textContent : '', text: c.innerText }; }).catch(() => null);
+    const got = await until(read, 8000); await P.p.waitForTimeout(2200); const later = await read();
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel, says when Christmas is and today\'s date, and its countdown ticks',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && /Today is \w+day, \w+ \d+, \d{4}/.test(got.text) && (want === 'YES' || (/seconds? to go/.test(got.left) && later && later.left !== got.left)) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 200), later: later && later.left }));
+    const box = await P.p.$('.vpage.on .is-it-stage'); const bb = box && await box.boundingBox();
+    if (bb) { await P.p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); }
+    const ripple = await P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0);
+    if (bb) { await P.p.mouse.click(bb.x + 40, bb.y + 30, { button: 'right' }); }
+    const stamp = await P.p.$$eval('.vpage.on .is-it-stamp', (r) => r.length).catch(() => 0);
+    check('is it: a tap on the word makes a ripple there and a right-click stamps a flag, with no page errors', ripple > 0 && stamp > 0 && !P.errors.length, JSON.stringify({ ripple, stamp, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"; "cartoons should be 2d": a cartoon ask
+  // draws THAT subject as a flat 2D cartoon (no 3D figure, no stock lump): the emoji at once, then the Art Forge's painted cartoon of it
+  if (want("cartoon: draw a cartoon cat puts a 2D cartoon of a cat on the stage, its own painting swapped in, and says why when none comes")) {
+    const P = await fresh(); const posts = [];
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'cartoon ' + b.subject, img: PNG }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('draw a cartoon cat', 1500);
+    const cat = await until(async () => P.p.$eval('.cartoon-card[data-subject="cat"]', (e) => ({ head: e.querySelector('div').textContent, alt: (e.querySelector('.cartoon-pic img') || {}).alt || '', status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    const figs = (await P.state()).filter((x) => x.kind === 'figure' || x.kind === 'fig3d').length;
+    check('cartoon: "draw a cartoon cat" puts one flat card for a cat on the stage, asks the forge for a cartoon of a cat, and shows the painting it got (alt names the cat); no 3D figure',
+      !!cat && /cartoon cat/i.test(cat.head) && /2D cartoon of cat/.test(cat.alt) && !cat.status && posts.some((b) => b.subject === 'cat' && b.kind === 'cartoon') && figs === 0, JSON.stringify({ cat, posts, figs }));
+    await P.ask('make a cartoon of a dragon', 1500);
+    const dragon = await until(async () => P.p.$eval('.cartoon-card[data-subject="dragon"]', (e) => ({ pic: e.querySelector('.cartoon-pic').textContent, status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    check('cartoon: with no painting left today the dragon card still draws a dragon (its emoji) and says plainly why the painting waits',
+      !!dragon && /🐉/.test(dragon.pic) && /used up/.test(dragon.status) && !P.errors.length, JSON.stringify({ dragon, errors: P.errors }));
+    await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
@@ -1855,8 +1898,11 @@ try {
       nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(csMsg) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, csMsg, stillThere, left, errors: S.errors }));
     await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
-    await S.p.click('.counterfactual-draft summary');
-    await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
+    // the card can be drawn again just after the ask (a save re-renders the stage), which drops a click on the old summary: open the one on the page, up to 3 tries
+    for (let i = 0; i < 3 && !(await S.p.$('.counterfactual-draft [data-fracture="1"]')); i++) {
+      await S.p.click('.counterfactual-draft summary').catch(() => {});
+      await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 2000 }).catch(() => {});
+    }
     const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim()).catch(() => '(no fracture line marked)'); // a miss is one red check, not a dead shard
     const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent).catch(() => '');
     check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
@@ -2587,6 +2633,7 @@ try {
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
+  // (2026-10-22: the replies say plainly Verse is a program with no feelings, skills/feelings.js)
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Verse's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
@@ -2597,7 +2644,7 @@ try {
     // Verse's voice (owner, 2026-10-14: "I wish Verse didnt seem so grumpy"): warm and true, never opening on "no"
     const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by Verse, about itself/.test(t);
     check('feelings: "do you love me?", "Verse, do you have feelings?", "are you conscious" and "do you get lonely" get Verse\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
+      own(r.love, 'can\u2019t love anyone') && own(r.feel, 'a program without feelings') && own(r.mind, 'made by A-to-Mind') && own(r.lonely, 'a program without feelings') && own(r.pretty, 'The look is deliberate') && !r.lyrics.includes('can\u2019t love anyone'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -4271,16 +4318,43 @@ try {
       const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
       await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
       const swapped = { swarm: !!(await F.p.$('.ff-swarm-mind')), doodle: !!(await F.p.$('.ff-doodle-mind')), sel: await F.p.$eval('.ff-swarm-mind select.mf-mode', (s) => s.value).catch(() => '') };
-      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind'], ['echo field', '.ff-echo-field'], ['mind field doodle mind', '.ff-doodle-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
       await F.ask('mind field modes', 700); const list = await F.p.$$eval('.mf-modes li', (l) => l.length).catch(() => 0);
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 7 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 7 && o.sim === 8 && !o.errors.length;
-    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all seven, and "what\'s similar" lists all eight parts',
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 9 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 9 && o.sim === 10 && !o.errors.length;
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }
+  if (want("tilt arena: four modes in one card, agents learn, Mode switches, GPU Swarm falls back, every ask opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
+    const out = {};
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
+      const F = await fresh(); await F.p.setViewportSize(vp);
+      await F.ask('tilt arena', 700); await until(async () => !!(await F.p.$('.ff-tilt-mode canvas')), 8000);
+      const card = '.ff-tilt-mode', cv = await F.p.$(card + ' canvas'), b = await cv.boundingBox();
+      for (let i = 0; i < 30; i++) { await F.p.mouse.move(b.x + b.width * (0.2 + i / 60), b.y + b.height * 0.4); await F.p.waitForTimeout(40); }
+      await F.p.waitForTimeout(3200);
+      const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why,.ta-board li')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className || n.tagName);
+        return { gen: +(e.dataset.gen || 0), board: e.querySelectorAll('.ta-board li').length, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), frameMs: +(e.dataset.frameMs || 99), clipped: out }; });
+      await F.ask('save the arena', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      await F.p.selectOption(card + ' select.mf-mode', 'gpu-swarm'); await until(async () => !!(await F.p.$('.ff-gpu-swarm canvas')), 8000).catch(() => {});
+      await until(async () => /^(on|cpu)$/.test(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.gpu || '')), 8000).catch(() => {});
+      await until(async () => !!(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.frameMs || '')), 8000).catch(() => {});
+      const gpu = await F.p.$eval('.ff-gpu-swarm', (e) => ({ where: e.dataset.gpu || '', frameMs: +(e.dataset.frameMs || 99), tilt: !!document.querySelector('.ff-tilt-mode') })).catch(() => ({}));
+      const asks = {}; for (const [a, sel] of [['gaze chase', '.ff-gaze-chase'], ['hand arena', '.ff-hand-arena'], ['tilt arena gaze', '.ff-gaze-chase']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      const xr = await F.p.$eval('.ff-hand-arena', (e) => [...e.querySelectorAll('button')].map((x) => x.textContent).join('|')).catch(() => '');
+      await F.ask('tilt arena modes', 700); const list = await F.p.$$eval('.ta-modes li', (l) => l.length).catch(() => 0);
+      out[vp.width] = { ...r, seal, gpu, asks, xr, list, errors: F.errors.slice() }; await F.ctx.close();
+    }
+    const good = (o) => o.gen >= 1 && o.board === 3 && o.modes.length === 4 && o.modes[0] === 'tilt-mode' && o.frameMs < 8 && !o.clipped.length && /^[0-9a-f]{12}$/.test(o.seal)
+      && /^(on|cpu)$/.test(o.gpu.where) && o.gpu.frameMs < 8 && !o.gpu.tilt && Object.values(o.asks).every(Boolean) && /VR/.test(o.xr) && o.list === 4 && !o.errors.length;
+    check('tilt arena: "tilt arena" opens Tilt mode with three leader cards, the weakest copies the leader within a few seconds, the card fits at 1280 and 390 wide with nothing cut off, under 8 ms a frame, "save the arena" seals the leader, Mode switches in place to GPU Swarm (graphics card or the processor, under 8 ms), "gaze chase", "hand arena" and "tilt arena gaze" open their modes with a VR button or its fallback, and "tilt arena modes" lists all four',
+      good(out[1280]) && good(out[390]), JSON.stringify(out).slice(0, 900));
+  }
+
   if (want("operating laws: veto council keeps mass at 100 and names who delayed or blocked, stigmergy board grows returning trails, term orbits merge overused words")) { // asked by the owner, 2026-10-18
     const F = await fresh();
     await F.ask('convene a council on whether to rewrite the app', 700); await until(async () => !!(await F.p.$('.veto-council .vc-p')), 8000);
@@ -4445,8 +4519,8 @@ try {
     check("Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
       /#901 .* made by Verse, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
         && forge.asks.length >= 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
-        && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
-      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+        && div.length >= 1 && /^(I asked: Learn Go on the stage.*)?What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
+      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), vase: (again.match(/Vase[^\n]*\n?[^\n]*/) || [''])[0], div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
     await B.ctx.close(); }
   // Verse's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
   if (want("Verse's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
@@ -5824,12 +5898,12 @@ try {
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
+        && self.note === 'whole text kept' && /* no 8000 cap since 2026-10-22 (copy and save keep the whole card) */ !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
-        && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+        && self.svgH < 3200 /* the picture wraps every line in full since 2026-10-22 (no ellipsis), so it is taller than the old 1600 */ && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
     const honest = await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cite = pg.querySelector('section[data-sec=words] .vs-cite'), notes = [...pg.querySelectorAll('.vs-sec[data-sec=growth] .vs-note')].map((n) => n.textContent); return { cite: cite ? cite.textContent : '', notes, theatre: /My own words, kept as I said them/.test(pg.textContent) }; });
     check('self card, no theatre (owner, 2026-10-19): the words are labelled as Verse\'s model\'s, written from these facts, not a felt state, and each growth claim carries a source line',
       /^Written by Verse's model/.test(honest.cite) && /from these facts/.test(honest.cite) && /not a felt state/.test(honest.cite) && !honest.theatre && honest.notes.length === 3 && /families\.json/.test(honest.notes[0]) && !S.errors.length, JSON.stringify({ honest, errors: S.errors }));
@@ -5993,7 +6067,7 @@ try {
       if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
       return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
         counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
-    }).catch(() => null), 8000);
+    }).catch(() => null), 15000); // a loaded runner took longer than 8 s to draw it
     const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
     check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
       !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
@@ -6253,7 +6327,7 @@ try {
     await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
     const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
     check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
-      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+      JSON.stringify(groups.card.slice(0, 2)) === '["copy card","save card"]' && !groups.card.some((t) => /copy text|save text|^copy$/.test(t)) && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
     await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
     await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
     const copiedText = await U.p.evaluate(() => window.__copied);

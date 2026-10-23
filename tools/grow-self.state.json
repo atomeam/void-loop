@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "39713650962",
-  "at": "2026-10-22T02:52:58Z",
-  "what": "Verse hardened itself: 10 benchmark ask(s) for memory-preview, night-sky, ritual-template, sky-card.  Why these: memory-preview (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); night-sky (no benchmark ask, evidence tier: tested); ritual-template (no benchmark ask, evidence tier: tested); sky-card (no benchmark ask, evidence tier: tested); tab (no benchmark ask, evidence tier: tested). New phrases: “memory preview” now opens memory-preview; “show my memory snippets” now opens memory-preview; “what memories do I have” now opens memory-preview; “hide the sky” now opens night-sky; “morning routine as calendar events” now opens ritual-template; “export my evening routine to my calendar” now opens ritual-template; “ritual template: meditate 10, stretch 15, journal 10 at 6:30am” now opens ritual-template; “where is jupiter” now opens sky-card; “where is the moon tonight” now opens sky-card; “is venus up” now opens sky-card. Did not route: magic 8 ball should spawn an 8 ball; put in the page; draft for me.",
-  "try": "memory preview",
+  "run": "40024401176",
+  "at": "2026-10-23T21:08:29Z",
+  "what": "Verse hardened itself: 18 benchmark ask(s) for fix-audit, echo-field, gaze-chase, gpu-swarm, hand-arena, tilt-arena-mode.  Why these: fix-audit (no benchmark ask, evidence tier: checked); echo-field (no benchmark ask, evidence tier: experiment); gaze-chase (no benchmark ask, evidence tier: experiment); gpu-swarm (no benchmark ask, evidence tier: experiment); hand-arena (no benchmark ask, evidence tier: experiment); tilt-arena-mode (no benchmark ask, evidence tier: experiment). New phrases: “audit your fixes” now opens fix-audit; “post-fix audit” now opens fix-audit; “fix evidence audit” now opens fix-audit; “echo field” now opens echo-field; “show me the echo field” now opens echo-field; “acoustic lattice” now opens echo-field; “gaze chase” now opens gaze-chase; “look to steer” now opens gaze-chase; “steer with my gaze” now opens gaze-chase; “gpu swarm” now opens gpu-swarm; “show me the gpu swarm” now opens gpu-swarm; “webgpu swarm” now opens gpu-swarm; “hand arena” now opens hand-arena; “steer with my hand” now opens hand-arena; “hand tracking arena” now opens hand-arena; “tilt arena modes” now opens tilt-arena-mode; “tilt arena gaze” now opens tilt-arena-mode; “tilt arena in hand mode” now opens tilt-arena-mode.",
+  "try": "audit your fixes",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-20T21:53:27Z",
-    "try": "something unkeepable",
-    "closedAt": "2026-10-21T15:36:02Z"
+    "at": "2026-10-22T05:02:46Z",
+    "try": "mind field",
+    "closedAt": "2026-10-23T21:07:56Z"
   }
 }

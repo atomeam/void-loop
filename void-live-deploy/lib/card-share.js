@@ -130,7 +130,8 @@ function fullMark(el, w) {
   const note = fullNote(raw); let chip = w.querySelector('.vc-full');
   if (!note) { if (chip) chip.remove(); return; }
   if (!chip) { chip = document.createElement('span'); chip.className = 'vc-full'; w.appendChild(chip); }
-  chip.textContent = note; chip.title = raw + ' characters: copy card, save card, copy text and save text ' + (raw > BODY_MAX ? 'keep all of them' : 'keep all of them'); chip.dataset.chars = String(raw);
+  if (chip.textContent !== note) chip.textContent = note; // only when it changed: rewriting the same text is a DOM change, and the page re-frames on every change (it looped forever on the Game Box)
+  chip.title = raw + ' characters: copy card, save card, copy text and save text ' + (raw > BODY_MAX ? 'keep all of them' : 'keep all of them'); chip.dataset.chars = String(raw);
 }
 /** the self card's public link, every block open. Pure. */
 export const selfLink = (origin) => String(origin || 'https://a-to-mind.com') + '/?q=' + encodeURIComponent('what do you think of yourself') + '&open=all';

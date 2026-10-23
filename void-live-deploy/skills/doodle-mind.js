@@ -1,5 +1,6 @@
 /**
- * doodle-mind skill — Mind Field's Draw mode (owner, 2026-10-21: "combine anything that can be without taking away"): the best parts of
+ * doodle-mind skill — Mind Field's Doodle Mind mode: draw on the living field and it guesses your next stroke; drag its orbs, tilt it or let it listen.
+ * Combined from the best parts of
  * frontier drafts F-224 (thought-trace lattice: your last strokes rewrite the lattice's rule and it guesses your next stroke as oracle
  * nodes), F-225 (acoustic causal lattice: sound feeds the field, only after you press Listen, as a level number never a recording) and
  * F-229 (causal attention probes: a small attention head over tilt, field energy and sound moves orbs you can drag, and they feed back;
@@ -10,10 +11,10 @@
 import { fieldSkill } from '../lib/field-stage.js';
 import * as D from '../lib/field-doodle.js';
 
-const SAY = 'Mind Field, Draw mode: draw on it and it guesses your next stroke; drag the orbs, tap Tilt or Listen to feed it, Mode for the other six minds';
+const SAY = 'Mind Field, Doodle Mind mode: draw on it and it guesses your next stroke; drag the orbs, tap Tilt or Listen to feed it, Mode for the other eight modes';
 
 /** the Listen button (the mic only after a press, a level number in memory only), the draggable orbs and the oracle nodes. */
-function mount({ el, q, th, input, cv }) {
+export function mount({ el, q, th, input, cv }) {
   const btns = q('.ff-btns'), listen = document.createElement('button');
   listen.type = 'button'; listen.className = 'g-btn mf-listen'; listen.textContent = 'Listen'; listen.setAttribute('aria-pressed', 'false');
   listen.title = 'feed the field with the sound level around you (asks for the microphone; only a number is used, nothing is recorded or sent)';
@@ -57,7 +58,7 @@ function mount({ el, q, th, input, cv }) {
 }
 
 const idea = {
-  id: 'doodle-mind', title: 'Mind Field', sub: 'Draw mode · it guesses your next stroke', W: 360, H: 270, warm: 10, trails: false,
+  id: 'doodle-mind', title: 'Mind Field', sub: 'Doodle Mind · it guesses your next stroke', W: 360, H: 270, warm: 10, trails: false,
   how: 'Draw on it: your last strokes set how the field spreads, fades and grows, and the squares show where it thinks you will go next. Drag the orbs, tap Tilt or Listen to feed it. Nothing you draw is kept; Seal keeps only the numbers.',
   create(seed) { return D.create(seed); },
   step(s, dt, input) { D.step(s, dt, input); },
@@ -74,6 +75,7 @@ const idea = {
   }
 };
 
+export { idea };
 export default fieldSkill({
   name: 'doodle-mind',
   words: '(?:mind ?field|living field|(?:thought[- ]trace|doodle) (?:lattice|mind)|doodle mind|mind (?:to draw with|i can draw (?:on|with))|draw with (?:a |the )?mind)',

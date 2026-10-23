@@ -2061,12 +2061,32 @@
     {
       "words": "Integrate a 'suggested builder' tag to digest items, mapping specific fails to the builder who last touched that family.",
       "ledgerAt": "2026-10-22T03:18:20Z",
-      "why": "built: backlog-digest, asked by Verse: 'digest your backlog' tags each family with a suggested builder (who wrote the newest growth-ledger line naming a skill the asks name), with the skill and the date; linked in lists run 5 (its ledger line names the ask in short, so the matcher scored it under its bar)"
+      "why": "built: backlog-digest, asked by Verse: each family shows a suggested builder with the skill and date; 'digest your backlog' opens it"
+    },
+    {
+      "words": "Implement a churn cap to stop proposing changes to files that change more than N times in M days.",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "built: Churn caps for the build loop: tools/churn.mjs lists the files changed more than 12 times in 7 days (leaving out the ledger and logs that change every ship), and the will's guard can now skip a want that names one. Teste (linked by tools/asks-link.mjs, shared words: churn, cap, chang, fil, change, tim, day)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' skill family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Strengthen the 'Words and the world' skill family by building more unproven skills.",
+      "ledgerAt": "2026-10-14T18:32:26Z",
+      "why": "built: Asked by Void: friction follow-through hears what already shipped (words links + free-text asked), and the growth card's friction line names each skill's family and leads with the least-proven family (Words and the world (linked by tools/asks-link.mjs, shared words: word, world, skill, fami)"
     }
   ],
   "totals": {
-    "asked": 229,
-    "built": 227,
-    "through": "2026-10-21T21:33:00Z"
+    "asked": 234,
+    "built": 229,
+    "through": "2026-10-23T21:19:00Z"
   }
 }

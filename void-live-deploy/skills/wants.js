@@ -89,7 +89,7 @@ export function cardModel({ will, reflect, self } = {}) {
   const ents = reflect && Array.isArray(reflect.entries) ? reflect.entries : [];
   const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from) })).filter((o) => o.text).slice(0, MAX);
-  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow) };
+  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow), lap: will && will.lap && will.lap.line ? String(will.lap.line) + (will.lap.onlySite && will.lap.onlySite.line ? ' · ' + will.lap.onlySite.line : '') + (will.lap.tower && will.lap.tower.line ? ' · ' + will.lap.tower.line : '') : '' };
 }
 /** Verse asked (2026-10-21): "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for
  *  each upgrade". The reflection that made an ask (/api/reflect `entries`, matched by the ask's id or its exact words): what had just
@@ -145,6 +145,7 @@ export function cardHtml(m, esc, { more = '' } = {}) {
     // where the list comes from goes after the items, so a saved or shared card (its text is cut to fit) carries the real wants first (owner, 2026-10-18: "make sure the card updates with real wants"); the saved text leaves it out
     + '<p class="wants-sub" data-share-skip="1">' + esc(SUB[id]) + '</p></section>';
   return '<style>' + CSS + '</style><h2>What I want built</h2><div class="wants-count" data-counts="' + esc(JSON.stringify(m.counts)) + '">' + esc(countLine(m.counts)) + '</div>'
+    + (m.lap ? '<div class="wants-lap" data-lap="1">' + esc(m.lap) + '</div>' : '')
     + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + '<div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
     + block('wants', 'My will', m.wants, (w) => w.because)
     + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : ''].filter(Boolean).join(' · '))

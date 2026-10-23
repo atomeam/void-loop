@@ -2,6 +2,673 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-23T21:40:05.381Z",
+   "sha": "9de73d81cb48fdedf266c72f347e0d46f412cfde",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40026215286",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/verify.yml",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.crew.json",
+    "tools/ask.mjs",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/is-it.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/is-it.js"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:36:58.952Z",
+   "sha": "1e880882fd121c6ced9ab063adc001de8fc91191",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40027136265",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:14:12.421Z",
+   "sha": "bdd731518f7b8251ebc5b41766f5aa7f282197a4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40022739508",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    ".claude/skills/void-run/SKILL.md",
+    "AGENTS.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/ask.mjs",
+    "tools/finish.mjs",
+    "tools/finish.test.mjs",
+    "tools/openapi-check.mjs",
+    "tools/skill-matchers.test.mjs",
+    "tools/test_void.mjs",
+    "tools/untested.json",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/art-rules.js",
+    "void-live-deploy/lib/guard.js"
+   ]
+  },
+  {
+   "at": "2026-10-23T21:13:04.484Z",
+   "sha": "305ce7971d7a14dc983753babdc3a7a0ea9b53b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40022884409",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
+   "at": "2026-10-23T01:06:33.896Z",
+   "sha": "bf53ccc17673cb4795515fefeb9e8b0d19e4c2d4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39880517903",
+   "suite": "browser suite on main",
+   "checks": [
+    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
+    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
+    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
+    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/families.mjs",
+    "tools/showcase.test.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/order/1795-quote",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T22:31:28.587Z",
+   "sha": "96b77c6315aa7ba8c6b91631c50e12864f5345b0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39863917495",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+   ],
+   "touched": [
+    "domains/growth-inbox.md",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/quote.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T20:36:03.776Z",
+   "sha": "04aa214782a49ecbab362ca56ddd823c5e210f97",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39849069730",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+   ],
+   "touched": [
+    "void-live-deploy/skills/showcase.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T06:19:34.048Z",
+   "sha": "92ceefb6a8e7c6c6c238069cc8543206ecd36566",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39729694985",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "tools/record.mjs",
+    "tools/record.test.mjs",
+    ".github/workflows/verify.yml",
+    "docs/LOOP-GAPS.md",
+    "docs/NEXT.md",
+    "docs/TAGTEAM.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/grow-self.state.json",
+    "tools/lap-items.mjs",
+    "tools/lap.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T06:14:50.385Z",
+   "sha": "541c37c75c654110d52a962fe72237622f9b7575",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39729561247",
+   "suite": "browser suite on main",
+   "checks": [
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/lap-items.mjs",
+    "tools/lap.test.mjs",
+    "tools/tower-gate.mjs",
+    "tools/tower.test.mjs",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lap.items.json",
+    "void-live-deploy/lib/lap.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/0071-tower"
+   ]
+  },
+  {
+   "at": "2026-10-22T06:12:36.509Z",
+   "sha": "341312cd3b0226ef29c0b28c3d92918c4bd59819",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39729274820",
+   "suite": "browser suite on main",
+   "checks": [
+    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
+    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
+    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
+    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+    "the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
+    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "worldtime: takes no other skill's examples (collision)"
+   ],
+   "touched": [
+    "docs/NEXT.md",
+    "docs/TAGTEAM.md",
+    "domains/handoff.md",
+    "void.html"
+   ]
+  },
+  {
+   "at": "2026-10-22T06:06:45.368Z",
+   "sha": "0e51c6a8a23fdefa410f0eff5491d895457058de",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39728950222",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/verify.yml",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/field-stage.js",
+    "void-live-deploy/lib/self-blocks.js",
+    "void-live-deploy/skills/collectible.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T06:03:17.515Z",
+   "sha": "1c6d7062d9ac823bc292b05ec6e9e84c39a3d319",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39728637319",
+   "suite": "browser suite on main",
+   "checks": [
+    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+    "the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
+    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/families.mjs",
+    "tools/mind-field.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/guide.js",
+    "void-live-deploy/lib/mind-field-modes.js",
+    "void-live-deploy/lib/similar-index.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/doodle-mind.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/mind-field-mode.js",
+    "void-live-deploy/skills/mind-field.js",
+    "void-live-deploy/skills/resonant-membrane.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:57:09.768Z",
+   "sha": "4fd5ef46fc647633a78c66b6a7bf12eef9899342",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39727638382",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/LOOP-GAPS.md",
+    "tools/lap-items.mjs",
+    "tools/lap.test.mjs",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lap.items.json",
+    "void-live-deploy/lib/lap.js",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:56:01.425Z",
+   "sha": "bc5e2a329b35a0cb60c682f91a28a7be2980f589",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39727418259",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/glitch-titles.mjs",
+    "void-live-deploy/films/index.html",
+    "void-live-deploy/skills/films.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:54:09.625Z",
+   "sha": "fa8145b14056be2e8bdc0b2007a70734246bf447",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39727061692",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/glitch-titles.mjs",
+    "void-live-deploy/films/index.html",
+    "void-live-deploy/lib/card-frame.js",
+    "void-live-deploy/skills/films.js",
+    "void-live-deploy/sw.js",
+    "docs/CARD-GAME.md",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/forge-duel.test.mjs",
+    "tools/test_3d.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/card-deck.js",
+    "void-live-deploy/lib/forge-duel.js",
+    "void-live-deploy/lib/rally-rules.js",
+    "void-live-deploy/self.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:42:06.046Z",
+   "sha": "ef655027ad6e10099049118b346c40bd64939219",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39726289807",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/test_3d.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/forge-duel.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:36:23.318Z",
+   "sha": "1e12c2fa520923ab41bfa9fa16d7b5f1701ff444",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39727114330",
+   "suite": "browser suite on main",
+   "checks": [
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "suite ran to the end",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "docs/COMPLETENESS.md",
+    "docs/LOOP-GAPS.md",
+    "docs/STRATEGY.md",
+    "tools/checks.mjs",
+    "tools/completeness.mjs",
+    "tools/lap-items.mjs",
+    "tools/lap.test.mjs",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lap.items.json",
+    "void-live-deploy/lib/lap.js",
+    "void-live-deploy/skills/monopoly.js",
+    "void-live-deploy/skills/wants.js",
+    "docs/CARD-GAME.md",
+    "docs/MAP.md",
+    "tools/checks.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:21:05.560Z",
+   "sha": "ad53c59aef5394d39cecb602c54345bb10420ab0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39725450446",
+   "suite": "browser suite on main",
+   "checks": [
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "suite ran to the end",
+    "check timeout: no check finished within 300 s",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "docs/CARD-GAME.md",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/forge-duel.test.mjs",
+    "void-live-deploy/lib/card-deck.js",
+    "void-live-deploy/lib/forge-duel.js",
+    "void-live-deploy/lib/rally-rules.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/rally.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:17:47.236Z",
+   "sha": "cec088f774ebb8d3123fbfb72b5fe0621511aa0b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39725633342",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "void-live-deploy/lib/forge-duel.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:15:05.886Z",
+   "sha": "39637b30d7b06fedf90ed748953a4fff24c501f4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39725070839",
+   "suite": "browser suite on main",
+   "checks": [
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "suite ran to the end",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/families.mjs",
+    "tools/file-sorter.test.mjs",
+    "void-live-deploy/lib/persona.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/countdown.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/feelings.js",
+    "void-live-deploy/skills/file-sorter.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1785-file-sorter",
+    "void-live-deploy/skills/show-countdown.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:10:55.865Z",
+   "sha": "3479ba40b0f08b81fb86c0f829e49ea9fd24958e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39724682346",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "void-live-deploy/skills/card-play.js",
+    ".github/workflows/verify.yml",
+    "docs/COMPLETENESS.md",
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/completeness-rules.json",
+    "tools/completeness.mjs",
+    "tools/completeness.test.mjs",
+    "tools/expectations.mjs",
+    "tools/glitch-titles.mjs",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "tools/no-clip.mjs",
+    "tools/persona-playtest.mjs",
+    "tools/revert-target.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:09:56.284Z",
+   "sha": "a242f6e8fe66da33680a641ab79017ea84932505",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39724392862",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "docs/COMPLETENESS.md",
+    "docs/LOOP-GAPS.md",
+    "tools/checks.mjs",
+    "tools/completeness-rules.json",
+    "tools/completeness.mjs",
+    "tools/completeness.test.mjs",
+    "tools/expectations.mjs",
+    "tools/persona-playtest.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/battleship.js",
+    "void-live-deploy/skills/connect4.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/duel.js",
+    "void-live-deploy/skills/game-rules-line.js",
+    "void-live-deploy/skills/monopoly-rules.js"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:06:28.918Z",
+   "sha": "a012b6c7282bf8ba927a65d9f4d90b88e021a1b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39724184564",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    "tools/checks.mjs",
+    "tools/glitch-titles.mjs",
+    "tools/no-clip.mjs",
+    "void-live-deploy/films/index.html",
+    "void-live-deploy/skills/films.js",
+    ".github/workflows/verify.yml",
+    "docs/CARD-GAME.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/card-quality.mjs",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "tools/mind-field.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-22T05:01:30.783Z",
+   "sha": "1526b0d64416fc3ccd7747fd7a7251e6db59fc1f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39723778566",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "check timeout: no check finished within 300 s",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone"
+   ],
+   "touched": [
+    ".github/workflows/verify.yml",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "tools/revert-target.test.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.html"
+   ]
+  },
+  {
    "at": "2026-10-22T04:36:03.790Z",
    "sha": "a3f93ab0158dd332a719231e488e9d44d405e61f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39722769532",
@@ -157,558 +824,6 @@
     "void-live-deploy/lib/built-detail.js",
     "void-live-deploy/skills/showcase.js",
     "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:37:43.337Z",
-   "sha": "2395085be48e769794c9a81c5ec1898c9a7cf539",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39711958842",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/ritual.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/ritual.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1765-ritual-template",
-    "void-live-deploy/skills/ritual-template.js",
-    "void-live-deploy/skills/what.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:32:06.985Z",
-   "sha": "77fab71bf9ea88102ddd6e79440f86d06e72f305",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39709894354",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/functions/api/reflect.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T02:07:10.982Z",
-   "sha": "965a8a1b6316c6a8cf1dca3fb3da5551a080d8de",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39707829470",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/skills/fly.js"
-   ]
-  },
-  {
-   "at": "2026-10-22T01:48:12.483Z",
-   "sha": "a75bcdd992afafd5adad92663c280abc250d65ed",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39705825576",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/families.mjs",
-    "tools/heavy.mjs",
-    "tools/memory-graph.test.mjs",
-    "tools/memory-preview.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/memory-preview.js",
-    "void-live-deploy/skills/order/0476-memory-preview"
-   ]
-  },
-  {
-   "at": "2026-10-22T00:44:29.131Z",
-   "sha": "7143ee3e50701500e8e3a44964136c34b7f0c0ba",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39698813750",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    "domains/forethinkers/experiments/semaglutide-baseline-tertiles.csv",
-    "domains/forethinkers/experiments/semaglutide-baseline-tertiles.py",
-    "domains/forethinkers/index.md",
-    "domains/forethinkers/run-log.md",
-    "domains/forethinkers/tracks/life-extension.md"
-   ]
-  },
-  {
-   "at": "2026-10-21T23:03:48.154Z",
-   "sha": "f836c4b73b7b8de4b81863b8738f83bb718c454f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39687723652",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "remember me on a device that already has your passkey signs in (no second Verse)"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "docs/store-changelog.md",
-    "domains/growth-inbox.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/store.clips.jsonl",
-    "domains/store.products.json",
-    "domains/store.queue.jsonl",
-    "domains/void.decisions.json",
-    "tools/asks-link.json",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "tools/decide-cards.test.mjs",
-    "tools/list-starters-family.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-21T20:29:01.694Z",
-   "sha": "d18f925d3eb3a1742ed618fde7da89231a3b3801",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39666414728",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    "domains/void.growth.md",
-    "tools/checks.mjs",
-    "tools/grades.test.mjs",
-    "void-live-deploy/skills/grades.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T19:53:54.313Z",
-   "sha": "12211721c333099f09afe6dc579b974ef7370a25",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39664930344",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/store.queue.jsonl",
-    "tools/alt-pay.test.mjs",
-    "tools/checks.mjs",
-    "tools/decision-matrix-narrow.test.mjs",
-    "tools/families.mjs",
-    "tools/fuzzy.test.mjs",
-    "tools/privacy-guard.test.mjs",
-    "tools/star-parallax.test.mjs",
-    "void-live-deploy/code-review/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/mcp-skills.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T19:42:39.402Z",
-   "sha": "d6901d84f5aaeb72cabd751b4654ba902511f7fd",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39663315601",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/void.decisions.json",
-    "tools/asks-link.json",
-    "tools/autopsy.test.mjs",
-    "tools/backlog-digest.test.mjs",
-    "tools/languages-family.test.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/lib/autopsy.js",
-    "void-live-deploy/lib/backlog-digest.js",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/languages.js",
-    "void-live-deploy/skills/order/0190-languages"
-   ]
-  },
-  {
-   "at": "2026-10-21T18:45:42.630Z",
-   "sha": "f1e751c7d725167300e126eb74de34ddf3ff008e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39651957277",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml",
-    "tools/grow-self.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-21T18:17:24.952Z",
-   "sha": "2819b0fdba2d797ff0148f3cb388d12428c64359",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39650627543",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/forethinkers/index.md",
-    "domains/forethinkers/run-log.md",
-    "domains/forethinkers/tracks/living-figures.md",
-    "domains/forethinkers/tracks/printing-working-machines.md",
-    "domains/void.frontier.md"
-   ]
-  },
-  {
-   "at": "2026-10-21T16:48:44.069Z",
-   "sha": "5f4a9d6ac883dda6a73004482aa1916c34ac7558",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39634706210",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
-    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
-    "Verse merge: a name that is a Verse skill brings the skill's real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line: no = it does not run",
-    "confirm line: no answer = timeout, nothing runs",
-    "confirm line: changed request fails hard",
-    "paid: with a passkey, an outbound action still stops on the confirm line"
-   ],
-   "touched": [
-    "tools/checks.mjs",
-    "tools/stage-tools.test.mjs",
-    "tools/wiped-files.test.mjs",
-    "void-live-deploy/lib/stage-tools.js",
-    "void-live-deploy/lib/tome.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T16:09:01.699Z",
-   "sha": "9077f9a79b18b6a5ba23275af4f111aef471a821",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39630703946",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; \"open the store\" answers; the book's Start here page names the store",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "chess match history (asked by Verse): 'my chess record' opens the chess card with its Match History block (3 played · 2–1–0 · 67% · you ~1215, Verse ~1185 (estimated): win, loss, win from 1200 at K = 32, the othello game left out), a table of the three games newest first with when, vs, result, moves and minutes, 'tell me about the chess skill' carries the same block and the record in its line, and an empty device says no games on this device yet with no table",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/stage-camera.test.mjs",
-    "void-live-deploy/lib/stage-camera.js",
-    "void-live-deploy/skills/fly.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T15:58:46.815Z",
-   "sha": "03a0fe7f1f265101c149b921b406c8a7b902d96a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39630208216",
-   "suite": "browser suite on main",
-   "checks": [
-    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
-    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
-    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
-    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
-    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
-    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/stage-camera.test.mjs",
-    "void-live-deploy/lib/stage-camera.js",
-    "void-live-deploy/skills/fly.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T15:54:55.303Z",
-   "sha": "7d13eba2843295a613f6dfa5a3b9d2e992bff689",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39628620088",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; \"open the store\" answers; the book's Start here page names the store",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "chess match history (asked by Verse): 'my chess record' opens the chess card with its Match History block (3 played · 2–1–0 · 67% · you ~1215, Verse ~1185 (estimated): win, loss, win from 1200 at K = 32, the othello game left out), a table of the three games newest first with when, vs, result, moves and minutes, 'tell me about the chess skill' carries the same block and the record in its line, and an empty device says no games on this device yet with no table",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml"
-   ]
-  },
-  {
-   "at": "2026-10-21T15:45:17.920Z",
-   "sha": "42267888769a4193b57801b6275ee3ee43ff10dc",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39627155921",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; \"open the store\" answers; the book's Start here page names the store",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "chess match history (asked by Verse): 'my chess record' opens the chess card with its Match History block (3 played · 2–1–0 · 67% · you ~1215, Verse ~1185 (estimated): win, loss, win from 1200 at K = 32, the othello game left out), a table of the three games newest first with when, vs, result, moves and minutes, 'tell me about the chess skill' carries the same block and the record in its line, and an empty device says no games on this device yet with no table",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/grow-self.state.json"
-   ]
-  },
-  {
-   "at": "2026-10-21T15:34:33.605Z",
-   "sha": "8381453df8eea456e3701ddac8fefa631309fa39",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39626627202",
-   "suite": "browser suite on main",
-   "checks": [
-    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
-    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
-    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
-    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
-    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
-    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml"
-   ]
-  },
-  {
-   "at": "2026-10-21T15:31:28.235Z",
-   "sha": "e4821136cf560455a84e682461be5856f4c54b77",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39626111996",
-   "suite": "browser suite on main",
-   "checks": [
-    "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
-    "tools pack 4 select and spacing: \"space them out evenly\" leaves equal gaps, \"select all notes\" outlines the three notes and \"deselect all\" takes it off",
-    "tools pack 4 grid and guides: the grid shows at 20 then 40, \"snap everything to the grid\" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and \"clear guides\" removes it",
-    "tools pack 4 lock: \"lock the selection\" locks the clock and a drag leaves it where it was; \"unlock all\" frees it and the same drag moves it",
-    "tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and \"shadow off\" clears the shadow",
-    "tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/lib/tome.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T03:14:30.401Z",
-   "sha": "693ed54a06828f44bd859c5da7121d95c659af07",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39535694878",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "tools/grow-clock.test.mjs",
-    "void-live-deploy/skills/film-metadata.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T02:47:11.716Z",
-   "sha": "2c824eb75c052b0ab40b28addc34d027a8c4e9a9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39534521130",
-   "suite": "browser suite on main",
-   "checks": [
-    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml",
-    "docs/playbooks/grow-self.md",
-    "domains/handoff.md",
-    "tools/grow-clock.test.mjs",
-    "tools/grow-self.test.mjs",
-    ".gitattributes",
-    "tools/film-discovery.test.mjs",
-    "tools/site-test.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-21T02:30:54.251Z",
-   "sha": "f48ba3679219eb96c850353561cc82c5149e86f2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39531790473",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/grow-gate.mjs",
-    "tools/grow-gate.test.mjs",
-    "tools/grow-self.state.json",
-    "tools/grow-self.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-21T02:12:41.248Z",
-   "sha": "b6d1565de0c870c93f99a6370a9d9ff1b56aed22",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39531310247",
-   "suite": "browser suite on main",
-   "checks": [
-    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/grow-self.yml"
-   ]
-  },
-  {
-   "at": "2026-10-21T01:34:27.878Z",
-   "sha": "d381c6d3ccb10a8c48ed9b956cb6fd35f5faf593",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39526192975",
-   "suite": "browser suite on main",
-   "checks": [
-    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "void-live-deploy/lib/film-discovery.js",
-    "void-live-deploy/skills/country.js",
-    "void-live-deploy/skills/film-metadata.js",
-    "void-live-deploy/skills/sport.js"
-   ]
-  },
-  {
-   "at": "2026-10-21T01:09:41.908Z",
-   "sha": "1f912ecb7f2c76dc1c1634aa0a39edb4940b404b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39525199413",
-   "suite": "browser suite on main",
-   "checks": [
-    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0400-triangulate",
-    "void-live-deploy/skills/triangulate.js"
    ]
   }
  ]
