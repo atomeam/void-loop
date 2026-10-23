@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T22:48:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-23T22:38:51Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for podcast, mind-field-mode"
+  },
+  {
    "at": "2026-10-23T22:38:38Z",
    "subject": "Incident: the browser suite failed on b77ab65d (void-live-deploy/incidents.json)"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-23T21:59:01Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T21:58:34Z",
-   "subject": "coin: mark the style-constant innerHTML as reviewed"
-  },
-  {
-   "at": "2026-10-23T21:58:18Z",
-   "subject": "coin: mark the style-constant innerHTML as reviewed"
   }
  ],
  "builders": {

@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 10,
     "checked": 1,
-    "proven": 32
+    "proven": 33
    },
    "from": 6,
    "to": 50
@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
-    "proven": 40
+    "checked": 2,
+    "proven": 41
    },
    "from": 288,
    "to": 335
@@ -934,8 +934,10 @@
     "listen field",
     "swarm field"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the making things, this one is trusted enough to be taught.",
+   "glow": 100,
    "n": 42
   },
   {
@@ -6131,8 +6133,10 @@
     "latest episode",
     "verse podcast"
    ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. It has not failed a reader yet.",
+   "glow": 100,
    "n": 335
   },
   {

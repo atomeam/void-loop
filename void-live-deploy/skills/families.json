@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 29,
-  "checked": 14,
-  "proven": 283
+  "tested": 28,
+  "checked": 13,
+  "proven": 285
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 10,
     "checked": 1,
-    "proven": 32
+    "proven": 33
    },
    "skills": [
     {
@@ -344,10 +344,12 @@
     },
     {
      "name": "mind-field-mode",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     },
     {
      "name": "tilt-arena-mode",
@@ -2815,8 +2817,8 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
-    "proven": 40
+    "checked": 2,
+    "proven": 41
    },
    "skills": [
     {
@@ -3237,10 +3239,12 @@
     },
     {
      "name": "podcast",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-23"
     }
    ]
   },
