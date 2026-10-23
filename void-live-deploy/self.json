@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-23T23:00:31Z",
+   "subject": "Argon's verdicts on the tower: design polish, history and unit and scientific modes beat calculator.net, signed and dated…"
+  },
+  {
+   "at": "2026-10-23T22:53:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-23T22:52:09Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-23T22:24:15Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:24:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-23T22:24:08Z",
-   "subject": "Automerge starts Verse's review itself on a labelled PR that has had none for 3 minutes (PRs Verse opens with the Actions token start no…"
   }
  ],
  "builders": {
