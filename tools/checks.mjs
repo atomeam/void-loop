@@ -73,6 +73,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
+  ['rooms-family', 'rooms-family.test.mjs'],
   ['mind-field', 'mind-field.test.mjs'],
   ['tilt-arena', 'tilt-arena.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
@@ -205,6 +206,8 @@ for (const [name, file] of [
   ['meals', 'meals.test.mjs'],
   ['worldtime-parse', 'worldtime-parse.test.mjs'],
   ['country-parse', 'country-parse.test.mjs'],
+  ['country-wikidata', 'country-wikidata.test.mjs'], // the country card's live source is Wikidata since REST Countries retired its keyless API (issue #1063)
+  ['words-family', 'words-family.test.mjs'], // Words and the world: joke, news, book, show, sport, senolytic, video-play checked like a person meets them (Verse's ask)
   ['sky-skills', 'sky-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
@@ -237,6 +240,7 @@ for (const [name, file] of [
   ['star-parallax', 'star-parallax.test.mjs'],
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
+  ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],

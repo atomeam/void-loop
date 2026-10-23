@@ -95,7 +95,7 @@ export default async function build(ctx, data) {
     for (const [a, b] of P[n]) { x.beginPath(); x.arc(a, b, 11, 0, Math.PI * 2); x.fill(); } const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
   const faces = [1, 2, 3, 4, 5, 6].map((n) => new THREE.MeshPhysicalMaterial({ map: pip(n), roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.08 }));
   // rounded dice (bevelled corners and edges like real ones), the pips on each face; RoundedBoxGeometry keeps BoxGeometry's face groups
-  const { RoundedBoxGeometry } = await import('/vendor/three-r180/addons/RoundedBoxGeometry.js');
+  const { RoundedBoxGeometry } = await import('/vendor/three-r180a/addons/RoundedBoxGeometry.js');
   const dieGeo = new RoundedBoxGeometry(0.016, 0.016, 0.016, 4, 0.0022);
   // BoxGeometry faces: +x, -x, +y, -y, +z, -z; the +y face shows the roll
   const dieFor = (n) => { const rest = [1, 2, 3, 4, 5, 6].filter((f) => f !== n && f !== 7 - n); return new THREE.Mesh(dieGeo, [rest[0], rest[1], n, 7 - n, rest[2], rest[3]].map((v) => faces[v - 1])); };
