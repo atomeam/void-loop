@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-22T21:09:34Z",
-   "subject": "Add fact skill: random fun facts from public API. Mark inbox row building."
+   "at": "2026-10-23T22:16:32Z",
+   "subject": "Incident: the browser suite failed on 86794bb4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T20:36:03Z",
-   "subject": "Incident: the browser suite failed on 04aa2147 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T22:10:50Z",
+   "subject": "Incident: the browser suite failed on f2d60658 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T20:27:50Z",
-   "subject": "Update showcase.js"
+   "at": "2026-10-23T22:05:47Z",
+   "subject": "Incident: the browser suite failed on 7adc40b1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T18:31:15Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
+   "at": "2026-10-23T22:03:46Z",
+   "subject": "Incident: the browser suite failed on c9f4423b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T18:23:08Z",
-   "subject": "Verse fixes its cartoon skill: learn to handle \"draw a toon cat\""
+   "at": "2026-10-23T21:59:08Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T17:33:36Z",
-   "subject": "Verse fixes its print-file skill: learn to handle \"print file for gear assembly\""
+   "at": "2026-10-23T21:59:01Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T16:01:30Z",
-   "subject": "reinvest: today's plan for Verse's money"
+   "at": "2026-10-23T21:58:34Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
   },
   {
-   "at": "2026-10-22T13:07:05Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+   "at": "2026-10-23T21:58:18Z",
+   "subject": "coin: mark the style-constant innerHTML as reviewed"
   },
   {
-   "at": "2026-10-22T12:31:55Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-10-23T21:56:18Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T12:30:52Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-10-23T21:56:07Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T12:29:08Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-23T21:56:01Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T12:23:34Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-10-23T21:53:22Z",
+   "subject": "Incident: the browser suite failed on 9c456af5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T06:19:34Z",
-   "subject": "Incident: the browser suite failed on 92ceefb6 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:51:17Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for is-it, gamebox"
   },
   {
-   "at": "2026-10-22T06:14:50Z",
-   "subject": "Incident: the browser suite failed on 541c37c7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:48:56Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T06:12:36Z",
-   "subject": "Incident: the browser suite failed on 341312cd (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:48:50Z",
+   "subject": "Verse's fix loop was starving itself: an over-size skill file made every propose-fix POST a 413 and the job never left the probe cap; the…"
   },
   {
-   "at": "2026-10-22T06:06:45Z",
-   "subject": "Incident: the browser suite failed on 0e51c6a8 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:45:55Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T06:03:17Z",
-   "subject": "Incident: the browser suite failed on 1c6d7062 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:45:44Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:57:09Z",
-   "subject": "Incident: the browser suite failed on 4fd5ef46 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:45:37Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-22T05:56:01Z",
-   "subject": "Incident: the browser suite failed on bc5e2a32 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:40:05Z",
+   "subject": "Incident: the browser suite failed on 9de73d81 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-22T05:54:09Z",
-   "subject": "Incident: the browser suite failed on fa8145b1 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T21:38:37Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
