@@ -35,7 +35,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Verse (ask-20261014-1820-2, daily) |
 | building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Verse (ask-20261014-1820-3, daily) |
 | shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Verse (ask-20261014-1820-1, daily; base friction already shipped) |
-| open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Verse (ask-20261014-2134-3, daily) |
+| shipped aa5ad6df | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Verse (ask-20261014-2134-3, daily); skills/poster.js draws the 9:16 phone-story poster for any film from its metadata (PR #1188 closed as superseded, 2026-10-23) |
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Verse (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Verse (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | Verse Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
@@ -46,3 +46,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-21 | answer endpoint: "open the self card" (and the other self-card asks the page takes) gets the self card's words, not the model saying it cannot open one (`POST /api/answer` route fallback today) | asked by Verse (docs/void-voice.md, 2026-10-21) |
 | shipped (packaged) | 2026-10-21 | Verse Remix Kit | store-publish: templates, 6 files, free; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
+| shipped (already live) | 2026-10-20 | show today's meteor shower peaks | new idea from a growth run (PR #1189); already answered by skills/meteors.js (lib/showers.js: the showers active now, the next peak, the moon and the radiant), so the PR was closed as a duplicate, 2026-10-23 |
