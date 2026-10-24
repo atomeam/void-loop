@@ -33,14 +33,18 @@ export async function pageFor(asked, get = fetch, why = []) {
   } catch (e) { why.push('search error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return null; }
 }
 
-/** the free photo Wikidata names for an item (its P18 image, a Wikimedia Commons file): a Commons address for a 320 px version of it, or '' (it redirects to upload.wikimedia.org, which is checked after the fetch). */
+/** the free photo Wikidata names for an item (its P18 image, a Wikimedia Commons file): the address of a 320 px version of it on upload.wikimedia.org, or ''. */
 async function commonsPhoto(item, get, why) {
   if (!/^Q\d{1,12}$/.test(String(item || ''))) { why.push('no wikidata item'); return ''; }
   try {
     const r = await withTimeout(get, 'https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&property=P18&entity=' + item, { headers: UA }, 5000);
     if (!r.ok) { why.push('wikidata ' + r.status); return ''; } const j = await r.json(), file = j && j.claims && j.claims.P18 && j.claims.P18[0] && j.claims.P18[0].mainsnak && j.claims.P18[0].mainsnak.datavalue && j.claims.P18[0].mainsnak.datavalue.value;
     if (!file || typeof file !== 'string' || file.length > 200 || !/\.(?:jpe?g|png|webp)$/i.test(file)) { why.push(file ? 'wikidata image is not a jpeg, png or webp' : 'no wikidata image'); return ''; }
-    return 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(file.replace(/ /g, '_')) + '?width=320';
+    // the direct 320 px address from Commons' own API (not Special:FilePath, whose redirect a Worker may not report the end of)
+    const c = await withTimeout(get, 'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url&iiurlwidth=320&titles=' + encodeURIComponent('File:' + file), { headers: UA }, 5000);
+    if (!c.ok) { why.push('commons ' + c.status); return ''; } const cj = await c.json(), pages = cj && cj.query && cj.query.pages, page = pages && Object.values(pages)[0], info = page && page.imageinfo && page.imageinfo[0];
+    const url = info && (info.thumburl || info.url); if (!url || !IMG_HOST.test(url)) { why.push('commons gave no Wikimedia address'); return ''; }
+    return url;
   } catch (e) { why.push('wikidata error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return ''; }
 }
 
@@ -57,7 +61,6 @@ export async function leadPhoto(asked, get = fetch, why = []) {
     if (!src || !IMG_HOST.test(src)) { src = await commonsPhoto(s.wikibase_item, get, why); if (!src) { why.push('no free photo'); return null; } }
     const p = await withTimeout(get, src, { headers: { 'user-agent': UA['user-agent'] } }, 6000);
     const ct = String((p.headers && p.headers.get && p.headers.get('content-type')) || '').split(';')[0].trim().toLowerCase();
-    if (p.url && !IMG_HOST.test(p.url)) { why.push('photo redirected off Wikimedia'); return null; }
     if (!p.ok || !/^image\/(?:jpeg|png|webp)$/.test(ct)) { why.push('photo ' + p.status + ' ' + ct.slice(0, 20)); return null; }
     const buf = new Uint8Array(await p.arrayBuffer()); if (!buf.length || buf.length > MAX_PHOTO) { why.push('photo size ' + buf.length); return null; }
     let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));

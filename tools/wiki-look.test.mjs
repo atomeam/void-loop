@@ -12,7 +12,7 @@ const wiki = (over = {}) => async (url, opts) => {
   if (u.includes('list=search')) return res({ query: { search: [{ title: over.title || 'Dimebag Darrell' }] } });
   if (u.includes('/page/summary/')) return res({ type: over.type || 'standard', description: 'American guitarist (1966-2004)', wikibase_item: 'Q319690', ...(over.noThumb ? {} : { thumbnail: { source: over.src || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/D.jpg/320px-D.jpg' } }) });
   if (u.includes('wikidata.org/w/api.php')) return res(over.noP18 ? { claims: {} } : { claims: { P18: [{ mainsnak: { datavalue: { value: 'Dimebag Darrell 2004.jpg' } } }] } });
-  if (u.startsWith('https://commons.wikimedia.org/wiki/Special:FilePath/')) return over.offsite ? { ...res(JPEG, 'image/jpeg'), url: 'https://evil.example/x.jpg' } : { ...res(JPEG, 'image/jpeg'), url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' };
+  if (u.includes('commons.wikimedia.org/w/api.php')) return res({ query: { pages: { 1: { imageinfo: [{ thumburl: over.offsite ? 'https://evil.example/x.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' }] } } } });
   if (u.startsWith('https://upload.wikimedia.org/')) return over.bigPhoto ? res(new Uint8Array(MAX_PHOTO + 10), 'image/jpeg') : res(JPEG, over.ct || 'image/jpeg');
   throw new Error('unexpected ' + u);
 };
@@ -27,7 +27,7 @@ test('the lead photo comes only from upload.wikimedia.org, as a small jpeg, png 
   const ok = await leadPhoto('dimebag darrel', wiki()); assert.match(ok.img, /^data:image\/jpeg;base64,/); assert.equal(ok.usual, 'Dimebag Darrell'); assert.match(ok.description, /guitarist/);
   const viaWikidata = await leadPhoto('dimebag darrel', wiki({ noThumb: true })); assert.match(viaWikidata.img, /^data:image\/jpeg/, 'no Wikipedia thumbnail (non-free photo): the free Wikidata image is next');
   const why = []; assert.equal(await leadPhoto('dimebag darrel', wiki({ noThumb: true, noP18: true }), why), null); assert.match(why.join(), /no wikidata image.*no free photo/);
-  assert.equal(await leadPhoto('dimebag darrel', wiki({ noThumb: true, offsite: true })), null, 'a Commons address that redirects off Wikimedia is dropped');
+  assert.equal(await leadPhoto('dimebag darrel', wiki({ noThumb: true, offsite: true })), null, 'a Commons answer that points off Wikimedia is dropped');
   assert.match((await leadPhoto('dimebag darrel', wiki({ src: 'https://evil.example/a.jpg' }))).img, /^data:/, 'a thumbnail address off Wikimedia is never fetched; the Wikidata image is used instead');
   assert.equal(await leadPhoto('dimebag darrel', wiki({ type: 'disambiguation' })), null);
   assert.equal(await leadPhoto('dimebag darrel', wiki({ ct: 'text/html' })), null); assert.equal(await leadPhoto('dimebag darrel', wiki({ bigPhoto: true })), null);
@@ -50,8 +50,8 @@ test('photoLook paints from the photo description and says where it came from; n
     const r = await route.photoLook(e, 'dimebag darrel', wiki());
     assert.equal(r.source, 'wikipedia'); assert.equal(r.name, 'Dimebag Darrell'); assert.match(r.look, /goatee dyed bright pink.*lightning bolt/); assert.equal(e.calls.vision, 1);
     const none = await route.photoLook(env(look), 'zorblax', wiki({ title: 'Quantum computing' })); assert.equal(none, null);
-    const l = await route.lookFor(env(look), 'cartoon9 dimebag darrel'); assert.equal(l.source, 'wikipedia'); assert.equal(l.name, 'Dimebag Darrell');
-    const e2 = env(look); globalThis.fetch = wiki({ fail: true }); const f = await route.lookFor(e2, 'cartoon9 dimebag darrel');
+    const l = await route.lookFor(env(look), 'cartoon10 dimebag darrel'); assert.equal(l.source, 'wikipedia'); assert.equal(l.name, 'Dimebag Darrell');
+    const e2 = env(look); globalThis.fetch = wiki({ fail: true }); const f = await route.lookFor(e2, 'cartoon10 dimebag darrel');
     assert.equal(e2.calls.vision, 0); assert.equal(e2.calls.text, 1); assert.match(f.look, /generic man/, 'without a page the text model is asked as before'); assert.match(f.photoWhy, /search error down/, 'and it says why the photo was not used');
   } finally { globalThis.fetch = realFetch; }
 });

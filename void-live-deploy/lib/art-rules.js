@@ -92,10 +92,10 @@ export function directedPrompt(scene, rarity = 'common') {
 // is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
 // (no "children's picture-book style": it turned every person into a child)
 export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, classic animated cartoon style';
-/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon9': painted from its look (below); the
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon10': painted from its look (below); the
  *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
  *  was a smiling boy in a blue t-shirt). Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon9 ' + key : '');
+export const cartoonKey = (key) => (key ? 'cartoon10 ' + key : '');
 // the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
 // subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
 export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
