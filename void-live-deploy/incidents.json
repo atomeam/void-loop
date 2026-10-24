@@ -2,6 +2,43 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T17:03:43.376Z",
+   "sha": "d1c945d082fc7cfeed4f39da621784386d383549",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40112186696",
+   "suite": "browser suite on main",
+   "checks": [
+    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+    "the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
+    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
+    "built-in image: \"show this image <url>\" puts the picture up, a bare image url replaces it (one card), \"make the image red\" edges it red, it comes back after a reload, a picture that will not load says so on the card, and \"remove the image\" takes it away (twice is harmless)",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "image instant photo look: the picture sits in an off-white instant-photo frame with a deep bottom strip (at least 3x the side), the caption you write sits under the picture in the felt-tip hand in dark ink and is kept, each photo has its own slight tilt that survives a reload, and \"make the image blue\" edges it blue",
+    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-24T17:02:55.572Z",
    "sha": "1515ffdb41f78df6ab4f916f0d1748ae16af8fa9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40112044831",
@@ -635,24 +672,6 @@
    "touched": [
     "void-live-deploy/functions/api/card-art.js",
     "void-live-deploy/lib/art-rules.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:57:45.409Z",
-   "sha": "f439d29b79ea0461c6aa0e38363cd248380966e8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40063845380",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/card-art-route.test.mjs",
-    "tools/skill-matchers.test.mjs",
-    "tools/wiki-look.test.mjs",
-    "void-live-deploy/lib/art-rules.js",
-    "void-live-deploy/lib/wiki-look.js"
    ]
   }
  ]
