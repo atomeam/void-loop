@@ -4,10 +4,10 @@
   "calculator": {
    "speed": {
     "verdict": "worse",
-    "verse": 2866,
-    "best": 646,
-    "evidence": "Verse 2866 ms to network idle (median of 3, phone width) vs calculator.net 646 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:02:11.491Z",
+    "verse": 3100,
+    "best": 694,
+    "evidence": "Verse 3100 ms to network idle (median of 3, phone width) vs calculator.net 694 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:24:43.622Z",
     "was": "better"
    },
    "reliability": {
@@ -15,30 +15,72 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:02:11.491Z"
+    "at": "2026-10-24T01:24:43.622Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:02:11.491Z"
+    "at": "2026-10-24T01:24:43.622Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
     "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
-    "at": "2026-10-24T01:02:11.491Z"
+    "at": "2026-10-24T01:24:43.622Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "history": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "unit and scientific modes": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
    }
   },
   "is it": {
    "speed": {
     "verdict": "worse",
-    "verse": 2891,
-    "best": 898,
-    "evidence": "Verse 2891 ms to network idle (median of 3, phone width) vs isitchristmas.com 898 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:01:10.858Z",
+    "verse": 2952,
+    "best": 964,
+    "evidence": "Verse 2952 ms to network idle (median of 3, phone width) vs isitchristmas.com 964 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:23:41.834Z",
     "was": "better"
    },
    "mobile": {
@@ -46,30 +88,42 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs isitchristmas.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:01:10.858Z"
+    "at": "2026-10-24T01:23:41.834Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs isitchristmas.com 0 unnamed controls or images",
-    "at": "2026-10-24T01:01:10.858Z"
+    "at": "2026-10-24T01:23:41.834Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs isitchristmas.com 3 of 3 loads answered",
-    "at": "2026-10-24T01:01:10.858Z"
+    "at": "2026-10-24T01:23:41.834Z"
+   },
+   "big answer": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "local language": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
    }
   },
   "coin flip": {
    "speed": {
     "verdict": "worse",
-    "verse": 2937,
-    "best": 873,
-    "evidence": "Verse 2937 ms to network idle (median of 3, phone width) vs justflipacoin.com 873 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:01:26.885Z",
+    "verse": 3284,
+    "best": 905,
+    "evidence": "Verse 3284 ms to network idle (median of 3, phone width) vs justflipacoin.com 905 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:23:57.700Z",
     "was": "better"
    },
    "mobile": {
@@ -77,30 +131,36 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:01:26.885Z"
+    "at": "2026-10-24T01:23:57.700Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-24T01:01:26.885Z"
+    "at": "2026-10-24T01:23:57.700Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-24T01:01:26.885Z"
+    "at": "2026-10-24T01:23:57.700Z"
+   },
+   "flip history": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
    }
   },
   "random number": {
    "speed": {
     "verdict": "worse",
-    "verse": 2827,
-    "best": 1086,
-    "evidence": "Verse 2827 ms to network idle (median of 3, phone width) vs random.org 1086 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:01:40.173Z",
+    "verse": 2584,
+    "best": 1235,
+    "evidence": "Verse 2584 ms to network idle (median of 3, phone width) vs random.org 1235 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:24:11.908Z",
     "was": "better"
    },
    "reliability": {
@@ -108,30 +168,72 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-24T01:01:40.173Z"
+    "at": "2026-10-24T01:24:11.908Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 418,
     "evidence": "Verse 0 px sideways overflow at 390 px vs random.org 418 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:01:40.173Z"
+    "at": "2026-10-24T01:24:11.908Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-24T01:01:40.173Z"
+    "at": "2026-10-24T01:24:11.908Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "range choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "true randomness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
    }
   },
   "word count": {
    "speed": {
     "verdict": "worse",
-    "verse": 2852,
-    "best": 2442,
-    "evidence": "Verse 2852 ms to network idle (median of 3, phone width) vs wordcounter.net 2442 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:01:53.702Z",
+    "verse": 2848,
+    "best": 2642,
+    "evidence": "Verse 2848 ms to network idle (median of 3, phone width) vs wordcounter.net 2642 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:24:25.363Z",
     "was": "better"
    },
    "reliability": {
@@ -139,60 +241,114 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:01:53.702Z"
+    "at": "2026-10-24T01:24:25.363Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:01:53.702Z"
+    "at": "2026-10-24T01:24:25.363Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-24T01:01:53.702Z"
+    "at": "2026-10-24T01:24:25.363Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "live counting": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "characters and sentences": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
    }
   },
   "stopwatch": {
    "speed": {
     "verdict": "unverified",
-    "verse": 3351,
+    "verse": 3402,
     "best": null,
-    "evidence": "Verse 3351 ms to network idle (median of 3, phone width) vs online-stopwatch.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:02:23.819Z"
+    "evidence": "Verse 3402 ms to network idle (median of 3, phone width) vs online-stopwatch.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:24:56.705Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:02:23.819Z"
+    "at": "2026-10-24T01:24:56.705Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T01:02:23.819Z"
+    "at": "2026-10-24T01:24:56.705Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "online-stopwatch.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:02:23.819Z"
+    "evidence": "Verse 3 of 3 loads answered vs online-stopwatch.com 0 of 3 loads answered",
+    "at": "2026-10-24T01:24:56.705Z"
+   },
+   "alarms": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "laps": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
    }
   },
   "unit converter": {
    "speed": {
     "verdict": "worse",
-    "verse": 4110,
-    "best": 689,
-    "evidence": "Verse 4110 ms to network idle (median of 3, phone width) vs unitconverters.net 689 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:05:08.691Z",
+    "verse": 3063,
+    "best": 720,
+    "evidence": "Verse 3063 ms to network idle (median of 3, phone width) vs unitconverters.net 720 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:27:59.911Z",
     "was": "better"
    },
    "mobile": {
@@ -200,141 +356,231 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:05:08.691Z"
+    "at": "2026-10-24T01:27:59.911Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
-    "at": "2026-10-24T01:05:08.691Z"
+    "at": "2026-10-24T01:27:59.911Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:05:08.691Z"
+    "at": "2026-10-24T01:27:59.911Z"
+   },
+   "unit breadth": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "both directions": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
    }
   },
   "password": {
    "speed": {
     "verdict": "unverified",
-    "verse": 2673,
+    "verse": 2664,
     "best": null,
-    "evidence": "Verse 2673 ms to network idle (median of 3, phone width) vs passwordsgenerator.net NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:05:24.265Z"
+    "evidence": "Verse 2664 ms to network idle (median of 3, phone width) vs passwordsgenerator.net NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:28:13.101Z"
    },
    "mobile": {
     "verdict": "unverified",
     "verse": 0,
     "best": null,
     "evidence": "Verse 0 px sideways overflow at 390 px vs passwordsgenerator.net null px sideways overflow at 390 px",
-    "at": "2026-10-24T01:05:24.265Z"
+    "at": "2026-10-24T01:28:13.101Z"
    },
    "accessibility": {
     "verdict": "unverified",
     "verse": 0,
     "best": null,
     "evidence": "Verse 0 unnamed controls or images vs passwordsgenerator.net null unnamed controls or images",
-    "at": "2026-10-24T01:05:24.265Z"
+    "at": "2026-10-24T01:28:13.101Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "passwordsgenerator.net answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:05:24.265Z"
+    "evidence": "Verse 3 of 3 loads answered vs passwordsgenerator.net 0 of 3 loads answered",
+    "at": "2026-10-24T01:28:13.101Z"
+   },
+   "length and character choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "strength shown": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
    }
   },
   "encoder": {
    "speed": {
     "verdict": "unverified",
-    "verse": 2708,
+    "verse": 2769,
     "best": null,
-    "evidence": "Verse 2708 ms to network idle (median of 3, phone width) vs base64encode.org NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:12:08.198Z"
+    "evidence": "Verse 2769 ms to network idle (median of 3, phone width) vs base64encode.org NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:35:03.577Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:12:08.198Z"
+    "at": "2026-10-24T01:35:03.577Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-24T01:12:08.198Z"
+    "at": "2026-10-24T01:35:03.577Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "base64encode.org answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:12:08.198Z"
+    "evidence": "Verse 3 of 3 loads answered vs base64encode.org 0 of 3 loads answered",
+    "at": "2026-10-24T01:35:03.577Z"
+   },
+   "decode too": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "files and character sets": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
    }
   },
   "colour": {
    "speed": {
     "verdict": "unverified",
-    "verse": 4706,
+    "verse": 2751,
     "best": null,
-    "evidence": "Verse 4706 ms to network idle (median of 3, phone width) vs color-hex.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:09:23.208Z"
+    "evidence": "Verse 2751 ms to network idle (median of 3, phone width) vs color-hex.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:32:38.177Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:09:23.208Z"
+    "at": "2026-10-24T01:32:38.177Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs color-hex.com 0 unnamed controls or images",
-    "at": "2026-10-24T01:09:23.208Z"
+    "at": "2026-10-24T01:32:38.177Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "color-hex.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:09:23.208Z"
+    "evidence": "Verse 3 of 3 loads answered vs color-hex.com 0 of 3 loads answered",
+    "at": "2026-10-24T01:32:38.177Z"
+   },
+   "every colour model": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "shades and palettes": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
    }
   },
   "time zones": {
    "speed": {
     "verdict": "unverified",
-    "verse": 7442,
+    "verse": 3772,
     "best": null,
-    "evidence": "Verse 7442 ms to network idle (median of 3, phone width) vs timeanddate.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:06:46.819Z"
+    "evidence": "Verse 3772 ms to network idle (median of 3, phone width) vs timeanddate.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T01:29:35.464Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "timeanddate.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:06:46.819Z"
+    "evidence": "Verse 3 of 3 loads answered vs timeanddate.com 0 of 3 loads answered",
+    "at": "2026-10-24T01:29:35.464Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 22,
     "evidence": "Verse 0 px sideways overflow at 390 px vs timeanddate.com 22 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:06:46.819Z"
+    "at": "2026-10-24T01:29:35.464Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs timeanddate.com 1 unnamed controls or images",
-    "at": "2026-10-24T01:06:46.819Z"
+    "at": "2026-10-24T01:29:35.464Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "world time": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "meeting planner": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
    }
   }
  }
