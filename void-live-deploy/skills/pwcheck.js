@@ -10,7 +10,7 @@
 import { check, leakCount, MAX_LEN } from '../lib/pwcheck.js';
 
 // "how secure is my password", "is hunter2 a good password" (answered with a warning, never read), "is my password strong?", "check my password strength", "test the strength of my password", "how long would it take to crack my password"
-const ASKS = /^(?:please\s+)?(?:(?:how|is)\s+(?:secure|strong|safe|good)\b.*\bpassword\b|is\s+(?:my|this|the|our)\s+(?:\w+\s+)?(?:password|passcode)\s+(?:strong|secure|safe|good|ok|okay|any\s+good)(?:\s+enough)?|is\s+\S+(?:\s+\S+){0,3}\s+(?:a\s+)?(?:good|strong|secure|safe|decent)\s+(?:password|passcode)|(?:check|test|rate|grade)\s+(?:the\s+)?(?:strength\s+of\s+)?(?:my|a|the)?\s*password(?:\s+strength)?|(?:password|passcode)\s+(?:strength|checker|check|tester)|how\s+long\s+(?:to|would\s+it\s+take\s+to)\s+crack\b.*\bpassword\b|can\s+you\s+check\s+my\s+password)\s*[?.!]*$/i;
+const ASKS = /^(?:please\s+)?(?:(?:how|is)\s+(?:secure|strong|safe|good)\b.*\bpassword\b|how\s+\w+\s+is\s+my\s+password|is\s+(?:my|this|the|our)\s+(?:\w+\s+)?(?:password|passcode)\s+(?:strong|secure|safe|good|ok|okay|any\s+good)(?:\s+enough)?|is\s+\S+(?:\s+\S+){0,3}\s+(?:a\s+)?(?:good|strong|secure|safe|decent)\s+(?:password|passcode)|(?:check|test|rate|grade)\s+(?:the\s+)?(?:strength\s+of\s+)?(?:my|a|the)?\s*password(?:\s+strength)?|(?:password|passcode)\s+(?:strength|checker|check|tester)|how\s+long\s+(?:to|would\s+it\s+take\s+to)\s+crack\b.*\bpassword\b|can\s+you\s+check\s+my\s+password)\s*[?.!]*$/i;
 const NOT = /\b(?:generate|generator|make|create|suggest|reset|forgot|forget|change|manager|recover|save|store|hash|encrypt)\b/i;
 
 /** true for an ask that wants the checker. Pure. */
