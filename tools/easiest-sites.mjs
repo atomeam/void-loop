@@ -1,0 +1,56 @@
+// Which real sites are the easiest to beat (owner, 2026-10-24: "find the real life actual easiest site, this is findable"). No guessing: the Tranco list
+// (tranco-list.eu, the research ranking of the most visited sites) gives the real sites, in the order people really visit them; each home page is
+// loaded once and measured for how much it does: the controls on it (inputs, buttons, menus), the words, the links, the scripts and the bytes. A site
+// that is a tool (something to type into or press) with the least on it is the easiest. The order comes from these numbers, so it only changes when
+// the numbers do. Passive: one plain GET of each home page, no sign-in, no forms, a visible User-Agent, a small number at a time.
+//   node tools/easiest-sites.mjs [how many of the top of the list] [out.json]      (.github/workflows/easiest-sites.yml runs it where the network is open)
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import path from 'node:path'; import os from 'node:os';
+
+const TRANCO = 'https://tranco-list.eu/top-1m.csv.zip';
+const strip = (h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->|<noscript[\s\S]*?<\/noscript>/gi, ' ');
+const count = (h, re) => (h.match(re) || []).length;
+
+/** how much one home page does, from its HTML. Pure. */
+export function features(html, bytes = html.length) {
+  const body = strip(html), text = body.replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  const inputs = count(body, /<input\b(?![^>]*type=["']?(?:hidden|submit|image)\b)/gi) + count(body, /<textarea\b/gi), selects = count(body, /<select\b/gi), buttons = count(body, /<button\b|<input\b[^>]*type=["']?(?:submit|button)\b|role=["']button/gi);
+  return { bytes, scripts: count(html, /<script\b/gi), links: count(body, /<a\s[^>]*href=/gi), inputs, selects, buttons, words: text ? text.split(' ').length : 0,
+    password: /<input\b[^>]*type=["']?password/i.test(body), title: ((/<title[^>]*>([\s\S]*?)<\/title>/i.exec(html) || [])[1] || '').replace(/\s+/g, ' ').trim().slice(0, 90),
+    login: /\b(?:sign in|log in|login|create an account|sign up)\b/i.test(text), search: /<input\b[^>]*type=["']?search|\bname=["']?q["'\s>]/i.test(body) };
+}
+/** how hard a page is to beat: every control counts most, then the words, links and scripts; lower is easier. A page with nothing to type into or press is not a tool: null. Pure. */
+export function hardness(f) {
+  const controls = f.inputs + f.selects + f.buttons;
+  if (!controls || f.password || f.words < 3) return null;                  // nothing to use, or an account wall: not a one-tool site
+  return Math.round(controls * 10 + f.words / 25 + f.links / 4 + f.scripts + f.bytes / 20000);
+}
+
+async function get(host, ms = 7000) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch('https://' + host + '/', { signal: ctl.signal, redirect: 'follow', headers: { 'user-agent': 'VerseScout/1 (+https://a-to-mind.com; reads a home page once)', accept: 'text/html' } });
+    if (!r.ok || !/text\/html/.test(r.headers.get('content-type') || '')) return null;
+    const buf = Buffer.from(await r.arrayBuffer()).subarray(0, 600000);
+    return { final: new URL(r.url).hostname, html: buf.toString('utf8'), bytes: buf.length };
+  } catch (_) { return null; } finally { clearTimeout(t); }
+}
+
+if (process.argv[1] === new URL(import.meta.url).pathname) {
+  const n = Math.min(100000, Math.max(100, +process.argv[2] || 5000)), outFile = process.argv[3] || 'easiest-sites.json', dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
+  execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);
+  const rows = fs.readFileSync(path.join(dir, 'top-1m.csv'), 'utf8').split('\n').slice(0, n).map((l) => l.split(',')).filter((r) => r[1]).map((r) => ({ rank: +r[0], host: r[1].trim() }));
+  const out = []; let i = 0, done = 0;
+  await Promise.all(Array.from({ length: 40 }, async () => {
+    while (i < rows.length) {
+      const row = rows[i++], page = await get(row.host); done++;
+      if (done % 500 === 0) console.error('scanned ' + done + ' of ' + rows.length);
+      if (!page) continue;
+      const f = features(page.html, page.bytes), h = hardness(f);
+      if (h !== null) out.push({ ...row, final: page.final, hardness: h, ...f });
+    }
+  }));
+  out.sort((a, b) => a.hardness - b.hardness || a.rank - b.rank);
+  fs.writeFileSync(outFile, JSON.stringify({ source: TRANCO, scanned: rows.length, at: new Date().toISOString(), easiest: out.slice(0, 300) }, null, 1) + '\n');
+  console.log('scanned ' + rows.length + ', ' + out.length + ' with something to use; the 60 easiest (hardness, Tranco rank, host, controls, words, links, title):');
+  for (const s of out.slice(0, 60)) console.log(String(s.hardness).padStart(4), String(s.rank).padStart(6), s.host.padEnd(28), (s.inputs + s.selects + s.buttons) + 'c', s.words + 'w', s.links + 'l', '|', s.title);
+}

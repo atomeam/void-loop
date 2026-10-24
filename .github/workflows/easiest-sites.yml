@@ -1,0 +1,30 @@
+# Which real sites are the easiest to beat (tools/easiest-sites.mjs): the top of the Tranco ranking, each home page measured once for how much it
+# does. Started by hand; the result is the job log and an artifact (easiest-sites.json). Passive: one GET of each home page.
+name: Easiest sites
+on:
+  workflow_dispatch:
+    inputs:
+      top:
+        description: how many of the top of the list to scan
+        default: '5000'
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Scan
+        env:
+          TOP: ${{ inputs.top }}
+        run: node tools/easiest-sites.mjs "$TOP" easiest-sites.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: easiest-sites
+          path: easiest-sites.json
+          retention-days: 30
