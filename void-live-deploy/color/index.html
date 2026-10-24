@@ -45,6 +45,8 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/gradient.js">
 <link rel="modulepreload" href="/lib/colour.js">
 <!-- /modulepreload -->
 </head>
@@ -66,10 +68,13 @@
   <h2>The 16 VGA colours</h2><div class="row v" id="vga"></div>
   <div class="dl"><button type="button" id="random">Random colour</button></div>
   <div class="dl"><button type="button" id="json">Download JSON</button><button type="button" id="csv">Download CSV</button><button type="button" id="link">Copy link</button></div>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Type a colour any way: <code>#f53</code>, <code>ff5733</code>, <code>rgb(255 87 51)</code>, <code>hsl(11 100% 60%)</code> or one of the 148 CSS names. Click any swatch to make it the colour. The nearest name is the nearest to the eye (CIE Lab), not to the numbers. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
   </div>
 </main>
 <script type="module">
+  import { mountRelated, setAccent, setPalette, shadesOf } from '/lib/toolkit.js';
+  import { pack as gradientCode } from '/lib/gradient.js';
   import { parse, describe, passes, toHex } from '/lib/colour.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   let now = null;
@@ -114,6 +119,14 @@
   fill('vga', VGA);
   $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });
   const start = new URLSearchParams(location.search).get('c') || '6d4aff'; $('in').value = parse(start) ? (/^[0-9a-f]{3,8}$/i.test(start) ? '#' + start : start) : ''; set($('in').value || '#6d4aff');
+  const curHex = () => new URLSearchParams(location.search).get('c') || '6d4aff';
+  const lighter = (h) => '#' + [0, 2, 4].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) + (255 - parseInt(h.slice(i, i + 2), 16)) * 0.6).toString(16).padStart(2, '0')).join('');
+  mountRelated($('related'), '/color/', [
+    { label: 'Make a gradient from it', href: () => '/gradient/#' + gradientCode({ type: 'linear', angle: 90, stops: [{ color: '#' + curHex(), pos: 0 }, { color: lighter(curHex()), pos: 100 }] }) },
+    { label: 'Use it as every tool\u2019s accent', run: () => (setAccent('#' + curHex()) ? 'Every tool wears it now' : 'This browser will not keep it') },
+    { label: 'Paint the wheel in its shades', href: () => (setPalette(shadesOf('#' + curHex(), 8)) ? '/wheel/' : null) },
+    { label: 'It as a number', href: () => '/base-converter/?v=' + curHex() + '&b=16' },
+  ]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

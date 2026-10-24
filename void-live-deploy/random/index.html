@@ -29,7 +29,7 @@
   .row { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; align-items: center; margin: 6px 0; font-size: 14px; }
   .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); white-space: nowrap; }
   .row input[type=checkbox] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); } /* WCAG 2.5.8: a tap target at least 24 by 24 px */
-  button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; }
+  button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: var(--on-accent, #fff); cursor: pointer; font-weight: 600; }
   button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
   details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
   summary { cursor: pointer; color: var(--soft); }
@@ -37,6 +37,11 @@
   footer { text-align: center; font-size: 12px; color: var(--soft); margin-top: 22px; }
   footer a { color: inherit; }
 </style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main>
@@ -63,6 +68,7 @@
     <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
     <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
   </details>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no ads, nothing sent. A public, checkable draw instead fetches one round from the drand beacon (the only network use). <a href="/">Ask Verse anything</a></footer>
 </main>
 <script>
@@ -112,11 +118,21 @@
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
   // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
   const p = new URLSearchParams(location.search);
+  if (p.get('list')) { $('list').value = p.get('list').slice(0, 20000); $('listbox').open = true; } // a list handed over from the wheel (lib/toolkit.js)
   for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
   $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
   if (/^\d{1,12}$/.test(p.get('round') || '')) { $('beacon').checked = true; wantRound = +p.get('round'); } // a shared public draw: the same round, the same numbers
   if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
   draw();
+</script>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
+  const list = () => document.getElementById('list').value.split('\n').map((s) => s.trim()).filter(Boolean);
+  mountRelated(document.getElementById('related'), '/random/', [
+    { label: 'Spin your list on a wheel', href: () => (list().length ? '/wheel/#' + wheelCode(wheelEntries(list().join('\n'))) : null) },
+    { label: 'This number in other bases', href: () => { const v = document.getElementById('out').textContent.trim(); return /^-?\d+$/.test(v) ? '/base-converter/?v=' + v + '&b=10' : null; } },
+  ]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

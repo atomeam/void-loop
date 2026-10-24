@@ -31,13 +31,14 @@
   textarea { width: 100%; box-sizing: border-box; min-height: 14em; font: 15px/1.45 system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; resize: vertical; }
   .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
   button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
-  button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
   #count, #fair { font-size: 13px; color: var(--soft); }
   ol { margin: 4px 0 0; padding-left: 1.4em; font-size: 14px; max-height: 12em; overflow: auto; }
   footer { grid-column: 1 / -1; font-size: 12px; color: var(--soft); text-align: center; } footer a { color: inherit; }
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/wheel.js">
 <!-- /modulepreload -->
 </head>
@@ -58,14 +59,18 @@
     <ol id="history"></ol>
     <p id="fair">Fair: the winner is drawn with this browser's cryptographic random numbers before the wheel moves, each entry's chance exactly its share of the wheel; the spin then lands on it.</p>
   </section>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Click the wheel, press SPIN, or press Space. Everything stays on this device; the link carries the entries, nothing else. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated, paletteOf, setPalette } from '/lib/toolkit.js';
   import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom } from '/lib/wheel.js';
   const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d');
   const START = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
-  let entries = open(location.hash.slice(1)) || entriesOf(START), rot = 0, spinning = false, last = -1, sound = true, actx = null, won = -1;
-  const COLORS = ['#6d4aff', '#ff5f6d', '#ffb347', '#2bb3a3', '#4a90e2', '#c86dd7', '#7ac943', '#ff7f50', '#20b2aa', '#e05297', '#f4c430', '#5b6ee1'];
+  let lastKept = null; try { lastKept = localStorage.getItem('a2m.void.wheel.last.v1'); } catch (_) {} // the wheel you had, when a tool sends you back without one
+  let entries = open(location.hash.slice(1)) || open(lastKept) || entriesOf(START), rot = 0, spinning = false, last = -1, sound = true, actx = null, won = -1;
+  const OWN = ['#6d4aff', '#ff5f6d', '#ffb347', '#2bb3a3', '#4a90e2', '#c86dd7', '#7ac943', '#ff7f50', '#20b2aa', '#e05297', '#f4c430', '#5b6ee1'];
+  let COLORS = paletteOf() || OWN; // the palette set on the colour or gradient page (lib/toolkit.js), else the wheel's own
   const colorAt = (i, n) => COLORS[(i % COLORS.length === 0 && i === n - 1 && n % COLORS.length === 1) ? 1 : i % COLORS.length]; // the last slice never matches the first
   const lum = (h) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   function draw() {
@@ -87,7 +92,7 @@
     if (!spinning) { $('winner').textContent = ''; $('remove').hidden = $('again').hidden = true; won = -1; }
     const n = entries.length; $('count').textContent = n + (n === 1 ? ' entry' : ' entries') + (n < 2 ? ': add at least two to spin' : '');
     $('spin').disabled = spinning || n < 2; draw();
-    try { history.replaceState(null, '', n ? '#' + pack(entries) : location.pathname); } catch (_) {}
+    try { history.replaceState(null, '', n ? '#' + pack(entries) : location.pathname); if (n) localStorage.setItem('a2m.void.wheel.last.v1', pack(entries)); } catch (_) {}
   }
   function spin() {
     if (spinning || entries.length < 2) return;
@@ -113,6 +118,8 @@
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
   $('sound').addEventListener('click', () => { sound = !sound; $('sound').textContent = sound ? 'Sound on' : 'Sound off'; $('sound').setAttribute('aria-pressed', String(sound)); });
   sync(false);
+  mountRelated($('related'), '/wheel/', [{ label: 'Pick from these on the random page', href: () => (entries.length ? '/random/?list=' + encodeURIComponent(textOf(entries)) : null) }]
+    .concat(COLORS !== OWN ? [{ label: 'Its own colours again', run: () => { setPalette(null); COLORS = OWN; draw(); return 'Back to its own colours'; } }] : []));
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

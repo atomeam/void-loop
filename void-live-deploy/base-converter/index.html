@@ -30,6 +30,7 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/baseconv.js">
 <!-- /modulepreload -->
 </head>
@@ -43,9 +44,11 @@
   <div id="note" role="status" aria-live="polite"></div>
   <div class="facts" id="facts"></div>
   <p style="text-align:center"><button type="button" id="link">Copy link</button></p>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Type in any box; the others follow. Exact at any size (up to 4,096 digits), never rounded. A <code>0x</code>, <code>0b</code> or <code>0o</code> in front is understood, spaces and commas are ignored. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
   import { convert, clean } from '/lib/baseconv.js';
   const $ = (id) => document.getElementById(id), boxes = [...document.querySelectorAll('input[data-base]')];
   const facts = (r) => {
@@ -67,6 +70,7 @@
   // a link that opens on this number (?v=…&b=…), the way the page opens from an ask
   $('link').addEventListener('click', async () => { const box = boxes.find((x) => x.value.trim()), u = new URL(location.href); u.search = box ? '?v=' + encodeURIComponent(box.value.replace(/[ ,]/g, '')) + '&b=' + box.dataset.base : ''; try { await navigator.clipboard.writeText(u.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
   const q = new URLSearchParams(location.search), v = q.get('v'), from = +q.get('b') || 10; if (v && [2, 8, 10, 16].includes(from)) { const box = boxes.find((x) => +x.dataset.base === from); box.value = v.slice(0, 5000); show(box); }
+  mountRelated($('related'), '/base-converter/', [{ label: 'See it as a colour', href: () => { const h = $('b16').value.replace(/^0x/i, '').replace(/[\s,_]/g, ''); return /^[0-9a-f]{1,6}$/i.test(h) ? '/color/?c=' + h.padStart(6, '0').toLowerCase() : null; } }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

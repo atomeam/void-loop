@@ -5505,6 +5505,26 @@ try {
       && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
     await Z.ctx.close();
   }
+  if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
+    const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/wheel\/#/); await Z.p.waitForTimeout(400);
+    const onWheel = await Z.p.$eval('#entries', (e) => e.value).catch(() => '');
+    await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.click('#related button.tk-hand'); await Z.p.goto(base + 'stopwatch/');
+    const acc = await Z.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()), main = await Z.p.$eval('#swgo', (e) => getComputedStyle(e).backgroundColor);
+    await Z.p.goto(base + 'word-count/?t=' + encodeURIComponent('one two three four five six seven eight nine ten '.repeat(31)));
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/stopwatch\/\?t=/); await Z.p.waitForTimeout(300); const cd = await Z.p.$eval('#cdface', (e) => e.textContent), cdUrl = Z.p.url();
+    const related = await Z.p.$$eval('#related a', (a) => a.map((x) => x.getAttribute('href')));
+    // a gradient paints the wheel: its slices wear colours from along the gradient, and the wheel still holds the names it had
+    await Z.p.goto(base + 'gradient/#l90-ff0000ff.0-0000ffff.100'); await Z.p.waitForTimeout(300);
+    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/wheel\//); await Z.p.waitForTimeout(500);
+    const painted = await Z.p.evaluate(() => { const pal = JSON.parse(localStorage.getItem('a2m.void.palette.v1') || '[]'), c = document.getElementById('wheel'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, seen = new Set();
+      for (let i = 0; i < d.length; i += 16) seen.add('#' + [d[i], d[i + 1], d[i + 2]].map((v) => v.toString(16).padStart(2, '0')).join(''));
+      return { pal, worn: pal.filter((h) => seen.has(h)).length, entries: document.getElementById('entries').value.split('\n')[0] }; });
+    check("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel",
+      onWheel.includes(first) && acc === '#1a7f37' && main === 'rgb(26, 127, 55)' && cd === '1:42' && related.includes('/word-count/') && painted.pal[0] === '#ff0000' && painted.pal.length === 8 && painted.worn >= 2 && painted.entries === first && !Z.errors.length, JSON.stringify({ first, onWheel: onWheel.slice(0, 80), acc, main, cd, cdUrl, painted, related, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
   // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
   // gears' own steppers, and Check says what still needs changing, then that it is done

@@ -43,6 +43,7 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/gradient.js">
 <link rel="modulepreload" href="/lib/colour.js">
 <!-- /modulepreload -->
@@ -74,9 +75,11 @@
   <textarea id="paste" spellcheck="false" aria-label="Paste a CSS gradient" placeholder="Paste a gradient: linear-gradient(to right, #ff5f6d, #ffc371)"></textarea>
   <div class="row"><button type="button" id="import">Read it</button><label for="pic">or take the colours from a picture</label><input id="pic" type="file" accept="image/*"></div>
   <div id="note" role="status" aria-live="polite"></div>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Click the bar to add a stop; drag a stop's slider to move it. A picture is read on this device, along its middle from left to right, and never sent. The fallback colour is the stops' average, for browsers without gradients. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated, along, setPalette } from '/lib/toolkit.js';
   import { css, cssIn, rule, scss, read, pack, open, fallback, textContrast, normal, reverse, adjust, fromSamples, PRESETS, inFormat } from '/lib/gradient.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   let g = open(location.hash.slice(1)) || normal(PRESETS[2].g), on = 0;
@@ -127,6 +130,7 @@
   });
   addEventListener('hashchange', () => { const r = open(location.hash.slice(1)); if (r && pack(r) !== pack(g)) { g = r; draw(); } });
   draw();
+  mountRelated(document.getElementById('related'), '/gradient/', [{ label: 'Paint the wheel with it', href: () => (setPalette(along(pack(g).split('-').slice(1).map((x) => ({ color: '#' + x.slice(0, 6), pos: +x.slice(9) })), 8)) ? '/wheel/' : null) }, { label: 'Open its first colour', href: () => { const c = pack(g).split('-')[1]; return c ? '/color/?c=' + c.slice(0, 6) : null; } }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

@@ -483,6 +483,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T23:46:21Z",
+   "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T23:37:55Z",
+   "subject": "The stopwatch card: the 3D watch's bow is a closed ring through the crown, the hand beats 5 times a second, and the card art is a stopwatch"
+  },
+  {
+   "at": "2026-10-24T23:34:56Z",
+   "subject": "Incident: the browser suite failed on 4ab233de (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T23:18:20Z",
+   "subject": "Incident: the browser suite failed on 6388192d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T23:13:02Z",
+   "subject": "Incident: the browser suite failed on 320c6ddf (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T23:04:19Z",
    "subject": "Tower gate: stopwatch accuracy measured head to head; a 3 s run timed by the gate's own clock, read back and checked for holding still"
   },
@@ -541,26 +561,6 @@
   {
    "at": "2026-10-24T19:14:54Z",
    "subject": "Incident: the browser suite failed on cf301dc7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T19:12:02Z",
-   "subject": "Sharper card art: my art scores went up"
-  },
-  {
-   "at": "2026-10-24T19:07:28Z",
-   "subject": "Tower gate: time zones,password,finance measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T19:01:58Z",
-   "subject": "Tower gate: word count,password,sports measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T19:01:16Z",
-   "subject": "The wheel card's art is a wheel"
-  },
-  {
-   "at": "2026-10-24T18:57:43Z",
-   "subject": "Incident: the browser suite failed on e2b1a8d2 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

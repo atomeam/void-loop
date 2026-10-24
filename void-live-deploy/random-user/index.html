@@ -27,7 +27,7 @@
   .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 14px; cursor: pointer; color: var(--ink); }
   .chip input { margin: 0; width: 24px; height: 24px; accent-color: var(--accent); } /* a tap target of 24 px at least (WCAG 2.2 2.5.8) */
   button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
-  button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
   .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; font-size: 14px; }
   .card img { width: 48px; height: 48px; } .card b { display: block; font-size: 15px; } .card span { display: block; color: var(--soft); overflow-wrap: anywhere; }
@@ -37,6 +37,8 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/wheel.js">
 <link rel="modulepreload" href="/lib/fakeuser.js">
 <!-- /modulepreload -->
 </head>
@@ -59,9 +61,12 @@
   <div class="row"><label for="fmt">Format</label><select id="fmt"><option value="json">JSON</option><option value="csv">CSV</option><option value="yaml">YAML</option><option value="xml">XML</option><option value="sql">SQL inserts</option></select>
     <button type="button" id="copy">Copy</button><button type="button" id="dl">Download</button><button type="button" id="link">Copy link</button></div>
   <pre id="out"></pre>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Made on this device from the seed: the same seed and settings always give the same people, so a test can rely on them. Every email is at example.com, a domain reserved for examples; the pictures are initials, never real faces. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
   import { people, only, format, NATS, FIELDS } from '/lib/fakeuser.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   const q = new URLSearchParams(location.search), DEFAULT_FIELDS = ['gender', 'name', 'email', 'phone', 'dob', 'age', 'street', 'city', 'state', 'postcode', 'country', 'username', 'password', 'picture'];
@@ -73,10 +78,10 @@
   const chips = (box, list, on, label) => box.replaceChildren(...list.map((k) => { const c = el('input', { type: 'checkbox', checked: on.has(k) }); c.addEventListener('change', () => { c.checked ? on.add(k) : on.delete(k); make(); }); return el('label', { className: 'chip' }, [c, label(k)]); }));
   chips($('nats'), Object.keys(NATS), natsOn, (k) => NATS[k].country);
   chips($('fields'), FIELDS, fieldsOn, (k) => ({ dob: 'birthday', safePhone: 'phone is reserved for fiction', id: 'id (UUID)' })[k] || k);
-  let rows = [];
+  let rows = [], names = [];
   function make() {
     const nats = [...natsOn].length ? [...natsOn] : ['us'], all = people({ seed: $('seed').value || 'verse', n: +$('n').value, nats, gender: $('gender').value });
-    rows = only(all, [...fieldsOn]);
+    rows = only(all, [...fieldsOn]); names = all.slice(0, 60).map((p) => p.name);
     $('cards').replaceChildren(...all.slice(0, 30).map((p) => el('div', { className: 'card' }, [el('img', { src: p.picture, alt: '' }), el('div', {}, [el('b', { textContent: p.name }), el('span', { textContent: p.email }), el('span', { textContent: p.phone + (p.safePhone ? '' : ' (made up; could exist)') }), el('span', { textContent: p.city + ', ' + p.country + ' · ' + p.age })])])));
     const unsafe = nats.filter((k) => !NATS[k].safePhone).map((k) => NATS[k].country);
     $('phonenote').textContent = (all.length > 30 ? 'Showing 30 of ' + all.length + '; all of them are in the data below. ' : '') + 'Phones: United States, United Kingdom and France numbers are in ranges reserved for fiction and reach no one.' + (unsafe.length ? ' ' + unsafe.join(', ') + ' have no such range: those numbers are made up and could belong to someone, so never call or text them.' : '');
@@ -90,6 +95,7 @@
   $('dl').addEventListener('click', () => { const f = $('fmt').value, a = el('a', { href: URL.createObjectURL(new Blob([format(rows, f)], { type: 'text/plain' })), download: 'people.' + f }); document.body.append(a); a.click(); a.remove(); });
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); toast($('link'), 'Copied'); } catch (_) {} });
   make();
+  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: () => (names.length ? '/wheel/#' + wheelCode(wheelEntries(names.join('\n'))) : null) }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

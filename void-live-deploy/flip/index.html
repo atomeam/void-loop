@@ -27,6 +27,7 @@
   footer { text-align: center; font-size: 12px; opacity: .6; margin-top: 18px; }
 </style>
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/skills/coin.js">
 <link rel="modulepreload" href="/lib/tally.js">
 <link rel="modulepreload" href="/lib/reactions.js">
@@ -35,8 +36,10 @@
 </head>
 <body>
 <main id="card"><h2>Flip a coin</h2><noscript><p style="text-align:center">The coin needs JavaScript to flip.</p></noscript></main>
+  <nav id="related" aria-label="Related tools"></nav>
 <footer><a href="/flip/?q=flip+a+famous+coin">Flip a real coin from history</a> · <a href="/flip/?q=create+a+coin">Make your own coin</a> · <a href="/">Ask Verse anything</a></footer>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
   import coin from '/skills/coin.js';
   const card = document.getElementById('card');
   const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -52,6 +55,7 @@
   addEventListener('popstate', () => coin.run(ask(new URLSearchParams(location.search).get('q') || 'flip a coin'), api));
   // the space bar or Enter flips again, as a coin site should
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|select|textarea|button)$/i.test(e.target.tagName)) { e.preventDefault(); const b = card.querySelector('.coin-again'); if (b) b.click(); } });
+  mountRelated(document.getElementById('related'), '/flip/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

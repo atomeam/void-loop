@@ -25,11 +25,12 @@
   input:focus, select:focus { outline: none; border-color: var(--accent); }
   #result { margin-top: 14px; text-align: center; } #result canvas, #result img { max-width: 100%; max-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
   #line { font-size: 17px; font-weight: 600; margin: 10px 0 4px; } #line.ok { color: var(--ok); } #line.bad { color: var(--bad); } #note { color: var(--soft); font-size: 14px; min-height: 1.3em; }
-  .dl { display: flex; gap: 10px; justify-content: center; margin-top: 10px; } .dl a { text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; background: var(--accent); color: #fff; } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
+  .dl { display: flex; gap: 10px; justify-content: center; margin-top: 10px; } .dl a { text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; background: var(--accent); color: var(--on-accent, #fff); } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/imgfit.js">
 <!-- /modulepreload -->
 </head>
@@ -47,9 +48,11 @@
   </div>
   <div id="result" hidden><canvas id="pv" aria-label="The resized picture"></canvas><div id="line" role="status" aria-live="polite"></div><div id="note"></div>
     <div class="dl"><a id="dj" href="#" download="photo.jpg">Download JPEG</a><a id="dp" class="alt" href="#" download="photo.pdf">Download PDF</a></div></div>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Done on this device: the picture is never uploaded. The size limit counts 1 KB as 1,000 bytes, so the file passes either way a form counts it. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
   import { toPx, fitBox, fitSize, pdfOfJpeg } from '/lib/imgfit.js';
   const $ = (id) => document.getElementById(id); let bmp = null, token = 0, urls = [];
   const q = new URLSearchParams(location.search); for (const [k, id] of [['w', 'w'], ['h', 'h'], ['u', 'u'], ['kb', 'kb'], ['dpi', 'dpi']]) if (q.get(k)) $(id).value = q.get(k).slice(0, 12);
@@ -71,6 +74,7 @@
   }
   $('file').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { bmp = await createImageBitmap(f); const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } });
   for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', render);
+  mountRelated(document.getElementById('related'), '/resize-image/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

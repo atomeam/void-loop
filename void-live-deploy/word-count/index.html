@@ -34,6 +34,7 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/wordcount.js">
 <link rel="modulepreload" href="/skills/util.js">
 <link rel="modulepreload" href="/lib/colour.js">
@@ -54,9 +55,11 @@
   <h2>Keyword density</h2>
   <ol class="kw" id="kw"></ol>
   <p class="note" id="saved"></p>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Counted on this device as you type: your text is saved in this browser only (auto-save) and never sent anywhere, and the page works offline after one visit. A sentence ends at . ! or ?, but not after Mr., Dr., e.g. or U.S., and never inside a number like 3.5. Reading time at 238 words a minute, speaking time at 183; reading level is the Flesch-Kincaid grade. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
   import { count, duration } from '/lib/wordcount.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.wordcount.v1', box = $('text');
   const q = new URLSearchParams(location.search);
@@ -83,6 +86,7 @@
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(box.value); toast($('copy'), 'Copied'); } catch (_) {} });
   $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (box.value && box.value.length <= 4000 ? '?t=' + encodeURIComponent(box.value) : ''); try { await navigator.clipboard.writeText(u); toast($('link'), box.value.length > 4000 ? 'Link copied (text too long to carry)' : 'Copied'); } catch (_) {} });
   draw();
+  mountRelated($('related'), '/word-count/', [{ label: 'Rehearse it: a countdown of its speaking time', href: () => { const c = count(box.value); return c.words ? '/stopwatch/?t=' + Math.max(1, Math.round(c.speakSec)) + 's' : null; } }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

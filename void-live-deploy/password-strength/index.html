@@ -28,12 +28,13 @@
   .times { display: grid; gap: 8px; margin: 8px 0 4px; } .times div { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; } .times b { display: block; font-size: 22px; } .times span { font-size: 13px; color: var(--soft); }
   ul { margin: 8px 0; padding-left: 20px; } li { margin: 4px 0; }
   .opt { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 12px 0; font-size: 14px; }
-  button { font: inherit; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; background: transparent; color: var(--ink); cursor: pointer; } button.go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  button { font: inherit; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; background: transparent; color: var(--ink); cursor: pointer; } button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
   #leakmsg { font-size: 15px; } #leakmsg.bad { color: var(--c0); font-weight: 600; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/pwcheck.js">
 <!-- /modulepreload -->
 </head>
@@ -49,9 +50,11 @@
   </div>
   <ul id="why"></ul><ul id="tips"></ul>
   <div class="opt"><label><input type="checkbox" id="show"> show it</label><button type="button" id="leak" class="go">Has it leaked?</button><span id="leakmsg" role="status"></span></div>
+  <nav id="related" aria-label="Related tools"></nav>
   <footer>Worked out on this device; the password is never sent anywhere, stored, or put in the address. It is an estimate: words and patterns are priced the way a guesser would try them, and what we do not recognise is priced as random. "Has it leaked?" sends only the first 5 characters of a fingerprint of the password to the Have I Been Pwned list, which answers with every fingerprint that starts the same; the match is made here. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
   import { check, leakCount } from '/lib/pwcheck.js';
   const $ = (id) => document.getElementById(id), pw = $('pw');
   const fill = (ul, items) => { ul.textContent = ''; for (const t of items) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); } };
@@ -71,6 +74,7 @@
     else if (n > 0) { m.textContent = 'It has leaked: it is in known breaches ' + n.toLocaleString('en') + ' times. Do not use it anywhere.'; m.className = 'bad'; }
     else m.textContent = 'Not in the known leaks (that does not make it strong).';
   });
+  mountRelated(document.getElementById('related'), '/password-strength/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
