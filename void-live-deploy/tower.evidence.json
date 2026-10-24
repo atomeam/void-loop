@@ -362,52 +362,78 @@
   "stopwatch": {
    "speed": {
     "verdict": "better",
-    "verse": 341,
-    "best": 3439,
-    "evidence": "Verse 341 ms to the load event (median of 3, phone width) vs online-stopwatch.com 3439 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T19:21:07.409Z"
+    "verse": 163,
+    "best": 2159,
+    "evidence": "Verse (/stopwatch/) 163 ms to the load event (median of 3, phone width) vs online-stopwatch.com 2159 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
-    "evidence": "Verse 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 1 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T22:50:33.226Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T19:21:07.409Z"
+    "evidence": "Verse (/stopwatch/) 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.01)",
+    "at": "2026-10-24T22:50:33.226Z"
+   },
+   "alarms": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: an alarm)",
+    "at": "2026-10-24T22:50:33.226Z",
+    "of": 1,
+    "part": true
+   },
+   "laps": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: laps)",
+    "at": "2026-10-24T22:50:33.226Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 2,
+    "evidence": "Verse (/stopwatch/) 10 of 10 things a full answer shows vs online-stopwatch.com 2 of 10 things a full answer shows (Verse lacks: none; site lacks: laps, fastest and slowest lap, alarm, presets, keyboard shortcuts, pause and resume, share a timer, keeps time in a background tab)",
+    "at": "2026-10-24T22:50:33.226Z",
+    "of": 10
    }
   },
   "unit converter": {
@@ -482,7 +508,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T19:24:02.922Z"
+    "at": "2026-10-24T22:52:42.339Z"
    }
   },
   "encoder": {
@@ -1708,6 +1734,15 @@
     "best": 54,
     "evidence": "Verse 0 design defects vs Yahoo Finance 54 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Yahoo Finance (0 low-contrast texts, 53 small tap targets, layout shift 0.13)",
     "at": "2026-10-24T19:05:52.833Z"
+   }
+  },
+  "maps": {
+   "reliability": {
+    "verdict": "unverified",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
+    "at": "2026-10-24T22:54:24.936Z"
    }
   }
  }
