@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 758,
+ "counted": 760,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -535,6 +535,13 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -679,13 +686,6 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/colour.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
    "tests": 1
   },
   {
@@ -1117,6 +1117,13 @@
   },
   {
    "file": "lib/gist.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/gradient.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3212,10 +3219,12 @@
   "lib/colour.js": {
    "imports": [],
    "importedBy": [
+    "lib/gradient.js",
     "skills/util.js"
    ],
    "reachedBy": [
     "lib/writing-aids.js",
+    "skills/gradient.js",
     "skills/writing-aids.js"
    ]
   },
@@ -3754,6 +3763,14 @@
    ],
    "reachedBy": [
     "skills/games.js"
+   ]
+  },
+  "lib/gradient.js": {
+   "imports": [
+    "lib/colour.js"
+   ],
+   "importedBy": [
+    "skills/gradient.js"
    ]
   },
   "lib/ground.js": {
@@ -7287,6 +7304,12 @@
   },
   "skills/grades.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/gradient.js": {
+   "imports": [
+    "lib/gradient.js"
+   ],
    "importedBy": []
   },
   "skills/group.js": {

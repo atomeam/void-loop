@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 24,
+  "tested": 25,
   "checked": 14,
   "proven": 293
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 10,
     "checked": 1,
     "proven": 35
    },
@@ -39,6 +39,13 @@
      "success_rate": 1,
      "promoted": "2026-10-24",
      "streak": 1
+    },
+    {
+     "name": "gradient",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "forge",
