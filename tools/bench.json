@@ -6772,5 +6772,8 @@
   {"ask": "which sites have you beaten", "want": "skill:tower"},
   {"ask": "inspirational quote", "want": "skill:quote"},
   {"ask": "resonant membrane", "want": "skill:resonant-membrane"},
-  {"ask": "modes of mind field", "want": "skill:similar"}
+  {"ask": "modes of mind field", "want": "skill:similar"},
+  {"ask": "tell me a fact", "want": "skill:fact"},
+  {"ask": "sort these files: app.py, LICENSE, data.csv, logo.png", "want": "skill:file-sorter"},
+  {"ask": "what kind of files are these: README.md, config.yaml", "want": "skill:file-sorter"}
 ]
