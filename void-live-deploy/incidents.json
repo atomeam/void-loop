@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T14:44:29.240Z",
+   "sha": "59346d8ceecffe10e9a7679d6f3ed838effd9634",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40103203535",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json",
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "tools/wiki-look.test.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/art-rules.js"
+   ]
+  },
+  {
    "at": "2026-10-24T14:42:02.835Z",
    "sha": "a150e8f7910cefc13fbe0155988c377b5effb4f9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40103014507",
@@ -582,33 +603,6 @@
    "touched": [
     ".github/workflows/art-look.yml",
     "docs/MAP.md"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:45:03.028Z",
-   "sha": "30643de61c802c32a0a2357ef3f107033e015108",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40054883015",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    ".github/workflows/art-look.yml",
-    "docs/MAP.md",
-    "tools/card-art-route.test.mjs",
-    "tools/flakes.json",
-    "tools/skill-matchers.test.mjs",
-    "void-live-deploy/functions/api/card-art.js",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/art-rules.js",
-    "void-live-deploy/tower.evidence.json"
    ]
   }
  ]
