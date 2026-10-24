@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T04:11:19.625Z",
+   "sha": "6d14971aced39cf987b21ab499d4462ca3f60a03",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40060775100",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/playbooks/site-by-site.md",
+    "tools/test_void.mjs",
+    "tools/tower.test.mjs",
+    "void-live-deploy/conquered/index.html",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/skills/tower.js",
+    "void-live-deploy/tower.sentdown.json"
+   ]
+  },
+  {
    "at": "2026-10-24T04:10:30.447Z",
    "sha": "4a1ddc08103ab79352dd0c18a9e6d196a67f4068",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40060650756",
@@ -552,30 +573,6 @@
     "void-live-deploy/skills/deps.json",
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T01:35:38.608Z",
-   "sha": "4b88b528aab74cb040a0a36bf662f981e2cf709f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40049737416",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    "tools/is-it.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/is-it.js"
    ]
   }
  ]
