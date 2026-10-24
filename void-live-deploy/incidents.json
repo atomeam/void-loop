@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T00:41:08.015Z",
+   "sha": "851239bf2e855b8df7b5129ae6bd9f43af83373f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40045550660",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    "tools/tower-gate.mjs",
+    "tools/tower-verdict.test.mjs",
+    "void-live-deploy/tower.evidence.json"
+   ]
+  },
+  {
    "at": "2026-10-23T23:41:33.744Z",
    "sha": "3f97013f3268fdada4d64fcbe3d04a734f87ee99",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40039701974",
@@ -604,23 +625,6 @@
     "void-live-deploy/skills/order/1795-quote",
     "void-live-deploy/skills/showcase.js",
     "void-live-deploy/skills/what.json"
-   ]
-  },
-  {
-   "at": "2026-10-22T22:31:28.587Z",
-   "sha": "96b77c6315aa7ba8c6b91631c50e12864f5345b0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39863917495",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
-   ],
-   "touched": [
-    "domains/growth-inbox.md",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/quote.js"
    ]
   }
  ]
