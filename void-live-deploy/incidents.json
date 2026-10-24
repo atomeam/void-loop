@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T15:38:46.434Z",
+   "sha": "351d31fe834928fcf3261dcae98eaebff376408a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40107237134",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-24T15:33:59.005Z",
    "sha": "0ccb0aef408f61f07ddbb8b3a0a07de82fe3d48a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40106885084",
@@ -609,26 +624,6 @@
    "touched": [
     "tools/test_void.mjs",
     "void-live-deploy/skills/coin.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T03:43:08.261Z",
-   "sha": "96209ccbdce6854a5967c214516b44b0e7ddd687",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40058851945",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "void-live-deploy/void.growth.json",
-    "STANDING.md",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/book-news.js",
-    "void-live-deploy/lib/tome.js",
-    "void-live-deploy/tower.evidence.json"
    ]
   }
  ]
