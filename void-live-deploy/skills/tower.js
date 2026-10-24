@@ -34,7 +34,7 @@ export function centerOnYou(root) {
 export function towerHtml(t, esc) {
   const rows = t.floors.slice().reverse().map((f) => {
     const boss = f.floor === t.total && f.state === 'ahead' ? ' data-boss="yes"' : '';
-    const tag = f.state === 'beaten' ? 'DEFEATED' : f.state === 'current' ? '▶ YOU ARE HERE' : boss ? 'FINAL BOSS' : 'LOCKED';
+    const tag = f.state === 'beaten' ? (f.fatality ? 'FATALITY' : 'DEFEATED') : f.state === 'current' ? '▶ YOU ARE HERE' : boss ? 'FINAL BOSS' : 'LOCKED';
     const hp = f.state === 'current' ? '<span class="mk-vs">VERSE  VS  ' + esc(f.site.toUpperCase()) + '</span><span class="mk-hp" role="img" aria-label="' + esc(f.site + ' has ' + (f.m - f.n) + ' of ' + f.m + ' health left') + '">'
       + Array.from({ length: f.m }, (_, i) => '<i' + (i < f.n ? ' class="gone"' : '') + '></i>').join('') + '</span>' : '';
     return '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '"' + boss + '>'
@@ -50,7 +50,7 @@ export function detailText(f) {
   // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
   const open = f.left.filter((a) => !f.lost.includes(a));
   return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. ' + (f.page ? 'Verse\'s page for it: a-to-mind.com' + f.page.replace(/\?.*$/, '') + '. ' : '')
-    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '.' : 'Nothing left to beat.');
+    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '. ' : 'Nothing left to beat. ') + (f.fatality ? 'FATALITY: ' + f.fatality + '.' : '');
 }
 
 /** what moved between two towers, in words: the marker, a beaten floor, an aspect count. Pure. */

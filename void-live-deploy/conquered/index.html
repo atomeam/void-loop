@@ -13,6 +13,7 @@
   .mk-stack { max-height: none !important; overflow: visible !important; }
   #stamp { text-align: center; font-size: 11px; opacity: .5; margin-top: 8px; }
   a { color: inherit; }
+  .down { max-width: 640px; margin: 14px auto 0; padding: 8px 12px; border: 1px dashed #5a5470; border-radius: 8px; color: #a9a3be; font-size: 13px; }
 </style>
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/tower.js">
@@ -20,19 +21,21 @@
 <!-- /modulepreload -->
 </head>
 <body>
-<main><div id="tower">Reading the tower…</div><div id="stamp"></div></main>
+<main><div id="tower">Reading the tower…</div><div id="down"></div><div id="stamp"></div></main>
 <script type="module">
   import { tower } from '/lib/tower.js';
-  import { towerHtml, centerOnYou } from '/skills/tower.js';
+  import { towerHtml, centerOnYou, detailText } from '/skills/tower.js';
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   let first = true;
   async function draw() {
-    const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]);
+    const [inv, ev, sd] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.sentdown.json')]);
     const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {});
+    // the sites that sent Verse down a rank (a site the gate cannot measure, or that Verse could not beat after one honest fix): passed over for an easier one
+    const down = $('down'); down.textContent = ''; for (const x of (sd && sd.sites) || []) { const d = document.createElement('div'); d.className = 'down'; d.textContent = x.site + ' sent Verse down a rank: ' + x.why + ' Next: ' + x.next + '.'; down.appendChild(d); }
     $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
     const cur = $('tower').querySelector('[data-state="current"]'); if (first && cur) { first = false; cur.scrollIntoView({ block: 'center' }); }
-    for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('tower').querySelector('.tower-detail').textContent = f.n + ' of ' + f.m + ' aspects beaten' + (f.lost.length ? '. Still loses on: ' + f.lost.join(', ') : '') + (f.left.length ? '. Left to beat: ' + f.left.join(', ') : '') + '.'; };
+    for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('tower').querySelector('.tower-detail').textContent = detailText(f); };
   }
   draw(); setInterval(() => { if (document.visibilityState === 'visible') draw(); }, 30000);
 </script>

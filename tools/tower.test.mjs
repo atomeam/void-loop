@@ -43,3 +43,11 @@ test('a tie at the ideal score passes as equal-and-better; any other tie, or spe
   const r = rescore({ mobile: { verdict: 'equal', verse: 0, best: 0, evidence: 'e' }, reliability: { verdict: 'equal', verse: 3, best: 3, evidence: 'e' }, speed: { verdict: 'worse', verse: 3341, best: 908, evidence: 'e' }, history: { verdict: 'better', evidence: 'argon' } });
   assert.equal(r.mobile.verdict, 'equal-and-better'); assert.equal(r.reliability.verdict, 'equal-and-better'); assert.equal(r.speed.verdict, 'worse'); assert.equal(r.history.verdict, 'better');
 });
+test('every floor with a fatality says it in plain words, and the card detail carries it; the sent-down list is well formed', async () => {
+  const { detailText } = await import('../void-live-deploy/skills/tower.js');
+  const withKill = FLOORS.filter((f) => f.fatality); assert.ok(withKill.length >= 4);
+  for (const f of withKill) { assert.ok(f.fatality.length > 20 && f.fatality.length < 200, f.id); assert.match(detailText({ ...f, n: 1, m: 9, left: [], lost: [] }), new RegExp('FATALITY: ' + f.fatality.slice(0, 20).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))); }
+  assert.doesNotMatch(detailText({ site: 'x', n: 0, m: 9, left: [], lost: [], page: '' }), /FATALITY/);
+  const sd = JSON.parse((await import('node:fs')).readFileSync(new URL('../void-live-deploy/tower.sentdown.json', import.meta.url), 'utf8'));
+  assert.ok(sd.sites.length >= 1); for (const x of sd.sites) { assert.ok(x.site && x.why && x.next && /^\d{4}-\d\d-\d\d$/.test(x.at), x.site); assert.ok(!FLOORS.some((f) => f.site === x.site), x.site + ' was sent down, so it is not a floor that could be beaten'); }
+});

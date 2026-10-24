@@ -773,7 +773,7 @@ try {
         boss: (c.querySelector('.tower-floor[data-boss="yes"] .mk-tag') || {}).textContent, topIsBoss: c.querySelector('.tower-floor').dataset.boss === 'yes', struck: getComputedStyle(st('beaten')[0].querySelector('.mk-name')).textDecorationLine, head: (c.querySelector('.mk-score') || {}).textContent }; }).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-mk.png') }).catch(() => {});
     check('tower: three defeated (struck through, stamped), floor 4 is "YOU ARE HERE" with a health bar that has lost 4 of its segments, the rest locked, the final boss on top, and the head says "3 defeated"',
-      v.beaten === 3 && v.tags.every((x) => x === 'DEFEATED') && /YOU ARE HERE/.test(v.current || '') && v.segs >= 8 && v.gone === 4 && v.locked === FLOORS.length - 4 && v.boss === 'FINAL BOSS' && v.topIsBoss && /line-through/.test(v.struck) && /^3 defeated/.test(v.head) && !P.errors.length,
+      v.beaten === 3 && v.tags.every((x) => x === 'DEFEATED' || x === 'FATALITY') && v.tags.filter((x) => x === 'FATALITY').length === FLOORS.slice(0, 3).filter((f) => f.fatality).length && /YOU ARE HERE/.test(v.current || '') && v.segs >= 8 && v.gone === 4 && v.locked === FLOORS.length - 4 && v.boss === 'FINAL BOSS' && v.topIsBoss && /line-through/.test(v.struck) && /^3 defeated/.test(v.head) && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     await P.ctx.close();
   }
