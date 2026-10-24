@@ -1,6 +1,6 @@
 /**
- * showcase skill: "look what I made". Verse puts what it built since you were last here on the real stage, one thing at a
- * time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
+ * showcase skill: "look what I made". Verse shows what it built since you were last here, on the real stage.
+ * One thing at a time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
  * it used to stop at five). One at a time, so a thousand is as easy to page through as three; Done ends it whenever you like. A returning
@@ -47,8 +47,8 @@ export function lineOf(what) {
   return cut; // whole sentences, never cut with an ellipsis (owner, 2026-10-21: "i need to see the whole sentences")
 }
 
-/** what one of Verse's own upgrades did, from the line grow-self writes ("Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock,
- *  web4[, and the card art floors rise to …]"): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
+/** what one of Verse's own upgrades did, from the line grow-self writes (it opens "Verse hardened itself:" and names the benchmark asks and
+ *  the skills they are for, calendar-file, clock and web4, say): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
  *  clause alone read "Verse hardened itself" on every one of them (owner, 2026-10-20: "it should be saying the upgrade not just Verse hardened
  *  itself a bunch of times"). null for any other line. Pure. */
 export function hardenedLine(what) {
