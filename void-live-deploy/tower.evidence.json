@@ -1,4 +1,754 @@
 {
  "note": "Head-to-head verdicts per floor and aspect, written by tools/tower-gate.mjs from automated comparisons. Generic aspect names and counts only; the best sites and their detailed checklists stay private.",
- "floors": {}
+ "floors": {
+  "calculator": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "history": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "unit and scientific modes": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"what is 17% of 240\" on the live site",
+    "at": "2026-10-24T00:33:22.301Z"
+   }
+  },
+  "is it": {
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "big answer": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   },
+   "local language": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own is-it skill answered \"is it christmas?\" on the live site",
+    "at": "2026-10-24T00:32:16.315Z"
+   }
+  },
+  "coin flip": {
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "flip animation": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   },
+   "flip history": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own coin skill answered \"flip a coin\" on the live site",
+    "at": "2026-10-24T00:32:33.849Z"
+   }
+  },
+  "random number": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "range choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   },
+   "true randomness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own chance skill answered \"random number 1-100\" on the live site",
+    "at": "2026-10-24T00:32:49.806Z"
+   }
+  },
+  "word count": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "live counting": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   },
+   "characters and sentences": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"word count: the quick brown fox\" on the live site",
+    "at": "2026-10-24T00:33:03.418Z"
+   }
+  },
+  "stopwatch": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "alarms": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   },
+   "laps": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own timer skill answered \"set a timer for 10 minutes\" on the live site",
+    "at": "2026-10-24T00:33:36.040Z"
+   }
+  },
+  "unit converter": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "unit breadth": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   },
+   "both directions": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own calc skill answered \"100 c to f\" on the live site",
+    "at": "2026-10-24T00:36:27.043Z"
+   }
+  },
+  "password": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "length and character choice": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   },
+   "strength shown": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"generate a password\" on the live site",
+    "at": "2026-10-24T00:36:40.663Z"
+   }
+  },
+  "encoder": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "decode too": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   },
+   "files and character sets": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own dev-tools skill answered \"base64 encode hello\" on the live site",
+    "at": "2026-10-24T00:43:05.403Z"
+   }
+  },
+  "colour": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "every colour model": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   },
+   "shades and palettes": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own util skill answered \"#ff5733\" on the live site",
+    "at": "2026-10-24T00:40:39.640Z"
+   }
+  },
+  "time zones": {
+   "speed": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z",
+    "was": "unverified"
+   },
+   "reliability": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "world time": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   },
+   "meeting planner": {
+    "verdict": "better",
+    "called": true,
+    "evidence": "called beaten by verse on 2026-10-24: Verse's own worldtime skill answered \"time in tokyo\" on the live site",
+    "at": "2026-10-24T00:38:05.592Z"
+   }
+  }
+ }
 }
