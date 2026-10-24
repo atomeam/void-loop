@@ -90,13 +90,28 @@ export function directedPrompt(scene, rarity = 'common') {
 
 // a cartoon (skills/cartoon.js, owner 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"): "draw a cartoon cat"
 // is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
-export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, big friendly expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, children\'s picture-book style';
-/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon ' + key : '');
+// (no "children's picture-book style": it turned every person into a child)
+export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, classic animated cartoon style';
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon2': painted from its look (below); the
+ *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
+ *  was a smiling boy in a blue t-shirt). Pure. */
+export const cartoonKey = (key) => (key ? 'cartoon2 ' + key : '');
+// the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
+// subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
+export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
+  + 'In at most 40 words, the things that make it recognisable: for a person their age, build, hair, beard, face, usual clothes and what they are known for holding; '
+  + 'for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
+  + 'If you do not know it, reply only UNKNOWN.';
+export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon2? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
+/** a cartoon's prompt: from its look when there is one, else from its name. Pure. */
+export function cartoonPrompt(key, look = '') {
+  const name = String(key).replace(/^cartoon2? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
+  return (seen ? 'a cartoon of ' + name + ': ' + seen : 'a ' + name) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
+}
 
 /** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
-  if (kindWordOf(kind) === 'cartoon') return 'a ' + String(key).replace(/^cartoon /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
+  if (kindWordOf(kind) === 'cartoon') return cartoonPrompt(key);
   return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 

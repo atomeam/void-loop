@@ -219,3 +219,15 @@ test('past the Workers AI cap, or when it fails, Pollinations paints for free (u
     assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
   } finally { globalThis.fetch = real; }
 });
+// a cartoon is drawn from what its subject looks like, not the bare name (2026-10-24: "Cartoon Dimebag Darrel" came out a smiling boy in a blue t-shirt)
+test('a cartoon asks the text model for the look and paints from it; UNKNOWN or a refused look paints from the name; its row is the new cartoon2 one', async () => {
+  const look = 'a lean grown man with long dark hair, a long goatee dyed bright red, sunglasses, black band shirt, playing an electric guitar shaped like a lightning bolt';
+  const w = world({ scene: look });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
+  assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
+  assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
+  assert.equal(rows(w.env)[0].subject, 'cartoon2 dimebag darrel');
+  const u = world({ scene: 'UNKNOWN' }); await post(u.env, 'zorblax', 'cartoon'); assert.match(u.calls[0].o.prompt, /^a zorblax as a flat 2D cartoon/);
+  const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
+});

@@ -24,7 +24,7 @@ import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, cartoonPrompt } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -60,10 +60,10 @@ async function noteMiss(env, why) {
 // the Art Director (lib/art-rules.js): one short call to the free text model with the folded subject, the kind and the family (allow-lists only);
 // its scene is cleaned and checked by sceneOf, and anything that fails, is slow or is refused gives '' and the fixed template paints instead
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
-export async function direct(env, key, kind, family, take = '') {
+export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_SYSTEM, directorPrompt(key, kind, family, take)]) {
   try {
     const r = await Promise.race([
-      env.AI.run(models('merge'), { messages: [{ role: 'system', content: DIRECTOR_SYSTEM }, { role: 'user', content: directorPrompt(key, kind, family, take) }], max_tokens: 90 }),
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: ask[0] }, { role: 'user', content: ask[1] }], max_tokens: 90 }),
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
     ]);
     return sceneOf(scrubOut(redact(String(pick(r))), env), isSecret);
@@ -132,10 +132,11 @@ export async function onRequestPost({ request, env }) {
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
-  const scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon uses the fixed cartoon template
+  // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
+  const look = kind === 'cartoon' ? await direct(env, key, kind, '', '', [LOOK_SYSTEM, lookPrompt(key)]) : '', scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
   let img = '';
   try {
-    const prompt = scene ? directedPrompt(scene, rarity) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
+    const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
     let r = null;
     if (!overWorkers) {
       try { r = await Promise.race([paintOnce(env, models('art'), prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }
