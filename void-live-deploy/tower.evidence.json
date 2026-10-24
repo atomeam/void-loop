@@ -192,68 +192,85 @@
   "random number": {
    "speed": {
     "verdict": "better",
-    "verse": 132,
-    "best": 353,
-    "evidence": "Verse (/random/?min=1&max=100) 132 ms to the load event (median of 3, phone width) vs random.org 353 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:27:03.747Z"
+    "verse": 122,
+    "best": 230,
+    "evidence": "Verse (/random/?min=1&max=100) 122 ms to the load event (median of 3, phone width) vs random.org 230 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-24T16:27:03.747Z"
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:27:03.747Z"
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-24T16:27:03.747Z"
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:27:03.747Z"
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:27:03.747Z"
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
     "best": 4,
     "evidence": "Verse (/random/?min=1&max=100) 10 of 10 things a full answer shows vs random.org 4 of 10 things a full answer shows (Verse lacks: none; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base)",
-    "at": "2026-10-24T16:27:03.747Z",
+    "at": "2026-10-24T16:34:38.097Z",
     "of": 10
    },
    "design polish": {
     "verdict": "better",
-    "verse": 2,
+    "verse": 3,
     "best": 29,
-    "evidence": "Verse (/random/?min=1&max=100) 2 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:27:03.747Z"
+    "evidence": "Verse (/random/?min=1&max=100) 3 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T16:34:38.097Z"
    },
    "range choice": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 shown vs random.org 1 of 3 shown (Verse lacks: none; site lacks: how many, no repeats)",
-    "at": "2026-10-24T16:27:03.747Z",
+    "at": "2026-10-24T16:34:38.097Z",
     "of": 3,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/random/?min=1&max=100) 1 of 1 checked facts right for the same question vs random.org 1 of 1 checked facts right for the same question",
+    "at": "2026-10-24T16:34:38.097Z",
+    "of": 1
+   },
+   "true randomness": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/random/?min=1&max=100) 2 of 2 shown vs random.org 1 of 2 shown (Verse lacks: none; site lacks: a draw others can check)",
+    "at": "2026-10-24T16:34:38.097Z",
+    "of": 2,
     "part": true
    }
   },
@@ -311,45 +328,52 @@
   "stopwatch": {
    "speed": {
     "verdict": "better",
-    "verse": 222,
-    "best": 1059,
-    "evidence": "Verse 222 ms to the load event (median of 3, phone width) vs online-stopwatch.com 1059 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:39:22.374Z"
+    "verse": 310,
+    "best": 4971,
+    "evidence": "Verse 310 ms to the load event (median of 3, phone width) vs online-stopwatch.com 4971 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:36:41.046Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:39:22.374Z"
+    "at": "2026-10-24T16:36:41.046Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:39:22.374Z"
+    "at": "2026-10-24T16:36:41.046Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
-    "at": "2026-10-24T15:39:22.374Z"
+    "at": "2026-10-24T16:36:41.046Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:39:22.374Z"
+    "at": "2026-10-24T16:36:41.046Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:39:22.374Z"
+    "at": "2026-10-24T16:36:41.046Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.04), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T16:36:41.046Z"
    }
   },
   "unit converter": {
@@ -656,45 +680,52 @@
   "password strength": {
    "speed": {
     "verdict": "better",
-    "verse": 103,
-    "best": 22274,
-    "evidence": "Verse (/password-strength/) 103 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 22274 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:45:31.438Z"
+    "verse": 135,
+    "best": 1855,
+    "evidence": "Verse (/password-strength/) 135 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 1855 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:34:53.943Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-24T15:45:31.438Z"
+    "best": 1,
+    "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 1 of 3 loads answered",
+    "at": "2026-10-24T16:34:53.943Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:45:31.438Z"
+    "at": "2026-10-24T16:34:53.943Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-24T15:45:31.438Z"
+    "at": "2026-10-24T16:34:53.943Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:45:31.438Z"
+    "at": "2026-10-24T16:34:53.943Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/password-strength/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:45:31.438Z"
+    "at": "2026-10-24T16:34:53.943Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/password-strength/) 1 design defects vs howsecureismypassword.net 0 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), howsecureismypassword.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T16:34:53.943Z"
    }
   },
   "base converter": {
