@@ -627,6 +627,30 @@ try {
     check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
     await Q.ctx.close();
   }
+  // the password checker (lib/pwcheck.js, /password-strength/, skills/pwcheck.js; owner, 2026-10-24: back to the easy sites): worked out on the device, nothing sent
+  if (want("password strength: the page and the card rate a password on the device, send nothing while typing, and the leak check sends five characters")) {
+    const W = await fresh(); const origin = new URL(W.p.url()).origin, seen = [];
+    await W.ctx.route(/api\.pwnedpasswords\.com\/range\//, (r) => { seen.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: '0018A45C4D1DEF81644B54AB7F969B88D65:21\r\n00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2\r\n1E4C9B93F3F0682250B6CF8331B7EE68FD8:10434004' }); });
+    const pg = await W.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/password-strength/'); await pg.waitForSelector('#pw', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.fill('#pw', 'password'); await pg.waitForTimeout(300);
+    const weak = await pg.evaluate(() => ({ label: document.getElementById('label').textContent, off: document.getElementById('offline').textContent, why: [...document.querySelectorAll('#why li')].map((x) => x.textContent).join('|'), type: document.getElementById('pw').type }));
+    await pg.fill('#pw', 'Xk9$fTq2#Lm7@Vz4'); await pg.waitForTimeout(200); const strong = await pg.$eval('#label', (e) => e.textContent);
+    const third = reqs.filter((u) => /^https?:/.test(u)).length, typed = reqs.length - loaded; // before the leak button: typing sends nothing
+    await pg.fill('#pw', 'password'); await pg.click('#leak'); await pg.waitForFunction(() => /leaked/.test(document.getElementById('leakmsg').textContent), null, { timeout: 8000 }); const leak = await pg.$eval('#leakmsg', (e) => e.textContent);
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
+    const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
+    check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
+      loaded <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
+      JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
+    const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
+    await K.p.fill('.vpage.on .pw-in', 'letmein'); await K.p.waitForTimeout(250); const card = await K.p.$eval('.vpage.on .pw-out', (e) => e.textContent), hist = await K.p.evaluate(() => localStorage.getItem('a2m.void.loop.v1') || '');
+    await K.ask('is Tr0ub4dor&3 a good password', 900); const warn = await until(async () => K.p.$eval('.vpage.on .pw-warn', (e) => e.textContent).catch(() => ''), 6000);
+    check('password strength: "how secure is my password" opens a card with a password box that rates it on the device ("letmein" Very weak), the typed password is never in the ask history, and an ask that carries a password gets a warning that does not repeat it',
+      /Very weak/.test(card) && /Instantly|instantly/.test(card) && !/letmein/.test(hist) && /Do not type a real password/.test(warn) && !/Tr0ub4dor/.test(warn) && !K.errors.length, JSON.stringify({ card: card.slice(0, 120), warn: warn.slice(0, 80), errors: K.errors }));
+    await W.ctx.close(); await K.ctx.close();
+  }
   // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
   if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];

@@ -37,7 +37,7 @@ jobs:
           TOWER_PRIVATE: ${{ runner.temp }}/tower-private
           CHROME_PATH: /usr/bin/google-chrome
         run: |
-          for f in "is it" "coin flip" "random number" "word count" "calculator" "stopwatch" "unit converter" "password" "time zones" "colour" "encoder" "codebase"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
+          for f in "is it" "coin flip" "random number" "word count" "calculator" "stopwatch" "unit converter" "password" "time zones" "colour" "encoder" "codebase" "password strength"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}

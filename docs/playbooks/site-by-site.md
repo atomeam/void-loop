@@ -17,4 +17,4 @@
 
 **Mistakes made:** working a site the gate could never measure (tildegit.org sits behind Anubis);  calling floors beaten from "a skill answered" (taken back 2026-10-24); comparing with a remembered version of a site instead of its source; writing a scoreboard instead of improving Verse.
 
-**Done so far:** isitchristmas.com (2026-10-24): matched or ahead on the answer, languages, countdown, feeds, JSON and the turning flag; behind on the live crowd across the internet until `CLOUDFLARE_WORKERS_TOKEN` is set; chat left out on purpose.
+**Done so far:** howsecureismypassword.net (2026-10-24, the first floor chosen by data: `easiest-sites.mjs --tools`): one small page with no third party against its 23 requests; names what is weak and the fix; leak check by five characters. codebasehq.com: speed, mobile, accessibility, reliability measured (Verse ahead); its paid features unmeasured. tildegit.org: sent Verse down a rank (Anubis wall). isitchristmas.com (2026-10-24): matched or ahead on the answer, languages, countdown, feeds, JSON and the turning flag; behind on the live crowd across the internet until `CLOUDFLARE_WORKERS_TOKEN` is set; chat left out on purpose.
