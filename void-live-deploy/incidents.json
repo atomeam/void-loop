@@ -2,6 +2,24 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T04:08:17.565Z",
+   "sha": "af2461dae7941b1dc35f254cb5caa7fdefd4026c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40060557298",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/arrange.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/arrange.js",
+    "void-live-deploy/skills/music.js"
+   ]
+  },
+  {
    "at": "2026-10-24T03:45:50.434Z",
    "sha": "041f55fdaf6e085b2daeb0b8cc819c935780473b",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40059109366",
@@ -568,32 +586,6 @@
     "tools/site-scout.mjs",
     "tools/site-scout.test.mjs",
     "void-live-deploy/self.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T01:32:33.710Z",
-   "sha": "af57fa3166c66db82753a53ec1504423ac3967c6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40049612700",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    ".github/workflows/site-scout.yml",
-    "docs/MAP.md",
-    "docs/playbooks/site-by-site.md",
-    "tools/checks.mjs",
-    "tools/site-scout.mjs",
-    "tools/site-scout.test.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/tower.evidence.json"
    ]
   }
  ]
