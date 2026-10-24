@@ -21,3 +21,10 @@ test('a person can sign a floor beaten: every aspect passes, and keeps what it w
   const rows = called(calc, { speed: { verdict: 'worse', verse: 3341, best: 908, evidence: 'm' } }, 'argon', 'owner\'s call', at);
   assert.equal(gate(calc, rows).beaten, true); assert.equal(rows.speed.was, 'worse');
 });
+test('a row Verse awarded itself never counts, whoever writes it (taken back 2026-10-24)', async () => {
+  const { selfCalled } = await import('../void-live-deploy/lib/tower.js');
+  const self = { verdict: 'better', called: true, evidence: 'called beaten by verse on 2026-10-24: Verse\'s own calc skill answered' };
+  assert.equal(selfCalled(self), true); assert.equal(selfCalled({ verdict: 'better', called: true, evidence: 'called beaten by argon: owner\'s call' }), false);
+  const rows = Object.fromEntries(gate(calc, {}).left.map((a) => [a, self]));
+  assert.equal(gate(calc, rows).n, 0); assert.equal(gate(calc, rows).beaten, false);
+});
