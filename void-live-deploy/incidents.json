@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T01:49:31.198Z",
+   "sha": "c8dff6764dff985730216951898e27dff16089d4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40050917889",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/tower-gate.mjs",
+    "void-live-deploy/lib/tower.js"
+   ]
+  },
+  {
    "at": "2026-10-24T01:41:28.704Z",
    "sha": "8b511cf7397469215b935e53718fcfe8b1f57b09",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40050191290",
@@ -620,26 +635,6 @@
     "tools/test_3d.mjs",
     "tools/test_void.mjs",
     "tools/vendor-three.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:03:46.625Z",
-   "sha": "c9f4423be310c25ce54d7173b6f8fd4fdc92dcfe",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40030222940",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/playbooks/probe-and-fix.md",
-    "domains/void.agents.log.md",
-    "tools/propose-fix.mjs",
-    "tools/propose-fix.test.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]
