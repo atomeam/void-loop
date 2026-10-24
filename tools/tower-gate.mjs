@@ -169,9 +169,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is
   // scored on those answers instead of the pages above; an answer written into a box (a converter's output field) counts as shown
   if (probe && probe.ask && probe.truth) {
-    const answer = async (url) => { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {}); return await p.evaluate(() => (document.body ? document.body.innerText + '\n' + [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') : '')); } catch (_) { return null; } finally { await ctx.close(); } };
-    const vt = await answer(new URL(probe.ask.verse, VERSE).href), st = await answer(probe.ask.site);
+    // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
+    // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
+    const answer = async (url, type) => { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+      if (type) { const box = p.locator('textarea:visible, input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first(); await box.fill(type, { timeout: 8000 }); await box.press('Enter').catch(() => {}); await p.locator('button:visible, input[type=submit]:visible').filter({ hasText: /convert|calculate|submit|go\b/i }).first().click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(2000); }
+      const text = await p.evaluate(() => (document.body ? document.body.innerText + '\n' + [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') : ''));
+      return type ? text.split(type).join(' ') : text; } catch (_) { return null; } finally { await ctx.close(); } };
+    const vt = await answer(new URL(probe.ask.verse, VERSE).href), st = await answer(probe.ask.site, probe.ask.type);
     v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
+    // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
+    for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
   await b.close();
   const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), ev = (data.floors[f.id] = data.floors[f.id] || {});

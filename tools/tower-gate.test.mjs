@@ -31,7 +31,11 @@ test('is it: the right answer depends on the day', () => {
 });
 test('a probe exists only for a floor on the tower, and floors with no fair question leave accuracy unverified', () => {
   for (const id of Object.keys(PROBES)) assert.ok(FLOORS.some((f) => f.id === id), id);
-  for (const id of ['coin flip', 'base converter']) assert.equal(probeFor(id).truth, null, id);
+  assert.equal(probeFor('coin flip').truth, null, 'coin flip');
+  // the base converter's question is typed into hextobinary.com's box: exact digits pass, a rounded answer does not
+  const bc = probeFor('base converter'); assert.equal(bc.ask.type, '123456789abcdef0123456789abcdef'); assert.ok(bc.askParts['huge numbers'].length === 3);
+  assert.ok(bc.truth.every(([, re]) => re.test('1 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111 = 1,512,366,075,204,170,929,049,582,354,406,559,215')));
+  assert.ok(!bc.truth[1][1].test('1512366075204170900000000000000000000') && !bc.truth[1][1].test('1.512366075204171e+36'), 'rounded is wrong');
   assert.ok(probeFor('random number').ask && probeFor('random number').truth.length === 1, 'random number: the same question at addresses made for it');
   assert.equal(probeFor('weather'), null);
   for (const f of FLOORS) assert.ok(aspectsOf(f).includes('offline') && aspectsOf(f).includes('sharing'), f.id);

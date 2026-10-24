@@ -7,6 +7,10 @@
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
+// a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
+// run before or after it: a rounded 1.5123660752041709e+36 or a run of zeros at the end does not match. Pure.
+const exact = (digits) => new RegExp('(?<![0-9a-z])(?:0[\\s,_]?)*' + [...String(digits)].join('[\\s,_]?') + '(?![0-9a-z])', 'i'); // leading zeros allowed: 0001 0010 ... is the same number
+const HUGE = 0x123456789abcdef0123456789abcdefn;
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -63,7 +67,11 @@ export const PROBES = Object.freeze({
   },
   'base converter': {
     site: 'https://hextobinary.com/', verse: '/base-converter/?v=ff&b=16',
-    truth: null, // the site's address cannot carry the question, so the same question cannot be put to both
+    // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
+    // in the link. The question: a 31-digit hex number (121 bits), past what a double holds exactly (53 bits); the truth is computed with BigInt
+    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base-converter/?v=' + HUGE.toString(16) + '&b=16' },
+    truth: [['the exact binary', exact(HUGE.toString(2))], ['the exact decimal', exact(HUGE.toString(10))]],
+    askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],
   },
 });
@@ -90,7 +98,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
   const p = PROBES[id]; if (!p) return null;
-  return { site: p.site, verse: p.verse, ask: p.ask || null, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {
