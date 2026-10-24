@@ -57,6 +57,8 @@ export const FLOORS = [
 ];
 // fatality (owner, 2026-10-24: "i like the match then killshot", then "killshot= fatality"): once a site's aspects are matched, the one thing Verse does that the site cannot
 // answer, so the site becomes obsolete rather than equal. Only a thing that is built and live is written here; the card shows it as a plain line.
+/** a floor's fatality, which is also called its killshot (owner, 2026-10-24: "killshot= fatality", then "killshot can be kept too"): either field names it. Pure. */
+export const fatalityOf = (f) => String((f && (f.fatality || f.killshot)) || '');
 export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || []);
 // a floor's checklist plus anything its evidence names beyond it: a site that gains a feature Verse lacks (tools/tower-verdict.mjs --lost)
 // adds that aspect, and the floor is not beaten until Verse has it too

@@ -5,7 +5,7 @@
  * verified better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a floor shows the
  * Verse skills on it, N of M aspects beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine } from '../lib/tower.js?v=ladder-35';
+import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-36';
 
 const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^which\s+sites\s+have\s+you\s+beaten$|^what\s+sites\s+have\s+you\s+beaten$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
 export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
@@ -34,7 +34,7 @@ export function centerOnYou(root) {
 export function towerHtml(t, esc) {
   const rows = t.floors.slice().reverse().map((f) => {
     const boss = f.floor === t.total && f.state === 'ahead' ? ' data-boss="yes"' : '';
-    const tag = f.state === 'beaten' ? (f.fatality ? 'FATALITY' : 'DEFEATED') : f.state === 'current' ? '▶ YOU ARE HERE' : boss ? 'FINAL BOSS' : 'LOCKED';
+    const tag = f.state === 'beaten' ? (fatalityOf(f) ? 'FATALITY' : 'DEFEATED') : f.state === 'current' ? '▶ YOU ARE HERE' : boss ? 'FINAL BOSS' : 'LOCKED';
     const hp = f.state === 'current' ? '<span class="mk-vs">VERSE  VS  ' + esc(f.site.toUpperCase()) + '</span><span class="mk-hp" role="img" aria-label="' + esc(f.site + ' has ' + (f.m - f.n) + ' of ' + f.m + ' health left') + '">'
       + Array.from({ length: f.m }, (_, i) => '<i' + (i < f.n ? ' class="gone"' : '') + '></i>').join('') + '</span>' : '';
     return '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '"' + boss + '>'
@@ -50,7 +50,7 @@ export function detailText(f) {
   // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
   const open = f.left.filter((a) => !f.lost.includes(a));
   return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. ' + (f.page ? 'Verse\'s page for it: a-to-mind.com' + f.page.replace(/\?.*$/, '') + '. ' : '')
-    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '. ' : 'Nothing left to beat. ') + (f.fatality ? 'FATALITY: ' + f.fatality + '.' : '');
+    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '. ' : 'Nothing left to beat. ') + (fatalityOf(f) ? 'FATALITY (the killshot): ' + fatalityOf(f) + '.' : '');
 }
 
 /** what moved between two towers, in words: the marker, a beaten floor, an aspect count. Pure. */
