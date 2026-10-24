@@ -1,50 +1,38 @@
 /**
- * tower skill — "the tower", "verse tower", "which sites have you beaten": the only-site-you-need ladder (lib/tower.js). A vertical stack
- * of floors, each one real site named in plain text as a comparison (no logos or brand styling, no affiliation implied), easiest at the
- * bottom. Beaten floors glow, the current fight shows its progress, higher floors are dim. A floor is beaten only when every aspect is
- * verified better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a floor shows the
- * Verse skills on it, N of M aspects beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
+ * tower skill — "the tower", "verse tower", "which sites have you beaten": the only-site-you-need ladder (lib/tower.js). The site Verse is
+ * on now at the top with each of its aspects, every conquered site under it, nothing above (the queue has no end). Each site is named in
+ * plain text as a comparison (no logos or brand styling, no affiliation implied). A site is conquered only when every aspect is verified
+ * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
+ * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-38';
+import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-39';
 
 const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^which\s+sites\s+have\s+you\s+beaten$|^what\s+sites\s+have\s+you\s+beaten$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
 export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
 
-// The tower as a fighting-game ladder (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on, who we passed and who's
-// ahead"): the final boss at the top, floor 1 at the bottom. A defeated site is struck through and stamped; the one Verse is fighting glows,
-// says YOU ARE HERE and shows its health bar (one segment per aspect, a segment drains for each one Verse beats); the ones ahead are locked.
-const MK_CSS = '<style>.vpage:has(.mk) .vc-art{display:none}.mk{max-width:520px;margin:0 auto}.mk-head{text-align:center;font:900 22px/1 Impact,system-ui,sans-serif;letter-spacing:.18em;color:#ffd166;text-shadow:0 0 12px rgba(255,120,60,.6);margin:2px 0 4px}'
-  + '.mk-score{text-align:center;font-size:13px;opacity:.85;margin-bottom:8px;letter-spacing:.06em}.mk-stack{max-height:min(44vh,330px);overflow-y:auto;padding:2px 4px;scrollbar-width:thin}'
-  + '.mk-stack .tower-floor{display:grid;grid-template-columns:2.2em 1fr auto;grid-template-areas:"no name tag" "no count count";align-items:center;gap:0 8px;width:100%;text-align:left;margin:4px 0;padding:7px 10px;border:2px solid #3a3550;border-radius:6px;background:linear-gradient(#15121f,#0b0910);color:#eee;font:inherit;cursor:pointer;position:relative;overflow-wrap:anywhere}'
-  + '.mk-no{grid-area:no;font:900 22px/1 Impact,system-ui,sans-serif;opacity:.5;text-align:center}.mk-name{grid-area:name;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:14px}'
-  + '.mk-tag{grid-area:tag;font:900 11px/1 Impact,system-ui,sans-serif;letter-spacing:.16em;padding:3px 7px;border-radius:3px}.mk-count{grid-area:count;font-size:11px;opacity:.65;margin-top:2px}'
-  + '.tower-floor[data-state=beaten]{border-color:#7a2630;background:linear-gradient(#1b0d12,#0e070a);opacity:.8}.tower-floor[data-state=beaten] .mk-name{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:#ff4560;opacity:.6}'
-  + '.tower-floor[data-state=beaten] .mk-tag{color:#ff4560;border:2px solid #ff4560;transform:rotate(-6deg)}.tower-floor[data-state=beaten] .mk-no{color:#ff4560;opacity:.8}'
-  + '.tower-floor[data-state=current]{border-color:#ffd166;background:linear-gradient(#2a1c10,#150d07);box-shadow:0 0 18px rgba(255,170,60,.55);animation:mk-pulse 1.1s ease-in-out infinite;padding:11px 10px}'
-  + '.tower-floor[data-state=current] .mk-name{font-size:17px;color:#fff}.tower-floor[data-state=current] .mk-tag{background:#ffd166;color:#2a1604}.tower-floor[data-state=current] .mk-no{opacity:1;color:#ffd166;font-size:28px}'
-  + '.mk-hp{grid-column:1/-1;display:flex;gap:2px;margin-top:6px}.mk-hp i{flex:1;height:9px;background:#e0364f;border-radius:1px}.mk-hp i.gone{background:#2a2433}.mk-vs{grid-column:1/-1;font-size:11px;letter-spacing:.14em;color:#ffd166;margin-top:5px}'
-  + '.tower-floor[data-state=ahead]{opacity:.55}.tower-floor[data-state=ahead] .mk-tag{color:#8a86a0;border:1px solid #3a3550}.tower-floor[data-state=ahead][data-boss=yes]{opacity:.9;border-color:#6a2a8a}.tower-floor[data-state=ahead][data-boss=yes] .mk-tag{color:#e8a8ff;border-color:#a04ad0}'
-  + '@keyframes mk-pulse{50%{box-shadow:0 0 30px rgba(255,200,80,.9)}}@media (prefers-reduced-motion:reduce){.tower-floor[data-state=current]{animation:none}}</style>';
-/** the stack scrolled so the floor Verse is on sits in the middle (call after drawing). */
-export function centerOnYou(root) {
-  const stack = root && root.querySelector('.mk-stack'), cur = stack && stack.querySelector('[data-state="current"]');
-  if (stack && cur) stack.scrollTop = Math.max(0, cur.offsetTop - stack.offsetTop - stack.clientHeight / 2 + cur.offsetHeight / 2);
-}
+// The tower, plain (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"; "drop
+// the fighting-game gimmicks"): the site Verse is on now, with each of its aspects and where it stands, and under it every site already
+// conquered. The queue past the current site is not drawn: it has no end.
+const TW_CSS = '<style>.vpage:has(.tw) .vc-art{display:none}.tw{max-width:520px;margin:0 auto}.tw-head{text-align:center;font-weight:700;font-size:17px;margin:2px 0}'
+  + '.tw-score{text-align:center;font-size:13px;opacity:.75;margin-bottom:8px}.tw-stack{max-height:min(48vh,360px);overflow-y:auto;padding:2px}'
+  + '.tw-stack .tower-floor{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 10px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer;overflow-wrap:anywhere}'
+  + '.tw-name{font-weight:700}.tw-count{font-size:12px;opacity:.7;margin-left:6px}.tower-floor[data-state=current]{border-color:#c9b6ff;padding:10px 12px}.tower-floor[data-state=current] .tw-name{font-size:16px}'
+  + '.tw-aspects{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 10px;font-size:12px}.tw-aspects li[data-v=won]{color:#8fe3a8}.tw-aspects li[data-v=lost]{color:#ff8a8a}.tw-aspects li[data-v=open]{opacity:.6}'
+  + '.tower-floor[data-state=beaten]{opacity:.75}.tower-floor[data-state=beaten] .tw-name{text-decoration:line-through}</style>';
+const MARK = { won: '✓', lost: '✗', open: '·' };
+/** each aspect of a site and where Verse stands on it: won, lost or not measured yet. Pure. */
+export const aspectRows = (f) => (f.aspects || []).map((a) => ({ a, v: f.lost.includes(a) ? 'lost' : f.left.includes(a) ? 'open' : 'won' }));
+/** the stack scrolled to its top, where the current site is (call after drawing). */
+export function centerOnYou(root) { const stack = root && root.querySelector('.tw-stack'); if (stack) stack.scrollTop = 0; }
 export function towerHtml(t, esc) {
-  const rows = t.floors.slice().reverse().map((f) => {
-    const boss = f.floor === t.total && f.state === 'ahead' ? ' data-boss="yes"' : '';
-    const tag = f.state === 'beaten' ? (fatalityOf(f) ? 'FATALITY' : 'DEFEATED') : f.state === 'current' ? '▶ YOU ARE HERE' : boss ? 'FINAL BOSS' : 'LOCKED';
-    const hp = f.state === 'current' ? '<span class="mk-vs">VERSE  VS  ' + esc(f.site.toUpperCase()) + '</span><span class="mk-hp" role="img" aria-label="' + esc(f.site + ' has ' + (f.m - f.n) + ' of ' + f.m + ' health left') + '">'
-      + Array.from({ length: f.m }, (_, i) => '<i' + (i < f.n ? ' class="gone"' : '') + '></i>').join('') + '</span>' : '';
-    return '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '"' + boss + '>'
-      + '<span class="mk-no" aria-hidden="true">' + esc(f.floor) + '</span><span class="mk-name">' + esc(f.site) + '</span><span class="mk-tag">' + esc(tag) + '</span>'
-      + '<span class="mk-count">' + esc(f.n + ' of ' + f.m + ' aspects beaten') + '</span>' + hp + '</button>';
-  }).join('');
-  const done = t.floors.filter((f) => f.beaten).length;
-  return MK_CSS + '<div class="mk"><div class="mk-head">THE TOWER</div><div class="mk-score tower-line">' + esc(done + ' defeated · floor ' + Math.min(t.marker, t.total) + ' · no top: ' + (t.total - done) + ' open' + (t.frontier && t.frontier.ranked ? ' + ' + t.frontier.ranked + ' ranked' : '') + ', then every site') + '</div>'
-    + '<div class="mk-stack tower-stack">' + rows + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
-    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A site falls only when every aspect is measured head to head or judged better by a person who used both; Verse never awards itself one. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
+  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
+  const row = (f) => '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">'
+    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'conquered' : f.n + ' of ' + f.m + ' aspects beaten') + '</span>'
+    + (f.state === 'current' ? '<ul class="tw-aspects">' + aspectRows(f).map((r) => '<li data-v="' + r.v + '">' + MARK[r.v] + ' ' + esc(r.a) + '</li>').join('') + '</ul>' : '') + '</button>';
+  return TW_CSS + '<div class="tw"><div class="tw-head">The tower</div><div class="tw-score tower-line">' + esc(t.beaten + ' conquered' + (cur ? ' · now: ' + cur.site : '')) + '</div>'
+    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) : '') + won.map(row).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
+    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
 export function detailText(f) {
   // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
@@ -57,7 +45,8 @@ export function detailText(f) {
 export function changes(prev, next) {
   const out = [];
   if (!prev || !next) return out;
-  if (next.marker !== prev.marker) out.push('The marker moved to floor ' + Math.min(next.marker, next.total) + '.');
+  const now = (t) => (t.floors.find((f) => f.state === 'current') || {}).site;
+  if (now(next) !== now(prev) && now(next)) out.push('Now: ' + now(next) + '.');
   for (const f of next.floors) {
     const was = prev.floors.find((x) => x.id === f.id); if (!was) continue;
     if (f.beaten && !was.beaten) out.push(f.site + ' is beaten.');

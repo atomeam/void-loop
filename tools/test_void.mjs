@@ -823,20 +823,21 @@ try {
       JSON.stringify({ card, raws, by, errors: F.errors }));
     await F.ctx.close();
   }
-  // the tower as a fighting-game ladder (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on, who we passed and who's ahead"):
-  // the evidence is stubbed so three floors are beaten and the fourth is half won
-  if (want("tower: a fighting-game ladder: defeated floors struck through, the one being fought glowing with its health bar, the rest locked, the boss on top")) {
+  // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
+  // the evidence is stubbed so three sites are conquered and the fourth is 4 aspects in
+  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
     const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
     const rows = (f, n) => Object.fromEntries([...aspectsOf(f), ...(f.extra || [])].slice(0, n).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
     const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => { const st = (s) => [...c.querySelectorAll('.tower-floor[data-state="' + s + '"]')]; const cur = st('current')[0], hp = cur && cur.querySelector('.mk-hp');
-      return { beaten: st('beaten').length, tags: st('beaten').map((b) => b.querySelector('.mk-tag').textContent), current: cur && cur.textContent, segs: hp ? hp.children.length : 0, gone: hp ? hp.querySelectorAll('.gone').length : 0, locked: st('ahead').length,
-        boss: (c.querySelector('.tower-floor[data-boss="yes"] .mk-tag') || {}).textContent, topIsBoss: c.querySelector('.tower-floor').dataset.boss === 'yes', struck: getComputedStyle(st('beaten')[0].querySelector('.mk-name')).textDecorationLine, head: (c.querySelector('.mk-score') || {}).textContent }; }).catch((e) => ({ err: String(e) }));
-    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-mk.png') }).catch(() => {});
-    check('tower: three defeated (struck through, stamped), floor 4 is "YOU ARE HERE" with a health bar that has lost 4 of its segments, the rest locked, the final boss on top, and the head says "3 defeated"',
-      v.beaten === 3 && v.tags.every((x) => x === 'DEFEATED' || x === 'FATALITY') && v.tags.filter((x) => x === 'FATALITY').length === FLOORS.slice(0, 3).filter((f) => f.fatality).length && /YOU ARE HERE/.test(v.current || '') && v.segs >= 8 && v.gone === 4 && v.locked === FLOORS.length - 4 && v.boss === 'FINAL BOSS' && v.topIsBoss && /line-through/.test(v.struck) && /^3 defeated/.test(v.head) && !P.errors.length,
+    const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
+      return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
+        struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
+    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
+    check('tower: ' + FLOORS[3].site + ' on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, and the head says "3 conquered"',
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === FLOORS[3].site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && /^3 conquered · now: /.test(v.head || '')
+        && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     await P.ctx.close();
   }
@@ -850,7 +851,7 @@ try {
     const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
     const before = await line(); beaten = true;
     const after = await until(async () => { const r = await line(); return r && /calculator\.net is beaten/.test(r.live) ? r : null; }, 6000);
-    check('tower: the open card picked up a beaten floor on its own and said so ("calculator.net is beaten", the marker moved), with a fresh "updated" time', !!before && !!after && /11 of 11/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    check('tower: the open card picked up a conquered site on its own and said so ("calculator.net is beaten"), with a fresh "updated" time', !!before && !!after && /calculator\.net\s*conquered/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
     await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
     check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
     await P.ctx.close();
