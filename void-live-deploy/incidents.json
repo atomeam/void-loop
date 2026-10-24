@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:04:27.074Z",
+   "sha": "0a9af46ff922271dab91d8c4277576c1e7edcaf3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40051995290",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/flakes.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json",
+    ".github/workflows/easiest-sites.yml",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/easiest-sites.mjs",
+    "tools/easiest-sites.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-24T01:56:40.049Z",
    "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40051422704",
@@ -582,34 +603,6 @@
     "void-live-deploy/self.json",
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:16:32.669Z",
-   "sha": "86794bb41882b25453d4a79afcd3976907d845e0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40030671619",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/coin.test.mjs",
-    "tools/families.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/coin.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0011-coin",
-    "void-live-deploy/skills/what.json",
     "void-live-deploy/void.growth.json"
    ]
   }
