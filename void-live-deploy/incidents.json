@@ -2,6 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T15:31:07.961Z",
+   "sha": "f98128ba9e9412d8f2c0773e3ffd2ce470e98f0f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40106677854",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml"
+   ]
+  },
+  {
    "at": "2026-10-24T15:26:53.617Z",
    "sha": "dc7561e22053a8ba24a60b38ae1c9e9b75228e75",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40106341032",
@@ -605,20 +619,6 @@
     "tools/skill-matchers.test.mjs",
     "void-live-deploy/functions/api/card-art.js",
     "void-live-deploy/lib/art-rules.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T03:10:32.369Z",
-   "sha": "50166c16c4b84dab70c72f460eec572088b8a33e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40056620797",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/checks.mjs"
    ]
   }
  ]
