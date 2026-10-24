@@ -38,7 +38,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'coin flip', 'colour', 'colour codes', 'gradient', 'random user', 'wheel']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'coin flip', 'colour', 'colour codes', 'gradient', 'random number', 'random user', 'wheel']);
   const has = (t) => score(t, models).has;
   assert.deepEqual(has('OKLCH'), ['OKLCH']); assert.deepEqual(has('Hunter Lab'), ['Hunter Lab']); assert.deepEqual(has('CIE Lab'), ['CIELab']); assert.deepEqual(has('CIELCH'), ['CIELCh']); assert.deepEqual(has('CIELUV'), ['CIELUV']);
   // hexcolor16.com's list, as the owner read it off the page on 2026-10-24
