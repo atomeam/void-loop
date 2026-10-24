@@ -2,6 +2,28 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:53:05.183Z",
+   "sha": "5176580df10b184dfe30e856254e9fcc99580083",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40055435050",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/art-look.yml",
+    "docs/MAP.md",
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/art-rules.js"
+   ]
+  },
+  {
    "at": "2026-10-24T02:50:54.890Z",
    "sha": "7cf0f6e8da5970bbaecc394f09c78ebcd5b9317c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40055295141",
@@ -588,21 +610,6 @@
    "touched": [
     ".github/workflows/tower-gate.yml",
     "tools/tower-gate.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:30:28.548Z",
-   "sha": "628e6ffe81fd4d0ffeca7cf8dda5c6e01bc39c15",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40039287608",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/tower-gate.mjs",
-    "void-live-deploy/tower.evidence.json"
    ]
   }
  ]
