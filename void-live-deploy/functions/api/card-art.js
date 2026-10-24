@@ -85,7 +85,9 @@ export async function lookFor(env, key) {
   let text = '';
   try {
     const r = await Promise.race([
-      env.AI.run(models('merge'), { messages: [{ role: 'system', content: LOOK_SYSTEM }, { role: 'user', content: lookPrompt(key) }], max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }), // a thinking model spent the 400 tokens thinking and said nothing (live, 2026-10-24: 'empty ... choices')
+      // the answer model (gpt-oss-120b), not the small free one: one call per subject ever (the picture is kept), and the free model knew a famous
+      // guitarist only as "a long dark beard and a lightning-bolt guitar" (live, 2026-10-24), missing the dyed goatee and the outfit
+      env.AI.run(models('answer'), { messages: [{ role: 'system', content: LOOK_SYSTEM }, { role: 'user', content: lookPrompt(key) }], max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }), // a thinking model spent the 400 tokens thinking and said nothing (live, 2026-10-24: 'empty ... choices')
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
     ]);
     text = scrubOut(redact(String(pick(r))), env);

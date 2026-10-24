@@ -75,9 +75,9 @@ export function directorPrompt(key, kind = 'answer', family = '', take = '') {
 }
 /** the Director's reply -> one clean scene (letters, digits, spaces and plain punctuation, at most SCENE_MAX characters, at least four words), or ''
  *  when it is empty, too short, or would be refused as a subject (sexual, hateful, a brand or artist, shaped like a secret). Pure. */
-export function sceneOf(text, isSecret = () => false) {
+export function sceneOf(text, isSecret = () => false, max = SCENE_MAX) {
   const line = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').split(/\n/).map((l) => l.trim()).find((l) => l) || '';
-  const clean = line.replace(/^(?:scene|answer|output)\s*:\s*/i, '').replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, SCENE_MAX).replace(/[ ,.'-]+$/, '');
+  const clean = line.replace(/^(?:scene|answer|output)\s*:\s*/i, '').replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max).replace(/[ ,.'-]+$/, '');
   if (clean.split(' ').length < 4) return '';
   const all = clean.toLowerCase(); // a subject's refusals, word by word (refusal()'s run-of-letters secret test would trip on any sentence)
   if (isSecret(clean) || keeperOf(clean) || SEXUAL.test(all) || HATE.test(all) || BRANDS.test(all) || /\d{6,}/.test(all) || clean.split(' ').some((w) => w.length >= 28)) return '';
@@ -92,23 +92,25 @@ export function directedPrompt(scene, rarity = 'common') {
 // is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
 // (no "children's picture-book style": it turned every person into a child)
 export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, classic animated cartoon style';
-/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon5': painted from its look (below); the
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon6': painted from its look (below); the
  *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
  *  was a smiling boy in a blue t-shirt). Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon5 ' + key : '');
+export const cartoonKey = (key) => (key ? 'cartoon6 ' + key : '');
 // the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
 // subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
 export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
-  + 'In at most 40 words, the things that make it recognisable: for a person their age, build, hair, beard, face, usual clothes and what they are known for holding; '
-  + 'for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
+  + 'In at most 55 words, the signature details fans recognise first, exact and specific, with their real colours: for a person their hair (length, '
+  + 'curl, colour), facial hair (shape, and its colour if dyed), their best-known outfit piece by piece, and the exact shape and colour of what they are '
+  + 'known for holding; for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
   + 'Reply in exactly two lines: "Name: " and its name as it is usually spelled, then "Look: " and the description. '
   + 'If you do not know it, reply only UNKNOWN.';
 /** the text model's look -> one clean line, or '' (UNKNOWN, refused, or too short): the longest line of the reply, so a preamble such as
  *  "Here is a description:" is never taken for the look, then the same checks as the Director's scene. Pure. */
+export const LOOK_MAX = 380;
 export function lookOf(text, isSecret = () => false) {
   const lines = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').split(/\n/).map((l) => l.replace(/^[\s*#>-]+/, '').trim()).filter(Boolean);
   const best = lines.sort((a, b) => b.length - a.length)[0] || '';
-  return /\bunknown\b/i.test(best) && best.split(' ').length < 6 ? '' : sceneOf(best, isSecret);
+  return /\bunknown\b/i.test(best) && best.split(' ').length < 6 ? '' : sceneOf(best, isSecret, LOOK_MAX);
 }
 /** the usual spelling the text model gave, kept only when it is the same name as asked, near enough letter for letter (at most a third of
  *  the letters changed and the same number of words): "dimebag darrel" may become "Dimebag Darrell", never a different subject. Pure. */

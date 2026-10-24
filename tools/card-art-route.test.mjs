@@ -27,7 +27,7 @@ async function formOf(o) {
 function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false } = {}) {
   store.clear(); route.resetReady();
   const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
-  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
+  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge') || model === models('answer')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
   return { env, calls, dcalls };
 }
 const post = (env, subject, kind = 'answer', rarity = 'common', ip = '1.1.1.1') => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ subject, kind, rarity }) }) });
@@ -227,11 +227,11 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon5 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon6 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
-  assert.equal(pre.dcalls[0].o.max_tokens, 400); assert.equal(pre.dcalls[0].o.chat_template_kwargs.enable_thinking, false, 'no thinking: it ate the whole answer');
+  assert.equal(pre.dcalls[0].o.max_tokens, 700); assert.equal(pre.dcalls[0].o.chat_template_kwargs.enable_thinking, false, 'no thinking: it ate the whole answer');
   const u = world({ scene: 'UNKNOWN' }); await post(u.env, 'zorblax', 'cartoon'); assert.match(u.calls[0].o.prompt, /^a zorblax as a flat 2D cartoon/);
   const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
 });
@@ -252,4 +252,11 @@ test('a cartoon takes the usual spelling from the look reply, paints and shows i
   const bad = world({ scene: 'Name: Pantera\nLook: ' + look }); const b = await (await post(bad.env, 'dimebag darrel', 'cartoon')).json();
   assert.equal(b.name, undefined); assert.match(bad.calls[0].o.prompt, /^a cartoon of dimebag darrel: /);
   const none = world({ directFail: true }); const c = await (await post(none.env, 'cat', 'cartoon')).json(); assert.match(c.lookWhy, /^error slow/);
+});
+test('a cartoon look is asked of the answer model, keeps up to 380 characters of signature detail, and still refuses what a scene would', async () => {
+  const { lookOf, LOOK_MAX } = await import('../void-live-deploy/lib/art-rules.js');
+  const w = world({ scene: 'Name: Dimebag Darrell\nLook: a lean man with long curly dark brown hair, a long braided goatee dyed bright pink, a sleeveless black shirt, baggy green camouflage cargo shorts, a razor blade pendant necklace, playing a blue electric guitar whose body is shaped like a jagged lightning bolt with a matching lightning headstock' });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(w.dcalls[0].model, models('answer')); assert.match(a.look, /dyed bright pink.*camouflage cargo shorts.*lightning bolt/); assert.ok(a.look.length > 240 && a.look.length <= LOOK_MAX);
+  assert.equal(lookOf('Look: a cartoon mouse in the style of disney with big round ears and red shorts and yellow shoes'), '', 'a brand anywhere in the look is refused');
 });
