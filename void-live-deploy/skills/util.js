@@ -129,7 +129,8 @@ async function run(text, api) {
     const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
     el = q.chars
       ? showPage((p) => { p.innerHTML = '<h2>Characters</h2>' + big(chars + (chars === 1 ? ' character' : ' characters'), 44) + '<p style="color:#8a8a8a">' + noSp + ' without spaces · ' + words + (words === 1 ? ' word' : ' words') + '</p>'; })
-      : showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'; });
+      : showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'
+        + (q.s.length <= 4000 ? '<p><a class="wc-open" href="/word-count/?t=' + encodeURIComponent(q.s) + '">Sentences, reading time and keywords, counted as you type</a></p>' : ''); });
   } else if (q.kind === 'uuid') {
     const id = (crypto.randomUUID && crypto.randomUUID()) || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => { const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16; return (c === 'x' ? r : (r & 3) | 8).toString(16); });
     el = showPage((p) => { p.innerHTML = '<h2>UUID</h2>' + big(id, 22) + copyBtn + '<p style="color:#8a8a8a">version 4, random, made in your browser · ask again for another</p>'; });

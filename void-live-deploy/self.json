@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-24T17:54:46Z",
-   "subject": "The undo pile records a restore made with its button at once"
+   "at": "2026-10-24T18:45:53Z",
+   "subject": "The gate takes back base64encode.org's accuracy loss: an output box that never filled is no answer, not a wrong one"
   },
   {
-   "at": "2026-10-24T17:49:34Z",
-   "subject": "Tower gate: gradient,password,wheel measured against their live sites"
+   "at": "2026-10-24T18:42:31Z",
+   "subject": "Incident: the browser suite failed on 8edd7fcb (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:49:19Z",
-   "subject": "Incident: the browser suite failed on c6985fe4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:34:38Z",
+   "subject": "Incident: the browser suite failed on d3a59983 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:43:34Z",
-   "subject": "Main's three red book checks read the book as it is now"
+   "at": "2026-10-24T18:33:04Z",
+   "subject": "Tower gate: wheel,password,calendar measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:43:05Z",
-   "subject": "Incident: the browser suite failed on 903e27a7 (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:29:47Z",
+   "subject": "Incident: the browser suite failed on cba0fd62 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:41:40Z",
-   "subject": "Tower gate: gradient,base converter,password measured against their live sites"
+   "at": "2026-10-24T18:27:55Z",
+   "subject": "Incident: the browser suite failed on 30e449a3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:41:32Z",
-   "subject": "Verse fixes its coin skill: learn to handle \"coin toss\""
+   "at": "2026-10-24T18:27:35Z",
+   "subject": "Tower gate: wheel,password,recipes measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:40:02Z",
-   "subject": "Verse fixes its coin skill: learn to handle \"heads or tails\""
+   "at": "2026-10-24T18:26:25Z",
+   "subject": "wheelofnames.com, accuracy and remove the winner: the gate spins both wheels once and reads what the spin showed"
   },
   {
-   "at": "2026-10-24T17:32:41Z",
-   "subject": "Incident: the browser suite failed on e9e85c8e (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:25:18Z",
+   "subject": "Incident: the browser suite failed on 35fe95e4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:31:13Z",
-   "subject": "A Clear list button for Verse's builds that stays cleared, and quiz and challenge start in a fresh visit"
+   "at": "2026-10-24T18:20:57Z",
+   "subject": "randomuser.me, accuracy: the gate asks both for the same five people and checks they hold together"
   },
   {
-   "at": "2026-10-24T17:25:59Z",
-   "subject": "Incident: the browser suite failed on 271b95fd (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:19:59Z",
+   "subject": "Tower gate: wheel,password,translate measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:25:52Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
+   "at": "2026-10-24T18:14:28Z",
+   "subject": "The self card lists each skill's own new phrases, and a saved countdown card reads cleanly"
   },
   {
-   "at": "2026-10-24T17:24:49Z",
-   "subject": "Tower gate: gradient,base converter,password measured against their live sites"
+   "at": "2026-10-24T18:12:02Z",
+   "subject": "Tower gate: random user,word count,encoder measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:22:24Z",
-   "subject": "Incident: the browser suite failed on ff01da4d (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:10:36Z",
+   "subject": "Incident: the browser suite failed on 757c1c37 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:18:43Z",
-   "subject": "hextobinary.com, accuracy and huge numbers: the gate types the question into a converter's box, and both sites get the same 121-bit number"
+   "at": "2026-10-24T18:07:36Z",
+   "subject": "Accuracy for word count, unit converter and encoder: the gate types the question into each site's box, and Verse counts a closing \"!\""
   },
   {
-   "at": "2026-10-24T17:18:37Z",
-   "subject": "Tower gate: base converter,password,gradient measured against their live sites"
+   "at": "2026-10-24T18:04:54Z",
+   "subject": "Tower gate: gradient,password,weather measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:13:58Z",
-   "subject": "Main's two red image checks, Recently built clears on Done, the stability dial fades old reds, Service health says what it adds"
+   "at": "2026-10-24T18:01:38Z",
+   "subject": "Tower gate: gradient,password,random user measured against their live sites"
   },
   {
-   "at": "2026-10-24T17:07:51Z",
-   "subject": "Incident: the browser suite failed on b101bdfa (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T18:00:15Z",
+   "subject": "colorzilla.com, accuracy: the gate puts the same gradient to both and checks the CSS each writes"
   },
   {
-   "at": "2026-10-24T17:06:28Z",
-   "subject": "Tower gate: base converter,tildegit,password measured against their live sites"
+   "at": "2026-10-24T17:58:44Z",
+   "subject": "Incident: the browser suite failed on 89496cd2 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-24T17:05:58Z",
-   "subject": "Incident: the browser suite failed on e68fec95 (void-live-deploy/incidents.json)"
+   "at": "2026-10-24T17:57:23Z",
+   "subject": "The stage watch test expects a restore to record itself, and the families card is regenerated"
   }
  ],
  "builders": {

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Word counter: words, characters and sentences as you type · Verse</title>
+<meta name="description" content="Type or paste text and see words, characters (with and without spaces), sentences, paragraphs, reading and speaking time, reading level and keyword density change as you type. Kept on this device, works offline, no ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Word counter · Verse">
+<meta property="og:description" content="Words, characters, sentences, paragraphs, reading time and keyword density, live as you type. Kept on this device; works offline.">
+<meta property="og:url" content="https://a-to-mind.com/word-count/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/word-count/ (the tower's wordcounter.net floor): one file and one small module, no third party */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 16px 0 6px; }
+  .big { text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 700; margin: 4px 0 8px; font-variant-numeric: tabular-nums; }
+  textarea { box-sizing: border-box; width: 100%; min-height: 240px; font: 16px/1.6 system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; resize: vertical; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 10px 0; padding: 0; list-style: none; }
+  .stats li { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .stats b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .stats span { color: var(--soft); font-size: 13px; }
+  ol.kw { margin: 0; padding-left: 22px; } ol.kw li { font-variant-numeric: tabular-nums; }
+  .note { font-size: 13px; color: var(--soft); }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/wordcount.js">
+<link rel="modulepreload" href="/skills/util.js">
+<link rel="modulepreload" href="/lib/colour.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Word counter</h1>
+  <div class="big" id="big" aria-live="polite">0 words · 0 characters</div>
+  <label for="text" class="note">Type or paste your text; everything below counts as you type.</label>
+  <textarea id="text" spellcheck="true" placeholder="Start typing, or paste a document here"></textarea>
+  <div class="row">
+    <button type="button" id="upper">UPPERCASE</button><button type="button" id="lower">lowercase</button><button type="button" id="title">Title Case</button>
+    <button type="button" id="copy">Copy text</button><button type="button" id="link">Copy link</button><button type="button" id="clear">Clear</button>
+  </div>
+  <h2>Details</h2>
+  <ul class="stats" id="stats"></ul>
+  <h2>Keyword density</h2>
+  <ol class="kw" id="kw"></ol>
+  <p class="note" id="saved"></p>
+  <footer>Counted on this device as you type: your text is saved in this browser only (auto-save) and never sent anywhere, and the page works offline after one visit. A sentence ends at . ! or ?, but not after Mr., Dr., e.g. or U.S., and never inside a number like 3.5. Reading time at 238 words a minute, speaking time at 183; reading level is the Flesch-Kincaid grade. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { count, duration } from '/lib/wordcount.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.wordcount.v1', box = $('text');
+  const q = new URLSearchParams(location.search);
+  let saved = ''; try { saved = localStorage.getItem(KEY) || ''; } catch (_) {}
+  box.value = q.has('t') ? q.get('t') : saved;
+  const n = (x) => x.toLocaleString('en');
+  const item = (v, label) => { const li = document.createElement('li'), b = document.createElement('b'), s = document.createElement('span'); b.textContent = v; s.textContent = label; li.append(b, s); return li; };
+  let timer = 0;
+  function draw() {
+    const c = count(box.value);
+    $('big').textContent = n(c.words) + (c.words === 1 ? ' word' : ' words') + ' · ' + n(c.characters) + (c.characters === 1 ? ' character' : ' characters');
+    $('stats').replaceChildren(item(n(c.words), 'Words'), item(n(c.characters), 'Characters'), item(n(c.noSpaces), 'Characters without spaces'), item(n(c.sentences), 'Sentences'),
+      item(n(c.paragraphs), 'Paragraphs'), item(duration(c.readSec), 'Reading time'), item(duration(c.speakSec), 'Speaking time'), item(c.grade === null ? 'n/a' : 'grade ' + Math.max(0, c.grade), 'Reading level'));
+    $('kw').replaceChildren(...(c.keywords.length ? c.keywords.map((k) => { const li = document.createElement('li'); li.textContent = k.word + ' · ' + k.count + ' (' + (k.share * 100).toFixed(1) + '%)'; return li; }) : [Object.assign(document.createElement('li'), { textContent: 'Start typing to see the words you use most' })]));
+    clearTimeout(timer); timer = setTimeout(() => { try { localStorage.setItem(KEY, box.value); $('saved').textContent = box.value ? 'Saved on this device (auto-save).' : ''; } catch (_) { $('saved').textContent = 'This browser will not keep the text; copy it before you leave.'; } }, 400);
+  }
+  box.addEventListener('input', draw);
+  const set = (v) => { box.value = v; draw(); box.focus(); };
+  $('upper').addEventListener('click', () => set(box.value.toUpperCase()));
+  $('lower').addEventListener('click', () => set(box.value.toLowerCase()));
+  $('title').addEventListener('click', () => set(box.value.toLowerCase().replace(/(^|[\s"(\[\-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())));
+  $('clear').addEventListener('click', () => set(''));
+  const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+  $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(box.value); toast($('copy'), 'Copied'); } catch (_) {} });
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (box.value && box.value.length <= 4000 ? '?t=' + encodeURIComponent(box.value) : ''); try { await navigator.clipboard.writeText(u); toast($('link'), box.value.length > 4000 ? 'Link copied (text too long to carry)' : 'Copied'); } catch (_) {} });
+  draw();
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

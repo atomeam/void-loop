@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 765,
+ "counted": 766,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -528,17 +528,17 @@
    "tests": 3
   },
   {
-   "file": "lib/date-words.js",
+   "file": "lib/colour.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
    "tests": 1
   },
   {
-   "file": "lib/colour.js",
+   "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
   },
   {
@@ -1880,6 +1880,13 @@
   },
   {
    "file": "lib/star-parallax.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/wordcount.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3253,6 +3260,7 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
     "skills/writing-aids.js"
@@ -6312,6 +6320,12 @@
    "importedBy": [
     "functions/api/will.js"
    ]
+  },
+  "lib/wordcount.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": []
   },
   "lib/writing-aids.js": {
    "imports": [
@@ -9586,6 +9600,7 @@
     "lib/colour.js"
    ],
    "importedBy": [
+    "lib/wordcount.js",
     "lib/writing-aids.js"
    ],
    "reachedBy": [
