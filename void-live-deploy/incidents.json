@@ -2,6 +2,35 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T15:54:42.684Z",
+   "sha": "40d72112dc3a409731ec0771ae9d64200d266208",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40108518548",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/gradient.test.mjs",
+    "tools/tower-probes.mjs",
+    "void-live-deploy/gradient/index.html",
+    "void-live-deploy/lib/gradient.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/gradient.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json"
+   ]
+  },
+  {
    "at": "2026-10-24T15:48:06.879Z",
    "sha": "86ac4b5222e541ba680f218a2c82fa65eb1cdef2",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40107888158",
@@ -616,24 +645,6 @@
     "docs/MAP.md",
     "tools/easiest-sites.mjs",
     "tools/easiest-sites.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:08:17.565Z",
-   "sha": "af2461dae7941b1dc35f254cb5caa7fdefd4026c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40060557298",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/arrange.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/arrange.js",
-    "void-live-deploy/skills/music.js"
    ]
   }
  ]
