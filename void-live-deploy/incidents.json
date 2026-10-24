@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T16:15:39.621Z",
+   "sha": "1d40b6dab438ac2410767463d657158e8a8aa9dc",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40110121818",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/fakeuser.test.mjs",
+    "tools/families.mjs",
+    "tools/tower-gate.test.mjs",
+    "tools/tower-probes.mjs",
+    "void-live-deploy/lib/fakeuser.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/random-user/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/fakeuser.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json"
+   ]
+  },
+  {
    "at": "2026-10-24T16:09:53.306Z",
    "sha": "d957075f4fbe0738506fcb49e177bc0a4dbc2d58",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40109199852",
@@ -630,24 +658,6 @@
     "void-live-deploy/functions/api/card-art.js",
     "void-live-deploy/lib/art-rules.js",
     "void-live-deploy/lib/wiki-look.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:14:42.168Z",
-   "sha": "488990e18eda4676c7c4c6d20265051caaf33a43",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40060838159",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/playbooks/site-by-site.md",
-    "tools/tower.test.mjs",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/skills/tower.js"
    ]
   }
  ]
