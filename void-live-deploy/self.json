@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T16:07:37Z",
+   "subject": "Made-up people against randomuser.me; the gate scores every new floor's own aspects; its design test finds a browser here"
+  },
+  {
    "at": "2026-10-24T16:03:22Z",
    "subject": "Tower gate: colour codes measured against their live sites"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-24T15:26:55Z",
    "subject": "Tower: Hugging Face and perchance.org join as opponents"
-  },
-  {
-   "at": "2026-10-24T15:26:53Z",
-   "subject": "Incident: the browser suite failed on dc7561e2 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

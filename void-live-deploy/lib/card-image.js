@@ -154,8 +154,10 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   if (d.adds) { const a = wrap('Adds to Verse: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
   // footer: collector number and the three plates
   const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'Verse', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
-  s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
+  // the line ends before the first plate: a long one ("MYTHIC · 294/440 · VERSE · TESTED 2026-10-24", ~570 px) is squeezed to fit, never run under it
+  const FOOT = foot.toUpperCase().slice(0, 60), room = (stats.length ? 704 - stats.length * 74 - 14 : 700) - 44, wide = FOOT.length * 13.4 > room;
+  s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5"' + (wide ? ' textLength="' + room + '" lengthAdjust="spacingAndGlyphs"' : '') + ' fill="hsl(' + hue + ' 15% 62%)">' + esc(FOOT) + '</text>';
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
   s += '</g></g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;

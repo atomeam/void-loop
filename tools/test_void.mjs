@@ -858,6 +858,10 @@ try {
       JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === FLOORS[3].site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && /^3 conquered · now: /.test(v.head || '')
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
+    // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
+    const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
+    check('tower: a saved or copied tower card says the fight (' + FLOORS[3].site + ': 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp(FLOORS[3].site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects beaten\\. Still to beat: ').test(saved.b || '') && /Conquered: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
