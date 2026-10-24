@@ -43,8 +43,10 @@ export function group(digits, base) {
 export function all(n) {
   const neg = n < 0n, mag = neg ? -n : n, plain = { bin: format(n, 2), oct: format(n, 8), dec: format(n, 10), hex: format(n, 16).toUpperCase() };
   const bits = mag === 0n ? 1 : mag.toString(2).length; let signed = null;
-  if (!neg) for (const w of [8, 16, 32, 64]) if (bits <= w) { const top = 1n << BigInt(w - 1); signed = { width: w, value: mag >= top ? mag - (1n << BigInt(w)) : mag, unsigned: mag }; break; }
-  if (neg) for (const w of [8, 16, 32, 64]) if (mag <= (1n << BigInt(w - 1))) { signed = { width: w, value: n, unsigned: (1n << BigInt(w)) + n, twos: ((1n << BigInt(w)) + n).toString(2).padStart(w, '0') }; break; }
+  // the smallest power-of-two width from 8 bits up that holds the value (8, 16, 32, 64, 128, 256 ... at any size, the tower gate's 'signed reading')
+  const widths = []; for (let w = 8; w <= Math.max(64, bits * 2); w *= 2) widths.push(w);
+  if (!neg) for (const w of widths) if (bits <= w) { const top = 1n << BigInt(w - 1); signed = { width: w, value: mag >= top ? mag - (1n << BigInt(w)) : mag, unsigned: mag }; break; }
+  if (neg) for (const w of widths) if (mag <= (1n << BigInt(w - 1))) { signed = { width: w, value: n, unsigned: (1n << BigInt(w)) + n, twos: ((1n << BigInt(w)) + n).toString(2).padStart(w, '0') }; break; }
   let text = ''; if (!neg && mag > 0n) { const hex = mag.toString(16), padded = hex.length % 2 ? '0' + hex : hex, bytes = padded.match(/../g).map((h) => parseInt(h, 16)); if (bytes.length <= 64 && bytes.every((b) => b >= 32 && b < 127)) text = String.fromCharCode(...bytes); }
   return { value: n, negative: neg, plain, bin: group(plain.bin, 2), oct: group(plain.oct, 8), dec: group(plain.dec, 10), hex: group(plain.hex, 16), bits, signed, text };
 }

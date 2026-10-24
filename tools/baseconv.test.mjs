@@ -19,7 +19,7 @@ test('grouping: binary by four, hex by two, decimal by commas, octal by three', 
 test('what the bits mean: the signed reading in the smallest width, negatives in two\'s complement, and bytes as text', () => {
   assert.deepEqual([all(255n).signed.width, all(255n).signed.value], [8, -1n]); assert.deepEqual([all(127n).signed.width, all(127n).signed.value], [8, 127n]); assert.equal(all(128n).signed.value, -128n); assert.equal(all(256n).signed.width, 16);
   const n = all(-1n); assert.equal(n.signed.width, 8); assert.equal(n.signed.twos, '11111111'); assert.equal(all(-129n).signed.width, 16); assert.equal(all(-129n).signed.twos, '1111111101111111');
-  assert.equal(all(0x48656c6c6fn).text, 'Hello'); assert.equal(all(0x01n).text, ''); assert.equal(all(1n << 70n).signed, null);
+  assert.equal(all(0x48656c6c6fn).text, 'Hello'); assert.equal(all(0x01n).text, ''); assert.equal(all(1n << 70n).signed.width, 128, 'any size: the smallest power-of-two width that holds it'); assert.equal(all(1n << 127n).signed.value, -(1n << 127n), 'the top bit of 128 set reads negative');
 });
 test('a wrong digit says which digits belong to the base', () => {
   assert.match(convert('12', 2, 10).why, /not a base 2 number: digits 0 to 1 only/); assert.match(convert('xyz', 16, 10).why, /not a base 16 number/); assert.match(convert('', 10, 2).why, /Type a number first/);
