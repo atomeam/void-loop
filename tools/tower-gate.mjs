@@ -129,6 +129,27 @@ export async function measure(browser, url, tag, ask, probe) {
 // after a deploy measures the fight Verse is in now, any floor whose page the deploy changed, and floors whose evidence lacks an aspect the gate
 // can now measure (a check added since it was last measured), at most `max`, so one fix is verified in about a minute and not in a 20-minute sweep
 /** the aspects the gate can measure on a floor today: the measured ones on its checklist, its PARTS, and accuracy and completeness only with a probe. Pure. */
+/** a page's answer to a question in its address, or typed into its own box (`type`) as a person would; the text it shows and its boxes hold,
+ *  or null when it could not be read. Exported for tools/tower-gate.test.mjs, which runs it against local pages. */
+export async function answer(b, url, type) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+      if (/[?&]q=/.test(url)) await p.waitForTimeout(3000); // Verse answering an ask in the address: the card lands a moment after load
+      const read = () => p.evaluate(() => ({ text: document.body ? document.body.innerText : '', boxes: [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') }));
+      if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
+      // the box a person types into: the page's largest visible text area, else its first visible text input (unitconverters.net's "From")
+      const areas = p.locator('textarea:visible'), n = await areas.count(); let box = null, best = -1;
+      for (let i = 0; i < n; i++) { const bb = await areas.nth(i).boundingBox().catch(() => null); const a = bb ? bb.width * bb.height : 0; if (a > best) { best = a; box = areas.nth(i); } }
+      if (!box) box = p.locator('input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first();
+      const before = (await read()).text;
+      await box.fill(type, { timeout: 8000 }); if (best < 0) await box.press('Enter').catch(() => {}); // Enter in a text area would add a line to what is counted
+      const go = p.locator('button:visible, input[type=submit]:visible, input[type=button]:visible').filter({ hasText: /convert|calculate|encode|count|submit|go\b/i }).first();
+      if (await go.count()) await go.click({ timeout: 2000 }).catch(() => {}); else await p.locator('input[type=submit]:visible').first().click({ timeout: 2000 }).catch(() => {});
+      await p.waitForTimeout(2000);
+      // scored on what typing changed and what the boxes hold, never on text the page had before (unitconverters.net's definitions mention 212°F);
+      // what was typed is taken out, so the question never counts as its own answer
+      const r = await read(), had = new Set(before.split('\n').map((l) => l.trim()));
+      const changed = r.text.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
+      return (changed + '\n' + r.boxes).split(type).join(' '); } catch (_) { return null; } finally { await ctx.close(); } }
+
 export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
   return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]));
@@ -171,11 +192,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
-    const answer = async (url, type) => { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
-      if (type) { const box = p.locator('textarea:visible, input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first(); await box.fill(type, { timeout: 8000 }); await box.press('Enter').catch(() => {}); await p.locator('button:visible, input[type=submit]:visible').filter({ hasText: /convert|calculate|submit|go\b/i }).first().click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(2000); }
-      const text = await p.evaluate(() => (document.body ? document.body.innerText + '\n' + [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') : ''));
-      return type ? text.split(type).join(' ') : text; } catch (_) { return null; } finally { await ctx.close(); } };
-    const vt = await answer(new URL(probe.ask.verse, VERSE).href), st = await answer(probe.ask.site, probe.ask.type);
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href), st = await answer(b, probe.ask.site, probe.ask.type);
     v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }

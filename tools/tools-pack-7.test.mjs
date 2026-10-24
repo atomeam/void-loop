@@ -223,3 +223,10 @@ test('the study card skill and the dev tool skill hand out what they promise', (
   assert.equal(study.stageKinds.study.mount.length, 2);
   assert.ok(devTools.stageKinds.devtool && a11y.stageKinds.a11y && typeof a11y.decorate === 'function');
 });
+
+test('a word count counts the text as typed: a closing "!" is the text\'s, not stripped like an ask\'s', async () => {
+  const { utilOf: u } = await import('../void-live-deploy/skills/util.js');
+  const s = u('word count: The quick brown fox jumps over the lazy dog. It was not amused!').s;
+  assert.equal(s.length, 63); assert.equal((s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, 13);
+  assert.equal(u('how many words in hello there?').s, 'hello there');
+});

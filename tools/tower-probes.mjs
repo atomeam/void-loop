@@ -11,6 +11,7 @@ const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() =
 // run before or after it: a rounded 1.5123660752041709e+36 or a run of zeros at the end does not match. Pure.
 const exact = (digits) => new RegExp('(?<![0-9a-z])(?:0[\\s,_]?)*' + [...String(digits)].join('[\\s,_]?') + '(?![0-9a-z])', 'i'); // leading zeros allowed: 0001 0010 ... is the same number
 const HUGE = 0x123456789abcdef0123456789abcdefn;
+const WC_TEXT = 'The quick brown fox jumps over the lazy dog. It was not amused!'; // 13 words, 63 characters, 2 sentences
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -67,6 +68,22 @@ export const PROBES = Object.freeze({
     facts: [['names', /\bnames?\b/i], ['emails', /\bemails?\b|@/i], ['phones', /\bphones?\b/i], ['addresses', /\baddress|\bstreet\b|\bcity\b/i], ['birthdays', /\bbirthday|\bdob\b|date of birth/i],
       ['passwords', /\bpasswords?\b/i], ['pictures', /\bpictures?\b|\bphotos?\b|\bavatars?\b/i], ['gender', /\bgender\b/i], ['nationality', /\bnationalit|\bcountr/i], ['a seed', /\bseed\b/i],
       ['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]],
+  },
+  // three floors measured through Verse's ask: the site gets the same words typed into its own box (tower-gate.mjs `type`), Verse gets the ask
+  'word count': {
+    site: 'https://wordcounter.net/', verse: null,
+    ask: { site: 'https://wordcounter.net/', type: WC_TEXT, verse: '/?q=' + encodeURIComponent('word count: ' + WC_TEXT) },
+    truth: [['13 words', /(?<![\d,])13\s+words?\b|\bwords?\s*:?\s*13(?![\d,])/i], ['63 characters', /(?<![\d,])63\s+characters?\b|\bcharacters?\s*:?\s*63(?![\d,])/i]],
+  },
+  'unit converter': {
+    site: 'https://www.unitconverters.net/', verse: null,
+    ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', verse: '/?q=' + encodeURIComponent('100 c to f') },
+    truth: [['212 °F', /(?<![\d.])212(?:\.0+)?(?![\d.])\s*(?:°\s*F|degrees? fahrenheit|fahrenheit)?/i]],
+  },
+  encoder: {
+    site: 'https://www.base64encode.org/', verse: null,
+    ask: { site: 'https://www.base64encode.org/', type: 'hello', verse: '/?q=' + encodeURIComponent('base64 encode hello') },
+    truth: [['aGVsbG8=', /aGVsbG8=/]],
   },
   'base converter': {
     site: 'https://hextobinary.com/', verse: '/base-converter/?v=ff&b=16',

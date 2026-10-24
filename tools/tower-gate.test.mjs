@@ -79,3 +79,25 @@ test('a run after a deploy measures the current fight, the floors whose page cha
   assert.ok(pick({}, null, [], 3).length === 3 && pick({}, null, [], 1).length === 1);
   for (const id of pick({}, { sites: [{ site: 'only-on-the-frontier.example', hardness: 1 }] }, [])) assert.ok(F.some((f) => f.id === id), 'a frontier site has no Verse page to measure: ' + id);
 });
+
+// the gate types a question into a site's own box (tower-probes.mjs `type`), against two local pages built like the real ones
+test('a typed question: the From box and its Convert button, the largest text area, and only what typing changed counts', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const PAGES = {
+    '/c2f': '<p>Water boils at 212°F.</p><form onsubmit="event.preventDefault();document.getElementById(\'ucto\').value=String(+document.getElementById(\'ucfrom\').value*9/5+32)"><input type="text" id="ucfrom"><input type="text" id="ucto"><input type="submit" value="Convert"></form>',
+    '/wc': '<input type="search" placeholder="search"><textarea id="t" style="width:600px;height:300px"></textarea><p id="n">0 words 0 characters</p><script>t.oninput=()=>{const v=t.value;n.textContent=(v.match(/[A-Za-z0-9\'-]+/g)||[]).length+" words "+v.length+" characters"}</script>',
+  };
+  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '') + '</body>'); }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u;
+  try {
+    const uc = probeFor('unit converter'), wc = probeFor('word count');
+    const blank = await answer(b, at('/c2f'), 'zzz'); // typing something that converts to nothing: the 212°F in the page text does not count
+    assert.equal(score(blank, uc.truth).n, 0, 'text the page had before typing is not an answer');
+    assert.equal(score(await answer(b, at('/c2f'), '100'), uc.truth).n, 1, 'typed into From, Convert pressed, 212 read from the To box');
+    assert.deepEqual(score(await answer(b, at('/wc'), wc.ask.type), wc.truth).n, 2, '13 words and 63 characters... read live from the big text area');
+  } finally { await b.close(); server.close(); }
+});
