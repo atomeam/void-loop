@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 10,
+    "tested": 9,
     "checked": 1,
-    "proven": 34
+    "proven": 35
    },
    "from": 6,
    "to": 51
@@ -71,8 +71,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 1,
+    "tested": 2,
+    "checked": 2,
     "proven": 14
    },
    "from": 126,
@@ -170,8 +170,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 4
+    "checked": 0,
+    "proven": 5
    },
    "from": 344,
    "to": 349
@@ -348,8 +348,10 @@
     "compress my image to 100kb",
     "image resizer"
    ],
-   "tier": "tested",
-   "why": "1 browser-suite mention",
+   "tier": "proven",
+   "why": "1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Turn the page when you are done.",
+   "glow": 100,
    "n": 7
   },
   {
@@ -2518,8 +2520,9 @@
     "1010 binary to decimal",
     "255 in hex"
    ],
-   "tier": "tested",
-   "why": "1 browser-suite mention",
+   "tier": "checked",
+   "why": "1 browser-suite mention, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 127
   },
   {
@@ -6302,8 +6305,10 @@
     "is my password strong",
     "check my password strength"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the safety and small delights. Say the words below and it answers.",
+   "glow": 100,
    "n": 345
   },
   {
