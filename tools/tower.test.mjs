@@ -16,8 +16,12 @@ test('one queue, easiest first: conquered sites, then the one with the fewest as
   assert.equal(t.floors.filter((f) => f.state === 'current').length, 1);
   const r = record({ verdict: 'better' }, 'worse', 900, 500, 'e', 'now'); assert.equal(r.was, 'better');
   ev[FLOORS[1].id].speed = r; t = tower([], ev); assert.equal(t.beaten, 0); assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).regressed.length, 1);
-  assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'current'); // 1 aspect left: it is the fight again
+  // a site Verse is losing on is not easy to beat: an easier site is fought first, and the hard one stays in the queue
+  assert.notEqual(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].id, FLOORS[4].id); assert.equal(t.floors[0].state, 'current');
+  assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).state, 'ahead');
   assert.match(towerLine(t), /^Tower: now [^ ]+ \(\d+ of \d+ aspects beaten\), 0 conquered$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b/);
+  ev[FLOORS[1].id].speed = { verdict: 'better', evidence: 'fixed' }; t = tower([], ev);
+  assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); // its loss fixed, it falls
 });
 test('the tower has no end: every site in the frontier is in the queue once, never a site already listed, a regressed or blocked one never dropped', async () => {
   const { frontierOf, hostOf } = await import('../void-live-deploy/lib/tower.js');

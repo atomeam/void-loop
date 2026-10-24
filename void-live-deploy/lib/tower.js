@@ -120,7 +120,10 @@ export function tower(onlySite = [], evidence = {}, frontier = null) {
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
   const all = sites.map((f, i) => { const g = gate(f, under(evidence, f) || {}), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, order: i, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => (a.m - a.n) - (b.m - b.n) || a.order - b.order), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
+  // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
+  const hard = (f) => (f.lost.length ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => hard(a) - hard(b) || (a.m - a.n) - (b.m - b.n) || a.order - b.order), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
