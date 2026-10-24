@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gist · Verse</title>
+<meta name="description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
+<style>
+  /* a-to-mind.com/g/ (owner, 2026-10-24: "verse can eat github starting with the smallest"): GitHub's gist with no sign-in and no server */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --code: #fff;
+    --c: #7a7690; --s: #0a7d3e; --n: #b4531a; --k: #6d4aff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --code: #12111a; --c: #7f7b96; --s: #7ee0a0; --n: #ffb27a; --k: #b9a2ff; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 14px 12px 40px; }
+  header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  h1 { font-size: 16px; margin: 0; color: var(--soft); font-weight: 600; } h1 b { color: var(--ink); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; } .tab { border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; padding: 4px 10px; font-size: 13px; cursor: pointer; background: transparent; color: var(--soft); }
+  .tab[aria-selected=true] { background: var(--code); color: var(--ink); font-weight: 600; }
+  .box { border: 1px solid var(--line); border-radius: 0 8px 8px 8px; background: var(--code); overflow: auto; }
+  textarea, pre { margin: 0; width: 100%; box-sizing: border-box; font: 13px/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; padding: 10px 12px; tab-size: 2; }
+  textarea { min-height: 320px; background: transparent; color: inherit; border: 0; resize: vertical; display: block; outline: none; }
+  pre { white-space: pre; display: grid; grid-template-columns: auto 1fr; gap: 0 14px; }
+  .ln { color: var(--soft); text-align: right; user-select: none; opacity: .6; } code { white-space: pre; }
+  .c { color: var(--c); font-style: italic; } .s { color: var(--s); } .n { color: var(--n); } .k { color: var(--k); font-weight: 600; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  input.name { font: inherit; font-size: 13px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; width: 12em; }
+  #note { font-size: 13px; color: var(--soft); min-height: 1.3em; } #meter { font-size: 12px; color: var(--soft); margin-left: auto; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 18px; } footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <header><h1><b>Gist</b> · no account, nothing stored</h1><a class="btn" href="/g/" id="new" hidden>New gist</a></header>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="box" id="box"></div>
+  <div class="bar" id="bar"></div>
+  <div id="note" aria-live="polite"></div>
+  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. Anyone with the link sees the text, drawn as text. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { pack, unpack, cleanFiles, cleanName, langOf, tokens, MAX_FILES, MAX_TEXT } from '/lib/gist.js';
+  const $ = (id) => document.getElementById(id), el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  let files = [['snippet.txt', '']], at = 0, view = false;
+  const loaded = await unpack(location.hash);
+  if (loaded) { files = loaded; view = true; }
+  else if (location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
+  const note = (t) => { $('note').textContent = t; };
+  function draw() {
+    const tabs = $('tabs'); tabs.textContent = '';
+    files.forEach(([name], i) => { const b = el('button', 'tab', name); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(i === at)); b.onclick = () => { keep(); at = i; draw(); }; tabs.appendChild(b); });
+    if (!view && files.length < MAX_FILES) { const b = el('button', 'tab', '+ file'); b.type = 'button'; b.onclick = () => { keep(); files.push(['file' + (files.length + 1) + '.txt', '']); at = files.length - 1; draw(); }; tabs.appendChild(b); }
+    const box = $('box'); box.textContent = ''; const [name, text] = files[at];
+    if (view) {
+      const pre = el('pre'), lang = langOf(name), lines = text.replace(/\n$/, '').split('\n'), nums = el('span', 'ln'), body = el('code');
+      nums.textContent = lines.map((_, i) => i + 1).join('\n');
+      lines.forEach((l, i) => { for (const [k, t] of tokens(l, lang)) body.appendChild(k ? el('span', k, t) : document.createTextNode(t)); if (i < lines.length - 1) body.appendChild(document.createTextNode('\n')); });
+      pre.append(nums, body); box.appendChild(pre);
+    } else {
+      const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here…';
+      ta.addEventListener('input', meter); ta.addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); meter(); } });
+      box.appendChild(ta);
+    }
+    bar();
+  }
+  function keep() { const ta = $('ta'); if (ta && !view) files[at][1] = ta.value; const nm = $('nm'); if (nm && !view) files[at][0] = cleanName(nm.value); }
+  const total = () => { keep(); return files.reduce((n, f) => n + f[1].length, 0); };
+  function meter() { const m = $('meter'); if (m) m.textContent = total().toLocaleString() + ' of ' + MAX_TEXT.toLocaleString() + ' characters'; }
+  const download = (name, text) => { const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = cleanName(name); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  const copy = (t, done) => { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => note(done), () => note('Select the text and copy it by hand.')); };
+  function bar() {
+    const b = $('bar'); b.textContent = ''; $('new').hidden = !view;
+    if (view) {
+      const cp = el('button', null, 'Copy'); cp.onclick = () => copy(files[at][1], 'Copied ' + files[at][0] + '.');
+      const raw = el('button', null, 'Raw'); raw.onclick = () => { const w = open('', '_blank'); if (w) { w.document.title = files[at][0]; const p = w.document.createElement('pre'); p.style.cssText = 'margin:12px;font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap'; p.textContent = files[at][1]; w.document.body.appendChild(p); } };
+      const dl = el('button', null, 'Download'); dl.onclick = () => download(files[at][0], files[at][1]);
+      const lk = el('button', 'go', 'Copy link'); lk.onclick = () => copy(location.href, 'Link copied. It holds the whole gist.');
+      const ed = el('button', null, 'Edit a copy'); ed.onclick = () => { view = false; history.replaceState(null, '', '/g/'); draw(); note('This is your own copy: change it and get a new link. The original link stays as it was.'); };
+      b.append(cp, raw, dl, lk, ed);
+    } else {
+      const nm = el('input', 'name'); nm.id = 'nm'; nm.value = files[at][0]; nm.maxLength = 60; nm.setAttribute('aria-label', 'File name'); nm.onchange = () => { keep(); draw(); };
+      const rm = el('button', null, 'Remove file'); rm.hidden = files.length < 2; rm.onclick = () => { files.splice(at, 1); at = Math.max(0, at - 1); draw(); };
+      const go = el('button', 'go', 'Get link'); go.id = 'get';
+      go.onclick = async () => {
+        keep(); if (!files.some((f) => f[1].trim())) { note('Write something first.'); return; }
+        const s = await pack(files); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return; }
+        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it.');
+      };
+      b.append(nm, rm, go, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
+    }
+  }
+  addEventListener('hashchange', async () => { const f = await unpack(location.hash); if (f) { files = f; at = 0; view = true; draw(); } });
+  draw();
+</script>
+</body>
+</html>

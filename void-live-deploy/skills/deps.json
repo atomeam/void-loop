@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 747,
+ "counted": 748,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -924,7 +924,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/v01d-fixes.js",
@@ -1719,6 +1719,13 @@
   },
   {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/gist.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3664,6 +3671,10 @@
     "skills/monopoly.js",
     "skills/oracle.js"
    ]
+  },
+  "lib/gist.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/go-ai.js": {
    "imports": [],

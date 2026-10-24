@@ -483,6 +483,70 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T01:55:49Z",
+   "subject": "Easiest sites: the Tranco ranking's top sites, each home page measured once for how much it does, so the easiest real site to beat comes…"
+  },
+  {
+   "at": "2026-10-24T01:55:35Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after f0759b477979bcb325a2ca292c4e0be3ff8831c9 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-24T01:53:11Z",
+   "subject": "Incident: the browser suite failed on 3eec201e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:51:17Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T01:49:31Z",
+   "subject": "Incident: the browser suite failed on c8dff676 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:48:04Z",
+   "subject": "a-to-mind.com/random: one 8 KB file and nothing else (random.org loads 1.2 s): a number between any two, many at once, no repeats, sorted…"
+  },
+  {
+   "at": "2026-10-24T01:44:42Z",
+   "subject": "Tower: a row Verse awarded itself never counts in the tower, whoever writes it (gate runs that started before the take-back wrote them in…"
+  },
+  {
+   "at": "2026-10-24T01:41:28Z",
+   "subject": "Incident: the browser suite failed on 8b511cf7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:41:09Z",
+   "subject": "Tower gate: a floor with Verse's own page for the job is measured there (/is-it/christmas, /flip/), as a person would open it, not through…"
+  },
+  {
+   "at": "2026-10-24T01:37:36Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T01:36:59Z",
+   "subject": "Tower: the self-called rows came back from gate runs that were in flight when they were taken back (77 rows); they are gone, the gate…"
+  },
+  {
+   "at": "2026-10-24T01:35:38Z",
+   "subject": "Incident: the browser suite failed on 4b88b528 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:34:39Z",
+   "subject": "a-to-mind.com/flip: the coin and nothing else (42 KB in 7 requests; justflipacoin.com is 915 KB in 23 with ads and a consent box), any…"
+  },
+  {
+   "at": "2026-10-24T01:33:51Z",
+   "subject": "Incident: the browser suite failed on 1b7713d5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:32:33Z",
+   "subject": "Incident: the browser suite failed on af57fa31 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:31:30Z",
+   "subject": "Every coin: 'flip a Lydian stater' flips the real coin with its real obverse and reverse (Wikimedia Commons, linked); 'flip a famous coin'…"
+  },
+  {
    "at": "2026-10-24T01:25:37Z",
    "subject": "Christmas itself: the midnight wave. While Christmas is somewhere on Earth the is-it card follows it around the world (\"It is Christmas in…"
   },
@@ -497,70 +561,6 @@
   {
    "at": "2026-10-24T01:09:10Z",
    "subject": "Verse hardens itself: 1 benchmark ask(s) for tilt-mode"
-  },
-  {
-   "at": "2026-10-24T01:00:46Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T01:00:23Z",
-   "subject": "Incident: the browser suite failed on 4e1d269d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T00:45:38Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T00:45:01Z",
-   "subject": "Is it Christmas, side by side with isitchristmas.com's own source: your flag is your pointer and turns with the wheel or the arrow keys…"
-  },
-  {
-   "at": "2026-10-24T00:42:32Z",
-   "subject": "Incident: the browser suite failed on 2a5e5383 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T00:41:08Z",
-   "subject": "Incident: the browser suite failed on 851239bf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T00:39:14Z",
-   "subject": "Verse hardens itself: 4 benchmark ask(s) for eat, quote"
-  },
-  {
-   "at": "2026-10-24T00:33:12Z",
-   "subject": "Tower: the 10 floors marked beaten are taken back (owner, 2026-10-24: none of them was earned; Verse answering an ask is not being better…"
-  },
-  {
-   "at": "2026-10-24T00:30:10Z",
-   "subject": "Verse helps you order food: 'order food from lovebird in lakeland' finds the restaurant (OpenStreetMap), its hours, phone and map, every…"
-  },
-  {
-   "at": "2026-10-23T23:49:02Z",
-   "subject": "Verse hardens itself: 3 benchmark ask(s) for fact, file-sorter"
-  },
-  {
-   "at": "2026-10-23T23:41:33Z",
-   "subject": "Incident: the browser suite failed on 3f97013f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:40:43Z",
-   "subject": "Incident: the browser suite failed on f8568894 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:40:28Z",
-   "subject": "Incident: the browser suite failed on 7c204cbe (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:32:59Z",
-   "subject": "Incident: the browser suite failed on ba8b2ef1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:32:07Z",
-   "subject": "Incident: the browser suite failed on 8a265fc7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:32:01Z",
-   "subject": "Tower gate: a verdict commit rebases onto the newest main and retries when main moved during the run (run #3 lost its push to a race)"
   }
  ],
  "builders": {

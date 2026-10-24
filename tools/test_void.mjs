@@ -684,6 +684,44 @@ try {
       JSON.stringify({ mine, seen, named, errors: P.errors }));
     await p2.close(); await P.ctx.close();
   }
+  // a gist with no server (owner, 2026-10-24: "verse can eat github starting with the smallest"): write a snippet, get a link, open that link in a fresh page
+  if (want("gist: write a snippet, get a link that holds it, open the link on a new page: coloured, numbered, two files, copy and an editable copy")) {
+    const G = await fresh(); const origin = new URL(G.p.url()).origin;
+    await G.p.goto(origin + '/g/'); await G.p.waitForSelector('#ta', { timeout: 15000 });
+    await G.p.fill('#nm', 'hello.py'); await G.p.dispatchEvent('#nm', 'change');
+    await G.p.fill('#ta', 'def hi():\n    # say it\n    print("héllo ✓")\n');
+    await G.p.click('.tab:has-text("+ file")'); await G.p.fill('#nm', 'notes.md'); await G.p.dispatchEvent('#nm', 'change'); await G.p.fill('#ta', '# Notes\nsecond file'); await G.p.click('#get'); await G.p.waitForSelector('pre', { timeout: 8000 });
+    const link = G.p.url(), isLink = /\/g\/#v1\.[A-Za-z0-9_-]+$/.test(link);
+    const p2 = await G.ctx.newPage(); await p2.goto(link); await p2.waitForSelector('pre', { timeout: 8000 });
+    const seen = await p2.evaluate(() => ({ tabs: [...document.querySelectorAll('.tab')].map((t) => t.textContent), nums: document.querySelector('.ln').textContent.trim().split('\n').length, code: document.querySelector('code').textContent,
+      kinds: [...document.querySelectorAll('code span')].map((s) => s.className + ':' + s.textContent) }));
+    await p2.click('.tab:has-text("notes.md")'); const second = await p2.$eval('code', (c) => c.textContent);
+    await p2.click('button:has-text("Edit a copy")'); const editable = await p2.$eval('#ta', (t) => t.value).catch(() => null); const urlAfter = p2.url();
+    const hostile = await G.ctx.newPage(); await hostile.goto(origin + '/g/#v1.AAAA<script>'); await hostile.waitForSelector('#ta', { timeout: 8000 }); const hostileNote = await hostile.$eval('#note', (n) => n.textContent);
+    if (process.env.VOID_SHOTS) await p2.screenshot({ path: path.join(process.env.VOID_SHOTS, 'gist.png') }).catch(() => {});
+    check('gist: a link holds the whole gist: opened on a new page it shows hello.py with line numbers and the comment, string and keyword coloured, a second tab for notes.md, "Edit a copy" gives an editable copy at a clean address, and a damaged link says so',
+      isLink && seen.tabs.join() === 'hello.py,notes.md' && seen.nums === 3 && /héllo ✓/.test(seen.code) && seen.kinds.some((k) => /^c:# say it/.test(k)) && seen.kinds.some((k) => /^s:"héllo ✓"/.test(k)) && seen.kinds.some((k) => /^k:def/.test(k))
+      && /second file/.test(second) && editable === '# Notes\nsecond file' && /\/g\/$/.test(urlAfter) && /not a gist/.test(hostileNote) && !G.errors.length,
+      JSON.stringify({ isLink, seen, second, editable, urlAfter, hostileNote, errors: G.errors }));
+    await G.ctx.close();
+  }
+  // the tower as a fighting-game ladder (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on, who we passed and who's ahead"):
+  // the evidence is stubbed so three floors are beaten and the fourth is half won
+  if (want("tower: a fighting-game ladder: defeated floors struck through, the one being fought glowing with its health bar, the rest locked, the boss on top")) {
+    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const rows = (f, n) => Object.fromEntries([...aspectsOf(f), ...(f.extra || [])].slice(0, n).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
+    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ask('the tower', 1200);
+    const v = await P.p.$eval('.vpage.on', (c) => { const st = (s) => [...c.querySelectorAll('.tower-floor[data-state="' + s + '"]')]; const cur = st('current')[0], hp = cur && cur.querySelector('.mk-hp');
+      return { beaten: st('beaten').length, tags: st('beaten').map((b) => b.querySelector('.mk-tag').textContent), current: cur && cur.textContent, segs: hp ? hp.children.length : 0, gone: hp ? hp.querySelectorAll('.gone').length : 0, locked: st('ahead').length,
+        boss: (c.querySelector('.tower-floor[data-boss="yes"] .mk-tag') || {}).textContent, topIsBoss: c.querySelector('.tower-floor').dataset.boss === 'yes', struck: getComputedStyle(st('beaten')[0].querySelector('.mk-name')).textDecorationLine, head: (c.querySelector('.mk-score') || {}).textContent }; }).catch((e) => ({ err: String(e) }));
+    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-mk.png') }).catch(() => {});
+    check('tower: three defeated (struck through, stamped), floor 4 is "YOU ARE HERE" with a health bar that has lost 4 of its segments, the rest locked, the final boss on top, and the head says "3 defeated"',
+      v.beaten === 3 && v.tags.every((x) => x === 'DEFEATED') && /YOU ARE HERE/.test(v.current || '') && v.segs >= 8 && v.gone === 4 && v.locked === FLOORS.length - 4 && v.boss === 'FINAL BOSS' && v.topIsBoss && /line-through/.test(v.struck) && /^3 defeated/.test(v.head) && !P.errors.length,
+      JSON.stringify({ v, errors: P.errors }));
+    await P.ctx.close();
+  }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;

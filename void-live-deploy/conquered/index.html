@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Tower · Verse</title>
+<meta name="description" content="Verse's tower: the sites it has beaten, the one it is fighting now, and who is still ahead.">
+<style>
+  /* a-to-mind.com/conquered (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on and who we passed and who's ahead"):
+     the same ladder as the tower card (skills/tower.js towerHtml), full screen, left open and kept current */
+  html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 50% 0%, #2a1530, #07060b 70%); color: #ecebf5; font: 16px/1.4 system-ui, -apple-system, sans-serif; }
+  main { padding: 18px 12px 30px; }
+  .mk-stack { max-height: none !important; overflow: visible !important; }
+  #stamp { text-align: center; font-size: 11px; opacity: .5; margin-top: 8px; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+<main><div id="tower">Reading the tower…</div><div id="stamp"></div></main>
+<script type="module">
+  import { tower } from '/lib/tower.js';
+  import { towerHtml, centerOnYou } from '/skills/tower.js';
+  const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  let first = true;
+  async function draw() {
+    const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]);
+    const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {});
+    $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
+    const cur = $('tower').querySelector('[data-state="current"]'); if (first && cur) { first = false; cur.scrollIntoView({ block: 'center' }); }
+    for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('tower').querySelector('.tower-detail').textContent = f.n + ' of ' + f.m + ' aspects beaten' + (f.lost.length ? '. Still loses on: ' + f.lost.join(', ') : '') + (f.left.length ? '. Left to beat: ' + f.left.join(', ') : '') + '.'; };
+  }
+  draw(); setInterval(() => { if (document.visibilityState === 'visible') draw(); }, 30000);
+</script>
+</body>
+</html>

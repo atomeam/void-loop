@@ -397,6 +397,7 @@ for (const [name, file] of [
   ['site-scout', 'site-scout.test.mjs'],
   ['coins', 'coins.test.mjs'],
   ['easiest-sites', 'easiest-sites.test.mjs'],
+  ['gist', 'gist.test.mjs'],
   ['persona-playtest', 'persona-playtest.mjs'],
   ['ics', 'ics.test.mjs'],
   ['lineage', 'lineage.test.mjs'],
