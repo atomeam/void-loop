@@ -615,17 +615,29 @@ try {
   }
   // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
   if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
-    const P = await fresh(); const posts = [];
-    await P.ctx.route(/\/api\/tally(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50001, tails: 48310 }, today: { heads: 612, tails: 592 } } }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50000, tails: 48310 }, today: { heads: 611, tails: 592 } } }) }); });
+    const P = await fresh(); const posts = []; let reads = 0;
+    await P.ctx.route(/\/api\/tally(?:\?|$)/, (r) => { const q = r.request(); if (q.method() !== 'POST') reads++; if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50001, tails: 48310 }, today: { heads: 612, tails: 592 } } }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50000, tails: 48310 }, today: { heads: 611, tails: 592 } } }) }); });
     await P.ask('flip a coin', 1200);
     const line = await until(async () => P.p.$eval('.vpage.on .coin-everyone', (e) => (e.hidden ? '' : e.textContent)).catch(() => ''), 6000);
-    check('coin: everyone\'s flips: "Everyone today: 51% heads of 1,204 flips · all time 50.9% heads of 98,311" under the tally, read from /api/tally, and the flip was posted as one heads or tails with n 1',
-      /^Everyone today: 51% heads of 1,20[34] flips · all time 50\.9% heads of 98,31[01]$/.test(line) && posts.length === 1 && posts[0].of === 'coin' && /^(?:heads|tails)$/.test(posts[0].v) && posts[0].n === 1 && !P.errors.length, JSON.stringify({ line, posts, errors: P.errors }));
+    check('coin: everyone\'s flips: "Everyone today: 51% heads of 1,204 flips · all time 50.9% heads of 98,311" under the tally, from the one POST of the first flip (heads or tails, n 1; no separate read: one request, not two)',
+      /^Everyone today: 51% heads of 1,20[34] flips · all time 50\.9% heads of 98,31[01]$/.test(line) && posts.length === 1 && posts[0].of === 'coin' && /^(?:heads|tails)$/.test(posts[0].v) && posts[0].n === 1 && reads === 0 && !P.errors.length, JSON.stringify({ line, posts, reads, errors: P.errors }));
     await P.ctx.close();
     const Q = await fresh(); await Q.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
     await Q.ask('flip a coin', 1500); const hidden = await Q.p.$eval('.vpage.on .coin-everyone', (e) => e.hidden).catch(() => null);
     check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
     await Q.ctx.close();
+  }
+  // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
+  if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
+    const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];
+    await F.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"counts":{"all":{"heads":1,"tails":1},"today":{"heads":1,"tails":1}}}' }));
+    const pg = await F.ctx.newPage(); pg.on('request', (q) => got.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/flip/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); await pg.waitForTimeout(800);
+    const word = await pg.$eval('.coin-word', (e) => e.textContent), pre = await pg.$$eval('link[rel=modulepreload]', (l) => l.map((x) => x.getAttribute('href')));
+    const mods = ['/skills/coin.js', '/lib/tally.js', '/lib/reactions.js', '/lib/coins.js'], tally = got.filter((u) => u.startsWith('/api/tally')).length;
+    check('flip page: the coin lands (Heads or Tails), the head preloads every module it imports (coin, tally, reactions, coins) so there is no waterfall, and it makes one tally request on load',
+      /^(?:Heads|Tails)$/.test(word) && mods.every((m) => pre.includes(m) && got.includes(m)) && tally === 1 && !F.errors.length, JSON.stringify({ word, pre, tally, errors: F.errors }));
+    await F.ctx.close();
   }
   // every coin (owner, 2026-10-24: "any ever discovered coin as well as create a coin and it ties into our coin appraisal"): Commons and the appraiser are stubbed
   if (want("coin: any real coin with its real faces, a picker, your own coin, and what it's worth")) { const C = await fresh(); const appraised = [];

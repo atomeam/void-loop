@@ -424,6 +424,7 @@ for (const [name, file] of [
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
+  ['preload', 'preload.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
@@ -474,6 +475,9 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
+// every module a direct page (/flip/, /g/, /conquered/) imports is preloaded in its head (tools/preload.mjs; owner, 2026-10-24: "speed fixes a
+// lot of our other issues and is worth fixing permanently"): an import added without its preload is a waterfall again
+addScript('preload', 'preload.mjs', ['--check']);
 addScript('similar', 'similar-index.mjs', ['--check']); // the "what's similar" index of every family's parts (lib/similar-index.js)
 addScript('refresh', 'refresh.mjs', ['--check']);
 addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its source: the floor only rises (tools/art-floor.json)

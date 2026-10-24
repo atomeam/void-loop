@@ -187,9 +187,12 @@ function flipCard(text, api, ask, look, keepEl) {
   // until the first read works; each flip is one small POST per side; a 429 rests the posts for its Retry-After. Nothing from the server is drawn but numbers.
   const every = el.querySelector('.coin-everyone'); every.className += ' coin-tally'; let restUntil = 0;
   const showEvery = (j) => { const line = j && j.ok && j.counts ? coinLine(j.counts) : ''; if (line) { every.textContent = line; every.hidden = false; } };
-  fetch('/api/tally?of=coin', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then(showEvery).catch(() => {});
-  const tell = (v, n) => { if (!n || Date.now() < restUntil) return; fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
-    .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); return null; } return r.ok ? r.json() : null; }).then(showEvery).catch(() => {}); };
+  // one request on load, not two (speed, 2026-10-24): the first flip's POST answers with the counts, so there is no separate read; a POST that is
+  // resting (429) reads them once instead
+  const read = () => fetch('/api/tally?of=coin', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then(showEvery).catch(() => {});
+  let shown = false; const seen = (j) => { if (j && j.ok) shown = true; showEvery(j); };
+  const tell = (v, n) => { if (!n) return; if (Date.now() < restUntil) { if (!shown) { shown = true; read(); } return; } fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
+    .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); if (!shown) { shown = true; read(); } return null; } return r.ok ? r.json() : null; }).then(seen).catch(() => {}); };
   const coins = Array.from({ length: ask.n }, () => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', look ? look.rim : st.rim);
     b.innerHTML = '<span class="fc h"></span><span class="fc t"></span>'; // void-review: ok (constant markup, faces painted by paintFace)
