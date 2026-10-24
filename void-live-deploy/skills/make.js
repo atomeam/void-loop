@@ -76,8 +76,9 @@ export function makeOf(text) {
     if (re.test(m[1])) return { kind: 'game', id, label };
   }
   for (const [re, id, label] of GAMES) if (id !== 'tictactoe' && re.test(t)) return { kind: 'game', id, label }; // bare tic-tac-toe is the tictactoe skill
-  m = t.match(/^(?:make|build|create|show|render|draw|give|materiali[sz]e|summon|spawn)?\s*(?:me\s+)?(?:a\s+|an\s+)?(?:([a-z]+)\s+)?(?:3d|3-d|three[\s-]?d)\s+(?:([a-z]+)\s+)?([a-z]+)$/);
-  if (m && SHAPES[m[3]]) { const c = [m[1], m[2]].find((w) => w && COLORS[w]); return { kind: '3d', shape: SHAPES[m[3]], color: c || null, word: m[3] }; }
+  m = t.match(/^(?:make|build|create|show|render|draw|give|materiali[sz]e|summon|spawn)?\s*(?:me\s+)?(?:a\s+|an\s+)?(?:([a-z]+)\s+)?(?:(?:3d|3-d|three[\s-]?d)\s+)?(?:([a-z]+)\s+)?([a-z]+)$/);
+  // without "3d" every other word has to be a colour ("make a sphere", "a red cube"), so "game box" stays the game box's
+  if (m && SHAPES[m[3]] && (/\b(?:3d|3-d|three[\s-]?d)\b/.test(t) || [m[1], m[2]].every((w) => !w || COLORS[w]))) { const c = [m[1], m[2]].find((w) => w && COLORS[w]); return { kind: '3d', shape: SHAPES[m[3]], color: c || null, word: m[3] }; }
   return null;
 }
 
@@ -241,7 +242,7 @@ async function run(text, api) {
 
 export default {
   name: 'make',
-  examples: ['make a 3d torus', 'show me a gold 3d diamond', 'timing game', 'uap timeline'], // Connect 4 is its own game now (skills/connect4.js), ahead of this in the index
+  examples: ['make a 3d torus', 'show me a gold 3d diamond', 'make a sphere', 'timing game', 'uap timeline'], // Connect 4 is its own game now (skills/connect4.js), ahead of this in the index
   nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list', 'what is a uap', 'news filter settings'],
   match(lower, text) { return !!makeOf(text); },
   run,

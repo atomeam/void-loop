@@ -380,7 +380,7 @@
    "examples": [
     "make a 3d torus",
     "show me a gold 3d diamond",
-    "timing game"
+    "make a sphere"
    ],
    "tier": "proven",
    "why": "a self-test, 4 browser-suite mentions, 33 real asks in the benchmark",

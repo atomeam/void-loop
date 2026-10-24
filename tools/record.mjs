@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
+import { scoreOf, takeBeatMs, toBeat } from './film-sound.mjs'; // the film's score and its tempo: scene changes land on its beats
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const site = path.resolve(here, '..', 'void-live-deploy');
@@ -147,7 +148,11 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   // about twice that, 1080 x 1920 (CSS zoom 2.3), so every pixel of the film is real. Playwright never scales a film up (asked for
   // 1080 x 1920 at a 540 viewport it put the page in the top-left quarter of a grey frame, every film before 2026-10-14).
   const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
+  // beat-locked cuts: the film's own score (tools/film-sound.mjs, picked by the film's id) has a tempo, and the take's clock starts when the page is made (that is when the
+  // video starts); every change of scene waits for the next beat of the score, in the take's time (the cut is 15% faster)
+  let tookMs = 0, syncAt = 0; const score = scoreOf(id), beat = takeBeatMs(score), tick = [], t0 = Date.now();
   const page = await ctx.newPage(), cutsSeen = [];
+  const onBeat = async (minMs, every = 1) => { await page.waitForTimeout(toBeat(Date.now() - t0, beat, minMs, every)); tick.push(Date.now() - t0); }; // tick: when each scene change was let go, for the trace
   try {
     await page.goto(ship ? 'https://a-to-mind.com/?q=' + encodeURIComponent(tool.ask) : base + 'fringe/' + id + '.html', { waitUntil: 'load' });
     // the edit (owner, 2026-10-14: "teach Verse how to edit and make epic videos that are very entertaining"): a hook that slams in,
@@ -188,6 +193,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
             if (e.scrollWidth > e.clientWidth + 1 || r.left < -1 || r.right > W + 1 || r.top < -1 || r.bottom > H + 1 || /\u2026|\.\.\.$/.test(t)) bad.push(t.slice(0, 60)); }
           return bad; },
         clear() { document.querySelectorAll('[data-v-card]').forEach((n) => n.remove()); },
+        sync() { const e = fx('data-v-sync'); e.style.cssText = 'inset:0;background:#ff00ff'; setTimeout(() => e.remove(), 90); }, // the film's sync mark: one pure magenta frame pair, so the score can be lined up with the video's own clock (tools/film-sound.mjs findSync)
         chip(text) { const c = fx('data-v-chip', esc(text)); requestAnimationFrame(() => c.classList.add('on')); setTimeout(() => { c.classList.remove('on'); setTimeout(() => c.remove(), 250); }, 1100); },
         punch(el) { // push in on what was pressed, then ease back: the camera follows the action
           // the origin as a share of the page, so the page zoom's units never matter (in px it swung the frame off-centre)
@@ -200,8 +206,9 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     }, { title: words.title, caption: words.caption, total: seconds * 1000 });
     const fx = (fn, ...args) => page.evaluate(({ fn, args }) => window.__vfx && window.__vfx[fn](...args), { fn, args });
     // the hook: the first second decides whether anyone stays
+    await onBeat(300); syncAt = Date.now() - t0; await fx('sync'); await page.waitForTimeout(110); // the sync mark, on a beat
     await fx('card', 'an AI built this itself', words.hook, false);
-    await page.waitForTimeout(1600); cutsSeen.push(...(await fx('cuts')) || []);
+    await onBeat(1400, 2); cutsSeen.push(...(await fx('cuts')) || []);
     await fx('clear');
     // the demo, then the finding (when the ledger has one, its seconds taken from the demo so the film stays as long), then the ending
     const until = Date.now() + Math.max(4, seconds - 4 - (words.finding ? FINDING_MS / 1000 : 0)) * 1000;
@@ -217,23 +224,24 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
       if (label) await fx('chip', 'tap: ' + label);
       await b.click({ timeout: 1000 }).catch(() => {});
       await b.evaluate((el) => window.__vfx && window.__vfx.punch(el)).catch(() => {});
-      await page.waitForTimeout(1100);
+      await onBeat(1000);
     }
     const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
     if (words.finding) { // the payoff a viewer can check: what this run found, in the ledger's own words, a page at a time
       const pages = findingPages(words.finding);
       for (const [i, p] of pages.entries()) {
         await fx('card', 'what it found' + (pages.length > 1 ? ' ' + (i + 1) + '/' + pages.length : ''), p, false);
-        await page.waitForTimeout(Math.max(1400, FINDING_MS / pages.length) | 0); cutsSeen.push(...(await fx('cuts')) || []);
+        await onBeat(Math.max(1400, FINDING_MS / pages.length) | 0, 2); cutsSeen.push(...(await fx('cuts')) || []);
         await fx('clear');
       }
     }
     // the ending: the call to action on the same card as the hook, so the last frame flows into the first and the Short loops
     await fx('card', 'try it free · a-to-mind.com', words.hook, true);
-    await page.waitForTimeout(600); cutsSeen.push(...(await fx('cuts')) || []);
-    await page.waitForTimeout(2000);
+    await onBeat(500); cutsSeen.push(...(await fx('cuts')) || []);
+    await onBeat(1800, 2);
     if (cutsSeen.length && process.env.VOID_FILM_CUTS !== 'warn') throw new Error('film text cut off: ' + [...new Set(cutsSeen)].join(' | '));
   } finally {
+    tookMs = Date.now() - t0; // by the take's own clock; the video is a little shorter (its first frame comes after the page is made): the difference skews the score (tools/film-sound.mjs skewSeconds)
     await page.close(); // the video is written when its page closes
   }
   const raw = await page.video().path();
@@ -241,7 +249,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const video = path.join(out, id + '.webm');
   fs.renameSync(raw, video);
   const meta = path.join(out, id + '.json');
-  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), recorded: new Date().toISOString() }, null, 2) + '\n');
+  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
   return { video, meta };
 }
 
