@@ -14,10 +14,10 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 10,
     "checked": 1,
-    "proven": 35
+    "proven": 36
    },
    "from": 6,
    "to": 53
@@ -28,8 +28,8 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "kind": "games",
    "count": {
-    "experiment": 1,
-    "tested": 1,
+    "experiment": 0,
+    "tested": 2,
     "checked": 1,
     "proven": 29
    },
@@ -367,8 +367,10 @@
     "css gradient",
     "make a gradient from red to blue"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the making things; set down here after it answered true 3 times. Ask, and see.",
+   "glow": 100,
    "n": 8
   },
   {
@@ -382,8 +384,9 @@
     "fake name generator",
     "generate 5 fake german women"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 9
   },
   {
@@ -1169,8 +1172,9 @@
     "wheel of names",
     "spin a wheel with pizza, tacos and sushi"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 55
   },
   {

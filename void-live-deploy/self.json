@@ -483,8 +483,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T16:34:12Z",
+   "subject": "Incident: the browser suite failed on ea8a127b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T16:33:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-24T16:32:31Z",
    "subject": "random.org, true randomness and accuracy: a public draw anyone can check, and the gate asks both sites the same question"
+  },
+  {
+   "at": "2026-10-24T16:31:57Z",
+   "subject": "Verse hardens itself: 9 benchmark ask(s) for fakeuser, wheel, gradient"
   },
   {
    "at": "2026-10-24T16:31:27Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T16:07:37Z",
    "subject": "Made-up people against randomuser.me; the gate scores every new floor's own aspects; its design test finds a browser here"
-  },
-  {
-   "at": "2026-10-24T16:03:22Z",
-   "subject": "Tower gate: colour codes measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:00:16Z",
-   "subject": "Incident: the browser suite failed on 3dfde9ca (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:58:53Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

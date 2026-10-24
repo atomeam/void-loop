@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-24",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 2,
-  "tested": 25,
+  "experiment": 0,
+  "tested": 26,
   "checked": 14,
-  "proven": 293
+  "proven": 294
  },
  "families": [
   {
@@ -24,10 +24,10 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 10,
     "checked": 1,
-    "proven": 35
+    "proven": 36
    },
    "skills": [
     {
@@ -42,18 +42,21 @@
     },
     {
      "name": "gradient",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-24",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "fakeuser",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-24"
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "forge",
@@ -457,19 +460,20 @@
    "name": "Games",
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
-    "experiment": 1,
-    "tested": 1,
+    "experiment": 0,
+    "tested": 2,
     "checked": 1,
     "proven": 29
    },
    "skills": [
     {
      "name": "wheel",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-24"
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "coin",
