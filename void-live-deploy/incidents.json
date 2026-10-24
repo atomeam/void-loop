@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T11:19:25.518Z",
+   "sha": "b05def79e7e3733f673c801a19807de74e7d68ea",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40088901291",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-24T06:06:57.967Z",
    "sha": "d491f43f17fb0e6ed9864c650753723a56d547f7",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40068326979",
@@ -588,23 +609,6 @@
    "touched": [
     ".github/workflows/tower-gate.yml",
     "void-live-deploy/lib/tower.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:33:05.308Z",
-   "sha": "1821ea0352a4c2e93a0676179d87784db090865c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40054033042",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/gist.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/g/index.html",
-    "void-live-deploy/lib/gist.js"
    ]
   }
  ]
