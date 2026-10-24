@@ -73,7 +73,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   put('reliability', v.reliability, s.reliability, ' of 3 loads answered');
   put('mobile', v.mobile, s.mobile, ' px sideways overflow at 390 px');
   put('accessibility', v.a11y, s.a11y, ' unnamed controls or images');
-  // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back
+  // a site that answered none of the loads turned the gate away (many block automated visits): that is no measurement, not a win
+  if (!s.reliability) ev.reliability = { verdict: 'unverified', verse: v.reliability, best: 0, evidence: f.site + ' answered none of 3 automated loads (it may block them): not measured', at };
+  // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back.
+  // Rows the old gate called by itself ("called beaten by verse") are dropped on every run, in every floor: runs in flight when that was taken back
+  // pushed them in again, and a later run only re-measures four aspects
+  for (const rows of Object.values(data.floors)) for (const [k, r] of Object.entries(rows || {})) if (r && r.called && /^called beaten by verse\b/.test(String(r.evidence || ''))) delete rows[k];
   fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
   for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
 }
