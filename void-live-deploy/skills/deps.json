@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 755,
+ "counted": 757,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1124,6 +1124,13 @@
   },
   {
    "file": "lib/heat-dose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3898,6 +3905,12 @@
    ],
    "reachedBy": [
     "skills/ritual-template.js"
+   ]
+  },
+  "lib/imgfit.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/imgfit.js"
    ]
   },
   "lib/inbox-health.js": {
@@ -7475,6 +7488,12 @@
   },
   "skills/image.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/imgfit.js": {
+   "imports": [
+    "lib/imgfit.js"
+   ],
    "importedBy": []
   },
   "skills/incident-autopsy.js": {

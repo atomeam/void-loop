@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resize and compress a photo · Verse</title>
+<meta name="description" content="Make a photo or signature an exact size in cm, mm, inches or pixels and under a size limit in KB, as a JPEG or a PDF. Done on your device: nothing is uploaded.">
+<style>
+  /* a-to-mind.com/resize-image/ (owner, 2026-10-24: back to the easy sites; pancardresizer.com is a three-step wizard behind AdSense, tag-manager, jQuery, Bootstrap and Croppie): one step, one file and one small module, the picture never leaves the device */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --ok: #1f8a4c; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --ok: #6fd184; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 600px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; } .drop input { max-width: 100%; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0; } label { display: grid; gap: 3px; font-size: 13px; color: var(--soft); }
+  input[type=number], select { font: inherit; font-size: 16px; color: var(--ink); background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; width: 100%; box-sizing: border-box; } select option { color: #15131c; }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  #result { margin-top: 14px; text-align: center; } #result canvas, #result img { max-width: 100%; max-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  #line { font-size: 17px; font-weight: 600; margin: 10px 0 4px; } #line.ok { color: var(--ok); } #line.bad { color: var(--bad); } #note { color: var(--soft); font-size: 14px; min-height: 1.3em; }
+  .dl { display: flex; gap: 10px; justify-content: center; margin-top: 10px; } .dl a { text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; background: var(--accent); color: #fff; } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/imgfit.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Resize and compress a photo</h1>
+  <div class="drop"><label for="file" style="display:block;color:inherit;font-size:16px">Choose a photo or signature (JPEG, PNG or WebP)</label><input id="file" type="file" accept="image/jpeg,image/png,image/webp,image/*"></div>
+  <div class="grid">
+    <label>Width<input id="w" type="number" min="0" step="any" inputmode="decimal" value="3.5"></label>
+    <label>Height<input id="h" type="number" min="0" step="any" inputmode="decimal" value="2.5"></label>
+    <label>Unit<select id="u"><option value="cm" selected>cm</option><option value="mm">mm</option><option value="in">inches</option><option value="px">pixels</option></select></label>
+    <label>Resolution (dpi, for cm, mm and inches)<input id="dpi" type="number" min="50" max="1200" value="200" inputmode="numeric"></label>
+    <label>Largest file size, KB (blank for none)<input id="kb" type="number" min="1" step="any" inputmode="decimal" value="50"></label>
+    <label>Fit<select id="fit"><option value="fill" selected>Crop to fill the size</option><option value="fit">Keep the whole picture</option><option value="stretch">Stretch to the size</option></select></label>
+  </div>
+  <div id="result" hidden><canvas id="pv" aria-label="The resized picture"></canvas><div id="line" role="status" aria-live="polite"></div><div id="note"></div>
+    <div class="dl"><a id="dj" href="#" download="photo.jpg">Download JPEG</a><a id="dp" class="alt" href="#" download="photo.pdf">Download PDF</a></div></div>
+  <footer>Done on this device: the picture is never uploaded. The size limit counts 1 KB as 1,000 bytes, so the file passes either way a form counts it. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { toPx, fitBox, fitSize, pdfOfJpeg } from '/lib/imgfit.js';
+  const $ = (id) => document.getElementById(id); let bmp = null, token = 0, urls = [];
+  const q = new URLSearchParams(location.search); for (const [k, id] of [['w', 'w'], ['h', 'h'], ['u', 'u'], ['kb', 'kb'], ['dpi', 'dpi']]) if (q.get(k)) $(id).value = q.get(k).slice(0, 12);
+  const kbText = (n) => (n / 1000).toFixed(1).replace(/\.0$/, '') + ' KB';
+  async function render() {
+    const mine = ++token; if (!bmp) return;
+    const unit = $('u').value, w = toPx($('w').value, unit, $('dpi').value), h = toPx($('h').value, unit, $('dpi').value);
+    if (!w || !h) { $('result').hidden = false; $('line').textContent = ''; $('line').className = ''; $('note').textContent = 'Type a width and a height (up to 8,000 pixels a side).'; return; }
+    const box = fitBox(bmp.width, bmp.height, w, h, $('fit').value), c = $('pv'); c.width = box.w; c.height = box.h; const x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, box.w, box.h); x.drawImage(bmp, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, box.dh);
+    const enc = (qq) => new Promise((res) => c.toBlob(async (b) => res(new Uint8Array(await b.arrayBuffer())), 'image/jpeg', qq)), kb = Number($('kb').value), limit = kb > 0 ? Math.round(kb * 1000) : 0;
+    const r = await fitSize(enc, limit); if (mine !== token) return;
+    for (const u of urls) URL.revokeObjectURL(u); urls = [URL.createObjectURL(new Blob([r.bytes], { type: 'image/jpeg' })), URL.createObjectURL(new Blob([pdfOfJpeg(r.bytes, box.w, box.h, Number($('dpi').value) > 0 ? Number($('dpi').value) : 300)], { type: 'application/pdf' }))];
+    $('dj').href = urls[0]; $('dp').href = urls[1]; $('result').hidden = false;
+    $('line').textContent = box.w + ' × ' + box.h + ' px · ' + kbText(r.bytes.length) + (limit ? (r.fits ? ' (limit ' + kbText(limit) + ')' : ' — over your ' + kbText(limit) + ' limit') : '');
+    $('line').className = limit ? (r.fits ? 'ok' : 'bad') : '';
+    $('note').textContent = !limit ? 'JPEG at a good quality.' : r.fits ? 'JPEG quality ' + Math.round(r.quality * 100) + '%, the highest that fits the limit.' : 'Even at the lowest quality it is ' + kbText(r.smallest) + ': ask for a smaller size, or a larger limit.';
+    $('result').dataset.bytes = String(r.bytes.length); $('result').dataset.fits = String(r.fits);
+  }
+  $('file').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { bmp = await createImageBitmap(f); const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } });
+  for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', render);
+</script>
+</body>
+</html>

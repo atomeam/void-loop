@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 25,
+  "tested": 26,
   "checked": 14,
   "proven": 291
  },
@@ -25,11 +25,18 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 10,
     "checked": 1,
     "proven": 34
    },
    "skills": [
+    {
+     "name": "imgfit",
+     "tier": "tested",
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "forge",
      "tier": "proven",

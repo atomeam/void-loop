@@ -483,6 +483,46 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T04:50:46Z",
+   "subject": "Cartoon rows: the prefix strip handles two digits (cartoon10 leaked into the painting prompt)"
+  },
+  {
+   "at": "2026-10-24T04:49:12Z",
+   "subject": "Cartoon photo: the Wikidata image's direct address comes from Commons' own API (the live run found the image, then dropped it: a Worker…"
+  },
+  {
+   "at": "2026-10-24T04:48:32Z",
+   "subject": "Incident: the browser suite failed on 03c5cde1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:43:28Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T04:39:45Z",
+   "subject": "Base converter: the next floor from the data (hextobinary.com), and the cartoon photo falls back to the free Wikidata image"
+  },
+  {
+   "at": "2026-10-24T04:35:41Z",
+   "subject": "Incident: the browser suite failed on d2cb9609 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:35:06Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after d2cb96099515dc75af5bb076b3ac63fb3905f5b1 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-24T04:33:37Z",
+   "subject": "Incident: the browser suite failed on a15502f1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:32:18Z",
+   "subject": "Verse hardens itself: nothing to add this cycle"
+  },
+  {
+   "at": "2026-10-24T04:28:58Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
    "at": "2026-10-24T04:27:27Z",
    "subject": "Cartoon from a photo: say why the photo was not used (photoWhy), and a fresh row (cartoon8)"
   },
@@ -521,46 +561,6 @@
   {
    "at": "2026-10-24T04:08:25Z",
    "subject": "Cartoon from a real photo: Wikipedia's lead photo of the named page, described by the vision model, and the page's title as the usual…"
-  },
-  {
-   "at": "2026-10-24T04:08:17Z",
-   "subject": "Incident: the browser suite failed on af2461da (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:03:38Z",
-   "subject": "Tower: killshot and fatality are the same thing; a floor may use either field"
-  },
-  {
-   "at": "2026-10-24T04:02:41Z",
-   "subject": "Tower: match, then the fatality; sites that give trouble send Verse down a rank"
-  },
-  {
-   "at": "2026-10-24T04:00:55Z",
-   "subject": "Easiest sites: --tools scans only tool-named hosts of the whole top million, minus parked, adult and shell pages"
-  },
-  {
-   "at": "2026-10-24T03:59:44Z",
-   "subject": "Music: a heavy ask is a song with a shape: sections on a tension curve, a distorted guitar, kick-ducked pads, and a test that measures it"
-  },
-  {
-   "at": "2026-10-24T03:59:40Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T03:49:39Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
-  },
-  {
-   "at": "2026-10-24T03:46:59Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T03:45:50Z",
-   "subject": "Incident: the browser suite failed on 041f55fd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:43:08Z",
-   "subject": "Incident: the browser suite failed on 96209ccb (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

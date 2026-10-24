@@ -668,6 +668,28 @@ try {
       card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base-converter/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
     await B.ctx.close(); await K.ctx.close();
   }
+  // the photo resizer (lib/imgfit.js, /resize-image/, skills/imgfit.js; owner, 2026-10-24: back to the easy sites): a real picture in, an exact size and a size limit out
+  if (want("photo resizer: a photo becomes an exact size under a size limit as a JPEG and a PDF, on the device, and the ask opens it filled in")) {
+    const R = await fresh(); const origin = new URL(R.p.url()).origin, pg = await R.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/resize-image/'); await pg.waitForSelector('#file', { timeout: 10000 }); const loaded = reqs.length;
+    const png = await pg.evaluate(async () => { const c = document.createElement('canvas'); c.width = 1200; c.height = 900; const x = c.getContext('2d'); for (let i = 0; i < 3000; i++) { x.fillStyle = 'hsl(' + (i * 7 % 360) + ',70%,' + (30 + i % 40) + '%)'; x.fillRect((i * 37) % 1200, (i * 91) % 900, 40, 30); } const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); });
+    await pg.setInputFiles('#file', { name: 'me.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+    await pg.fill('#w', '3.5'); await pg.fill('#h', '2.5'); await pg.selectOption('#u', 'cm'); await pg.fill('#dpi', '200'); await pg.fill('#kb', '12');
+    await until(async () => (await pg.$eval('#line', (e) => e.textContent).catch(() => '')).includes('limit'), 8000); await pg.waitForTimeout(300);
+    const out = await pg.evaluate(() => ({ line: document.getElementById('line').textContent, cls: document.getElementById('line').className, bytes: +document.getElementById('result').dataset.bytes, fits: document.getElementById('result').dataset.fits, w: document.getElementById('pv').width, h: document.getElementById('pv').height }));
+    const dj = pg.waitForEvent('download', { timeout: 15000 }); await pg.click('#dj'); const jd = await dj, jb = fs.readFileSync(await jd.path());
+    const dp = pg.waitForEvent('download', { timeout: 15000 }); await pg.click('#dp'); const pd = await dp, pb = fs.readFileSync(await pd.path());
+    const jsz = await pg.evaluate(async (b64) => { const u = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); const bm = await createImageBitmap(new Blob([u], { type: 'image/jpeg' })); return [bm.width, bm.height]; }, jb.toString('base64'));
+    await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
+    check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
+      loaded <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
+    const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
+    const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
+    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', href === '/resize-image/?w=3.5&h=2.5&u=cm&kb=50' && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
+    await R.ctx.close(); await K.ctx.close();
+  }
   // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
   if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];
