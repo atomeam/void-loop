@@ -65,10 +65,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString();
-  const v = await measure(b, VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', f.ask), s = await measure(b, f.url, slug + '-site');
+  // a floor with Verse's own page for the job (/is-it/christmas, /flip/) is measured there, as a person would open it; others through the ask
+  const v = await measure(b, f.page ? new URL(f.page, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', f.page ? null : f.ask), s = await measure(b, f.url, slug + '-site');
   await b.close();
   const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), ev = (data.floors[f.id] = data.floors[f.id] || {});
-  const put = (aspect, a, c, unit) => { const m = MEASURES[aspect]; ev[aspect] = record(ev[aspect], verdict(a, c, m.hi, m.ideal), a, c, 'Verse ' + a + unit + ' vs ' + f.site + ' ' + c + unit, at); };
+  const put = (aspect, a, c, unit) => { const m = MEASURES[aspect]; ev[aspect] = record(ev[aspect], verdict(a, c, m.hi, m.ideal), a, c, 'Verse' + (f.page ? ' (' + f.page + ')' : '') + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit, at); };
   put('speed', v.speed, s.speed, ' ms to network idle (median of 3, phone width)');
   put('reliability', v.reliability, s.reliability, ' of 3 loads answered');
   put('mobile', v.mobile, s.mobile, ' px sideways overflow at 390 px');
