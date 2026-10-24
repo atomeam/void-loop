@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40038844039",
-  "at": "2026-10-23T23:19:55Z",
-  "what": "Verse hardened itself: 2 benchmark ask(s) for resonant-membrane, similar.  Why these: tab (no benchmark ask, evidence tier: tested, 21 failed runs name it); coin (no benchmark ask, evidence tier: checked, 2 failed runs name it); eightball (no benchmark ask, evidence tier: tested); fact (no benchmark ask, evidence tier: tested); resonant-membrane (no benchmark ask, evidence tier: tested); similar (no benchmark ask, evidence tier: tested). New phrases: “resonant membrane” now opens resonant-membrane; “modes of mind field” now opens similar. Did not route: put in the page; draft for me; heads or tails; coin toss.",
-  "try": "resonant membrane",
+  "run": "40041638411",
+  "at": "2026-10-23T23:48:44Z",
+  "what": "Verse hardened itself: 3 benchmark ask(s) for fact, file-sorter.  Why these: tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); fact (no benchmark ask, evidence tier: tested); echo-disagrees (only 2 benchmark asks, evidence tier: checked); file-sorter (only 1 benchmark ask, evidence tier: checked). New phrases: “tell me a fact” now opens fact; “sort these files: app.py, LICENSE, data.csv, logo.png” now opens file-sorter; “what kind of files are these: README.md, config.yaml” now opens file-sorter. Did not route: put in the page; draft for me; heads or tails; coin toss.",
+  "try": "tell me a fact",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-23T23:08:59Z",
-    "try": "the tower",
-    "closedAt": "2026-10-23T23:19:24Z"
+    "at": "2026-10-23T23:19:55Z",
+    "try": "resonant membrane",
+    "closedAt": "2026-10-23T23:48:22Z"
   }
 }
