@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T22:42:27Z",
+   "subject": "Stopwatch: a full /stopwatch/ page against online-stopwatch.com, the stage stopwatch marks fastest and slowest laps, and the tower card…"
+  },
+  {
+   "at": "2026-10-24T22:32:55Z",
+   "subject": "Verse fixes its zoom-figure skill: learn to handle \"spin the 3d model\""
+  },
+  {
    "at": "2026-10-24T21:42:35Z",
    "subject": "Verse fixes its magnetize skill: learn to handle \"how do i magnetize this?\""
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-24T18:50:40Z",
    "subject": "Tower gate: word count,password,docs and notes measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T18:45:53Z",
-   "subject": "The gate takes back base64encode.org's accuracy loss: an output box that never filled is no answer, not a wrong one"
-  },
-  {
-   "at": "2026-10-24T18:42:31Z",
-   "subject": "Incident: the browser suite failed on 8edd7fcb (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

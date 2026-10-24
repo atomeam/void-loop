@@ -20,7 +20,7 @@ export const FLOORS = [
   { id: 'calculator', site: 'calculator.net', url: 'https://www.calculator.net/', ask: 'what is 17% of 240', label: 'Calculator', glyph: '÷', extra: ['history', 'unit and scientific modes'] },
   // the single-tool rungs (owner, 2026-10-23): one utility each, the fights after the tutorial; 'stopwatch' is the old 'timer and clock'
   // floor (aka keeps its coverage row and any evidence under the old id)
-  { id: 'stopwatch', aka: 'timer and clock', site: 'online-stopwatch.com', url: 'https://www.online-stopwatch.com/', ask: 'set a timer for 10 minutes', page: '/stopwatch/', label: 'Stopwatch and timer', glyph: '◷', extra: ['alarms', 'laps'] },
+  { id: 'stopwatch', aka: 'timer and clock', site: 'online-stopwatch.com', url: 'https://www.online-stopwatch.com/', ask: 'set a timer for 10 minutes', page: '/stopwatch/', label: 'Stopwatch and timer', glyph: '◷', fatality: 'time that a reload or a background tab never loses, the fastest and slowest lap marked, an alarm made with no sound file, a link that holds your countdown, and it opens offline', extra: ['alarms', 'laps'] },
   { id: 'unit converter', site: 'unitconverters.net', url: 'https://www.unitconverters.net/', ask: '100 c to f', label: 'Unit converter', glyph: '⇄', extra: ['unit breadth', 'both directions'] },
   { id: 'password', site: 'passwordsgenerator.net', url: 'https://passwordsgenerator.net/', ask: 'generate a password', label: 'Password generator', glyph: '⚿', extra: ['length and character choice', 'strength shown'] },
   // found by data, not by feel (owner, 2026-10-24: "find the real life actual easiest site"): `easiest-sites.mjs --tools` ranked howsecureismypassword.net the easiest real one-tool site
