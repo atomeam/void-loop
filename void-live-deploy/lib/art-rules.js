@@ -92,20 +92,27 @@ export function directedPrompt(scene, rarity = 'common') {
 // is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
 // (no "children's picture-book style": it turned every person into a child)
 export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, classic animated cartoon style';
-/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon2': painted from its look (below); the
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon3': painted from its look (below); the
  *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
  *  was a smiling boy in a blue t-shirt). Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon2 ' + key : '');
+export const cartoonKey = (key) => (key ? 'cartoon3 ' + key : '');
 // the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
 // subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
 export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
   + 'In at most 40 words, the things that make it recognisable: for a person their age, build, hair, beard, face, usual clothes and what they are known for holding; '
   + 'for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
   + 'If you do not know it, reply only UNKNOWN.';
-export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon2? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
+/** the text model's look -> one clean line, or '' (UNKNOWN, refused, or too short): the longest line of the reply, so a preamble such as
+ *  "Here is a description:" is never taken for the look, then the same checks as the Director's scene. Pure. */
+export function lookOf(text, isSecret = () => false) {
+  const lines = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').split(/\n/).map((l) => l.replace(/^[\s*#>-]+/, '').trim()).filter(Boolean);
+  const best = lines.sort((a, b) => b.length - a.length)[0] || '';
+  return /\bunknown\b/i.test(best) && best.split(' ').length < 6 ? '' : sceneOf(best, isSecret);
+}
+export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon[23]? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
 /** a cartoon's prompt: from its look when there is one, else from its name. Pure. */
 export function cartoonPrompt(key, look = '') {
-  const name = String(key).replace(/^cartoon2? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
+  const name = String(key).replace(/^cartoon[23]? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
   return (seen ? 'a cartoon of ' + name + ': ' + seen : 'a ' + name) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
 }
 

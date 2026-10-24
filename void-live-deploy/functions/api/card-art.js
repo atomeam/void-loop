@@ -24,7 +24,7 @@ import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, cartoonPrompt } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, cartoonPrompt } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -60,13 +60,13 @@ async function noteMiss(env, why) {
 // the Art Director (lib/art-rules.js): one short call to the free text model with the folded subject, the kind and the family (allow-lists only);
 // its scene is cleaned and checked by sceneOf, and anything that fails, is slow or is refused gives '' and the fixed template paints instead
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
-export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_SYSTEM, directorPrompt(key, kind, family, take)]) {
+export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_SYSTEM, directorPrompt(key, kind, family, take)], clean = sceneOf, maxTokens = 90) {
   try {
     const r = await Promise.race([
-      env.AI.run(models('merge'), { messages: [{ role: 'system', content: ask[0] }, { role: 'user', content: ask[1] }], max_tokens: 90 }),
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: ask[0] }, { role: 'user', content: ask[1] }], max_tokens: maxTokens }),
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
     ]);
-    return sceneOf(scrubOut(redact(String(pick(r))), env), isSecret);
+    return clean(scrubOut(redact(String(pick(r))), env), isSecret);
   } catch (_) { return ''; }
 }
 // one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window (its steps are fixed at 4); schnell takes JSON
@@ -133,7 +133,7 @@ export async function onRequestPost({ request, env }) {
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
-  const look = kind === 'cartoon' ? await direct(env, key, kind, '', '', [LOOK_SYSTEM, lookPrompt(key)]) : '', scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
+  const look = kind === 'cartoon' ? await direct(env, key, kind, '', '', [LOOK_SYSTEM, lookPrompt(key)], lookOf, 400) : '', scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
@@ -150,10 +150,10 @@ export async function onRequestPost({ request, env }) {
   if (!img) return plate('busy'); // nothing usable: nothing is kept
   try {
     await ensure(env);
-    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true }); }
+    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(look ? { look } : {}) }); }
     await env.DB.prepare('INSERT OR IGNORE INTO void_art (subject, img, day) VALUES (?, ?, ?)').bind(key, img, today()).run();
     const won = await cached(env, key); // two people at once: both get the picture stored first
-    if (won) return json({ ...hit(won, key), cached: false });
+    if (won) return json({ ...hit(won, key), cached: false, ...(look ? { look } : {}) });
   } catch (_) {}
-  return json({ state: 'art', key, img, cached: false });
+  return json({ state: 'art', key, img, cached: false, ...(look ? { look } : {}) });
 }
