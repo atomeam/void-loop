@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T22:56:38Z",
+   "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T22:48:23Z",
+   "subject": "Tower: the stopwatch floor names its FATALITY (time a reload or a background tab never loses, fastest and slowest lap, an alarm with no…"
+  },
+  {
    "at": "2026-10-24T22:42:27Z",
    "subject": "Stopwatch: a full /stopwatch/ page against online-stopwatch.com, the stage stopwatch marks fastest and slowest laps, and the tower card…"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-24T18:57:20Z",
    "subject": "A word counter page against wordcounter.net: counts as you type, offline, kept on the device"
-  },
-  {
-   "at": "2026-10-24T18:50:57Z",
-   "subject": "Incident: the browser suite failed on 05cb7c91 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T18:50:40Z",
-   "subject": "Tower gate: word count,password,docs and notes measured against their live sites"
   }
  ],
  "builders": {

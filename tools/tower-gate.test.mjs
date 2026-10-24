@@ -145,3 +145,27 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
     assert.equal(await answer(b, at('/stuck'), e.ask.type, false, e.ask.box), null, 'an empty output box is no answer, not a wrong one');
   } finally { await b.close(); server.close(); }
 });
+
+test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real length and holds it; a fast clock is wrong; a clock it cannot read is not measured', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const root = new URL('../void-live-deploy/', import.meta.url);
+  // a stopwatch that runs twice as fast, and one drawn on a canvas with no text the gate can read
+  const fake = '<div id=f>0:00.00</div><button id=g>Start</button><script>let t0=0,iv;g.onclick=()=>{if(g.textContent==="Start"){t0=Date.now();g.textContent="Stop";iv=setInterval(()=>{f.textContent="0:"+String(((Date.now()-t0)*2/1000).toFixed(2)).padStart(5,"0")},30)}else{clearInterval(iv);g.textContent="Start"}}</script>';
+  const PAGES = { '/fast': fake, '/canvas': '<canvas width=300 height=200></canvas>' };
+  const server = http.createServer((q, r) => {
+    if (PAGES[q.url]) { r.writeHead(200, { 'content-type': 'text/html' }); return r.end('<!doctype html><body>' + PAGES[q.url]); }
+    const file = new URL('.' + (q.url.split('?')[0].endsWith('/') ? q.url.split('?')[0] + 'index.html' : q.url.split('?')[0]), root);
+    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
+  }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, s = probeFor('stopwatch');
+  try {
+    assert.equal(score(await answer(b, at(s.ask.verse), null, false, false, s.ask.time), s.truth).n, 2, 'the real length of the run, held once stopped');
+    assert.equal(score(await answer(b, at('/fast'), null, false, false, s.ask.time), s.truth).n, 0, 'a clock running twice as fast is wrong');
+    assert.equal(await answer(b, at('/canvas'), null, false, false, s.ask.time), null, 'a clock the gate cannot read is not measured, never a loss');
+  } finally { await b.close(); server.close(); }
+});

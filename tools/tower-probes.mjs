@@ -32,6 +32,17 @@ export function peopleIn(text) {
 }
 /** whole years from an ISO birthday to `now` (UTC). Pure. */
 export const ageOn = (dob, now = new Date()) => { const b = new Date(String(dob).slice(0, 10) + 'T00:00:00Z'); if (isNaN(b)) return NaN; let a = now.getUTCFullYear() - b.getUTCFullYear(); if (now < new Date(Date.UTC(now.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate()))) a--; return a; };
+/** what a timed run puts between what the stopwatch showed and what it showed a moment later, around the gate's own measure in ms (tower-gate.mjs answer, `timed`) */
+export const TIMED = '\u241e gate measured ms \u241e';
+/** the clock readings in a text: "0:03.02", "00:00:03", "1:02:03.4", "3.02 s", each with its value and the step it shows (0.01 s, 1 s). Pure. */
+export function clockReadings(text) {
+  const out = [], t = String(text || '');
+  for (const m of t.matchAll(/(?<![\d:.])(?:(\d{1,2}):)?(\d{1,2}):(\d{2})(?:[.,](\d{1,3}))?(?![\d:])/g)) out.push({ at: m[0], s: (+(m[1] || 0)) * 3600 + +m[2] * 60 + +m[3] + (m[4] ? +m[4] / 10 ** m[4].length : 0), step: m[4] ? 10 ** -m[4].length : 1 });
+  for (const m of t.matchAll(/(?<![\d:.])(\d{1,3})[.,](\d{1,3})\s*s(?:ec(?:onds?)?)?\b/g)) out.push({ at: m[0], s: +m[1] + +m[2] / 10 ** m[2].length, step: 10 ** -m[2].length });
+  return out;
+}
+// a run timed by the gate, read back: a reading is right when the run's real length falls inside what it shows (its step, plus 0.3 s for the press)
+const timedRun = (t) => { const [a = '', ms = '', c = ''] = String(t || '').split(TIMED); const real = +ms / 1000; return { real, ok: Number.isFinite(real) && real > 0 ? clockReadings(a).filter((r) => r.s > 0 && r.s - 0.3 <= real && real <= r.s + r.step + 0.3) : [], later: c }; };
 const everyone = (f) => (t) => { const ps = peopleIn(t); return ps.length > 0 && ps.every(f); };
 
 export const PROBES = Object.freeze({
@@ -105,7 +116,10 @@ export const PROBES = Object.freeze({
   // three floors measured through Verse's ask: the site gets the same words typed into its own box (tower-gate.mjs `type`), Verse gets the ask
   stopwatch: {
     site: 'https://www.online-stopwatch.com/', verse: '/stopwatch/',
-    truth: null, // a stopwatch's answer is a running clock: no same question to check by reading a page (yet)
+    // the same question to both: started, run for 3 s by the gate's own clock, stopped, read; then read again 1.5 s later
+    ask: { site: 'https://www.online-stopwatch.com/', verse: '/stopwatch/', time: 3000 },
+    truth: () => [['the time shown is the real length of the run, to its last digit plus 0.3 s', { test: (t) => timedRun(t).ok.length > 0 }],
+      ['it holds still once stopped', { test: (t) => { const r = timedRun(t); return r.ok.some((x) => r.later.includes(x.at)); } }]],
     // what a full stopwatch-and-timer page offers (online-stopwatch.com's own: stopwatch, countdown, laps, alarm, presets, full screen)
     facts: [['stopwatch', /\bstopwatch\b/i], ['countdown timer', /\bcountdown\b/i], ['laps', /\blaps?\b/i], ['fastest and slowest lap', /\bfastest\b[\s\S]{0,80}\bslowest\b/i], ['alarm', /\balarm\b/i],
       ['presets', /\b(?:1|3|5|10|15|25)\s*min\b/i], ['keyboard shortcuts', /\bspace\b[\s\S]{0,40}\b(?:start|stop)/i], ['pause and resume', /\bpause|\bresume|\bstop\b/i], ['share a timer', /\bcopy link\b|\bshare\b/i], ['keeps time in a background tab', /background tab|never (?:makes it )?drift/i]],
