@@ -10237,6 +10237,21 @@ try {
         && !/no checks reported/.test(live) && /but GitHub does/.test(none) && asked.filter((u) => /check-runs/.test(u)).length === 1 && !S.errors.length,
       JSON.stringify({ live, none, asked, errors: S.errors }));
     await S.ctx.close(); }
+  // eat (owner, 2026-10-23: help someone get food from a real restaurant): the place from OpenStreetMap, every way to order, what people get there
+  if (want("eat: order food from a named restaurant")) { const E = await fresh(); const answered = [];
+    await E.ctx.route(/nominatim\.openstreetmap\.org/, (r) => r.fulfill(json(/lovebird/i.test(r.request().url()) ? [{ osm_type: 'node', osm_id: 1, lat: '28.02', lon: '-81.95', type: 'fast_food', name: 'LoveBird Almost Famous Chicken',
+      address: { house_number: '2101', road: 'South Florida Avenue', city: 'Lakeland', state: 'Florida' }, extratags: { cuisine: 'chicken', opening_hours: 'Mo-Sa 11:30-21:00', phone: '+1 863 555 0100', website: 'lovebirdeats.com' } }] : [])));
+    await E.ctx.route(/\/api\/answer$/, (r) => { answered.push(r.request().postData() || ''); return r.fulfill(json({ answer: 'The G.O.A.T. sandwich: tenders, lettuce, tomato, pickle.\nSo Gouda Mac.' })); });
+    await E.ask('order food from lovebird in lakeland', 1500); const pg = await E.page();
+    const hrefs = await E.p.$$eval('.vpage.on .eat-order a', (as) => as.map((a) => a.getAttribute('href')));
+    if (process.env.VOID_SHOTS) await E.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'eat-card.png') }).catch(() => {});
+    await E.ask('order of operations', 600); const other = await E.page();
+    check('eat: order food from a named restaurant: its name, address, hours, a call, its site and the delivery apps, and what people get there (labelled, not the restaurant\'s word); "order of operations" is not food',
+      /LoveBird Almost Famous Chicken/.test(pg) && /2101 South Florida Avenue, Lakeland/.test(pg) && /Mo-Sa 11:30-21:00/.test(pg) && /G\.O\.A\.T\./.test(pg) && /check the menu/.test(pg)
+      && hrefs.includes('https://lovebirdeats.com') && hrefs.some((h) => /^tel:\+18635550100$/.test(h)) && hrefs.some((h) => /doordash\.com/.test(h)) && hrefs.some((h) => /ubereats\.com/.test(h))
+      && answered.some((b) => /LoveBird Almost Famous Chicken/.test(b) && /Lakeland/.test(b)) && !/LoveBird/.test(other),
+      [pg.slice(0, 300), hrefs.join(' '), other.slice(0, 80)].join(' | '));
+    await E.ctx.close(); }
   if (want("ritual template: a habit sequence laid back to back with a download for one calendar file")) { const S = await fresh();
     await S.ask('ritual template: meditate 10, stretch 15, journal 10 at 6:30am', 600);
     const t = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((x) => /routine/i.test(x) ? x : '').catch(() => ''), 8000).catch(() => '');

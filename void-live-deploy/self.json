@@ -483,84 +483,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-23T23:06:25Z",
-   "subject": "Incident: the browser suite failed on a7f7392a (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:32:59Z",
+   "subject": "Incident: the browser suite failed on ba8b2ef1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T23:04:43Z",
-   "subject": "Incident: the browser suite failed on 6a7522bd (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:32:07Z",
+   "subject": "Incident: the browser suite failed on 8a265fc7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T23:03:29Z",
-   "subject": "deploy-direct: deploy a-to-mind.com from this machine with wrangler, no GitHub in the path (owner, 2026-10-23); needs…"
+   "at": "2026-10-23T23:32:01Z",
+   "subject": "Tower gate: a verdict commit rebases onto the newest main and retries when main moved during the run (run #3 lost its push to a race)"
   },
   {
-   "at": "2026-10-23T23:02:10Z",
-   "subject": "Incident: the browser suite failed on ed9fba8e (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:30:28Z",
+   "subject": "Incident: the browser suite failed on 628e6ffe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T23:02:03Z",
-   "subject": "Regenerate self.json after the merge"
+   "at": "2026-10-23T23:28:10Z",
+   "subject": "Tower card loads the tower list from a new address (lib/tower.js?v=ladder-35), so a browser's old 24-floor copy is never reused"
   },
   {
-   "at": "2026-10-23T23:01:45Z",
-   "subject": "Tower gate: a tie at the ideal score (0 px overflow, every load answered) passes as equal-and-better; --rescore applies the rule to stored…"
+   "at": "2026-10-23T23:26:29Z",
+   "subject": "Incident: the browser suite failed on 3119753a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T23:00:36Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-23T23:25:10Z",
+   "subject": "Incident: the browser suite failed on eecedfb0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T23:00:31Z",
-   "subject": "Argon's verdicts on the tower: design polish, history and unit and scientific modes beat calculator.net, signed and dated…"
+   "at": "2026-10-23T23:23:53Z",
+   "subject": "Incident: the browser suite failed on 17c78704 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T22:53:04Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-23T23:23:18Z",
+   "subject": "Incident: the browser suite failed on 9da35267 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T22:52:09Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-23T23:22:59Z",
+   "subject": "A bare hex code ('#ff5733') opens the colour card; random.org and color-hex.com fall (Verse answers both floors' asks)"
   },
   {
-   "at": "2026-10-23T22:51:43Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-23T23:22:16Z",
+   "subject": "Verse hardens itself: 2 benchmark ask(s) for resonant-membrane, similar"
   },
   {
-   "at": "2026-10-23T22:51:01Z",
-   "subject": "Inventory: drop the older bare pollen entry that overrode the new description"
+   "at": "2026-10-23T23:22:15Z",
+   "subject": "Tower: calculator, stopwatch, unit converter, password and encoder fall (Verse answered each floor's ask); the gate counts the page's own…"
   },
   {
-   "at": "2026-10-23T22:48:50Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-23T23:20:36Z",
+   "subject": "Tower gate: speed, mobile, accessibility and reliability measured against the live sites of the early floors"
   },
   {
-   "at": "2026-10-23T22:39:28Z",
-   "subject": "Inventory: describe the six family skills that arrived with no line (games, time, rooms, dates, stage-out, pollen), so main's inventory…"
+   "at": "2026-10-23T23:18:38Z",
+   "subject": "Autonomous tower: after every deploy each one-tool floor is asked on the live site, and a floor Verse's own skill answers falls by itself…"
   },
   {
-   "at": "2026-10-23T22:38:51Z",
-   "subject": "Verse hardens itself: 6 benchmark ask(s) for podcast, mind-field-mode"
+   "at": "2026-10-23T23:15:32Z",
+   "subject": "Tower: floors 1 and 2 beaten on Argon's call (owner: no rules); the scout can call a whole floor and the gate never overturns a call"
   },
   {
-   "at": "2026-10-23T22:38:38Z",
-   "subject": "Incident: the browser suite failed on b77ab65d (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:14:39Z",
+   "subject": "Tower gate runs itself after every main deploy for the early floors, commits changed verdicts and redeploys"
   },
   {
-   "at": "2026-10-23T22:38:37Z",
-   "subject": "Inventory: describe the six family skills that arrived with no line (games, time, rooms, dates, stage-out, pollen), so main's inventory…"
+   "at": "2026-10-23T23:12:43Z",
+   "subject": "Argon's verdicts: isitchristmas.com design polish; justflipacoin.com design polish and flip animation"
   },
   {
-   "at": "2026-10-23T22:38:02Z",
-   "subject": "Incident: the browser suite failed on 846f2c3a (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:11:57Z",
+   "subject": "Incident: the browser suite failed on 0c15eef0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-23T22:35:49Z",
-   "subject": "Incident: the browser suite failed on 59279e02 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:10:52Z",
+   "subject": "The tower is the owner's ladder again: the easiest sites first (isitchristmas, justflipacoin, random.org, wordcounter, calculator.net, the…"
   },
   {
-   "at": "2026-10-23T22:34:21Z",
-   "subject": "Incident: the browser suite failed on 485feb26 (void-live-deploy/incidents.json)"
+   "at": "2026-10-23T23:10:37Z",
+   "subject": "Incident: the browser suite failed on 75e0a0d4 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

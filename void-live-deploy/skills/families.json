@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 27,
-  "checked": 14,
-  "proven": 285
+  "tested": 25,
+  "checked": 16,
+  "proven": 286
  },
  "families": [
   {
@@ -25,8 +25,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 10,
-    "checked": 1,
+    "tested": 9,
+    "checked": 2,
     "proven": 33
    },
    "skills": [
@@ -337,10 +337,12 @@
     },
     {
      "name": "resonant-membrane",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "mind-field-mode",
@@ -1237,7 +1239,7 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 10
    },
@@ -1297,6 +1299,13 @@
      "streak": 6
     },
     {
+     "name": "eat",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "heart",
      "tier": "proven",
      "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark",
@@ -1340,8 +1349,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 0,
+    "tested": 1,
+    "checked": 1,
     "proven": 28
    },
    "sources": {
@@ -1605,10 +1614,12 @@
     },
     {
      "name": "quote",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-24",
      "streak": 1,
      "source": {
       "sites": [
@@ -2816,18 +2827,19 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 2,
     "checked": 3,
-    "proven": 41
+    "proven": 42
    },
    "skills": [
     {
      "name": "tower",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-23",
+     "success_rate": 1,
+     "promoted": "2026-10-24",
      "streak": 2
     },
     {
@@ -3196,10 +3208,12 @@
     },
     {
      "name": "similar",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-24",
      "streak": 2
     },
     {
