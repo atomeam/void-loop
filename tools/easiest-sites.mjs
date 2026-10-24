@@ -34,8 +34,9 @@ export const ADULT = /(porn|xxx|sex|adult|nude|cam(?:s|girl)|escort|fuck|hentai|
 export const isToolHost = (host) => TOOL_HOST.test(String(host)) && !ADULT.test(String(host));
 /** a page that is not worth measuring: parked or for sale, adult by its title, or almost no words and no links (a shell). Pure. */
 export function junk(f) {
-  const t = (f.title || '').toLowerCase();
-  return ADULT.test(t) || /\b(?:domain (?:is )?for sale|buy this domain|this domain|parked|coming soon|under construction|account suspended|default web page)\b/.test(t) || (f.words < 6 && f.links < 2);
+  // accents off first ("casinò" is a casino), and a consent or ad-preference screen is not the tool behind it
+  const t = (f.title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return ADULT.test(t) || /\b(?:domain (?:is )?for sale|buy this domain|this domain|parked|coming soon|under construction|account suspended|default web page|ad preferences?|preferencias de anuncio|cookie (?:settings|consent|preferences)|privacy (?:settings|choices)|consent)\b/.test(t) || (f.words < 6 && f.links < 2);
 }
 
 async function get(host, ms = 7000) {

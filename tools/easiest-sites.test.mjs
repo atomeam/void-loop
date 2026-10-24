@@ -24,3 +24,9 @@ test('parked, for-sale, adult-titled and empty shell pages are junk; a real one-
   assert.ok(junk(features('<title>x</title><body><button>go</button></body>')));
   assert.ok(!junk(features('<title>Flip a coin</title><body><button>Flip</button> Heads or tails, decided at once, fair and quick. <a href="/a">a</a> <a href="/b">b</a></body>')));
 });
+test('junk: an accented casino and a consent screen are not tools', async () => {
+  const { junk } = await import('./easiest-sites.mjs');
+  assert.equal(junk({ title: 'Chicken Road ▷ Gioco da casinò', words: 300, links: 40 }), true);
+  assert.equal(junk({ title: 'Preferências de Anúncio', words: 300, links: 40 }), true);
+  assert.equal(junk({ title: 'ColorZilla - Eyedropper, Color Picker', words: 300, links: 40 }), false);
+});
