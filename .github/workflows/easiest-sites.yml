@@ -10,6 +10,9 @@ on:
       rank:
         description: instead of a scan, the Tranco rank of these sites (comma separated)
         default: ''
+      tools:
+        description: scan only the tool-named hosts of the whole top million (how many at most; empty for the plain scan of the top)
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -25,7 +28,8 @@ jobs:
         env:
           TOP: ${{ inputs.top }}
           RANK: ${{ inputs.rank }}
-        run: if [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
+          TOOLS: ${{ inputs.tools }}
+        run: if [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; elif [ -n "$TOOLS" ]; then node tools/easiest-sites.mjs --tools "$TOOLS"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
