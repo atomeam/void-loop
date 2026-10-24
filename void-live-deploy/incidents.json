@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T04:33:37.140Z",
+   "sha": "a15502f14cd8ebd77c1d08d98842cd79be61e0c5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40062243406",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml",
+    "docs/MAP.md",
+    "docs/playbooks/site-by-site.md",
+    "tools/families.mjs",
+    "tools/pwcheck.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/pwcheck.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/password-strength/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1805-pwcheck"
+   ]
+  },
+  {
    "at": "2026-10-24T04:16:49.284Z",
    "sha": "d034ca303b7da5a72a6b5c546773787d58b389d1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40061160872",
@@ -572,23 +600,6 @@
     "tools/checks.mjs",
     "tools/easiest-sites.mjs",
     "tools/easiest-sites.test.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-24T01:56:40.049Z",
-   "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40051422704",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/random/index.html"
    ]
   }
  ]
