@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:24:11.860Z",
+   "sha": "6a9f889c56868aa2e5b706110342ff5a0fc06906",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40053420539",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/easiest-sites.yml",
+    "tools/easiest-sites.mjs"
+   ]
+  },
+  {
    "at": "2026-10-24T02:22:46.593Z",
    "sha": "99f5e9e57aef7d86798d879e448c1006762dbe93",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40053296446",
@@ -588,26 +603,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/inventory.js",
     "void-live-deploy/skills/tower.js",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:04:43.220Z",
-   "sha": "6a7522bd9f5e64498920276d5a9ef371f34e7905",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40036089376",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/automerge.mjs",
-    "tools/pr-ready.mjs",
-    "tools/pr-ready.test.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/inventory.js",
     "void-live-deploy/void.growth.json"
    ]
   }
