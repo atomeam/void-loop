@@ -4,10 +4,10 @@
   "calculator": {
    "speed": {
     "verdict": "worse",
-    "verse": 2953,
-    "best": 648,
-    "evidence": "Verse 2953 ms to network idle (median of 3, phone width) vs calculator.net 648 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:52:25.235Z",
+    "verse": 3088,
+    "best": 653,
+    "evidence": "Verse 3088 ms to network idle (median of 3, phone width) vs calculator.net 653 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:06:17.021Z",
     "was": "better"
    },
    "reliability": {
@@ -15,60 +15,60 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:52:25.235Z"
+    "at": "2026-10-24T02:06:17.021Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:52:25.235Z"
+    "at": "2026-10-24T02:06:17.021Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
     "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
-    "at": "2026-10-24T01:52:25.235Z"
+    "at": "2026-10-24T02:06:17.021Z"
    }
   },
   "is it": {
    "speed": {
     "verdict": "better",
-    "verse": 841,
-    "best": 860,
-    "evidence": "Verse (/is-it/christmas) 841 ms to network idle (median of 3, phone width) vs isitchristmas.com 860 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:51:42.647Z"
+    "verse": 861,
+    "best": 888,
+    "evidence": "Verse (/is-it/christmas) 861 ms to network idle (median of 3, phone width) vs isitchristmas.com 888 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:05:31.445Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 px sideways overflow at 390 px vs isitchristmas.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:51:42.647Z"
+    "at": "2026-10-24T02:05:31.445Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 unnamed controls or images vs isitchristmas.com 0 unnamed controls or images",
-    "at": "2026-10-24T01:51:42.647Z"
+    "at": "2026-10-24T02:05:31.445Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/is-it/christmas) 3 of 3 loads answered vs isitchristmas.com 3 of 3 loads answered",
-    "at": "2026-10-24T01:51:42.647Z"
+    "at": "2026-10-24T02:05:31.445Z"
    }
   },
   "coin flip": {
    "speed": {
     "verdict": "worse",
-    "verse": 1258,
-    "best": 845,
-    "evidence": "Verse (/flip/) 1258 ms to network idle (median of 3, phone width) vs justflipacoin.com 845 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:51:51.815Z",
+    "verse": 1404,
+    "best": 849,
+    "evidence": "Verse (/flip/) 1404 ms to network idle (median of 3, phone width) vs justflipacoin.com 849 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:05:41.729Z",
     "was": "better"
    },
    "mobile": {
@@ -76,60 +76,60 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:51:51.815Z"
+    "at": "2026-10-24T02:05:41.729Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-24T01:51:51.815Z"
+    "at": "2026-10-24T02:05:41.729Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-24T01:51:51.815Z"
+    "at": "2026-10-24T02:05:41.729Z"
    }
   },
   "random number": {
    "speed": {
     "verdict": "better",
-    "verse": 847,
-    "best": 1150,
-    "evidence": "Verse (/random/?min=1&max=100) 847 ms to network idle (median of 3, phone width) vs random.org 1150 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:51:59.877Z"
+    "verse": 867,
+    "best": 1168,
+    "evidence": "Verse (/random/?min=1&max=100) 867 ms to network idle (median of 3, phone width) vs random.org 1168 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:05:50.102Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-24T01:51:59.877Z"
+    "at": "2026-10-24T02:05:50.102Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 418,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 418 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:51:59.877Z"
+    "at": "2026-10-24T02:05:50.102Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-24T01:51:59.877Z"
+    "at": "2026-10-24T02:05:50.102Z"
    }
   },
   "word count": {
    "speed": {
     "verdict": "worse",
-    "verse": 2765,
-    "best": 2276,
-    "evidence": "Verse 2765 ms to network idle (median of 3, phone width) vs wordcounter.net 2276 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:52:07.571Z",
+    "verse": 2800,
+    "best": 2782,
+    "evidence": "Verse 2800 ms to network idle (median of 3, phone width) vs wordcounter.net 2782 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:05:57.714Z",
     "was": "better"
    },
    "reliability": {
@@ -137,60 +137,60 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:52:07.571Z"
+    "at": "2026-10-24T02:05:57.714Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:52:07.571Z"
+    "at": "2026-10-24T02:05:57.714Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-24T01:52:07.571Z"
+    "at": "2026-10-24T02:05:57.714Z"
    }
   },
   "stopwatch": {
    "speed": {
     "verdict": "unverified",
-    "verse": 3183,
+    "verse": 3005,
     "best": null,
-    "evidence": "Verse 3183 ms to network idle (median of 3, phone width) vs online-stopwatch.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:52:37.734Z"
+    "evidence": "Verse 3005 ms to network idle (median of 3, phone width) vs online-stopwatch.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:06:30.277Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:52:37.734Z"
+    "at": "2026-10-24T02:06:30.277Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T01:52:37.734Z"
+    "at": "2026-10-24T02:06:30.277Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
     "evidence": "online-stopwatch.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:52:37.734Z"
+    "at": "2026-10-24T02:06:30.277Z"
    }
   },
   "unit converter": {
    "speed": {
     "verdict": "worse",
-    "verse": 2871,
-    "best": 653,
-    "evidence": "Verse 2871 ms to network idle (median of 3, phone width) vs unitconverters.net 653 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:55:29.546Z",
+    "verse": 3000,
+    "best": 692,
+    "evidence": "Verse 3000 ms to network idle (median of 3, phone width) vs unitconverters.net 692 ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:09:19.642Z",
     "was": "better"
    },
    "mobile": {
@@ -198,141 +198,141 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:55:29.546Z"
+    "at": "2026-10-24T02:09:19.642Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
-    "at": "2026-10-24T01:55:29.546Z"
+    "at": "2026-10-24T02:09:19.642Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
-    "at": "2026-10-24T01:55:29.546Z"
+    "at": "2026-10-24T02:09:19.642Z"
    }
   },
   "password": {
    "speed": {
     "verdict": "unverified",
-    "verse": 2604,
+    "verse": 2697,
     "best": null,
-    "evidence": "Verse 2604 ms to network idle (median of 3, phone width) vs passwordsgenerator.net NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:55:42.458Z"
+    "evidence": "Verse 2697 ms to network idle (median of 3, phone width) vs passwordsgenerator.net NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:09:32.423Z"
    },
    "mobile": {
     "verdict": "unverified",
     "verse": 0,
     "best": null,
     "evidence": "Verse 0 px sideways overflow at 390 px vs passwordsgenerator.net null px sideways overflow at 390 px",
-    "at": "2026-10-24T01:55:42.458Z"
+    "at": "2026-10-24T02:09:32.423Z"
    },
    "accessibility": {
     "verdict": "unverified",
     "verse": 0,
     "best": null,
     "evidence": "Verse 0 unnamed controls or images vs passwordsgenerator.net null unnamed controls or images",
-    "at": "2026-10-24T01:55:42.458Z"
+    "at": "2026-10-24T02:09:32.423Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:55:42.458Z"
+    "at": "2026-10-24T02:09:32.423Z"
    }
   },
   "encoder": {
    "speed": {
     "verdict": "unverified",
-    "verse": 2749,
+    "verse": 2612,
     "best": null,
-    "evidence": "Verse 2749 ms to network idle (median of 3, phone width) vs base64encode.org NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T02:02:29.283Z"
+    "evidence": "Verse 2612 ms to network idle (median of 3, phone width) vs base64encode.org NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:16:15.896Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T02:02:29.283Z"
+    "at": "2026-10-24T02:16:15.896Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-24T02:02:29.283Z"
+    "at": "2026-10-24T02:16:15.896Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
     "evidence": "base64encode.org answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T02:02:29.283Z"
+    "at": "2026-10-24T02:16:15.896Z"
    }
   },
   "colour": {
    "speed": {
     "verdict": "unverified",
-    "verse": 3006,
+    "verse": 2776,
     "best": null,
-    "evidence": "Verse 3006 ms to network idle (median of 3, phone width) vs color-hex.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T02:00:03.604Z"
+    "evidence": "Verse 2776 ms to network idle (median of 3, phone width) vs color-hex.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:13:50.238Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T02:00:03.604Z"
+    "at": "2026-10-24T02:13:50.238Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs color-hex.com 0 unnamed controls or images",
-    "at": "2026-10-24T02:00:03.604Z"
+    "at": "2026-10-24T02:13:50.238Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
     "evidence": "color-hex.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T02:00:03.604Z"
+    "at": "2026-10-24T02:13:50.238Z"
    }
   },
   "time zones": {
    "speed": {
     "verdict": "unverified",
-    "verse": 3614,
+    "verse": 3556,
     "best": null,
-    "evidence": "Verse 3614 ms to network idle (median of 3, phone width) vs timeanddate.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T01:57:01.463Z"
+    "evidence": "Verse 3556 ms to network idle (median of 3, phone width) vs timeanddate.com NaN ms to network idle (median of 3, phone width)",
+    "at": "2026-10-24T02:10:48.073Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
     "evidence": "timeanddate.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T01:57:01.463Z"
+    "at": "2026-10-24T02:10:48.073Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 22,
     "evidence": "Verse 0 px sideways overflow at 390 px vs timeanddate.com 22 px sideways overflow at 390 px",
-    "at": "2026-10-24T01:57:01.463Z"
+    "at": "2026-10-24T02:10:48.073Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs timeanddate.com 1 unnamed controls or images",
-    "at": "2026-10-24T01:57:01.463Z"
+    "at": "2026-10-24T02:10:48.073Z"
    }
   }
  }
