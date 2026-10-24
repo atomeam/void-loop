@@ -2,6 +2,33 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T01:33:51.145Z",
+   "sha": "1b7713d5dc9954020962f8910f280f7f0e08fadc",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40049428995",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/site-scout.yml",
+    "docs/MAP.md",
+    "docs/playbooks/site-by-site.md",
+    "tools/checks.mjs",
+    "tools/site-scout.mjs",
+    "tools/site-scout.test.mjs",
+    "void-live-deploy/self.json"
+   ]
+  },
+  {
    "at": "2026-10-24T01:32:33.710Z",
    "sha": "af57fa3166c66db82753a53ec1504423ac3967c6",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40049612700",
@@ -616,26 +643,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/is-it.js"
-   ]
-  },
-  {
-   "at": "2026-10-23T21:36:58.952Z",
-   "sha": "1e880882fd121c6ced9ab063adc001de8fc91191",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40027136265",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
