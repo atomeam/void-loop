@@ -17,16 +17,27 @@ export function wallClock(at, tz) {
 export const langsOf = (h) => String(h || '').split(',').map((x) => x.trim().split(';')[0]).filter((x) => /^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(x)).slice(0, 6);
 
 /** the page: one giant word, the note, today's date; the script only redoes it by the device's clock. Pure. */
-export function page(slug, a, w, zone) {
+// the word as big as the screen allows (the tower gate, 2026-10-24: 101 px against isitchristmas.com's 160 at phone width): its size follows its
+// length, so "NO" fills the width and "NAC YDY" still fits; --n is the word's letters, reset when the script answers in the device's language
+// a full-width character (Chinese, Japanese, Korean) is about 1 em wide against about 0.8 for a Latin capital, so it counts 1.3
+export const WIDE = /[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\uff00-\uff60]/;
+export const letters = (word) => Math.max(1, Array.from(String(word || '')).reduce((n, c) => n + (WIDE.test(c) ? 1.3 : 1), 0));
+export function page(slug, a, w, zone, origin = 'https://a-to-mind.com') {
+  const url = origin + '/is-it/' + slug, said = w.word + ': ' + a.note;
   return '<!doctype html><html lang="' + esc(w.lang) + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<title>Is it ' + esc(a.what) + '?</title><link rel="alternate" type="application/rss+xml" href="/is-it/' + esc(slug) + '.rss">'
+    + '<title>Is it ' + esc(a.what) + '?</title><link rel="alternate" type="application/rss+xml" href="/is-it/' + esc(slug) + '.rss"><link rel="modulepreload" href="/skills/is-it.js">'
+    + '<meta name="description" content="' + esc(said) + '"><meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Is it ' + esc(a.what) + '? ' + esc(w.word) + '">'
+    + '<meta property="og:description" content="' + esc(said) + '"><meta property="og:url" content="' + esc(url) + '"><meta property="og:image" content="' + esc(origin) + '/og.png"><meta name="twitter:card" content="summary_large_image">'
     + '<style>html,body{margin:0;height:100%;background:#fff;color:#000;font-family:system-ui,-apple-system,sans-serif}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}'
-    + 'h1{font-size:clamp(96px,26vw,260px);line-height:1;margin:0;font-weight:900}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}</style></head>'
-    + '<body><main><h1 id="w">' + esc(w.word) + '</h1><p id="n">' + esc(a.note) + '</p><p id="t">' + esc(a.today) + '</p>'
-    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small></main>'
+    + 'h1{font-size:min(260px,calc(84vw / (var(--n) * .8)));line-height:1;margin:0;font-weight:900;white-space:nowrap}button{font:inherit;font-size:14px;color:inherit;background:none;border:1px solid #999;border-radius:999px;padding:4px 14px;cursor:pointer;margin-top:10px}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}</style></head>'
+    + '<body><main><h1 id="w" style="--n:' + letters(w.word) + '">' + esc(w.word) + '</h1><p id="n">' + esc(a.note) + '</p><p id="t">' + esc(a.today) + '</p>'
+    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small><button type="button" id="s">Share</button></main>'
     + '<script type="module">import{isIt,wordFor}from"/skills/is-it.js";const a=isIt(' + JSON.stringify('is it ' + slug.replace(/-/g, ' ')) + ');if(a){const w=wordFor(a.yes,navigator.languages);'
-    + 'document.getElementById("w").textContent=w.word;document.getElementById("n").textContent=a.note;document.getElementById("t").textContent=a.today;'
-    + 'document.getElementById("z").firstChild.textContent="By this device\\u2019s clock ("+(Intl.DateTimeFormat().resolvedOptions().timeZone||"local time")+"). ";}</script></body></html>';
+    + 'const h=document.getElementById("w");h.textContent=w.word;h.style.setProperty("--n",Array.from(w.word).reduce((n,c)=>n+(/[\\u1100-\\u115f\\u2e80-\\ua4cf\\uac00-\\ud7a3\\uf900-\\ufaff\\uff00-\\uff60]/.test(c)?1.3:1),0));document.getElementById("n").textContent=a.note;document.getElementById("t").textContent=a.today;'
+    + 'document.getElementById("z").firstChild.textContent="By this device\\u2019s clock ("+(Intl.DateTimeFormat().resolvedOptions().timeZone||"local time")+"). ";}'
+    // Share: the phone's own share sheet, or the link copied; and the page opens offline after one visit (sw.js keeps /is-it/ pages)
+    + 'document.getElementById("s").onclick=async()=>{const d={title:document.title,text:document.getElementById("w").textContent+": "+document.getElementById("n").textContent,url:location.href};try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(d.url);document.getElementById("s").textContent="Link copied";}}catch(_){}};'
+    + 'if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});</script></body></html>';
 }
 /** the answer for each of the last `n` days, newest first: [{ day: 'YYYY-MM-DD', a }] (isitchristmas.com's feed carries the last 10). Pure. */
 export function lastDays(slug, now, n = 10) {
@@ -58,5 +69,5 @@ export async function onRequestGet({ request, params }) {
   const headers = { 'cache-control': 'public, max-age=300', vary: 'accept-language', 'x-content-type-options': 'nosniff' };
   if (rss) return new Response(feed(slug, a, w, url.origin, now, url.searchParams.get('only') === 'yes'), { headers: { ...headers, 'content-type': 'application/rss+xml; charset=utf-8' } });
   if (json) return new Response(JSON.stringify(answerJson(slug, a, w, tz && wallClock(new Date(), tz) ? tz : 'UTC')), { headers: { ...headers, 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*' } });
-  return new Response(page(slug, a, w, tz && wallClock(new Date(), tz) ? tz : 'UTC'), { headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
+  return new Response(page(slug, a, w, tz && wallClock(new Date(), tz) ? tz : 'UTC', url.origin), { headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
 }

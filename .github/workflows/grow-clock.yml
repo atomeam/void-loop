@@ -33,12 +33,11 @@ jobs:
         run: |
           start() { gh workflow run "$1" --repo "$GITHUB_REPOSITORY" --ref main && echo "$(date -u +%H:%M) started $1" || echo "::warning title=Not started::$1"; }
           for i in $(seq 0 32); do
-            # six ticks an hour: probe at :00, then grow-self and propose-fix take turns (each skips quietly when it has nothing to do)
-            # grow-self on most ticks so hardenings happen faster (owner, 2026-10-21: upgrade the loop)
+            # six ticks an hour: probe at :00, propose-fix on the rest (it skips quietly when there is no miss to fix). No self-hardening (owner,
+            # 2026-10-24: "there should be no self hardening, it needs to say exactly what upgrades"): grow-self.yml is run by hand only
             case $((i % 4)) in
               0) start probe-asks.yml ;;
-              1) start propose-fix.yml ;;
-              *) start grow-self.yml ;;
+              *) start propose-fix.yml ;;
             esac
             if [ "$i" -lt 32 ]; then sleep 600; fi
           done

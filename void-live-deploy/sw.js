@@ -4,7 +4,9 @@ const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
-const TOOLS = ['/color/', '/base-converter/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/g/'];
+const TOOLS = ['/color/', '/base-converter/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/g/', '/is-it/christmas'];
+// any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
+const isTool = (p) => TOOLS.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
@@ -39,8 +41,8 @@ self.addEventListener('fetch', (e) => {
   // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load.
   e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
-    const tool = nav && TOOLS.includes(url.pathname);
+    const tool = nav && isTool(url.pathname);
     if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }
     return res;
-  }).catch(() => (nav && TOOLS.includes(url.pathname) ? caches.match(url.pathname).then((r) => r || caches.match('/')) : caches.match(nav ? '/' : req)).then((r) => r || Response.error())));
+  }).catch(() => (nav && isTool(url.pathname) ? caches.match(url.pathname).then((r) => r || caches.match('/')) : caches.match(nav ? '/' : req)).then((r) => r || Response.error())));
 });

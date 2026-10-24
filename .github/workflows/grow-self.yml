@@ -12,8 +12,8 @@
 name: Verse hardens itself
 
 on:
-  schedule:
-    - cron: '41 */3 * * *' # every 3 hours (owner, 2026-10-19: "it upgrades extremely often and I dont have to babysit"); one preview in flight, closed before the next starts
+  # no schedule (owner, 2026-10-24: "there should be no self hardening, it needs to say exactly what upgrades not just hardening that means
+  # fucking nothing"): kept for a run by hand, never on a timer (docs/SALVAGE.md)
   workflow_dispatch:
     inputs:
       n:
@@ -185,17 +185,10 @@ jobs:
           node tools/art-score.mjs --write; node tools/art-pixels.mjs --write
           art=$(git diff --name-only -- tools/art-floor.json | wc -l)
           if [ "$count" -lt 1 ] && [ "$art" -lt 1 ]; then
-            # still write a detailed "nothing added" ledger line so the growth card shows every attempt (owner, 2026-10-21: give every detail)
-            failed=$(node -p "const f = JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); f.slice(0,8).map(x => x.ask + ' (wanted ' + x.want + ')').join('; ')" "$g/failed.json" 2>/dev/null || echo '')
-            what="Verse looked and found nothing to add this cycle. Candidates tried: ${failed:-none}."
-            printf '%s | verse | finding | %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$what" >> domains/void.agents.log.md
-            node tools/grow.mjs finding "$what" --by verse || true
-            # the finding must leave this job or the ledger never sees it
-            git diff -- domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch" || true
-            echo "passed=1" >> "$GITHUB_OUTPUT"
+            # nothing added is not growth (owner, 2026-10-24, on six "found nothing to add" lines in What's new: "why is this even happening"): no
+            # ledger line, no log line, no PR; what was tried stays in this job's summary (report.md above) and in grow-lessons for the next plan
             echo "added=0" >> "$GITHUB_OUTPUT"
-            echo "title=nothing to add this cycle" >> "$GITHUB_OUTPUT"
-            echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report lists them; a finding was written to the ledger"
+            echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report above lists them; nothing is opened"
             exit 0
           fi
           skills=""; title=""
