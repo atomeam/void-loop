@@ -43,7 +43,9 @@ async function commonsPhoto(item, get, why) {
     // the direct 320 px address from Commons' own API (not Special:FilePath, whose redirect a Worker may not report the end of)
     const c = await withTimeout(get, 'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url&iiurlwidth=320&titles=' + encodeURIComponent('File:' + file), { headers: UA }, 5000);
     if (!c.ok) { why.push('commons ' + c.status); return ''; } const cj = await c.json(), pages = cj && cj.query && cj.query.pages, page = pages && Object.values(pages)[0], info = page && page.imageinfo && page.imageinfo[0];
-    const url = info && (info.thumburl || info.url); if (!url || !IMG_HOST.test(url)) { why.push('commons gave no Wikimedia address for "' + file.replace(/[^A-Za-z0-9 .,'()_-]/g, ' ').slice(0, 50) + '": ' + (page ? Object.keys(page).join(',').slice(0, 60) : 'no page') + (info ? ' info ' + Object.keys(info).join(',').slice(0, 40) : '')); return ''; }
+    // Commons may write the address protocol-relative ("//upload...") or as http (2026-10-24: a real thumburl failed the https check, so the photo was lost)
+    const url = String((info && (info.thumburl || info.url)) || '').replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://');
+    if (!url || !IMG_HOST.test(url)) { why.push('commons gave no Wikimedia address for "' + file.replace(/[^A-Za-z0-9 .,'()_-]/g, ' ').slice(0, 50) + '": ' + (url ? 'it gave ' + url.replace(/[^A-Za-z0-9:/._-]/g, ' ').slice(0, 50) : 'none')); return ''; }
     return url;
   } catch (e) { why.push('wikidata error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return ''; }
 }
@@ -58,6 +60,7 @@ export async function leadPhoto(asked, get = fetch, why = []) {
     // English Wikipedia leaves non-free (fair-use) photos out of its page images, which is most photos of a person who has died or is not free-licensed: then the
     // Wikidata image (P18), always a free Commons file, is the next source
     let src = s.thumbnail && s.thumbnail.source;
+    if (src) src = String(src).replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://');
     if (!src || !IMG_HOST.test(src)) { src = await commonsPhoto(s.wikibase_item, get, why); if (!src) { why.push('no free photo'); return null; } }
     const p = await withTimeout(get, src, { headers: { 'user-agent': UA['user-agent'] } }, 6000);
     const ct = String((p.headers && p.headers.get && p.headers.get('content-type')) || '').split(';')[0].trim().toLowerCase();

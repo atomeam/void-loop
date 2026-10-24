@@ -8,7 +8,7 @@ import * as route from '../void-live-deploy/functions/api/card-art.js';
 import { models, ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, CAMERA, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
 import { readFileSync } from 'node:fs';
-globalThis.fetch = async () => { throw new Error('no network in these tests'); }; // a cartoon looks its subject up on Wikipedia (lib/wiki-look.js): never the real one here; tools/wiki-look.test.mjs fakes it
+globalThis.fetch = async (u) => { if (/wikipedia\.org\/w\/api\.php\?action=query&list=search/.test(String(u))) return new Response(JSON.stringify({ query: { search: [] } }), { headers: { 'content-type': 'application/json' } }); throw new Error('no network in these tests'); }; // Wikipedia knows no page (a lost photo would leave the painting unkept) // a cartoon looks its subject up on Wikipedia (lib/wiki-look.js): never the real one here; tools/wiki-look.test.mjs fakes it
 
 const store = new Map();
 globalThis.caches = { default: { match: async (req) => (store.has(req.url) ? new Response(store.get(req.url)) : undefined), put: async (req, res) => { store.set(req.url, await res.text()); } } };
@@ -228,7 +228,7 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon11 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon12 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
@@ -237,6 +237,11 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
   assert.equal(rows(f.env).length, 0, 'a cartoon painted after the look failed is shown but never kept: the next ask tries again');
   assert.equal(rows(u.env).length, 1, 'an unknown subject is an answer, kept');
+  const { keepable } = await import('../void-live-deploy/functions/api/card-art.js');
+  assert.equal(keepable({ look: 'x', source: 'wikipedia' }), true);
+  assert.equal(keepable({ look: 'x', photoWhy: 'no wikidata image; no free photo' }), true, 'no photo to be had: the words are the best there is');
+  assert.equal(keepable({ look: 'x', photoWhy: 'commons gave no Wikimedia address for "D.jpg": none; no free photo' }), false, 'a photo lost on the way: try again next time');
+  assert.equal(keepable({ look: 'x', photoWhy: 'vision error slow' }), false); assert.equal(keepable({ look: '', why: 'error slow' }), false); assert.equal(keepable({ look: '', why: 'unknown: UNKNOWN' }), true);
 });
 // the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the look reply's Name line, kept only when it is the same name
 test('a cartoon takes the usual spelling from the look reply, paints and shows it, and keeps it for the next ask; a different name is never taken', async () => {

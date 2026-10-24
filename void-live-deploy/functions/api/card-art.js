@@ -86,6 +86,16 @@ export async function lookFor(env, key) {
   const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d* /, ''), undefined, photoWhy); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
   const res = await lookFromText(env, key); return { ...res, photoWhy: photoWhy.join('; ').slice(0, 200) }; // why the photo was not used, so a builder can see it
 }
+// whether a cartoon's painting may be kept for ever: drawn from the photo, or from words when there is no photo to be had (no page by that name, no free
+// image). A photo that exists but was lost on the way (a Commons, download or vision error) or a look that failed leaves the painting unkept, so the
+// next ask tries the photo again; 'unknown' is an answer and is kept (2026-10-24: a text look drew Dimebag with a short brown goatee and a plain guitar)
+const NO_PHOTO = /^(?:name too short|no search hit|top page .* is not that name|page type|no wikidata item|no wikidata image|wikidata image is not)/;
+export function keepable(seen) {
+  if (!seen || seen.source === 'wikipedia') return true;
+  if (!seen.look) return !/^(?:error|empty)\b/.test(seen.why || '');
+  const first = String(seen.photoWhy || '').split('; ')[0];
+  return !first || NO_PHOTO.test(first) || /^no AI binding/.test(first);
+}
 async function lookFromText(env, key) {
   let text = '';
   try {
@@ -113,7 +123,9 @@ export async function photoLook(env, asked, get = (u, o) => fetch(u, o), why = [
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS + 8000)),
     ]);
     const said = scrubOut(redact(String(pick(r))), env), look = lookOf(said, isSecret); if (!look) { why.push('vision said ' + (said.trim() ? 'something refused: ' + said.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) : 'nothing (' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r) + ')')); return null; }
-    return { look, name: ph.usual, source: 'wikipedia' };
+    // Wikipedia's one line on what the subject is ("American guitarist"), so a headshot that crops out the guitar still paints a guitarist
+    const role = String(ph.description || '').replace(/\s*\(?\d{3,4}\b.*$/, '').trim();
+    return { look: role ? look + '; ' + role.charAt(0).toLowerCase() + role.slice(1) : look, name: ph.usual, source: 'wikipedia' };
   } catch (e) { why.push('vision error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 60)); return null; }
 }
 // one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window (its steps are fixed at 4); schnell takes JSON
@@ -198,7 +210,7 @@ export async function onRequestPost({ request, env }) {
   const told = kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {};
   // a cartoon painted without a look because the look failed (no photo, and the text model erred or said nothing; 'unknown' is an answer and is kept) is a guess at the subject: shown once, never kept, so the next ask tries
   // again instead of serving the guess for ever (2026-10-24: the kept "dimebag darrel" was a smiling stranger in a blue shirt, painted when the look timed out)
-  if (kind === 'cartoon' && !look && /^(?:error|empty)\b/.test(seen.why || '')) return json({ state: 'art', key, img, cached: false, kept: false, ...told });
+  if (kind === 'cartoon' && !keepable(seen)) return json({ state: 'art', key, img, cached: false, kept: false, ...told });
   await keepName(env, key, seen.name);
   try {
     await ensure(env);
