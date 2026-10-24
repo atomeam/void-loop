@@ -7140,7 +7140,8 @@ try {
     const tocText = await N.p.evaluate(() => { const a = [...document.querySelectorAll('#vtome .gb-toc li')].find((l) => /new/i.test(l.textContent) && /What/.test(l.textContent)); return a ? a.textContent : ''; });
     const tocFits = await N.p.evaluate(() => { const l = document.querySelector('#vtome .gb-toc'), pg = l && l.closest('.tome-page'); if (!pg) return false; const folio = pg.querySelector('.tome-folio').getBoundingClientRect(), last = l.lastElementChild.getBoundingClientRect(); return { ok: last.bottom <= folio.top + 2, last: Math.round(last.bottom), folio: Math.round(folio.top), n: l.children.length }; }); // the longer contents still fits its page
     await N.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await N.p.waitForTimeout(1500);
-    const pg = await N.p.evaluate(() => { const r = document.querySelector('#vtome .tome-page.right') || document.querySelector('#vtome .tome-page'); return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: r ? r.querySelectorAll('.tome-art svg').length : 0, folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) }; });
+    // the chapter's first page, left or right: it moves as the book grows (page 6 is a left page, 7 a right one)
+    const pg = await N.p.evaluate((from) => { const all = [...document.querySelectorAll('#vtome .tome-page')], r = all.find((x) => x.dataset.page === String(from)) || document.querySelector('#vtome .tome-page.right') || all[0]; return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: all.reduce((n, x) => n + x.querySelectorAll('.tome-art svg').length, 0), folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: all.map((x) => x.dataset.page) }; }, info.from);
     const seen = await N.p.evaluate(() => { try { return localStorage.getItem('a2m.void.book.seen.v1'); } catch (_) { return null; } });
     const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
     let ranOk = true;
@@ -7193,8 +7194,9 @@ try {
     const after = await until(async () => { const l = await look(); return l && l.shown.join(',') === '2,3' && !l.turning ? l : null; }, 4000);
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(1000);
     const back = await look();
-    check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page',
-      mid && !!after && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
+    // How to ask runs over pages 2 and 3 since 2026-10-21 (1cad11c7: every page fits its sheet); how to read a page is page 4
+    check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital, and more to ask), ← turns back to the title page',
+      mid && !!after && /How to ask/.test(after.text) && /More to ask/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
     // the cover is part of the book (owner, 2026-10-16): ← from the title page swings it shut, → opens it again
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
     const shut = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened'), book: !!window.__voidBook && window.__voidBook.open }; });
@@ -7205,7 +7207,9 @@ try {
     // the index at the back names every skill, each with its page, and a jump from it lands on that page
     const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('#vtome .tome-page .tome-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
     const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
-    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    // a skill is indexed by its page's title ("Verse fixes" for v01d-fixes, "Mind Field" for mind-field-mode), so its title counts as well as its name
+    const titleOf = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')).pages.filter((g) => g.name && g.title).map((g) => [g.name, g.title.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')]));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n) && !idxNames.has(titleOf[n]));
     const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
     const indexed = idx.names.map(([n]) => n);
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
