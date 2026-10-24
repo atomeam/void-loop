@@ -60,3 +60,14 @@ test('design polish counts what a design review fails first, lower is better and
     assert.equal(l.contrast, 1, 'the faint line fails, the aria-hidden sample on yellow does not count'); assert.equal(l.targets, 1, 'the tiny button counts, the link inside a line does not');
   } finally { await b.close(); }
 });
+test('a run after a deploy measures the current fight, the floors whose page changed and the ones missing a measurable aspect, at most three', async () => {
+  const { pick, measurable } = await import('./tower-gate.mjs'), { FLOORS: F } = await import('../void-live-deploy/lib/tower.js');
+  const full = (id) => Object.fromEntries(measurable(F.find((f) => f.id === id)).map((a) => [a, { verdict: 'better', evidence: 'x', verse: 1, best: 2 }]));
+  assert.ok(measurable(F.find((f) => f.id === 'colour codes')).includes('every colour model')); assert.ok(!measurable(F.find((f) => f.id === 'coin flip')).includes('accuracy'), 'a flip has no right answer');
+  const ev = Object.fromEntries(F.map((f) => [f.id, full(f.id)])); // every floor fully measured: only the fight is picked
+  const t = pick(ev, null, []); assert.equal(t.length, 1);
+  assert.deepEqual(pick(ev, null, ['void-live-deploy/flip/index.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
+  delete ev.calculator.speed; assert.ok(pick(ev, null, []).includes('calculator'), 'a missing row adds its floor');
+  assert.ok(pick({}, null, [], 3).length === 3 && pick({}, null, [], 1).length === 1);
+  for (const id of pick({}, { sites: [{ site: 'only-on-the-frontier.example', hardness: 1 }] }, [])) assert.ok(F.some((f) => f.id === id), 'a frontier site has no Verse page to measure: ' + id);
+});
