@@ -117,6 +117,7 @@
  "goal": "\"Can you make it do this?\": \"give me a challenge with this\" beside an explainer puts a short goal next to it…",
  "gpu-swarm": "Tilt Arena's GPU Swarm mode: 256 learning agents whose networks run on your graphics card, switching to the…",
  "grades": "GPA from your grades, the score you need on a final, cumulative GPA, and a percent as a letter grade",
+ "gradient": "\"gradient generator\", \"css gradient\", \"make a gradient from red to blue\"",
  "group": "\"group the clock and the note\", \"move the group to the top left\", \"make the group bigger\", \"ungroup\"",
  "growth": "\"growth\" / \"how have you grown\": Verse's growth ledger, newest first",
  "guide": "The book: everything Verse can do, one page each, read like a Skyrim book",

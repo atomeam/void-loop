@@ -34,6 +34,12 @@ export const PROBES = Object.freeze({
     site: 'https://hexcolor16.com/ff5733', verse: '/color/?c=ff5733',
     truth: () => PROBES.colour.truth(), facts: null, // the colour floor's facts (below)
   },
+  gradient: {
+    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/gradient/',
+    truth: null, // each opens on its own starting gradient: no same question to check
+    facts: [['linear', /\blinear\b/i], ['radial', /\bradial\b/i], ['conic', /\bconic\b/i], ['opacity', /\bopacity\b/i], ['presets', /\bpresets?\b/i], ['import CSS', /\bimport\b|\bpaste\b/i],
+      ['reverse', /\breverse\b/i], ['hue and saturation', /\bhue\b/i], ['SCSS', /\bscss\b/i], ['from a picture', /\b(?:image|picture)\b/i], ['text contrast', /\bcontrast\b|\bwcag\b/i], ['CSS output', /background(?:-image)?\s*:\s*(?:linear|radial|conic)-gradient/i]],
+  },
   'base converter': {
     site: 'https://hextobinary.com/', verse: '/base-converter/?v=ff&b=16',
     truth: null, // the site's address cannot carry the question, so the same question cannot be put to both

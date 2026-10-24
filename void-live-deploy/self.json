@@ -483,6 +483,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T15:38:16Z",
+   "subject": "No self-hardening, no empty news; floor 1's page answers bigger, shares and opens offline"
+  },
+  {
+   "at": "2026-10-24T15:37:13Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T15:33:59Z",
+   "subject": "Incident: the browser suite failed on 0ccb0aef (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:32:58Z",
+   "subject": "Incident: the browser suite failed on 885d2866 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:31:08Z",
+   "subject": "Incident: the browser suite failed on f98128ba (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:26:55Z",
+   "subject": "Tower: Hugging Face and perchance.org join as opponents"
+  },
+  {
    "at": "2026-10-24T15:26:53Z",
    "subject": "Incident: the browser suite failed on dc7561e2 (void-live-deploy/incidents.json)"
   },
@@ -537,30 +561,6 @@
   {
    "at": "2026-10-24T15:07:38Z",
    "subject": "The tower: eleven aspects measured head to head, no ceiling, and no opponent swapped down because the gate failed"
-  },
-  {
-   "at": "2026-10-24T15:07:03Z",
-   "subject": "Incident: the browser suite failed on 2343bb78 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T14:58:55Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T14:58:01Z",
-   "subject": "Cartoons from a real photo: thumb.wikimedia.org is Wikimedia too"
-  },
-  {
-   "at": "2026-10-24T14:56:44Z",
-   "subject": "Incident: the browser suite failed on 9ababa07 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T14:53:02Z",
-   "subject": "Incident: the browser suite failed on 8ddcd500 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T14:52:37Z",
-   "subject": "reinvest: today's plan for Verse's money"
   }
  ],
  "builders": {
