@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T04:35:40.951Z",
+   "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40062412398",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
+   ],
+   "touched": [
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "tools/wiki-look.test.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/lib/art-rules.js",
+    "void-live-deploy/lib/wiki-look.js"
+   ]
+  },
+  {
    "at": "2026-10-24T04:33:37.140Z",
    "sha": "a15502f14cd8ebd77c1d08d98842cd79be61e0c5",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40062243406",
@@ -579,27 +599,6 @@
     "tools/flakes.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tower.evidence.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:04:27.074Z",
-   "sha": "0a9af46ff922271dab91d8c4277576c1e7edcaf3",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40051995290",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/flakes.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tower.evidence.json",
-    ".github/workflows/easiest-sites.yml",
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/easiest-sites.mjs",
-    "tools/easiest-sites.test.mjs"
    ]
   }
  ]
