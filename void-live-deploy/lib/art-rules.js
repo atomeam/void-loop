@@ -128,10 +128,10 @@ export function lookParts(text) {
   const t = String(text == null ? '' : text), name = (/^\W*name\s*:\s*(.+)$/im.exec(t) || [])[1] || '', look = (/^\W*look\s*:\s*([\s\S]+)$/im.exec(t) || [])[1];
   return { name: name.replace(/[*_]/g, '').trim(), text: look != null ? look : t.replace(/^\W*name\s*:.*$/im, '') };
 }
-export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon\d? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
+export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
 /** a cartoon's prompt: from its look when there is one, else from its name. Pure. */
 export function cartoonPrompt(key, look = '') {
-  const name = String(key).replace(/^cartoon\d? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
+  const name = String(key).replace(/^cartoon\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
   return (seen ? 'a cartoon of ' + name + ': ' + seen : 'a ' + name) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
 }
 

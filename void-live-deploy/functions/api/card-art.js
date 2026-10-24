@@ -47,7 +47,7 @@ export const resetReady = () => { ready = null; }; // tests: a new fake database
 
 // a cartoon's name as usually spelled (lookFor), kept beside its picture so a later ask with the same misspelling gets the right name too
 async function nameOf(env, key) {
-  if (!/^cartoon\d /.test(key)) return '';
+  if (!/^cartoon\d+ /.test(key)) return '';
   try { const r = await env.DB.prepare('SELECT name FROM void_art_name WHERE subject = ?').bind(key).first(); return (r && r.name) || ''; } catch (_) { return ''; }
 }
 async function keepName(env, key, name) {
@@ -83,7 +83,7 @@ export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_
 // (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
 // builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
 export async function lookFor(env, key) {
-  const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d? /, ''), undefined, photoWhy); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
+  const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d* /, ''), undefined, photoWhy); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
   const res = await lookFromText(env, key); return { ...res, photoWhy: photoWhy.join('; ').slice(0, 200) }; // why the photo was not used, so a builder can see it
 }
 async function lookFromText(env, key) {
@@ -98,7 +98,7 @@ async function lookFromText(env, key) {
     text = scrubOut(redact(String(pick(r))), env);
     if (!text.trim()) return { look: '', why: 'empty ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) + (r.choices && r.choices[0] ? ' finish ' + String(r.choices[0].finish_reason || '').slice(0, 20) : '') : typeof r) };
   } catch (e) { return { look: '', why: 'error ' + String(e && e.message || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 80) }; }
-  const parts = lookParts(text), name = spellingOf(String(key).replace(/^cartoon\d? /, ''), parts.name), look = lookOf(parts.text, isSecret), said = text.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+  const parts = lookParts(text), name = spellingOf(String(key).replace(/^cartoon\d* /, ''), parts.name), look = lookOf(parts.text, isSecret), said = text.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
   return look ? { look, name, why: '' } : { look: '', name, why: (/\bunknown\b/i.test(text) ? 'unknown' : 'refused') + ': ' + said };
 }
 // a cartoon's look from a real photo (lib/wiki-look.js; owner, 2026-10-24, the "dimebag darrel" cartoon was a made-up guitarist because a language model
