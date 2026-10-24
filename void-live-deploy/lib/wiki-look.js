@@ -43,7 +43,7 @@ async function commonsPhoto(item, get, why) {
     // the direct 320 px address from Commons' own API (not Special:FilePath, whose redirect a Worker may not report the end of)
     const c = await withTimeout(get, 'https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url&iiurlwidth=320&titles=' + encodeURIComponent('File:' + file), { headers: UA }, 5000);
     if (!c.ok) { why.push('commons ' + c.status); return ''; } const cj = await c.json(), pages = cj && cj.query && cj.query.pages, page = pages && Object.values(pages)[0], info = page && page.imageinfo && page.imageinfo[0];
-    const url = info && (info.thumburl || info.url); if (!url || !IMG_HOST.test(url)) { why.push('commons gave no Wikimedia address'); return ''; }
+    const url = info && (info.thumburl || info.url); if (!url || !IMG_HOST.test(url)) { why.push('commons gave no Wikimedia address for "' + file.replace(/[^A-Za-z0-9 .,'()_-]/g, ' ').slice(0, 50) + '": ' + (page ? Object.keys(page).join(',').slice(0, 60) : 'no page') + (info ? ' info ' + Object.keys(info).join(',').slice(0, 40) : '')); return ''; }
     return url;
   } catch (e) { why.push('wikidata error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return ''; }
 }

@@ -483,6 +483,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T12:21:36Z",
+   "subject": "Verse fixes its make skill: learn to handle \"make a sphere\""
+  },
+  {
+   "at": "2026-10-24T12:09:56Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-10-24T11:40:17Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
+  },
+  {
+   "at": "2026-10-24T11:40:10Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+  },
+  {
+   "at": "2026-10-24T11:39:50Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+  },
+  {
+   "at": "2026-10-24T11:37:17Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+  },
+  {
+   "at": "2026-10-24T11:19:25Z",
+   "subject": "Incident: the browser suite failed on b05def79 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T11:10:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-24T06:59:55Z",
    "subject": "Verse fixes its pwcheck skill: learn to handle \"how secure is my password\""
   },
@@ -529,38 +561,6 @@
   {
    "at": "2026-10-24T04:51:05Z",
    "subject": "Incident: the browser suite failed on 34f04b75 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:50:46Z",
-   "subject": "Cartoon rows: the prefix strip handles two digits (cartoon10 leaked into the painting prompt)"
-  },
-  {
-   "at": "2026-10-24T04:49:12Z",
-   "subject": "Cartoon photo: the Wikidata image's direct address comes from Commons' own API (the live run found the image, then dropped it: a Worker…"
-  },
-  {
-   "at": "2026-10-24T04:48:32Z",
-   "subject": "Incident: the browser suite failed on 03c5cde1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:43:28Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T04:39:45Z",
-   "subject": "Base converter: the next floor from the data (hextobinary.com), and the cartoon photo falls back to the free Wikidata image"
-  },
-  {
-   "at": "2026-10-24T04:35:41Z",
-   "subject": "Incident: the browser suite failed on d2cb9609 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:35:06Z",
-   "subject": "Spotter: 2 check(s) healed with no revert after d2cb96099515dc75af5bb076b3ac63fb3905f5b1 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-24T04:33:37Z",
-   "subject": "Incident: the browser suite failed on a15502f1 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

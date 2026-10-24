@@ -33,3 +33,18 @@ test('ffmpeg writes the score as an .m4a with sound in it', { skip: !has && 'no 
   const mean = Number((/mean_volume: (-?[\d.]+) dB/.exec(v) || [])[1]), max = Number((/max_volume: (-?[\d.]+) dB/.exec(v) || [])[1]);
   assert.ok(mean > -30 && mean < -8, 'heard, not loud: ' + mean); assert.ok(max < -0.5, 'never clips: ' + max);
 });
+
+test('beat-locked cuts: a beat of the finished film is 15% longer in the take, and a wait lands exactly on a beat', async () => {
+  const { takeBeatMs, toBeat, SPEEDUP } = await import('./film-sound.mjs'); assert.equal(SPEEDUP, 1.15);
+  const sc = { bpm: 80 }; assert.equal(takeBeatMs(sc), 862.5); const b = takeBeatMs(sc);
+  for (const [at, min, every] of [[0, 0, 1], [123, 1000, 1], [4321, 1400, 2], [9999, 500, 1], [862.5, 0, 1], [20000, 1800, 2]]) { const w = toBeat(at, b, min, every), t = at + w; assert.ok(w >= Math.min(min, w), 'never early'); assert.ok(w >= min - 1, JSON.stringify([at, min, w])); const k = t / (b * every); assert.ok(Math.abs(k - Math.round(k)) < 0.002, 'on the grid: ' + [at, min, every, t].join(',')); assert.ok(w < min + b * every + 1, 'never later than one more step'); }
+  assert.equal(toBeat(862.5, b, 0), 0, 'already on a beat: no wait'); assert.equal(toBeat(0, b, 1000, 2), Math.round(Math.ceil(1000 / (b * 2)) * b * 2));
+});
+
+test('the sync mark: the magenta frame is found in ffmpeg\'s signalstats text, white and dark frames are not, and the skew is the lag over the speed-up', async () => {
+  const { findSync, skewSeconds } = await import('./film-sound.mjs');
+  const frame = (t, y, u, v) => `frame:0 pts:0 pts_time:${t}\nlavfi.signalstats.YAVG=${y}\nlavfi.signalstats.UAVG=${u}\nlavfi.signalstats.VAVG=${v}\n`;
+  const text = frame(0, 235, 128, 128) + frame(0.4, 20, 128, 128) + frame(0.84, 105, 212, 235) + frame(0.88, 105, 211, 234) + frame(0.92, 40, 130, 126);
+  assert.equal(findSync(text), 0.84); assert.equal(findSync(frame(0, 235, 128, 128) + frame(0.5, 60, 140, 150)), null); assert.equal(findSync(''), null);
+  assert.equal(skewSeconds(2300, 1.4), +(900 / 1000 / 1.15).toFixed(3)); assert.equal(skewSeconds(1000, 1.4), 0, 'a negative lag is no skew'); assert.equal(skewSeconds(9000, 1), 1.304, 'clamped to 1.5 s of lag'); assert.equal(skewSeconds('x', 1), 0);
+});
