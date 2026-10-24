@@ -475,7 +475,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T03:34:16Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -483,8 +483,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T15:58:49Z",
+   "subject": "Tower gate: measure the current fight after a deploy, every floor once a day"
+  },
+  {
+   "at": "2026-10-24T15:55:43Z",
+   "subject": "Spin the wheel: a fair wheel picker against wheelofnames.com, and the cards line up with their text"
+  },
+  {
+   "at": "2026-10-24T15:54:42Z",
+   "subject": "Incident: the browser suite failed on 40d72112 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:48:07Z",
+   "subject": "Incident: the browser suite failed on 86ac4b52 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:47:59Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
    "at": "2026-10-24T15:46:35Z",
    "subject": "CSS gradient: the first floor taken from the tower's frontier (colorzilla.com)"
+  },
+  {
+   "at": "2026-10-24T15:45:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-24T15:45:17Z",
+   "subject": "Colour page beats hexcolor16.com's list; the gate measures design polish and the colour floors' own aspects"
   },
   {
    "at": "2026-10-24T15:41:26Z",
@@ -533,34 +561,6 @@
   {
    "at": "2026-10-24T15:23:48Z",
    "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T15:23:02Z",
-   "subject": "Tower: a site Verse is losing on waits behind an easier one, still in the queue"
-  },
-  {
-   "at": "2026-10-24T15:22:26Z",
-   "subject": "Tower gate: 45 minutes, room for the German and offline loads of every floor"
-  },
-  {
-   "at": "2026-10-24T15:18:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T15:18:11Z",
-   "subject": "Tower: one endless queue, current site on top, conquered under it"
-  },
-  {
-   "at": "2026-10-24T15:16:14Z",
-   "subject": "Incident: the browser suite failed on 6bbb774b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:15:39Z",
-   "subject": "Cartoons: Wikipedia's one line on the subject drops '(born 1968)' whole, not leaving 'born' in the look"
-  },
-  {
-   "at": "2026-10-24T15:13:54Z",
-   "subject": "Tower frontier: the real tool sites ranked from the top million, not yet floors"
   }
  ],
  "builders": {
