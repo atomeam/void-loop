@@ -601,7 +601,7 @@
    "examples": [
     "export a print file",
     "export the stage as 3mf",
-    "download a 3mf of the stage"
+    "export as stl"
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
