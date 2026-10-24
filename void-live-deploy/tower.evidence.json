@@ -362,52 +362,52 @@
   "stopwatch": {
    "speed": {
     "verdict": "better",
-    "verse": 310,
-    "best": 4971,
-    "evidence": "Verse 310 ms to the load event (median of 3, phone width) vs online-stopwatch.com 4971 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:36:41.046Z"
+    "verse": 341,
+    "best": 3439,
+    "evidence": "Verse 341 ms to the load event (median of 3, phone width) vs online-stopwatch.com 3439 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:36:41.046Z"
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T16:36:41.046Z"
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
-    "at": "2026-10-24T16:36:41.046Z"
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:36:41.046Z"
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:36:41.046Z"
+    "at": "2026-10-24T19:21:07.409Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.04), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:36:41.046Z"
+    "evidence": "Verse 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T19:21:07.409Z"
    }
   },
   "unit converter": {
@@ -482,7 +482,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T19:04:07.435Z"
+    "at": "2026-10-24T19:24:02.922Z"
    }
   },
   "encoder": {
@@ -1261,61 +1261,60 @@
   },
   "random user": {
    "speed": {
-    "verdict": "worse",
-    "verse": 175,
-    "best": 154,
-    "evidence": "Verse (/random-user/) 175 ms to the load event (median of 3, phone width) vs randomuser.me 154 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:09:36.370Z",
-    "was": "better"
+    "verdict": "better",
+    "verse": 132,
+    "best": 185,
+    "evidence": "Verse (/random-user/) 132 ms to the load event (median of 3, phone width) vs randomuser.me 185 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random-user/) 3 of 3 loads answered vs randomuser.me 3 of 3 loads answered",
-    "at": "2026-10-24T18:09:36.370Z"
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random-user/) 0 px sideways overflow at 390 px vs randomuser.me 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:09:36.370Z"
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/random-user/) 0 unnamed controls or images vs randomuser.me 4 unnamed controls or images",
-    "at": "2026-10-24T18:09:36.370Z"
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random-user/) 1 (1: the page shows itself again with the network cut) vs randomuser.me 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:09:36.370Z"
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random-user/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs randomuser.me 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:09:36.370Z"
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 29,
+    "verse": 1,
     "best": 52,
-    "evidence": "Verse (/random-user/) 29 design defects vs randomuser.me 52 design defects: Verse (0 low-contrast texts, 28 small tap targets, layout shift 0.34), randomuser.me (49 low-contrast texts, 3 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T18:09:36.370Z"
+    "evidence": "Verse (/random-user/) 1 design defects vs randomuser.me 52 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.34), randomuser.me (49 low-contrast texts, 3 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T19:23:38.976Z"
    },
    "output formats": {
     "verdict": "better",
     "verse": 5,
     "best": 4,
     "evidence": "Verse (/random-user/) 5 of 5 shown vs randomuser.me 4 of 5 shown (Verse lacks: none; site lacks: SQL)",
-    "at": "2026-10-24T18:09:36.370Z",
+    "at": "2026-10-24T19:23:38.976Z",
     "of": 5,
     "part": true
    },
@@ -1324,7 +1323,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/random-user/) 1 of 1 shown vs randomuser.me 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:09:36.370Z",
+    "at": "2026-10-24T19:23:38.976Z",
     "of": 1,
     "part": true
    },
@@ -1333,7 +1332,7 @@
     "verse": 8,
     "best": 1,
     "evidence": "Verse (/random-user/) 8 of 8 shown vs randomuser.me 1 of 8 shown (Verse lacks: none; site lacks: United Kingdom, France, Germany, Spain, Brazil, India, Japan)",
-    "at": "2026-10-24T18:09:36.370Z",
+    "at": "2026-10-24T19:23:38.976Z",
     "of": 8,
     "part": true
    },
@@ -1342,8 +1341,16 @@
     "verse": 15,
     "best": 14,
     "evidence": "Verse (/random-user/) 15 of 15 things a full answer shows vs randomuser.me 14 of 15 things a full answer shows (Verse lacks: none; site lacks: SQL)",
-    "at": "2026-10-24T18:09:36.370Z",
+    "at": "2026-10-24T19:23:38.976Z",
     "of": 15
+   },
+   "accuracy": {
+    "verdict": "better",
+    "verse": 5,
+    "best": 4,
+    "evidence": "Verse (/random-user/) 5 of 5 checked facts right for the same question vs randomuser.me 4 of 5 checked facts right for the same question (Verse missed: none; site missed: every phone in the range reserved for fiction)",
+    "at": "2026-10-24T19:23:38.976Z",
+    "of": 5
    }
   },
   "weather": {
