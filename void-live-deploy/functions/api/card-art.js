@@ -83,7 +83,10 @@ export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_
 // (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
 // builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
 export async function lookFor(env, key) {
-  const seen = await photoLook(env, String(key).replace(/^cartoon\d? /, '')); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
+  const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d? /, ''), undefined, photoWhy); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
+  const res = await lookFromText(env, key); return { ...res, photoWhy: photoWhy.join('; ').slice(0, 200) }; // why the photo was not used, so a builder can see it
+}
+async function lookFromText(env, key) {
   let text = '';
   try {
     const r = await Promise.race([
@@ -101,17 +104,17 @@ export async function lookFor(env, key) {
 // a cartoon's look from a real photo (lib/wiki-look.js; owner, 2026-10-24, the "dimebag darrel" cartoon was a made-up guitarist because a language model
 // describes a person from memory): Wikipedia's lead photo of the page the name means, described by the vision model in plain visual words. { look, name, source }
 // or null when there is no such page or photo, nothing was seen, or the description fails the scene checks; the caller then asks the text model as before.
-export async function photoLook(env, asked, get = (u, o) => fetch(u, o)) {
-  if (!env || !env.AI) return null;
-  const ph = await leadPhoto(asked, get); if (!ph) return null;
+export async function photoLook(env, asked, get = (u, o) => fetch(u, o), why = []) {
+  if (!env || !env.AI) { why.push('no AI binding'); return null; }
+  const ph = await leadPhoto(asked, get, why); if (!ph) return null;
   try {
     const r = await Promise.race([
       env.AI.run(models('vision'), { messages: [{ role: 'user', content: [{ type: 'text', text: PHOTO_ASK }, { type: 'image_url', image_url: { url: ph.img } }] }], max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }),
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS + 8000)),
     ]);
-    const look = lookOf(scrubOut(redact(String(pick(r))), env), isSecret); if (!look) return null;
+    const said = scrubOut(redact(String(pick(r))), env), look = lookOf(said, isSecret); if (!look) { why.push('vision said ' + (said.trim() ? 'something refused: ' + said.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) : 'nothing (' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r) + ')')); return null; }
     return { look, name: ph.usual, source: 'wikipedia' };
-  } catch (_) { return null; }
+  } catch (e) { why.push('vision error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 60)); return null; }
 }
 // one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window (its steps are fixed at 4); schnell takes JSON
 // and paints a square. The reply is { image: base64 }, or a stream of the image's bytes, read here.
@@ -195,10 +198,10 @@ export async function onRequestPost({ request, env }) {
   await keepName(env, key, seen.name);
   try {
     await ensure(env);
-    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.name ? { name: seen.name } : {}) } : {}) }); }
+    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) }); }
     await env.DB.prepare('INSERT OR IGNORE INTO void_art (subject, img, day) VALUES (?, ?, ?)').bind(key, img, today()).run();
     const won = await cached(env, key); // two people at once: both get the picture stored first
-    if (won) return json({ ...hit(won, key), cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.name ? { name: seen.name } : {}) } : {}) });
+    if (won) return json({ ...hit(won, key), cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) });
   } catch (_) {}
-  return json({ state: 'art', key, img, cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.name ? { name: seen.name } : {}) } : {}) });
+  return json({ state: 'art', key, img, cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) });
 }

@@ -20,32 +20,33 @@ const plainTitle = (t) => String(t || '').replace(/\s*\([^)]*\)\s*$/, '').trim()
 const withTimeout = (get, url, opts, ms) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); return get(url, { ...opts, signal: c.signal }).finally(() => clearTimeout(t)); };
 
 /** the Wikipedia page a typed name means: { title, usual } (usual: the name as it is usually spelled, '' when the page's name is not the asked one), or null. */
-export async function pageFor(asked, get = fetch) {
+export async function pageFor(asked, get = fetch, why = []) {
   const q = String(asked || '').replace(/[^\p{L}\p{N} '.-]/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
-  if (q.length < 2) return null;
+  if (q.length < 2) { why.push('name too short'); return null; }
   try {
     const r = await withTimeout(get, WIKI + '/w/api.php?action=query&list=search&srlimit=1&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }, 5000);
-    if (!r.ok) return null; const j = await r.json(), hit = j && j.query && j.query.search && j.query.search[0];
-    if (!hit || !hit.title) return null;
+    if (!r.ok) { why.push('search ' + r.status); return null; } const j = await r.json(), hit = j && j.query && j.query.search && j.query.search[0];
+    if (!hit || !hit.title) { why.push('no search hit'); return null; }
     const usual = spellingOf(q, plainTitle(hit.title)); // the same name, near enough letter for letter
+    if (!usual) why.push('top page "' + String(hit.title).replace(/[^A-Za-z0-9 .,'-]/g, ' ').slice(0, 40) + '" is not that name');
     return usual ? { title: String(hit.title), usual } : null;
-  } catch (_) { return null; }
+  } catch (e) { why.push('search error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return null; }
 }
 
 /** the page's lead photo as a data URL, with the page's one-line description: { img, description, usual }, or null (no page, a disambiguation, no photo, a photo off Wikimedia or too big). */
-export async function leadPhoto(asked, get = fetch) {
-  const page = await pageFor(asked, get); if (!page) return null;
+export async function leadPhoto(asked, get = fetch, why = []) {
+  const page = await pageFor(asked, get, why); if (!page) return null;
   try {
     const r = await withTimeout(get, WIKI + '/api/rest_v1/page/summary/' + encodeURIComponent(page.title.replace(/ /g, '_')), { headers: UA }, 5000);
-    if (!r.ok) return null; const s = await r.json();
-    const src = s && s.type === 'standard' && s.thumbnail && s.thumbnail.source; if (!src || !IMG_HOST.test(src)) return null;
+    if (!r.ok) { why.push('summary ' + r.status); return null; } const s = await r.json();
+    const src = s && s.type === 'standard' && s.thumbnail && s.thumbnail.source; if (!src || !IMG_HOST.test(src)) { why.push(s && s.type !== 'standard' ? 'page type ' + String(s.type).slice(0, 20) : 'no lead photo'); return null; }
     const p = await withTimeout(get, src, { headers: { 'user-agent': UA['user-agent'] } }, 6000);
     const ct = String((p.headers && p.headers.get && p.headers.get('content-type')) || '').split(';')[0].trim().toLowerCase();
-    if (!p.ok || !/^image\/(?:jpeg|png|webp)$/.test(ct)) return null;
-    const buf = new Uint8Array(await p.arrayBuffer()); if (!buf.length || buf.length > MAX_PHOTO) return null;
+    if (!p.ok || !/^image\/(?:jpeg|png|webp)$/.test(ct)) { why.push('photo ' + p.status + ' ' + ct.slice(0, 20)); return null; }
+    const buf = new Uint8Array(await p.arrayBuffer()); if (!buf.length || buf.length > MAX_PHOTO) { why.push('photo size ' + buf.length); return null; }
     let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
     return { img: 'data:' + ct + ';base64,' + btoa(bin), description: String(s.description || '').replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120), usual: page.usual };
-  } catch (_) { return null; }
+  } catch (e) { why.push('photo error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return null; }
 }
 
 /** what the vision model is asked about the photo. It sees the picture; nothing a person typed goes with it. */
