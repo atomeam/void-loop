@@ -6775,5 +6775,9 @@
   {"ask": "modes of mind field", "want": "skill:similar"},
   {"ask": "tell me a fact", "want": "skill:fact"},
   {"ask": "sort these files: app.py, LICENSE, data.csv, logo.png", "want": "skill:file-sorter"},
-  {"ask": "what kind of files are these: README.md, config.yaml", "want": "skill:file-sorter"}
+  {"ask": "what kind of files are these: README.md, config.yaml", "want": "skill:file-sorter"},
+  {"ask": "order food from lovebird in lakeland", "want": "skill:eat"},
+  {"ask": "what's good at lovebird almost famous chicken lakeland", "want": "skill:eat"},
+  {"ask": "lovebird lakeland menu", "want": "skill:eat"},
+  {"ask": "random quote", "want": "skill:quote"}
 ]
