@@ -99,8 +99,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 1,
+    "tested": 0,
+    "checked": 2,
     "proven": 28
    },
    "from": 155,
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 7,
-    "proven": 87
+    "checked": 6,
+    "proven": 88
    },
    "from": 191,
    "to": 288
@@ -2138,7 +2138,7 @@
     "is it friday"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
    "n": 105
@@ -3265,8 +3265,9 @@
     "fun fact",
     "random fact"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 170
   },
   {
@@ -3735,8 +3736,9 @@
     "what kind of files are these: README.md, config.yaml",
     "classify files: main.go, notes.txt"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 193
   },
@@ -3917,7 +3919,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
    "n": 204
   },
@@ -4067,7 +4069,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",
-   "flavor": "Among the stage it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "flavor": "Proven 4 times over by those who asked, and kept among the stage. Say the words below and it answers.",
    "glow": 100,
    "n": 213
   },

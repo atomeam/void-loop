@@ -2,8 +2,9 @@
 // dates; the word in the visitor's own language; the page that works with scripts off; the daily feed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import isItSkill, { isIt, easter, wordFor, flagOf, countdown } from '../void-live-deploy/skills/is-it.js';
-import { onRequestGet, wallClock, langsOf } from '../void-live-deploy/functions/is-it/[what].js';
+import isItSkill, { isIt, easter, wordFor, flagOf, countdown, regionName } from '../void-live-deploy/skills/is-it.js';
+import { onRequestGet, wallClock, langsOf, feed, lastDays, answerJson } from '../void-live-deploy/functions/is-it/[what].js';
+import { clean } from '../void-live-deploy/lib/share.js';
 
 const FRI = new Date(2026, 9, 23, 12); // Friday, October 23, 2026
 test('is it christmas: NO with the days left and the date on a normal day, YES on the day', () => {
@@ -43,4 +44,21 @@ test('/is-it/<day>: a page that answers with scripts off, in the browser\'s lang
   assert.equal((await get('/is-it/narnia')).status, 404);
   assert.equal(wallClock(new Date('2026-12-24T23:30:00Z'), 'Asia/Tokyo').getDate(), 25, 'Tokyo is already on the 25th');
   assert.deepEqual(langsOf('fr-CA,fr;q=0.9,en;q=0.8'), ['fr-CA', 'fr', 'en']);
+});
+test('as isitchristmas.com: the feed carries the last ten days, the "on the day only" feed only YES days, and a JSON answer', async () => {
+  const xmas = new Date(2026, 11, 27, 12), a = isIt('is it christmas', xmas), w = wordFor(a.yes, ['en']);
+  const all = feed('christmas', a, w, 'https://a-to-mind.com', xmas), only = feed('christmas', a, w, 'https://a-to-mind.com', xmas, true);
+  assert.equal(all.match(/<item>/g).length, 10); assert.match(all, /<item><title>YES<\/title><description>Today is Christmas\.<\/description><link>https:\/\/a-to-mind\.com\/is-it\/christmas#2026-12-25<\/link>/);
+  assert.equal(only.match(/<item>/g).length, 1); assert.match(only, /christmas#2026-12-25/); assert.match(only, /\(Christmas only\)/);
+  assert.equal(feed('christmas', a, w, 'https://x', FRI, true).match(/<item>/g), null, 'no YES day in the last ten: an empty feed, nothing to notify');
+  assert.deepEqual(lastDays('christmas', xmas).map((x) => x.day).slice(0, 3), ['2026-12-27', '2026-12-26', '2026-12-25']);
+  const j = answerJson('christmas', isIt('is it christmas', FRI), wordFor(false, ['de']), 'Europe/Berlin');
+  assert.deepEqual([j.yes, j.word, j.next, j.zone, j.feed], [false, 'NEIN', '2026-12-25', 'Europe/Berlin', '/is-it/christmas.rss']);
+  const get = (path) => onRequestGet({ request: new Request('https://a-to-mind.com' + path, { headers: { 'accept-language': 'en' } }), params: { what: new URL('https://x' + path).pathname.split('/').pop() } });
+  const r = await get('/is-it/christmas.json'); assert.match(r.headers.get('content-type'), /json/); assert.equal(r.headers.get('access-control-allow-origin'), '*'); assert.equal(typeof (await r.json()).yes, 'boolean');
+});
+test('the flag turns, as on the old site: a cursor carries a whole number of 15° turns, never anything else; a region has its name', () => {
+  assert.deepEqual(clean(JSON.stringify({ t: 'cursor', x: 0.5, y: 0.5, flag: 'FR', a: 45 })), { t: 'cursor', x: 0.5, y: 0.5, flag: 'FR', a: 45 });
+  for (const a of [7, 400, '45', 1.5, null]) assert.equal('a' in clean(JSON.stringify({ t: 'cursor', x: 0.1, y: 0.1, a })), false, String(a));
+  assert.equal(regionName('FR'), 'France'); assert.equal(regionName('CA'), 'Canada');
 });

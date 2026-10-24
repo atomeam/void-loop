@@ -52,8 +52,14 @@ export function clean(raw) {
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const unit = (v) => Math.min(1, Math.max(0, v));
   // the crowd's moves: a cursor may carry a flag (exactly two capital letters: a region code, drawn as its flag on the other screens, never text),
+  // and an angle (a whole number of 15° turns, -360..360: the flag turned with the arrow keys or the wheel, as on isitchristmas.com),
   // a ripple is a place, a stamp is a place and a flag
-  if (m.t === 'cursor' && Number.isFinite(m.x) && Number.isFinite(m.y)) return FLAG.test(m.flag) ? { t: 'cursor', x: unit(m.x), y: unit(m.y), flag: m.flag } : { t: 'cursor', x: unit(m.x), y: unit(m.y) };
+  if (m.t === 'cursor' && Number.isFinite(m.x) && Number.isFinite(m.y)) {
+    const c = { t: 'cursor', x: unit(m.x), y: unit(m.y) };
+    if (FLAG.test(m.flag)) c.flag = m.flag;
+    if (Number.isInteger(m.a) && m.a % 15 === 0 && Math.abs(m.a) <= 360) c.a = m.a;
+    return c;
+  }
   if (m.t === 'ripple' && Number.isFinite(m.x) && Number.isFinite(m.y)) return { t: 'ripple', x: unit(m.x), y: unit(m.y) };
   if (m.t === 'stamp' && Number.isFinite(m.x) && Number.isFinite(m.y) && FLAG.test(m.flag)) return { t: 'stamp', x: unit(m.x), y: unit(m.y), flag: m.flag };
   if (m.t === 'summon' && typeof m.ask === 'string') { const ask = m.ask.trim(); if (ask && ask.length <= ASK_MAX) return typeof m.k === 'string' && TOKEN.test(m.k) ? { t: 'summon', ask, k: m.k } : { t: 'summon', ask }; }

@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 25,
+  "tested": 24,
   "checked": 16,
-  "proven": 286
+  "proven": 287
  },
  "families": [
   {
@@ -885,9 +885,9 @@
     {
      "name": "is-it",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-23"
     },
@@ -1349,8 +1349,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 1,
+    "tested": 0,
+    "checked": 2,
     "proven": 28
    },
    "sources": {
@@ -1635,10 +1635,12 @@
     },
     {
      "name": "fact",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-24",
      "source": {
       "sites": [
        "jsph.pl"
@@ -1944,8 +1946,8 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 7,
-    "proven": 87
+    "checked": 6,
+    "proven": 88
    },
    "skills": [
     {
@@ -1958,12 +1960,12 @@
     },
     {
      "name": "file-sorter",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-23",
+     "promoted": "2026-10-24",
      "streak": 2
     },
     {

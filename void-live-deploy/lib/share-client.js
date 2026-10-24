@@ -26,10 +26,10 @@ export function join(room, hooks, env = globalThis) {
     if (m.t === 'here') { if (s.mode === 'tabs' && peerId(m.id) && m.id !== me) { seen.add(m.id); count(seen.size); } return; }
     if (m.t === 'left') { if (peerId(m.id)) { seen.delete(m.id); count(s.mode === 'tabs' ? seen.size : here - 1); hooks.gone(m.id); if (!pub) note('they left'); } return; }
     if (!peerId(m.from) || m.from === me) return;
-    const c = clean(JSON.stringify({ t: m.t, x: m.x, y: m.y, flag: m.flag, ask: m.ask, k: m.k, key: m.key, text: m.text, data: m.data }));
+    const c = clean(JSON.stringify({ t: m.t, x: m.x, y: m.y, flag: m.flag, a: m.a, ask: m.ask, k: m.k, key: m.key, text: m.text, data: m.data }));
     if (!c) return;
     if (!seen.has(m.from) && s.mode === 'tabs') { seen.add(m.from); count(seen.size); if (!pub) note('another tab came into this Verse'); }
-    if (c.t === 'cursor') hooks.presence(m.from, c.x, c.y, c.flag);
+    if (c.t === 'cursor') hooks.presence(m.from, c.x, c.y, c.flag, c.a);
     else if (c.t === 'ripple') { if (hooks.ripple) hooks.ripple(m.from, c.x, c.y); }
     else if (c.t === 'stamp') { if (hooks.stamp) hooks.stamp(m.from, c.x, c.y, c.flag); }
     else if (c.t === 'move') { if (hooks.move) hooks.move(c.key, c.x, c.y); }
@@ -47,7 +47,7 @@ export function join(room, hooks, env = globalThis) {
     const post = (m) => { try { ch.postMessage({ ...m, from: me }); } catch (_) {} };
     s.hereBack = () => { try { ch.postMessage({ t: 'here', id: me }); } catch (_) {} };
     try { ch.postMessage({ t: 'join', id: me }); } catch (_) {}
-    s.cursor = (x, y, flag) => post(flag ? { t: 'cursor', x, y, flag } : { t: 'cursor', x, y });
+    s.cursor = (x, y, flag, a) => post({ t: 'cursor', x, y, ...(flag ? { flag } : {}), ...(a ? { a } : {}) });
     s.ripple = (x, y) => post({ t: 'ripple', x, y });
     s.stamp = (x, y, flag) => post({ t: 'stamp', x, y, flag });
     s.summoned = (ask, k) => post(k ? { t: 'summon', ask, k } : { t: 'summon', ask });
@@ -64,7 +64,7 @@ export function join(room, hooks, env = globalThis) {
   ws.onopen = () => {
     open = true; s.mode = 'live';
     const send = (m) => { try { ws.send(JSON.stringify(m)); } catch (_) {} };
-    s.cursor = (x, y, flag) => send(flag ? { t: 'cursor', x, y, flag } : { t: 'cursor', x, y });
+    s.cursor = (x, y, flag, a) => send({ t: 'cursor', x, y, ...(flag ? { flag } : {}), ...(a ? { a } : {}) });
     s.ripple = (x, y) => send({ t: 'ripple', x, y });
     s.stamp = (x, y, flag) => send({ t: 'stamp', x, y, flag });
     s.summoned = (ask, k) => send(k ? { t: 'summon', ask, k } : { t: 'summon', ask });

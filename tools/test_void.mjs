@@ -636,6 +636,15 @@ try {
     const ripple = await until(async () => P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0), 4000);
     check('is it: everyone here: the first tab says "2 people here right now", shows the second tab\'s marker at its pointer, and plays its tap as a ripple; no page errors',
       !!count1 && !!peer && ripple > 0 && !P.errors.length, JSON.stringify({ count1, peer, ripple, errors: P.errors }));
+    // as on isitchristmas.com: your own flag is your pointer, the arrow keys turn it 15° a step, the others see it turned and can read its country
+    if (bb) { await p2.mouse.move(bb.x + bb.width * 0.6, bb.y + bb.height * 0.5); await p2.keyboard.press('ArrowRight'); await p2.keyboard.press('ArrowRight'); await p2.mouse.move(bb.x + bb.width * 0.62, bb.y + bb.height * 0.5); }
+    const mine = await p2.$eval('.vpage.on .is-it-me', (e) => ({ shown: e.style.display !== 'none', turn: e.style.transform })).catch(() => null);
+    const seen = await until(async () => P.p.$eval('.vpage.on .is-it-peer', (e) => (/rotate\(30deg\)/.test(e.style.transform) ? { turn: e.style.transform, title: e.title } : null)).catch(() => null), 4000);
+    const named = await P.p.$eval('.vpage.on .is-it-crowd-status', (e) => e.textContent).catch(() => '');
+    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'is-it-crowd.png') }).catch(() => {});
+    check('is it: everyone here: your flag follows your pointer and the arrow keys turn it; the other tab sees it turned 30° and named by its country',
+      !!mine && mine.shown && /rotate\(30deg\)/.test(mine.turn) && !!seen && /United States/.test(seen.title) && /United States and you/.test(named) && !P.errors.length,
+      JSON.stringify({ mine, seen, named, errors: P.errors }));
     await p2.close(); await P.ctx.close();
   }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed

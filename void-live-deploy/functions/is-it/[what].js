@@ -23,28 +23,40 @@ export function page(slug, a, w, zone) {
     + '<style>html,body{margin:0;height:100%;background:#fff;color:#000;font-family:system-ui,-apple-system,sans-serif}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}'
     + 'h1{font-size:clamp(96px,26vw,260px);line-height:1;margin:0;font-weight:900}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}</style></head>'
     + '<body><main><h1 id="w">' + esc(w.word) + '</h1><p id="n">' + esc(a.note) + '</p><p id="t">' + esc(a.today) + '</p>'
-    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/">Ask Verse anything</a></small></main>'
+    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small></main>'
     + '<script type="module">import{isIt,wordFor}from"/skills/is-it.js";const a=isIt(' + JSON.stringify('is it ' + slug.replace(/-/g, ' ')) + ');if(a){const w=wordFor(a.yes,navigator.languages);'
     + 'document.getElementById("w").textContent=w.word;document.getElementById("n").textContent=a.note;document.getElementById("t").textContent=a.today;'
     + 'document.getElementById("z").firstChild.textContent="By this device\\u2019s clock ("+(Intl.DateTimeFormat().resolvedOptions().timeZone||"local time")+"). ";}</script></body></html>';
 }
-/** the feed: one item, today's answer (a reader polls it daily, as the old feed was read). Pure. */
-export function feed(slug, a, w, origin, at) {
-  const day = at.toISOString().slice(0, 10), url = origin + '/is-it/' + slug;
-  return '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Is it ' + esc(a.what) + '?</title><link>' + esc(url) + '</link>'
-    + '<description>' + esc(a.what) + ': ' + esc(w.word) + ' or ' + esc(wordFor(!a.yes, [w.lang]).word) + ', one item a day, from Verse.</description><ttl>60</ttl>'
-    + '<item><title>' + esc(w.word) + '</title><description>' + esc(a.note) + '</description><link>' + esc(url) + '</link><guid isPermaLink="false">' + esc(slug + '-' + day) + '</guid>'
-    + '<pubDate>' + new Date(day + 'T00:00:00Z').toUTCString() + '</pubDate></item></channel></rss>';
+/** the answer for each of the last `n` days, newest first: [{ day: 'YYYY-MM-DD', a }] (isitchristmas.com's feed carries the last 10). Pure. */
+export function lastDays(slug, now, n = 10) {
+  const out = [];
+  for (let i = 0; i < n; i++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i, 12); const a = isIt('is it ' + slug.replace(/-/g, ' '), d); if (a) out.push({ day: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'), a }); }
+  return out;
+}
+/** the feed: one item a day for the last ten days; `only` keeps the YES days alone (the old site's "Christmas only" feed: silent all
+ *  year, one item on the day). Pure. */
+export function feed(slug, a, w, origin, now, only = false) {
+  const url = origin + '/is-it/' + slug, items = lastDays(slug, now).filter((x) => !only || x.a.yes);
+  return '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Is it ' + esc(a.what) + '?' + (only ? ' (' + esc(a.what) + ' only)' : '') + '</title><link>' + esc(url) + '</link>'
+    + '<description>' + esc(a.what) + ': ' + esc(w.word) + ' or ' + esc(wordFor(!a.yes, [w.lang]).word) + (only ? ', only on the day itself' : ', one item a day') + ', from Verse.</description><ttl>60</ttl>'
+    + items.map(({ day, a: x }) => '<item><title>' + esc(wordFor(x.yes, [w.lang]).word) + '</title><description>' + esc(x.note) + '</description><link>' + esc(url + '#' + day) + '</link><guid isPermaLink="false">' + esc(slug + '-' + day) + '</guid>'
+      + '<pubDate>' + new Date(day + 'T00:00:00Z').toUTCString() + '</pubDate></item>').join('') + '</channel></rss>';
+}
+/** the answer as data, for a bot, a shortcut or a home screen widget (the old site's /api for IFTTT). Pure. */
+export function answerJson(slug, a, w, zone) {
+  return { what: a.what, yes: a.yes, word: w.word, lang: w.lang, note: a.note, today: a.today, next: a.at ? new Date(a.at).toISOString().slice(0, 10) : null, zone, page: '/is-it/' + slug, feed: '/is-it/' + slug + '.rss' };
 }
 
 export async function onRequestGet({ request, params }) {
   const url = new URL(request.url), raw = String(params.what || '').toLowerCase().slice(0, 40);
-  const rss = /\.rss$/.test(raw), slug = raw.replace(/\.rss$/, '').replace(/[^a-z0-9-]/g, '');
+  const rss = /\.rss$/.test(raw), json = /\.json$/.test(raw), slug = raw.replace(/\.(?:rss|json)$/, '').replace(/[^a-z0-9-]/g, '');
   const tz = (url.searchParams.get('tz') || '').slice(0, 40), now = wallClock(new Date(), tz) || wallClock(new Date(), 'UTC');
   const a = slug ? isIt('is it ' + slug.replace(/-/g, ' '), now) : null;
   if (!a) return new Response('Ask me about a day: /is-it/christmas, /is-it/friday, /is-it/halloween, /is-it/the-weekend', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
   const w = wordFor(a.yes, langsOf(request.headers.get('accept-language')));
   const headers = { 'cache-control': 'public, max-age=300', vary: 'accept-language', 'x-content-type-options': 'nosniff' };
-  if (rss) return new Response(feed(slug, a, w, url.origin, new Date()), { headers: { ...headers, 'content-type': 'application/rss+xml; charset=utf-8' } });
+  if (rss) return new Response(feed(slug, a, w, url.origin, now, url.searchParams.get('only') === 'yes'), { headers: { ...headers, 'content-type': 'application/rss+xml; charset=utf-8' } });
+  if (json) return new Response(JSON.stringify(answerJson(slug, a, w, tz && wallClock(new Date(), tz) ? tz : 'UTC')), { headers: { ...headers, 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*' } });
   return new Response(page(slug, a, w, tz && wallClock(new Date(), tz) ? tz : 'UTC'), { headers: { ...headers, 'content-type': 'text/html; charset=utf-8' } });
 }

@@ -57,6 +57,8 @@ export function flagOf(tag) {
   const r = (/^[a-z]{2,3}[-_]([a-z]{2})\b/i.exec(String(tag || '')) || [])[1];
   return r ? String.fromCodePoint(...[...r.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : '';
 }
+/** a region's name in English ("FR" -> "France"), or the code itself when the browser cannot name it. */
+export function regionName(code) { try { return new Intl.DisplayNames(['en'], { type: 'region' }).of(String(code || '').toUpperCase()) || code; } catch (_) { return code; } }
 /** the time left until a date as "62 days 3 hours 4 minutes 5 seconds" (the parts that are not zero), or '' when it has come. Pure. */
 export function countdown(to, now = new Date()) {
   let s = Math.floor((to - now) / 1000);
@@ -140,7 +142,7 @@ function run(text, api) {
       + '<p class="is-it-fade" style="text-align:center;animation-delay:.45s">' + esc(a.note) + '</p>'
       + (a.at ? '<p class="is-it-left is-it-fade" style="text-align:center;font-variant-numeric:tabular-nums;font-size:20px;animation-delay:.6s;color:' + th[0] + '"></p>' : '')
       + '<p class="is-it-fade" style="text-align:center;opacity:.8;animation-delay:.75s">' + esc(a.today) + '</p>'
-      + '<div class="src">Source: this device’s clock and calendar (' + esc(zone) + '), no network. Tap the word for a ripple; right-click or hold to stamp your flag. Also at a-to-mind.com/is-it/' + esc(a.slug) + '</div>';
+      + '<div class="src">Source: this device’s clock and calendar (' + esc(zone) + '), no network. Tap the word for a ripple; right-click or hold to stamp your flag; the wheel or the arrow keys turn it. Also at a-to-mind.com/is-it/' + esc(a.slug) + '</div>';
   });
   const box = el && el.querySelector ? el.querySelector('.is-it-stage') : null;
   if (box) {
@@ -165,12 +167,36 @@ function run(text, api) {
     const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'is-it-crowd-switch'; sw.style.cssText = 'font:inherit;font-size:12px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:2px 10px;cursor:pointer;opacity:.8';
     const status = document.createElement('span'); status.className = 'is-it-crowd-status'; status.style.marginLeft = '8px';
     crowdLine.append(sw, status); const srcLine = el.querySelector('.src'); if (srcLine) srcLine.before(crowdLine); else box.after(crowdLine);
-    const others = new Map(); let crowd = null;
+    const others = new Map(); let crowd = null, angle = 0, lastAt = null;
+    // your own flag is your pointer inside the stage, and it turns (isitchristmas.com: the scroll wheel and the arrow keys turn your flag 15° a
+    // step, a middle click sets it straight; the others see it turn). Mouse only: on a phone a finger has no hover, the tap and the hold stay.
+    if (flag) {
+      const mine = document.createElement('span'); mine.className = 'is-it-me'; mine.textContent = flag; mine.setAttribute('aria-hidden', 'true');
+      mine.style.cssText = 'position:absolute;font-size:26px;pointer-events:none;display:none;transform:translate(-50%,-50%);filter:drop-shadow(0 0 6px rgba(0,0,0,.6))';
+      box.appendChild(mine); let over = false;
+      const turn = (by) => { angle = by === 0 ? 0 : Math.max(-360, Math.min(360, angle + by)); if (Math.abs(angle) === 360) angle = 0; mine.style.transform = 'translate(-50%,-50%) rotate(' + angle + 'deg)'; if (crowd && lastAt) crowd.cursor(lastAt[0], lastAt[1], region || undefined, angle || undefined); };
+      box.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; const r = box.getBoundingClientRect(); mine.style.left = (e.clientX - r.left) + 'px'; mine.style.top = (e.clientY - r.top) + 'px'; mine.style.display = ''; box.style.cursor = 'none'; over = true; });
+      box.addEventListener('pointerleave', () => { mine.style.display = 'none'; box.style.cursor = ''; over = false; });
+      box.addEventListener('wheel', (e) => { if (!over) return; e.preventDefault(); turn(e.deltaY < 0 ? 15 : -15); }, { passive: false });
+      box.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); turn(0); } });
+      const keys = (e) => { if (!box.isConnected) return document.removeEventListener('keydown', keys); if (!over || /^(?:input|textarea|select)$/i.test((e.target && e.target.tagName) || '')) return; if (e.key === 'ArrowLeft') { e.preventDefault(); turn(-15); } else if (e.key === 'ArrowRight') { e.preventDefault(); turn(15); } };
+      document.addEventListener('keydown', keys);
+    }
     const place = (x, y) => ({ left: (x * box.clientWidth) + 'px', top: (y * box.clientHeight) + 'px' });
-    const presence = (id, x, y, fl) => { let f = others.get(id); if (!f) { f = document.createElement('span'); f.className = 'is-it-peer'; f.style.cssText = 'position:absolute;font-size:22px;pointer-events:none;transition:left .25s linear,top .25s linear;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))'; f.setAttribute('aria-hidden', 'true'); box.appendChild(f); others.set(id, f); } f.textContent = fl ? flagOf('xx-' + fl) : '·'; Object.assign(f.style, place(x, y)); };
-    const gone = (id) => { const f = others.get(id); if (f) f.remove(); others.delete(id); };
+    const presence = (id, x, y, fl, ang) => {
+      let f = others.get(id);
+      if (!f) { f = document.createElement('span'); f.className = 'is-it-peer'; f.style.cssText = 'position:absolute;font-size:22px;transition:left .25s linear,top .25s linear,transform .2s;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))'; f.setAttribute('aria-hidden', 'true'); box.appendChild(f); others.set(id, f); }
+      f.textContent = fl ? flagOf('xx-' + fl) : '·'; f.dataset.region = fl || ''; f.title = fl ? regionName(fl) : 'someone'; // hover a flag: whose country it is (the old site's legend)
+      f.style.transform = 'translate(-50%,-50%) rotate(' + (ang || 0) + 'deg)'; Object.assign(f.style, place(x, y)); count(others.size + 1);
+    };
+    const gone = (id) => { const f = others.get(id); if (f) f.remove(); others.delete(id); count(others.size + 1); };
     const atUnit = (x, y, cls, txt) => { const d = document.createElement('span'); d.className = cls; d.textContent = txt || ''; Object.assign(d.style, place(x, y)); box.appendChild(d); setTimeout(() => d.remove(), cls === 'is-it-stamp' ? 4100 : 900); };
-    const count = (n) => { status.textContent = n > 1 ? n.toLocaleString('en') + ' people here right now' : 'only you here right now'; };
+    // how many are here, and from where ("3 people here right now: Canada, France and you")
+    const count = (n) => {
+      if (!crowd) return;
+      const from = [...new Set([...others.values()].map((f) => f.dataset.region).filter(Boolean).map(regionName))];
+      status.textContent = n > 1 ? n.toLocaleString('en') + ' people here right now' + (from.length ? ': ' + from.slice(0, 6).join(', ') + (from.length > 6 ? ' and more' : '') + ' and you' : '') : 'only you here right now';
+    };
     const unit = (e) => { const r = box.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]; };
     const leaveCrowd = () => { if (crowd) { try { crowd.leave(); } catch (_) {} crowd = null; } for (const id of [...others.keys()]) gone(id); status.textContent = ''; sw.textContent = 'Everyone here'; sw.setAttribute('aria-pressed', 'false'); };
     const joinCrowd = () => {
@@ -179,7 +205,7 @@ function run(text, api) {
         if (!box.isConnected) return;
         crowd = m.join('public-is-it', { summon() {}, presence, gone, count, ripple: (id, x, y) => atUnit(x, y, 'is-it-ripple'), stamp: (id, x, y, fl) => atUnit(x, y, 'is-it-stamp', flagOf('xx-' + fl)), note: (t) => { status.textContent = /not switched on/.test(t) ? 'live crowd not switched on yet: tabs in this browser share it' : status.textContent; } });
         let last = 0;
-        box.addEventListener('pointermove', (e) => { const t = Date.now(); if (!crowd || t - last < 60) return; last = t; const [x, y] = unit(e); crowd.cursor(x, y, region || undefined); }, { passive: true });
+        box.addEventListener('pointermove', (e) => { const t = Date.now(); if (!crowd || t - last < 60) return; last = t; const [x, y] = unit(e); lastAt = [x, y]; crowd.cursor(x, y, region || undefined, angle || undefined); }, { passive: true });
       }).catch(() => { status.textContent = 'the crowd could not start in this browser'; });
     };
     box.addEventListener('click', (e) => { if (crowd) { const [x, y] = unit(e); crowd.ripple(x, y); } });

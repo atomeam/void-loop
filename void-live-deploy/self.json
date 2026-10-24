@@ -483,6 +483,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T00:33:12Z",
+   "subject": "Tower: the 10 floors marked beaten are taken back (owner, 2026-10-24: none of them was earned; Verse answering an ask is not being better…"
+  },
+  {
+   "at": "2026-10-24T00:30:10Z",
+   "subject": "Verse helps you order food: 'order food from lovebird in lakeland' finds the restaurant (OpenStreetMap), its hours, phone and map, every…"
+  },
+  {
+   "at": "2026-10-23T23:49:02Z",
+   "subject": "Verse hardens itself: 3 benchmark ask(s) for fact, file-sorter"
+  },
+  {
+   "at": "2026-10-23T23:41:33Z",
+   "subject": "Incident: the browser suite failed on 3f97013f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T23:40:43Z",
+   "subject": "Incident: the browser suite failed on f8568894 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-23T23:40:28Z",
+   "subject": "Incident: the browser suite failed on 7c204cbe (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-23T23:32:59Z",
    "subject": "Incident: the browser suite failed on ba8b2ef1 (void-live-deploy/incidents.json)"
   },
@@ -537,30 +561,6 @@
   {
    "at": "2026-10-23T23:18:38Z",
    "subject": "Autonomous tower: after every deploy each one-tool floor is asked on the live site, and a floor Verse's own skill answers falls by itself…"
-  },
-  {
-   "at": "2026-10-23T23:15:32Z",
-   "subject": "Tower: floors 1 and 2 beaten on Argon's call (owner: no rules); the scout can call a whole floor and the gate never overturns a call"
-  },
-  {
-   "at": "2026-10-23T23:14:39Z",
-   "subject": "Tower gate runs itself after every main deploy for the early floors, commits changed verdicts and redeploys"
-  },
-  {
-   "at": "2026-10-23T23:12:43Z",
-   "subject": "Argon's verdicts: isitchristmas.com design polish; justflipacoin.com design polish and flip animation"
-  },
-  {
-   "at": "2026-10-23T23:11:57Z",
-   "subject": "Incident: the browser suite failed on 0c15eef0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:10:52Z",
-   "subject": "The tower is the owner's ladder again: the easiest sites first (isitchristmas, justflipacoin, random.org, wordcounter, calculator.net, the…"
-  },
-  {
-   "at": "2026-10-23T23:10:37Z",
-   "subject": "Incident: the browser suite failed on 75e0a0d4 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

@@ -525,7 +525,7 @@
    "skills": 3,
    "direct": 0,
    "dependants": 7,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/date-words.js",
