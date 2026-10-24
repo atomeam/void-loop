@@ -4,10 +4,10 @@
   "calculator": {
    "speed": {
     "verdict": "worse",
-    "verse": 3322,
-    "best": 722,
-    "evidence": "Verse 3322 ms to network idle (median of 3, phone width) vs calculator.net 722 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:00:07.220Z",
+    "verse": 236,
+    "best": 59,
+    "evidence": "Verse 236 ms to the load event (median of 3, phone width) vs calculator.net 59 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:13:25.983Z",
     "was": "better"
    },
    "reliability": {
@@ -15,181 +15,310 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-24T15:00:07.220Z"
+    "at": "2026-10-24T15:13:25.983Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:00:07.220Z"
+    "at": "2026-10-24T15:13:25.983Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 6,
-    "evidence": "Verse 0 unnamed controls or images vs calculator.net 6 unnamed controls or images",
-    "at": "2026-10-24T15:00:07.220Z"
+    "best": 2,
+    "evidence": "Verse 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
+    "at": "2026-10-24T15:13:25.983Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:13:25.983Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:13:25.983Z"
    }
   },
   "is it": {
    "speed": {
     "verdict": "better",
-    "verse": 778,
-    "best": 1150,
-    "evidence": "Verse (/is-it/christmas) 778 ms to network idle (median of 3, phone width) vs isitchristmas.com 1150 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T14:59:23.311Z"
+    "verse": 68,
+    "best": 103,
+    "evidence": "Verse (/is-it/christmas) 68 ms to the load event (median of 3, phone width) vs isitchristmas.com 103 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:12:31.049Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 px sideways overflow at 390 px vs isitchristmas.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T14:59:23.311Z"
+    "at": "2026-10-24T15:12:31.049Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 unnamed controls or images vs isitchristmas.com 0 unnamed controls or images",
-    "at": "2026-10-24T14:59:23.311Z"
+    "at": "2026-10-24T15:12:31.049Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/is-it/christmas) 3 of 3 loads answered vs isitchristmas.com 3 of 3 loads answered",
-    "at": "2026-10-24T14:59:23.311Z"
+    "at": "2026-10-24T15:12:31.049Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/is-it/christmas) 0 (1: the page shows itself again with the network cut) vs isitchristmas.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:12:31.049Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/is-it/christmas) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs isitchristmas.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:12:31.049Z"
+   },
+   "local language": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/is-it/christmas) 1 (1: a German browser gets German) vs isitchristmas.com 0 (1: a German browser gets German)",
+    "at": "2026-10-24T15:12:31.049Z"
+   },
+   "big answer": {
+    "verdict": "worse",
+    "verse": 101,
+    "best": 160,
+    "evidence": "Verse (/is-it/christmas) 101 px, the largest text on the first screen vs isitchristmas.com 160 px, the largest text on the first screen",
+    "at": "2026-10-24T15:12:31.049Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/is-it/christmas) 1 of 1 checked facts right for the same question vs isitchristmas.com 1 of 1 checked facts right for the same question",
+    "at": "2026-10-24T15:12:31.049Z",
+    "of": 1
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/is-it/christmas) 4 of 4 things a full answer shows vs isitchristmas.com 1 of 4 things a full answer shows (Verse lacks: none; site lacks: which day it is about, how long until it, the date itself)",
+    "at": "2026-10-24T15:12:31.049Z",
+    "of": 4
    }
   },
   "coin flip": {
    "speed": {
     "verdict": "better",
-    "verse": 815,
-    "best": 1091,
-    "evidence": "Verse (/flip/) 815 ms to network idle (median of 3, phone width) vs justflipacoin.com 1091 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T14:59:32.841Z"
+    "verse": 140,
+    "best": 212,
+    "evidence": "Verse (/flip/) 140 ms to the load event (median of 3, phone width) vs justflipacoin.com 212 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:12:44.535Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T14:59:32.841Z"
+    "at": "2026-10-24T15:12:44.535Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-24T14:59:32.841Z"
+    "at": "2026-10-24T15:12:44.535Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-24T14:59:32.841Z"
+    "at": "2026-10-24T15:12:44.535Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:12:44.535Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/flip/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:12:44.535Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 2,
+    "evidence": "Verse (/flip/) 3 of 3 things a full answer shows vs justflipacoin.com 2 of 3 things a full answer shows (Verse lacks: none; site lacks: a running count)",
+    "at": "2026-10-24T15:12:44.535Z",
+    "of": 3
    }
   },
   "random number": {
    "speed": {
     "verdict": "better",
-    "verse": 820,
-    "best": 1105,
-    "evidence": "Verse (/random/?min=1&max=100) 820 ms to network idle (median of 3, phone width) vs random.org 1105 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T14:59:40.003Z"
+    "verse": 95,
+    "best": 457,
+    "evidence": "Verse (/random/?min=1&max=100) 95 ms to the load event (median of 3, phone width) vs random.org 457 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:12:55.319Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-24T14:59:40.003Z"
+    "at": "2026-10-24T15:12:55.319Z"
    },
    "mobile": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 418,
-    "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 418 px sideways overflow at 390 px",
-    "at": "2026-10-24T14:59:40.003Z"
+    "best": 0,
+    "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T15:12:55.319Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-24T14:59:40.003Z"
+    "at": "2026-10-24T15:12:55.319Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:12:55.319Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:12:55.319Z"
+   },
+   "completeness": {
+    "verdict": "equal",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/random/?min=1&max=100) 1 of 3 things a full answer shows vs random.org 1 of 3 things a full answer shows (Verse lacks: a minimum, a maximum; site lacks: a minimum, a maximum)",
+    "at": "2026-10-24T15:12:55.319Z",
+    "of": 3
    }
   },
   "word count": {
    "speed": {
-    "verdict": "worse",
-    "verse": 2972,
-    "best": 2790,
-    "evidence": "Verse 2972 ms to network idle (median of 3, phone width) vs wordcounter.net 2790 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T14:59:47.374Z",
-    "was": "better"
+    "verdict": "better",
+    "verse": 222,
+    "best": 1026,
+    "evidence": "Verse 222 ms to the load event (median of 3, phone width) vs wordcounter.net 1026 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:13:06.357Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-24T14:59:47.374Z"
+    "at": "2026-10-24T15:13:06.357Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T14:59:47.374Z"
+    "at": "2026-10-24T15:13:06.357Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-24T14:59:47.374Z"
+    "at": "2026-10-24T15:13:06.357Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs wordcounter.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:13:06.357Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wordcounter.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:13:06.357Z"
    }
   },
   "stopwatch": {
    "speed": {
-    "verdict": "unverified",
-    "verse": 3188,
-    "best": null,
-    "evidence": "Verse 3188 ms to network idle (median of 3, phone width) vs online-stopwatch.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:00:20.652Z"
+    "verdict": "better",
+    "verse": 285,
+    "best": 2428,
+    "evidence": "Verse 285 ms to the load event (median of 3, phone width) vs online-stopwatch.com 2428 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:13:39.594Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:00:20.652Z"
+    "at": "2026-10-24T15:13:39.594Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:00:20.652Z"
+    "at": "2026-10-24T15:13:39.594Z"
    },
    "reliability": {
-    "verdict": "unverified",
+    "verdict": "better",
     "verse": 3,
+    "best": 2,
+    "evidence": "Verse 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
+    "at": "2026-10-24T15:13:39.594Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "online-stopwatch.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T15:00:20.652Z"
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:13:39.594Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:13:39.594Z"
    }
   },
   "unit converter": {
    "speed": {
     "verdict": "worse",
-    "verse": 3053,
-    "best": 743,
-    "evidence": "Verse 3053 ms to network idle (median of 3, phone width) vs unitconverters.net 743 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:03:09.729Z",
+    "verse": 326,
+    "best": 124,
+    "evidence": "Verse 326 ms to the load event (median of 3, phone width) vs unitconverters.net 124 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:16:02.221Z",
     "was": "better"
    },
    "mobile": {
@@ -197,21 +326,35 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:03:09.729Z"
+    "at": "2026-10-24T15:16:02.221Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
-    "at": "2026-10-24T15:03:09.729Z"
+    "at": "2026-10-24T15:16:02.221Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
-    "at": "2026-10-24T15:03:09.729Z"
+    "at": "2026-10-24T15:16:02.221Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs unitconverters.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:16:02.221Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs unitconverters.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:16:02.221Z"
    }
   },
   "password": {
@@ -240,219 +383,444 @@
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "passwordsgenerator.net answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T15:03:23.394Z"
+    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
+    "at": "2026-10-24T15:16:18.066Z"
    }
   },
   "encoder": {
    "speed": {
-    "verdict": "unverified",
-    "verse": 2665,
-    "best": null,
-    "evidence": "Verse 2665 ms to network idle (median of 3, phone width) vs base64encode.org NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:07:55.863Z"
+    "verdict": "better",
+    "verse": 211,
+    "best": 776,
+    "evidence": "Verse 211 ms to the load event (median of 3, phone width) vs base64encode.org 776 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:20:03.959Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:07:55.863Z"
+    "at": "2026-10-24T15:20:03.959Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-24T15:07:55.863Z"
-   },
-   "reliability": {
-    "verdict": "unverified",
-    "verse": 3,
-    "best": 0,
-    "evidence": "base64encode.org answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T15:07:55.863Z"
-   }
-  },
-  "colour": {
-   "speed": {
-    "verdict": "better",
-    "verse": 856,
-    "best": 1129,
-    "evidence": "Verse (/color/?c=ff5733) 856 ms to network idle (median of 3, phone width) vs hexcolor16.com 1129 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:07:48.294Z"
-   },
-   "mobile": {
-    "verdict": "worse",
-    "verse": 37,
-    "best": 0,
-    "evidence": "Verse (/color/?c=ff5733) 37 px sideways overflow at 390 px vs hexcolor16.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:07:48.294Z",
-    "was": "equal-and-better"
-   },
-   "accessibility": {
-    "verdict": "better",
-    "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs hexcolor16.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:07:48.294Z"
+    "at": "2026-10-24T15:20:03.959Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs hexcolor16.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:07:48.294Z"
+    "evidence": "Verse 3 of 3 loads answered vs base64encode.org 3 of 3 loads answered",
+    "at": "2026-10-24T15:20:03.959Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:20:03.959Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:20:03.959Z"
+   }
+  },
+  "colour": {
+   "speed": {
+    "verdict": "better",
+    "verse": 89,
+    "best": 529,
+    "evidence": "Verse (/color/?c=ff5733) 89 ms to the load event (median of 3, phone width) vs color-hex.com 529 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs color-hex.com 3 unnamed controls or images",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs color-hex.com 3 of 3 loads answered",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs color-hex.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs color-hex.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:18:42.316Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 4 of 4 checked facts right for the same question vs color-hex.com 3 of 4 checked facts right for the same question (Verse missed: none; site missed: HSL 11°, 100%, 60%)",
+    "at": "2026-10-24T15:18:42.316Z",
+    "of": 4
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 11,
+    "evidence": "Verse (/color/?c=ff5733) 13 of 13 things a full answer shows vs color-hex.com 11 of 13 things a full answer shows (Verse lacks: none; site lacks: tones, text contrast)",
+    "at": "2026-10-24T15:18:42.316Z",
+    "of": 13
    }
   },
   "time zones": {
    "speed": {
-    "verdict": "unverified",
-    "verse": 3883,
-    "best": null,
-    "evidence": "Verse 3883 ms to network idle (median of 3, phone width) vs timeanddate.com NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:04:45.621Z"
+    "verdict": "worse",
+    "verse": 278,
+    "best": 259,
+    "evidence": "Verse 278 ms to the load event (median of 3, phone width) vs timeanddate.com 259 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:18:06.091Z"
    },
    "reliability": {
-    "verdict": "unverified",
+    "verdict": "better",
     "verse": 3,
-    "best": 0,
-    "evidence": "timeanddate.com answered none of 3 automated loads (it may block them): not measured",
-    "at": "2026-10-24T15:04:45.621Z"
+    "best": 1,
+    "evidence": "Verse 3 of 3 loads answered vs timeanddate.com 1 of 3 loads answered",
+    "at": "2026-10-24T15:18:06.091Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 22,
     "evidence": "Verse 0 px sideways overflow at 390 px vs timeanddate.com 22 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:04:45.621Z"
+    "at": "2026-10-24T15:18:06.091Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 unnamed controls or images vs timeanddate.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:04:45.621Z"
+    "at": "2026-10-24T15:18:06.091Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs timeanddate.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:18:06.091Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 0,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs timeanddate.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:18:06.091Z"
    }
   },
   "codebase": {
    "speed": {
     "verdict": "better",
-    "verse": 832,
-    "best": 1771,
-    "evidence": "Verse (/g/) 832 ms to network idle (median of 3, phone width) vs codebasehq.com 1771 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:10:20.800Z"
+    "verse": 103,
+    "best": 224,
+    "evidence": "Verse (/g/) 103 ms to the load event (median of 3, phone width) vs codebasehq.com 224 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:20:31.005Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 3 loads answered vs codebasehq.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:10:20.800Z"
+    "at": "2026-10-24T15:20:31.005Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs codebasehq.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:10:20.800Z"
+    "at": "2026-10-24T15:20:31.005Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/g/) 0 unnamed controls or images vs codebasehq.com 8 unnamed controls or images",
-    "at": "2026-10-24T15:10:20.800Z"
+    "at": "2026-10-24T15:20:31.005Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs codebasehq.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:20:31.005Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse (/g/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codebasehq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:20:31.005Z"
    }
   },
   "password strength": {
    "speed": {
     "verdict": "better",
-    "verse": 818,
-    "best": 23575,
-    "evidence": "Verse (/password-strength/) 818 ms to network idle (median of 3, phone width) vs howsecureismypassword.net 23575 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:10:31.014Z"
+    "verse": 95,
+    "best": 20658,
+    "evidence": "Verse (/password-strength/) 95 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 20658 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:20:56.850Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-24T15:10:31.014Z"
+    "at": "2026-10-24T15:20:56.850Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:10:31.014Z"
+    "at": "2026-10-24T15:20:56.850Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-24T15:10:31.014Z"
+    "at": "2026-10-24T15:20:56.850Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:20:56.850Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse (/password-strength/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:20:56.850Z"
    }
   },
   "base converter": {
    "speed": {
     "verdict": "better",
-    "verse": 832,
-    "best": 2596,
-    "evidence": "Verse (/base-converter/) 832 ms to network idle (median of 3, phone width) vs hextobinary.com 2596 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:11:43.572Z"
+    "verse": 118,
+    "best": 1843,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 118 ms to the load event (median of 3, phone width) vs hextobinary.com 1843 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:22:30.216Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/base-converter/) 3 of 3 loads answered vs hextobinary.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:11:43.572Z"
+    "best": 2,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 loads answered vs hextobinary.com 2 of 3 loads answered",
+    "at": "2026-10-24T15:22:30.216Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/base-converter/) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:11:43.572Z"
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T15:22:30.216Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse (/base-converter/) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:11:43.572Z"
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
+    "at": "2026-10-24T15:22:30.216Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 1 (1: the page shows itself again with the network cut) vs hextobinary.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:22:30.216Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hextobinary.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:22:30.216Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 things a full answer shows vs hextobinary.com 3 of 4 things a full answer shows (Verse lacks: none; site lacks: octal)",
+    "at": "2026-10-24T15:22:30.216Z",
+    "of": 4
    }
   },
   "photo resizer": {
    "speed": {
     "verdict": "better",
-    "verse": 796,
-    "best": 3903,
-    "evidence": "Verse (/resize-image/) 796 ms to network idle (median of 3, phone width) vs pancardresizer.com 3903 ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:11:55.419Z"
+    "verse": 144,
+    "best": 1856,
+    "evidence": "Verse (/resize-image/) 144 ms to the load event (median of 3, phone width) vs pancardresizer.com 1856 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:23:18.095Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 3 loads answered vs pancardresizer.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:11:55.419Z"
+    "at": "2026-10-24T15:23:18.095Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/resize-image/) 0 px sideways overflow at 390 px vs pancardresizer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:11:55.419Z"
+    "at": "2026-10-24T15:23:18.095Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/resize-image/) 0 unnamed controls or images vs pancardresizer.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:11:55.419Z"
+    "at": "2026-10-24T15:23:18.095Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/resize-image/) 1 (1: the page shows itself again with the network cut) vs pancardresizer.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:23:18.095Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/resize-image/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:23:18.095Z"
+   }
+  },
+  "colour codes": {
+   "speed": {
+    "verdict": "better",
+    "verse": 157,
+    "best": 231,
+    "evidence": "Verse (/color/?c=ff5733) 157 ms to the load event (median of 3, phone width) vs hexcolor16.com 231 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs hexcolor16.com 3 of 3 loads answered",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs hexcolor16.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs hexcolor16.com 1 unnamed controls or images",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs hexcolor16.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hexcolor16.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:19:53.275Z"
+   },
+   "accuracy": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/color/?c=ff5733) 4 of 4 checked facts right for the same question vs hexcolor16.com 3 of 4 checked facts right for the same question (Verse missed: none; site missed: CMYK 0, 66, 80, 0)",
+    "at": "2026-10-24T15:19:53.275Z",
+    "of": 4
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 12,
+    "evidence": "Verse (/color/?c=ff5733) 13 of 13 things a full answer shows vs hexcolor16.com 12 of 13 things a full answer shows (Verse lacks: none; site lacks: text contrast)",
+    "at": "2026-10-24T15:19:53.275Z",
+    "of": 13
+   }
+  },
+  "tildegit": {
+   "speed": {
+    "verdict": "better",
+    "verse": 145,
+    "best": 219,
+    "evidence": "Verse (/g/) 145 ms to the load event (median of 3, phone width) vs tildegit.org 219 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T15:20:43.201Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/g/) 3 of 3 loads answered vs tildegit.org 3 of 3 loads answered",
+    "at": "2026-10-24T15:20:43.201Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs tildegit.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T15:20:43.201Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/g/) 0 unnamed controls or images vs tildegit.org 1 unnamed controls or images",
+    "at": "2026-10-24T15:20:43.201Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs tildegit.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T15:20:43.201Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/g/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs tildegit.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T15:20:43.201Z"
    }
   }
  }
