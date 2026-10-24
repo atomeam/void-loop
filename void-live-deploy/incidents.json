@@ -2,6 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:22:46.593Z",
+   "sha": "99f5e9e57aef7d86798d879e448c1006762dbe93",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40053296446",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/skills/tower.js"
+   ]
+  },
+  {
    "at": "2026-10-24T02:19:42.592Z",
    "sha": "b21b34d63bd92dce0466f6ea8d3d9f3f0d7fa378",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40053138727",
@@ -594,27 +608,6 @@
     "tools/pr-ready.test.mjs",
     "void-live-deploy/self.json",
     "void-live-deploy/skills/inventory.js",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:02:10.873Z",
-   "sha": "ed9fba8e77f53c68c453c1af69d9d05569902332",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40036476160",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
     "void-live-deploy/void.growth.json"
    ]
   }
