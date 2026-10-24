@@ -9886,6 +9886,18 @@ try {
     check('music: "play some music" is not taken (Verse does not play recordings)', !(await M.p.$('.vpage.on .mu-play')) && !!again, '');
     check('music: no page errors', !M.errors.length, M.errors.join(' | ').slice(0, 200));
     await M.ctx.close(); }
+  // a song with a shape (lib/arrange.js; owner, 2026-10-24): "make a heavy metal song" is built in sections, rendered here and each section's loudness measured
+  if (want("music: a heavy ask is built in sections whose loudness really differs")) { const M = await fresh(); const origin = new URL(M.p.url()).origin;
+    await M.ask('make a heavy metal song', 900); await until(async () => /Save as WAV/.test(await M.page()), 8000);
+    const card = await M.p.evaluate(() => ({ form: (document.querySelector('.vpage.on .mu-form') || {}).textContent || '', labels: [...document.querySelectorAll('.vpage.on .mu-roll text')].map((t) => t.textContent) }));
+    const m = await M.p.evaluate(async (o) => { const a = await import(o + '/lib/arrange.js'), p = a.arrange('make a heavy metal song'), out = await a.renderArranged(p); let peak = 0; for (const x of out.samples) peak = Math.max(peak, Math.abs(x));
+      return { peak, secs: out.samples.length / out.rate, loud: Object.fromEntries(a.sectionLoudness(out.samples, out.rate, p).map((x) => [x.id, x.db])) }; }, origin);
+    const L = m.loud, loudest = Math.min(L.drop, L.breakdown, L.climax), quietest = Math.max(L.intro, L.bridge);
+    if (process.env.VOID_SHOTS) await M.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'music-heavy.png') }).catch(() => {});
+    check('music: "make a heavy metal song" shows its form (intro, drop, breakdown, bridge, climax) under the roll, and the rendered song has the drop, breakdown and climax at least 6 dB above the quiet intro and bridge, the climax the loudest, and no clipping',
+      /intro 4 · drop 8 · breakdown 4 · bridge 4 · climax 8/.test(card.form) && card.labels.join() === 'intro,drop,breakdown,bridge,climax' && loudest - quietest >= 6 && L.climax > L.drop && L.climax > L.breakdown && m.peak <= 1.0 && m.secs > 60 && !M.errors.length,
+      JSON.stringify({ card, m, errors: M.errors }).slice(0, 400));
+    await M.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now Verse is Web4"): "what is web4" is one card with the four steps of the web
   // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
   if (want("Verse web4: the four steps of the web as one card, the honest sentence, a tapped link runs its ask")) { const W = await fresh();
