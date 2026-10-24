@@ -277,59 +277,59 @@
   "word count": {
    "speed": {
     "verdict": "better",
-    "verse": 314,
-    "best": 2041,
-    "evidence": "Verse 314 ms to the load event (median of 3, phone width) vs wordcounter.net 2041 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:10:00.596Z"
+    "verse": 233,
+    "best": 1346,
+    "evidence": "Verse 233 ms to the load event (median of 3, phone width) vs wordcounter.net 1346 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs wordcounter.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wordcounter.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 31,
     "evidence": "Verse 0 design defects vs wordcounter.net 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wordcounter.net (8 low-contrast texts, 23 small tap targets, layout shift 0.02)",
-    "at": "2026-10-24T18:10:00.596Z"
+    "at": "2026-10-24T18:47:57.681Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse 2 of 2 checked facts right for the same question vs wordcounter.net 2 of 2 checked facts right for the same question",
-    "at": "2026-10-24T18:10:00.596Z",
+    "at": "2026-10-24T18:47:57.681Z",
     "of": 2
    }
   },
@@ -456,7 +456,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T18:30:48.547Z"
+    "at": "2026-10-24T18:48:35.637Z"
    }
   },
   "encoder": {
@@ -1522,6 +1522,57 @@
     "best": 136,
     "evidence": "Verse 11 design defects vs Google Calendar 136 design defects: Verse (11 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
     "at": "2026-10-24T18:32:34.631Z"
+   }
+  },
+  "docs and notes": {
+   "speed": {
+    "verdict": "better",
+    "verse": 192,
+    "best": 557,
+    "evidence": "Verse 192 ms to the load event (median of 3, phone width) vs Google Docs 557 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Google Docs 3 of 3 loads answered",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Docs 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs Google Docs 0 unnamed controls or images",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Docs 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Docs 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T18:50:11.742Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T18:50:11.742Z"
    }
   }
  }
