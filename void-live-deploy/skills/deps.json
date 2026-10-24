@@ -17,6 +17,13 @@
    "tests": 2
   },
   {
+   "file": "lib/state.js",
+   "skills": 30,
+   "direct": 4,
+   "dependants": 52,
+   "tests": 4
+  },
+  {
    "file": "lib/field-kit.js",
    "skills": 30,
    "direct": 2,
@@ -24,17 +31,10 @@
    "tests": 4
   },
   {
-   "file": "lib/state.js",
-   "skills": 29,
-   "direct": 4,
-   "dependants": 51,
-   "tests": 4
-  },
-  {
    "file": "lib/placement.js",
-   "skills": 28,
+   "skills": 29,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 1
   },
   {
@@ -52,6 +52,34 @@
    "tests": 1
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 18,
+   "direct": 0,
+   "dependants": 43,
+   "tests": 1
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 18,
+   "direct": 1,
+   "dependants": 43,
+   "tests": 1
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 18,
+   "direct": 0,
+   "dependants": 42,
+   "tests": 4
+  },
+  {
+   "file": "lib/ladder.js",
+   "skills": 18,
+   "direct": 10,
+   "dependants": 34,
+   "tests": 2
+  },
+  {
    "file": "lib/mind-field-modes.js",
    "skills": 18,
    "direct": 1,
@@ -66,32 +94,39 @@
    "tests": 0
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 17,
+   "file": "lib/rule-registry.js",
+   "skills": 13,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 38,
    "tests": 1
   },
   {
-   "file": "lib/merge-rules.js",
-   "skills": 17,
+   "file": "lib/guide.js",
+   "skills": 13,
    "direct": 1,
-   "dependants": 42,
-   "tests": 1
+   "dependants": 37,
+   "tests": 2
   },
   {
-   "file": "lib/art-rules.js",
-   "skills": 17,
+   "file": "lib/card-subject.js",
+   "skills": 13,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 36,
+   "tests": 2
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 13,
+   "direct": 1,
+   "dependants": 34,
    "tests": 4
   },
   {
-   "file": "lib/ladder.js",
-   "skills": 17,
-   "direct": 10,
-   "dependants": 33,
-   "tests": 2
+   "file": "lib/reactions.js",
+   "skills": 13,
+   "direct": 1,
+   "dependants": 34,
+   "tests": 1
   },
   {
    "file": "lib/sky-math.js",
@@ -101,52 +136,17 @@
    "tests": 1
   },
   {
-   "file": "lib/rule-registry.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 37,
-   "tests": 1
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 12,
-   "direct": 1,
-   "dependants": 36,
-   "tests": 2
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 35,
-   "tests": 2
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 12,
-   "direct": 1,
-   "dependants": 33,
-   "tests": 4
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 12,
-   "direct": 1,
-   "dependants": 33,
-   "tests": 1
-  },
-  {
    "file": "lib/corrections.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
    "file": "lib/autopsy.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 5,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 5
   },
   {
@@ -199,6 +199,13 @@
    "tests": 1
   },
   {
+   "file": "lib/better.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 24,
+   "tests": 3
+  },
+  {
    "file": "lib/bridges.js",
    "skills": 8,
    "direct": 4,
@@ -241,11 +248,32 @@
    "tests": 1
   },
   {
-   "file": "lib/better.js",
+   "file": "lib/probe-log.js",
    "skills": 7,
-   "direct": 2,
+   "direct": 1,
    "dependants": 23,
-   "tests": 3
+   "tests": 1
+  },
+  {
+   "file": "lib/spark.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/inbox-health.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-confidence.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 22,
+   "tests": 1
   },
   {
    "file": "lib/art-source.js",
@@ -276,39 +304,18 @@
    "tests": 1
   },
   {
-   "file": "lib/probe-log.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/spark.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/inbox-health.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 21,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-confidence.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 21,
-   "tests": 1
-  },
-  {
    "file": "lib/match-history.js",
    "skills": 6,
    "direct": 5,
    "dependants": 8,
    "tests": 3
+  },
+  {
+   "file": "lib/reaction-bar.js",
+   "skills": 6,
+   "direct": 2,
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/tilt-arena-modes.js",
@@ -356,13 +363,6 @@
    "file": "lib/prints.js",
    "skills": 5,
    "direct": 3,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/reaction-bar.js",
-   "skills": 5,
-   "direct": 2,
    "dependants": 6,
    "tests": 1
   },
@@ -2598,6 +2598,7 @@
     "skills/guide.js",
     "skills/incident-autopsy.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -2820,6 +2821,7 @@
     "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -2878,6 +2880,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -2968,6 +2971,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -3153,6 +3157,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -3331,6 +3336,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/incident-autopsy.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/service-health.js",
@@ -3898,6 +3904,7 @@
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -4001,6 +4008,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -4069,6 +4077,7 @@
     "skills/guide.js",
     "skills/incident-autopsy.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -4114,6 +4123,7 @@
     "skills/games.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/rebuild-map.js",
@@ -4327,6 +4337,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/incident-autopsy.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
@@ -4750,6 +4761,7 @@
     "skills/lift3d.js",
     "skills/lock.js",
     "skills/mancala.js",
+    "skills/merges.js",
     "skills/monopoly.js",
     "skills/moon.js",
     "skills/othello.js",
@@ -4868,6 +4880,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -5008,6 +5021,7 @@
     "lib/about-skill.js",
     "skills/about-skill.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/own-parts.js"
    ]
   },
@@ -5045,6 +5059,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/incident-autopsy.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/service-health.js",
@@ -5208,6 +5223,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
+    "skills/merges.js",
     "skills/mini/book.js",
     "skills/mini/growthtree.js",
     "skills/oracle.js",
@@ -5391,6 +5407,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -5498,6 +5515,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
@@ -5772,6 +5790,7 @@
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge-void.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/null-sweep.js",
     "skills/othello.js",
@@ -7389,6 +7408,7 @@
     "skills/about-skill.js",
     "skills/growth-tree.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/own-parts.js"
    ]
   },
@@ -7425,6 +7445,7 @@
     "skills/about-skill.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -7903,7 +7924,8 @@
   },
   "skills/merges.js": {
    "imports": [
-    "skills/live.js"
+    "skills/live.js",
+    "skills/showcase.js"
    ],
    "importedBy": [
     "skills/own-parts.js"
@@ -8961,7 +8983,8 @@
     "lib/placement.js"
    ],
    "importedBy": [
-    "skills/guide.js"
+    "skills/guide.js",
+    "skills/merges.js"
    ],
    "reachedBy": [
     "lib/about-skill.js",

@@ -483,6 +483,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T17:02:07Z",
+   "subject": "Verse's own upgrades say what got better: the merge log and grow-self titles name the skills and phrases, and the tray chip stays one…"
+  },
+  {
+   "at": "2026-10-24T17:00:08Z",
+   "subject": "Incident: the browser suite failed on 38871163 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T16:58:47Z",
+   "subject": "Tower gate: base converter,encoder,codebase measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:51:01Z",
+   "subject": "hextobinary.com, signed reading: the base converter reads any size as two's complement, and the gate reads answers written in boxes"
+  },
+  {
+   "at": "2026-10-24T16:45:46Z",
+   "subject": "Verse hardens itself: 1 benchmark ask(s) for baseconv"
+  },
+  {
+   "at": "2026-10-24T16:43:26Z",
+   "subject": "Tower gate: base converter,photo resizer,time zones measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:38:46Z",
+   "subject": "Tower gate: random number,password strength,stopwatch measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:35:46Z",
+   "subject": "random.org, design polish: the number page's checkboxes are full tap targets, and its footer tells the truth about the public draw"
+  },
+  {
+   "at": "2026-10-24T16:34:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-24T16:34:12Z",
    "subject": "Incident: the browser suite failed on ea8a127b (void-live-deploy/incidents.json)"
   },
@@ -525,42 +561,6 @@
   {
    "at": "2026-10-24T16:25:11Z",
    "subject": "random.org, completeness and range choice: the number page writes any base in columns, and the probe reads the real tool"
-  },
-  {
-   "at": "2026-10-24T16:23:08Z",
-   "subject": "Incident: the browser suite failed on 9d659fd1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:20:36Z",
-   "subject": "Tower gate: a run by hand takes several floors, comma separated"
-  },
-  {
-   "at": "2026-10-24T16:19:05Z",
-   "subject": "Tower gate: colour measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:15:39Z",
-   "subject": "Incident: the browser suite failed on 1d40b6da (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:15:06Z",
-   "subject": "The tower card saves the fight, the card picture's footer fits, and color-hex.com's contrast aspect is measured"
-  },
-  {
-   "at": "2026-10-24T16:10:43Z",
-   "subject": "Tower gate: colour,coin flip,random number measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:09:53Z",
-   "subject": "Incident: the browser suite failed on d957075f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:09:36Z",
-   "subject": "Incident: the browser suite failed on 1ca24f1b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:07:37Z",
-   "subject": "Made-up people against randomuser.me; the gate scores every new floor's own aspects; its design test finds a browser here"
   }
  ],
  "builders": {

@@ -1,7 +1,7 @@
 /**
- * service-health skill (asked by Verse, 2026-10-16: "Create a 'Service Health' dashboard card that monitors the connectivity and response
- * speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know w…"): "service health", "are the services up", "is uber down",
- * "is coingecko working", "check the adapters". One status-page card: every adapter in skills/providers.js and the public APIs the stage
+ * service-health skill — "service health", "are the services up", "is uber down": every service Verse hands you to, checked from your browser.
+ * Asked by Verse, 2026-10-16: "Create a 'Service Health' dashboard card that monitors the connectivity and response
+ * speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know w…". Also "is coingecko working", "check the adapters". One status-page card: every adapter in skills/providers.js and the public APIs the stage
  * calls (lib/service-health.js APIS), each with a dot (up, slow, down) and its response time, checked from this browser when the card
  * opens or "Check again" is tapped. No server, nothing kept. The law and the HTML are lib/service-health.js (pure, tested). Verse itself is
  * a service on the card too (asked by Verse, 2026-10-18): a stability dial over incidents.json (how often the suite on main went red in 7

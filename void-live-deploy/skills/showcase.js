@@ -153,10 +153,14 @@ export const VERIFIED_URL = '/claims-verified.json';
  *  had every ask in a2m.void.shown.v1, so nothing ever showed again and there was no way back to it) */
 export const RECENT_DAYS = 7;
 /** the verified playable builds of the last `days` days, newest first, previewed before or not. Pure. */
-export function recentOf(entries, verified, now = Date.now(), days = RECENT_DAYS) {
-  const after = new Date(now - days * 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+export function recentOf(entries, verified, now = Date.now(), days = RECENT_DAYS, done = '') {
+  let after = new Date(now - days * 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+  if (done && done > after) after = done; // closed with Done: only what was built since then
   return whatsNew(sinceLast(entries, after), { verified }).steps;
 }
+/** when this device last closed "Recently built" with Done: the sparkle and the quiet line stay away until something newer is built
+ *  (owner, 2026-10-24: "so why are we back to unclearable recently built"); asking "what's new" still replays them */
+export const RECENT_DONE_KEY = 'a2m.void.recentDone.v1';
 let recentSteps = null; // the last recent list, so the sparkle comes back when a walkthrough ends
 async function ledger() {
   const r = await fetch(LEDGER_URL, { cache: 'no-cache' });
@@ -244,7 +248,9 @@ function end(stageApi) {
   const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); clearInterval(el._tick); el.remove(); }
   const s = document.getElementById('showcase-scrim'); if (s) s.remove();
   removeEventListener('keydown', tour.esc, true);
+  const closedRecent = tour.done && /recently built/i.test(tour.label);
   tour = null;
+  if (closedRecent) { write(RECENT_DONE_KEY, nowIso()); recentSteps = null; return; } // Done means done: no sparkle comes back for these
   if (recentSteps && recentSteps.length) bell(stageApi, recentSteps, { recent: true }); // recently built stays one tap away
 }
 
@@ -274,8 +280,8 @@ async function step(stageApi) {
   const ctl = document.createElement('span');
   ctl.style.cssText = 'display:flex;gap:6px;margin-left:auto';
   const last = tour.i === tour.steps.length - 1;
-  ctl.append(button(last ? 'Done' : 'Next →', () => { clear(stageApi); tour.i++; step(stageApi); }),
-    button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
+  ctl.append(button(last ? 'Done' : 'Next →', () => { clear(stageApi); if (last) tour.done = true; tour.i++; step(stageApi); }),
+    button('Keep', () => { tour.made = null; if (last) tour.done = true; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); tour.done = true; end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
   const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
@@ -315,8 +321,7 @@ async function step(stageApi) {
 // a step chip in the tray: drag it out of the bar and let go over the stage, and that step runs now with its things where it landed;
 // a tap (no drag) runs it in place. Pointer events, so mouse, pen and touch all grab it.
 function chip(stageApi, it) {
-  const short = it.line.length > 90 ? it.line.slice(0, 89).replace(/\s+\S*$/, '') + '\u2026' : it.line; // a chip is a label: the step itself shows the whole line
-  const b = button(short, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = (short === it.line ? '' : it.line + ' \u00b7 ') + 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
+  const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
   let from = null, ghost = null;
   b.addEventListener('pointerdown', (e) => { if (e.button) return; from = { x: e.clientX, y: e.clientY }; try { b.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
   b.addEventListener('pointermove', (e) => {
@@ -398,7 +403,7 @@ export async function nudge(stageApi, note) {
   try { list = await ledger(); } catch (_) { return 0; }
   const V = await verifiedSet();
   const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: V });
-  recentSteps = recentOf(list, V);
+  recentSteps = recentOf(list, V, Date.now(), RECENT_DAYS, read(RECENT_DONE_KEY));
   if (!steps.length) {
     // nothing unseen: what was built recently still shows, as a quiet line and the sparkle, never gone after one look
     if (!recentSteps.length) return 0;

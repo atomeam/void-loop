@@ -3126,9 +3126,14 @@ try {
     const line = await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
     const whole = await P.p.$eval('#away-note', (e) => e.scrollWidth <= e.clientWidth + 1 || getComputedStyle(e).whiteSpace !== 'nowrap').catch(() => false);
     await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
-    check('look what I made: what was built recently always shows, even on a device that has seen everything: the sparkle stays (recent), the quiet line names the build in full, and a tap plays it',
-      bellOk === 'recent' && /Recently built: A routine becomes back-to-back daily calendar events in one file you can download/.test(line) && whole && /1 of 1/.test(bar) && !P.errors.length,
-      JSON.stringify({ bellOk, line, whole, bar, errors: P.errors }));
+    // Done clears it (owner, 2026-10-24: "so why are we back to unclearable recently built"): no sparkle after the walkthrough, none after a reload
+    await P.p.click('[data-showcase="next"]'); await P.p.waitForTimeout(600); // the one step's last button is Done
+    const afterDone = !!(await P.p.$('#whatsnew-bell'));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(210, 210); await P.p.waitForTimeout(3000);
+    const afterReload = { bell: !!(await P.p.$('#whatsnew-bell')), line: await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '') };
+    check('look what I made: what was built recently always shows, even on a device that has seen everything: the sparkle stays (recent), the quiet line names the build in full, and a tap plays it; Done clears it, and a reload keeps it cleared',
+      bellOk === 'recent' && /Recently built: A routine becomes back-to-back daily calendar events in one file you can download/.test(line) && whole && /1 of 1/.test(bar) && !afterDone && !afterReload.bell && !/Recently built/.test(afterReload.line) && !P.errors.length,
+      JSON.stringify({ bellOk, line, whole, bar, afterDone, afterReload, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit

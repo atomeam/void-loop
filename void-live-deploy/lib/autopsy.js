@@ -164,8 +164,12 @@ export function autopsyHtml(a, esc = escHtml) {
 export function stabilityOf(incidentsJson, now = Date.now()) {
   const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
   const day = recent.filter((i) => now - Date.parse(i.at) < 864e5).length;
-  const score = Math.max(0, 100 - 12 * recent.length);
-  return { score, label: !recent.length ? 'steady' : recent.length <= 3 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length };
+  // each red suite costs 12 and the cost halves every 12 hours, so a main that stays green climbs back in a day or two instead of sitting at
+  // 0/100 for the whole week after a bad morning (owner, 2026-10-24: old incidents "lock the live health dial at 0/100 for a week")
+  const cost = recent.reduce((a, i) => a + 12 * Math.pow(0.5, Math.max(0, now - Date.parse(i.at)) / (12 * 36e5)), 0);
+  const score = Math.max(0, Math.round(100 - cost));
+  const last = recent.length ? Math.max(0, Math.round((now - Math.max(...recent.map((i) => Date.parse(i.at)))) / 36e5)) : null; // hours since the newest red
+  return { score, label: score >= 95 ? 'steady' : score >= 60 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length, last };
 }
 /** the gauge as markup: a bar and one sentence. Pure. */
 export function stabilityHtml(g, esc = escHtml) {

@@ -1117,7 +1117,7 @@
     {
      "name": "baseconv",
      "tier": "checked",
-     "why": "1 browser-suite mention, 1 real ask in the benchmark",
+     "why": "1 browser-suite mention, 2 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "its tests",
      "success_rate": 1,

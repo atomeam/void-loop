@@ -2573,7 +2573,7 @@
     "255 in hex"
    ],
    "tier": "checked",
-   "why": "1 browser-suite mention, 1 real ask in the benchmark",
+   "why": "1 browser-suite mention, 2 real asks in the benchmark",
    "glow": 100,
    "n": 130
   },
@@ -3701,7 +3701,7 @@
    "chapter": "life",
    "name": "service-health",
    "title": "Service health",
-   "line": "(asked by Verse, 2026-10-16: \"Create a 'Service Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know w…\"): \"service health\", \"are the services up\", \"is uber down\", \"is coingecko working\", \"check the adapters\"",
+   "line": "\"service health\", \"are the services up\", \"is uber down\": every service Verse hands you to, checked from your browser",
    "examples": [
     "service health",
     "are the services up",

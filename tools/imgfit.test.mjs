@@ -33,3 +33,9 @@ test('the asks and the sizes in them', () => {
   for (const a of ['strip the exif from a photo', 'draw a picture of a cat', 'my photos', 'resize the stage', 'what is the size of the moon', 'make a cartoon image', 'make me a sandwich', 'crop a local image', 'rotate a local image']) assert.ok(!isAsk(a), a);
   assert.deepEqual(sizeIn('resize a photo to 3.5 x 2.5 cm under 50 kb'), { w: 3.5, h: 2.5, unit: 'cm', kb: 50 }); assert.deepEqual(sizeIn('make this picture 600 by 800 px'), { w: 600, h: 800, unit: 'px' }); assert.deepEqual(sizeIn('compress my image to 100kb'), { kb: 100 }); assert.deepEqual(sizeIn('under 2 mb'), { kb: 2048 }); assert.deepEqual(sizeIn('resize a photo'), {});
 });
+
+test('"make the image red" is the stage picture\'s colour edge, not the resizer; "make" with a size still is', async () => {
+  const { isAsk: ask } = await import('../void-live-deploy/lib/imgfit.js');
+  assert.equal(ask('make the image red'), false); assert.equal(ask('make the image blue'), false);
+  assert.equal(ask('make this picture 600 by 800 px'), true);
+});

@@ -68,7 +68,9 @@ const THING = '(?:photo|photograph|picture|pic|image|signature|selfie|scan)s?';
 const ASK = new RegExp('^(?:please\\s+)?(?:can\\s+you\\s+)?(?:(?:resize|compress|shrink|reduce|crop|scale|make)\\b.{0,30}\\b' + THING + '\\b|' + THING + '\\s+(?:resizer|compressor|resize|compress)|(?:image|photo|picture)\\s+(?:size\\s+)?(?:reducer|resizer|compressor)|(?:reduce|lower|cut)\\s+(?:the\\s+)?(?:file\\s+)?size\\s+of\\s+(?:a|my|this|the)\\s+' + THING + '|pan\\s*card\\s+(?:photo|signature)\\b.*)(?:\\s.*)?$', 'i');
 const NOT = /\b(?:exif|metadata|location|gps|scrub|strip|stage|draw|3d|cartoon|figure|model|nude|movie|film|video|local|gif|rotate|pause)\b/i;
 /** true for an ask that wants the resizer. Pure. */
-export const isAsk = (text) => { const t = String(text || '').trim(); return t.length < 140 && ASK.test(t) && !NOT.test(t); };
+// "make" wants a size ("make this picture 600 by 800 px"): "make the image red" is the stage image's colour edge, never the resizer
+const MAKE_ONLY = /^(?:please\s+)?(?:can\s+you\s+)?make\b/i;
+export const isAsk = (text) => { const t = String(text || '').trim(); return t.length < 140 && ASK.test(t) && !NOT.test(t) && (!MAKE_ONLY.test(t) || /\d/.test(t)); };
 /** what size an ask names: { w, h, unit, kb } (any may be missing). "3.5 x 2.5 cm", "600 by 800 px", "under 50 kb", "to 100kb". Pure. */
 export function sizeIn(text) {
   const t = String(text || '').toLowerCase(), out = {};
