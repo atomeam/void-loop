@@ -44,3 +44,19 @@ test('reading a GitHub file: the text, or a plain sentence for missing, binary, 
   assert.match((await ghFileText(f, fake(200, 'x'.repeat(500000)))).error, /over 400 KB/);
   assert.match((await ghFileText(f, async () => { throw new Error('down'); })).error, /could not be reached/);
 });
+test('a locked gist: the link is noise without the passphrase, the files with it; a wrong one opens nothing', async () => {
+  const { pack, open, isLocked } = await import('../void-live-deploy/lib/gist.js');
+  const files = [['secret.txt', 'the launch is on friday']];
+  const link = await pack(files, { pass: 'correct horse' }); assert.ok(isLocked(link)); assert.match(link, /^v1e\./);
+  assert.ok(!Buffer.from(link.slice(4), 'base64url').toString('latin1').includes('friday'), 'not readable from the link');
+  assert.equal(await open(link), null); assert.equal(await open(link, 'wrong'), null);
+  assert.deepEqual((await open('#' + link, 'correct horse')).files, files);
+  assert.notEqual(await pack(files, { pass: 'correct horse' }), link, 'a fresh salt each time');
+});
+test('an edited copy carries what it was copied from; the line comparison finds what changed', async () => {
+  const { pack, open, unpack, lineDiff } = await import('../void-live-deploy/lib/gist.js');
+  const prev = [['a.js', 'one\ntwo\nthree']], next = [['a.js', 'one\n2\nthree\nfour']];
+  const g = await open(await pack(next, { prev })); assert.deepEqual(g.files, next); assert.deepEqual(g.prev, prev);
+  assert.deepEqual(await unpack(await pack(next, { prev })), next, 'older callers still get the files');
+  assert.deepEqual(lineDiff('one\ntwo\nthree', 'one\n2\nthree\nfour'), [['=', 'one'], ['-', 'two'], ['+', '2'], ['=', 'three'], ['+', 'four']]);
+});

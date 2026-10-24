@@ -705,6 +705,28 @@ try {
       JSON.stringify({ isLink, seen, second, editable, urlAfter, hostileNote, errors: G.errors }));
     await G.ctx.close();
   }
+  // outdo, not match (owner, 2026-10-24): a gist locked with a passphrase (the link alone reads as noise), and an edited copy that shows what changed
+  if (want("gist lock: a locked gist opens only with its passphrase, and an edited copy of it shows what changed line by line")) {
+    const G = await fresh(); const origin = new URL(G.p.url()).origin;
+    await G.p.goto(origin + '/g/'); await G.p.waitForSelector('#ta', { timeout: 15000 });
+    await G.p.fill('#nm', 'plan.txt'); await G.p.dispatchEvent('#nm', 'change'); await G.p.fill('#ta', 'one\nsecret two\nthree'); await G.p.fill('#lockpw', 'blue harbour');
+    await G.p.click('#get'); await G.p.waitForSelector('pre', { timeout: 15000 });
+    const link = G.p.url(), lockedLink = /\/g\/#v1e\.[A-Za-z0-9_-]+$/.test(link) && !/secret/.test(Buffer.from(link.split('.').pop(), 'base64').toString('latin1'));
+    const p2 = await G.ctx.newPage(); await p2.goto(link); await p2.waitForSelector('#pw', { timeout: 8000 });
+    const hidden = await p2.evaluate(() => !document.querySelector('code') && !/secret/.test(document.body.textContent));
+    await p2.fill('#pw', 'wrong'); await p2.click('button:has-text("Open")'); await p2.waitForFunction(() => /does not open/.test(document.getElementById('note').textContent), null, { timeout: 15000 });
+    await p2.fill('#pw', 'blue harbour'); await p2.click('button:has-text("Open")'); await p2.waitForSelector('code', { timeout: 15000 });
+    const opened = await p2.$eval('code', (c) => c.textContent);
+    await p2.click('button:has-text("Edit a copy")'); await p2.fill('#ta', 'one\nopen two\nthree\nfour'); await p2.click('#get'); await p2.waitForSelector('#changed', { timeout: 15000 });
+    const copyLink = p2.url(); const p3 = await G.ctx.newPage(); await p3.goto(copyLink); await p3.waitForSelector('#pw', { timeout: 8000 });
+    await p3.fill('#pw', 'blue harbour'); await p3.click('button:has-text("Open")'); await p3.waitForSelector('#changed', { timeout: 15000 }); await p3.click('#changed');
+    const d = await p3.evaluate(() => ({ add: [...document.querySelectorAll('code .add')].map((s) => s.textContent), del: [...document.querySelectorAll('code .del')].map((s) => s.textContent) }));
+    if (process.env.VOID_SHOTS) await p3.screenshot({ path: path.join(process.env.VOID_SHOTS, 'gist-lock.png') }).catch(() => {});
+    check('gist lock: a locked link holds no readable text and shows nothing but a passphrase box, a wrong passphrase is refused, the right one opens it, and an edited copy (still locked) shows the changed line out and the new lines in',
+      lockedLink && hidden && /secret two/.test(opened) && copyLink !== link && /#v1e\./.test(copyLink) && d.del.join() === 'secret two' && d.add.join() === 'open two,four' && !G.errors.length,
+      JSON.stringify({ lockedLink, hidden, opened, copyLink: copyLink.slice(0, 40), d, errors: G.errors }));
+    await G.ctx.close();
+  }
   // one GitHub file in Verse (owner, 2026-10-24: Verse eats GitHub from the smallest piece): GitHub's raw address is stubbed
   if (want("gh-file: a pasted github file link shows the file coloured and numbered with the linked lines lit; a plain repo link stays the repo card")) {
     const F = await fresh(); const raws = [];

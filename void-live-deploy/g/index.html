@@ -28,6 +28,8 @@
   button.go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
   input.name { font: inherit; font-size: 13px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; width: 12em; }
   #note { font-size: 13px; color: var(--soft); min-height: 1.3em; } #meter { font-size: 12px; color: var(--soft); margin-left: auto; }
+  .add { background: rgba(46, 160, 67, .18); } .del { background: rgba(248, 81, 73, .18); text-decoration: line-through; text-decoration-color: rgba(248, 81, 73, .5); }
+  .lock { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 18px 12px; }
   footer { font-size: 12px; color: var(--soft); margin-top: 18px; } footer a { color: inherit; }
 </style>
 </head>
@@ -38,12 +40,13 @@
   <div class="box" id="box"></div>
   <div class="bar" id="bar"></div>
   <div id="note" aria-live="polite"></div>
-  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. Anyone with the link sees the text, drawn as text. <a href="/">Ask Verse anything</a></footer>
+  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
-  import { pack, unpack, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
+  import { pack, open, isLocked, lineDiff, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
   const $ = (id) => document.getElementById(id), el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  let files = [['snippet.txt', '']], at = 0, view = false, gh = null;
+  // prev: the files an edited copy was made from (it travels in the link, so the copy can show what changed); pass: this gist's passphrase, kept only in this page
+  let files = [['snippet.txt', '']], at = 0, view = false, gh = null, prev = null, pass = '', diff = false, locked = false;
   // a GitHub file (?gh=owner/repo/branch/path&L=10-20): read from GitHub's public raw address, shown as a gist; "Edit a copy" makes it one
   const q = new URLSearchParams(location.search), ghp = q.get('gh'), L = /^(\d+)-(\d+)$/.exec(q.get('L') || '');
   if (ghp) {
@@ -58,16 +61,42 @@
       else { files = [[gh.name, r.text]]; view = true; }
     }
   }
-  const loaded = gh ? null : await unpack(location.hash);
-  if (loaded) { files = loaded; view = true; }
+  const loaded = gh ? null : await open(location.hash);
+  if (loaded) { files = loaded.files; prev = loaded.prev; view = true; }
+  else if (!gh && isLocked(location.hash)) locked = true;
   else if (!gh && location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
   const note = (t) => { $('note').textContent = t; };
+  // a locked gist: nothing is shown until the passphrase opens it, here in the page (the passphrase never leaves it)
+  function drawLock() {
+    $('tabs').textContent = ''; $('bar').textContent = ''; const box = $('box'); box.textContent = '';
+    const f = el('form', 'lock'), pw = el('input', 'name'); pw.type = 'password'; pw.id = 'pw'; pw.placeholder = 'Passphrase'; pw.autocomplete = 'off'; pw.setAttribute('aria-label', 'Passphrase');
+    const go = el('button', 'go', 'Open'); go.type = 'submit';
+    f.append(el('span', null, 'This gist is locked.'), pw, go); box.appendChild(f); pw.focus();
+    f.onsubmit = async (e) => {
+      e.preventDefault(); go.disabled = true; note('Opening…');
+      const g = await open(location.hash, pw.value); go.disabled = false;
+      if (!g) { note('That passphrase does not open it.'); pw.select(); return; }
+      files = g.files; prev = g.prev; pass = pw.value; locked = false; view = true; at = 0; note(''); draw();
+    };
+  }
+  function drawDiff(box) {
+    const pre = el('pre'), signs = [], body = el('code'), old = new Map((prev || []).map((f) => [f[0], f[1]])), seen = new Set();
+    const line = (cls, sign, t) => { if (signs.length) body.appendChild(document.createTextNode('\n')); signs.push(sign); body.appendChild(el('span', cls, t)); };
+    for (const [name, text] of files) {
+      seen.add(name); line('k', '', old.has(name) ? name : name + ' (new file)');
+      for (const [op, t] of lineDiff(old.has(name) ? old.get(name) : '', text)) line(op === '+' ? 'add' : op === '-' ? 'del' : null, op === '=' ? ' ' : op, t);
+    }
+    for (const [name, text] of old) if (!seen.has(name)) { line('k', '', name + ' (removed)'); for (const t of text.split('\n')) line('del', '-', t); }
+    const nums = el('span', 'ln', signs.join('\n')); pre.append(nums, body); box.appendChild(pre);
+  }
   function draw() {
+    if (locked) { drawLock(); return; }
     const tabs = $('tabs'); tabs.textContent = '';
     files.forEach(([name], i) => { const b = el('button', 'tab', name); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(i === at)); b.onclick = () => { keep(); at = i; draw(); }; tabs.appendChild(b); });
     if (!view && files.length < MAX_FILES) { const b = el('button', 'tab', '+ file'); b.type = 'button'; b.onclick = () => { keep(); files.push(['file' + (files.length + 1) + '.txt', '']); at = files.length - 1; draw(); }; tabs.appendChild(b); }
     const box = $('box'); box.textContent = ''; const [name, text] = files[at];
-    if (view) {
+    if (view && diff) drawDiff(box);
+    else if (view) {
       renderCode(box, name, text, gh && gh.lines);
       const first = box.querySelector('.lit'); if (first) requestAnimationFrame(() => first.scrollIntoView({ block: 'center' }));
     } else {
@@ -89,21 +118,27 @@
       const raw = el('button', null, 'Raw'); raw.onclick = () => { const w = open('', '_blank'); if (w) { w.document.title = files[at][0]; const p = w.document.createElement('pre'); p.style.cssText = 'margin:12px;font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap'; p.textContent = files[at][1]; w.document.body.appendChild(p); } };
       const dl = el('button', null, 'Download'); dl.onclick = () => download(files[at][0], files[at][1]);
       const lk = el('button', 'go', 'Copy link'); lk.onclick = () => copy(location.href, 'Link copied. It holds the whole gist.');
-      const ed = el('button', null, 'Edit a copy'); ed.onclick = () => { view = false; history.replaceState(null, '', '/g/'); draw(); note('This is your own copy: change it and get a new link. The original link stays as it was.'); };
+      const ed = el('button', null, 'Edit a copy'); ed.onclick = () => { prev = files.map((f) => f.slice()); diff = false; view = false; history.replaceState(null, '', '/g/'); draw(); note('This is your own copy: change it and get a new link. The original link stays as it was, and the new one shows what you changed.'); };
       b.append(cp, raw, dl, lk, ed);
+      if (prev) { const ch = el('button', null, diff ? 'Show the files' : 'What changed'); ch.id = 'changed'; ch.onclick = () => { diff = !diff; draw(); }; b.appendChild(ch); }
+      if (pass) b.appendChild(el('span', null, 'Locked: the link opens only with the passphrase.'));
     } else {
       const nm = el('input', 'name'); nm.id = 'nm'; nm.value = files[at][0]; nm.maxLength = 60; nm.setAttribute('aria-label', 'File name'); nm.onchange = () => { keep(); draw(); };
       const rm = el('button', null, 'Remove file'); rm.hidden = files.length < 2; rm.onclick = () => { files.splice(at, 1); at = Math.max(0, at - 1); draw(); };
+      const pw = el('input', 'name'); pw.id = 'lockpw'; pw.type = 'password'; pw.placeholder = 'Passphrase (optional)'; pw.autocomplete = 'new-password'; pw.value = pass; pw.setAttribute('aria-label', 'Lock it with a passphrase (optional)'); pw.oninput = () => { pass = pw.value; };
       const go = el('button', 'go', 'Get link'); go.id = 'get';
       go.onclick = async () => {
         keep(); if (!files.some((f) => f[1].trim())) { note('Write something first.'); return; }
-        const s = await pack(files); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return; }
-        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it.');
+        const s = await pack(files, { pass, prev }); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return; }
+        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it' + (pass ? ', locked: send the passphrase another way.' : '.'));
       };
-      b.append(nm, rm, go, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
+      b.append(nm, rm, pw, go, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
     }
   }
-  addEventListener('hashchange', async () => { const f = await unpack(location.hash); if (f) { files = f; at = 0; view = true; draw(); } });
+  addEventListener('hashchange', async () => {
+    const g = await open(location.hash); diff = false; at = 0;
+    if (g) { files = g.files; prev = g.prev; pass = ''; locked = false; view = true; draw(); } else if (isLocked(location.hash)) { locked = true; pass = ''; draw(); }
+  });
   draw();
 </script>
 </body>

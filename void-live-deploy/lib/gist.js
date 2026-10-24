@@ -31,21 +31,58 @@ async function readCapped(stream, cap) {
   const out = new Uint8Array(n); let at = 0; for (const p of parts) { out.set(p, at); at += p.length; } return out;
 }
 
-/** the files as one link fragment, or null when they do not fit. */
-export async function pack(files) {
-  const clean = cleanFiles(files), bytes = new TextEncoder().encode(JSON.stringify(clean));
-  const packed = await readCapped(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw')), OUT_CAP);
-  const s = 'v1.' + b64(packed);
+// a gist holds its files and, for an edited copy, the files it was copied from (so the copy can show what changed). The packed form is the
+// compressed JSON { f: files, p: previous } (an older link is just the files array). Locked: the compressed bytes are encrypted with AES-GCM under
+// a key made from the passphrase (PBKDF2, SHA-256, 210,000 rounds, a fresh salt) before they go in the link, so the link alone reads as noise.
+const ROUNDS = 210000;
+async function keyFrom(pass, salt) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(pass)), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: ROUNDS, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+const compress = (bytes) => readCapped(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw')), OUT_CAP);
+const inflate = (bytes) => readCapped(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')), OUT_CAP);
+const okFiles = (files) => Array.isArray(files) && files.length > 0 && files.every((f) => Array.isArray(f) && typeof f[0] === 'string' && typeof f[1] === 'string');
+
+/** the files (and what they were copied from) as one link fragment, or null when they do not fit. With a passphrase the link is locked. */
+export async function pack(files, opts = {}) {
+  const prev = okFiles(opts.prev) ? cleanFiles(opts.prev) : null, body = prev ? { f: cleanFiles(files), p: prev } : cleanFiles(files);
+  let bytes = await compress(new TextEncoder().encode(JSON.stringify(body))), tag = 'v1.';
+  if (opts.pass) {
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const sealed = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await keyFrom(opts.pass, salt), bytes));
+    bytes = new Uint8Array(28 + sealed.length); bytes.set(salt, 0); bytes.set(iv, 16); bytes.set(sealed, 28); tag = 'v1e.';
+  }
+  const s = tag + b64(bytes);
   return s.length <= MAX_LINK ? s : null;
 }
-/** the files in a link fragment (with or without the #), or null for anything that is not a gist link. Never throws. */
-export async function unpack(fragment) {
+/** is this link locked with a passphrase? Pure. */
+export const isLocked = (fragment) => /^#?v1e\.[A-Za-z0-9_-]+$/.test(String(fragment || ''));
+/** the gist in a link: { files, prev } (prev is null unless it is an edited copy), or null for anything that is not a gist link, or a locked one
+ *  without the right passphrase. Never throws. */
+export async function open(fragment, pass) {
   try {
-    const m = /^#?v1\.([A-Za-z0-9_-]+)$/.exec(String(fragment || '')); if (!m || m[1].length > MAX_LINK) return null;
-    const raw = await readCapped(new Blob([unb64(m[1])]).stream().pipeThrough(new DecompressionStream('deflate-raw')), OUT_CAP);
-    const files = JSON.parse(new TextDecoder().decode(raw));
-    return Array.isArray(files) && files.every((f) => Array.isArray(f) && typeof f[0] === 'string' && typeof f[1] === 'string') ? cleanFiles(files) : null;
+    const m = /^#?v1(e?)\.([A-Za-z0-9_-]+)$/.exec(String(fragment || '')); if (!m || m[2].length > MAX_LINK) return null;
+    let bytes = unb64(m[2]);
+    if (m[1]) { if (!pass || bytes.length < 29) return null; bytes = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes.subarray(16, 28) }, await keyFrom(pass, bytes.subarray(0, 16)), bytes.subarray(28))); }
+    const body = JSON.parse(new TextDecoder().decode(await inflate(bytes)));
+    if (okFiles(body)) return { files: cleanFiles(body), prev: null };
+    if (body && okFiles(body.f)) return { files: cleanFiles(body.f), prev: okFiles(body.p) ? cleanFiles(body.p) : null };
+    return null;
   } catch (_) { return null; }
+}
+/** the files in an unlocked link, or null (kept for the GitHub file view and older callers). */
+export async function unpack(fragment) { const g = await open(fragment); return g ? g.files : null; }
+
+/** what changed between two texts, line by line: [['=', line] | ['-', line] | ['+', line]] (a longest-common-subsequence diff). Pure. */
+export function lineDiff(a, b) {
+  const x = String(a).split('\n'), y = String(b).split('\n');
+  if (x.length * y.length > 4e6) return [...x.map((l) => ['-', l]), ...y.map((l) => ['+', l])]; // too big to compare closely: all out, all in
+  const n = x.length, m = y.length, L = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = x[i] === y[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const out = []; let i = 0, j = 0;
+  while (i < n && j < m) { if (x[i] === y[j]) { out.push(['=', x[i]]); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) out.push(['-', x[i++]]); else out.push(['+', y[j++]]); }
+  while (i < n) out.push(['-', x[i++]]); while (j < m) out.push(['+', y[j++]]);
+  return out;
 }
 
 /** the language of a file from its name, for colouring: 'js', 'py', 'json', 'html', 'css', 'sh', 'md' or '' (plain). Pure. */
