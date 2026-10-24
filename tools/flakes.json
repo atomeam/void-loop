@@ -108,5 +108,7 @@
   {"check": "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card al", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
   {"check": "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
   {"check": "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pop", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
-  {"check": "suite ran to the end", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"}
+  {"check": "suite ran to the end", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1", "at": "2026-10-24T04:35:06Z"},
+  {"check": "suite ran to the end", "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1", "at": "2026-10-24T04:35:06Z"}
 ]
