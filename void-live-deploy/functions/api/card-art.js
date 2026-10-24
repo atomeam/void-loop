@@ -124,7 +124,7 @@ export async function photoLook(env, asked, get = (u, o) => fetch(u, o), why = [
     ]);
     const said = scrubOut(redact(String(pick(r))), env), look = lookOf(said, isSecret); if (!look) { why.push('vision said ' + (said.trim() ? 'something refused: ' + said.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) : 'nothing (' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r) + ')')); return null; }
     // Wikipedia's one line on what the subject is ("American guitarist"), so a headshot that crops out the guitar still paints a guitarist
-    const role = String(ph.description || '').replace(/\s*\(?\d{3,4}\b.*$/, '').trim();
+    const role = String(ph.description || '').replace(/\s*\(?\s*(?:born|b\.|c\.)?\s*\d{3,4}\b.*$/i, '').replace(/\s+(?:born|b\.)$/i, '').trim(); // "(born 1968)", "(1966-2004)" and a dangling "born" go
     return { look: role ? look + '; ' + role.charAt(0).toLowerCase() + role.slice(1) : look, name: ph.usual, source: 'wikipedia' };
   } catch (e) { why.push('vision error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 60)); return null; }
 }
