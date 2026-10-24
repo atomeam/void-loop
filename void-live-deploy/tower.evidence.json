@@ -458,52 +458,52 @@
   "colour": {
    "speed": {
     "verdict": "better",
-    "verse": 143,
-    "best": 506,
-    "evidence": "Verse (/color/?c=ff5733) 143 ms to the load event (median of 3, phone width) vs color-hex.com 506 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:09:49.666Z"
+    "verse": 172,
+    "best": 707,
+    "evidence": "Verse (/color/?c=ff5733) 172 ms to the load event (median of 3, phone width) vs color-hex.com 707 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs color-hex.com 3 unnamed controls or images",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs color-hex.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs color-hex.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs color-hex.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "accuracy": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 checked facts right for the same question vs color-hex.com 3 of 4 checked facts right for the same question (Verse missed: none; site missed: HSL 11°, 100%, 60%)",
-    "at": "2026-10-24T16:09:49.666Z",
+    "at": "2026-10-24T16:18:32.997Z",
     "of": 4
    },
    "completeness": {
@@ -511,7 +511,7 @@
     "verse": 13,
     "best": 11,
     "evidence": "Verse (/color/?c=ff5733) 13 of 13 things a full answer shows vs color-hex.com 11 of 13 things a full answer shows (Verse lacks: none; site lacks: tones, text contrast)",
-    "at": "2026-10-24T16:09:49.666Z",
+    "at": "2026-10-24T16:18:32.997Z",
     "of": 13
    },
    "design polish": {
@@ -519,14 +519,14 @@
     "verse": 0,
     "best": 26,
     "evidence": "Verse (/color/?c=ff5733) 0 design defects vs color-hex.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), color-hex.com (11 low-contrast texts, 15 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:09:49.666Z"
+    "at": "2026-10-24T16:18:32.997Z"
    },
    "every colour model": {
     "verdict": "better",
     "verse": 15,
     "best": 10,
     "evidence": "Verse (/color/?c=ff5733) 15 of 15 shown vs color-hex.com 10 of 15 shown (Verse lacks: none; site lacks: HWB, CIELUV, CIELCh, Oklab, OKLCH)",
-    "at": "2026-10-24T16:09:49.666Z",
+    "at": "2026-10-24T16:18:32.997Z",
     "of": 15,
     "part": true
    },
@@ -535,8 +535,17 @@
     "verse": 12,
     "best": 7,
     "evidence": "Verse (/color/?c=ff5733) 12 of 12 shown vs color-hex.com 7 of 12 shown (Verse lacks: none; site lacks: tones, split-complementary, tetradic, square, the 16 VGA colours)",
-    "at": "2026-10-24T16:09:49.666Z",
+    "at": "2026-10-24T16:18:32.997Z",
     "of": 12,
+    "part": true
+   },
+   "contrast": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/color/?c=ff5733) 2 of 2 shown vs color-hex.com 0 of 2 shown (Verse lacks: none; site lacks: text contrast, AA and AAA)",
+    "at": "2026-10-24T16:18:32.997Z",
+    "of": 2,
     "part": true
    }
   },
