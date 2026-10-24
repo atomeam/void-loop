@@ -12,8 +12,8 @@ const wiki = (over = {}) => async (url, opts) => {
   if (u.includes('list=search')) return res({ query: { search: [{ title: over.title || 'Dimebag Darrell' }] } });
   if (u.includes('/page/summary/')) return res({ type: over.type || 'standard', description: 'American guitarist (1966-2004)', wikibase_item: 'Q319690', ...(over.noThumb ? {} : { thumbnail: { source: over.src || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/D.jpg/320px-D.jpg' } }) });
   if (u.includes('wikidata.org/w/api.php')) return res(over.noP18 ? { claims: {} } : { claims: { P18: [{ mainsnak: { datavalue: { value: 'Dimebag Darrell 2004.jpg' } } }] } });
-  if (u.includes('commons.wikimedia.org/w/api.php')) return res({ query: { pages: { 1: { imageinfo: [{ thumburl: over.offsite ? 'https://evil.example/x.jpg' : over.relative ? '//upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' }] } } } });
-  if (u.startsWith('https://upload.wikimedia.org/')) return over.bigPhoto ? res(new Uint8Array(MAX_PHOTO + 10), 'image/jpeg') : res(JPEG, over.ct || 'image/jpeg');
+  if (u.includes('commons.wikimedia.org/w/api.php')) return res({ query: { pages: { 1: { imageinfo: [{ thumburl: over.offsite ? 'https://evil.example/x.jpg' : over.relative ? '//upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' : over.thumbHost ? 'https://thumb.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/x/320px-x.jpg' }] } } } });
+  if (/^https:\/\/(?:upload|thumb)\.wikimedia\.org\//.test(u)) return over.bigPhoto ? res(new Uint8Array(MAX_PHOTO + 10), 'image/jpeg') : res(JPEG, over.ct || 'image/jpeg');
   throw new Error('unexpected ' + u);
 };
 
@@ -23,12 +23,14 @@ test('a misspelt name finds the page whose title is the same name, and gives the
   assert.deepEqual(await pageFor('mercury', wiki({ title: 'Mercury (planet)' })), { title: 'Mercury (planet)', usual: 'Mercury' }, 'a disambiguation tail is dropped');
   assert.equal(await pageFor('x', wiki()), null); assert.equal(await pageFor('dimebag darrel', wiki({ fail: true })), null, 'a failed fetch is no page, never an error');
 });
-test('the lead photo comes only from upload.wikimedia.org, as a small jpeg, png or webp, from a standard page', async () => {
+test('the lead photo comes only from the Wikimedia image hosts, as a small jpeg, png or webp, from a standard page', async () => {
   const ok = await leadPhoto('dimebag darrel', wiki()); assert.match(ok.img, /^data:image\/jpeg;base64,/); assert.equal(ok.usual, 'Dimebag Darrell'); assert.match(ok.description, /guitarist/);
   const viaWikidata = await leadPhoto('dimebag darrel', wiki({ noThumb: true })); assert.match(viaWikidata.img, /^data:image\/jpeg/, 'no Wikipedia thumbnail (non-free photo): the free Wikidata image is next');
   const why = []; assert.equal(await leadPhoto('dimebag darrel', wiki({ noThumb: true, noP18: true }), why), null); assert.match(why.join(), /no wikidata image.*no free photo/);
   assert.equal(await leadPhoto('dimebag darrel', wiki({ noThumb: true, offsite: true })), null, 'a Commons answer that points off Wikimedia is dropped');
   assert.ok(await leadPhoto('dimebag darrel', wiki({ noThumb: true, relative: true })), 'a protocol-relative Commons address is the same photo, not a miss');
+  assert.ok(await leadPhoto('dimebag darrel', wiki({ noThumb: true, thumbHost: true })), 'thumb.wikimedia.org, where Commons now answers (live, 2026-10-24), is Wikimedia too');
+  assert.equal(await leadPhoto('dimebag darrel', wiki({ src: 'https://thumb.wikimedia.org.evil.example/x.jpg', offsite: true })), null, 'a look-alike host is not');
   assert.equal(await leadPhoto('dimebag darrel', wiki({ src: '//evil.example/x.jpg', offsite: true })), null, 'protocol-relative off Wikimedia is still dropped');
   assert.match((await leadPhoto('dimebag darrel', wiki({ src: 'https://evil.example/a.jpg' }))).img, /^data:/, 'a thumbnail address off Wikimedia is never fetched; the Wikidata image is used instead');
   assert.equal(await leadPhoto('dimebag darrel', wiki({ type: 'disambiguation' })), null);

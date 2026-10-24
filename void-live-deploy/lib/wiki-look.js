@@ -2,7 +2,7 @@
  * wiki-look: what a subject really looks like, from Wikipedia (owner, 2026-10-24: the cartoon of "dimebag darrel" was a made-up guitarist, because a text
  * model describes a person from memory, and a wrong memory is drawn faithfully; "make sure it corrects the spelling too"). For a typed name:
  *   1. Wikipedia's own search finds the page (it forgives a misspelling), and its title is the usual spelling;
- *   2. the page's summary gives its lead photo (upload.wikimedia.org only, a small thumbnail);
+ *   2. the page's summary gives its lead photo (Wikimedia's own image hosts only, a small thumbnail);
  *   3. the vision model describes that photo in plain visual words (functions/api/card-art.js), and the cartoon is drawn from the description.
  * The page is used only when its title is the same name as the one asked (spellingOf: a third of the letters at most, the same words), so
  * "zorblax" never becomes whatever page Wikipedia ranks first. Fixed hosts, no key; a photo is read for one description and dropped, never stored; only
@@ -12,7 +12,7 @@
 import { spellingOf } from './art-rules.js';
 
 const WIKI = 'https://en.wikipedia.org';
-const IMG_HOST = /^https:\/\/upload\.wikimedia\.org\//;
+const IMG_HOST = /^https:\/\/(?:upload|thumb)\.wikimedia\.org\//; // Wikimedia's own image hosts (2026-10-24: Commons now answers thumburl on thumb.wikimedia.org)
 export const MAX_PHOTO = 600000; // bytes of the thumbnail we will read
 const UA = { 'user-agent': 'Verse/1 (https://a-to-mind.com; reads a Wikipedia page summary and its lead photo once per cartoon)', accept: 'application/json' };
 
@@ -33,7 +33,7 @@ export async function pageFor(asked, get = fetch, why = []) {
   } catch (e) { why.push('search error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return null; }
 }
 
-/** the free photo Wikidata names for an item (its P18 image, a Wikimedia Commons file): the address of a 320 px version of it on upload.wikimedia.org, or ''. */
+/** the free photo Wikidata names for an item (its P18 image, a Wikimedia Commons file): the address of a 320 px version of it on Wikimedia's image hosts, or ''. */
 async function commonsPhoto(item, get, why) {
   if (!/^Q\d{1,12}$/.test(String(item || ''))) { why.push('no wikidata item'); return ''; }
   try {
