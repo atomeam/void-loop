@@ -13,7 +13,8 @@ const CLEAN = clean; // shared: lib/ask-text.js
 export function printFileOf(text) {
   const t = CLEAN(text);
   if (/^(?:please\s+)?export\s+a\s+print\s+file$/i.test(t)) return { what: 'stage' };
-  if (/^(?:please\s+)?export\s+the\s+stage(?:\s+as\s+(?:a\s+)?3mf)?$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?export\s+the\s+stage(?:\s+as\s+(?:a\s+)?(3mf|stl))?$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?export\s+as\s+(?:a\s+)?(3mf|stl)$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?(?:save|download)\s+(?:a\s+)?(?:3mf|print\s+file)(?:\s+of\s+the\s+stage)?$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?print\s+file\s+for\s+(?:the\s+)?(?:slicer|[\w\s]+)$/i.test(t)) return { what: 'stage' };
   return null;
@@ -203,7 +204,7 @@ async function run(text, api, verify = verify3mf) {
 
 export default {
   name: 'print-file',
-  examples: ['export a print file', 'export the stage as 3mf', 'download a 3mf of the stage', 'save a print file', 'print file for the slicer', 'print file for gear assembly'],
+  examples: ['export a print file', 'export the stage as 3mf', 'export as stl', 'download a 3mf of the stage', 'save a print file', 'print file for the slicer', 'print file for gear assembly'],
   nearMisses: ['download motelet', 'summon motelet', 'export a csv', 'what is a slicer'],
   printFileOf,
   stageTriangles,
