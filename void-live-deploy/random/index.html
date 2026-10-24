@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Random number · Verse</title>
+<meta name="description" content="A random number between any two numbers, many at once, with or without repeats, or a pick from your own list. Your device's secure random numbers, no bias, no ads.">
+<style>
+  /* a-to-mind.com/random (owner, 2026-10-24: "beat speed" on random.org): one file, nothing else to load, the number on screen at once */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 6px; text-align: center; font-weight: 600; color: var(--soft); }
+  #out { text-align: center; font: 800 clamp(64px, 18vw, 132px)/1.05 system-ui, sans-serif; margin: 10px 0 4px; word-break: break-word; font-variant-numeric: tabular-nums; min-height: 1.1em; }
+  #out.many { font-size: clamp(22px, 5vw, 30px); font-weight: 700; line-height: 1.5; }
+  #note { text-align: center; color: var(--soft); font-size: 14px; min-height: 1.4em; }
+  form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 8px; }
+  label { font-size: 12px; color: var(--soft); display: grid; gap: 3px; }
+  input, textarea { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; box-sizing: border-box; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; align-items: center; margin: 6px 0; font-size: 14px; }
+  .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); }
+  button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; }
+  button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
+  details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { cursor: pointer; color: var(--soft); }
+  #hist { color: var(--soft); font-size: 13px; text-align: center; margin-top: 10px; }
+  footer { text-align: center; font-size: 12px; color: var(--soft); margin-top: 22px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="what">Random number</h1>
+  <div id="out" aria-live="polite"></div>
+  <div id="note"></div>
+  <form id="f" autocomplete="off">
+    <label>From <input id="min" type="number" inputmode="numeric" value="1"></label>
+    <label>To <input id="max" type="number" inputmode="numeric" value="100"></label>
+    <label>How many <input id="n" type="number" inputmode="numeric" value="1" min="1" max="10000"></label>
+  </form>
+  <div class="row">
+    <label><input id="uniq" type="checkbox"> no repeats</label>
+    <label><input id="sort" type="checkbox"> sorted</label>
+  </div>
+  <div class="row"><button id="go" type="button">New number</button><button id="copy" class="quiet" type="button">Copy</button><button id="link" class="quiet" type="button">Copy link</button></div>
+  <div id="hist"></div>
+  <details id="listbox"><summary>Pick from a list instead</summary>
+    <p style="font-size:13px;color:var(--soft)">One item a line. Pick one, or shuffle them all.</p>
+    <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
+    <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
+  </details>
+  <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no network, no ads. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script>
+  // an unbiased integer in [0, range) from 32-bit secure randoms: draws past the last whole multiple of the range are thrown away
+  const buf = new Uint32Array(1);
+  function below(range) { const lim = Math.floor(4294967296 / range) * range; for (;;) { crypto.getRandomValues(buf); if (buf[0] < lim) return buf[0] % range; } }
+  function between(a, b) { const span = b - a + 1; if (span <= 4294967296) return a + below(span); const hi = below(Math.ceil(span / 4294967296)); return a + Math.min(span - 1, hi * 4294967296 + below(4294967296)); }
+  const $ = (id) => document.getElementById(id), out = $('out'), note = $('note'), hist = [];
+  const num = (id, d) => { const v = Math.trunc(Number($(id).value)); return Number.isFinite(v) ? v : d; };
+  function draw() {
+    let a = num('min', 1), b = num('max', 100); if (a > b) [a, b] = [b, a];
+    const span = b - a + 1, uniq = $('uniq').checked; let n = Math.min(10000, Math.max(1, num('n', 1)));
+    if (uniq && n > span) { n = span; note.textContent = 'Only ' + span.toLocaleString() + ' different numbers fit between ' + a + ' and ' + b + '.'; } else note.textContent = '';
+    let vals;
+    if (uniq) { const seen = new Set(); vals = []; if (n > span / 2 && span <= 200000) { const all = Array.from({ length: span }, (_, i) => a + i); for (let i = all.length - 1; i > 0; i--) { const j = below(i + 1); [all[i], all[j]] = [all[j], all[i]]; } vals = all.slice(0, n); } else while (vals.length < n) { const v = between(a, b); if (!seen.has(v)) { seen.add(v); vals.push(v); } } }
+    else vals = Array.from({ length: n }, () => between(a, b));
+    if ($('sort').checked) vals.sort((x, y) => x - y);
+    out.className = n > 1 ? 'many' : ''; out.textContent = vals.map((v) => v.toLocaleString('en')).join(n > 1 ? ', ' : '');
+    $('go').textContent = n > 1 ? 'New numbers' : 'New number';
+    $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + a + ' to ' + b + (uniq ? ', no repeats' : '') : 'Random number, ' + a + ' to ' + b;
+    if (n === 1) { hist.unshift(vals[0]); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
+    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1');
+    history.replaceState(null, '', '?' + q);
+  }
+  function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
+  $('pick').onclick = () => { const l = listItems(); if (!l.length) { note.textContent = 'Write a few items first, one a line.'; return; } out.className = ''; out.textContent = l[below(l.length)]; $('what').textContent = 'Picked from your list of ' + l.length; note.textContent = ''; };
+  $('shuffle').onclick = () => { const l = listItems(); for (let i = l.length - 1; i > 0; i--) { const j = below(i + 1); [l[i], l[j]] = [l[j], l[i]]; } out.className = 'many'; out.textContent = l.map((s, i) => (i + 1) + '. ' + s).join('\n'); out.style.whiteSpace = 'pre-line'; $('what').textContent = 'Your list, shuffled'; note.textContent = ''; };
+  $('go').onclick = () => { out.style.whiteSpace = ''; draw(); };
+  $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
+  $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
+  $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
+  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw;
+  addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
+  // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
+  const p = new URLSearchParams(location.search);
+  for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
+  $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
+  draw();
+</script>
+</body>
+</html>

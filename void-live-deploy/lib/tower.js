@@ -15,7 +15,7 @@ export const FLOORS = [
   // the tutorial floors (2026-10-23): one-trick sites, the first fights, so the climb starts where a whole site can be out-done
   { id: 'is it', site: 'isitchristmas.com', url: 'https://isitchristmas.com/', ask: 'is it christmas?', page: '/is-it/christmas', label: 'Is it…?', glyph: '?', extra: ['big answer', 'local language'] },
   { id: 'coin flip', site: 'justflipacoin.com', url: 'https://justflipacoin.com/', ask: 'flip a coin', page: '/flip/', label: 'Coin flip', glyph: '◐', extra: ['flip animation', 'flip history'] },
-  { id: 'random number', site: 'random.org', url: 'https://www.random.org/', ask: 'random number 1-100', label: 'Random number', glyph: '#', extra: ['range choice', 'true randomness'] },
+  { id: 'random number', site: 'random.org', url: 'https://www.random.org/', ask: 'random number 1-100', page: '/random/?min=1&max=100', label: 'Random number', glyph: '#', extra: ['range choice', 'true randomness'] },
   { id: 'word count', site: 'wordcounter.net', url: 'https://wordcounter.net/', ask: 'word count: the quick brown fox', label: 'Word count', glyph: '¶', extra: ['live counting', 'characters and sentences'] },
   { id: 'calculator', site: 'calculator.net', url: 'https://www.calculator.net/', ask: 'what is 17% of 240', label: 'Calculator', glyph: '÷', extra: ['history', 'unit and scientific modes'] },
   // the single-tool rungs (owner, 2026-10-23): one utility each, the fights after the tutorial; 'stopwatch' is the old 'timer and clock'
