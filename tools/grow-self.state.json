@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40068355708",
-  "at": "2026-10-24T05:59:44Z",
-  "what": "Verse hardened itself: 3 benchmark ask(s) for imgfit.  Why these: tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); imgfit (no benchmark ask, evidence tier: tested); echo-disagrees (only 2 benchmark asks, evidence tier: checked); fact (only 1 benchmark ask, evidence tier: checked). New phrases: “resize a photo to 3.5 x 2.5 cm under 50 kb” now opens imgfit; “compress my image to 100kb” now opens imgfit; “image resizer” now opens imgfit. Did not route: put in the page; draft for me; heads or tails; coin toss.",
-  "try": "resize a photo to 3.5 x 2.5 cm under 50 kb",
+  "run": "40111866754",
+  "at": "2026-10-24T16:31:42Z",
+  "what": "Verse hardened itself: 9 benchmark ask(s) for fakeuser, wheel, gradient.  Why these: tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); fakeuser (no benchmark ask, evidence tier: experiment); wheel (no benchmark ask, evidence tier: experiment); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); gradient (no benchmark ask, evidence tier: tested). New phrases: “random user generator” now opens fakeuser; “fake name generator” now opens fakeuser; “generate 5 fake german women” now opens fakeuser; “spin the wheel” now opens wheel; “wheel of names” now opens wheel; “spin a wheel with pizza, tacos and sushi” now opens wheel; “gradient generator” now opens gradient; “css gradient” now opens gradient; “make a gradient from red to blue” now opens gradient. Did not route: put in the page; draft for me; heads or tails; coin toss.",
+  "try": "random user generator",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-24T05:01:19Z",
-    "try": "how secure is my password",
-    "closedAt": "2026-10-24T05:59:22Z"
+    "at": "2026-10-24T05:59:44Z",
+    "try": "resize a photo to 3.5 x 2.5 cm under 50 kb",
+    "closedAt": "2026-10-24T16:31:16Z"
   }
 }
