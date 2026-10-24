@@ -3657,7 +3657,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 9 live findings, 2026-10-23",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 10 live findings, 2026-10-24",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 193

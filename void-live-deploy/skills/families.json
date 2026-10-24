@@ -1973,7 +1973,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 9 live findings, 2026-10-23",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 10 live findings, 2026-10-24",
      "last_tested": "2026-10-24",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,

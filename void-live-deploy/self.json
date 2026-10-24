@@ -483,6 +483,62 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T17:54:46Z",
+   "subject": "The undo pile records a restore made with its button at once"
+  },
+  {
+   "at": "2026-10-24T17:49:34Z",
+   "subject": "Tower gate: gradient,password,wheel measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T17:49:19Z",
+   "subject": "Incident: the browser suite failed on c6985fe4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:43:34Z",
+   "subject": "Main's three red book checks read the book as it is now"
+  },
+  {
+   "at": "2026-10-24T17:43:05Z",
+   "subject": "Incident: the browser suite failed on 903e27a7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:41:40Z",
+   "subject": "Tower gate: gradient,base converter,password measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T17:41:32Z",
+   "subject": "Verse fixes its coin skill: learn to handle \"coin toss\""
+  },
+  {
+   "at": "2026-10-24T17:40:02Z",
+   "subject": "Verse fixes its coin skill: learn to handle \"heads or tails\""
+  },
+  {
+   "at": "2026-10-24T17:32:41Z",
+   "subject": "Incident: the browser suite failed on e9e85c8e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:31:13Z",
+   "subject": "A Clear list button for Verse's builds that stays cleared, and quiz and challenge start in a fresh visit"
+  },
+  {
+   "at": "2026-10-24T17:25:59Z",
+   "subject": "Incident: the browser suite failed on 271b95fd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:25:52Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
+  },
+  {
+   "at": "2026-10-24T17:24:49Z",
+   "subject": "Tower gate: gradient,base converter,password measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T17:22:24Z",
+   "subject": "Incident: the browser suite failed on ff01da4d (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T17:18:43Z",
    "subject": "hextobinary.com, accuracy and huge numbers: the gate types the question into a converter's box, and both sites get the same 121-bit number"
   },
@@ -505,62 +561,6 @@
   {
    "at": "2026-10-24T17:05:58Z",
    "subject": "Incident: the browser suite failed on e68fec95 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T17:03:43Z",
-   "subject": "Incident: the browser suite failed on d1c945d0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T17:02:55Z",
-   "subject": "Incident: the browser suite failed on 1515ffdb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T17:02:07Z",
-   "subject": "Verse's own upgrades say what got better: the merge log and grow-self titles name the skills and phrases, and the tray chip stays one…"
-  },
-  {
-   "at": "2026-10-24T17:00:08Z",
-   "subject": "Incident: the browser suite failed on 38871163 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:58:47Z",
-   "subject": "Tower gate: base converter,encoder,codebase measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:51:01Z",
-   "subject": "hextobinary.com, signed reading: the base converter reads any size as two's complement, and the gate reads answers written in boxes"
-  },
-  {
-   "at": "2026-10-24T16:45:46Z",
-   "subject": "Verse hardens itself: 1 benchmark ask(s) for baseconv"
-  },
-  {
-   "at": "2026-10-24T16:43:26Z",
-   "subject": "Tower gate: base converter,photo resizer,time zones measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:38:46Z",
-   "subject": "Tower gate: random number,password strength,stopwatch measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:35:46Z",
-   "subject": "random.org, design polish: the number page's checkboxes are full tap targets, and its footer tells the truth about the public draw"
-  },
-  {
-   "at": "2026-10-24T16:34:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T16:34:12Z",
-   "subject": "Incident: the browser suite failed on ea8a127b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:33:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T16:32:31Z",
-   "subject": "random.org, true randomness and accuracy: a public draw anyone can check, and the gate asks both sites the same question"
   }
  ],
  "builders": {
