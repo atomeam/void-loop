@@ -6,6 +6,12 @@
    "why": "its proof-of-work wall (Anubis) answers every automated visit with Access Denied, so nothing about it can be measured.",
    "at": "2026-10-24",
    "next": "radicle.xyz"
+  },
+  {
+   "site": "color-hex.com",
+   "why": "it answers every automated visit with nothing the gate can time (its speed came back NaN on every load), so the colour floor cannot be measured against it.",
+   "at": "2026-10-24",
+   "next": "hexcolor16.com"
   }
  ]
 }

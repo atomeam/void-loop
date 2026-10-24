@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T14:33:11Z",
+   "subject": "Cartoons: one painted after its look failed is shown but never kept, so the Dimebag guess is painted again from his photo"
+  },
+  {
+   "at": "2026-10-24T14:29:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-24T14:24:04Z",
    "subject": "Fix: Verse's \"make a sphere\" pattern also took \"game box\"; without \"3d\" the other words must be colours"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-24T05:01:42Z",
    "subject": "Photo resizer: the third floor from the data (pancardresizer.com): one step instead of a three-step wizard behind ads"
-  },
-  {
-   "at": "2026-10-24T05:01:38Z",
-   "subject": "Verse hardens itself: 4 benchmark ask(s) for pwcheck, baseconv"
-  },
-  {
-   "at": "2026-10-24T04:58:55Z",
-   "subject": "Incident: the browser suite failed on 6ce81fd0 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

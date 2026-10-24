@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
  */
+import { askColour, parse, toHex, describe } from '../lib/colour.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -35,6 +36,8 @@ export function utilOf(text) {
   // "what color is rgb 255 0 0", "rgb(0, 128, 255)"
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
+  // what the forms above miss, from the colour page's own reader (lib/colour.js): "hsl(11, 100%, 60%)", "ff5733 color", "colour picker", "html color codes"
+  { const c = askColour(t); if (c) return { kind: 'color', c: toHex(parse(c)) }; }
   m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
   // "make it uppercase: hello world", "turn this into title case: ..."
@@ -110,9 +113,11 @@ async function run(text, api) {
     el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div><img alt="QR code for ' + esc(q.data) + '" src="' + esc(src) + '" style="float:none;max-width:240px;max-height:240px;background:#fff;border-radius:8px;margin:8px 0">'
       + '<div class="src">Source: <a href="https://goqr.me/api/" target="_blank" rel="noopener">goqr.me</a></div>'; });
   } else if (q.kind === 'color') {
-    const h = hex(q.c), v = hsl(h);
+    const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
-      + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
+      + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li>'
+      + (d ? '<li><b>Nearest name</b> ' + esc(d.name.name) + (d.name.exact ? '' : ' (' + esc(d.name.hex) + ')') + '</li><li><b>Text on it</b> ' + (d.contrast.text === '#000000' ? 'black, ' + d.contrast.black : 'white, ' + d.contrast.white) + ':1' + (Math.max(d.contrast.black, d.contrast.white) >= 4.5 ? ' (passes AA)' : ' (large text only)') + '</li>' : '') + '</ul>'
+      + '<p><a class="cc-open" href="/color/?c=' + esc(h.slice(1)) + '">Every model, shades, tones and schemes</a></p>'; });
   } else if (q.kind === 'letters') {
     // a, e, i, o, u are vowels (y is counted as a consonant, the usual school answer)
     const ls = Array.from(q.s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).filter((c) => /[a-z]/.test(c)), v = ls.filter((c) => 'aeiou'.includes(c)).length, n = q.which === 'vowels' ? v : ls.length - v;
