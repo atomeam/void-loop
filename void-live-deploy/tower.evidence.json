@@ -448,7 +448,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T17:39:51.670Z"
+    "at": "2026-10-24T17:47:17.621Z"
    }
   },
   "encoder": {
@@ -1033,59 +1033,59 @@
   "gradient": {
    "speed": {
     "verdict": "better",
-    "verse": 133,
-    "best": 453,
-    "evidence": "Verse (/gradient/) 133 ms to the load event (median of 3, phone width) vs colorzilla.com 453 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T17:38:47.427Z"
+    "verse": 153,
+    "best": 365,
+    "evidence": "Verse (/gradient/) 153 ms to the load event (median of 3, phone width) vs colorzilla.com 365 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 554,
     "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 554 px sideways overflow at 390 px",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/gradient/) 0 unnamed controls or images vs colorzilla.com 2 unnamed controls or images",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/gradient/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorzilla.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 9,
     "best": 54,
     "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 54 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.09), colorzilla.com (28 low-contrast texts, 26 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T17:38:47.427Z"
+    "at": "2026-10-24T17:47:01.526Z"
    },
    "stops with opacity": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/gradient/) 2 of 2 shown vs colorzilla.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:38:47.427Z",
+    "at": "2026-10-24T17:47:01.526Z",
     "of": 2,
     "part": true
    },
@@ -1094,7 +1094,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:38:47.427Z",
+    "at": "2026-10-24T17:47:01.526Z",
     "of": 1,
     "part": true
    },
@@ -1103,7 +1103,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:38:47.427Z",
+    "at": "2026-10-24T17:47:01.526Z",
     "of": 1,
     "part": true
    },
@@ -1112,8 +1112,85 @@
     "verse": 12,
     "best": 10,
     "evidence": "Verse (/gradient/) 12 of 12 things a full answer shows vs colorzilla.com 10 of 12 things a full answer shows (Verse lacks: none; site lacks: conic, text contrast)",
-    "at": "2026-10-24T17:38:47.427Z",
+    "at": "2026-10-24T17:47:01.526Z",
     "of": 12
+   }
+  },
+  "wheel": {
+   "speed": {
+    "verdict": "better",
+    "verse": 150,
+    "best": 311,
+    "evidence": "Verse (/wheel/) 150 ms to the load event (median of 3, phone width) vs wheelofnames.com 311 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/wheel/) 3 of 3 loads answered vs wheelofnames.com 3 of 3 loads answered",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/wheel/) 0 px sideways overflow at 390 px vs wheelofnames.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/wheel/) 0 unnamed controls or images vs wheelofnames.com 2 unnamed controls or images",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/wheel/) 1 (1: the page shows itself again with the network cut) vs wheelofnames.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/wheel/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wheelofnames.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 13,
+    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 12 small tap targets, layout shift 0.03)",
+    "at": "2026-10-24T17:49:04.968Z"
+   },
+   "entries list": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:49:04.968Z",
+    "of": 1,
+    "part": true
+   },
+   "weights": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:49:04.968Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 9,
+    "best": 9,
+    "evidence": "Verse (/wheel/) 9 of 9 things a full answer shows vs wheelofnames.com 9 of 9 things a full answer shows (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:49:04.968Z",
+    "of": 9
    }
   }
  }
