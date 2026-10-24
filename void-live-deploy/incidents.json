@@ -2,6 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:33:05.308Z",
+   "sha": "1821ea0352a4c2e93a0676179d87784db090865c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40054033042",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/gist.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/g/index.html",
+    "void-live-deploy/lib/gist.js"
+   ]
+  },
+  {
    "at": "2026-10-24T02:24:11.860Z",
    "sha": "6a9f889c56868aa2e5b706110342ff5a0fc06906",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40053420539",
@@ -582,28 +599,6 @@
    ],
    "touched": [
     "void-live-deploy/self.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:06:24.929Z",
-   "sha": "a7f7392a2975785b8a1715e12860862719ac0871",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40036373109",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "tools/tower.test.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/inventory.js",
-    "void-live-deploy/skills/tower.js",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
