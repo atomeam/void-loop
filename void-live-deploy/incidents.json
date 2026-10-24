@@ -2,6 +2,25 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T15:26:53.617Z",
+   "sha": "dc7561e22053a8ba24a60b38ae1c9e9b75228e75",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40106341032",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json",
+    "void-live-deploy/tower.frontier.json"
+   ]
+  },
+  {
    "at": "2026-10-24T15:24:16.213Z",
    "sha": "f537b00f9768e4172da4b74b240b899bfcae11a8",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40106161364",
@@ -600,28 +619,6 @@
    ],
    "touched": [
     "tools/checks.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-24T03:09:38.936Z",
-   "sha": "b23ebc978bdef5c8f68474cbd5f6bf7dfd13395d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40056610307",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/preload.mjs",
-    "tools/preload.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/conquered/index.html",
-    "void-live-deploy/flip/index.html",
-    "void-live-deploy/g/index.html",
-    "void-live-deploy/skills/coin.js"
    ]
   }
  ]
