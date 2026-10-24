@@ -31,7 +31,11 @@ export const FLOORS = [
   // third floor from the data (`easiest-sites.mjs --tools`): pancardresizer.com, a three-step wizard that resizes a photo or signature to a size in cm and a limit in KB, behind AdSense, tag-manager, jQuery, Bootstrap and Croppie
   { id: 'photo resizer', site: 'pancardresizer.com', url: 'https://pancardresizer.com/', ask: 'resize a photo to 3.5 x 2.5 cm under 50 kb', page: '/resize-image/', label: 'Photo resizer', glyph: '▣', fatality: 'one step instead of three: any size in cm, mm, inches or pixels, a size limit in KB it really meets (or says it cannot), a JPEG or a PDF, with no ads and nothing uploaded', extra: ['exact size', 'size limit', 'pdf'] },
   { id: 'time zones', site: 'timeanddate.com', url: 'https://www.timeanddate.com/', ask: 'time in tokyo', label: 'Time zones', glyph: '◴', extra: ['world time', 'meeting planner'] },
-  { id: 'colour', site: 'hexcolor16.com', url: 'https://hexcolor16.com/ff5733', ask: '#ff5733', page: '/color/?c=ff5733', label: 'Colour codes', glyph: '◉', fatality: 'every model on one page, the nearest name by eye, whether text on it passes WCAG AA and AAA, tints, shades, tones and five schemes, with no ads, analytics or web fonts', extra: ['every colour model', 'shades and palettes', 'contrast'] }, // color-hex.com blocks every automated visit, so it sent Verse down to hexcolor16.com (tower.sentdown.json)
+  // colour: color-hex.com could not be timed by the old gate (it never went quiet on the network); that was the gate's fault, not a win, so the
+  // gate was fixed and the site is the opponent again (owner, 2026-10-24: "never swap a target site down to an easier site ... beat both sites")
+  { id: 'colour', site: 'color-hex.com', url: 'https://www.color-hex.com/color/ff5733', ask: '#ff5733', page: '/color/?c=ff5733', label: 'Colour picker', glyph: '◉', fatality: 'every model on one page, the nearest name by eye, whether text on it passes WCAG AA and AAA, tints, shades, tones and five schemes, with no ads, analytics or web fonts', extra: ['every colour model', 'shades and palettes', 'contrast'] },
+  // and hexcolor16.com, the hex-code tool the data found (Tranco 63,673): beaten too, not instead
+  { id: 'colour codes', site: 'hexcolor16.com', url: 'https://hexcolor16.com/ff5733', ask: 'ff5733 color', page: '/color/?c=ff5733', label: 'Colour codes', glyph: '◉', fatality: 'contrast for text on the colour, the nearest name by eye, and the page opens offline, with no ads, analytics or web fonts', extra: ['every colour model', 'shades and palettes'] },
   { id: 'encoder', site: 'base64encode.org', url: 'https://www.base64encode.org/', ask: 'base64 encode hello', label: 'Encoder', glyph: '⌗', extra: ['decode too', 'files and character sets'] },
   { id: 'weather', site: 'weather.gov', url: 'https://www.weather.gov/', ask: 'weather in boston', label: 'Weather', glyph: '☂', extra: ['hourly and daily forecast', 'alerts', 'radar'] },
   { id: 'translate', site: 'Google Translate', url: 'https://translate.google.com/', ask: 'translate hello to spanish', label: 'Translate', glyph: '⇄', extra: ['language count', 'speech in and out', 'camera text'] },
@@ -58,6 +62,9 @@ export const FLOORS = [
   // the code hosts from the least visited up (owner, 2026-10-24: "verse can eat github starting with the smallest"; the order is Tranco's,
   // tools/easiest-sites.mjs --rank). codebasehq.com's public side is one page that sells a paid product; its extra aspects are what that page lists
   { id: 'codebase', site: 'codebasehq.com', url: 'https://www.codebasehq.com/', ask: 'make a gist', page: '/g/', label: 'Code host (Codebase)', glyph: '⌥', fatality: 'a gist locked with a passphrase and a what-changed view, with no account and nothing stored', extra: ['code hosting', 'ticket tracking', 'time tracking', 'project files and docs'] },
+  // the next forge up (Tranco order): sent down when its proof-of-work wall (Anubis) turned the old gate away; a wall the gate could not pass is the
+  // gate's fault, not a loss (owner, 2026-10-24), so it is a floor again and the gate, a full browser now, does the wall's work like a visitor
+  { id: 'tildegit', site: 'tildegit.org', url: 'https://tildegit.org/', ask: 'make a gist', page: '/g/', label: 'Code host (tildegit)', glyph: '⌥', extra: ['code hosting', 'issues', 'pull requests', 'accounts'] },
   // the top of the tower (owner, 2026-10-23: "Github and claude ar on the tower too"): where Verse's own code lives, and the final boss
   { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
   { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
@@ -84,7 +91,10 @@ export function gate(floor, ev = {}) {
 
 /** the whole tower: each floor's gate, coverage (replaced, partial, missing from lap.items.json) and skills; the marker is the lowest floor
  *  whose gate fails (floors above it can be worked on, even beaten, but the marker does not pass a floor that is not). Pure. */
-export function tower(onlySite = [], evidence = {}) {
+// the tower has no top (owner, 2026-10-24: "The Tower is every website, web tool, and app ... scaling indefinitely"): FLOORS are the sites under
+// head-to-head measurement now; the frontier (tower.frontier.json, the real tool sites ranked from the top million by easiest-sites.mjs --tools)
+// is the climb past them, and grows as the scan grows. `total` is the floors on the board, never a ceiling.
+export function tower(onlySite = [], evidence = {}, frontier = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
@@ -96,6 +106,9 @@ export function tower(onlySite = [], evidence = {}) {
   floors.sort((a, b) => ((whole(a) ? a.m - a.n : 1e3) - (whole(b) ? b.m - b.n : 1e3)) || a.floor - b.floor); floors.forEach((f, i) => { f.floor = i + 1; });
   const at = floors.findIndex((f) => !f.beaten), marker = at < 0 ? floors.length : at;
   for (const f of floors) f.state = f.floor - 1 < marker ? 'beaten' : f.floor - 1 === marker ? 'current' : 'ahead';
-  return { floors, marker: marker + 1, beaten: floors.filter((f) => f.beaten).length, total: floors.length };
+  const ahead = (frontier && Array.isArray(frontier.sites) ? frontier.sites : []).filter((x) => x && x.site && !FLOORS.some((f) => f.site === x.site));
+  return { floors, marker: marker + 1, beaten: floors.filter((f) => f.beaten).length, total: floors.length, frontier: { ranked: ahead.length, of: (frontier && frontier.of) || 1000000, next: ahead.slice(0, 5).map((x) => x.site) } };
 }
-export const towerLine = (t) => 'Tower: floor ' + Math.min(t.marker, t.total) + ' of ' + t.total + ' (' + (t.floors[t.marker - 1] ? t.floors[t.marker - 1].site + ', ' + t.floors[t.marker - 1].n + ' of ' + t.floors[t.marker - 1].m + ' aspects beaten' : 'every floor beaten') + '), ' + t.beaten + ' floors beaten';
+/** the tower in one line, with no ceiling: where the marker is, how many floors are beaten, and how much of the web is still ahead. Pure. */
+export const towerLine = (t) => 'Tower: floor ' + Math.min(t.marker, t.total) + ' (' + (t.floors[t.marker - 1] ? t.floors[t.marker - 1].site + ', ' + t.floors[t.marker - 1].n + ' of ' + t.floors[t.marker - 1].m + ' aspects beaten' : 'every floor on the board beaten') + '), ' + t.beaten + ' floors beaten; no top: '
+  + (t.total - t.beaten) + ' floors open' + (t.frontier && t.frontier.ranked ? ' and ' + t.frontier.ranked + ' more real tool sites ranked from the top million' : '') + ', and every other site after them';

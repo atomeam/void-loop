@@ -29,8 +29,8 @@
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   let first = true;
   async function draw() {
-    const [inv, ev, sd] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.sentdown.json')]);
-    const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {});
+    const [inv, ev, sd, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.sentdown.json'), get('/tower.frontier.json')]);
+    const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr);
     // the sites that sent Verse down a rank (a site the gate cannot measure, or that Verse could not beat after one honest fix): passed over for an easier one
     const down = $('down'); down.textContent = ''; for (const x of (sd && sd.sites) || []) { const d = document.createElement('div'); d.className = 'down'; d.textContent = x.site + ' sent Verse down a rank: ' + x.why + ' Next: ' + x.next + '.'; down.appendChild(d); }
     $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();

@@ -72,6 +72,10 @@ if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] ===
     const f = features(page.html, page.bytes), h = hardness(f); if (h !== null && !junk(f)) out.push({ ...row, final: page.final, hardness: h, ...f }); } }));
   out.sort((a, b) => a.hardness - b.hardness || a.rank - b.rank);
   fs.writeFileSync('easiest-sites.json', JSON.stringify({ source: TRANCO, mode: 'tool-named hosts', scanned: rows.length, at: new Date().toISOString(), easiest: out.slice(0, 300) }, null, 1) + '\n');
+  // the tower's frontier (owner, 2026-10-24: the tower has no top, every site is on it): every real tool found, easiest first, minus the floors
+  // already on the tower; the tower card counts them as the climb still ahead and grows as the scan grows
+  if (process.env.FRONTIER) { const { FLOORS } = await import('../void-live-deploy/lib/tower.js'), on = new Set(FLOORS.map((f) => f.site.toLowerCase().replace(/^www\./, '')));
+    fs.writeFileSync(process.env.FRONTIER, JSON.stringify({ about: 'The tower has no top: every site is on it. These are the real one-tool sites ranked so far from the top million (Tranco), easiest first, not yet floors; the scan (easiest-sites.mjs --tools) adds more.', source: TRANCO, scanned: rows.length, of: 1000000, at: new Date().toISOString().slice(0, 10), sites: out.filter((x) => !on.has(x.host.replace(/^www\./, ''))).map((x) => ({ site: x.host, rank: x.rank, hardness: x.hardness, title: String(x.title || '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) })) }, null, 1) + '\n'); }
   console.log('scanned ' + rows.length + ', ' + out.length + ' real tools; the 70 easiest (hardness, Tranco rank, host, controls, words, links, title):');
   for (const s of out.slice(0, 70)) console.log(String(s.hardness).padStart(4), String(s.rank).padStart(7), s.host.padEnd(30), (s.inputs + s.selects + s.buttons) + 'c', s.words + 'w', s.links + 'l', '|', s.title);
   process.exit(0);

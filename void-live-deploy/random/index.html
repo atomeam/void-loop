@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Random number · Verse</title>
 <meta name="description" content="A random number between any two numbers, many at once, with or without repeats, or a pick from your own list. Your device's secure random numbers, no bias, no ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Random number · Verse">
+<meta property="og:description" content="A random number between any two numbers, many at once, with or without repeats, or a pick from your own list. Your device's secure random numbers, no bias, no ads.">
+<meta property="og:url" content="https://a-to-mind.com/random/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/random (owner, 2026-10-24: "beat speed" on random.org): one file, nothing else to load, the number on screen at once */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; }
@@ -89,5 +96,6 @@
   $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
   draw();
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

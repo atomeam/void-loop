@@ -2,13 +2,17 @@
 // so every deploy shows up on the next load; the cache is only a fallback. /api is never touched.
 const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
+// the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
+// modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
+const TOOLS = ['/color/', '/base-converter/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/g/'];
+const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
 const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vendor path (below), so it is dropped on activate
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(TOOLS.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -35,7 +39,8 @@ self.addEventListener('fetch', (e) => {
   // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load.
   e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
-    if (res.ok && (!nav || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(nav ? '/' : req, copy)); }
+    const tool = nav && TOOLS.includes(url.pathname);
+    if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }
     return res;
-  }).catch(() => caches.match(nav ? '/' : req).then((r) => r || Response.error())));
+  }).catch(() => (nav && TOOLS.includes(url.pathname) ? caches.match(url.pathname).then((r) => r || caches.match('/')) : caches.match(nav ? '/' : req)).then((r) => r || Response.error())));
 });

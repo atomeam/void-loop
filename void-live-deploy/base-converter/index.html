@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Binary, decimal, hex and octal converter · Verse</title>
 <meta name="description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Binary, decimal, hex and octal converter · Verse">
+<meta property="og:description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/base-converter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/base-converter/ (owner, 2026-10-24: back to the easy sites; hextobinary.com, Tranco 136,997, is a hex-to-binary box among AdSense, tag-manager, consent and maths-typesetting scripts): one file and one small module, no third party */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; }
@@ -35,6 +42,7 @@
   <div class="row"><label for="b16">Hex</label><input id="b16" data-base="16" inputmode="text" autocomplete="off" spellcheck="false" placeholder="FF"><button type="button" data-copy="b16">Copy</button></div>
   <div id="note" role="status" aria-live="polite"></div>
   <div class="facts" id="facts"></div>
+  <p style="text-align:center"><button type="button" id="link">Copy link</button></p>
   <footer>Type in any box; the others follow. Exact at any size (up to 4,096 digits), never rounded. A <code>0x</code>, <code>0b</code> or <code>0o</code> in front is understood, spaces and commas are ignored. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
@@ -56,7 +64,10 @@
   };
   for (const b of boxes) b.addEventListener('input', () => show(b));
   for (const c of document.querySelectorAll('button[data-copy]')) c.addEventListener('click', async () => { const v = $(c.dataset.copy).value; try { await navigator.clipboard.writeText(v.replace(/[ ,]/g, '')); c.textContent = 'Copied'; setTimeout(() => { c.textContent = 'Copy'; }, 1200); } catch (_) { $(c.dataset.copy).select(); } });
+  // a link that opens on this number (?v=…&b=…), the way the page opens from an ask
+  $('link').addEventListener('click', async () => { const box = boxes.find((x) => x.value.trim()), u = new URL(location.href); u.search = box ? '?v=' + encodeURIComponent(box.value.replace(/[ ,]/g, '')) + '&b=' + box.dataset.base : ''; try { await navigator.clipboard.writeText(u.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
   const q = new URLSearchParams(location.search), v = q.get('v'), from = +q.get('b') || 10; if (v && [2, 8, 10, 16].includes(from)) { const box = boxes.find((x) => +x.dataset.base === from); box.value = v.slice(0, 5000); show(box); }
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

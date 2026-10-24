@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flip a coin · Verse</title>
 <meta name="description" content="Flip a coin: one tap, a fair flip from your device's secure random numbers. Any real coin ever struck, or one you make. No ads, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Coin flip · Verse">
+<meta property="og:description" content="Flip a coin: one tap, a fair flip from your device's secure random numbers. Any real coin ever struck, or one you make. No ads, no sign-up.">
+<meta property="og:url" content="https://a-to-mind.com/flip/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico">
 <style>
   /* a-to-mind.com/flip (owner, 2026-10-24: beat justflipacoin.com): the coin and nothing else, no ads, no consent box, no tracker; it loads the
@@ -46,5 +53,6 @@
   // the space bar or Enter flips again, as a coin site should
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|select|textarea|button)$/i.test(e.target.tagName)) { e.preventDefault(); const b = card.querySelector('.coin-again'); if (b) b.click(); } });
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

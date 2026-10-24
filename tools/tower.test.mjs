@@ -13,7 +13,9 @@ test('the marker never passes a floor whose gate fails, and a regression un-beat
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.marker, 2); // measured floors sort first by gap
   const r = record({ verdict: 'better' }, 'worse', 900, 500, 'e', 'now'); assert.equal(r.was, 'better');
   ev[FLOORS[1].id].speed = r; t = tower([], ev); assert.equal(t.marker, 1); assert.equal(t.floors[0].regressed.length, 1);
-  assert.match(towerLine(t), new RegExp('^Tower: floor 1 of ' + FLOORS.length + ' \\('));
+  assert.match(towerLine(t), /^Tower: floor 1 \(/); assert.doesNotMatch(towerLine(t), / of \d+ \(/, 'no ceiling: the tower has no top');
+  const fr = tower([], {}, { of: 1000000, sites: [{ site: 'example-tool.com' }, { site: FLOORS[0].site }] });
+  assert.equal(fr.frontier.ranked, 1, 'a frontier site already on the board is not counted twice'); assert.match(towerLine(fr), /and 1 more real tool sites ranked from the top million, and every other site after them$/);
 });
 test('verdicts come from numbers only', () => {
   assert.equal(verdict(100, 200), 'better'); assert.equal(verdict(3, 3, true), 'equal'); assert.equal(verdict(NaN, 1), 'unverified');
@@ -49,7 +51,7 @@ test('every floor with a fatality says it in plain words, and the card detail ca
   for (const f of withKill) { assert.ok(f.fatality.length > 20 && f.fatality.length < 200, f.id); assert.match(detailText({ ...f, n: 1, m: 9, left: [], lost: [] }), new RegExp('FATALITY \\(the killshot\\): ' + f.fatality.slice(0, 20).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))); }
   assert.doesNotMatch(detailText({ site: 'x', n: 0, m: 9, left: [], lost: [], page: '' }), /FATALITY/);
   const sd = JSON.parse((await import('node:fs')).readFileSync(new URL('../void-live-deploy/tower.sentdown.json', import.meta.url), 'utf8'));
-  assert.ok(sd.sites.length >= 1); for (const x of sd.sites) { assert.ok(x.site && x.why && x.next && /^\d{4}-\d\d-\d\d$/.test(x.at), x.site); assert.ok(!FLOORS.some((f) => f.site === x.site), x.site + ' was sent down, so it is not a floor that could be beaten'); }
+  assert.ok(Array.isArray(sd.sites)); for (const x of sd.sites) { assert.ok(x.site && x.why && x.next && /^\d{4}-\d\d-\d\d$/.test(x.at), x.site); assert.ok(!FLOORS.some((f) => f.site === x.site), x.site + ' was sent down, so it is not a floor that could be beaten'); }
 });
 test('a floor may name its fatality as `killshot` too: the same word for the same thing', async () => {
   const { fatalityOf } = await import('../void-live-deploy/lib/tower.js'), { detailText } = await import('../void-live-deploy/skills/tower.js');

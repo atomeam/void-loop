@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>How secure is my password? · Verse</title>
 <meta name="description" content="How long a password would take to guess, why, and what to change. Worked out on your device: the password is never sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Password strength · Verse">
+<meta property="og:description" content="How long a password would take to guess, why, and what to change. Worked out on your device: the password is never sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/password-strength/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/password-strength/ (owner, 2026-10-24: back to the easy sites; the data's easiest real tool was howsecureismypassword.net, which now points to another site, asks about cookies and loads analytics, tag-manager and widget scripts):
      one file and one small module, no third party, no cookie, nothing stored, the password only ever in this page */
@@ -65,5 +72,6 @@
     else m.textContent = 'Not in the known leaks (that does not make it strong).';
   });
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

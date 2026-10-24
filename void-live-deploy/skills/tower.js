@@ -5,7 +5,7 @@
  * verified better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a floor shows the
  * Verse skills on it, N of M aspects beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-37';
+import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-38';
 
 const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^which\s+sites\s+have\s+you\s+beaten$|^what\s+sites\s+have\s+you\s+beaten$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
 export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
@@ -42,7 +42,7 @@ export function towerHtml(t, esc) {
       + '<span class="mk-count">' + esc(f.n + ' of ' + f.m + ' aspects beaten') + '</span>' + hp + '</button>';
   }).join('');
   const done = t.floors.filter((f) => f.beaten).length;
-  return MK_CSS + '<div class="mk"><div class="mk-head">THE TOWER</div><div class="mk-score tower-line">' + esc(done + ' defeated · ' + (t.total - done) + ' to go · floor ' + Math.min(t.marker, t.total) + ' of ' + t.total) + '</div>'
+  return MK_CSS + '<div class="mk"><div class="mk-head">THE TOWER</div><div class="mk-score tower-line">' + esc(done + ' defeated · floor ' + Math.min(t.marker, t.total) + ' · no top: ' + (t.total - done) + ' open' + (t.frontier && t.frontier.ranked ? ' + ' + t.frontier.ranked + ' ranked' : '') + ', then every site') + '</div>'
     + '<div class="mk-stack tower-stack">' + rows + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A site falls only when every aspect is measured head to head or judged better by a person who used both; Verse never awards itself one. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
@@ -67,7 +67,7 @@ export function changes(prev, next) {
   return out;
 }
 const POLL_MS = () => (typeof window !== 'undefined' && window.__towerPollMs) || 30000;
-const load = async () => { const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]); return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}); };
+const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr); };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';

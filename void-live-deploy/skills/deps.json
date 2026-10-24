@@ -938,7 +938,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/v01d-fixes.js",

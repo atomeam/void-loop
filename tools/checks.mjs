@@ -431,6 +431,7 @@ for (const [name, file] of [
   ['arrange', 'arrange.test.mjs'],
   ['wiki-look', 'wiki-look.test.mjs'],
   ['colour', 'colour.test.mjs'],
+  ['tower-gate', 'tower-gate.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],

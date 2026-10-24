@@ -14,7 +14,8 @@ on:
         description: scan only the tool-named hosts of the whole top million (how many at most; empty for the plain scan of the top)
         default: ''
 permissions:
-  contents: read
+  contents: write # the tools scan commits the tower's frontier (void-live-deploy/tower.frontier.json)
+  actions: write # and starts the deploy (a GITHUB_TOKEN push starts no workflow)
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -29,7 +30,18 @@ jobs:
           TOP: ${{ inputs.top }}
           RANK: ${{ inputs.rank }}
           TOOLS: ${{ inputs.tools }}
+          FRONTIER: void-live-deploy/tower.frontier.json
         run: if [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; elif [ -n "$TOOLS" ]; then node tools/easiest-sites.mjs --tools "$TOOLS"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
+      - name: Commit the tower's frontier
+        if: inputs.tools != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.frontier.json; if git diff --cached --quiet; then exit 0; fi
+          git commit -q -m "Tower frontier: the real tool sites ranked from the top million, not yet floors"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

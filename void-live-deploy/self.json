@@ -483,8 +483,60 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T14:58:01Z",
+   "subject": "Cartoons from a real photo: thumb.wikimedia.org is Wikimedia too"
+  },
+  {
+   "at": "2026-10-24T14:56:44Z",
+   "subject": "Incident: the browser suite failed on 9ababa07 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:53:02Z",
+   "subject": "Incident: the browser suite failed on 8ddcd500 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:52:37Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-24T14:44:47Z",
+   "subject": "Colour codes: the colour floor, sent down from color-hex.com to hexcolor16.com, built as /color/"
+  },
+  {
+   "at": "2026-10-24T14:44:47Z",
+   "subject": "Cartoons from a real photo: the Commons address is read in every form it comes in, a photo lost on the way leaves the painting unkept"
+  },
+  {
+   "at": "2026-10-24T14:44:29Z",
+   "subject": "Incident: the browser suite failed on 59346d8c (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:43:33Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T14:42:03Z",
+   "subject": "Incident: the browser suite failed on a150e8f7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:41:22Z",
+   "subject": "Verse hardens itself: nothing to add this cycle"
+  },
+  {
+   "at": "2026-10-24T14:41:02Z",
+   "subject": "Incident: the browser suite failed on 9e7f9d17 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:35:01Z",
+   "subject": "Incident: the browser suite failed on 0e796119 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T14:33:11Z",
    "subject": "Cartoons: one painted after its look failed is shown but never kept, so the Dimebag guess is painted again from his photo"
+  },
+  {
+   "at": "2026-10-24T14:31:18Z",
+   "subject": "Verse hardens itself: nothing to add this cycle"
   },
   {
    "at": "2026-10-24T14:29:11Z",
@@ -509,58 +561,6 @@
   {
    "at": "2026-10-24T11:40:17Z",
    "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-24T11:40:10Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-24T11:39:50Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-24T11:37:17Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-10-24T11:20:52Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
-  },
-  {
-   "at": "2026-10-24T11:19:25Z",
-   "subject": "Incident: the browser suite failed on b05def79 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T11:10:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T06:59:55Z",
-   "subject": "Verse fixes its pwcheck skill: learn to handle \"how secure is my password\""
-  },
-  {
-   "at": "2026-10-24T06:06:58Z",
-   "subject": "Incident: the browser suite failed on d491f43f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T06:00:01Z",
-   "subject": "Verse hardens itself: 3 benchmark ask(s) for imgfit"
-  },
-  {
-   "at": "2026-10-24T05:27:18Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T05:13:05Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T05:10:33Z",
-   "subject": "Incident: the browser suite failed on ddc707fd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T05:01:42Z",
-   "subject": "Photo resizer: the third floor from the data (pancardresizer.com): one step instead of a three-step wizard behind ads"
   }
  ],
  "builders": {

@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gist · Verse</title>
 <meta name="description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Gists · Verse">
+<meta property="og:description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
+<meta property="og:url" content="https://a-to-mind.com/g/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/g/ (owner, 2026-10-24: "verse can eat github starting with the smallest"): GitHub's gist with no sign-in and no server */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --code: #fff;
@@ -144,5 +151,6 @@
   });
   draw();
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
