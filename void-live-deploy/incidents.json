@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T00:42:32.334Z",
+   "sha": "2a5e5383a2582a39674e931c69a823050df79364",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40045502948",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    "docs/MAP.md",
+    "tools/families.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/approval-core.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/eat.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json"
+   ]
+  },
+  {
    "at": "2026-10-24T00:41:08.015Z",
    "sha": "851239bf2e855b8df7b5129ae6bd9f43af83373f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40045550660",
@@ -598,33 +626,6 @@
    "touched": [
     "domains/void.agents.log.md",
     "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T01:06:33.896Z",
-   "sha": "bf53ccc17673cb4795515fefeb9e8b0d19e4c2d4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39880517903",
-   "suite": "browser suite on main",
-   "checks": [
-    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
-    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
-    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
-    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/families.mjs",
-    "tools/showcase.test.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/order/1795-quote",
-    "void-live-deploy/skills/showcase.js",
-    "void-live-deploy/skills/what.json"
    ]
   }
  ]
