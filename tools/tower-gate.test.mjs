@@ -130,3 +130,18 @@ test('a spin: a tap at the wheel\'s centre, the winner must be one of its own na
     assert.equal(await answer(b, at('/stuck'), null, true), null, 'no spin, no measurement');
   } finally { await b.close(); server.close(); }
 });
+
+test('an answer that belongs in a box: a box that never fills is not measured, a filled one is scored', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const page = (works) => '<textarea id=i style="width:500px;height:200px"></textarea><button id=e>ENCODE</button><textarea id=o style="width:500px;height:200px"></textarea><script>e.onclick=()=>{' + (works ? 'o.value=btoa(i.value)' : '') + '}</script>';
+  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + page(q.url === '/ok')); }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, e = probeFor('encoder');
+  try {
+    assert.equal(score(await answer(b, at('/ok'), e.ask.type, false, e.ask.box), e.truth).n, 1);
+    assert.equal(await answer(b, at('/stuck'), e.ask.type, false, e.ask.box), null, 'an empty output box is no answer, not a wrong one');
+  } finally { await b.close(); server.close(); }
+});

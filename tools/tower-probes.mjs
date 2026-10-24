@@ -110,12 +110,12 @@ export const PROBES = Object.freeze({
   },
   'unit converter': {
     site: 'https://www.unitconverters.net/', verse: null,
-    ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', verse: '/?q=' + encodeURIComponent('100 c to f') },
+    ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', box: true, verse: '/?q=' + encodeURIComponent('100 c to f') },
     truth: [['212 °F', /(?<![\d.])212(?:\.0+)?(?![\d.])\s*(?:°\s*F|degrees? fahrenheit|fahrenheit)?/i]],
   },
   encoder: {
     site: 'https://www.base64encode.org/', verse: null,
-    ask: { site: 'https://www.base64encode.org/', type: 'hello', verse: '/?q=' + encodeURIComponent('base64 encode hello') },
+    ask: { site: 'https://www.base64encode.org/', type: 'hello', box: true, verse: '/?q=' + encodeURIComponent('base64 encode hello') },
     truth: [['aGVsbG8=', /aGVsbG8=/]],
   },
   'base converter': {

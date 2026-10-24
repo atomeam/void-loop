@@ -131,7 +131,7 @@ export async function measure(browser, url, tag, ask, probe) {
 /** the aspects the gate can measure on a floor today: the measured ones on its checklist, its PARTS, and accuracy and completeness only with a probe. Pure. */
 /** a page's answer to a question in its address, or typed into its own box (`type`) as a person would; the text it shows and its boxes hold,
  *  or null when it could not be read. Exported for tools/tower-gate.test.mjs, which runs it against local pages. */
-export async function answer(b, url, type, spin = false) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+export async function answer(b, url, type, spin = false, inBox = false) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
       if (/[?&]q=/.test(url)) await p.waitForTimeout(3000); // Verse answering an ask in the address: the card lands a moment after load
       const read = () => p.evaluate(() => ({ text: document.body ? document.body.innerText : '', boxes: [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') }));
       if (spin) { // a wheel: spin it once (a tap at the centre of its largest canvas, where both wheels put their spin), then read what the spin
@@ -153,7 +153,7 @@ export async function answer(b, url, type, spin = false) { const ctx = await b.n
       const areas = p.locator('textarea:visible'), n = await areas.count(); let box = null, best = -1;
       for (let i = 0; i < n; i++) { const bb = await areas.nth(i).boundingBox().catch(() => null); const a = bb ? bb.width * bb.height : 0; if (a > best) { best = a; box = areas.nth(i); } }
       if (!box) box = p.locator('input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first();
-      const before = (await read()).text;
+      const before0 = await read(), before = before0.text;
       await box.fill(type, { timeout: 8000 }); if (best < 0) await box.press('Enter').catch(() => {}); // Enter in a text area would add a line to what is counted
       const go = p.locator('button:visible, input[type=submit]:visible, input[type=button]:visible').filter({ hasText: /convert|calculate|encode|count|submit|go\b/i }).first();
       if (await go.count()) await go.click({ timeout: 2000 }).catch(() => {}); else await p.locator('input[type=submit]:visible').first().click({ timeout: 2000 }).catch(() => {});
@@ -161,6 +161,9 @@ export async function answer(b, url, type, spin = false) { const ctx = await b.n
       // scored on what typing changed and what the boxes hold, never on text the page had before (unitconverters.net's definitions mention 212°F);
       // what was typed is taken out, so the question never counts as its own answer
       const r = await read(), had = new Set(before.split('\n').map((l) => l.trim()));
+      // a site whose answer goes in a box (an encoder's output): a box that never filled means the gate got no answer out of it, which is
+      // not measured, never a loss for the site (base64encode.org was once scored 0 that way)
+      if (inBox && r.boxes.split(type).join('').trim() === before0.boxes.trim()) return null;
       const changed = r.text.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
       return (changed + '\n' + r.boxes).split(type).join(' '); } catch (_) { return null; } finally { await ctx.close(); } }
 
@@ -206,7 +209,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
-    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin), st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin);
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin), st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin, probe.ask.box);
     v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }

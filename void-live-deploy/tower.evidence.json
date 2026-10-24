@@ -510,12 +510,11 @@
     "at": "2026-10-24T18:10:41.860Z"
    },
    "accuracy": {
-    "verdict": "better",
+    "verdict": "unverified",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse 1 of 1 checked facts right for the same question vs base64encode.org 0 of 1 checked facts right for the same question (Verse missed: none; site missed: aGVsbG8=)",
-    "at": "2026-10-24T18:10:41.860Z",
-    "of": 1
+    "best": null,
+    "evidence": "base64encode.org scored 0 of 1 on 2026-10-24, most likely because the gate got no answer out of its box (its output stayed empty), not because it encodes wrongly; taken back until the gate reads an answer from it",
+    "at": "2026-10-24T18:40:00Z"
    }
   },
   "colour": {
