@@ -28,6 +28,7 @@
   input, textarea { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; box-sizing: border-box; }
   .row { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; align-items: center; margin: 6px 0; font-size: 14px; }
   .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); white-space: nowrap; }
+  .row input[type=checkbox] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); } /* WCAG 2.5.8: a tap target at least 24 by 24 px */
   button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; }
   button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
   details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
@@ -62,7 +63,7 @@
     <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
     <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
   </details>
-  <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no network, no ads. <a href="/">Ask Verse anything</a></footer>
+  <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no ads, nothing sent. A public, checkable draw instead fetches one round from the drand beacon (the only network use). <a href="/">Ask Verse anything</a></footer>
 </main>
 <script>
   // an unbiased integer in [0, range) from 32-bit secure randoms: draws past the last whole multiple of the range are thrown away
