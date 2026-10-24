@@ -51,10 +51,12 @@
     <label><input id="uniq" type="checkbox"> no repeats</label>
     <label><input id="sort" type="checkbox"> sorted</label>
     <label>Base <select id="base"><option value="10">decimal</option><option value="2">binary</option><option value="8">octal</option><option value="16">hex</option></select></label>
+    <label title="Numbers from drand, a public randomness beacon: anyone with the link re-derives the same numbers from the same public round"><input id="beacon" type="checkbox"> public, checkable draw</label>
     <label>Columns <select id="cols"><option value="0">in a line</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
   </div>
   <div class="row"><button id="go" type="button">New number</button><button id="copy" class="quiet" type="button">Copy</button><button id="link" class="quiet" type="button">Copy link</button></div>
   <div id="hist"></div>
+  <div id="proof" style="font-size:13px;color:var(--soft);text-align:center;margin-top:6px;overflow-wrap:anywhere"></div>
   <details id="listbox"><summary>Pick from a list or shuffle it</summary>
     <p style="font-size:13px;color:var(--soft)">One item a line. Pick one, or shuffle them all.</p>
     <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
@@ -69,13 +71,24 @@
   function between(a, b) { const span = b - a + 1; if (span <= 4294967296) return a + below(span); const hi = below(Math.ceil(span / 4294967296)); return a + Math.min(span - 1, hi * 4294967296 + below(4294967296)); }
   const $ = (id) => document.getElementById(id), out = $('out'), note = $('note'), hist = [];
   const num = (id, d) => { const v = Math.trunc(Number($(id).value)); return Number.isFinite(v) ? v : d; };
-  function draw() {
+  // a public, checkable draw (lib/beacon.js): the numbers come from a drand round, and the link carries the round so anyone re-derives them
+  let wantRound = 0, busy = false;
+  async function beaconDraw(a, b, n, uniq) {
+    if (busy) return; busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
+    try {
+      const B = await import('/lib/beacon.js'), r = await B.fetchRound(wantRound); wantRound = 0;
+      const vals = await B.numbers(r.randomness, a, b, n, uniq); busy = false; return { vals, r, url: B.roundUrl(r.round) };
+    } catch (e) { busy = false; $('proof').textContent = 'The public beacon did not answer, so nothing was drawn. Untick "public, checkable draw" for this device\'s own random numbers.'; return null; }
+  }
+  async function draw() {
     let a = num('min', 1), b = num('max', 100); if (a > b) [a, b] = [b, a];
     const span = b - a + 1, uniq = $('uniq').checked; let n = Math.min(10000, Math.max(1, num('n', 1)));
     if (uniq && n > span) { n = span; note.textContent = 'Only ' + span.toLocaleString() + ' different numbers fit between ' + a + ' and ' + b + '.'; } else note.textContent = '';
-    let vals;
-    if (uniq) { const seen = new Set(); vals = []; if (n > span / 2 && span <= 200000) { const all = Array.from({ length: span }, (_, i) => a + i); for (let i = all.length - 1; i > 0; i--) { const j = below(i + 1); [all[i], all[j]] = [all[j], all[i]]; } vals = all.slice(0, n); } else while (vals.length < n) { const v = between(a, b); if (!seen.has(v)) { seen.add(v); vals.push(v); } } }
+    let vals, pub = null;
+    if ($('beacon').checked) { if (span > 4294967296) { note.textContent = 'A public draw takes a range of up to 4,294,967,296 numbers.'; return; } pub = await beaconDraw(a, b, n, uniq); if (!pub) return; vals = pub.vals; }
+    else if (uniq) { const seen = new Set(); vals = []; if (n > span / 2 && span <= 200000) { const all = Array.from({ length: span }, (_, i) => a + i); for (let i = all.length - 1; i > 0; i--) { const j = below(i + 1); [all[i], all[j]] = [all[j], all[i]]; } vals = all.slice(0, n); } else while (vals.length < n) { const v = between(a, b); if (!seen.has(v)) { seen.add(v); vals.push(v); } } }
     else vals = Array.from({ length: n }, () => between(a, b));
+    $('proof').innerHTML = ''; if (pub) { const l = document.createElement('a'); l.href = pub.url; l.textContent = 'drand round ' + pub.r.round; l.target = '_blank'; l.rel = 'noopener'; $('proof').append('From the public beacon, ', l, ': anyone opening this link gets these same numbers, re-derived from that round (SHA-256 of "randomness:index:try").'); }
     if ($('sort').checked) vals.sort((x, y) => x - y);
     // the base the numbers are written in (random.org's integer tool offers binary, octal, decimal and hex) and, for many, how many a row
     const base = +$('base').value || 10, cols = +$('cols').value || 0, word = (v) => (base === 10 ? v.toLocaleString('en') : (v < 0 ? '-' : '') + Math.abs(v).toString(base).toUpperCase());
@@ -84,7 +97,7 @@
     $('go').textContent = n > 1 ? 'New numbers' : 'New number';
     $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + a + ' to ' + b + (uniq ? ', no repeats' : '') : 'Random number, ' + a + ' to ' + b;
     if (n === 1) { hist.unshift(vals[0]); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
-    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols);
+    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols); if (pub) q.set('round', pub.r.round);
     history.replaceState(null, '', '?' + q);
   }
   function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
@@ -94,12 +107,13 @@
   $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
   $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
   $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
-  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw;
+  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw; $('beacon').onchange = draw;
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
   // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
   const p = new URLSearchParams(location.search);
   for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
   $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
+  if (/^\d{1,12}$/.test(p.get('round') || '')) { $('beacon').checked = true; wantRound = +p.get('round'); } // a shared public draw: the same round, the same numbers
   if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
   draw();
 </script>

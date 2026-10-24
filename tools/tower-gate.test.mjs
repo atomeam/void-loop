@@ -31,7 +31,8 @@ test('is it: the right answer depends on the day', () => {
 });
 test('a probe exists only for a floor on the tower, and floors with no fair question leave accuracy unverified', () => {
   for (const id of Object.keys(PROBES)) assert.ok(FLOORS.some((f) => f.id === id), id);
-  for (const id of ['coin flip', 'random number', 'base converter']) assert.equal(probeFor(id).truth, null, id);
+  for (const id of ['coin flip', 'base converter']) assert.equal(probeFor(id).truth, null, id);
+  assert.ok(probeFor('random number').ask && probeFor('random number').truth.length === 1, 'random number: the same question at addresses made for it');
   assert.equal(probeFor('weather'), null);
   for (const f of FLOORS) assert.ok(aspectsOf(f).includes('offline') && aspectsOf(f).includes('sharing'), f.id);
 });
