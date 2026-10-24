@@ -2,6 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T16:29:18.391Z",
+   "sha": "bd280a8cfa88079dba3d1af193bfa0d41228375c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40111117988",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml"
+   ]
+  },
+  {
    "at": "2026-10-24T16:23:08.022Z",
    "sha": "9d659fd179c8b5083199d65571f4ecead8613706",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40110688967",
@@ -630,34 +644,6 @@
     "void-live-deploy/functions/api/card-art.js",
     "void-live-deploy/lib/art-rules.js",
     "void-live-deploy/lib/wiki-look.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:33:37.140Z",
-   "sha": "a15502f14cd8ebd77c1d08d98842cd79be61e0c5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40062243406",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/tower-gate.yml",
-    "docs/MAP.md",
-    "docs/playbooks/site-by-site.md",
-    "tools/families.mjs",
-    "tools/pwcheck.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/pwcheck.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/password-strength/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1805-pwcheck"
    ]
   }
  ]
