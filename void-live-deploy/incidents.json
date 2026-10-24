@@ -2,6 +2,40 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T17:00:07.999Z",
+   "sha": "388711630971f7a89ab2d98829ccf8bda12d8cde",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40111803704",
+   "suite": "browser suite on main",
+   "checks": [
+    "built-in image: \"show this image <url>\" puts the picture up, a bare image url replaces it (one card), \"make the image red\" edges it red, it comes back after a reload, a picture that will not load says so on the card, and \"remove the image\" takes it away (twice is harmless)",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "image instant photo look: the picture sits in an off-white instant-photo frame with a deep bottom strip (at least 3x the side), the caption you write sits under the picture in the felt-tip hand in dark ink and is kept, each photo has its own slight tilt that survives a reload, and \"make the image blue\" edges it blue",
+    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/showcase.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/guide.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json"
+   ]
+  },
+  {
    "at": "2026-10-24T16:34:12.113Z",
    "sha": "ea8a127b9d8f66c3c75728fefd98b6a79baa9975",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40111474742",
@@ -612,34 +646,6 @@
     "void-live-deploy/incidents.json",
     "void-live-deploy/lib/art-rules.js",
     "void-live-deploy/lib/baseconv.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:48:31.755Z",
-   "sha": "03c5cde16fd4b773897c8b32cce16abb786d950e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40063227358",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/tower-gate.yml",
-    "docs/MAP.md",
-    "tools/baseconv.test.mjs",
-    "tools/card-art-route.test.mjs",
-    "tools/families.mjs",
-    "tools/skill-matchers.test.mjs",
-    "tools/test_void.mjs",
-    "tools/wiki-look.test.mjs",
-    "void-live-deploy/base-converter/index.html",
-    "void-live-deploy/lib/art-rules.js",
-    "void-live-deploy/lib/baseconv.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/lib/wiki-look.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/baseconv.js"
    ]
   }
  ]
