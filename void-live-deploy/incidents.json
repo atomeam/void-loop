@@ -2,6 +2,81 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T02:10:42.567Z",
+   "sha": "1f48ccdb815dd083fe400ed1ca69b47211c3159f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40052451170",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/void.growth.json",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/gist.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/conquered/index.html",
+    "void-live-deploy/g/index.html",
+    "void-live-deploy/lib/gist.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json"
+   ]
+  },
+  {
+   "at": "2026-10-24T02:06:30.249Z",
+   "sha": "6918856d236c78cdc713d0b3a882dc690f3261eb",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40052145510",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/easiest-sites.yml",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/easiest-sites.mjs",
+    "tools/easiest-sites.test.mjs",
+    "tools/flakes.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json"
+   ]
+  },
+  {
+   "at": "2026-10-24T02:04:27.074Z",
+   "sha": "0a9af46ff922271dab91d8c4277576c1e7edcaf3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40051995290",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/flakes.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json",
+    ".github/workflows/easiest-sites.yml",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/easiest-sites.mjs",
+    "tools/easiest-sites.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-24T01:56:40.049Z",
    "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40051422704",
@@ -535,82 +610,6 @@
     "void-live-deploy/_headers",
     "void-live-deploy/podcast/cover.jpg",
     "void-live-deploy/podcast/episodes.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:35:49.588Z",
-   "sha": "59279e025daa7c2fe98a3fa6367c386d18965d84",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40033732857",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/growth-inbox.md",
-    "tools/families.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/fact.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1790-fact",
-    "void-live-deploy/skills/what.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:34:21.645Z",
-   "sha": "485feb26a88f651c81329673dd36d5efdfd75e1a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40033474794",
-   "suite": "browser suite on main",
-   "checks": [
-    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
-    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
-    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
-    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:16:32.669Z",
-   "sha": "86794bb41882b25453d4a79afcd3976907d845e0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40030671619",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/coin.test.mjs",
-    "tools/families.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/coin.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0011-coin",
-    "void-live-deploy/skills/what.json",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
