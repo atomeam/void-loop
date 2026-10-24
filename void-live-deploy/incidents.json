@@ -2,6 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T03:03:28.581Z",
+   "sha": "99cd4ea77fe406048a973c9c975d8672e22a8456",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40056134737",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/lib/art-rules.js"
+   ]
+  },
+  {
    "at": "2026-10-24T02:59:14.807Z",
    "sha": "9acd513ae88a85d6cff7473ea593b200f4726f33",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40055804496",
@@ -599,21 +616,6 @@
    ],
    "touched": [
     "void-live-deploy/skills/tower.js"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:32:59.097Z",
-   "sha": "ba8b2ef1f99f5274b1a4fcf83882b3b9163b2092",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40039356780",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/skills/util.js",
-    "void-live-deploy/tower.evidence.json"
    ]
   }
  ]
