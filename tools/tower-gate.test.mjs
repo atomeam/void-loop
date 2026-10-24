@@ -101,3 +101,13 @@ test('a typed question: the From box and its Convert button, the largest text ar
     assert.deepEqual(score(await answer(b, at('/wc'), wc.ask.type), wc.truth).n, 2, '13 words and 63 characters... read live from the big text area');
   } finally { await b.close(); server.close(); }
 });
+
+test('made-up people are read the same way from randomuser.me\'s JSON and Verse\'s, and checked for holding together', async () => {
+  const { peopleIn, ageOn, probeFor: pf, score: sc } = await import('./tower-probes.mjs');
+  const nested = JSON.stringify({ results: [{ email: 'a@example.com', phone: '(212) 555-0142', dob: { date: '1990-06-01T00:00:00Z', age: ageOn('1990-06-01') }, location: { country: 'United States' } }] });
+  const flat = 'Copy\n' + JSON.stringify({ results: [{ email: 'a@example.com', phone: '(212) 555-0142', dob: '1990-06-01', age: ageOn('1990-06-01'), country: 'United States' }] }, null, 2) + '\nmore page text {';
+  assert.deepEqual(peopleIn(nested), peopleIn(flat));
+  const t = pf('random user').truth; assert.equal(sc(flat, t).missing.join(), 'five people, as asked', 'one person: every check but the count holds');
+  assert.equal(sc(flat.replace(/"age": \d+/, '"age": 3'), t).missing.includes('every age right for its birthday'), true);
+  assert.deepEqual(peopleIn('no json here'), []);
+});

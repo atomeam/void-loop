@@ -12,6 +12,23 @@ const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() =
 const exact = (digits) => new RegExp('(?<![0-9a-z])(?:0[\\s,_]?)*' + [...String(digits)].join('[\\s,_]?') + '(?![0-9a-z])', 'i'); // leading zeros allowed: 0001 0010 ... is the same number
 const HUGE = 0x123456789abcdef0123456789abcdefn;
 const WC_TEXT = 'The quick brown fox jumps over the lazy dog. It was not amused!'; // 13 words, 63 characters, 2 sentences
+
+// the people in a page's JSON ({"results": [...]}, as randomuser.me's API and Verse's page both write it), each read the same way whatever its
+// shape: randomuser.me nests dob and location, Verse's rows are flat. [] when the page holds no such JSON. Pure.
+export function peopleIn(text) {
+  const t = String(text || ''), at = t.indexOf('"results"'); if (at < 0) return [];
+  const start = t.lastIndexOf('{', at); if (start < 0) return [];
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < t.length; i++) { const c = t[i];
+    if (inStr) { if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true; else if (c === '{') depth++; else if (c === '}' && --depth === 0) {
+      try { const j = JSON.parse(t.slice(start, i + 1)); return (Array.isArray(j.results) ? j.results : []).map((p) => ({ country: p.country || (p.location && p.location.country) || '', dob: String(typeof p.dob === 'string' ? p.dob : (p.dob && p.dob.date) || '').slice(0, 10), age: typeof p.age === 'number' ? p.age : p.dob && p.dob.age, email: p.email, phone: p.phone })); } catch (_) { return []; } } }
+  return [];
+}
+/** whole years from an ISO birthday to `now` (UTC). Pure. */
+export const ageOn = (dob, now = new Date()) => { const b = new Date(String(dob).slice(0, 10) + 'T00:00:00Z'); if (isNaN(b)) return NaN; let a = now.getUTCFullYear() - b.getUTCFullYear(); if (now < new Date(Date.UTC(now.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate()))) a--; return a; };
+const everyone = (f) => (t) => { const ps = peopleIn(t); return ps.length > 0 && ps.every(f); };
+
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -64,7 +81,13 @@ export const PROBES = Object.freeze({
   },
   'random user': {
     site: 'https://randomuser.me/', verse: '/random-user/',
-    truth: null, // made-up people have no right answer to check
+    // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
+    // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
+    // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
+    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random-user/?n=5&nat=us&seed=verse&fmt=json' },
+    truth: [['five people, as asked', (t) => peopleIn(t).length === 5], ['all from the United States, as asked', everyone((p) => p.country === 'United States')],
+      ['every age right for its birthday', everyone((p) => Number.isFinite(p.age) && p.age === ageOn(p.dob))], ['every email well formed', everyone((p) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(p.email)))],
+      ['every phone in the range reserved for fiction', everyone((p) => /555-01\d\d$/.test(String(p.phone)))]],
     facts: [['names', /\bnames?\b/i], ['emails', /\bemails?\b|@/i], ['phones', /\bphones?\b/i], ['addresses', /\baddress|\bstreet\b|\bcity\b/i], ['birthdays', /\bbirthday|\bdob\b|date of birth/i],
       ['passwords', /\bpasswords?\b/i], ['pictures', /\bpictures?\b|\bphotos?\b|\bavatars?\b/i], ['gender', /\bgender\b/i], ['nationality', /\bnationalit|\bcountr/i], ['a seed', /\bseed\b/i],
       ['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]],
@@ -123,6 +146,6 @@ export function probeFor(id) {
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {
   const t = String(text || ''), has = [], missing = [];
-  for (const [label, re] of items || []) (re.test(t) ? has : missing).push(label);
+  for (const [label, re] of items || []) { let ok = false; try { ok = typeof re === 'function' ? !!re(t) : re.test(t); } catch (_) { ok = false; } (ok ? has : missing).push(label); } // a check is a pattern, or a function of the page's text
   return { n: has.length, of: has.length + missing.length, has, missing };
 }
