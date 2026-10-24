@@ -6783,5 +6783,7 @@
   {"ask": "tilt arena", "want": "skill:tilt-mode"},
   {"ask": "tell me a quote", "want": "skill:quote"},
   {"ask": "pluck the membrane", "want": "skill:resonant-membrane"},
-  {"ask": "membrane mind", "want": "skill:resonant-membrane"}
+  {"ask": "membrane mind", "want": "skill:resonant-membrane"},
+  {"ask": "what's similar to swarm mind", "want": "skill:similar"},
+  {"ask": "what is similar to the mind field", "want": "skill:similar"}
 ]
