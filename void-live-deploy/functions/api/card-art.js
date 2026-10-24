@@ -85,11 +85,11 @@ export async function lookFor(env, key) {
   let text = '';
   try {
     const r = await Promise.race([
-      env.AI.run(models('merge'), { messages: [{ role: 'system', content: LOOK_SYSTEM }, { role: 'user', content: lookPrompt(key) }], max_tokens: 400 }),
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: LOOK_SYSTEM }, { role: 'user', content: lookPrompt(key) }], max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }), // a thinking model spent the 400 tokens thinking and said nothing (live, 2026-10-24: 'empty ... choices')
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
     ]);
     text = scrubOut(redact(String(pick(r))), env);
-    if (!text.trim()) return { look: '', why: 'empty ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) : typeof r) };
+    if (!text.trim()) return { look: '', why: 'empty ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) + (r.choices && r.choices[0] ? ' finish ' + String(r.choices[0].finish_reason || '').slice(0, 20) : '') : typeof r) };
   } catch (e) { return { look: '', why: 'error ' + String(e && e.message || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 80) }; }
   const parts = lookParts(text), name = spellingOf(String(key).replace(/^cartoon\d? /, ''), parts.name), look = lookOf(parts.text, isSecret), said = text.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
   return look ? { look, name, why: '' } : { look: '', name, why: (/\bunknown\b/i.test(text) ? 'unknown' : 'refused') + ': ' + said };
