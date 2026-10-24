@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T06:06:57.967Z",
+   "sha": "d491f43f17fb0e6ed9864c650753723a56d547f7",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40068326979",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/tower-gate.yml",
+    "docs/MAP.md",
+    "tools/families.mjs",
+    "tools/imgfit.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/imgfit.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/resize-image/index.html",
+    "void-live-deploy/self.json"
+   ]
+  },
+  {
    "at": "2026-10-24T05:10:32.978Z",
    "sha": "ddc707fd703a9c1b8a8a4016322a03838118958e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40064648716",
@@ -577,21 +605,6 @@
     "tools/test_void.mjs",
     "void-live-deploy/g/index.html",
     "void-live-deploy/lib/gist.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:24:11.860Z",
-   "sha": "6a9f889c56868aa2e5b706110342ff5a0fc06906",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40053420539",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".github/workflows/easiest-sites.yml",
-    "tools/easiest-sites.mjs"
    ]
   }
  ]
