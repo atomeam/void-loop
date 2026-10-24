@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       floor:
-        description: a floor id (e.g. "colour codes"), or "all" for every floor; empty measures the current fight
+        description: a floor id (e.g. "colour codes"), several separated by commas, or "all" for every floor; empty measures the current fight
         default: ''
   schedule:
     - cron: '17 6 * * *'
@@ -55,7 +55,7 @@ jobs:
           if [ "$EVENT" = "schedule" ] || [ "$FLOOR" = "all" ]; then
             node -e "import('./void-live-deploy/lib/tower.js').then((m) => m.FLOORS.forEach((f) => console.log(f.id)))" > floors.txt
           elif [ -n "$FLOOR" ]; then
-            printf '%s\n' "$FLOOR" > floors.txt
+            printf '%s\n' "$FLOOR" | tr ',' '\n' > floors.txt # one floor, or several separated by commas
           else
             node tools/tower-gate.mjs --which $(git diff --name-only HEAD~1 HEAD 2>/dev/null) > floors.txt
           fi
