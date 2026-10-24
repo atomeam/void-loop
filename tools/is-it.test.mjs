@@ -39,7 +39,7 @@ test('questions that are not about the day are left alone', () => {
 test('/is-it/<day>: a page that answers with scripts off, in the browser\'s language, and a daily feed', async () => {
   const get = (path, lang = 'fr-CA,fr;q=0.9') => onRequestGet({ request: new Request('https://a-to-mind.com' + path, { headers: { 'accept-language': lang } }), params: { what: new URL('https://x' + path).pathname.split('/').pop() } });
   const page = await (await get('/is-it/christmas')).text();
-  assert.match(page, /<h1 id="w">(?:NON|OUI)<\/h1>/); assert.match(page, /<html lang="fr">/);
+  assert.match(page, /<h1 id="w" style="--n:3">(?:NON|OUI)<\/h1>/); assert.match(page, /og:title" content="Is it Christmas\? (?:NON|OUI)"/); assert.match(page, /id="s">Share</); assert.match(page, /<html lang="fr">/);
   const rss = await get('/is-it/christmas.rss', 'en'); assert.match(rss.headers.get('content-type'), /rss/); assert.match(await rss.text(), /<item><title>(?:NO|YES)<\/title>/);
   assert.equal((await get('/is-it/narnia')).status, 404);
   assert.equal(wallClock(new Date('2026-12-24T23:30:00Z'), 'Asia/Tokyo').getDate(), 25, 'Tokyo is already on the 25th');

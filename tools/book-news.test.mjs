@@ -86,3 +86,9 @@ test('an entry with no try of its own gets one from tryOf (the showcase), its ow
   assert.deepEqual(newsEntries(L, 10).map((e) => e.try), ['', '', 'make a clock'], 'no tryOf, as before');
   assert.deepEqual(newsEntries(L, 10, () => { throw new Error('x'); }).map((e) => e.try), ['', '', 'make a clock']);
 });
+test('an entry that added nothing is not news, and the same words twice in a day are one line', async () => {
+  const { newsEntries } = await import('../void-live-deploy/lib/book-news.js');
+  const L = [1, 2, 3].map((i) => ({ at: '2026-10-24T0' + i + ':00:00Z', kind: 'finding', what: 'Verse looked and found nothing to add this cycle. Candidates tried: none.' }))
+    .concat([{ at: '2026-10-24T05:00:00Z', kind: 'build', what: 'Colour codes on one page.' }, { at: '2026-10-24T06:00:00Z', kind: 'build', what: 'Colour codes on one page.' }]);
+  const n = newsEntries(L); assert.equal(n.length, 1); assert.equal(n[0].line, 'Colour codes on one page.');
+});

@@ -24,11 +24,15 @@ export function plainOf(what) {
 }
 
 /** the ledger entries worth a line: the newest NEWS_MAX with a date and some text, newest first, as { at, day, kind, line, try }. Pure. */
+// an entry that says nothing was added is not news (owner, 2026-10-24, on six of them in one day: "why is this even happening"); the
+// ledger keeps them (append-only), the book skips them, and grow-self.yml no longer writes them
+export const NOTHING = /\b(?:found nothing to add|nothing to add this cycle|nothing added)\b/i;
 export function newsEntries(ledger, max = NEWS_MAX, tryOf = null) { // tryOf(entry): an ask for an entry with no `try` of its own (skills/showcase.js playable)
-  const out = [];
+  const out = [], seen = new Set();
   for (const e of Array.isArray(ledger) ? ledger : []) {
     if (!e || typeof e.at !== 'string' || !/^\d{4}-\d\d-\d\d/.test(e.at)) continue;
-    const line = e.show ? cut(e.show) : plainOf(e.what); if (!line) continue;
+    const line = e.show ? cut(e.show) : plainOf(e.what); if (!line || NOTHING.test(line)) continue;
+    const once = e.at.slice(0, 10) + '|' + line; if (seen.has(once)) continue; seen.add(once); // the same words twice in a day are one line
     let t = e.try || ''; if (!t && tryOf) { try { t = tryOf(e) || ''; } catch (_) { t = ''; } }
     out.push({ at: e.at, day: e.at.slice(0, 10), kind: String(e.kind || 'grow'), line, try: t ? cut(t, 90) : '' });
   }
