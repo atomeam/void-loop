@@ -475,13 +475,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-24T03:34:16Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-24T16:03:22Z",
+   "subject": "Tower gate: colour codes measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:00:16Z",
+   "subject": "Incident: the browser suite failed on 3dfde9ca (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:58:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-24T15:58:49Z",
    "subject": "Tower gate: measure the current fight after a deploy, every floor once a day"
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T15:26:53Z",
    "subject": "Incident: the browser suite failed on dc7561e2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:25:10Z",
-   "subject": "Tower frontier: an accented casino and a consent screen are not tools"
-  },
-  {
-   "at": "2026-10-24T15:24:16Z",
-   "subject": "Incident: the browser suite failed on f537b00f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:23:48Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
   }
  ],
  "builders": {

@@ -36,6 +36,8 @@ export const FLOORS = [
   // the wheel picker (owner, 2026-10-24: "find the site to conquer and get to work now"): the frontier's wheelofgold.com is a login-walled
   // spin-to-win, not a tool, so the floor fights the category's best, wheelofnames.com
   { id: 'wheel', site: 'wheelofnames.com', url: 'https://wheelofnames.com/', ask: 'spin the wheel', page: '/wheel/', label: 'Wheel picker', glyph: '◔', fatality: 'the winner drawn fairly with cryptographic random numbers before the wheel turns, weights like Pizza*3 typed inline, and an answer straight from the ask', extra: ['entries list', 'remove the winner', 'weights'] },
+  // from the frontier (owner, 2026-10-24): randomuser.me (Tranco 66,893), made-up people for testing
+  { id: 'random user', site: 'randomuser.me', url: 'https://randomuser.me/', ask: 'random user generator', page: '/random-user/', label: 'Made-up people', glyph: '☺', fatality: 'SQL inserts, a seed that always gives the same people, and phone numbers in ranges reserved for fiction, all on the device with no photo of a real face', extra: ['nationalities', 'output formats', 'seed'] },
   { id: 'time zones', site: 'timeanddate.com', url: 'https://www.timeanddate.com/', ask: 'time in tokyo', label: 'Time zones', glyph: '◴', extra: ['world time', 'meeting planner'] },
   // colour: color-hex.com could not be timed by the old gate (it never went quiet on the network); that was the gate's fault, not a win, so the
   // gate was fixed and the site is the opponent again (owner, 2026-10-24: "never swap a target site down to an easier site ... beat both sites")

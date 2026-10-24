@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-24",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 1,
+  "experiment": 2,
   "tested": 25,
   "checked": 14,
   "proven": 293
@@ -24,7 +24,7 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 10,
     "checked": 1,
     "proven": 35
@@ -46,6 +46,14 @@
      "why": "2 browser-suite mentions",
      "last_tested": "2026-10-24",
      "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "fakeuser",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-24"
     },
     {
      "name": "forge",
