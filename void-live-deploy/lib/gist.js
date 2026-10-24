@@ -77,3 +77,47 @@ export function tokens(line, lang) {
   push('', line.slice(last));
   return out.length ? out : [['', line]];
 }
+
+// GitHub's next piece: one file, read straight from GitHub's public raw address (raw.githubusercontent.com answers any page), coloured and
+// numbered here. A github.com file link ("…/blob/main/src/a.js#L10-L20") or a raw link becomes { owner, repo, rest, name, raw, page, lines }.
+const PART = /^[A-Za-z0-9_.-]{1,100}$/, REST = /^[A-Za-z0-9._~+@%-]+(?:\/[A-Za-z0-9._~+@%-]+){1,40}$/;
+/** the GitHub file a link names, or null. `rest` is the branch or commit then the path, as GitHub's own raw address takes it. Pure. */
+export function ghFileOf(text) {
+  const t = String(text == null ? '' : text).trim().slice(0, 500);
+  const m = /(?:^|\s)(?:https?:\/\/)?(?:www\.)?github\.com\/([^\s/]+)\/([^\s/]+)\/blob\/([^\s#?]+)(?:\?[^\s#]*)?(?:#L(\d+)(?:-L(\d+))?)?/i.exec(t)
+    || /(?:^|\s)(?:https?:\/\/)?raw\.githubusercontent\.com\/([^\s/]+)\/([^\s/]+)\/([^\s#?]+)(?:\?[^\s#]*)?(?:#L(\d+)(?:-L(\d+))?)?/i.exec(t);
+  if (!m) return null;
+  const [, owner, repo, rest] = m;
+  if (!PART.test(owner) || !PART.test(repo) || /^\.+$/.test(owner) || /^\.+$/.test(repo) || !REST.test(rest) || /(?:^|\/)\.\.?(?:\/|$)/.test(rest)) return null;
+  const a = m[4] ? Math.min(+m[4], 200000) : 0, b = m[5] ? Math.min(+m[5], 200000) : a;
+  return { owner, repo, rest, name: cleanName(decodeURIComponent(rest.split('/').pop())), raw: 'https://raw.githubusercontent.com/' + owner + '/' + repo + '/' + rest,
+    page: 'https://github.com/' + owner + '/' + repo + '/blob/' + rest, lines: a ? [Math.min(a, b), Math.max(a, b)] : null };
+}
+/** the address of Verse's own page for a GitHub file. Pure. */
+export const ghFilePage = (f) => '/g/?gh=' + encodeURIComponent(f.owner + '/' + f.repo + '/' + f.rest) + (f.lines ? '&L=' + f.lines[0] + '-' + f.lines[1] : '');
+/** a GitHub file's text, at most 400 KB, or { error } in plain words. */
+export async function ghFileText(f, get = fetch) {
+  try {
+    const r = await get(f.raw, { redirect: 'follow' });
+    if (r.status === 404) return { error: 'GitHub has no public file there (a private repo, a wrong branch or a wrong path).' };
+    if (!r.ok) return { error: 'GitHub did not send the file just now (' + r.status + ').' };
+    const bytes = await readCapped(r.body, OUT_CAP).catch(() => null);
+    if (!bytes) return { error: 'That file is over 400 KB: open it on GitHub.' };
+    const text = new TextDecoder().decode(bytes);
+    if (/\u0000/.test(text.slice(0, 8000))) return { error: 'That is not a text file (an image or a program): open it on GitHub.' };
+    return { text };
+  } catch (_) { return { error: 'GitHub could not be reached just now.' }; }
+}
+/** draw code into an element: line numbers, colouring, the given lines lit; only text nodes, never markup. */
+export function renderCode(box, name, text, lit) {
+  const doc = box.ownerDocument, el = (tag, cls, t) => { const e = doc.createElement(tag); if (cls) e.className = cls; if (t != null) e.textContent = t; return e; };
+  const pre = el('pre', 'gist-pre'), lang = langOf(name), lines = String(text).replace(/\n$/, '').split('\n'), nums = el('span', 'ln'), body = el('code');
+  nums.textContent = lines.map((_, i) => i + 1).join('\n');
+  lines.forEach((l, i) => {
+    const row = el('span', lit && i + 1 >= lit[0] && i + 1 <= lit[1] ? 'lit' : null); if (row.className) row.dataset.line = String(i + 1);
+    for (const [k, t] of tokens(l, lang)) row.appendChild(k ? el('span', k, t) : doc.createTextNode(t));
+    body.appendChild(row); if (i < lines.length - 1) body.appendChild(doc.createTextNode('\n'));
+  });
+  pre.append(nums, body); box.textContent = ''; box.appendChild(pre);
+  return pre;
+}

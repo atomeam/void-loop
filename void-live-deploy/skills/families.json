@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 23,
-  "checked": 16,
-  "proven": 288
+  "tested": 24,
+  "checked": 15,
+  "proven": 289
  },
  "families": [
   {
@@ -1351,21 +1351,21 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 0,
-    "checked": 2,
-    "proven": 28
+    "tested": 1,
+    "checked": 1,
+    "proven": 29
    },
    "sources": {
-    "read": 22,
-    "named": 20,
-    "second": 11,
+    "read": 23,
+    "named": 21,
+    "second": 12,
     "answered": 0,
-    "points": 1.41,
+    "points": 1.43,
     "one_live_from_proven": [
-     "quote",
+     "gh-file",
      "fact"
     ],
-    "words": "Source reliability: 22 skills answer from outside sources; 20 name the source on the card, 11 have a second source, 0 have a kept live answer from it (1.41 of 3 on average). One kept live answer each would make 2 more proven: quote, fact."
+    "words": "Source reliability: 23 skills answer from outside sources; 21 name the source on the card, 12 have a second source, 0 have a kept live answer from it (1.43 of 3 on average). One kept live answer each would make 2 more proven: gh-file, fact."
    },
    "skills": [
     {
@@ -1385,6 +1385,25 @@
       "answered": false,
       "points": 1,
       "words": "source 1 of 3: github.com; named on the card; no second source; no kept live answer yet"
+     }
+    },
+    {
+     "name": "gh-file",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests",
+     "source": {
+      "sites": [
+       "github.com",
+       "githubusercontent.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: github.com, githubusercontent.com; named on the card; a second source; no kept live answer yet. One kept live answer from github.com would make it proven"
      }
     },
     {
@@ -1616,8 +1635,8 @@
     },
     {
      "name": "quote",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -1631,8 +1650,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: quotable.io; named on the card; no second source; no kept live answer yet. One kept live answer from quotable.io would make it proven"
+      "words": "source 1 of 3: quotable.io; named on the card; no second source; no kept live answer yet"
      }
     },
     {

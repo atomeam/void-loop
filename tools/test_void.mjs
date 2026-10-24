@@ -705,6 +705,21 @@ try {
       JSON.stringify({ isLink, seen, second, editable, urlAfter, hostileNote, errors: G.errors }));
     await G.ctx.close();
   }
+  // one GitHub file in Verse (owner, 2026-10-24: Verse eats GitHub from the smallest piece): GitHub's raw address is stubbed
+  if (want("gh-file: a pasted github file link shows the file coloured and numbered with the linked lines lit; a plain repo link stays the repo card")) {
+    const F = await fresh(); const raws = [];
+    await F.ctx.route(/raw\.githubusercontent\.com/, (r) => { raws.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: Array.from({ length: 40 }, (_, i) => 'const line' + (i + 1) + ' = "v"; // note ' + (i + 1)).join('\n') + '\n' }); });
+    await F.ctx.route(/\/api\/repo/, (r) => r.fulfill(json({ ok: true, repo: { full: 'atomeam/void-loop', description: 'd', languages: [], commits: [], files: [], readme: '' } })));
+    await F.ask('https://github.com/atomeam/void-loop/blob/main/src/demo.js#L20-L22', 1500);
+    const card = await until(async () => F.p.$eval('.vpage.on', (c) => { const lit = [...c.querySelectorAll('.ghf-box .lit')].map((x) => x.textContent); return lit.length ? { h2: c.querySelector('h2').textContent, sub: c.querySelector('.sub').textContent, lit, kinds: [...c.querySelectorAll('.ghf-box code span span')].map((x) => x.className).filter(Boolean), full: c.querySelector('.ghf-full').getAttribute('href') } : null; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await F.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'gh-file.png') }).catch(() => {});
+    const by = await F.p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return (l[l.length - 1] || {}).note || ''; } catch (_) { return ''; } });
+    check('gh-file: a pasted file link with #L20-L22 shows demo.js (40 lines) from GitHub\'s raw address, lines 20 to 22 lit, keyword, string and comment coloured, and a link to the whole file at /g/',
+      !!card && card.h2 === 'demo.js' && /40 lines/.test(card.sub) && card.lit.length === 3 && /line20 /.test(card.lit[0]) && card.kinds.includes('k') && card.kinds.includes('s') && card.kinds.includes('c')
+      && /^\/g\/\?gh=atomeam%2Fvoid-loop%2Fmain%2Fsrc%2Fdemo\.js&L=20-22$/.test(card.full) && raws[0] === 'https://raw.githubusercontent.com/atomeam/void-loop/main/src/demo.js' && /gh-file/.test(by) && !F.errors.length,
+      JSON.stringify({ card, raws, by, errors: F.errors }));
+    await F.ctx.close();
+  }
   // the tower as a fighting-game ladder (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on, who we passed and who's ahead"):
   // the evidence is stubbed so three floors are beaten and the fourth is half won
   if (want("tower: a fighting-game ladder: defeated floors struck through, the one being fought glowing with its health bar, the rest locked, the boss on top")) {

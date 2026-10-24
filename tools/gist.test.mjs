@@ -26,3 +26,21 @@ test('colouring: every character is in exactly one piece, comments and strings a
   assert.ok(tokens('return "a"; // b', 'js').some((t) => t[0] === 'k' && t[1] === 'return') && tokens('return "a"; // b', 'js').some((t) => t[0] === 'c' && /^\/\/ b/.test(t[1])));
   assert.equal(langOf('x.py'), 'py'); assert.equal(langOf('Dockerfile'), '');
 });
+test('a GitHub file link: blob and raw links with line anchors; plain repo links and path tricks are not files', async () => {
+  const { ghFileOf, ghFilePage } = await import('../void-live-deploy/lib/gist.js');
+  const f = ghFileOf('see https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/gist.js#L5-L12');
+  assert.deepEqual([f.name, f.raw, f.lines], ['gist.js', 'https://raw.githubusercontent.com/atomeam/void-loop/main/void-live-deploy/lib/gist.js', [5, 12]]);
+  assert.equal(ghFilePage(f), '/g/?gh=atomeam%2Fvoid-loop%2Fmain%2Fvoid-live-deploy%2Flib%2Fgist.js&L=5-12');
+  assert.equal(ghFileOf('https://raw.githubusercontent.com/nodejs/node/main/README.md').name, 'README.md');
+  for (const no of ['https://github.com/atomeam/void-loop', 'https://github.com/a/b/blob/main/../../etc/passwd', 'https://github.com/a/b/blob/main', 'look at a/b', 'https://evil.com/github.com/a/b/blob/main/x.js']) assert.equal(ghFileOf(no), null, no);
+});
+test('reading a GitHub file: the text, or a plain sentence for missing, binary, too big or unreachable', async () => {
+  const { ghFileOf, ghFileText } = await import('../void-live-deploy/lib/gist.js');
+  const f = ghFileOf('https://github.com/a/b/blob/main/x.js'), seen = [];
+  const fake = (status, body) => async (u) => { seen.push(u); return new Response(body, { status }); };
+  assert.deepEqual(await ghFileText(f, fake(200, 'const a = 1;\n')), { text: 'const a = 1;\n' }); assert.equal(seen[0], 'https://raw.githubusercontent.com/a/b/main/x.js');
+  assert.match((await ghFileText(f, fake(404, 'no'))).error, /no public file there/);
+  assert.match((await ghFileText(f, fake(200, new Uint8Array([137, 80, 78, 71, 0, 0, 1])))).error, /not a text file/);
+  assert.match((await ghFileText(f, fake(200, 'x'.repeat(500000)))).error, /over 400 KB/);
+  assert.match((await ghFileText(f, async () => { throw new Error('down'); })).error, /could not be reached/);
+});

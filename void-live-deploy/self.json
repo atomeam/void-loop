@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T02:01:54Z",
+   "subject": "Verse eats GitHub from the smallest piece: a gist with no account and no server (a-to-mind.com/g/: files packed into the link, coloured…"
+  },
+  {
+   "at": "2026-10-24T01:56:40Z",
+   "subject": "Incident: the browser suite failed on f0759b47 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T01:55:49Z",
    "subject": "Easiest sites: the Tranco ranking's top sites, each home page measured once for how much it does, so the easiest real site to beat comes…"
   },
@@ -501,6 +509,10 @@
   {
    "at": "2026-10-24T01:49:31Z",
    "subject": "Incident: the browser suite failed on c8dff676 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T01:49:28Z",
+   "subject": "Verse hardens itself: 1 benchmark ask(s) for quote"
   },
   {
    "at": "2026-10-24T01:48:04Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T01:25:37Z",
    "subject": "Christmas itself: the midnight wave. While Christmas is somewhere on Earth the is-it card follows it around the world (\"It is Christmas in…"
-  },
-  {
-   "at": "2026-10-24T01:21:34Z",
-   "subject": "Site scout: what a real site shows and lets a visitor do, read from the live page on GitHub (phone and desktop: text, controls, weight…"
-  },
-  {
-   "at": "2026-10-24T01:14:32Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T01:09:10Z",
-   "subject": "Verse hardens itself: 1 benchmark ask(s) for tilt-mode"
   }
  ],
  "builders": {

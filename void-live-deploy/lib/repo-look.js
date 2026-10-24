@@ -29,6 +29,7 @@ export function repoAsk(text) {
   if (!raw) return '';
   if (/github\.com\//i.test(raw)) {
     if (/\b(?:link|bookmark)\b/i.test(raw)) return '';
+    if (/github\.com\/[^\s/]+\/[^\s/]+\/blob\//i.test(raw)) return ''; // one file is skills/gh-file.js, not the whole repo
     if (/github\.com\/(?:orgs|settings|marketplace|features|sponsors|topics|search|login|notifications)\b/i.test(raw)) return '';
     return parseRepo(raw);
   }

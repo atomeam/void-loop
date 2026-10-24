@@ -111,6 +111,7 @@
  "gauge-feedback": "\"clean this feedback <text> | work: <the work, in a few words>\" splits feedback into statements, flags the…",
  "gaze-chase": "Tilt Arena's Gaze Chase mode: in VR the agents chase where you look, and without VR the pointer or tilt steers",
  "gears": "Explainer.gear-pair, the first living miniature: two meshing gears you turn by dragging either one, with…",
+ "gh-file": "One file from GitHub, read in Verse",
  "go": "The board game Go, two people on one 9×9 board",
  "goal": "\"Can you make it do this?\": \"give me a challenge with this\" beside an explainer puts a short goal next to it…",
  "gpu-swarm": "Tilt Arena's GPU Swarm mode: 256 learning agents whose networks run on your graphics card, switching to the…",

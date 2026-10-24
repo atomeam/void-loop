@@ -21,6 +21,7 @@
   textarea { min-height: 320px; background: transparent; color: inherit; border: 0; resize: vertical; display: block; outline: none; }
   pre { white-space: pre; display: grid; grid-template-columns: auto 1fr; gap: 0 14px; }
   .ln { color: var(--soft); text-align: right; user-select: none; opacity: .6; } code { white-space: pre; }
+  .lit { background: rgba(255, 209, 102, .22); display: inline-block; min-width: 100%; }
   .c { color: var(--c); font-style: italic; } .s { color: var(--s); } .n { color: var(--n); } .k { color: var(--k); font-weight: 600; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
   button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; }
@@ -40,12 +41,26 @@
   <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. Anyone with the link sees the text, drawn as text. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
-  import { pack, unpack, cleanFiles, cleanName, langOf, tokens, MAX_FILES, MAX_TEXT } from '/lib/gist.js';
+  import { pack, unpack, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
   const $ = (id) => document.getElementById(id), el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  let files = [['snippet.txt', '']], at = 0, view = false;
-  const loaded = await unpack(location.hash);
+  let files = [['snippet.txt', '']], at = 0, view = false, gh = null;
+  // a GitHub file (?gh=owner/repo/branch/path&L=10-20): read from GitHub's public raw address, shown as a gist; "Edit a copy" makes it one
+  const q = new URLSearchParams(location.search), ghp = q.get('gh'), L = /^(\d+)-(\d+)$/.exec(q.get('L') || '');
+  if (ghp) {
+    const parts = ghp.split('/'); gh = parts.length >= 4 ? ghFileOf('github.com/' + parts[0] + '/' + parts[1] + '/blob/' + parts.slice(2).join('/') + (L ? '#L' + L[1] + '-L' + L[2] : '')) : null;
+    if (!gh) $('note').textContent = 'That is not a GitHub file address.';
+    else {
+      document.title = gh.name + ' · ' + gh.owner + '/' + gh.repo + ' · Verse';
+      const h = document.querySelector('h1'); h.textContent = ''; const a = el('a', null, gh.owner + '/' + gh.repo); a.href = 'https://github.com/' + gh.owner + '/' + gh.repo; a.target = '_blank'; a.rel = 'noopener';
+      h.append(el('b', null, gh.name), ' · ', a, ' · read from GitHub, nothing stored');
+      const r = await ghFileText(gh);
+      if (r.error) { $('note').textContent = r.error; const o = el('a', null, ' Open it on GitHub.'); o.href = gh.page; o.target = '_blank'; o.rel = 'noopener'; $('note').appendChild(o); gh = null; }
+      else { files = [[gh.name, r.text]]; view = true; }
+    }
+  }
+  const loaded = gh ? null : await unpack(location.hash);
   if (loaded) { files = loaded; view = true; }
-  else if (location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
+  else if (!gh && location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
   const note = (t) => { $('note').textContent = t; };
   function draw() {
     const tabs = $('tabs'); tabs.textContent = '';
@@ -53,10 +68,8 @@
     if (!view && files.length < MAX_FILES) { const b = el('button', 'tab', '+ file'); b.type = 'button'; b.onclick = () => { keep(); files.push(['file' + (files.length + 1) + '.txt', '']); at = files.length - 1; draw(); }; tabs.appendChild(b); }
     const box = $('box'); box.textContent = ''; const [name, text] = files[at];
     if (view) {
-      const pre = el('pre'), lang = langOf(name), lines = text.replace(/\n$/, '').split('\n'), nums = el('span', 'ln'), body = el('code');
-      nums.textContent = lines.map((_, i) => i + 1).join('\n');
-      lines.forEach((l, i) => { for (const [k, t] of tokens(l, lang)) body.appendChild(k ? el('span', k, t) : document.createTextNode(t)); if (i < lines.length - 1) body.appendChild(document.createTextNode('\n')); });
-      pre.append(nums, body); box.appendChild(pre);
+      renderCode(box, name, text, gh && gh.lines);
+      const first = box.querySelector('.lit'); if (first) requestAnimationFrame(() => first.scrollIntoView({ block: 'center' }));
     } else {
       const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here…';
       ta.addEventListener('input', meter); ta.addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); meter(); } });

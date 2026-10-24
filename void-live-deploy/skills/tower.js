@@ -41,15 +41,19 @@ export function towerHtml(t, esc) {
       + '<span class="mk-no" aria-hidden="true">' + esc(f.floor) + '</span><span class="mk-name">' + esc(f.site) + '</span><span class="mk-tag">' + esc(tag) + '</span>'
       + '<span class="mk-count">' + esc(f.n + ' of ' + f.m + ' aspects beaten') + '</span>' + hp + '</button>';
   }).join('');
-  const done = t.floors.filter((f) => f.beaten).length;
+  const done = t.floors.filter((f) => f.beaten).length, cur = t.floors.find((f) => f.state === 'current'), next = t.floors.filter((f) => f.state === 'ahead').slice(0, 2).map((f) => f.site);
+  // the same in plain words, so a copied or shared card still says who was beaten, who is being fought and who is next (the rungs are buttons)
+  const said = (done ? 'Defeated: ' + t.floors.filter((f) => f.beaten).map((f) => f.site).join(', ') + '. ' : '') + (cur ? 'Fighting ' + cur.site + ' (' + cur.n + ' of ' + cur.m + '). ' : '') + (next.length ? 'Next: ' + next.join(', ') + '.' : '');
   return MK_CSS + '<div class="mk"><div class="mk-head">THE TOWER</div><div class="mk-score tower-line">' + esc(done + ' defeated · ' + (t.total - done) + ' to go · floor ' + Math.min(t.marker, t.total) + ' of ' + t.total) + '</div>'
+    + '<p class="mk-said" style="text-align:center;font-size:12px;opacity:.8;margin:-4px 0 8px">' + esc(said) + '</p>'
     + '<div class="mk-stack tower-stack">' + rows + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A site falls only when every aspect is measured head to head or judged better by a person who used both; Verse never awards itself one. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
 export function detailText(f) {
-  return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. Verse skills here: ' + (f.skills.length ? f.skills.join(', ') : 'none yet') + '. '
-    + (f.lost.length ? 'Still loses on: ' + f.lost.join(', ') + '. ' : '') + (f.regressed.length ? 'Regressed: ' + f.regressed.join(', ') + '. ' : '')
-    + 'Left to beat: ' + (f.left.length ? f.left.join(', ') : 'nothing') + '.';
+  // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
+  const open = f.left.filter((a) => !f.lost.includes(a));
+  return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. ' + (f.page ? 'Verse\'s page for it: a-to-mind.com' + f.page.replace(/\?.*$/, '') + '. ' : '')
+    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '.' : 'Nothing left to beat.');
 }
 
 /** what moved between two towers, in words: the marker, a beaten floor, an aspect count. Pure. */
