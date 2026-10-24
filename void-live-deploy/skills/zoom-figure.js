@@ -10,7 +10,7 @@ const BUDGET = { 1: 24, 2: 96, 3: 280 };
 
 export function zoomOf(text) {
   const t = CLEAN(text);
-  if (/^(?:please\s+)?zoom in on the figure$/.test(t)) return { act: 'in' };
+  if (/^(?:please\s+)?zoom in on the figure$|^(?:please\s+)?spin the (?:3d )?model$/.test(t)) return { act: 'in' };
   if (/^(?:please\s+)?zoom in$/.test(t)) return { act: 'in' };
   if (/^(?:please\s+)?closer on the figure$/.test(t)) return { act: 'in' };
   if (/^(?:please\s+)?zoom out on the figure$/.test(t)) return { act: 'out' };
@@ -50,7 +50,7 @@ async function run(text, api) {
 
 export default {
   name: 'zoom-figure',
-  examples: ['zoom in on the figure', 'zoom in', 'closer on the figure', 'zoom out on the figure'],
+  examples: ['zoom in on the figure', 'zoom in', 'closer on the figure', 'zoom out on the figure', 'spin the 3d model'],
   nearMisses: ['spin the figure', 'summon a figure', 'what is zoom', 'zoom in on the map'],
   zoomOf,
   nextLod,
