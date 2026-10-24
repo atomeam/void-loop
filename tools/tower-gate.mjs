@@ -14,7 +14,7 @@
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
-import { probeFor, score } from './tower-probes.mjs';
+import { probeFor, score, SPUN } from './tower-probes.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -131,9 +131,23 @@ export async function measure(browser, url, tag, ask, probe) {
 /** the aspects the gate can measure on a floor today: the measured ones on its checklist, its PARTS, and accuracy and completeness only with a probe. Pure. */
 /** a page's answer to a question in its address, or typed into its own box (`type`) as a person would; the text it shows and its boxes hold,
  *  or null when it could not be read. Exported for tools/tower-gate.test.mjs, which runs it against local pages. */
-export async function answer(b, url, type) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+export async function answer(b, url, type, spin = false) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
       if (/[?&]q=/.test(url)) await p.waitForTimeout(3000); // Verse answering an ask in the address: the card lands a moment after load
       const read = () => p.evaluate(() => ({ text: document.body ? document.body.innerText : '', boxes: [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') }));
+      if (spin) { // a wheel: spin it once (a tap at the centre of its largest canvas, where both wheels put their spin), then read what the spin
+        // showed: the lines it added, and the entries the page had before it, after a marker, so a check can tell a winner from the wheel's own list
+        const before = await read(), cv = p.locator('canvas:visible'), k = await cv.count(); let bb = null, area = 0;
+        for (let i = 0; i < k; i++) { const x = await cv.nth(i).boundingBox().catch(() => null); if (x && x.width * x.height > area) { area = x.width * x.height; bb = x; } }
+        if (!bb) return null;
+        await p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2);
+        // a line is new when the page shows it more times than before: the winner's name was already on the page, in the list of names
+        const count = (txt) => { const m = new Map(); for (const l of txt.split('\n').map((x) => x.trim()).filter(Boolean)) m.set(l, (m.get(l) || 0) + 1); return m; };
+        const had = count(before.text), added = (txt) => { const now = count(txt), out = []; for (const [l, n] of now) for (let i = had.get(l) || 0; i < n; i++) out.push(l); return out.join('\n'); };
+        let changed = '';
+        for (let w = 0; w < 30; w++) { await p.waitForTimeout(1000); changed = added((await read()).text); if (/winner/i.test(changed) && w >= 2) { await p.waitForTimeout(1500); changed = added((await read()).text); break; } }
+        if (!/winner/i.test(changed)) return null; // the gate could not make it spin: not measured, never a loss for the site
+        return changed + '\n' + SPUN + '\n' + before.text + '\n' + before.boxes;
+      }
       if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
       // the box a person types into: the page's largest visible text area, else its first visible text input (unitconverters.net's "From")
       const areas = p.locator('textarea:visible'), n = await areas.count(); let box = null, best = -1;
@@ -192,7 +206,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
-    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href), st = await answer(b, probe.ask.site, probe.ask.type);
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin), st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin);
     v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }

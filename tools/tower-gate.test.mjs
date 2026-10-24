@@ -111,3 +111,22 @@ test('made-up people are read the same way from randomuser.me\'s JSON and Verse\
   assert.equal(sc(flat.replace(/"age": \d+/, '"age": 3'), t).missing.includes('every age right for its birthday'), true);
   assert.deepEqual(peopleIn('no json here'), []);
 });
+
+test('a spin: a tap at the wheel\'s centre, the winner must be one of its own names, and a wheel that never spins is not measured', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const wheel = (winner, spins = true) => '<div contenteditable>Ali<br>Beatriz<br>Charles</div><canvas id=c width=300 height=300></canvas><div id=d></div><script>' + (spins ? 'c.onclick=()=>setTimeout(()=>{d.innerHTML="<h2>We have a winner!</h2><p>' + winner + '</p><button>Close</button> <button>Remove</button>"},1500)' : '') + '</script>';
+  const PAGES = { '/good': wheel('Charles'), '/wrong': wheel('Zed'), '/stuck': wheel('', false) };
+  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '')); }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, w = probeFor('wheel');
+  try {
+    const good = await answer(b, at('/good'), null, true);
+    assert.equal(score(good, w.truth).n, 2, 'a winner, and one of its own names (already on the page before the spin)');
+    assert.equal(score(good, w.askParts['remove the winner']).n, 1);
+    assert.equal(score(await answer(b, at('/wrong'), null, true), w.truth).n, 1, 'a winner not on the wheel is wrong');
+    assert.equal(await answer(b, at('/stuck'), null, true), null, 'no spin, no measurement');
+  } finally { await b.close(); server.close(); }
+});

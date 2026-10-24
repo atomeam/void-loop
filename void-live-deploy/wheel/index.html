@@ -98,7 +98,7 @@
       const t = (now - t0) / ms; rot = from + (to - from) * ease(t); const at = under(entries, rot); if (at !== last) { last = at; tick(); } draw();
       if (t < 1) return requestAnimationFrame(step);
       rot = to % 360; draw(); spinning = false; won = i; const name = entries[i].label;
-      $('winner').innerHTML = ''; const b = document.createElement('b'); b.textContent = name; $('winner').append('The winner is', b);
+      $('winner').innerHTML = ''; const b = document.createElement('b'); b.textContent = name; $('winner').append('The winner is ', b); // the space: it read "The winner isCarol"
       const li = document.createElement('li'); li.textContent = name; $('history').prepend(li);
       $('remove').hidden = entries.length <= 2; $('again').hidden = false; $('spin').disabled = false;
     };

@@ -9,6 +9,11 @@ const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() =
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
 // run before or after it: a rounded 1.5123660752041709e+36 or a run of zeros at the end does not match. Pure.
+/** what a spin's answer puts between what the spin showed and what the page had before it (tower-gate.mjs answer, `spin`) */
+export const SPUN = '\u241e before the spin \u241e';
+const spun = (t) => { const [after, before = ''] = String(t || '').split(SPUN); return { after, before }; };
+// wheelofnames.com's own starting names, put on Verse's wheel in its link, so both spin the same eight
+const WHEEL_NAMES = ['Ali', 'Beatriz', 'Charles', 'Diya', 'Eric', 'Fatima', 'Gabriel', 'Hanna'];
 const exact = (digits) => new RegExp('(?<![0-9a-z])(?:0[\\s,_]?)*' + [...String(digits)].join('[\\s,_]?') + '(?![0-9a-z])', 'i'); // leading zeros allowed: 0001 0010 ... is the same number
 const HUGE = 0x123456789abcdef0123456789abcdefn;
 const WC_TEXT = 'The quick brown fox jumps over the lazy dog. It was not amused!'; // 13 words, 63 characters, 2 sentences
@@ -75,7 +80,12 @@ export const PROBES = Object.freeze({
   },
   wheel: {
     site: 'https://wheelofnames.com/', verse: '/wheel/',
-    truth: null, // a spin has no right answer to check
+    // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
+    // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
+    ask: { site: 'https://wheelofnames.com/', verse: '/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
+    truth: [['announces a winner', (t) => /winner/i.test(spun(t).after)], ['the winner is one of the wheel\'s own names', (t) => { const { after, before } = spun(t), names = new Set(before.split('\n').map((l) => l.trim()).filter((l) => l && l.length <= 40));
+      return after.split('\n').some((l) => { const x = l.replace(/^.*\bwinner(?:\s+is)?\s*:?\s*/i, '').replace(/[!.]+$/, '').trim(); return !!x && names.has(x); }); }]],
+    askParts: { 'remove the winner': [['a way to remove the winner', (t) => /remove/i.test(spun(t).after)]] },
     facts: [['an entries list', /\bentries\b|\bnames\b/i], ['spin', /\bspin\b/i], ['shuffle', /\bshuffle\b/i], ['sort', /\bsort\b/i], ['results', /\bresults?\b|\bwinners?\b/i],
       ['a share link', /\bshare\b|\bcopy link\b/i], ['weights', /\bweights?\b|times as likely/i], ['says it is fair', /\bfair\b/i], ['sound control', /\bsound\b|\bmute\b/i]],
   },
