@@ -482,7 +482,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T18:59:32.657Z"
+    "at": "2026-10-24T19:04:07.435Z"
    }
   },
   "encoder": {
@@ -646,11 +646,11 @@
     "at": "2026-10-24T16:42:54.038Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "unverified",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs timeanddate.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:42:54.038Z"
+    "best": 0,
+    "evidence": "timeanddate.com answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
+    "at": "2026-10-24T19:02:58.045Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
@@ -1650,6 +1650,57 @@
     "best": 61,
     "evidence": "Verse 0 design defects vs ESPN 61 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), ESPN (49 low-contrast texts, 12 small tap targets, layout shift 0.08)",
     "at": "2026-10-24T19:01:17.416Z"
+   }
+  },
+  "finance": {
+   "speed": {
+    "verdict": "better",
+    "verse": 290,
+    "best": 4788,
+    "evidence": "Verse 290 ms to the load event (median of 3, phone width) vs Yahoo Finance 4788 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 2,
+    "evidence": "Verse 3 of 3 loads answered vs Yahoo Finance 2 of 3 loads answered",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Yahoo Finance 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 28,
+    "evidence": "Verse 0 unnamed controls or images vs Yahoo Finance 28 unnamed controls or images",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Yahoo Finance 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Yahoo Finance 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T19:05:52.833Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 54,
+    "evidence": "Verse 0 design defects vs Yahoo Finance 54 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Yahoo Finance (0 low-contrast texts, 53 small tap targets, layout shift 0.13)",
+    "at": "2026-10-24T19:05:52.833Z"
    }
   }
  }
