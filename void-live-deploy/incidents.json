@@ -2,6 +2,24 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T04:57:45.409Z",
+   "sha": "f439d29b79ea0461c6aa0e38363cd248380966e8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40063845380",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "tools/wiki-look.test.mjs",
+    "void-live-deploy/lib/art-rules.js",
+    "void-live-deploy/lib/wiki-look.js"
+   ]
+  },
+  {
    "at": "2026-10-24T04:51:04.946Z",
    "sha": "34f04b75433512f91ac094a0e4627767db547d04",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40063403703",
@@ -573,34 +591,6 @@
     "void-live-deploy/lib/gist.js",
     "void-live-deploy/lib/repo-look.js",
     "void-live-deploy/self.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:17:34.964Z",
-   "sha": "cf89cbb1c5ee60313fa5b7b16bb14765f273d0c4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40052625161",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/gist.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/conquered/index.html",
-    "void-live-deploy/g/index.html",
-    "void-live-deploy/lib/gist.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json"
    ]
   }
  ]
