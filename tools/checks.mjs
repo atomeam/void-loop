@@ -433,6 +433,7 @@ for (const [name, file] of [
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],
   ['gradient', 'gradient.test.mjs'],
+  ['wheel', 'wheel.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],

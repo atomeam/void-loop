@@ -12,7 +12,7 @@ function run(text, api) {
   showPage((el) => {
     el.dataset.cardKind = 'CSS gradient';
     el.innerHTML = '<h2>CSS gradient</h2>' // void-review: ok (escaped)
-      + '<div style="height:120px;border-radius:12px;margin:8px 0;border:1px solid rgba(127,127,127,.3);display:flex;align-items:center;justify-content:center;font-weight:600;background-image:' + esc(c) + ';color:' + esc(tc.text) + '">Text on it</div>'
+      + '<p style="margin-top:8px;margin-bottom:8px"><span style="height:120px;border-radius:12px;border:1px solid rgba(127,127,127,.3);display:flex;align-items:center;justify-content:center;font-weight:600;background-image:' + esc(c) + ';color:' + esc(tc.text) + '">Text on it</span></p>'
       + '<pre style="white-space:pre-wrap;word-break:break-all;font-size:13px">' + esc(rule(g)) + '</pre>'
       + '<p><a class="gr-open" href="' + esc(href) + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">Edit the gradient</a></p>'
       + '<div class="src">Stops with opacity, linear, radial or conic, presets, reverse, hue and saturation; paste CSS to edit it or take the colours from a picture. Nothing is sent anywhere.</div>';

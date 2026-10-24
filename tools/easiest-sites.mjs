@@ -36,7 +36,7 @@ export const isToolHost = (host) => TOOL_HOST.test(String(host)) && !ADULT.test(
 export function junk(f) {
   // accents off first ("casinò" is a casino), and a consent or ad-preference screen is not the tool behind it
   const t = (f.title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  return ADULT.test(t) || /\b(?:domain (?:is )?for sale|buy this domain|this domain|parked|coming soon|under construction|account suspended|default web page|ad preferences?|preferencias de anuncio|cookie (?:settings|consent|preferences)|privacy (?:settings|choices)|consent)\b/.test(t) || (f.words < 6 && f.links < 2);
+  return ADULT.test(t) || /\b(?:domain (?:is )?for sale|buy this domain|this domain|parked|coming soon|under construction|account suspended|default web page|ad preferences?|preferencias de anuncio|for sale|advertisement network|ad network|cookie (?:settings|consent|preferences)|privacy (?:settings|choices)|consent)\b/.test(t) || (f.words < 6 && f.links < 2);
 }
 
 async function get(host, ms = 7000) {

@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-24",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 25,
   "checked": 14,
   "proven": 293
@@ -449,12 +449,20 @@
    "name": "Games",
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 1,
     "checked": 1,
     "proven": 29
    },
    "skills": [
+    {
+     "name": "wheel",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-24"
+    },
     {
      "name": "coin",
      "tier": "checked",

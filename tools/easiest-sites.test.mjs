@@ -28,5 +28,6 @@ test('junk: an accented casino and a consent screen are not tools', async () => 
   const { junk } = await import('./easiest-sites.mjs');
   assert.equal(junk({ title: 'Chicken Road ▷ Gioco da casinò', words: 300, links: 40 }), true);
   assert.equal(junk({ title: 'Preferências de Anúncio', words: 300, links: 40 }), true);
+  assert.equal(junk({ title: 'Thexchange.com for sale | Spaceship.com', words: 300, links: 40 }), true); assert.equal(junk({ title: 'Operated by Clickadu Advertisement Network', words: 300, links: 40 }), true);
   assert.equal(junk({ title: 'ColorZilla - Eyedropper, Color Picker', words: 300, links: 40 }), false);
 });

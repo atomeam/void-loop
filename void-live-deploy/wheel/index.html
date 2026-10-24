@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spin the wheel: a fair random name picker · Verse</title>
+<meta name="description" content="Type names or choices, spin, get a winner. Fair: the winner is drawn with the browser's cryptographic random numbers before the wheel turns, and a weight like Pizza*3 triples a chance. Remove winners, shuffle, sort, share the wheel as a link. No ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spin the wheel · Verse">
+<meta property="og:description" content="Type names or choices, spin, get a winner. Fair, weighted if you like, shareable as a link. No ads, nothing sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/wheel/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/wheel/ (owner, 2026-10-24: "find the site to conquer and get to work now"): one file and one small module, no third party */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 16px 16px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
+  @media (max-width: 760px) { main { grid-template-columns: minmax(0, 1fr); } }
+  h1 { grid-column: 1 / -1; font-size: 18px; margin: 0; text-align: center; font-weight: 600; color: var(--soft); }
+  .stage { position: relative; width: 100%; max-width: 560px; margin: 0 auto; aspect-ratio: 1; }
+  canvas { width: 100%; height: 100%; display: block; cursor: pointer; border-radius: 50%; }
+  .pointer { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 30px solid var(--ink); filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+  #spin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 22%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--bg); background: var(--ink); color: var(--bg); font: 700 clamp(13px, 3.4vw, 20px) system-ui, sans-serif; cursor: pointer; }
+  #spin:disabled { opacity: .6; cursor: default; }
+  #winner { text-align: center; min-height: 3.2em; margin: 10px 0 0; }
+  #winner b { display: block; font-size: clamp(24px, 6vw, 40px); line-height: 1.15; overflow-wrap: anywhere; }
+  label { font-size: 14px; color: var(--soft); }
+  textarea { width: 100%; box-sizing: border-box; min-height: 14em; font: 15px/1.45 system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; resize: vertical; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #count, #fair { font-size: 13px; color: var(--soft); }
+  ol { margin: 4px 0 0; padding-left: 1.4em; font-size: 14px; max-height: 12em; overflow: auto; }
+  footer { grid-column: 1 / -1; font-size: 12px; color: var(--soft); text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/wheel.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Spin the wheel</h1>
+  <section>
+    <div class="stage"><canvas id="wheel" width="1120" height="1120" role="img" aria-label="The wheel"></canvas><div class="pointer" aria-hidden="true"></div><button type="button" id="spin">SPIN</button></div>
+    <div id="winner" role="status" aria-live="polite"></div>
+    <div class="row" style="justify-content:center"><button type="button" id="remove" hidden>Remove the winner</button><button type="button" id="again" hidden>Spin again</button></div>
+  </section>
+  <section>
+    <label for="entries">Names or choices, one a line (Pizza*3 is three times as likely)</label>
+    <textarea id="entries" spellcheck="false"></textarea>
+    <div id="count"></div>
+    <div class="row"><button type="button" id="shuffle">Shuffle</button><button type="button" id="sort">Sort A–Z</button><button type="button" id="link">Copy link</button><button type="button" id="sound" aria-pressed="true">Sound on</button></div>
+    <label>Winners so far</label>
+    <ol id="history"></ol>
+    <p id="fair">Fair: the winner is drawn with this browser's cryptographic random numbers before the wheel moves, each entry's chance exactly its share of the wheel; the spin then lands on it.</p>
+  </section>
+  <footer>Click the wheel, press SPIN, or press Space. Everything stays on this device; the link carries the entries, nothing else. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom } from '/lib/wheel.js';
+  const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d');
+  const START = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
+  let entries = open(location.hash.slice(1)) || entriesOf(START), rot = 0, spinning = false, last = -1, sound = true, actx = null, won = -1;
+  const COLORS = ['#6d4aff', '#ff5f6d', '#ffb347', '#2bb3a3', '#4a90e2', '#c86dd7', '#7ac943', '#ff7f50', '#20b2aa', '#e05297', '#f4c430', '#5b6ee1'];
+  const colorAt = (i, n) => COLORS[(i % COLORS.length === 0 && i === n - 1 && n % COLORS.length === 1) ? 1 : i % COLORS.length]; // the last slice never matches the first
+  const lum = (h) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  function draw() {
+    const W = cv.width, R = W / 2 - 6, s = slices(entries); cx.clearRect(0, 0, W, W); cx.save(); cx.translate(W / 2, W / 2); cx.rotate((rot * Math.PI) / 180);
+    s.forEach((x, i) => {
+      const a0 = ((x.start - 90) * Math.PI) / 180, a1 = ((x.end - 90) * Math.PI) / 180, col = colorAt(i, s.length);
+      cx.beginPath(); cx.moveTo(0, 0); cx.arc(0, 0, R, a0, a1); cx.closePath(); cx.fillStyle = col; cx.fill(); cx.strokeStyle = 'rgba(255,255,255,.65)'; cx.lineWidth = 3; cx.stroke();
+      const mid = (a0 + a1) / 2, size = Math.max(14, Math.min(46, ((x.end - x.start) / 360) * 2 * Math.PI * R * 0.42)); cx.save(); cx.rotate(mid); cx.textAlign = 'right'; cx.textBaseline = 'middle';
+      cx.fillStyle = lum(col) > 0.4 ? '#111' : '#fff'; cx.font = '600 ' + size + 'px system-ui, sans-serif';
+      let label = x.label; const max = R * 0.78; while (label.length > 1 && cx.measureText(label).width > max) label = label.slice(0, -2) + '…';
+      cx.fillText(label, R - 22, 0); cx.restore();
+    });
+    cx.restore(); cx.beginPath(); cx.arc(W / 2, W / 2, R, 0, 2 * Math.PI); cx.lineWidth = 8; cx.strokeStyle = 'rgba(0,0,0,.18)'; cx.stroke();
+  }
+  const tick = () => { if (!sound) return; try { actx = actx || new AudioContext(); const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = 1400; g.gain.setValueAtTime(0.07, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.04); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.05); } catch (_) {} };
+  function sync(fromText) {
+    if (fromText) entries = entriesOf($('entries').value); else $('entries').value = textOf(entries);
+    // a changed wheel has no winner yet: the last one belonged to the old wheel
+    if (!spinning) { $('winner').textContent = ''; $('remove').hidden = $('again').hidden = true; won = -1; }
+    const n = entries.length; $('count').textContent = n + (n === 1 ? ' entry' : ' entries') + (n < 2 ? ': add at least two to spin' : '');
+    $('spin').disabled = spinning || n < 2; draw();
+    try { history.replaceState(null, '', n ? '#' + pack(entries) : location.pathname); } catch (_) {}
+  }
+  function spin() {
+    if (spinning || entries.length < 2) return;
+    spinning = true; $('spin').disabled = true; $('remove').hidden = $('again').hidden = true; $('winner').textContent = '';
+    const i = pickIndex(entries, fairRandom()), from = rot, to = plan(entries, i, from, 5 + Math.floor(fairRandom() * 3), fairRandom());
+    const ms = matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 5200, t0 = performance.now(); last = under(entries, rot);
+    const step = (now) => {
+      const t = (now - t0) / ms; rot = from + (to - from) * ease(t); const at = under(entries, rot); if (at !== last) { last = at; tick(); } draw();
+      if (t < 1) return requestAnimationFrame(step);
+      rot = to % 360; draw(); spinning = false; won = i; const name = entries[i].label;
+      $('winner').innerHTML = ''; const b = document.createElement('b'); b.textContent = name; $('winner').append('The winner is', b);
+      const li = document.createElement('li'); li.textContent = name; $('history').prepend(li);
+      $('remove').hidden = entries.length <= 2; $('again').hidden = false; $('spin').disabled = false;
+    };
+    requestAnimationFrame(step);
+  }
+  $('spin').addEventListener('click', spin); cv.addEventListener('click', spin); $('again').addEventListener('click', spin);
+  addEventListener('keydown', (e) => { if (e.code === 'Space' && document.activeElement !== $('entries') && !(document.activeElement instanceof HTMLButtonElement)) { e.preventDefault(); spin(); } });
+  $('remove').addEventListener('click', () => { if (won < 0) return; entries.splice(won, 1); won = -1; $('remove').hidden = true; sync(false); });
+  $('entries').addEventListener('input', () => sync(true));
+  $('shuffle').addEventListener('click', () => { entries = shuffle(entries); sync(false); });
+  $('sort').addEventListener('click', () => { entries = sorted(entries); sync(false); });
+  $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
+  $('sound').addEventListener('click', () => { sound = !sound; $('sound').textContent = sound ? 'Sound on' : 'Sound off'; $('sound').setAttribute('aria-pressed', String(sound)); });
+  sync(false);
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

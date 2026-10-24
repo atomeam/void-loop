@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T15:46:35Z",
+   "subject": "CSS gradient: the first floor taken from the tower's frontier (colorzilla.com)"
+  },
+  {
+   "at": "2026-10-24T15:41:26Z",
+   "subject": "Verse fixes its print-file skill: learn to handle \"export as stl\""
+  },
+  {
+   "at": "2026-10-24T15:38:46Z",
+   "subject": "Incident: the browser suite failed on 351d31fe (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T15:38:16Z",
    "subject": "No self-hardening, no empty news; floor 1's page answers bigger, shares and opens offline"
   },
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T15:13:54Z",
    "subject": "Tower frontier: the real tool sites ranked from the top million, not yet floors"
-  },
-  {
-   "at": "2026-10-24T15:12:09Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T15:11:27Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
-  },
-  {
-   "at": "2026-10-24T15:07:38Z",
-   "subject": "The tower: eleven aspects measured head to head, no ceiling, and no opponent swapped down because the gate failed"
   }
  ],
  "builders": {
