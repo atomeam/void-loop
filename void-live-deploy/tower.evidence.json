@@ -592,45 +592,52 @@
   "time zones": {
    "speed": {
     "verdict": "better",
-    "verse": 243,
-    "best": 480,
-    "evidence": "Verse 243 ms to the load event (median of 3, phone width) vs timeanddate.com 480 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:30:33.642Z"
+    "verse": 184,
+    "best": 482,
+    "evidence": "Verse 184 ms to the load event (median of 3, phone width) vs timeanddate.com 482 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:42:54.038Z"
    },
    "reliability": {
-    "verdict": "unverified",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 0,
-    "evidence": "timeanddate.com answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T15:42:51.222Z"
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs timeanddate.com 3 of 3 loads answered",
+    "at": "2026-10-24T16:42:54.038Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs timeanddate.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:30:33.642Z"
+    "at": "2026-10-24T16:42:54.038Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs timeanddate.com 0 unnamed controls or images",
-    "at": "2026-10-24T15:30:33.642Z"
+    "at": "2026-10-24T16:42:54.038Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs timeanddate.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:30:33.642Z"
+    "at": "2026-10-24T16:42:54.038Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs timeanddate.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:30:33.642Z"
+    "at": "2026-10-24T16:42:54.038Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 34,
+    "evidence": "Verse 0 design defects vs timeanddate.com 34 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), timeanddate.com (0 low-contrast texts, 34 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T16:42:54.038Z"
    }
   },
   "codebase": {
@@ -731,52 +738,52 @@
   "base converter": {
    "speed": {
     "verdict": "better",
-    "verse": 134,
-    "best": 1207,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 134 ms to the load event (median of 3, phone width) vs hextobinary.com 1207 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:27:14.742Z"
+    "verse": 155,
+    "best": 914,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 155 ms to the load event (median of 3, phone width) vs hextobinary.com 914 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 loads answered vs hextobinary.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 (1: the page shows itself again with the network cut) vs hextobinary.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hextobinary.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 things a full answer shows vs hextobinary.com 3 of 4 things a full answer shows (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T16:27:14.742Z",
+    "at": "2026-10-24T16:42:01.843Z",
     "of": 4
    },
    "design polish": {
@@ -784,14 +791,14 @@
     "verse": 0,
     "best": 22,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 design defects vs hextobinary.com 22 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), hextobinary.com (0 low-contrast texts, 22 small tap targets, layout shift 0.07)",
-    "at": "2026-10-24T16:27:14.742Z"
+    "at": "2026-10-24T16:42:01.843Z"
    },
    "all four bases": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 shown vs hextobinary.com 3 of 4 shown (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T16:27:14.742Z",
+    "at": "2026-10-24T16:42:01.843Z",
     "of": 4,
     "part": true
    }
@@ -799,45 +806,52 @@
   "photo resizer": {
    "speed": {
     "verdict": "better",
-    "verse": 117,
-    "best": 1694,
-    "evidence": "Verse (/resize-image/) 117 ms to the load event (median of 3, phone width) vs pancardresizer.com 1694 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:47:34.285Z"
+    "verse": 91,
+    "best": 1318,
+    "evidence": "Verse (/resize-image/) 91 ms to the load event (median of 3, phone width) vs pancardresizer.com 1318 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:42:27.530Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 3 loads answered vs pancardresizer.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:47:34.285Z"
+    "at": "2026-10-24T16:42:27.530Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/resize-image/) 0 px sideways overflow at 390 px vs pancardresizer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:47:34.285Z"
+    "at": "2026-10-24T16:42:27.530Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/resize-image/) 0 unnamed controls or images vs pancardresizer.com 1 unnamed controls or images",
-    "at": "2026-10-24T15:47:34.285Z"
+    "at": "2026-10-24T16:42:27.530Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/resize-image/) 1 (1: the page shows itself again with the network cut) vs pancardresizer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:47:34.285Z"
+    "at": "2026-10-24T16:42:27.530Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:47:34.285Z"
+    "at": "2026-10-24T16:42:27.530Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 21,
+    "evidence": "Verse (/resize-image/) 1 design defects vs pancardresizer.com 21 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), pancardresizer.com (20 low-contrast texts, 0 small tap targets, layout shift 0.26)",
+    "at": "2026-10-24T16:42:27.530Z"
    }
   },
   "colour codes": {
