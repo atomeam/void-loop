@@ -33,6 +33,7 @@ export function coinOf(text) {
 export function flip(p = 0.5, rand = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; }) { return rand() < p; }
 
 import { coinLine } from '../lib/tally.js';
+import { coinAsk, FAMOUS, findCoin, cleanMine, metalFace, METALS, MINE_KEY } from '../lib/coins.js';
 const KEY = 'a2m.void.coin.v1'; // this visit's tally and the sound choice, in sessionStorage / localStorage
 const tallyRead = () => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || '{}'); return { h: v.h | 0, t: v.t | 0 }; } catch (_) { return { h: 0, t: 0 }; } };
 const tallyWrite = (v) => { try { sessionStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
@@ -55,16 +56,130 @@ const CSS = '<style>.vpage:has(.coin-row) .vc-art{display:none}.coin-row{display
   + '.coin-tools button{font:inherit;font-size:12px;opacity:.75;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:2px 10px;cursor:pointer}'
   + '@media (prefers-reduced-motion:reduce){.coin{transition:none}}</style>';
 
+// a coin's two faces, drawn without ever putting a person's words into markup: { bg, ink, txt, img } a side
+function paintFace(f, side) {
+  f.textContent = side.img ? '' : side.txt || ''; f.style.color = side.ink || '#5a4106';
+  f.style.background = side.img ? 'center / cover no-repeat url("' + String(side.img).replace(/["\\\n]/g, '') + '"), #222' : side.bg;
+}
+
+/** a photo (a URL this page may read, or a data URL) as a small JPEG data URL for the appraiser, or null. */
+async function photoData(src, max = 768) {
+  try {
+    const blob = await (await fetch(src)).blob(), bmp = await createImageBitmap(blob), k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', 0.85);
+  } catch (_) { return null; }
+}
+
+// what's it worth (owner, 2026-10-24: the coin flip "ties into our coin appraisal"): the face goes to Verse's appraiser (/api/appraise, skills/appraise.js)
+// with what the coin is, and the valuation shows on the card. A made coin with no photo has nothing to value and says so.
+function worthButton(el, getImage, note) {
+  const tools = el.querySelector('.coin-tools'), out = document.createElement('p'); out.className = 'coin-worth'; out.style.cssText = 'text-align:center;font-size:14px;margin:6px 0;white-space:pre-line';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'coin-appraise'; b.textContent = 'What’s it worth?';
+  tools.appendChild(b); tools.after(out);
+  b.addEventListener('click', async (e) => {
+    e.stopPropagation(); b.disabled = true; out.textContent = 'Verse is looking at the coin…';
+    const image = await getImage();
+    if (!image) { out.textContent = 'There is no photo of this coin to value. Photograph a real coin and ask "what is this coin worth".'; b.disabled = false; return; }
+    try {
+      const r = await fetch('/api/appraise', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image, note }) });
+      const j = await r.json().catch(() => null);
+      out.textContent = j && j.text ? j.text : r.status === 503 ? 'The appraiser is not switched on here.' : 'The appraiser could not answer just now.';
+    } catch (_) { out.textContent = 'The appraiser could not answer just now.'; }
+    b.disabled = false;
+  });
+}
+
 function run(text, api) {
-  const ask = coinOf(text);
-  if (!ask) return 'none';
-  const { showPage, esc } = api, st = STYLES[ask.style], d = ask.n === 1 ? 150 : ask.n <= 4 ? 96 : 64;
+  const more = coinAsk(text), plain = more ? null : coinOf(text);
+  if (!more && !plain) return 'none';
+  if (more && more.kind === 'make') return designer(api);
+  if (more && more.kind === 'pick') return picker(api);
+  if (more && more.kind === 'mine') {
+    let mine = null; try { const v = JSON.parse(localStorage.getItem(MINE_KEY) || 'null'); if (v) mine = cleanMine(v); } catch (_) {}
+    if (!mine) return designer(api, 'You have not made a coin yet: make one here, then say "flip my coin".');
+    return flipCard(text, api, { n: 1, p: 0.5, for: more.for }, mineLook(mine));
+  }
+  if (more && more.kind === 'real') {
+    const name = more.name.replace(/\b\w/g, (c) => c.toUpperCase());
+    const look = { title: name, rim: '#8a6a10', h: { bg: metalFace('silver'), txt: '…', ink: '#3b4047' }, t: { bg: metalFace('silver'), txt: '…', ink: '#3b4047' }, src: 'Looking for the real ' + name + ' on Wikimedia Commons…', note: 'a ' + name + ' coin' };
+    const el = flipCard(text, api, { n: 1, p: 0.5, for: more.for }, look, true);
+    findCoin(more.name).then((c) => {
+      const card = typeof el === 'object' && el && el.querySelector ? el : null; if (!card || !card.isConnected) return;
+      const src = card.querySelector('.src');
+      if (!c) { src.textContent = 'Wikimedia Commons has no photo of a "' + more.name + '" coin. Try its full name ("Athenian owl tetradrachm"), or flip a famous coin.'; card.querySelectorAll('.coin .fc').forEach((f) => { f.textContent = '?'; }); return; }
+      card.querySelectorAll('.coin').forEach((b) => { paintFace(b.querySelector('.fc.h'), { img: c.heads.src }); paintFace(b.querySelector('.fc.t'), { img: c.tails.src }); });
+      src.textContent = 'Heads is its obverse, tails its reverse: real photos from Wikimedia Commons (';
+      const a1 = document.createElement('a'); a1.href = c.heads.page; a1.target = '_blank'; a1.rel = 'noopener'; a1.textContent = c.heads.title;
+      src.append(a1); if (c.tails !== c.heads) { const a2 = document.createElement('a'); a2.href = c.tails.page; a2.target = '_blank'; a2.rel = 'noopener'; a2.textContent = c.tails.title; src.append(', ', a2); }
+      src.append('). A fair flip from this device’s secure random numbers.');
+      worthButton(card, () => photoData(c.heads.src), 'a ' + name + ' coin');
+    }).catch(() => {});
+    return 'coin';
+  }
+  return flipCard(text, api, plain, null);
+}
+
+/** a made coin's look. Pure. */
+function mineLook(m) {
+  const ink = METALS[m.metal][3];
+  return { title: (m.rim || 'My coin') + (m.year ? ' · ' + m.year : ''), rim: METALS[m.metal][2], h: { bg: metalFace(m.metal), txt: m.heads, img: m.hImg, ink }, t: { bg: metalFace(m.metal), txt: m.tails, img: m.tImg, ink },
+    src: 'Your own coin, kept on this device. A fair flip from this device’s secure random numbers.', mine: m };
+}
+
+// the picker: famous coins from 600 BC to now, one tap each, and a box for any other coin
+function picker(api) {
+  api.showPage((card) => {
+    card.innerHTML = CSS + '<h2>Pick a coin to flip</h2><p class="coin-tally">Real coins, their real faces: heads is the obverse, tails the reverse.</p><div class="coin-picks"></div>'
+      + '<form class="coin-any" style="display:flex;gap:8px;justify-content:center;margin:10px 0"><input name="q" maxlength="60" placeholder="Any coin ever struck: a 1909 penny, a Ptolemaic drachm…" style="flex:1;max-width:360px;font:inherit;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit"><button type="submit" class="g-btn">Flip it</button></form>'
+      + '<div class="coin-tools"><button type="button" class="coin-make">Make your own coin</button></div><div class="src">Photos from Wikimedia Commons</div>';
+    const list = card.querySelector('.coin-picks'); list.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;justify-content:center';
+    for (const [name, when] of FAMOUS) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn coin-pick'; b.title = when; b.textContent = name; b.addEventListener('click', (e) => { e.stopPropagation(); api.stage.ask('flip a ' + name); }); list.appendChild(b); }
+    const f = card.querySelector('.coin-any'), q = f.querySelector('input');
+    q.addEventListener('keydown', (e) => e.stopPropagation());
+    f.addEventListener('submit', (e) => { e.preventDefault(); e.stopPropagation(); const v = q.value.trim(); if (v) api.stage.ask('flip a ' + v + (/\bcoin\b/i.test(v) ? '' : ' coin')); });
+    card.querySelector('.coin-make').addEventListener('click', (e) => { e.stopPropagation(); api.stage.ask('create a coin'); });
+  });
+  return 'coin';
+}
+
+// the coin maker: metal, a word or emoji a side, the words around the rim, a year, a photo for either side (made small here, kept on this device)
+function designer(api, hello) {
+  let m = cleanMine(null); try { const v = JSON.parse(localStorage.getItem(MINE_KEY) || 'null'); if (v) m = cleanMine(v); } catch (_) {}
+  api.showPage((card) => {
+    card.innerHTML = CSS + '<h2>Make a coin</h2>' + (hello ? '<p class="coin-tally"></p>' : '') + '<div class="coin-row"></div>'
+      + '<form class="coin-make-form" style="display:grid;grid-template-columns:auto 1fr;gap:6px 10px;max-width:420px;margin:8px auto;align-items:center">'
+      + '<label for="cm-metal">Metal</label><select id="cm-metal" name="metal"></select>'
+      + '<label for="cm-h">Heads</label><input id="cm-h" name="heads" maxlength="6"><label for="cm-t">Tails</label><input id="cm-t" name="tails" maxlength="6">'
+      + '<label for="cm-rim">Around the rim</label><input id="cm-rim" name="rim" maxlength="40" placeholder="IN COFFEE WE TRUST"><label for="cm-y">Year</label><input id="cm-y" name="year" maxlength="4" inputmode="numeric">'
+      + '<label for="cm-hi">Heads photo</label><input id="cm-hi" name="hImg" type="file" accept="image/*"><label for="cm-ti">Tails photo</label><input id="cm-ti" name="tImg" type="file" accept="image/*">'
+      + '</form><div class="coin-tools"><button type="button" class="coin-save">Save and flip it</button><button type="button" class="coin-clear-photos">Clear photos</button></div>'
+      + '<div class="src">Kept on this device only. A photo of a real coin can be valued: save it, flip it, then "What’s it worth?".</div>';
+    if (hello) card.querySelector('.coin-tally').textContent = hello;
+    const f = card.querySelector('form'), sel = f.querySelector('#cm-metal');
+    for (const k of Object.keys(METALS)) { const o = document.createElement('option'); o.value = k; o.textContent = k; sel.appendChild(o); }
+    sel.value = m.metal; f.heads.value = m.heads; f.tails.value = m.tails; f.rim.value = m.rim; f.year.value = m.year;
+    const row = card.querySelector('.coin-row'), b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', '120px');
+    b.innerHTML = '<span class="fc h"></span><span class="fc t"></span>'; row.appendChild(b); let turned = 0; // void-review: ok (constant markup, faces painted by paintFace)
+    const draw = () => { m = cleanMine({ ...m, metal: sel.value, heads: f.heads.value, tails: f.tails.value, rim: f.rim.value, year: f.year.value }); const l = mineLook(m); b.style.setProperty('--rim', l.rim); paintFace(b.querySelector('.fc.h'), l.h); paintFace(b.querySelector('.fc.t'), l.t); };
+    b.addEventListener('click', (e) => { e.stopPropagation(); turned += 180; b.style.transform = 'rotateY(' + turned + 'deg)'; });
+    f.addEventListener('keydown', (e) => e.stopPropagation()); f.addEventListener('input', draw); f.addEventListener('submit', (e) => e.preventDefault());
+    for (const [inp, key] of [[f.hImg, 'hImg'], [f.tImg, 'tImg']]) inp.addEventListener('change', async () => { const file = inp.files && inp.files[0]; if (!file) return; const url = URL.createObjectURL(file); m[key] = (await photoData(url, 256)) || ''; URL.revokeObjectURL(url); draw(); });
+    card.querySelector('.coin-clear-photos').addEventListener('click', (e) => { e.stopPropagation(); m.hImg = ''; m.tImg = ''; f.hImg.value = ''; f.tImg.value = ''; draw(); });
+    card.querySelector('.coin-save').addEventListener('click', (e) => { e.stopPropagation(); draw(); try { localStorage.setItem(MINE_KEY, JSON.stringify(m)); } catch (_) {} api.stage.ask('flip my coin'); });
+    draw();
+  });
+  return 'coin';
+}
+
+function flipCard(text, api, ask, look, keepEl) {
+  const { showPage, esc } = api, st = look ? null : STYLES[ask.style], d = ask.n === 1 ? 150 : ask.n <= 4 ? 96 : 64;
   let spins = 0;
   const el = showPage((card) => {
-    card.innerHTML = CSS + '<h2>' + esc(ask.for ? 'Coin for ' + ask.for : ask.n > 1 ? ask.n + ' coins' : 'Coin') + '</h2>'
+    card.innerHTML = CSS + '<h2>' + esc(ask.for ? (look ? look.title + ' for ' : 'Coin for ') + ask.for : look ? look.title : ask.n > 1 ? ask.n + ' coins' : 'Coin') + '</h2>'
       + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"></div><div class="coin-everyone" hidden></div>'
       + '<div class="coin-tools"><button type="button" class="coin-again">Flip again</button><button type="button" class="coin-sound"></button><button type="button" class="coin-reset">Reset tally</button></div>'
-      + '<div class="src">' + (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network</div>';
+      + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>';
   });
   if (!el || !el.querySelector) return 'coin';
   const row = el.querySelector('.coin-row'), word = el.querySelector('.coin-word'), tally = el.querySelector('.coin-tally'), snd = el.querySelector('.coin-sound');
@@ -76,8 +191,9 @@ function run(text, api) {
   const tell = (v, n) => { if (!n || Date.now() < restUntil) return; fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
     .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); return null; } return r.ok ? r.json() : null; }).then(showEvery).catch(() => {}); };
   const coins = Array.from({ length: ask.n }, () => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', st.rim);
-    b.innerHTML = '<span class="fc h" style="background:' + st.face + ';color:' + st.ink + '">' + st.h + '</span><span class="fc t" style="background:' + st.face + ';color:' + st.ink + '">' + st.t + '</span>'; // void-review: ok (st.* are constants from STYLES, never user text)
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', look ? look.rim : st.rim);
+    b.innerHTML = '<span class="fc h"></span><span class="fc t"></span>'; // void-review: ok (constant markup, faces painted by paintFace)
+    paintFace(b.querySelector('.fc.h'), look ? look.h : { bg: st.face, ink: st.ink, txt: st.h }); paintFace(b.querySelector('.fc.t'), look ? look.t : { bg: st.face, ink: st.ink, txt: st.t });
     row.appendChild(b); return b;
   });
   const showTally = (v) => { tally.textContent = 'Heads ' + v.h.toLocaleString('en') + ' · Tails ' + v.t.toLocaleString('en') + (v.h + v.t ? ' · ' + Math.round((100 * v.h) / (v.h + v.t)) + '% heads this visit' : ''); };
@@ -97,15 +213,17 @@ function run(text, api) {
   const label = () => { snd.textContent = soundOn() ? 'Sound on' : 'Sound off'; };
   snd.addEventListener('click', (e) => { e.stopPropagation(); try { localStorage.setItem(KEY + '.sound', soundOn() ? '0' : '1'); } catch (_) {} label(); if (soundOn()) ring(); });
   label(); go();
-  return 'coin';
+  if (look && look.mine) worthButton(el, async () => look.mine.hImg || look.mine.tImg || null, 'a coin, photographed by its owner' + (look.mine.rim ? ': ' + look.mine.rim : ''));
+  return keepEl ? el : 'coin';
 }
 
 export default {
   name: 'coin',
-  examples: ['flip a coin', 'heads or tails', 'coin toss', 'flip 3 coins', 'flip a coin 70% heads', 'flip a euro', 'toss a coin for who pays', 'flip a weighted coin 60% heads'],
-  nearMisses: ['what is a coin', 'how much is a coin worth', 'coin collecting', 'flip the card', 'bitcoin price'],
+  examples: ['flip a coin', 'heads or tails', 'coin toss', 'flip 3 coins', 'flip a coin 70% heads', 'flip a euro', 'toss a coin for who pays', 'flip a weighted coin 60% heads',
+    'flip a Lydian stater', 'flip a Morgan dollar', 'flip a famous coin', 'create a coin', 'flip my coin'],
+  nearMisses: ['what is a coin', 'how much is a coin worth', 'coin collecting', 'flip the card', 'bitcoin price', 'flip a pancake'],
   coinOf,
   flip,
-  match(lower, text) { return !!coinOf(text || lower); },
+  match(lower, text) { return !!(coinAsk(text || lower) || coinOf(text || lower)); },
   run
 };

@@ -365,7 +365,7 @@
     {
      "name": "tilt-mode",
      "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -441,9 +441,9 @@
     {
      "name": "coin",
      "tier": "checked",
-     "why": "a self-test, 6 browser-suite mentions",
-     "last_tested": "2026-10-23",
-     "last_tested_by": "the daily smoke test"
+     "why": "a self-test, 9 browser-suite mentions",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests"
     },
     {
      "name": "aggravation",

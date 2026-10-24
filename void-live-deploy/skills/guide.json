@@ -969,7 +969,7 @@
     "tilt game"
    ],
    "tier": "tested",
-   "why": "2 real asks in the benchmark",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 44
   },
@@ -1118,7 +1118,7 @@
     "coin toss"
    ],
    "tier": "checked",
-   "why": "a self-test, 6 browser-suite mentions",
+   "why": "a self-test, 9 browser-suite mentions",
    "n": 52
   },
   {

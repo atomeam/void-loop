@@ -483,12 +483,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T01:25:37Z",
+   "subject": "Christmas itself: the midnight wave. While Christmas is somewhere on Earth the is-it card follows it around the world (\"It is Christmas in…"
+  },
+  {
    "at": "2026-10-24T01:21:34Z",
    "subject": "Site scout: what a real site shows and lets a visitor do, read from the live page on GitHub (phone and desktop: text, controls, weight…"
   },
   {
    "at": "2026-10-24T01:14:32Z",
    "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T01:09:10Z",
+   "subject": "Verse hardens itself: 1 benchmark ask(s) for tilt-mode"
   },
   {
    "at": "2026-10-24T01:00:46Z",
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-23T23:32:01Z",
    "subject": "Tower gate: a verdict commit rebases onto the newest main and retries when main moved during the run (run #3 lost its push to a race)"
-  },
-  {
-   "at": "2026-10-23T23:30:28Z",
-   "subject": "Incident: the browser suite failed on 628e6ffe (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:28:10Z",
-   "subject": "Tower card loads the tower list from a new address (lib/tower.js?v=ladder-35), so a browser's old 24-floor copy is never reused"
   }
  ],
  "builders": {

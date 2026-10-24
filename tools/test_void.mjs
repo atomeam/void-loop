@@ -621,6 +621,32 @@ try {
     check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
     await Q.ctx.close();
   }
+  // every coin (owner, 2026-10-24: "any ever discovered coin as well as create a coin and it ties into our coin appraisal"): Commons and the appraiser are stubbed
+  if (want("coin: any real coin with its real faces, a picker, your own coin, and what it's worth")) { const C = await fresh(); const appraised = [];
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await C.ctx.route(/commons\.wikimedia\.org\/w\/api\.php/, (r) => { const rev = /reverse/.test(decodeURIComponent(r.request().url())); return r.fulfill(json({ query: { pages: { 1: { index: 1, title: 'File:Lydian stater ' + (rev ? 'reverse' : 'obverse') + '.jpg', imageinfo: [{ mime: 'image/jpeg', thumburl: 'https://upload.wikimedia.org/stub/' + (rev ? 'rev' : 'obv') + '.jpg', descriptionurl: 'https://commons.wikimedia.org/wiki/File:Lydian_stater_' + (rev ? 'reverse' : 'obverse') + '.jpg' }] } } } })); });
+    await C.ctx.route(/upload\.wikimedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' }, body: PNG }));
+    await C.ctx.route(/\/api\/appraise$/, (r) => { appraised.push(JSON.parse(r.request().postData() || '{}')); return r.fulfill(json({ text: 'An electrum stater of Lydia: about $3,000 in good condition.' })); });
+    await C.ask('flip a Lydian stater', 1500);
+    const real = await until(async () => C.p.$eval('.vpage.on', (c) => { const h = c.querySelector('.coin .fc.h'), t = c.querySelector('.coin .fc.t'); return /obv\.jpg/.test(h.style.background) ? { h2: c.querySelector('h2').textContent, h: h.style.background, t: t.style.background, src: c.querySelector('.src').textContent, word: c.querySelector('.coin-word').textContent } : null; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await C.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'coin-real.png') }).catch(() => {});
+    await C.p.click('.vpage.on .coin-appraise').catch(() => {});
+    const worth = await until(async () => C.p.$eval('.vpage.on .coin-worth', (e) => (/\$3,000/.test(e.textContent) ? e.textContent : '')).catch(() => ''), 6000);
+    check('coin: "flip a Lydian stater" flips the real coin: its obverse photo is heads and its reverse tails, from Wikimedia Commons with both files linked; "What\'s it worth?" sends the face to the appraiser and shows its answer',
+      !!real && /Lydian Stater/.test(real.h2) && /rev\.jpg/.test(real.t) && /Wikimedia Commons/.test(real.src) && /Lydian stater reverse/.test(real.src) && /^(?:Heads|Tails)$/.test(real.word)
+      && !!worth && appraised.length === 1 && /^data:image\/jpeg;base64,/.test(appraised[0].image) && /Lydian Stater coin/.test(appraised[0].note) && !C.errors.length,
+      JSON.stringify({ real, worth, n: appraised.length, note: appraised[0] && appraised[0].note, errors: C.errors }));
+    await C.ask('flip a famous coin', 900);
+    const picks = await C.p.$$eval('.vpage.on .coin-pick', (b) => b.map((x) => x.textContent)).catch(() => []);
+    await C.ask('create a coin', 900);
+    await C.p.fill('.vpage.on #cm-h', '☕'); await C.p.fill('.vpage.on #cm-t', '🍩'); await C.p.fill('.vpage.on #cm-rim', 'IN COFFEE WE TRUST'); await C.p.selectOption('.vpage.on #cm-metal', 'copper');
+    await C.p.click('.vpage.on .coin-save'); await C.p.waitForTimeout(1200);
+    const mine = await C.p.$eval('.vpage.on', (c) => ({ h2: c.querySelector('h2').textContent, h: c.querySelector('.coin .fc.h').textContent, t: c.querySelector('.coin .fc.t').textContent, bg: c.querySelector('.coin .fc.h').style.background })).catch(() => null);
+    if (process.env.VOID_SHOTS) await C.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'coin-mine.png') }).catch(() => {});
+    check('coin: "flip a famous coin" offers coins from the Lydian stater to the euro; "create a coin" makes your own (copper, ☕ and 🍩, words around the rim), kept on this device, and "Save and flip it" flips it',
+      picks.length >= 20 && picks[0] === 'Lydian stater' && !!mine && /IN COFFEE WE TRUST/.test(mine.h2) && mine.h === '☕' && mine.t === '🍩' && /217, 130, 75|d9824b/i.test(mine.bg) && !C.errors.length,
+      JSON.stringify({ picks: picks.length, mine, errors: C.errors }));
+    await C.ctx.close(); }
   // the midnight wave (owner, 2026-10-24: "something amazingly special when its actually christmas"): the clock is set to 23:30 UTC on Christmas Eve
   if (want("is it: christmas: the midnight wave follows christmas around the world and snow falls over the whole stage")) { const X = await fresh();
     await X.p.clock.install({ time: new Date('2026-12-24T23:30:00Z') });
