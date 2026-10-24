@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40052148383",
-  "at": "2026-10-24T01:59:04Z",
-  "what": "Verse hardened itself: 2 benchmark ask(s) for resonant-membrane.  Why these: tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); echo-disagrees (only 2 benchmark asks, evidence tier: checked); fact (only 1 benchmark ask, evidence tier: checked); resonant-membrane (only 1 benchmark ask, evidence tier: checked). New phrases: “pluck the membrane” now opens resonant-membrane; “membrane mind” now opens resonant-membrane. Did not route: put in the page; draft for me; heads or tails; coin toss.",
-  "try": "pluck the membrane",
+  "run": "40054282413",
+  "at": "2026-10-24T02:29:09Z",
+  "what": "Verse hardened itself: 2 benchmark ask(s) for similar.  Why these: tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); echo-disagrees (only 2 benchmark asks, evidence tier: checked); fact (only 1 benchmark ask, evidence tier: checked); similar (only 1 benchmark ask, evidence tier: checked). New phrases: “what's similar to swarm mind” now opens similar; “what is similar to the mind field” now opens similar. Did not route: put in the page; draft for me; heads or tails; coin toss.",
+  "try": "what's similar to swarm mind",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-24T01:49:14Z",
-    "try": "tell me a quote",
-    "closedAt": "2026-10-24T01:58:42Z"
+    "at": "2026-10-24T01:59:04Z",
+    "try": "pluck the membrane",
+    "closedAt": "2026-10-24T02:28:47Z"
   }
 }
