@@ -2,6 +2,29 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T01:41:28.704Z",
+   "sha": "8b511cf7397469215b935e53718fcfe8b1f57b09",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40050191290",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/coins.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/coins.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/coin.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json"
+   ]
+  },
+  {
    "at": "2026-10-24T01:35:38.608Z",
    "sha": "4b88b528aab74cb040a0a36bf662f981e2cf709f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40049737416",
@@ -615,28 +638,6 @@
     "tools/propose-fix.mjs",
     "tools/propose-fix.test.mjs",
     "void-live-deploy/self.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T21:53:21.850Z",
-   "sha": "9c456af5716fa7fdea5cd57b17f5d3be9449b8ed",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40029048597",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\""
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/finish.mjs",
-    "tools/merge-main.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/void.asks.json",
     "void-live-deploy/void.growth.json",
     "void-live-deploy/incidents.json"
    ]
