@@ -12,15 +12,23 @@ export const NEWS_PER_PAGE = 6;   // entries on a page
 export const KIND_ORDER = ['grow', 'build', 'fix'];
 export const KIND_NAME = { grow: 'Grew', build: 'Built', fix: 'Fixed', retire: 'Retired', idea: 'Ideas', finding: 'Found' };
 
-const LINE_MAX = 150;
 const cut = (s) => String(s || '').replace(/\s+/g, ' ').trim(); // whole sentences, never cut with an ellipsis (owner, 2026-10-21: the book cut its What's new lines)
+
+/** the part of an entry's own words a reader can use (2026-10-24: the chapter showed "Why these: tab (no benchmark ask, evidence tier:
+ *  tested, 30 failed runs name it); coin ..." for every entry Verse's self-hardening wrote): an entry that says "New phrases: ..." is those
+ *  sentences ("“tell me a quote” now opens quote."); otherwise its words up to the first internal section ("Why these:", "Did not route:",
+ *  "Candidates tried:"). Only the entry's own words, cut, never reworded. Pure. */
+export function plainOf(what) {
+  const t = cut(what), m = /\bNew phrases:\s*(.+?)(?:\s+(?:Did not route|Why these|Candidates tried):|$)/.exec(t);
+  return m ? m[1].trim() : t.replace(/\s+(?:Why these|Did not route|Candidates tried):[\s\S]*$/, '').trim();
+}
 
 /** the ledger entries worth a line: the newest NEWS_MAX with a date and some text, newest first, as { at, day, kind, line, try }. Pure. */
 export function newsEntries(ledger, max = NEWS_MAX, tryOf = null) { // tryOf(entry): an ask for an entry with no `try` of its own (skills/showcase.js playable)
   const out = [];
   for (const e of Array.isArray(ledger) ? ledger : []) {
     if (!e || typeof e.at !== 'string' || !/^\d{4}-\d\d-\d\d/.test(e.at)) continue;
-    const line = cut(e.show || e.what, LINE_MAX); if (!line) continue;
+    const line = e.show ? cut(e.show) : plainOf(e.what); if (!line) continue;
     let t = e.try || ''; if (!t && tryOf) { try { t = tryOf(e) || ''; } catch (_) { t = ''; } }
     out.push({ at: e.at, day: e.at.slice(0, 10), kind: String(e.kind || 'grow'), line, try: t ? cut(t, 90) : '' });
   }
@@ -65,7 +73,7 @@ export function withNews(book, ledger, opts = {}) {
   const k = np.length, first = at + 2; // the page number the chapter starts on
   const shift = (n) => (n >= first ? n + k : n);
   const pages = book.pages.map((p) => { const q = { ...p, n: shift(p.n) }; if (p.ownerPage) q.ownerPage = shift(p.ownerPage); if (p.entries) q.entries = p.entries.map((e) => ({ ...e, page: shift(e.page) })); return q; });
-  np.forEach((p, i) => { p.n = first + i; p.size = entries.length; });
+  np.forEach((p, i) => { p.n = first + i; p.size = entries.length; p.grown = Array.isArray(ledger) ? ledger.length : 0; }); // grown: the page's universe has a star per ledger entry
   pages.splice(at + 1, 0, ...np);
   const chapters = book.chapters.map((c) => ({ ...c, from: shift(c.from), to: shift(c.to) }));
   chapters.splice(1, 0, { id: NEWS_ID, name: 'What’s new', kind: 'news', for: 'the newest changes, live from the ledger', from: first, to: first + k - 1, count: entries.length });

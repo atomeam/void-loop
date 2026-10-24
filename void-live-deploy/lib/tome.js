@@ -125,6 +125,50 @@ const pageArt = (p, h = 120) => {
     return '<div class="tome-art">' + artSvg({ key: 'book:' + (p.name || p.title || p.kind), name: p.title || '', kind: p.kind === 'mini' ? 'Miniature' : p.game ? 'Game' : p.kind === 'skill' ? 'Skill' : 'Idea', chapter: p.chapter, rarity: p.tier || 'common', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h }) + '</div>';
   } catch (_) { return ''; }
 };
+// Verse's own picture for the pages about Verse itself (owner, 2026-10-24: "Verse is a universe that comes from an Atom", "represents its growth
+// plus im Atom", "needs to look more universe and less atom", "design an atom shaped galaxy that looks natural", with a picture: a spiral
+// galaxy, golden core, whose arms are three orbit rings of stars, blue clusters, pink nebula knots and dark dust lanes, in a field of stars).
+// Drawn here from a fixed seed, so the same growth draws the same sky: the rings' stars number the entries in Verse's growth ledger (`grown`),
+// so the galaxy fills in as Verse grows. Ids are per call so two on one spread do not share gradients or filters.
+let ringN = 0;
+export function verseUniverse(h = 80, w = 320, grown = 0) {
+  const n = 'vu' + (++ringN), cx = w / 2, cy = h / 2, f = (v) => (Math.round(v * 10) / 10).toString(), u = h / 100; // u: one hundredth of the height
+  let seed = 11; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647), pick = (a) => a[Math.floor(rnd() * a.length)];
+  const m = Math.min(1, 0.25 + h / 400); // fewer stars on a small picture: one too small to see is only weight (an 80 px banner draws about half)
+  const dot = (x, y, r, c, o) => '<circle cx="' + f(x) + '" cy="' + f(y) + '" r="' + f(r) + '" fill="' + c + '" opacity="' + f(o) + '"/>';
+  // the far field: stars of every colour, a few bright ones with four-point spikes, and small distant galaxies
+  let field = '';
+  for (let i = 0; i < Math.round(160 * m); i++) field += dot(rnd() * w, rnd() * h, (0.15 + rnd() * 0.45) * u * 0.6, pick(['#fff', '#fff', '#ffe9c4', '#cfe0ff', '#ffd2a8']), 0.35 + rnd() * 0.6);
+  for (let i = 0; i < 4; i++) { const x = rnd() * w, y = rnd() * h, L = (1.5 + rnd() * 2.5) * u; field += '<g opacity=".9" stroke="#fff" stroke-width="' + f(0.12 * u) + '"><line x1="' + f(x - L) + '" y1="' + f(y) + '" x2="' + f(x + L) + '" y2="' + f(y) + '"/><line x1="' + f(x) + '" y1="' + f(y - L) + '" x2="' + f(x) + '" y2="' + f(y + L) + '"/></g>' + dot(x, y, 0.5 * u, '#fff', 1); }
+  for (let i = 0; i < 6; i++) { const x = rnd() * w, y = rnd() * h; field += '<ellipse cx="' + f(x) + '" cy="' + f(y) + '" rx="' + f((0.8 + rnd() * 1.2) * u) + '" ry="' + f((0.3 + rnd() * 0.4) * u) + '" transform="rotate(' + Math.round(rnd() * 180) + ' ' + f(x) + ' ' + f(y) + ')" fill="#f1cf98" opacity=".55" filter="url(#' + n + 's)"/>'; }
+  // the three rings: tilted ellipses of stars, each with a soft blue glow, a dark dust lane just inside, blue clusters and pink knots along it
+  const per = Math.max(Math.round(120 * m), Math.min(600, Math.round((grown || 0) / 1.6 * m))), A = Math.min(w * 0.4, h * 0.9), B = A * 0.34;
+  let glow = '', dust = '', stars = '', knots = '';
+  for (const deg of [-12, 48, 108]) {
+    const rad = (deg * Math.PI) / 180, P = (t, s = 1, j = 0) => { const x = Math.cos(t) * A * s, y = Math.sin(t) * B * s; return [cx + x * Math.cos(rad) - y * Math.sin(rad) + j * (rnd() - 0.5), cy + x * Math.sin(rad) + y * Math.cos(rad) + j * (rnd() - 0.5)]; };
+    const ring = (sw, c, o, s = 1) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + f(A * s) + '" ry="' + f(B * s) + '" transform="rotate(' + deg + ' ' + cx + ' ' + cy + ')" fill="none" stroke="' + c + '" stroke-opacity="' + o + '" stroke-width="' + f(sw * u) + '"/>';
+    glow += ring(7, '#6f95ff', '.12') + ring(3.2, '#a9c6ff', '.26') + ring(1.3, '#e8f0ff', '.32', 0.995); // the band's haze, wide and faint to narrow and bright
+    dust += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + f(A * 0.975) + '" ry="' + f(B * 0.95) + '" transform="rotate(' + deg + ' ' + cx + ' ' + cy + ')" fill="none" stroke="#3a2516" stroke-opacity=".55" stroke-width="' + f(0.9 * u) + '" stroke-dasharray="' + f(6 * u) + ' ' + f(1.5 * u) + ' ' + f(2 * u) + ' ' + f(1 * u) + '"/>';
+    const ph = rnd() * 6;
+    for (let i = 0; i < per; i++) { const t = rnd() * Math.PI * 2, thick = (1.6 + 4 * Math.pow(Math.sin(2 * t + ph), 2)) * u; // a band that swells and thins as it goes round
+      const [x, y] = P(t, 0.985 + (rnd() - 0.5) * 0.05, thick); stars += dot(x, y, (0.1 + Math.pow(rnd(), 3) * 0.55) * u, pick(['#dbe8ff', '#b9d0ff', '#fff', '#fff', '#fff3df']), 0.35 + rnd() * 0.6); }
+    for (let i = 0; i < 9; i++) { const [x, y] = P(rnd() * Math.PI * 2, 1, 1.5 * u); knots += dot(x, y, (0.6 + rnd() * 0.8) * u, rnd() < 0.55 ? '#ff7fb0' : '#8fb6ff', 0.75); }
+  }
+  // the core: a golden glow and a tight spiral of warm stars winding into it
+  let core = '', arms = '';
+  const R = 30 * u, sp = (arm, t) => { const k = arm * Math.PI + t * 3.4 * Math.PI, r = (1.5 + t * R / u) * u; return [cx + Math.cos(k) * r, cy + Math.sin(k) * r * 0.8]; };
+  for (const arm of [0, 1]) { let d = ''; for (let i = 0; i <= 40; i++) { const [x, y] = sp(arm, i / 40); d += (i ? 'L' : 'M') + f(x) + ' ' + f(y); } arms += '<path d="' + d + '" fill="none" stroke="#ffd79a" stroke-opacity=".35" stroke-width="' + f(3.5 * u) + '" stroke-linecap="round"/>'; }
+  for (let i = 0; i < Math.round(420 * m); i++) { const t = Math.pow(rnd(), 0.75), [x, y] = sp(i % 2, t), j = (0.8 + t * 3.5) * u;
+    core += dot(x + j * (rnd() - 0.5), y + j * (rnd() - 0.5), (0.1 + Math.pow(rnd(), 2.5) * 0.45) * u, pick(['#fff4dc', '#ffe1a8', '#ffd08a', '#fff', '#ffb6c9']), 0.45 + rnd() * 0.5); }
+  return '<div class="tome-art"><svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" role="img" aria-label="Verse: a galaxy shaped like an atom, grown from it, ' + per * 3 + ' stars in its rings for its growth" style="display:block;border-radius:6px">'
+    + '<defs><radialGradient id="' + n + 'c" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffaf0"/><stop offset=".18" stop-color="#ffe7b8" stop-opacity=".95"/><stop offset=".5" stop-color="#d9a866" stop-opacity=".4"/><stop offset="1" stop-color="#7a5cff" stop-opacity="0"/></radialGradient>'
+    + '<filter id="' + n + 'b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="' + f(1.6 * u) + '"/></filter>'
+    + '<filter id="' + n + 's" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="' + f(0.35 * u) + '"/></filter></defs>'
+    + '<rect width="' + w + '" height="' + h + '" fill="#030306"/>' + field
+    + '<g filter="url(#' + n + 'b)">' + glow + arms + '</g>' + '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + f(36 * u) + '" ry="' + f(29 * u) + '" fill="url(#' + n + 'c)"/>'
+    + core + '<g filter="url(#' + n + 's)">' + dust + '</g>' + stars + '<g filter="url(#' + n + 's)">' + knots + '</g>'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + f(3 * u) + '" fill="#fffaf0" filter="url(#' + n + 's)"/></svg></div>';
+}
 const stop = (s) => { s = String(s || '').trim(); return !s || /[.!?…:)"”’']$/.test(s) ? s : s + '.'; }; // a line ends as a sentence does
 export function pageHtml(p, book, esc) {
   const t = book.totals || {}, chap = chapterOf(book, p.chapter);
@@ -148,7 +192,7 @@ export function pageHtml(p, book, esc) {
   if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
   if (p.kind === 'news') { // a page of the newest ledger entries (lib/book-news.js): by day, then by kind, each line its own words and an ask to try it
     const when = (d) => { const t = new Date(d + 'T12:00:00Z'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
-    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 80)
+    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
       + (p.days || []).map((d) => '<div class="tome-day">' + esc(when(d.day)) + (d.groups.some((g) => g.items.some((e) => e.try)) ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">show these on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? ' <a href="#" class="tome-tryit" data-ask="' + esc(e.try) + '">try it</a>' : '') + '</li>').join('') + '</ul>').join('')).join('') + '</div>';
   }
   if (p.kind === 'opener') {
