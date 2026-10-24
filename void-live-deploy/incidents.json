@@ -2,6 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T01:53:11.563Z",
+   "sha": "3eec201e15abad132763256efa15863ec312b4d9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40051173181",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/tower-verdict.test.mjs",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/tower.evidence.json"
+   ]
+  },
+  {
    "at": "2026-10-24T01:49:31.198Z",
    "sha": "c8dff6764dff985730216951898e27dff16089d4",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40050917889",
@@ -607,34 +623,6 @@
     "void-live-deploy/lib/share-client.js",
     "void-live-deploy/lib/share.js",
     "void-live-deploy/lib/tally.js"
-   ]
-  },
-  {
-   "at": "2026-10-23T22:05:47.385Z",
-   "sha": "7adc40b1cadcf77b3a9400a876d6928c87d21b05",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40030390972",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "docs/licenses.md",
-    "docs/miniatures.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/void.decisions.json",
-    "tools/bench.mjs",
-    "tools/checks.mjs",
-    "tools/country-wikidata.test.mjs",
-    "tools/rooms-family.test.mjs",
-    "tools/sw-3d-cache.test.mjs",
-    "tools/test_3d.mjs",
-    "tools/test_void.mjs",
-    "tools/vendor-three.test.mjs"
    ]
   }
  ]
