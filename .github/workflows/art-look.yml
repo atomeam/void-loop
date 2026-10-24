@@ -1,0 +1,35 @@
+# See the picture the Art Forge paints for one subject (functions/api/card-art.js), from GitHub's network, for builders whose machine can't
+# reach a-to-mind.com: the picture is printed into the job log as base64 lines between ART-BEGIN and ART-END, so a builder can decode it
+# and look at it (owner, 2026-10-23: check the result itself, not its name). Manual only; asks the forge once (it returns the kept picture
+# when one exists); nothing is written to the repo.
+name: Art look
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject:
+        description: the subject to paint (as typed)
+        required: true
+        type: string
+      kind:
+        description: cartoon, or a card kind (animal, place, thing...)
+        default: cartoon
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  look:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Paint and print
+        env:
+          SUBJECT: ${{ inputs.subject }}
+          KIND: ${{ inputs.kind }}
+        run: |
+          body=$(jq -nc --arg s "$SUBJECT" --arg k "$KIND" '{subject:$s,kind:$k}')
+          curl -sS -m 90 -X POST https://a-to-mind.com/api/card-art -H 'content-type: application/json' -H 'origin: https://a-to-mind.com' -d "$body" > art.json
+          jq -c 'del(.img)' art.json
+          echo ART-BEGIN; jq -r '.img // ""' art.json | sed 's/^data:image\/[a-z]*;base64,//' | fold -w 4000; echo ART-END
