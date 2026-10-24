@@ -24,9 +24,10 @@
   #note { text-align: center; color: var(--soft); font-size: 14px; min-height: 1.4em; }
   form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 8px; }
   label { font-size: 12px; color: var(--soft); display: grid; gap: 3px; }
+  select { font: inherit; font-size: 14px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 3px 6px; }
   input, textarea { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; box-sizing: border-box; }
   .row { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; align-items: center; margin: 6px 0; font-size: 14px; }
-  .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); }
+  .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); white-space: nowrap; }
   button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; }
   button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
   details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
@@ -49,10 +50,12 @@
   <div class="row">
     <label><input id="uniq" type="checkbox"> no repeats</label>
     <label><input id="sort" type="checkbox"> sorted</label>
+    <label>Base <select id="base"><option value="10">decimal</option><option value="2">binary</option><option value="8">octal</option><option value="16">hex</option></select></label>
+    <label>Columns <select id="cols"><option value="0">in a line</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
   </div>
   <div class="row"><button id="go" type="button">New number</button><button id="copy" class="quiet" type="button">Copy</button><button id="link" class="quiet" type="button">Copy link</button></div>
   <div id="hist"></div>
-  <details id="listbox"><summary>Pick from a list instead</summary>
+  <details id="listbox"><summary>Pick from a list or shuffle it</summary>
     <p style="font-size:13px;color:var(--soft)">One item a line. Pick one, or shuffle them all.</p>
     <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
     <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
@@ -74,11 +77,14 @@
     if (uniq) { const seen = new Set(); vals = []; if (n > span / 2 && span <= 200000) { const all = Array.from({ length: span }, (_, i) => a + i); for (let i = all.length - 1; i > 0; i--) { const j = below(i + 1); [all[i], all[j]] = [all[j], all[i]]; } vals = all.slice(0, n); } else while (vals.length < n) { const v = between(a, b); if (!seen.has(v)) { seen.add(v); vals.push(v); } } }
     else vals = Array.from({ length: n }, () => between(a, b));
     if ($('sort').checked) vals.sort((x, y) => x - y);
-    out.className = n > 1 ? 'many' : ''; out.textContent = vals.map((v) => v.toLocaleString('en')).join(n > 1 ? ', ' : '');
+    // the base the numbers are written in (random.org's integer tool offers binary, octal, decimal and hex) and, for many, how many a row
+    const base = +$('base').value || 10, cols = +$('cols').value || 0, word = (v) => (base === 10 ? v.toLocaleString('en') : (v < 0 ? '-' : '') + Math.abs(v).toString(base).toUpperCase());
+    out.className = n > 1 ? 'many' : ''; out.style.whiteSpace = cols && n > 1 ? 'pre' : '';
+    out.textContent = cols && n > 1 ? vals.map(word).reduce((rows, w, i) => { if (i % cols === 0) rows.push([]); rows[rows.length - 1].push(w); return rows; }, []).map((r) => r.join('\t')).join('\n') : vals.map(word).join(n > 1 ? ', ' : '');
     $('go').textContent = n > 1 ? 'New numbers' : 'New number';
     $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + a + ' to ' + b + (uniq ? ', no repeats' : '') : 'Random number, ' + a + ' to ' + b;
     if (n === 1) { hist.unshift(vals[0]); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
-    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1');
+    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols);
     history.replaceState(null, '', '?' + q);
   }
   function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
@@ -88,12 +94,13 @@
   $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
   $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
   $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
-  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw;
+  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw;
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
   // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
   const p = new URLSearchParams(location.search);
   for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
   $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
+  if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
   draw();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
