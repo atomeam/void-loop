@@ -16,6 +16,9 @@ export function putBack(stageApi, entry) {
   if (things[th.id]) th.id = th.kind + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
   things[th.id] = th;
   stageApi.select(th.id); stageApi.save(); stageApi.render();
+  // the restore is recorded now: the watcher looks only once redraws settle, so a restore and a quick second dismissal cancelled out and the
+  // pile and "what changed today" missed both (the restore button's path; the browser suite's undo pile check)
+  flush(stageApi);
   return th.id;
 }
 
