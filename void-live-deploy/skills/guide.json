@@ -619,7 +619,7 @@
    "examples": [
     "show the magnetize step",
     "how do I magnetize a printed motor",
-    "magnetize a printed motor"
+    "how do i magnetize this?"
    ],
    "tier": "proven",
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",

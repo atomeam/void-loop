@@ -5488,6 +5488,23 @@ try {
     check('quiz and challenge in a fresh visit: "test me on that" and "turn the questions i missed into a five-minute challenge" each put up gears and start (a quiz card, a challenge card), with no page errors',
       out.quiz.card === 1 && out.quiz.gears > 0 && out.challenge.card === 1 && out.challenge.gears > 0 && !out.quiz.errors.length && !out.challenge.errors.length, JSON.stringify(out));
   }
+  // the tower's online-stopwatch.com floor: the stage stopwatch's laps say which was fastest and slowest and lead to /stopwatch/, which keeps
+  // time across a reload and rings a countdown carried in its link
+  if (want("stopwatch: the stage stopwatch marks the fastest and slowest lap and links the full page; /stopwatch/ keeps time across a reload and a linked countdown rings")) {
+    const Z = await fresh(); await Z.ask('start a stopwatch', 900);
+    for (const w of [700, 300, 500]) { await Z.p.waitForTimeout(w); await Z.p.click('.vpage.on .sw-lap'); }
+    const stage = { laps: await Z.p.$$eval('.vpage.on .sw-laps li', (l) => l.map((x) => x.textContent)), link: await Z.p.$eval('.vpage.on a[href="/stopwatch/"]', (a) => a.textContent).catch(() => '') };
+    await Z.p.goto(base + 'stopwatch/'); await Z.p.keyboard.press('Space'); await Z.p.waitForTimeout(600); await Z.p.keyboard.press('l'); await Z.p.waitForTimeout(300); await Z.p.keyboard.press('l');
+    const lapRows = await Z.p.$$eval('#laps tbody tr', (r) => r.length), t1 = await Z.p.$eval('#swface', (e) => e.textContent);
+    await Z.p.reload(); await Z.p.waitForTimeout(500); const t2 = await Z.p.$eval('#swface', (e) => e.textContent), keptLaps = await Z.p.$$eval('#laps tbody tr', (r) => r.length);
+    await Z.p.goto(base + 'stopwatch/?t=2s'); await Z.p.click('#cdgo'); await Z.p.waitForTimeout(2700);
+    const ring = { note: await Z.p.$eval('#cdnote', (e) => e.textContent), done: await Z.p.$eval('#cdface', (e) => e.classList.contains('done')) };
+    const sec = (t) => t.split(':').reduce((a, x) => a * 60 + Number(x), 0);
+    check('stopwatch: the stage stopwatch marks the fastest and slowest lap and links the full page; /stopwatch/ keeps time across a reload and a linked countdown rings',
+      stage.laps.length === 3 && stage.laps.some((x) => /fastest/.test(x)) && stage.laps.some((x) => /slowest/.test(x)) && /full stopwatch/i.test(stage.link)
+      && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
   // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
   // gears' own steppers, and Check says what still needs changing, then that it is done
