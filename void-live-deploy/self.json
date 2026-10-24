@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T23:04:19Z",
+   "subject": "Tower gate: stopwatch accuracy measured head to head; a 3 s run timed by the gate's own clock, read back and checked for holding still"
+  },
+  {
    "at": "2026-10-24T22:56:38Z",
    "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-24T18:57:43Z",
    "subject": "Incident: the browser suite failed on e2b1a8d2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T18:57:20Z",
-   "subject": "A word counter page against wordcounter.net: counts as you type, offline, kept on the device"
   }
  ],
  "builders": {

@@ -5,6 +5,7 @@
  * data: { read: () => ({ ms, running }), press?: () => void, reset?: () => void }
  */
 const R = 0.025; // a 55 mm watch
+const BOW = 0.002 + 0.0062 + 0.0011 - 0.0008; // crown half-height + ring radius + tube - how far it reaches into the crown
 function dialTexture(THREE) {
   const N = 1024, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), cx = N / 2, r = N / 2;
   const grad = g.createRadialGradient(cx, cx * 0.85, r * 0.1, cx, cx, r); grad.addColorStop(0, '#fdfcf8'); grad.addColorStop(1, '#e9e6dc');
@@ -46,7 +47,9 @@ export default function build(ctx, data) {
   const stem = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0022, 0.0022, 0.006, 20)), satin); stem.position.set(0, R * 1.2, -0.003);
   const crown = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0042, 0.0042, 0.004, 32)), chrome); crown.position.set(0, R * 1.36, -0.003); crown.name = 'crown';
   const knurl = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0044, 0.0044, 0.0024, 32, 1, true)), satin); crown.add(knurl);
-  const bow = new THREE.Mesh(G(new THREE.TorusGeometry(0.0075, 0.0011, 12, 48, Math.PI * 1.25).rotateZ(-Math.PI * 0.125)), chrome); bow.position.set(0, R * 1.36 + 0.004, -0.003);
+  // the bow: a closed ring through the top of the crown, as on a real stopwatch (an open arc floated beside the crown, its ends in the air;
+  // owner, 2026-10-24, examining it: "pointing out the broken part"). BOW is its centre above the crown's centre: its lowest point sits 0.8 mm inside the crown
+  const bow = new THREE.Mesh(G(new THREE.TorusGeometry(0.0062, 0.0011, 16, 64)), chrome); bow.position.set(0, R * 1.36 + BOW, -0.003); bow.name = 'bow';
   const pusher = new THREE.Group(); pusher.rotation.z = -Math.PI / 3;
   const pStem = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0016, 0.0016, 0.005, 16)), satin); pStem.position.set(0, R * 1.18, -0.003);
   const pCap = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0026, 0.0026, 0.003, 24)), chrome); pCap.position.set(0, R * 1.29, -0.003); pCap.name = 'pusher';
@@ -68,7 +71,9 @@ export default function build(ctx, data) {
   let d = data || {}, press = 0, pressWhich = null, lastMs = -1;
   const read = () => { try { const r = d.read ? d.read() : d; return { ms: +r.ms || 0, running: !!r.running }; } catch (_) { return { ms: 0, running: false }; } };
   function setHands(ms) {
-    const s = ms / 1000, s60 = s % 60; sec.rotation.z = -(ctx.still ? Math.floor(s60 * 5) / 5 : s60) / 60 * Math.PI * 2;
+    // the hand beats five times a second, as the dial's 1/5 SECOND track says a mechanical stopwatch does; so the scene is drawn 5 times a
+    // second while it runs, not 60 (owner, 2026-10-24: "broken laggy 3d stopwatch")
+    const s = ms / 1000, s60 = s % 60; sec.rotation.z = -(Math.floor(s60 * 5) / 5) / 60 * Math.PI * 2;
     min.rotation.z = -((s / 60) % 30) / 30 * Math.PI * 2; lastMs = ms;
   }
   setHands(read().ms);
@@ -83,9 +88,9 @@ export default function build(ctx, data) {
     state: () => ({ second: -sec.rotation.z, minute: -min.rotation.z, ms: lastMs }), // for tests
     tick(dt) {
       let moved = false;
-      if (press > 0) { press = Math.max(0, press - dt * 6); const k = Math.sin(press * Math.PI) * 0.0016; crown.position.y = R * 1.36 - (pressWhich === 'press' ? k : 0); bow.position.y = crown.position.y + 0.004; pCap.position.y = R * 1.29 - (pressWhich === 'reset' ? k : 0); moved = true; }
+      if (press > 0) { press = Math.max(0, press - dt * 6); const k = Math.sin(press * Math.PI) * 0.0016; crown.position.y = R * 1.36 - (pressWhich === 'press' ? k : 0); bow.position.y = crown.position.y + BOW; pCap.position.y = R * 1.29 - (pressWhich === 'reset' ? k : 0); moved = true; }
       const r = read();
-      if (r.ms !== lastMs) { setHands(r.ms); moved = true; }
+      if (Math.floor(r.ms / 200) !== Math.floor(lastMs / 200)) { setHands(r.ms); moved = true; } // a new fifth of a second
       return moved ? 'view' : false;
     },
     dispose() { for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); dialMat.map.dispose(); },
