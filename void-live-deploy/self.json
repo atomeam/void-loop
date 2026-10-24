@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T16:31:23Z",
+   "subject": "Showcase: the book line reads whole, the comment names what an upgrade lists"
+  },
+  {
    "at": "2026-10-24T16:29:18Z",
    "subject": "Incident: the browser suite failed on bd280a8c (void-live-deploy/incidents.json)"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-24T15:55:43Z",
    "subject": "Spin the wheel: a fair wheel picker against wheelofnames.com, and the cards line up with their text"
-  },
-  {
-   "at": "2026-10-24T15:54:42Z",
-   "subject": "Incident: the browser suite failed on 40d72112 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
