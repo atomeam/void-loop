@@ -25,7 +25,7 @@
   input[type=number], input[type=text], select { font: 15px system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-width: 0; }
   input[type=number] { width: 6em; } #seed { width: 10em; font-family: ui-monospace, Menlo, Consolas, monospace; }
   .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 14px; cursor: pointer; color: var(--ink); }
-  .chip input { margin: 0; accent-color: var(--accent); }
+  .chip input { margin: 0; width: 24px; height: 24px; accent-color: var(--accent); } /* a tap target of 24 px at least (WCAG 2.2 2.5.8) */
   button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
   button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
