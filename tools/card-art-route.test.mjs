@@ -8,6 +8,7 @@ import * as route from '../void-live-deploy/functions/api/card-art.js';
 import { models, ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, CAMERA, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
 import { readFileSync } from 'node:fs';
+globalThis.fetch = async () => { throw new Error('no network in these tests'); }; // a cartoon looks its subject up on Wikipedia (lib/wiki-look.js): never the real one here; tools/wiki-look.test.mjs fakes it
 
 const store = new Map();
 globalThis.caches = { default: { match: async (req) => (store.has(req.url) ? new Response(store.get(req.url)) : undefined), put: async (req, res) => { store.set(req.url, await res.text()); } } };
@@ -227,7 +228,7 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon6 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon7 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
