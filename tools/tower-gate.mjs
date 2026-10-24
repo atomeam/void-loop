@@ -13,7 +13,7 @@
 // regressed. Passive: page loads only, no sign-in, no forms, no posting.
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, aspectsOf } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
 import { probeFor, score } from './tower-probes.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
@@ -125,7 +125,33 @@ export async function measure(browser, url, tag, ask, probe) {
   return { speed: times.length ? times[Math.floor(times.length / 2)] : NaN, reliability, ...out, truth: probe && probe.truth ? score(out.text, probe.truth) : null, facts: probe && probe.facts && probe.facts.length ? score(out.text, probe.facts) : null, parts };
 }
 
+// which floors a run measures (owner, 2026-10-24: "Target the current fight by default ... Keep --all for scheduled cron sweeps only"): a run
+// after a deploy measures the fight Verse is in now, any floor whose page the deploy changed, and floors whose evidence lacks an aspect the gate
+// can now measure (a check added since it was last measured), at most `max`, so one fix is verified in about a minute and not in a 20-minute sweep
+/** the aspects the gate can measure on a floor today: the measured ones on its checklist, its PARTS, and accuracy and completeness only with a probe. Pure. */
+export function measurable(f) {
+  const p = probeFor(f.id), want = aspectsOf(f);
+  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]));
+}
+/** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
+export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
+  const t = tower([], evidence, frontier), ids = new Set(FLOORS.map((f) => f.id)), out = [];
+  const add = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < max) out.push(id); };
+  add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
+  // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
+  const dir = (u) => { const m = String(u || '').match(/^\/([\w-]+)\//); return m ? m[1] : ''; };
+  for (const f of FLOORS) { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); if (d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/'))) add(f.id); }
+  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
+  return out;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
+  if (process.argv[2] === '--which') {
+    const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
+    for (const id of pick(data.floors || {}, fr, process.argv.slice(3))) console.log(id);
+    process.exit(0);
+  }
   const argv = process.argv.slice(2), only = argv.includes('--rescore'), id = argv.filter((a) => a !== '--rescore').join(' '), f = FLOORS.find((x) => x.id === id);
   if (!f) { console.error('no floor ' + id + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
   if (only) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)

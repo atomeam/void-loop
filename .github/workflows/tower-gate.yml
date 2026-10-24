@@ -1,7 +1,12 @@
-# The tower's automatic checks (tools/tower-gate.mjs) after every main deploy: Verse against the live site of each early floor, at phone
-# width, for speed, mobile, accessibility and reliability. The session container cannot reach the sites; this runner can. Passive page
-# loads only. A changed verdict is committed to main as "Tower gate: ..." and the deploy started, so the live tower card moves by itself;
-# the deploy of that commit does not start this again (the head commit says so).
+# The tower's automatic checks (tools/tower-gate.mjs) against the live sites. The session container cannot reach the sites; this runner can.
+# Passive page loads only. A changed verdict is committed to main as "Tower gate: ..." and the deploy started, so the live tower card moves by
+# itself; the deploy of that commit does not start this again (the head commit says so).
+# Which floors (owner, 2026-10-24: "Target the current fight by default ... Keep --all for scheduled cron sweeps only"; "Cancel superseded runs"):
+#   after a deploy        the fight Verse is in now, a floor whose page the deploy changed, floors missing a newly measurable aspect (at most 3,
+#                         about a minute: tools/tower-gate.mjs --which)
+#   by hand               `floor`: one floor id, or `all` for every floor
+#   once a day            every floor, so a site that changed under Verse is caught
+# A newer run cancels one in progress: what it was measuring is measured again by the newer one.
 name: Tower gate
 
 on:
@@ -10,34 +15,52 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      floor:
+        description: a floor id (e.g. "colour codes"), or "all" for every floor; empty measures the current fight
+        default: ''
+  schedule:
+    - cron: '17 6 * * *'
 
 permissions:
   contents: write # commit the verdicts
   actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
 
 concurrency:
-  group: tower-gate
-  cancel-in-progress: false
+  # a fight run is replaced by a newer one; the full sweep has its own group and is never cut short by the deploys that land while it runs
+  group: ${{ (github.event_name == 'schedule' || inputs.floor == 'all') && 'tower-gate-sweep' || 'tower-gate' }}
+  cancel-in-progress: ${{ !(github.event_name == 'schedule' || inputs.floor == 'all') }}
 
 jobs:
   gate:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.workflow_run.head_commit.message, 'Tower gate:'))
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.workflow_run.head_commit.message, 'Tower gate:'))
     runs-on: ubuntu-latest
-    timeout-minutes: 45 # eleven aspects: each site is also opened by a German browser and reloaded offline
+    timeout-minutes: 120 # the full sweep (45 floors, about a minute each: eleven aspects, a German browser and an offline reload per site); a fight run takes minutes
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 2 # the deploy's own change, for the floors whose pages it touched
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
-      - name: Measure the early floors against their live sites
+      - name: Measure the floors against their live sites
         env:
           TOWER_PRIVATE: ${{ runner.temp }}/tower-private
           CHROME_PATH: /usr/bin/google-chrome
+          FLOOR: ${{ inputs.floor }}
+          EVENT: ${{ github.event_name }}
         run: |
-          for f in "is it" "coin flip" "random number" "word count" "calculator" "stopwatch" "unit converter" "password" "time zones" "colour" "colour codes" "encoder" "codebase" "tildegit" "password strength" "base converter" "photo resizer" "gradient" "wheel"; do node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; done
+          if [ "$EVENT" = "schedule" ] || [ "$FLOOR" = "all" ]; then
+            node -e "import('./void-live-deploy/lib/tower.js').then((m) => m.FLOORS.forEach((f) => console.log(f.id)))" > floors.txt
+          elif [ -n "$FLOOR" ]; then
+            printf '%s\n' "$FLOOR" > floors.txt
+          else
+            node tools/tower-gate.mjs --which $(git diff --name-only HEAD~1 HEAD 2>/dev/null) > floors.txt
+          fi
+          echo "measuring: $(paste -sd, floors.txt)"
+          while IFS= read -r f; do [ -n "$f" ] && { node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; }; done < floors.txt
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}
@@ -45,7 +68,7 @@ jobs:
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add void-live-deploy/tower.evidence.json
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -q -m "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+          git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
           # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true
