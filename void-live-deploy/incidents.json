@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T16:23:08.022Z",
+   "sha": "9d659fd179c8b5083199d65571f4ecead8613706",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40110688967",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/test_void.mjs",
+    "tools/tower-probes.mjs",
+    "void-live-deploy/lib/card-image.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/tower.js"
+   ]
+  },
+  {
    "at": "2026-10-24T16:15:39.621Z",
    "sha": "1d40b6dab438ac2410767463d657158e8a8aa9dc",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40110121818",
@@ -638,26 +658,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/1805-pwcheck"
-   ]
-  },
-  {
-   "at": "2026-10-24T04:16:49.284Z",
-   "sha": "d034ca303b7da5a72a6b5c546773787d58b389d1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40061160872",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/card-art-route.test.mjs",
-    "tools/skill-matchers.test.mjs",
-    "tools/wiki-look.test.mjs",
-    "void-live-deploy/functions/api/card-art.js",
-    "void-live-deploy/lib/art-rules.js",
-    "void-live-deploy/lib/wiki-look.js"
    ]
   }
  ]
