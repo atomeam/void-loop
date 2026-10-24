@@ -23,7 +23,7 @@ jobs:
   gate:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.workflow_run.head_commit.message, 'Tower gate:'))
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45 # eleven aspects: each site is also opened by a German browser and reloaded offline
     steps:
       - uses: actions/checkout@v4
         with:
