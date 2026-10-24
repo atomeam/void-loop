@@ -101,5 +101,12 @@
   {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9", "at": "2026-10-24T01:55:35Z"},
   {"check": "suite ran to the end", "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9", "at": "2026-10-24T01:55:35Z"},
   {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "d506bd2c6bf8b4188ff85130900986dab680dfb3", "at": "2026-10-24T02:34:23Z"},
-  {"check": "suite ran to the end", "sha": "d506bd2c6bf8b4188ff85130900986dab680dfb3", "at": "2026-10-24T02:34:23Z"}
+  {"check": "suite ran to the end", "sha": "d506bd2c6bf8b4188ff85130900986dab680dfb3", "at": "2026-10-24T02:34:23Z"},
+  {"check": "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dis", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print ", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card al", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pop", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
+  {"check": "suite ran to the end", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"}
 ]
