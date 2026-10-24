@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary, decimal, hex and octal converter · Verse</title>
+<meta name="description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
+<style>
+  /* a-to-mind.com/base-converter/ (owner, 2026-10-24: back to the easy sites; hextobinary.com, Tranco 136,997, is a hex-to-binary box among AdSense, tag-manager, consent and maths-typesetting scripts): one file and one small module, no third party */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
+  .row { display: grid; grid-template-columns: 6.2em 1fr auto; gap: 8px; align-items: center; margin: 8px 0; }
+  label { font-size: 14px; color: var(--soft); }
+  input { font: 17px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 9px 11px; min-width: 0; width: 100%; box-sizing: border-box; }
+  input:focus { outline: none; border-color: var(--accent); } input.bad { border-color: var(--bad); }
+  button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
+  #note { min-height: 1.4em; font-size: 14px; color: var(--bad); margin: 6px 0; }
+  .facts { margin: 14px 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; display: none; } .facts p { margin: 4px 0; } .facts code { font: 14px ui-monospace, monospace; word-break: break-all; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/baseconv.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Binary, octal, decimal, hex</h1>
+  <div class="row"><label for="b2">Binary</label><input id="b2" data-base="2" inputmode="text" autocomplete="off" spellcheck="false" placeholder="1111 1111"><button type="button" data-copy="b2">Copy</button></div>
+  <div class="row"><label for="b8">Octal</label><input id="b8" data-base="8" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="377"><button type="button" data-copy="b8">Copy</button></div>
+  <div class="row"><label for="b10">Decimal</label><input id="b10" data-base="10" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="255" autofocus><button type="button" data-copy="b10">Copy</button></div>
+  <div class="row"><label for="b16">Hex</label><input id="b16" data-base="16" inputmode="text" autocomplete="off" spellcheck="false" placeholder="FF"><button type="button" data-copy="b16">Copy</button></div>
+  <div id="note" role="status" aria-live="polite"></div>
+  <div class="facts" id="facts"></div>
+  <footer>Type in any box; the others follow. Exact at any size (up to 4,096 digits), never rounded. A <code>0x</code>, <code>0b</code> or <code>0o</code> in front is understood, spaces and commas are ignored. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { convert, clean } from '/lib/baseconv.js';
+  const $ = (id) => document.getElementById(id), boxes = [...document.querySelectorAll('input[data-base]')];
+  const facts = (r) => {
+    const f = $('facts'); f.textContent = ''; const a = r.all; if (!r.ok) { f.style.display = 'none'; return; } f.style.display = 'block';
+    const line = (label, text, code) => { const p = document.createElement('p'); p.append(label + ' '); if (code) { const c = document.createElement('code'); c.textContent = text; p.appendChild(c); } else p.append(text); f.appendChild(p); };
+    line('Bits needed:', String(a.bits));
+    if (a.signed) line(a.negative ? 'In two’s complement (' + a.signed.width + ' bits):' : 'As a signed ' + a.signed.width + '-bit number:', a.negative ? a.signed.twos + ' (unsigned ' + a.signed.unsigned.toString() + ')' : a.signed.value.toString(), true);
+    if (a.text) line('As text:', a.text, true);
+  };
+  const show = (fromBox) => {
+    const base = +fromBox.dataset.base, raw = fromBox.value; for (const x of boxes) x.classList.remove('bad'); $('note').textContent = '';
+    if (!clean(raw)) { for (const b of boxes) if (b !== fromBox) b.value = ''; facts({ ok: false }); return; }
+    const r = convert(raw, base, base); if (!r.ok) { fromBox.classList.add('bad'); $('note').textContent = r.why; facts(r); return; }
+    for (const b of boxes) if (b !== fromBox) b.value = { 2: r.all.bin, 8: r.all.oct, 10: r.all.dec, 16: r.all.hex }[+b.dataset.base];
+    facts(r);
+  };
+  for (const b of boxes) b.addEventListener('input', () => show(b));
+  for (const c of document.querySelectorAll('button[data-copy]')) c.addEventListener('click', async () => { const v = $(c.dataset.copy).value; try { await navigator.clipboard.writeText(v.replace(/[ ,]/g, '')); c.textContent = 'Copied'; setTimeout(() => { c.textContent = 'Copy'; }, 1200); } catch (_) { $(c.dataset.copy).select(); } });
+  const q = new URLSearchParams(location.search), v = q.get('v'), from = +q.get('b') || 10; if (v && [2, 8, 10, 16].includes(from)) { const box = boxes.find((x) => +x.dataset.base === from); box.value = v.slice(0, 5000); show(box); }
+</script>
+</body>
+</html>

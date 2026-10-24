@@ -651,6 +651,23 @@ try {
       /Very weak/.test(card) && /Instantly|instantly/.test(card) && !/letmein/.test(hist) && /Do not type a real password/.test(warn) && !/Tr0ub4dor/.test(warn) && !K.errors.length, JSON.stringify({ card: card.slice(0, 120), warn: warn.slice(0, 80), errors: K.errors }));
     await W.ctx.close(); await K.ctx.close();
   }
+  // the base converter (lib/baseconv.js, /base-converter/, skills/baseconv.js; owner, 2026-10-24: back to the easy sites): worked out on the device
+  if (want("base converter: the page fills all four bases from any one, exact for huge numbers, with no third party, and the ask opens a card")) {
+    const B = await fresh(); const origin = new URL(B.p.url()).origin, pg = await B.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/base-converter/'); await pg.waitForSelector('#b10', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.fill('#b16', 'ff'); await pg.waitForTimeout(150); const fromHex = await pg.evaluate(() => ({ b2: b2.value, b8: b8.value, b10: b10.value, facts: document.getElementById('facts').textContent }));
+    await pg.fill('#b16', 'ffffffffffffffffffff'); await pg.waitForTimeout(150); const huge = await pg.$eval('#b10', (e) => e.value);
+    await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
+    const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
+    check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
+      loaded <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
+    const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
+    const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
+    check('base converter: "ff hex to binary" opens a card with 1111 1111 big, all four bases, and a link that opens the page on that number',
+      card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base-converter/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
+    await B.ctx.close(); await K.ctx.close();
+  }
   // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
   if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];

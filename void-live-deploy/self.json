@@ -483,6 +483,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T04:27:27Z",
+   "subject": "Cartoon from a photo: say why the photo was not used (photoWhy), and a fresh row (cartoon8)"
+  },
+  {
+   "at": "2026-10-24T04:24:52Z",
+   "subject": "Password strength: the next floor, found by data (howsecureismypassword.net, the easiest real one-tool site in the filtered scan)"
+  },
+  {
+   "at": "2026-10-24T04:16:49Z",
+   "subject": "Incident: the browser suite failed on d034ca30 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:15:47Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T04:14:42Z",
+   "subject": "Incident: the browser suite failed on 488990e1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:13:21Z",
+   "subject": "Incident: the browser suite failed on 97f7a0d2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:12:59Z",
+   "subject": "Spotter: 7 check(s) healed with no revert after 97f7a0d2277487a373af88f5a3261a6affd01019 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-24T04:11:19Z",
+   "subject": "Incident: the browser suite failed on 6d14971a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:10:30Z",
+   "subject": "Incident: the browser suite failed on 4a1ddc08 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T04:08:25Z",
    "subject": "Cartoon from a real photo: Wikipedia's lead photo of the named page, described by the vision model, and the page's title as the usual…"
   },
@@ -525,42 +561,6 @@
   {
    "at": "2026-10-24T03:43:08Z",
    "subject": "Incident: the browser suite failed on 96209ccb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:40:32Z",
-   "subject": "Incident: the browser suite failed on bbadd98e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:38:05Z",
-   "subject": "Coin: the everyone-count is sent a moment after the page is up, batched, not at load (speed: the last aspect /flip/ loses to…"
-  },
-  {
-   "at": "2026-10-24T03:31:49Z",
-   "subject": "The book's What's new: an atom-shaped galaxy for Verse (a star per ledger entry) and readable lines instead of the self-hardening's…"
-  },
-  {
-   "at": "2026-10-24T03:25:18Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T03:13:04Z",
-   "subject": "Incident: the browser suite failed on 42bc404e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:11:10Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T03:10:32Z",
-   "subject": "Incident: the browser suite failed on 50166c16 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:09:39Z",
-   "subject": "Incident: the browser suite failed on b23ebc97 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T03:09:27Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
   }
  ],
  "builders": {

@@ -33,15 +33,31 @@ export async function pageFor(asked, get = fetch, why = []) {
   } catch (e) { why.push('search error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return null; }
 }
 
+/** the free photo Wikidata names for an item (its P18 image, a Wikimedia Commons file): a Commons address for a 320 px version of it, or '' (it redirects to upload.wikimedia.org, which is checked after the fetch). */
+async function commonsPhoto(item, get, why) {
+  if (!/^Q\d{1,12}$/.test(String(item || ''))) { why.push('no wikidata item'); return ''; }
+  try {
+    const r = await withTimeout(get, 'https://www.wikidata.org/w/api.php?action=wbgetclaims&format=json&property=P18&entity=' + item, { headers: UA }, 5000);
+    if (!r.ok) { why.push('wikidata ' + r.status); return ''; } const j = await r.json(), file = j && j.claims && j.claims.P18 && j.claims.P18[0] && j.claims.P18[0].mainsnak && j.claims.P18[0].mainsnak.datavalue && j.claims.P18[0].mainsnak.datavalue.value;
+    if (!file || typeof file !== 'string' || file.length > 200 || !/\.(?:jpe?g|png|webp)$/i.test(file)) { why.push(file ? 'wikidata image is not a jpeg, png or webp' : 'no wikidata image'); return ''; }
+    return 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(file.replace(/ /g, '_')) + '?width=320';
+  } catch (e) { why.push('wikidata error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 40)); return ''; }
+}
+
 /** the page's lead photo as a data URL, with the page's one-line description: { img, description, usual }, or null (no page, a disambiguation, no photo, a photo off Wikimedia or too big). */
 export async function leadPhoto(asked, get = fetch, why = []) {
   const page = await pageFor(asked, get, why); if (!page) return null;
   try {
     const r = await withTimeout(get, WIKI + '/api/rest_v1/page/summary/' + encodeURIComponent(page.title.replace(/ /g, '_')), { headers: UA }, 5000);
     if (!r.ok) { why.push('summary ' + r.status); return null; } const s = await r.json();
-    const src = s && s.type === 'standard' && s.thumbnail && s.thumbnail.source; if (!src || !IMG_HOST.test(src)) { why.push(s && s.type !== 'standard' ? 'page type ' + String(s.type).slice(0, 20) : 'no lead photo'); return null; }
+    if (!s || s.type !== 'standard') { why.push('page type ' + String(s && s.type).slice(0, 20)); return null; }
+    // English Wikipedia leaves non-free (fair-use) photos out of its page images, which is most photos of a person who has died or is not free-licensed: then the
+    // Wikidata image (P18), always a free Commons file, is the next source
+    let src = s.thumbnail && s.thumbnail.source;
+    if (!src || !IMG_HOST.test(src)) { src = await commonsPhoto(s.wikibase_item, get, why); if (!src) { why.push('no free photo'); return null; } }
     const p = await withTimeout(get, src, { headers: { 'user-agent': UA['user-agent'] } }, 6000);
     const ct = String((p.headers && p.headers.get && p.headers.get('content-type')) || '').split(';')[0].trim().toLowerCase();
+    if (p.url && !IMG_HOST.test(p.url)) { why.push('photo redirected off Wikimedia'); return null; }
     if (!p.ok || !/^image\/(?:jpeg|png|webp)$/.test(ct)) { why.push('photo ' + p.status + ' ' + ct.slice(0, 20)); return null; }
     const buf = new Uint8Array(await p.arrayBuffer()); if (!buf.length || buf.length > MAX_PHOTO) { why.push('photo size ' + buf.length); return null; }
     let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));

@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 24,
+  "tested": 25,
   "checked": 14,
   "proven": 291
  },
@@ -1070,11 +1070,18 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 3,
     "checked": 1,
     "proven": 14
    },
    "skills": [
+    {
+     "name": "baseconv",
+     "tier": "tested",
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-24",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "calc",
      "tier": "proven",
