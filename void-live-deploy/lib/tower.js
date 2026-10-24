@@ -86,29 +86,46 @@ export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/
 export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => ev[a] && OK.has(ev[a].verdict) && ev[a].evidence && !selfCalled(ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  return { measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed };
+  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed };
 }
 
-/** the whole tower: each floor's gate, coverage (replaced, partial, missing from lap.items.json) and skills; the marker is the lowest floor
- *  whose gate fails (floors above it can be worked on, even beaten, but the marker does not pass a floor that is not). Pure. */
-// the tower has no top (owner, 2026-10-24: "The Tower is every website, web tool, and app ... scaling indefinitely"): FLOORS are the sites under
-// head-to-head measurement now; the frontier (tower.frontier.json, the real tool sites ranked from the top million by easiest-sites.mjs --tools)
-// is the climb past them, and grows as the scan grows. `total` is the floors on the board, never a ceiling.
+const HOST_RE = /^(?=.{3,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
+/** a host from what a list names ("Example.com", "https://www.example.com/x"), or '' when it is not one. Pure. */
+export function hostOf(s) {
+  const h = String(s || '').trim().toLowerCase().replace(/^[a-z][a-z0-9+.-]*:\/\//, '').replace(/[/?#:].*$/, '').replace(/^www\./, '').replace(/\.$/, '');
+  return HOST_RE.test(h) ? h : '';
+}
+/** the frontier's sites (tower.frontier.json, the real tool sites ranked from the top million by easiest-sites.mjs --tools) as one list: one per
+ *  host, never a site that is already in FLOORS, easiest first (the scan's hardness, then the least visited), the rest in the order they came. Pure. */
+export function frontierOf(frontier, floors = FLOORS) {
+  const list = Array.isArray(frontier) ? frontier : frontier && Array.isArray(frontier.sites) ? frontier.sites : [];
+  const taken = new Set(floors.map((f) => hostOf(f.url) || hostOf(f.site)).filter(Boolean)), seen = new Set(), out = [];
+  for (const x of list) {
+    const host = hostOf(x && (x.site || x.host)); if (!host || taken.has(host) || seen.has(host)) continue;
+    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: Number.isFinite(+x.hardness) ? +x.hardness : null, ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
+  }
+  const h = (x) => (x.hardness === null ? 1e9 : x.hardness);
+  return out.map((x, i) => [x, i]).sort((a, b) => h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
+}
+
+/** the whole tower: each site's gate, coverage (replaced, partial, missing from lap.items.json) and skills; the conquered sites first, then the
+ *  current one (the easiest not yet beaten), then the rest of the queue. A regression un-beats a site and puts it back in the queue. Pure. */
+// the tower has no end (owner, 2026-10-24: "it is endless, we look through literally every site and defeat them all"; "Don't separate \"named
+// floors\" from \"frontier floors\"—treat all unbeaten sites as one queue sorted easiest-first"): FLOORS and every frontier site are one queue,
+// sorted by how many aspects Verse still has to beat, then by the order they came (FLOORS, then the scan's hardness). `total` is the sites found
+// so far, never a ceiling: it grows as the scan grows.
 export function tower(onlySite = [], evidence = {}, frontier = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const floors = FLOORS.map((f, i) => { const g = gate(f, under(evidence, f) || {}), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, floor: i + 1, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
-  // easiest to hardest by measured gap: floors with any head-to-head evidence sort by aspects still lost; the rest keep the provisional order
-  // (a floor counts as measured for the order only when every aspect has a verdict: a few automated rows on a higher floor do not lift it
-  // over the unmeasured floors below it)
-  const whole = (f) => f.measured && f.left.every((a) => (under(evidence, f) || {})[a]);
-  floors.sort((a, b) => ((whole(a) ? a.m - a.n : 1e3) - (whole(b) ? b.m - b.n : 1e3)) || a.floor - b.floor); floors.forEach((f, i) => { f.floor = i + 1; });
-  const at = floors.findIndex((f) => !f.beaten), marker = at < 0 ? floors.length : at;
-  for (const f of floors) f.state = f.floor - 1 < marker ? 'beaten' : f.floor - 1 === marker ? 'current' : 'ahead';
-  const ahead = (frontier && Array.isArray(frontier.sites) ? frontier.sites : []).filter((x) => x && x.site && !FLOORS.some((f) => f.site === x.site));
-  return { floors, marker: marker + 1, beaten: floors.filter((f) => f.beaten).length, total: floors.length, frontier: { ranked: ahead.length, of: (frontier && frontier.of) || 1000000, next: ahead.slice(0, 5).map((x) => x.site) } };
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const all = sites.map((f, i) => { const g = gate(f, under(evidence, f) || {}), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, order: i, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
+  // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
+  const hard = (f) => (f.lost.length ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => hard(a) - hard(b) || (a.m - a.n) - (b.m - b.n) || a.order - b.order), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
+  return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
-/** the tower in one line, with no ceiling: where the marker is, how many floors are beaten, and how much of the web is still ahead. Pure. */
-export const towerLine = (t) => 'Tower: floor ' + Math.min(t.marker, t.total) + ' (' + (t.floors[t.marker - 1] ? t.floors[t.marker - 1].site + ', ' + t.floors[t.marker - 1].n + ' of ' + t.floors[t.marker - 1].m + ' aspects beaten' : 'every floor on the board beaten') + '), ' + t.beaten + ' floors beaten; no top: '
-  + (t.total - t.beaten) + ' floors open' + (t.frontier && t.frontier.ranked ? ' and ' + t.frontier.ranked + ' more real tool sites ranked from the top million' : '') + ', and every other site after them';
+/** the tower in one line: the site Verse is on now and how many it has conquered. Pure. */
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Tower: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects beaten)' : 'the next site the scan finds') + ', ' + t.beaten + ' conquered'; };

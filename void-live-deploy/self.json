@@ -475,13 +475,49 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T03:34:16Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-24T15:18:11Z",
+   "subject": "Tower: one endless queue, current site on top, conquered under it"
+  },
+  {
+   "at": "2026-10-24T15:16:14Z",
+   "subject": "Incident: the browser suite failed on 6bbb774b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T15:15:39Z",
+   "subject": "Cartoons: Wikipedia's one line on the subject drops '(born 1968)' whole, not leaving 'born' in the look"
+  },
+  {
+   "at": "2026-10-24T15:13:54Z",
+   "subject": "Tower frontier: the real tool sites ranked from the top million, not yet floors"
+  },
+  {
+   "at": "2026-10-24T15:12:09Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T15:11:27Z",
+   "subject": "Verse hardens itself: nothing to add this cycle"
+  },
+  {
+   "at": "2026-10-24T15:07:38Z",
+   "subject": "The tower: eleven aspects measured head to head, no ceiling, and no opponent swapped down because the gate failed"
+  },
+  {
+   "at": "2026-10-24T15:07:03Z",
+   "subject": "Incident: the browser suite failed on 2343bb78 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T14:58:55Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
   {
    "at": "2026-10-24T14:58:01Z",
    "subject": "Cartoons from a real photo: thumb.wikimedia.org is Wikimedia too"
@@ -525,42 +561,6 @@
   {
    "at": "2026-10-24T14:41:02Z",
    "subject": "Incident: the browser suite failed on 9e7f9d17 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T14:35:01Z",
-   "subject": "Incident: the browser suite failed on 0e796119 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T14:33:11Z",
-   "subject": "Cartoons: one painted after its look failed is shown but never kept, so the Dimebag guess is painted again from his photo"
-  },
-  {
-   "at": "2026-10-24T14:31:18Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
-  },
-  {
-   "at": "2026-10-24T14:29:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T14:24:04Z",
-   "subject": "Fix: Verse's \"make a sphere\" pattern also took \"game box\"; without \"3d\" the other words must be colours"
-  },
-  {
-   "at": "2026-10-24T14:20:56Z",
-   "subject": "Beat-locked film cuts (frontier #26): every scene change lands on the song's beat, and a sync frame lines the sound up with the picture"
-  },
-  {
-   "at": "2026-10-24T12:21:36Z",
-   "subject": "Verse fixes its make skill: learn to handle \"make a sphere\""
-  },
-  {
-   "at": "2026-10-24T12:09:56Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-10-24T11:40:17Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
   }
  ],
  "builders": {

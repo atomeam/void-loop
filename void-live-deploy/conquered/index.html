@@ -4,16 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Tower · Verse</title>
-<meta name="description" content="Verse's tower: the sites it has beaten, the one it is fighting now, and who is still ahead.">
+<meta name="description" content="Verse's tower: the site it is on now and every site it has conquered.">
 <style>
-  /* a-to-mind.com/conquered (owner, 2026-10-24: "a mk style visual tower, easy to see the level we were on and who we passed and who's ahead"):
-     the same ladder as the tower card (skills/tower.js towerHtml), full screen, left open and kept current */
-  html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 50% 0%, #2a1530, #07060b 70%); color: #ecebf5; font: 16px/1.4 system-ui, -apple-system, sans-serif; }
+  /* a-to-mind.com/conquered (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
+     the same tower as the card (skills/tower.js towerHtml), full screen, left open and kept current */
+  html, body { margin: 0; min-height: 100%; background: #07060b; color: #ecebf5; font: 16px/1.4 system-ui, -apple-system, sans-serif; }
   main { padding: 18px 12px 30px; }
-  .mk-stack { max-height: none !important; overflow: visible !important; }
+  .tw-stack { max-height: none !important; overflow: visible !important; }
   #stamp { text-align: center; font-size: 11px; opacity: .5; margin-top: 8px; }
   a { color: inherit; }
-  .down { max-width: 640px; margin: 14px auto 0; padding: 8px 12px; border: 1px dashed #5a5470; border-radius: 8px; color: #a9a3be; font-size: 13px; }
 </style>
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/tower.js">
@@ -21,20 +20,16 @@
 <!-- /modulepreload -->
 </head>
 <body>
-<main><div id="tower">Reading the tower…</div><div id="down"></div><div id="stamp"></div></main>
+<main><div id="tower">Reading the tower…</div><div id="stamp"></div></main>
 <script type="module">
   import { tower } from '/lib/tower.js';
-  import { towerHtml, centerOnYou, detailText } from '/skills/tower.js';
+  import { towerHtml, detailText } from '/skills/tower.js';
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  let first = true;
   async function draw() {
-    const [inv, ev, sd, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.sentdown.json'), get('/tower.frontier.json')]);
+    const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]);
     const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr);
-    // the sites that sent Verse down a rank (a site the gate cannot measure, or that Verse could not beat after one honest fix): passed over for an easier one
-    const down = $('down'); down.textContent = ''; for (const x of (sd && sd.sites) || []) { const d = document.createElement('div'); d.className = 'down'; d.textContent = x.site + ' sent Verse down a rank: ' + x.why + ' Next: ' + x.next + '.'; down.appendChild(d); }
     $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
-    const cur = $('tower').querySelector('[data-state="current"]'); if (first && cur) { first = false; cur.scrollIntoView({ block: 'center' }); }
     for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('tower').querySelector('.tower-detail').textContent = detailText(f); };
   }
   draw(); setInterval(() => { if (document.visibilityState === 'visible') draw(); }, 30000);
