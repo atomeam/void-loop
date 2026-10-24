@@ -77,6 +77,42 @@ export function rgbToLab({ r, g, b }) {
   const x = f((0.4124 * R + 0.3576 * G + 0.1805 * B) / 0.95047), y = f(0.2126 * R + 0.7152 * G + 0.0722 * B), z = f((0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883);
   return { l: 116 * y - 16, a: 500 * (x - y), b: 200 * (y - z) };
 }
+// the rest of the models the colour sites list (color-hex.com: XYZ, Yxy, Hunter Lab; the CSS ones: LCh, Oklab, OKLCH, HWB; and the decimal)
+/** RGB as CIE XYZ (D65, 0 to about 100). Pure. */
+export function rgbToXyz({ r, g, b }) {
+  const R = lin(r), G = lin(g), B = lin(b);
+  return { x: (0.4124 * R + 0.3576 * G + 0.1805 * B) * 100, y: (0.2126 * R + 0.7152 * G + 0.0722 * B) * 100, z: (0.0193 * R + 0.1192 * G + 0.9505 * B) * 100 };
+}
+/** RGB as CIE Yxy: the luminance Y and the chromaticity x, y (black is 0, 0.3127, 0.329, the D65 white point). Pure. */
+export function rgbToYxy(rgb) { const { x, y, z } = rgbToXyz(rgb), s = x + y + z; return s ? { Y: y, x: x / s, y: y / s } : { Y: 0, x: 0.3127, y: 0.329 }; }
+/** RGB as Hunter Lab (D65). Pure. */
+export function rgbToHunterLab(rgb) {
+  const { x, y, z } = rgbToXyz(rgb), Xn = 95.047, Yn = 100, Zn = 108.883, ka = (175 / 198.04) * (Xn + Yn), kb = (70 / 218.11) * (Yn + Zn), q = Math.sqrt(y / Yn);
+  return q ? { l: 100 * q, a: ka * ((x / Xn - y / Yn) / q), b: kb * ((y / Yn - z / Zn) / q) } : { l: 0, a: 0, b: 0 };
+}
+/** RGB as CIE L*u*v* (CIELUV, D65). Pure. */
+export function rgbToLuv(rgb) {
+  const { x, y, z } = rgbToXyz(rgb), Xn = 95.047, Yn = 100, Zn = 108.883, d = x + 15 * y + 3 * z, dn = Xn + 15 * Yn + 3 * Zn;
+  const t = y / Yn, l = t > 216 / 24389 ? 116 * Math.cbrt(t) - 16 : (24389 / 27) * t;
+  if (!d) return { l: 0, u: 0, v: 0 };
+  return { l, u: 13 * l * (4 * x / d - 4 * Xn / dn), v: 13 * l * (9 * y / d - 9 * Yn / dn) };
+}
+const polar = (a, b) => ({ c: Math.hypot(a, b), h: Math.hypot(a, b) < 1e-9 ? 0 : (Math.atan2(b, a) * 180 / Math.PI + 360) % 360 });
+/** RGB as CIE LCh(ab), the polar form of Lab. Pure. */
+export function rgbToLch(rgb) { const { l, a, b } = rgbToLab(rgb); return { l, ...polar(a, b) }; }
+/** RGB as Oklab (Björn Ottosson's perceptual space, used by CSS oklab()). Pure. */
+export function rgbToOklab({ r, g, b }) {
+  const R = lin(r), G = lin(g), B = lin(b);
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B), m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B), s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  return { l: 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, a: 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, b: 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s };
+}
+/** RGB as OKLCH, the polar form of Oklab (CSS oklch()). Pure. */
+export function rgbToOklch(rgb) { const { l, a, b } = rgbToOklab(rgb); return { l, ...polar(a, b) }; }
+/** RGB as HWB: hue, whiteness, blackness in percent (CSS hwb()). Pure. */
+export function rgbToHwb({ r, g, b }) { return { h: rgbToHsl({ r, g, b }).h, w: (Math.min(r, g, b) / 255) * 100, b: (1 - Math.max(r, g, b) / 255) * 100 }; }
+/** the colour as one decimal number, 0 to 16777215 (0xRRGGBB). Pure. */
+export const rgbToDecimal = ({ r, g, b }) => r * 65536 + g * 256 + b;
+
 /** the WCAG 2 contrast ratio of two colours, 1 to 21. Pure. */
 export function contrast(a, b) { const x = luminance(a), y = luminance(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
 /** what a ratio passes: { aa, aaLarge, aaa, aaaLarge }. Pure. */
@@ -102,10 +138,12 @@ export function tones(rgb, n = 9) {
   const { h, s, l } = rgbToHsl(rgb);
   return Array.from({ length: n }, (_, i) => toHex(hslToRgb(h, s * (1 - (i + 1) / (n + 1)), l)));
 }
-/** the harmony rules, by hue turns on the HSL wheel: { complementary, analogous, triadic, split, tetradic }, each a list of hex starting with the colour. Pure. */
+/** the harmony rules, by hue turns on the HSL wheel: { complementary, analogous, triadic, split, tetradic, square }, each a list of hex starting
+ *  with the colour. Tetradic is the rectangle (two complementary pairs 60° apart), square the four 90° apart, as hexcolor16.com and Adobe Color
+ *  name them. Pure. */
 export function schemes(rgb) {
   const { h, s, l } = rgbToHsl(rgb), at = (d) => toHex(hslToRgb(h + d, s, l)), self = toHex(rgb);
-  return { complementary: [self, at(180)], analogous: [at(-30), self, at(30)], triadic: [self, at(120), at(240)], split: [self, at(150), at(210)], tetradic: [self, at(90), at(180), at(270)] };
+  return { complementary: [self, at(180)], analogous: [at(-30), self, at(30)], triadic: [self, at(120), at(240)], split: [self, at(150), at(210)], tetradic: [self, at(60), at(180), at(240)], square: [self, at(90), at(180), at(270)] };
 }
 const r1 = (x) => Math.round(x * 10) / 10, r0 = Math.round;
 /** everything about one colour, rounded for reading. Pure. */
@@ -115,6 +153,10 @@ export function describe(rgb) {
   return {
     hex: toHex(rgb).toUpperCase(), rgb: { ...rgb }, hsl: { h: r0(hsl.h) % 360, s: r0(hsl.s), l: r0(hsl.l) }, hsv: { h: r0(hsv.h) % 360, s: r0(hsv.s), v: r0(hsv.v) },
     cmyk: { c: r0(cmyk.c), m: r0(cmyk.m), y: r0(cmyk.y), k: r0(cmyk.k) }, lab: { l: r1(lab.l), a: r1(lab.a), b: r1(lab.b) },
+    ...(() => { const xyz = rgbToXyz(rgb), yxy = rgbToYxy(rgb), hl = rgbToHunterLab(rgb), lch = rgbToLch(rgb), luv = rgbToLuv(rgb), ok = rgbToOklab(rgb), okc = rgbToOklch(rgb), hwb = rgbToHwb(rgb), r3 = (x) => Math.round(x * 1000) / 1000;
+      return { xyz: { x: r1(xyz.x), y: r1(xyz.y), z: r1(xyz.z) }, yxy: { Y: r1(yxy.Y), x: r3(yxy.x), y: r3(yxy.y) }, hunterLab: { l: r1(hl.l), a: r1(hl.a), b: r1(hl.b) },
+        lch: { l: r1(lch.l), c: r1(lch.c), h: r1(lch.h) % 360 }, luv: { l: r1(luv.l), u: r1(luv.u), v: r1(luv.v) }, oklab: { l: r3(ok.l), a: r3(ok.a), b: r3(ok.b) }, oklch: { l: r3(okc.l), c: r3(okc.c), h: r1(okc.h) % 360 },
+        hwb: { h: r0(hwb.h) % 360, w: r0(hwb.w), b: r0(hwb.b) }, decimal: rgbToDecimal(rgb) }; })(),
     luminance: Math.round(luminance(rgb) * 1000) / 1000, name: nearestName(rgb),
     contrast: { white: Math.round(onWhite * 100) / 100, black: Math.round(onBlack * 100) / 100, text: onBlack >= onWhite ? '#000000' : '#FFFFFF' },
     ...tintsAndShades(rgb), tones: tones(rgb), schemes: schemes(rgb),

@@ -668,6 +668,25 @@ try {
       card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base-converter/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
     await B.ctx.close(); await K.ctx.close();
   }
+  // the colour page against hexcolor16.com (owner, 2026-10-24: "ok beat it"): every model it lists and more, its ramps, six harmonies, the VGA
+  // palette and a random colour, readable contrast verdicts, and nothing on screen moves when the module fills the page in
+  if (want("colour page: 15 colour models with copy, the contrast verdict read on the page's own colours, six harmonies, the 16 VGA colours, a random colour, and no layout shift")) {
+    const C = await fresh(); const origin = new URL(C.p.url()).origin, pg = await C.ctx.newPage();
+    await pg.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
+    await pg.goto(origin + '/color/?c=ff5733'); await pg.waitForSelector('#rest:not([hidden])', { timeout: 10000 }); await pg.waitForTimeout(300);
+    const v = await pg.evaluate(() => ({ models: [...document.querySelectorAll('#models tr')].map((r) => r.cells[0].textContent + '=' + r.cells[1].textContent), copies: document.querySelectorAll('#models button').length,
+      verdictOnPage: [...document.querySelectorAll('#ratio > div > div')].every((d) => !d.style.background), samples: [...document.querySelectorAll('#ratio .sample[aria-hidden="true"]')].length,
+      schemes: [...document.querySelectorAll('#schemes .scheme p')].map((p) => p.textContent.split(' (')[0]), vga: [...document.querySelectorAll('#vga .sw')].map((s) => s.title), cls: window.__cls }));
+    await pg.click('#random'); await pg.waitForTimeout(150); const rnd = await pg.$eval('#hex', (e) => e.textContent); const url = pg.url();
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'colour.png'), fullPage: true }).catch(() => {});
+    const m = Object.fromEntries(v.models.map((x) => x.split('=')));
+    check('colour page: #ff5733 in 15 models each with a copy button (decimal 16734003, XYZ 45.2, 28.3, 6.2, CIELUV 60.2, 135, 41.6, OKLCH oklch(0.68 0.21 33.7), HWB hwb(11 20% 0%)), the two contrast verdicts on the page\'s own colours with the sample marked decoration, six harmonies with square apart from tetradic, the 16 VGA colours from black to white, a random colour that moves the address, and no layout shift',
+      v.models.length >= 16 && v.copies === v.models.length && m.Decimal === '16734003' && m['CIE XYZ'] === '45.2, 28.3, 6.2' && m.CIELUV === '60.2, 135, 41.6' && m.OKLCH === 'oklch(0.68 0.21 33.7)' && m.HWB === 'hwb(11 20% 0%)'
+        && v.verdictOnPage && v.samples === 2 && JSON.stringify(v.schemes) === JSON.stringify(['Complementary', 'Analogous', 'Triadic', 'Split-complementary', 'Tetradic', 'Square'])
+        && v.vga.length === 16 && v.vga[0] === '#000000' && v.vga[15] === '#ffffff' && /^#[0-9A-F]{6}$/.test(rnd) && url.endsWith('?c=' + rnd.slice(1).toLowerCase()) && v.cls < 0.01 && !C.errors.length,
+      JSON.stringify({ v, rnd, url, errors: C.errors }));
+    await C.ctx.close();
+  }
   // the photo resizer (lib/imgfit.js, /resize-image/, skills/imgfit.js; owner, 2026-10-24: back to the easy sites): a real picture in, an exact size and a size limit out
   if (want("photo resizer: a photo becomes an exact size under a size limit as a JPEG and a PDF, on the device, and the ask opens it filled in")) {
     const R = await fresh(); const origin = new URL(R.p.url()).origin, pg = await R.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
