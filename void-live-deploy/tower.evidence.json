@@ -362,59 +362,59 @@
   "stopwatch": {
    "speed": {
     "verdict": "better",
-    "verse": 163,
-    "best": 2159,
-    "evidence": "Verse (/stopwatch/) 163 ms to the load event (median of 3, phone width) vs online-stopwatch.com 2159 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T22:50:33.226Z"
+    "verse": 132,
+    "best": 1873,
+    "evidence": "Verse (/stopwatch/) 132 ms to the load event (median of 3, phone width) vs online-stopwatch.com 1873 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T22:50:33.226Z"
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/stopwatch/) 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T22:50:33.226Z"
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 2,
-    "evidence": "Verse (/stopwatch/) 3 of 3 loads answered vs online-stopwatch.com 2 of 3 loads answered",
-    "at": "2026-10-24T22:50:33.226Z"
+    "best": 3,
+    "evidence": "Verse (/stopwatch/) 3 of 3 loads answered vs online-stopwatch.com 3 of 3 loads answered",
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T22:50:33.226Z"
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/stopwatch/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T22:50:33.226Z"
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse (/stopwatch/) 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.01)",
-    "at": "2026-10-24T22:50:33.226Z"
+    "evidence": "Verse (/stopwatch/) 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.02)",
+    "at": "2026-10-24T23:39:58.819Z"
    },
    "alarms": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: an alarm)",
-    "at": "2026-10-24T22:50:33.226Z",
+    "at": "2026-10-24T23:39:58.819Z",
     "of": 1,
     "part": true
    },
@@ -423,7 +423,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: laps)",
-    "at": "2026-10-24T22:50:33.226Z",
+    "at": "2026-10-24T23:39:58.819Z",
     "of": 1,
     "part": true
    },
@@ -432,8 +432,15 @@
     "verse": 10,
     "best": 2,
     "evidence": "Verse (/stopwatch/) 10 of 10 things a full answer shows vs online-stopwatch.com 2 of 10 things a full answer shows (Verse lacks: none; site lacks: laps, fastest and slowest lap, alarm, presets, keyboard shortcuts, pause and resume, share a timer, keeps time in a background tab)",
-    "at": "2026-10-24T22:50:33.226Z",
+    "at": "2026-10-24T23:39:58.819Z",
     "of": 10
+   },
+   "accuracy": {
+    "verdict": "unverified",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/stopwatch/) 2 of 2 right on a 3 s run timed by the gate; the gate could not start or read online-stopwatch.com's clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win",
+    "at": "2026-10-24T23:39:58.819Z"
    }
   },
   "unit converter": {
@@ -508,7 +515,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T22:52:42.339Z"
+    "at": "2026-10-24T23:42:20.355Z"
    }
   },
   "encoder": {
@@ -1742,7 +1749,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T22:54:24.936Z"
+    "at": "2026-10-24T23:44:07.681Z"
    }
   }
  }
