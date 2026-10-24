@@ -394,6 +394,7 @@ for (const [name, file] of [
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
   ['tower-verdict', 'tower-verdict.test.mjs'],
+  ['site-scout', 'site-scout.test.mjs'],
   ['persona-playtest', 'persona-playtest.mjs'],
   ['ics', 'ics.test.mjs'],
   ['lineage', 'lineage.test.mjs'],

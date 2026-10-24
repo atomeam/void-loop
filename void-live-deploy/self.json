@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T00:45:01Z",
+   "subject": "Is it Christmas, side by side with isitchristmas.com's own source: your flag is your pointer and turns with the wheel or the arrow keys…"
+  },
+  {
+   "at": "2026-10-24T00:42:32Z",
+   "subject": "Incident: the browser suite failed on 2a5e5383 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T00:41:08Z",
+   "subject": "Incident: the browser suite failed on 851239bf (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T00:33:12Z",
    "subject": "Tower: the 10 floors marked beaten are taken back (owner, 2026-10-24: none of them was earned; Verse answering an ask is not being better…"
   },
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-23T23:22:16Z",
    "subject": "Verse hardens itself: 2 benchmark ask(s) for resonant-membrane, similar"
-  },
-  {
-   "at": "2026-10-23T23:22:15Z",
-   "subject": "Tower: calculator, stopwatch, unit converter, password and encoder fall (Verse answered each floor's ask); the gate counts the page's own…"
-  },
-  {
-   "at": "2026-10-23T23:20:36Z",
-   "subject": "Tower gate: speed, mobile, accessibility and reliability measured against the live sites of the early floors"
-  },
-  {
-   "at": "2026-10-23T23:18:38Z",
-   "subject": "Autonomous tower: after every deploy each one-tool floor is asked on the live site, and a floor Verse's own skill answers falls by itself…"
   }
  ],
  "builders": {
