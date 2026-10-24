@@ -2,6 +2,31 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T15:48:06.879Z",
+   "sha": "86ac4b5222e541ba680f218a2c82fa65eb1cdef2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40107888158",
+   "suite": "browser suite on main",
+   "checks": [
+    "undo pile: a dismissed sticky is on the pile, a restore button and \"restore the last dismissed\" put it back, and \"what changed today\" lists the adds and the dismissals",
+    "favorites and bookmarks: \"favorite this\" puts a star on the picked card, \"bookmark: make a clock\" keeps the ask, \"my bookmarks\" lists both and a run button asks it again; \"recently kept\" with nothing kept says so",
+    "print view: \"print the stage on letter\" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; \"print view on A4\" switches paper; the export history lists the exports",
+    "stage as a picture: \"copy the stage as an image\" puts a PNG with real pixels on the clipboard (painted cards), \"copy this card as a png\" does the picked card alone and is smaller, and \"qr code for this stage view\" shows a code for this page's address",
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/grow-clock.yml",
+    ".github/workflows/grow-self.yml",
+    "tools/book-news.test.mjs",
+    "tools/grow-clock.test.mjs",
+    "tools/is-it.test.mjs",
+    "void-live-deploy/lib/book-news.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/sw.js"
+   ]
+  },
+  {
    "at": "2026-10-24T15:38:46.434Z",
    "sha": "351d31fe834928fcf3261dcae98eaebff376408a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40107237134",
@@ -609,21 +634,6 @@
     "tools/test_void.mjs",
     "void-live-deploy/lib/arrange.js",
     "void-live-deploy/skills/music.js"
-   ]
-  },
-  {
-   "at": "2026-10-24T03:45:50.434Z",
-   "sha": "041f55fdaf6e085b2daeb0b8cc819c935780473b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40059109366",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/coin.js"
    ]
   }
  ]
