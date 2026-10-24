@@ -7,9 +7,6 @@
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS } from '../void-live-deploy/lib/tower.js';
-import { called } from './tower-verdict.mjs';
-// the one-tool floors: a single utility each, where answering the floor's ask with Verse's own skill is the whole job
-export const ONE_TOOL = new Set(['is it', 'coin flip', 'random number', 'word count', 'calculator', 'stopwatch', 'unit converter', 'password', 'time zones', 'colour', 'encoder']);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -32,7 +29,6 @@ export function rescore(rows = {}) {
 }
 /** the stored row, keeping what a pass was when it is now worse (a regression un-beats the floor). Pure. */
 export function record(prev, v, verse, best, evidence, at) {
-  if (prev && prev.called) return prev; // the scout called this floor beaten (tools/tower-verdict.mjs --beaten): a measurement never overturns the call
   const ok = (x) => x === 'better' || x === 'equal-and-better';
   return { verdict: v, verse, best, evidence, at, ...(v === 'worse' && prev && (ok(prev.verdict) || prev.was) ? { was: prev.was || prev.verdict } : {}) };
 }
@@ -77,10 +73,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   put('reliability', v.reliability, s.reliability, ' of 3 loads answered');
   put('mobile', v.mobile, s.mobile, ' px sideways overflow at 390 px');
   put('accessibility', v.a11y, s.a11y, ' unnamed controls or images');
-  // autonomous (owner, 2026-10-23: "this is an autonomous operation"): a one-tool floor falls by itself when one of Verse's own skills
-  // answers the floor's ask on the live site; the call is signed by verse and a later measurement never overturns it
-  if (v.skill && ONE_TOOL.has(f.id)) { data.floors[f.id] = called(f, ev, 'verse', 'Verse\'s own ' + v.skill + ' skill answered "' + f.ask + '" on the live site', at); console.log(f.site + ': called beaten (skill ' + v.skill + ')'); }
-  else if (ONE_TOOL.has(f.id)) console.log(f.site + ': no skill of Verse answered "' + f.ask + '"; not called');
+  // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back
   fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
   for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
 }

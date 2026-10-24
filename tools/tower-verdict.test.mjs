@@ -16,9 +16,8 @@ test('a pass must be an aspect of the floor; a lost aspect may be new, and keeps
   assert.deepEqual(r.unknown, []); assert.equal(r.rows.history.was, 'better'); assert.equal(r.rows['voice input'].verdict, 'worse');
 });
 test('the report is one line of at most 200 characters', () => { assert.equal(cleanReport(' a\\n b '.replace('\\n', '\n')), 'a b'); assert.equal(cleanReport('x'.repeat(300)).length, 200); assert.equal(cleanReport(''), null); });
-test('the scout calls a floor beaten: every aspect passes, and a new measurement never overturns it', async () => {
-  const { called } = await import('./tower-verdict.mjs'), { record } = await import('./tower-gate.mjs');
+test('a person can sign a floor beaten: every aspect passes, and keeps what it was', async () => {
+  const { called } = await import('./tower-verdict.mjs');
   const rows = called(calc, { speed: { verdict: 'worse', verse: 3341, best: 908, evidence: 'm' } }, 'argon', 'owner\'s call', at);
   assert.equal(gate(calc, rows).beaten, true); assert.equal(rows.speed.was, 'worse');
-  assert.equal(record(rows.speed, 'worse', 3000, 900, 'm2', 'now'), rows.speed);
 });
