@@ -456,7 +456,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T18:18:03.038Z"
+    "at": "2026-10-24T18:25:23.082Z"
    }
   },
   "encoder": {
@@ -1143,59 +1143,59 @@
   "wheel": {
    "speed": {
     "verdict": "better",
-    "verse": 155,
-    "best": 412,
-    "evidence": "Verse (/wheel/) 155 ms to the load event (median of 3, phone width) vs wheelofnames.com 412 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:17:15.798Z"
+    "verse": 135,
+    "best": 341,
+    "evidence": "Verse (/wheel/) 135 ms to the load event (median of 3, phone width) vs wheelofnames.com 341 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/wheel/) 3 of 3 loads answered vs wheelofnames.com 3 of 3 loads answered",
-    "at": "2026-10-24T18:17:15.798Z"
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/wheel/) 0 px sideways overflow at 390 px vs wheelofnames.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:17:15.798Z"
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/wheel/) 0 unnamed controls or images vs wheelofnames.com 2 unnamed controls or images",
-    "at": "2026-10-24T18:17:15.798Z"
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/wheel/) 1 (1: the page shows itself again with the network cut) vs wheelofnames.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:17:15.798Z"
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/wheel/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wheelofnames.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:17:15.798Z"
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 13,
-    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 12 small tap targets, layout shift 0.04)",
-    "at": "2026-10-24T18:17:15.798Z"
+    "best": 14,
+    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 14 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 13 small tap targets, layout shift 0.04)",
+    "at": "2026-10-24T18:24:37.254Z"
    },
    "entries list": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:17:15.798Z",
+    "at": "2026-10-24T18:24:37.254Z",
     "of": 1,
     "part": true
    },
@@ -1204,7 +1204,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:17:15.798Z",
+    "at": "2026-10-24T18:24:37.254Z",
     "of": 1,
     "part": true
    },
@@ -1213,7 +1213,7 @@
     "verse": 9,
     "best": 9,
     "evidence": "Verse (/wheel/) 9 of 9 things a full answer shows vs wheelofnames.com 9 of 9 things a full answer shows (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:17:15.798Z",
+    "at": "2026-10-24T18:24:37.254Z",
     "of": 9
    }
   },
@@ -1404,6 +1404,57 @@
     "best": 0,
     "evidence": "Verse 0 design defects vs Google Translate 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Translate (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
     "at": "2026-10-24T18:19:41.935Z"
+   }
+  },
+  "recipes": {
+   "speed": {
+    "verdict": "better",
+    "verse": 301,
+    "best": 334,
+    "evidence": "Verse 301 ms to the load event (median of 3, phone width) vs Allrecipes 334 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Allrecipes 3 of 3 loads answered",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Allrecipes 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs Allrecipes 0 unnamed controls or images",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Allrecipes 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Allrecipes 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T18:27:04.306Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 27,
+    "evidence": "Verse 0 design defects vs Allrecipes 27 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Allrecipes (1 low-contrast texts, 26 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T18:27:04.306Z"
    }
   }
  }
