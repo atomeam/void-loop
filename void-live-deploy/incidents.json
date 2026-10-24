@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T05:10:32.978Z",
+   "sha": "ddc707fd703a9c1b8a8a4016322a03838118958e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40064648716",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/tower-gate.yml",
+    "docs/MAP.md",
+    "tools/families.mjs",
+    "tools/imgfit.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/imgfit.js",
+    "void-live-deploy/lib/tower.js",
+    "void-live-deploy/resize-image/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/imgfit.js",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1825-imgfit"
+   ]
+  },
+  {
    "at": "2026-10-24T04:58:55.443Z",
    "sha": "6ce81fd0fb276a53c1db0bd43835c67fda98c43f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40063948798",
@@ -564,20 +592,6 @@
    "touched": [
     ".github/workflows/easiest-sites.yml",
     "tools/easiest-sites.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-24T02:22:46.593Z",
-   "sha": "99f5e9e57aef7d86798d879e448c1006762dbe93",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40053296446",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/skills/tower.js"
    ]
   }
  ]
