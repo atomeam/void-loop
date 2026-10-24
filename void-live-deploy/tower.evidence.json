@@ -448,7 +448,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T17:04:50.141Z"
+    "at": "2026-10-24T17:16:42.905Z"
    }
   },
   "encoder": {
@@ -752,52 +752,52 @@
   "base converter": {
    "speed": {
     "verdict": "better",
-    "verse": 139,
-    "best": 1071,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 139 ms to the load event (median of 3, phone width) vs hextobinary.com 1071 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T17:04:14.239Z"
+    "verse": 178,
+    "best": 1845,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 178 ms to the load event (median of 3, phone width) vs hextobinary.com 1845 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 loads answered vs hextobinary.com 3 of 3 loads answered",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 (1: the page shows itself again with the network cut) vs hextobinary.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hextobinary.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 things a full answer shows vs hextobinary.com 3 of 4 things a full answer shows (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T17:04:14.239Z",
+    "at": "2026-10-24T17:16:07.532Z",
     "of": 4
    },
    "design polish": {
@@ -805,14 +805,14 @@
     "verse": 0,
     "best": 22,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 design defects vs hextobinary.com 22 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), hextobinary.com (0 low-contrast texts, 22 small tap targets, layout shift 0.07)",
-    "at": "2026-10-24T17:04:14.239Z"
+    "at": "2026-10-24T17:16:07.532Z"
    },
    "all four bases": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 shown vs hextobinary.com 3 of 4 shown (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T17:04:14.239Z",
+    "at": "2026-10-24T17:16:07.532Z",
     "of": 4,
     "part": true
    },
@@ -821,7 +821,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 of 1 shown vs hextobinary.com 0 of 1 shown (Verse lacks: none; site lacks: a signed reading)",
-    "at": "2026-10-24T17:04:14.239Z",
+    "at": "2026-10-24T17:16:07.532Z",
     "of": 1,
     "part": true
    }
@@ -1011,6 +1011,92 @@
     "best": 9,
     "evidence": "Verse (/g/) 1 design defects vs tildegit.org 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.25), tildegit.org (4 low-contrast texts, 5 small tap targets, layout shift 0.00)",
     "at": "2026-10-24T17:04:33.918Z"
+   }
+  },
+  "gradient": {
+   "speed": {
+    "verdict": "better",
+    "verse": 110,
+    "best": 359,
+    "evidence": "Verse (/gradient/) 110 ms to the load event (median of 3, phone width) vs colorzilla.com 359 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 554,
+    "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 554 px sideways overflow at 390 px",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 0 unnamed controls or images vs colorzilla.com 2 unnamed controls or images",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/gradient/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorzilla.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 9,
+    "best": 54,
+    "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 54 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.09), colorzilla.com (28 low-contrast texts, 26 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T17:18:26.215Z"
+   },
+   "stops with opacity": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 2 of 2 shown vs colorzilla.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:18:26.215Z",
+    "of": 2,
+    "part": true
+   },
+   "import css": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:18:26.215Z",
+    "of": 1,
+    "part": true
+   },
+   "presets": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T17:18:26.215Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 12,
+    "best": 10,
+    "evidence": "Verse (/gradient/) 12 of 12 things a full answer shows vs colorzilla.com 10 of 12 things a full answer shows (Verse lacks: none; site lacks: conic, text contrast)",
+    "at": "2026-10-24T17:18:26.215Z",
+    "of": 12
    }
   }
  }
