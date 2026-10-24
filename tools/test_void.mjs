@@ -632,11 +632,11 @@ try {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];
     await F.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"counts":{"all":{"heads":1,"tails":1},"today":{"heads":1,"tails":1}}}' }));
     const pg = await F.ctx.newPage(); pg.on('request', (q) => got.push(q.url().replace(origin, '')));
-    await pg.goto(origin + '/flip/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); await pg.waitForTimeout(800);
+    await pg.goto(origin + '/flip/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); const early = got.filter((u) => u.startsWith('/api/tally')).length; await pg.waitForTimeout(2400);
     const word = await pg.$eval('.coin-word', (e) => e.textContent), pre = await pg.$$eval('link[rel=modulepreload]', (l) => l.map((x) => x.getAttribute('href')));
     const mods = ['/skills/coin.js', '/lib/tally.js', '/lib/reactions.js', '/lib/coins.js'], tally = got.filter((u) => u.startsWith('/api/tally')).length;
-    check('flip page: the coin lands (Heads or Tails), the head preloads every module it imports (coin, tally, reactions, coins) so there is no waterfall, and it makes one tally request on load',
-      /^(?:Heads|Tails)$/.test(word) && mods.every((m) => pre.includes(m) && got.includes(m)) && tally === 1 && !F.errors.length, JSON.stringify({ word, pre, tally, errors: F.errors }));
+    check('flip page: the coin lands (Heads or Tails), the head preloads every module it imports (coin, tally, reactions, coins) so there is no waterfall, and it asks for the everyone-count only after the page is up (none at load, one a moment later)',
+      /^(?:Heads|Tails)$/.test(word) && mods.every((m) => pre.includes(m) && got.includes(m)) && early === 0 && tally === 1 && !F.errors.length, JSON.stringify({ word, pre, early, tally, errors: F.errors }));
     await F.ctx.close();
   }
   // every coin (owner, 2026-10-24: "any ever discovered coin as well as create a coin and it ties into our coin appraisal"): Commons and the appraiser are stubbed

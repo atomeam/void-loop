@@ -191,8 +191,16 @@ function flipCard(text, api, ask, look, keepEl) {
   // resting (429) reads them once instead
   const read = () => fetch('/api/tally?of=coin', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then(showEvery).catch(() => {});
   let shown = false; const seen = (j) => { if (j && j.ok) shown = true; showEvery(j); };
-  const tell = (v, n) => { if (!n) return; if (Date.now() < restUntil) { if (!shown) { shown = true; read(); } return; } fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
-    .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); if (!shown) { shown = true; read(); } return null; } return r.ok ? r.json() : null; }).then(seen).catch(() => {}); };
+  // the everyone-count is not what the page is for, so it does not compete with loading it (speed, 2026-10-24: /flip/ waited on this request, then
+  // on the browser's quiet window, and lost the tower's speed aspect to justflipacoin.com): flips are gathered and sent together a moment after the
+  // page is up, one POST per side, never one per flip
+  let owed = { heads: 0, tails: 0 }, timer = 0;
+  const send = (v, n) => fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'coin', v, n }) })
+    .then((r) => { if (r.status === 429) { restUntil = Date.now() + 1000 * (Number(r.headers.get('retry-after')) || 60); if (!shown) { shown = true; read(); } return null; } return r.ok ? r.json() : null; }).then(seen).catch(() => {});
+  const flush = () => { timer = 0; const o = owed; owed = { heads: 0, tails: 0 };
+    if (Date.now() < restUntil) { if (!shown) { shown = true; read(); } return; }
+    for (const v of ['heads', 'tails']) if (o[v]) send(v, Math.min(20, o[v])); };
+  const tell = (v, n) => { if (!n) return; owed[v] += n; if (!timer) timer = setTimeout(flush, 1200); };
   const coins = Array.from({ length: ask.n }, () => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'coin'; b.style.setProperty('--d', d + 'px'); b.style.setProperty('--rim', look ? look.rim : st.rim);
     b.innerHTML = '<span class="fc h"></span><span class="fc t"></span>'; // void-review: ok (constant markup, faces painted by paintFace)
