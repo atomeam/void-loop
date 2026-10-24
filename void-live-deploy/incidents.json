@@ -2,6 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T03:13:04.363Z",
+   "sha": "42bc404e38688482d71694a08b5bdc40acb56b5f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40056803155",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/card-art-route.test.mjs",
+    "tools/skill-matchers.test.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/lib/art-rules.js"
+   ]
+  },
+  {
    "at": "2026-10-24T03:10:32.369Z",
    "sha": "50166c16c4b84dab70c72f460eec572088b8a33e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40056620797",
@@ -601,28 +618,6 @@
     "void-live-deploy/void.growth.json",
     "tools/tower-gate.mjs",
     "tools/tower-verdict.test.mjs",
-    "void-live-deploy/tower.evidence.json"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:41:33.744Z",
-   "sha": "3f97013f3268fdada4d64fcbe3d04a734f87ee99",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40039701974",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    "tools/tower-gate.mjs",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/skills/util.js",
     "void-live-deploy/tower.evidence.json"
    ]
   }
