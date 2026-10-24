@@ -41,11 +41,8 @@ export function towerHtml(t, esc) {
       + '<span class="mk-no" aria-hidden="true">' + esc(f.floor) + '</span><span class="mk-name">' + esc(f.site) + '</span><span class="mk-tag">' + esc(tag) + '</span>'
       + '<span class="mk-count">' + esc(f.n + ' of ' + f.m + ' aspects beaten') + '</span>' + hp + '</button>';
   }).join('');
-  const done = t.floors.filter((f) => f.beaten).length, cur = t.floors.find((f) => f.state === 'current'), next = t.floors.filter((f) => f.state === 'ahead').slice(0, 2).map((f) => f.site);
-  // the same in plain words, so a copied or shared card still says who was beaten, who is being fought and who is next (the rungs are buttons)
-  const said = (done ? 'Defeated: ' + t.floors.filter((f) => f.beaten).map((f) => f.site).join(', ') + '. ' : '') + (cur ? 'Fighting ' + cur.site + ' (' + cur.n + ' of ' + cur.m + '). ' : '') + (next.length ? 'Next: ' + next.join(', ') + '.' : '');
+  const done = t.floors.filter((f) => f.beaten).length;
   return MK_CSS + '<div class="mk"><div class="mk-head">THE TOWER</div><div class="mk-score tower-line">' + esc(done + ' defeated · ' + (t.total - done) + ' to go · floor ' + Math.min(t.marker, t.total) + ' of ' + t.total) + '</div>'
-    + '<p class="mk-said" style="text-align:center;font-size:12px;opacity:.8;margin:-4px 0 8px">' + esc(said) + '</p>'
     + '<div class="mk-stack tower-stack">' + rows + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. A site falls only when every aspect is measured head to head or judged better by a person who used both; Verse never awards itself one. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
