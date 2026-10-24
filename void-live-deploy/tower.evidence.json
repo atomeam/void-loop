@@ -448,7 +448,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T17:59:36.545Z"
+    "at": "2026-10-24T18:02:47.870Z"
    }
   },
   "encoder": {
@@ -1033,59 +1033,59 @@
   "gradient": {
    "speed": {
     "verdict": "better",
-    "verse": 142,
-    "best": 330,
-    "evidence": "Verse (/gradient/) 142 ms to the load event (median of 3, phone width) vs colorzilla.com 330 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T17:59:23.595Z"
+    "verse": 154,
+    "best": 409,
+    "evidence": "Verse (/gradient/) 154 ms to the load event (median of 3, phone width) vs colorzilla.com 409 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 554,
     "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 554 px sideways overflow at 390 px",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/gradient/) 0 unnamed controls or images vs colorzilla.com 2 unnamed controls or images",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/gradient/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorzilla.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 9,
     "best": 54,
     "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 54 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.09), colorzilla.com (28 low-contrast texts, 26 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T17:59:23.595Z"
+    "at": "2026-10-24T18:02:31.546Z"
    },
    "stops with opacity": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/gradient/) 2 of 2 shown vs colorzilla.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:59:23.595Z",
+    "at": "2026-10-24T18:02:31.546Z",
     "of": 2,
     "part": true
    },
@@ -1094,7 +1094,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:59:23.595Z",
+    "at": "2026-10-24T18:02:31.546Z",
     "of": 1,
     "part": true
    },
@@ -1103,7 +1103,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T17:59:23.595Z",
+    "at": "2026-10-24T18:02:31.546Z",
     "of": 1,
     "part": true
    },
@@ -1112,8 +1112,16 @@
     "verse": 12,
     "best": 10,
     "evidence": "Verse (/gradient/) 12 of 12 things a full answer shows vs colorzilla.com 10 of 12 things a full answer shows (Verse lacks: none; site lacks: conic, text contrast)",
-    "at": "2026-10-24T17:59:23.595Z",
+    "at": "2026-10-24T18:02:31.546Z",
     "of": 12
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 2 of 2 checked facts right for the same question vs colorzilla.com 2 of 2 checked facts right for the same question",
+    "at": "2026-10-24T18:02:31.546Z",
+    "of": 2
    }
   },
   "wheel": {
@@ -1277,6 +1285,57 @@
     "evidence": "Verse (/random-user/) 15 of 15 things a full answer shows vs randomuser.me 14 of 15 things a full answer shows (Verse lacks: none; site lacks: SQL)",
     "at": "2026-10-24T18:01:16.074Z",
     "of": 15
+   }
+  },
+  "weather": {
+   "speed": {
+    "verdict": "better",
+    "verse": 301,
+    "best": 370,
+    "evidence": "Verse 301 ms to the load event (median of 3, phone width) vs weather.gov 370 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs weather.gov 3 of 3 loads answered",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 600,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs weather.gov 600 px sideways overflow at 390 px",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse 0 unnamed controls or images vs weather.gov 7 unnamed controls or images",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 0,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T18:04:28.654Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 63,
+    "evidence": "Verse 1 design defects vs weather.gov 63 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), weather.gov (0 low-contrast texts, 63 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T18:04:28.654Z"
    }
   }
  }
