@@ -7079,6 +7079,8 @@ try {
   if (want("the book: a day in What's new plays on the stage as a walkthrough")) { const W = await fresh();
     const day = new Date().toISOString().slice(0, 10);
     await W.ctx.route(/\/void\.growth\.json/, (r) => r.fulfill(json([{ at: day + 'T09:00:00Z', by: 'claude', kind: 'grow', what: 'a clock on the stage', try: 'make a clock' }, { at: day + 'T10:00:00Z', by: 'claude', kind: 'grow', what: 'sticky notes', show: 'sticky notes', try: 'add a sticky that says hi' }])));
+    // both asks answered their live check (the book plays only those: a build that never answered is never claimed)
+    await W.ctx.route(/\/claims-verified\.json/, (r) => r.fulfill(json({ ok: ['make a clock', 'add a sticky that says hi'] })));
     await W.ask('open the book', 900); await until(async () => !!(await W.p.$('#vtome .tome.opened')), 8000); await W.p.waitForTimeout(400);
     await W.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await W.p.waitForTimeout(1500);
     const link = await W.p.$('#vtome .tome-page a[data-showcase-day="' + day + '"]');

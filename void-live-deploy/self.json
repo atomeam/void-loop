@@ -475,13 +475,53 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-21T16:48:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-24T16:26:37Z",
+   "subject": "Look what I made works again: restore the showcase module the page calls"
+  },
+  {
+   "at": "2026-10-24T16:25:11Z",
+   "subject": "random.org, completeness and range choice: the number page writes any base in columns, and the probe reads the real tool"
+  },
+  {
+   "at": "2026-10-24T16:23:08Z",
+   "subject": "Incident: the browser suite failed on 9d659fd1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T16:20:36Z",
+   "subject": "Tower gate: a run by hand takes several floors, comma separated"
+  },
+  {
+   "at": "2026-10-24T16:19:05Z",
+   "subject": "Tower gate: colour measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:15:39Z",
+   "subject": "Incident: the browser suite failed on 1d40b6da (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T16:15:06Z",
+   "subject": "The tower card saves the fight, the card picture's footer fits, and color-hex.com's contrast aspect is measured"
+  },
+  {
+   "at": "2026-10-24T16:10:43Z",
+   "subject": "Tower gate: colour,coin flip,random number measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T16:09:53Z",
+   "subject": "Incident: the browser suite failed on d957075f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T16:09:36Z",
+   "subject": "Incident: the browser suite failed on 1ca24f1b (void-live-deploy/incidents.json)"
+  },
   {
    "at": "2026-10-24T16:07:37Z",
    "subject": "Made-up people against randomuser.me; the gate scores every new floor's own aspects; its design test finds a browser here"
@@ -521,46 +561,6 @@
   {
    "at": "2026-10-24T15:46:35Z",
    "subject": "CSS gradient: the first floor taken from the tower's frontier (colorzilla.com)"
-  },
-  {
-   "at": "2026-10-24T15:45:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T15:45:17Z",
-   "subject": "Colour page beats hexcolor16.com's list; the gate measures design polish and the colour floors' own aspects"
-  },
-  {
-   "at": "2026-10-24T15:41:26Z",
-   "subject": "Verse fixes its print-file skill: learn to handle \"export as stl\""
-  },
-  {
-   "at": "2026-10-24T15:38:46Z",
-   "subject": "Incident: the browser suite failed on 351d31fe (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:38:16Z",
-   "subject": "No self-hardening, no empty news; floor 1's page answers bigger, shares and opens offline"
-  },
-  {
-   "at": "2026-10-24T15:37:13Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T15:33:59Z",
-   "subject": "Incident: the browser suite failed on 0ccb0aef (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:32:58Z",
-   "subject": "Incident: the browser suite failed on 885d2866 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:31:08Z",
-   "subject": "Incident: the browser suite failed on f98128ba (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T15:26:55Z",
-   "subject": "Tower: Hugging Face and perchance.org join as opponents"
   }
  ],
  "builders": {
