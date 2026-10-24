@@ -6779,5 +6779,6 @@
   {"ask": "order food from lovebird in lakeland", "want": "skill:eat"},
   {"ask": "what's good at lovebird almost famous chicken lakeland", "want": "skill:eat"},
   {"ask": "lovebird lakeland menu", "want": "skill:eat"},
-  {"ask": "random quote", "want": "skill:quote"}
+  {"ask": "random quote", "want": "skill:quote"},
+  {"ask": "tilt arena", "want": "skill:tilt-mode"}
 ]
