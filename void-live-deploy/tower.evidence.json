@@ -277,60 +277,86 @@
   "word count": {
    "speed": {
     "verdict": "better",
-    "verse": 233,
-    "best": 1346,
-    "evidence": "Verse 233 ms to the load event (median of 3, phone width) vs wordcounter.net 1346 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:47:57.681Z"
+    "verse": 126,
+    "best": 1460,
+    "evidence": "Verse (/word-count/) 126 ms to the load event (median of 3, phone width) vs wordcounter.net 1460 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
-    "evidence": "Verse 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs wordcounter.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 1 (1: the page shows itself again with the network cut) vs wordcounter.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wordcounter.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wordcounter.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 31,
-    "evidence": "Verse 0 design defects vs wordcounter.net 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wordcounter.net (8 low-contrast texts, 23 small tap targets, layout shift 0.02)",
-    "at": "2026-10-24T18:47:57.681Z"
+    "evidence": "Verse (/word-count/) 0 design defects vs wordcounter.net 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), wordcounter.net (8 low-contrast texts, 23 small tap targets, layout shift 0.02)",
+    "at": "2026-10-24T18:59:06.116Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
-    "evidence": "Verse 2 of 2 checked facts right for the same question vs wordcounter.net 2 of 2 checked facts right for the same question",
-    "at": "2026-10-24T18:47:57.681Z",
+    "evidence": "Verse (/word-count/) 2 of 2 checked facts right for the same question vs wordcounter.net 2 of 2 checked facts right for the same question",
+    "at": "2026-10-24T18:59:06.116Z",
     "of": 2
+   },
+   "live counting": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/word-count/) 1 of 1 shown vs wordcounter.net 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T18:59:06.116Z",
+    "of": 1,
+    "part": true
+   },
+   "characters and sentences": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/word-count/) 4 of 4 shown vs wordcounter.net 3 of 4 shown (Verse lacks: none; site lacks: characters without spaces)",
+    "at": "2026-10-24T18:59:06.116Z",
+    "of": 4,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 10,
+    "best": 10,
+    "evidence": "Verse (/word-count/) 10 of 10 things a full answer shows vs wordcounter.net 10 of 10 things a full answer shows (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T18:59:06.116Z",
+    "of": 10
    }
   },
   "stopwatch": {
@@ -456,7 +482,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T18:48:35.637Z"
+    "at": "2026-10-24T18:59:32.657Z"
    }
   },
   "encoder": {
@@ -1573,6 +1599,57 @@
     "best": 1,
     "evidence": "Verse 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
     "at": "2026-10-24T18:50:11.742Z"
+   }
+  },
+  "sports": {
+   "speed": {
+    "verdict": "better",
+    "verse": 350,
+    "best": 648,
+    "evidence": "Verse 350 ms to the load event (median of 3, phone width) vs ESPN 648 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 42,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 42 unnamed controls or images",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T19:01:17.416Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 61,
+    "evidence": "Verse 0 design defects vs ESPN 61 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), ESPN (49 low-contrast texts, 12 small tap targets, layout shift 0.08)",
+    "at": "2026-10-24T19:01:17.416Z"
    }
   }
  }
