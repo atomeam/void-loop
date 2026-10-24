@@ -3136,6 +3136,25 @@ try {
       JSON.stringify({ bellOk, line, whole, bar, afterDone, afterReload, errors: P.errors }));
     await P.ctx.close();
   }
+  // owner, 2026-10-24: "just make a clear list button for the builds that stays cleared": one tap clears new and recent builds on this device
+  if (want("look what I made: Clear list clears the builds and they stay cleared")) {
+    const at = new Date(Date.now() - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+    const LEDGER = [{ at, by: 'verse', kind: 'build', what: 'ritual template', show: 'A routine becomes calendar events', try: 'morning routine as calendar events' }, { at, by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-c')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-c', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['morning routine as calendar events', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bell = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 20000);
+    await P.p.click('#whatsnew-bell'); await until(async () => P.p.$('[data-showcase="clear"]'), 6000);
+    await P.p.click('[data-showcase="clear"]'); await P.p.waitForTimeout(500);
+    const now = { bar: !!(await P.p.$('#showcase-bar')), bell: !!(await P.p.$('#whatsnew-bell')) };
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(210, 210); await P.p.waitForTimeout(3000);
+    const later = { bell: !!(await P.p.$('#whatsnew-bell')), line: await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '') };
+    await P.ask("what's new", 1500); const replay = !!(await P.p.$('#showcase-bar'));
+    check('look what I made: Clear list clears the builds and they stay cleared: the walkthrough and the sparkle go at once, a reload shows neither, and "what\'s new" does not replay them',
+      bell === '2' && !now.bar && !now.bell && !later.bell && !/Recently built|I built this/.test(later.line) && !replay && !P.errors.length, JSON.stringify({ bell, now, later, replay, errors: P.errors }));
+    await P.ctx.close();
+  }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
     const LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
     const TARGET = '2026-10-14t01-00-00z';
@@ -5457,6 +5476,18 @@ try {
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
       && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
     await Z.ctx.close(); }
+  // site-test found both asks answering a fresh visit with only a hint line (atomeam/void-loop#1029, #1196): with nothing on the stage, a pair of
+  // gears goes up and the quiz or the five-minute challenge starts on them, saying why
+  if (want("quiz and challenge in a fresh visit: \"test me on that\" and \"turn the questions i missed into a five-minute challenge\" each put up gears and start")) {
+    const out = {};
+    for (const [k, ask, card] of [['quiz', 'test me on that', '.quiz-card'], ['challenge', 'turn the questions i missed into a five-minute challenge', '.challenge-card']]) {
+      const Z = await fresh(); await Z.ask(ask, 1200);
+      out[k] = { kinds: await Z.p.evaluate(() => [...document.querySelectorAll('[data-kind]')].map((e) => e.dataset.kind)).catch(() => []), card: await Z.p.$$eval(card, (d) => d.length), gears: await Z.p.$$eval('.gears-more', (d) => d.length), said: await Z.p.$eval('#say, .say, #status', (e) => e.textContent).catch(() => ''), errors: Z.errors };
+      await Z.ctx.close();
+    }
+    check('quiz and challenge in a fresh visit: "test me on that" and "turn the questions i missed into a five-minute challenge" each put up gears and start (a quiz card, a challenge card), with no page errors',
+      out.quiz.card === 1 && out.quiz.gears > 0 && out.challenge.card === 1 && out.challenge.gears > 0 && !out.quiz.errors.length && !out.challenge.errors.length, JSON.stringify(out));
+  }
   // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
   // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
   // gears' own steppers, and Check says what still needs changing, then that it is done

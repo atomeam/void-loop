@@ -243,6 +243,16 @@ function button(label, on) {
   return b;
 }
 
+/** the Clear list button: everything in this walkthrough is seen, Recently built is empty until something newer ships, and nothing is left on
+ *  screen asking for a look. */
+export function clearAll(stageApi, steps) {
+  markShown(steps || []); write(RECENT_DONE_KEY, nowIso()); recentSteps = null;
+  if (tour) { tour.done = true; end(stageApi); }
+  const b = document.getElementById('whatsnew-bell'); if (b) b.remove();
+  const note = document.getElementById('away-note'); if (note) note.textContent = '';
+  if (stageApi && stageApi.say) stageApi.say('Cleared · new builds will show here when Verse makes them');
+}
+
 function end(stageApi) {
   if (!tour) return;
   const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); clearInterval(el._tick); el.remove(); }
@@ -281,7 +291,11 @@ async function step(stageApi) {
   ctl.style.cssText = 'display:flex;gap:6px;margin-left:auto';
   const last = tour.i === tour.steps.length - 1;
   ctl.append(button(last ? 'Done' : 'Next →', () => { clear(stageApi); if (last) tour.done = true; tour.i++; step(stageApi); }),
-    button('Keep', () => { tour.made = null; if (last) tour.done = true; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); tour.done = true; end(stageApi); })]));
+    button('Keep', () => { tour.made = null; if (last) tour.done = true; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); tour.done = true; end(stageApi); })]),
+    // one tap clears the whole list on this device (owner, 2026-10-24: "just make a clear list button for the builds that stays cleared"):
+    // every step is marked seen, Recently built starts again from now, and the sparkle and the line go; "show me everything you made" still walks it all
+    button('Clear list', () => { clear(stageApi); clearAll(stageApi, tour.steps); }));
+  ctl.lastChild.dataset.showcase = 'clear';
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
   const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
@@ -493,7 +507,7 @@ async function run(text, api) {
   const wip = fresh.waiting.length ? ' · ' + fresh.waiting.length + ' more in progress (not answering yet)' : '';
   // a thing is previewed once (owner, 2026-10-16): with nothing new there is no replay, only the count and the way to see it all
   if (!fresh.steps.length) {
-    const recent = recentOf(list, V);
+    const recent = recentOf(list, V, Date.now(), RECENT_DAYS, read(RECENT_DONE_KEY));
     if (recent.length) { recentSteps = recent; start(stageApi, recent, { label: 'Nothing unseen since you last looked · recently built' + wip }); return 'showcase'; }
     const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
     say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));

@@ -483,6 +483,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T17:18:43Z",
+   "subject": "hextobinary.com, accuracy and huge numbers: the gate types the question into a converter's box, and both sites get the same 121-bit number"
+  },
+  {
+   "at": "2026-10-24T17:18:37Z",
+   "subject": "Tower gate: base converter,password,gradient measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T17:13:58Z",
+   "subject": "Main's two red image checks, Recently built clears on Done, the stability dial fades old reds, Service health says what it adds"
+  },
+  {
+   "at": "2026-10-24T17:07:51Z",
+   "subject": "Incident: the browser suite failed on b101bdfa (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:06:28Z",
+   "subject": "Tower gate: base converter,tildegit,password measured against their live sites"
+  },
+  {
+   "at": "2026-10-24T17:05:58Z",
+   "subject": "Incident: the browser suite failed on e68fec95 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:03:43Z",
+   "subject": "Incident: the browser suite failed on d1c945d0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T17:02:55Z",
+   "subject": "Incident: the browser suite failed on 1515ffdb (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T17:02:07Z",
    "subject": "Verse's own upgrades say what got better: the merge log and grow-self titles name the skills and phrases, and the tray chip stays one…"
   },
@@ -529,38 +561,6 @@
   {
    "at": "2026-10-24T16:32:31Z",
    "subject": "random.org, true randomness and accuracy: a public draw anyone can check, and the gate asks both sites the same question"
-  },
-  {
-   "at": "2026-10-24T16:31:57Z",
-   "subject": "Verse hardens itself: 9 benchmark ask(s) for fakeuser, wheel, gradient"
-  },
-  {
-   "at": "2026-10-24T16:31:27Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T16:31:23Z",
-   "subject": "Showcase: the book line reads whole, the comment names what an upgrade lists"
-  },
-  {
-   "at": "2026-10-24T16:29:18Z",
-   "subject": "Incident: the browser suite failed on bd280a8c (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T16:27:50Z",
-   "subject": "Tower gate: random number,base converter,word count measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T16:26:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-24T16:26:37Z",
-   "subject": "Look what I made works again: restore the showcase module the page calls"
-  },
-  {
-   "at": "2026-10-24T16:25:11Z",
-   "subject": "random.org, completeness and range choice: the number page writes any base in columns, and the probe reads the real tool"
   }
  ],
  "builders": {

@@ -7316,7 +7316,12 @@
    "imports": [],
    "importedBy": [
     "skills/gears.js",
-    "skills/mini/gears.js"
+    "skills/mini/gears.js",
+    "skills/quiz.js"
+   ],
+   "reachedBy": [
+    "skills/challenge.js",
+    "skills/goal.js"
    ]
   },
   "skills/gears.js": {
@@ -8650,7 +8655,8 @@
   },
   "skills/quiz.js": {
    "imports": [
-    "skills/quiz-rules.js"
+    "skills/quiz-rules.js",
+    "skills/gear-pair-rules.js"
    ],
    "importedBy": [
     "skills/challenge.js",
