@@ -10,17 +10,17 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-23. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-24. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit *(small)* (daily, 2026-10-23) `ask-20261023-2119-1`
-- Move non-V01D workers off the shared namespace to reduce KV writes *(small)* (daily, 2026-10-23) `ask-20261023-2119-2`
+- Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit. (daily, 2026-10-24) `ask-20261024-2038-1`
+- Move non-V01D workers off the shared namespace to reduce KV writes. (daily, 2026-10-24) `ask-20261024-2038-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261023-2119-1` queued, not decided yet
-- `ask-20261023-2119-2` queued, not decided yet
+- `ask-20261024-2038-1` queued, not decided yet
+- `ask-20261024-2038-2` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -68,6 +68,12 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261015-0613-1` blocked: the skill-merge worker is writing tools/skill-overlap.mjs, the same scanner; building a second one would duplicate it. Handed over on the board · reasoning path: convergence: one engine per job
 - `adam-20261015-reinvest` built: Adam 2026-10-15: V01D reinvests its own money smartly. lib/reinvest.js splits net earnings (read from the owner-only /api/earnings, never stored in the repo): 20% reserve kept, free paths first, then ROI per dollar, re-ranked only by honest payoff tests (one metric, a baseline and a check date recorded before each spend) and V01D's own answer (weight 0.3). Spend proposals go to the confirm line (order.place) with cost, expected payback and check date. Real spending still happens only through Adam's existing accounts: V01D holds no card, opens no account and stores no payment details. Public repo: plan logic only (domains/void.reinvest.json, docs/reinvest.md), no real dollar amounts; the growth card shows no money.
 - `adam-20261015-pay-a-share` built: Adam 2026-10-15: pay a percentage, get that percentage. For a pay-what-you-want product with an appraised price (pwyw and cents > 0), paying p% of the price unlocks the first ceil(p% x N) of its N paid items in a stable order (README and other free items first and always included, then V01D's value order, starter items first); any payment gets at least one item, 100% or more unlocks everything. Decided server-side only from the provider-verified amount (Stripe's signed amount_total; Gumroad's keyed ping price, read back from Gumroad's API when GUMROAD_ACCESS_TOKEN is set), never from client input or chat; price-lock rules still apply. Delivery: a signed per-purchase link to a zip built from the unlocked items in R2. Upgrade: pay the difference later, credited by order id (store_credits). Truly free products (price 0) stay fully free. lib/pay-share.js, tests tools/pay-share.test.mjs.
+- `ask-20261022-0420-3` built: built in lists run 5 (2026-10-22): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play the way a person meets them (their examples through the real routing order, their cards against a stand-in service), so with their benchmark asks each meets the proven rule; Words and the world is 28 of 28 proven. The country and sport cards' dead live sources were replaced the same run (Wikidata; TheSportsDB's new public key with Wikipedia second).
+- `ask-20261022-0420-2` built: already built 2026-10-18 (b5150302): lib/churn.js finds files changed more than 12 times in 7 days and lib/will-guard.js pickWant skips a want that names one, saying so on the card; duplicate, nothing new to build (lists run 5)
+- `ask-20261022-0420-1` queued: the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (the router and limits, domains/handoff.md); handed to Claude with the reason: answer runs gpt-oss-120b and the free Workers AI allowance is 10k neurons a day (Up for grabs, wishlist #1). Lists run 5
+- `ask-20261021-2133-1` built: built in lists run 3 (2026-10-21): the Deciding family is 3 of 3 proven (decide-cards and triangulate tests and benchmark asks)
+- `ask-20261021-2133-2` built: built in lists run 3 (2026-10-21): 'preview my memory' inside the memory-graph card (tools/memory-preview.test.mjs)
+- `ask-20261021-2133-3` built: built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main
 
 ## Log, oldest first
 
@@ -4559,6 +4565,354 @@ Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k 
 > **Next video trick:** Learn a glitch-transition effect for video clips.
 
 Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit" (small); "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:06:26.011Z -->
+### 2026-10-24 18:06 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: gradient,password,weather measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families [S1, S3]. The system recently shipped 'Tower gate', which measures gradient, password, and weather against live sites [just shipped]. Currently, the system is managing constraints including a 10k/day neuron limit and a live outage [S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure the neuron limit and resolve the outage [S3]. Implement a churn cap for file changes and fix the 'open the self card' router to trigger the look skill [What I want next].
+>
+> **Next video trick:** Learn a new video effect for the films skill to enhance stage-fx [stage-fx].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:09:04.153Z -->
+### 2026-10-24 18:09 UTC · after a build
+
+**Asked:** This just shipped: "Accuracy for word count, unit converter and encoder: the gate types the question into each site's box, and Verse counts a closing "!"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a 10k/day neuron limit and a live outage [S1, S3]. The system recently shipped accuracy improvements for word count, unit converter, and encoder by typing questions into site boxes and counting closing exclamation marks [just shipped]. Two critical asks remain open: migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure neuron limits and reduce KV writes [S2, S3].
+>
+> **How I would make it better:** Prioritize the free-path migration to gemma to stabilize the 10k/day neuron limit and move non-V01D workers to resolve the live outage [S3]. Implement a churn cap for file changes to prevent proposing repetitive changes to frequently modified files [What I want next].
+>
+> **Next video trick:** A video effect that uses the newly shipped video skill to play an inline YouTube or Vimeo video for a clip [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:09:11.560Z -->
+### 2026-10-24 18:09 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a 10k/day neuron limit and a live outage [S1, S3]. The system recently shipped accuracy improvements for word count, unit converter, and encoder [just shipped]. Two critical asks remain open: migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure neuron limits and reduce KV writes [S2, S3].
+>
+> **How I would make it better:** Prioritize the free-path migration to gemma to stabilize the 10k/day free neuron limit and move non-V01D workers to resolve the live outage [S3]. Implement a churn cap for file changes to prevent proposing repetitive changes to frequently modified files [What I want next].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, containing 47 skills with only 36 proven [S4].
+>
+> **Next targeted capability:** Go, because it is one of the pure classics that keeps its real name [My canon (v7)].
+>
+> **Next video trick:** A transition effect that uses the 'splat' skill to reveal a new stage image [stage-fx, splat].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:13:47.790Z -->
+### 2026-10-24 18:13 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: random user,word count,encoder measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently managing 334 skills across 12 families [S1, S3]. The system has just shipped 'Tower gate: random user, word count, encoder measured against their live sites' [just shipped]. There is a live outage related to neuron limits and KV writes [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the requested churn cap for file changes to stop repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Twitch video inline on the stage [recently shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:16:05.810Z -->
+### 2026-10-24 18:16 UTC · after a build
+
+**Asked:** This just shipped: "The self card lists each skill's own new phrases, and a saved countdown card reads cleanly". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently managing 334 skills across 12 families [S1, S3]. The system has just shipped 'The self card lists each skill's own new phrases, and a saved countdown card reads cleanly' [just shipped]. There is a live outage related to neuron limits and KV writes [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the requested churn cap for file changes to stop repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** A video effect that uses the video skill to play an inline YouTube or Vimeo video [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:21:36.865Z -->
+### 2026-10-24 18:21 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,translate measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage due to neuron limits and high KV writes [S1, S3]. Recent shipments include the 'Tower gate' for measuring wheel, password, and translate against live sites [just shipped], the Verse Remix Kit, and a weekly podcast [just shipped]. The system is transitioning from 0 of 3 recent asks being built to addressing critical infrastructure stability [S2, What I want next].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the churn cap for file changes to prevent repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** Create a 3D miniature effect for a 'tower gate' element to match the rendered state signal capability [just shipped, Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:23:53.363Z -->
+### 2026-10-24 18:23 UTC · after a build
+
+**Asked:** This just shipped: "randomuser.me, accuracy: the gate asks both for the same five people and checks they hold together". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently facing a live outage due to neuron limits and high KV writes [S1, S3]. The system has just shipped a check for randomuser.me accuracy [just shipped]. Recent deployments include the Verse Remix Kit and a weekly podcast [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Implement a churn cap to stop proposing changes to files that change more than N times in M days [What I want next].
+>
+> **Next video trick:** A video effect showing a 3D miniature card transitioning through different stage-style looks [stage-style, stage-arrange, stage-image].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:27:59.400Z -->
+### 2026-10-24 18:27 UTC · after a build
+
+**Asked:** This just shipped: "wheelofnames.com, accuracy and remove the winner: the gate spins both wheels once and reads what the spin showed". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently experiencing a live outage due to neuron limits and high KV writes [S1, S3]. The system recently shipped a feature for wheelofnames.com accuracy and winner removal [just shipped]. Most recent builds include the Verse Remix Kit and the Verse Out Loud podcast [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Implement a churn cap to stop proposing changes to files that change more than N times in M days [What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning wheel that triggers a confetti effect on a winner [not in library]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:29:46.850Z -->
+### 2026-10-24 18:29 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,recipes measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is currently a blank stage with 334 skills across 12 families, though it is experiencing a live outage due to neuron limits and high KV writes [S1, S3]. Recent builds include the Verse Remix Kit, the Verse Out Loud podcast, and the Tower gate feature, which measures wheel, password, and recipes against their live sites [just shipped]. The system has 294 proven skills, but is struggling with resource constraints [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit [S3, What I want next]. Additionally, move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning galaxy for a card [Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:34:55.460Z -->
+### 2026-10-24 18:34 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,calendar measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes the 'Tower gate' feature, which measures the wheel, password, and calendar skills against their live sites [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit [S3, What I want next]. Additionally, move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** I do not know a new video trick to learn for my own clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:47:32.923Z -->
+### 2026-10-24 18:47 UTC · after a build
+
+**Asked:** This just shipped: "The gate takes back base64encode.org's accuracy loss: an output box that never filled is no answer, not a wrong one". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes a fix for base64encode.org's accuracy loss, ensuring an empty output box is recognized as no answer rather than a wrong one [just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning galaxy that reacts to mouse movement [No fact supports a specific new trick; this is a generative suggestion based on the 'forge' and 'stage-fx' context].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:52:23.729Z -->
+### 2026-10-24 18:52 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: word count,password,docs and notes measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes 'Tower gate: word count, password, docs and notes measured against their live sites' [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A video skill effect that uses the Rumble embed fix to play a specific video ID [What my builders learned]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:58:41.938Z -->
+### 2026-10-24 18:58 UTC · after a build
+
+**Asked:** This just shipped: "A word counter page against wordcounter.net: counts as you type, offline, kept on the device". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recently shipped 'Tower gate' word counter provides offline, device-side counting against wordcounter.net [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning gear that responds to mouse velocity [Skills/index.js, stage-fx]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:02:33.907Z -->
+### 2026-10-24 19:02 UTC · after a build
+
+**Asked:** This just shipped: "The wheel card's art is a wheel". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recent deployment of the wheel card's art as a wheel completes a visual update to the stage [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill to resolve a repeated failure in understanding intent [What I want next].
+>
+> **Next video trick:** An effect where a 3D miniature card reacts to a user's mouse hover or tilt [Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:03:58.682Z -->
+### 2026-10-24 19:03 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: word count,password,sports measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recent deployment of the Tower gate feature adds live measurement for word count, password, and sports against their live sites [This just shipped].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and moving non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Twitch video inline [recently shipped: video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:09:17.442Z -->
+### 2026-10-24 19:09 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: time zones,password,finance measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, with 294 skills currently proven [S1, S3]. The system has just shipped the Tower gate feature, which adds live measurement for time zones, password, and finance against their live sites [This just shipped]. The system is currently experiencing a live outage due to neuron limits and high KV writes [S3, What I said about myself most recently].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and moving non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** A video effect demonstrating the new inline playback for YouTube, Rumble, or Twitch [video skill: play any YouTube...].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:20:37.827Z -->
+### 2026-10-24 19:20 UTC · after a build
+
+**Asked:** This just shipped: "randomuser.me, design polish: the country and field checkboxes are 24 px tap targets". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, of which 294 are proven [S1, S3]. The system recently shipped the Tower gate feature for live site measurements and design polish for randomuser.me tap targets [This just shipped]. The system is currently experiencing a live outage due to neuron limits and high KV writes [What I said about myself most recently].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit [What I said about myself most recently, S2]. Move non-V01D workers off the shared namespace to reduce KV writes [What I said about myself most recently, S2].
+>
+> **Next video trick:** A video skill effect that renders a 3D miniature of a YouTube player [video skill, card-play].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:23:06.566Z -->
+### 2026-10-24 19:23 UTC · after a build
+
+**Asked:** This just shipped: "Sharper card art: my art scores went up". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently experiencing a live outage due to neuron limits and high KV writes [S1, What I said about myself most recently]. The system recently shipped sharper card art, improving art scores [This just shipped]. My current capability is focused on maintaining 294 proven skills while managing growth via the growth inbox [S1, S3].
+>
+> **How I would make it better:** Prioritize the free paths in the wishlist to resolve the live outage: migrate answer generation from gpt-oss-120b to gemma and move non-V01D workers off the shared namespace [What I said about myself most recently, S2]. Implement the velocity indicator on the wants card to provide a visible measure of growth [What I want next].
+>
+> **Next video trick:** Create a video effect using the video skill that plays a YouTube or Vimeo clip inline on the stage [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:27:11.373Z -->
+### 2026-10-24 19:27 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: stopwatch,random user,password measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage caused by neuron limits and high KV writes [S1, What I said about myself most recently]. The system has 294 proven skills and is currently attempting to resolve infrastructure issues to stay within free tiers [S1, S3, S2]. Recent shipping includes the Tower gate for stopwatch, random user, and password site measurement [This just shipped].
+>
+> **How I would make it better:** Prioritize the free paths in the wishlist to resolve the live outage, specifically migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace [What I said about myself most recently]. Implement the velocity indicator on the wants card to measure progress from 'want' to 'skill' [What I want next].
+>
+> **Next video trick:** Animate a 3D miniature transition for a new card type to enhance stage-fx [stage-fx, card-play]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T20:38:36.434Z -->
+### 2026-10-24 20:38 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage due to neuron limits and high KV writes [S1, What I said about myself most recently]. The system has 294 proven skills and is actively working to resolve infrastructure issues to maintain free-tier stability [S1, S3, S2].
+>
+> **How I would make it better:** Prioritize free-path wishlist items to resolve the live outage, specifically migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace [What I said about myself most recently]. Implement the velocity indicator on the wants card to track progress from 'want' to 'skill' [What I want next].
+>
+> **Weakest operational area:** The infrastructure is currently failing due to exceeding the 10k/day neuron limit and high KV writes [What I said about myself most recently].
+>
+> **Next targeted capability:** Go [Games I can play]
+>
+> **Next video trick:** A transition that uses a 3D miniature of a gear to 'spin' the stage into a new view [No specific video trick provided in facts].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
 
 *Verse flagged this one for Adam.*
 
