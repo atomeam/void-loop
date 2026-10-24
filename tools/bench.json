@@ -6781,5 +6781,7 @@
   {"ask": "lovebird lakeland menu", "want": "skill:eat"},
   {"ask": "random quote", "want": "skill:quote"},
   {"ask": "tilt arena", "want": "skill:tilt-mode"},
-  {"ask": "tell me a quote", "want": "skill:quote"}
+  {"ask": "tell me a quote", "want": "skill:quote"},
+  {"ask": "pluck the membrane", "want": "skill:resonant-membrane"},
+  {"ask": "membrane mind", "want": "skill:resonant-membrane"}
 ]
