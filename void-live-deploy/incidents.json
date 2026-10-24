@@ -2,6 +2,28 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T03:09:38.936Z",
+   "sha": "b23ebc978bdef5c8f68474cbd5f6bf7dfd13395d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40056610307",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
+    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/preload.mjs",
+    "tools/preload.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/conquered/index.html",
+    "void-live-deploy/flip/index.html",
+    "void-live-deploy/g/index.html",
+    "void-live-deploy/skills/coin.js"
+   ]
+  },
+  {
    "at": "2026-10-24T03:03:28.581Z",
    "sha": "99cd4ea77fe406048a973c9c975d8672e22a8456",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40056134737",
@@ -602,20 +624,6 @@
    ],
    "touched": [
     ".github/workflows/tower-gate.yml"
-   ]
-  },
-  {
-   "at": "2026-10-23T23:40:28.588Z",
-   "sha": "7c204cbec84cdeae875bfbedbe085b429b2964c9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40039855943",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/skills/tower.js"
    ]
   }
  ]
