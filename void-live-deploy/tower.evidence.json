@@ -456,7 +456,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T18:25:23.082Z"
+    "at": "2026-10-24T18:30:48.547Z"
    }
   },
   "encoder": {
@@ -1143,59 +1143,59 @@
   "wheel": {
    "speed": {
     "verdict": "better",
-    "verse": 135,
-    "best": 341,
-    "evidence": "Verse (/wheel/) 135 ms to the load event (median of 3, phone width) vs wheelofnames.com 341 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:24:37.254Z"
+    "verse": 163,
+    "best": 601,
+    "evidence": "Verse (/wheel/) 163 ms to the load event (median of 3, phone width) vs wheelofnames.com 601 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/wheel/) 3 of 3 loads answered vs wheelofnames.com 3 of 3 loads answered",
-    "at": "2026-10-24T18:24:37.254Z"
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/wheel/) 0 px sideways overflow at 390 px vs wheelofnames.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:24:37.254Z"
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/wheel/) 0 unnamed controls or images vs wheelofnames.com 2 unnamed controls or images",
-    "at": "2026-10-24T18:24:37.254Z"
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/wheel/) 1 (1: the page shows itself again with the network cut) vs wheelofnames.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:24:37.254Z"
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/wheel/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wheelofnames.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:24:37.254Z"
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 14,
-    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 14 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 13 small tap targets, layout shift 0.04)",
-    "at": "2026-10-24T18:24:37.254Z"
+    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 14 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 13 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T18:29:00.186Z"
    },
    "entries list": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:24:37.254Z",
+    "at": "2026-10-24T18:29:00.186Z",
     "of": 1,
     "part": true
    },
@@ -1204,7 +1204,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:24:37.254Z",
+    "at": "2026-10-24T18:29:00.186Z",
     "of": 1,
     "part": true
    },
@@ -1213,8 +1213,25 @@
     "verse": 9,
     "best": 9,
     "evidence": "Verse (/wheel/) 9 of 9 things a full answer shows vs wheelofnames.com 9 of 9 things a full answer shows (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-24T18:24:37.254Z",
+    "at": "2026-10-24T18:29:00.186Z",
     "of": 9
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/wheel/) 2 of 2 checked facts right for the same question vs wheelofnames.com 2 of 2 checked facts right for the same question",
+    "at": "2026-10-24T18:29:00.186Z",
+    "of": 2
+   },
+   "remove the winner": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-24T18:29:00.186Z",
+    "of": 1,
+    "part": true
    }
   },
   "random user": {
@@ -1455,6 +1472,57 @@
     "best": 27,
     "evidence": "Verse 0 design defects vs Allrecipes 27 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Allrecipes (1 low-contrast texts, 26 small tap targets, layout shift 0.00)",
     "at": "2026-10-24T18:27:04.306Z"
+   }
+  },
+  "calendar": {
+   "speed": {
+    "verdict": "better",
+    "verse": 299,
+    "best": 1398,
+    "evidence": "Verse 299 ms to the load event (median of 3, phone width) vs Google Calendar 1398 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Google Calendar 3 of 3 loads answered",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Calendar 0 px sideways overflow at 390 px",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs Google Calendar 0 unnamed controls or images",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Calendar 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Calendar 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-24T18:32:34.631Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 11,
+    "best": 136,
+    "evidence": "Verse 11 design defects vs Google Calendar 136 design defects: Verse (11 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-24T18:32:34.631Z"
    }
   }
  }
