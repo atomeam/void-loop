@@ -167,3 +167,12 @@ test('Verse\'s own upgrades say what got better, not "Verse hardened itself" eve
   if (!(r.length === 1 && r[0].ask === 'morning routine as calendar events')) { console.log('FAIL recentOf keeps only verified builds of the last week, seen or not', JSON.stringify(r)); process.exitCode = 1; }
   else console.log('ok recentOf: verified builds of the last week, previewed or not');
 }
+
+test("one of Verse's own upgrades reads as what got better and two new phrases, never a bare ': new phrases' list", async () => {
+  const { playable, phrasesLine } = await import('../void-live-deploy/skills/showcase.js');
+  const phrases = [['memory preview', 'memory-preview'], ['hide the sky', 'night-sky'], ['where is jupiter', 'sky-card'], ['is venus up', 'sky-card'], ['ritual template', 'ritual-template']].map(([ask, skill]) => ({ ask, skill }));
+  const p = playable({ at: '2026-10-22T02:52:58Z', by: 'verse', kind: 'grow', what: "Verse hardened itself: 'memory preview', 'hide the sky' for memory-preview, night-sky. Why these: x.", try: 'memory preview', phrases });
+  assert.equal(p.line, 'Better at memory preview, night sky, sky card and 1 more: 5 more ways of asking answered right, like “memory preview” and “hide the sky”');
+  assert.equal(phrasesLine([{ ask: 'flip a coin', skill: 'coin' }]), 'Better at coin: 1 more way of asking answered right, like “flip a coin”');
+  assert.equal(phrasesLine([]), '');
+});

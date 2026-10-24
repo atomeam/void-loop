@@ -68,6 +68,19 @@ export function hardenedLine(what) {
   return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '') + tail;
 }
 
+/** one of Verse's own upgrades from the phrases it proved: what got better and two of the new ways of asking, short enough for one line and a
+ *  tray chip. The whole list ran to ten phrases, and a line whose first clause did not parse opened with ": new phrases" (owner's screenshot,
+ *  2026-10-24). '' when there are none. Pure. */
+export function phrasesLine(phrases) {
+  const ps = (Array.isArray(phrases) ? phrases : []).filter((p) => p && p.ask && p.skill);
+  if (!ps.length) return '';
+  const names = [...new Set(ps.map((p) => String(p.skill).replace(/-/g, ' ').trim()))];
+  const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
+  const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
+  const eg = ps.slice(0, 2).map((p) => '\u201c' + String(p.ask).slice(0, 40) + '\u201d');
+  return 'Better at ' + list + ': ' + ps.length + ' more way' + (ps.length === 1 ? '' : 's') + ' of asking answered right, like ' + eg.join(' and ');
+}
+
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */
 // shipped lines a later change undid: never previewed again (owner, 2026-10-18: the "try:" suggestions were removed, so "real suggestions on the empty stage" is no longer true)
 const RETIRED = [/real suggestions on the empty stage/i];
@@ -76,7 +89,7 @@ export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
   if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
-  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || (Array.isArray(e.phrases) && e.phrases.length ? (hardenedLine(e.what) || '').split(':')[0] + ': new phrases ' + e.phrases.map((p) => '\u201c' + p.ask + '\u201d now opens ' + p.skill).join('; ') : '') || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
+  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || phrasesLine(e.phrases) || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
 }
@@ -302,7 +315,8 @@ async function step(stageApi) {
 // a step chip in the tray: drag it out of the bar and let go over the stage, and that step runs now with its things where it landed;
 // a tap (no drag) runs it in place. Pointer events, so mouse, pen and touch all grab it.
 function chip(stageApi, it) {
-  const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
+  const short = it.line.length > 90 ? it.line.slice(0, 89).replace(/\s+\S*$/, '') + '\u2026' : it.line; // a chip is a label: the step itself shows the whole line
+  const b = button(short, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = (short === it.line ? '' : it.line + ' \u00b7 ') + 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
   let from = null, ghost = null;
   b.addEventListener('pointerdown', (e) => { if (e.button) return; from = { x: e.clientX, y: e.clientY }; try { b.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
   b.addEventListener('pointermove', (e) => {
