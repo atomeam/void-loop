@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 24,
+  "tested": 23,
   "checked": 16,
-  "proven": 287
+  "proven": 288
  },
  "families": [
   {
@@ -885,7 +885,7 @@
     {
      "name": "is-it",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -1239,9 +1239,9 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 10
+    "proven": 11
    },
    "skills": [
     {
@@ -1300,10 +1300,12 @@
     },
     {
      "name": "eat",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-24",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "heart",
@@ -1615,7 +1617,7 @@
     {
      "name": "quote",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-23",
      "last_tested_by": "its tests",
      "success_rate": 1,

@@ -85,9 +85,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 10
+    "proven": 11
    },
    "from": 143,
    "to": 154
@@ -2138,7 +2138,7 @@
     "is it friday"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
    "n": 105
@@ -2906,8 +2906,10 @@
     "what's good at lovebird almost famous chicken lakeland",
     "lovebird lakeland menu"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the body and mind; set down here after it answered true 3 times. It has not failed a reader yet.",
+   "glow": 100,
    "n": 150
   },
   {
@@ -3250,7 +3252,7 @@
     "inspirational quote"
    ],
    "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "why": "a self-test, 2 real asks in the benchmark",
    "glow": 100,
    "n": 169
   },

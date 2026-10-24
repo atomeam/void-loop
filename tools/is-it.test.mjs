@@ -2,7 +2,7 @@
 // dates; the word in the visitor's own language; the page that works with scripts off; the daily feed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import isItSkill, { isIt, easter, wordFor, flagOf, countdown, regionName } from '../void-live-deploy/skills/is-it.js';
+import isItSkill, { isIt, easter, wordFor, flagOf, countdown, regionName, wave, waveLine, offsetMin } from '../void-live-deploy/skills/is-it.js';
 import { onRequestGet, wallClock, langsOf, feed, lastDays, answerJson } from '../void-live-deploy/functions/is-it/[what].js';
 import { clean } from '../void-live-deploy/lib/share.js';
 
@@ -61,4 +61,14 @@ test('the flag turns, as on the old site: a cursor carries a whole number of 15Â
   assert.deepEqual(clean(JSON.stringify({ t: 'cursor', x: 0.5, y: 0.5, flag: 'FR', a: 45 })), { t: 'cursor', x: 0.5, y: 0.5, flag: 'FR', a: 45 });
   for (const a of [7, 400, '45', 1.5, null]) assert.equal('a' in clean(JSON.stringify({ t: 'cursor', x: 0.1, y: 0.1, a })), false, String(a));
   assert.equal(regionName('FR'), 'France'); assert.equal(regionName('CA'), 'Canada');
+});
+test('the midnight wave: Christmas reaches Kiritimati first and sweeps west, place by place, for two days', () => {
+  assert.equal(wave(new Date('2026-10-24T12:00:00Z')).on, false);
+  assert.equal(waveLine(wave(new Date('2026-12-24T09:30:00Z'))), 'Christmas reaches Kiritimati first, in 30 min, then sweeps west around the world.');
+  const w = wave(new Date('2026-12-24T23:30:00Z'));
+  assert.equal(waveLine(w), 'It is Christmas in 20 of 36 places right now. Next: London in 30 min.');
+  assert.equal(w.places.find((p) => p.name === 'Auckland').state, 'now'); assert.equal(w.places.find((p) => p.name === 'New York').state, 'before');
+  assert.equal(waveLine(wave(new Date('2026-12-26T10:30:00Z'))), 'It is Christmas in 1 of 36 places right now. It has reached everywhere.');
+  assert.equal(wave(new Date('2026-12-26T12:00:00Z')).on, false);
+  assert.equal(offsetMin('Asia/Tokyo', new Date('2026-12-25T00:00:00Z')), 540); assert.equal(offsetMin('Pacific/Auckland', new Date('2026-12-25T00:00:00Z')), 780, 'summer time in December');
 });

@@ -621,6 +621,17 @@ try {
     check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
     await Q.ctx.close();
   }
+  // the midnight wave (owner, 2026-10-24: "something amazingly special when its actually christmas"): the clock is set to 23:30 UTC on Christmas Eve
+  if (want("is it: christmas: the midnight wave follows christmas around the world and snow falls over the whole stage")) { const X = await fresh();
+    await X.p.clock.install({ time: new Date('2026-12-24T23:30:00Z') });
+    await X.ask('is it christmas?', 1500);
+    const w = await until(async () => X.p.$eval('.vpage.on', (c) => { const l = c.querySelector('.is-it-wave-line'); if (!l || !l.textContent) return null; const st = (n) => [...c.querySelectorAll('.is-it-wave-place')].find((e) => e.textContent === n).dataset.state; return { line: l.textContent, tokyo: st('Tokyo'), london: st('London'), ny: st('New York'), flakes: document.querySelectorAll('.is-it-snowfall span').length }; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await X.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'is-it-wave.png') }).catch(() => {});
+    await X.p.keyboard.press('Escape'); await X.p.waitForTimeout(800); const left = await X.p.$$eval('.is-it-snowfall', (e) => e.length);
+    check('is it: christmas: 23:30 UTC on Christmas Eve: "It is Christmas in 20 of 36 places right now. Next: London in 30 min.", Tokyo lit, London and New York still waiting, snow over the stage; closing the card stops the snow',
+      !!w && /It is Christmas in 20 of 36 places right now\. Next: London in 30 min\./.test(w.line) && w.tokyo === 'now' && w.london === 'before' && w.ny === 'before' && w.flakes >= 60 && left === 0 && !X.errors.length,
+      JSON.stringify({ w, left, errors: X.errors }));
+    await X.ctx.close(); }
   // everyone here (owner, 2026-10-23: the live crowd of visitors' flags on the is-it card): a public room on the relay; with the relay not switched on,
   // tabs in one browser share it through a BroadcastChannel, which is what this check uses: two pages in one context
   if (want("is it: everyone here: two tabs on the is-it card see each other's flag, ripple and count")) {

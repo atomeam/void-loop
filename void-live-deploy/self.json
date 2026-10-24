@@ -483,6 +483,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T01:21:34Z",
+   "subject": "Site scout: what a real site shows and lets a visitor do, read from the live page on GitHub (phone and desktop: text, controls, weight…"
+  },
+  {
+   "at": "2026-10-24T01:14:32Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T01:00:46Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T01:00:23Z",
+   "subject": "Incident: the browser suite failed on 4e1d269d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T00:45:38Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
    "at": "2026-10-24T00:45:01Z",
    "subject": "Is it Christmas, side by side with isitchristmas.com's own source: your flag is your pointer and turns with the wheel or the arrow keys…"
   },
@@ -493,6 +513,10 @@
   {
    "at": "2026-10-24T00:41:08Z",
    "subject": "Incident: the browser suite failed on 851239bf (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T00:39:14Z",
+   "subject": "Verse hardens itself: 4 benchmark ask(s) for eat, quote"
   },
   {
    "at": "2026-10-24T00:33:12Z",
@@ -537,30 +561,6 @@
   {
    "at": "2026-10-23T23:28:10Z",
    "subject": "Tower card loads the tower list from a new address (lib/tower.js?v=ladder-35), so a browser's old 24-floor copy is never reused"
-  },
-  {
-   "at": "2026-10-23T23:26:29Z",
-   "subject": "Incident: the browser suite failed on 3119753a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:25:10Z",
-   "subject": "Incident: the browser suite failed on eecedfb0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:23:53Z",
-   "subject": "Incident: the browser suite failed on 17c78704 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:23:18Z",
-   "subject": "Incident: the browser suite failed on 9da35267 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-23T23:22:59Z",
-   "subject": "A bare hex code ('#ff5733') opens the colour card; random.org and color-hex.com fall (Verse answers both floors' asks)"
-  },
-  {
-   "at": "2026-10-23T23:22:16Z",
-   "subject": "Verse hardens itself: 2 benchmark ask(s) for resonant-membrane, similar"
   }
  ],
  "builders": {

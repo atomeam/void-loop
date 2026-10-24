@@ -57,6 +57,39 @@ export function flagOf(tag) {
   const r = (/^[a-z]{2,3}[-_]([a-z]{2})\b/i.exec(String(tag || '')) || [])[1];
   return r ? String.fromCodePoint(...[...r.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : '';
 }
+// the midnight wave (owner, 2026-10-24: "something amazingly special when its actually christmas"): Christmas comes to Kiritimati first and
+// sweeps west across the world for 26 hours. Places from first to last, each with its time zone.
+export const WAVE = [['Kiritimati', 'Pacific/Kiritimati'], ['Auckland', 'Pacific/Auckland'], ['Sydney', 'Australia/Sydney'], ['Tokyo', 'Asia/Tokyo'], ['Seoul', 'Asia/Seoul'],
+  ['Beijing', 'Asia/Shanghai'], ['Manila', 'Asia/Manila'], ['Bangkok', 'Asia/Bangkok'], ['Dhaka', 'Asia/Dhaka'], ['Delhi', 'Asia/Kolkata'], ['Karachi', 'Asia/Karachi'],
+  ['Dubai', 'Asia/Dubai'], ['Moscow', 'Europe/Moscow'], ['Nairobi', 'Africa/Nairobi'], ['Athens', 'Europe/Athens'], ['Cairo', 'Africa/Cairo'], ['Berlin', 'Europe/Berlin'],
+  ['Rome', 'Europe/Rome'], ['Paris', 'Europe/Paris'], ['Lagos', 'Africa/Lagos'], ['London', 'Europe/London'], ['Dublin', 'Europe/Dublin'], ['Reykjavík', 'Atlantic/Reykjavik'],
+  ['Azores', 'Atlantic/Azores'], ['Rio de Janeiro', 'America/Sao_Paulo'], ['Buenos Aires', 'America/Argentina/Buenos_Aires'], ['Halifax', 'America/Halifax'],
+  ['New York', 'America/New_York'], ['Toronto', 'America/Toronto'], ['Chicago', 'America/Chicago'], ['Mexico City', 'America/Mexico_City'], ['Denver', 'America/Denver'],
+  ['Los Angeles', 'America/Los_Angeles'], ['Anchorage', 'America/Anchorage'], ['Honolulu', 'Pacific/Honolulu'], ['Pago Pago', 'Pacific/Pago_Pago']];
+/** a time zone's offset from UTC in minutes at a moment (Tokyo +540). Pure. */
+export function offsetMin(tz, at) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }).formatToParts(at).map((x) => [x.type, x.value]));
+  return Math.round((Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute) - Math.floor(at.getTime() / 60000) * 60000) / 60000);
+}
+/** where Christmas is right now: every place 'before', 'now' (it is the 25th there) or 'after', the count reached, and the next place with
+ *  the milliseconds until its midnight. `on` is false outside the wave's two days (no place on the 25th and none within a day of it). Pure. */
+export function wave(at = new Date()) {
+  const y = at.getUTCMonth() === 0 ? at.getUTCFullYear() - 1 : at.getUTCFullYear();
+  const places = WAVE.map(([name, tz]) => {
+    const off = offsetMin(tz, at), start = Date.UTC(y, 11, 25) - off * 60000, end = start + 864e5;
+    return { name, tz, start, state: at < start ? 'before' : at < end ? 'now' : 'after' };
+  });
+  const next = places.find((p) => p.state === 'before'), reached = places.filter((p) => p.state !== 'before').length, now = places.filter((p) => p.state === 'now').length;
+  const first = places[0].start, last = places[places.length - 1].start + 864e5;
+  return { on: at >= first - 864e5 && at < last, now, reached, total: places.length, places, next: next ? { name: next.name, ms: next.start - at } : null };
+}
+const hm = (ms) => { const m = Math.max(1, Math.round(ms / 60000)), h = Math.floor(m / 60); return (h ? h + ' h ' : '') + (m % 60) + ' min'; };
+/** the wave in one line: "Christmas has reached 12 of 36 places. Next: Moscow in 1 h 5 min." Pure. */
+export function waveLine(w) {
+  if (!w || !w.on) return '';
+  if (!w.reached) return 'Christmas reaches Kiritimati first, in ' + hm(w.next.ms) + ', then sweeps west around the world.';
+  return (w.now ? 'It is Christmas in ' + w.now + ' of ' + w.total + ' places right now' : 'Christmas has been everywhere') + (w.next ? '. Next: ' + w.next.name + ' in ' + hm(w.next.ms) + '.' : '. It has reached everywhere.');
+}
 /** a region's name in English ("FR" -> "France"), or the code itself when the browser cannot name it. */
 export function regionName(code) { try { return new Intl.DisplayNames(['en'], { type: 'region' }).of(String(code || '').toUpperCase()) || code; } catch (_) { return code; } }
 /** the time left until a date as "62 days 3 hours 4 minutes 5 seconds" (the parts that are not zero), or '' when it has come. Pure. */
@@ -124,7 +157,12 @@ const CSS = '<style>.vpage:has(.is-it-word) .vc-art{display:none}.is-it-stage{po
   + '.is-it-ripple{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;border:2px solid currentColor;pointer-events:none;animation:is-it-ripple .8s ease-out forwards}'
   + '@keyframes is-it-ripple{to{transform:scale(14);opacity:0}}.is-it-stamp{position:absolute;font-size:30px;pointer-events:none;animation:is-it-stamp 4s ease-in forwards}'
   + '@keyframes is-it-stamp{80%{opacity:1}to{opacity:0}}.is-it-snow{position:absolute;top:-10px;color:#fff;pointer-events:none;animation:is-it-snow linear infinite}'
-  + '@keyframes is-it-snow{to{transform:translateY(340px)}}@media (prefers-reduced-motion:reduce){.is-it-snow,.is-it-ripple,.is-it-stamp,.is-it-bit{animation:none;display:none}.is-it-word,.is-it-fade{animation:none;opacity:1}}</style>';
+  + '@keyframes is-it-snow{to{transform:translateY(340px)}}'
+  + '.is-it-wave-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 6px;margin:4px 0 10px;font-size:11px}.is-it-wave-place{padding:1px 6px;border-radius:999px;border:1px solid rgba(255,255,255,.15);opacity:.45;transition:all .6s}'
+  + '.is-it-wave-place[data-state=now]{opacity:1;color:#fff;border-color:#ffd166;background:rgba(255,107,107,.25);box-shadow:0 0 10px rgba(255,209,102,.55)}.is-it-wave-place[data-state=after]{opacity:.3;text-decoration:line-through}'
+  + '.is-it-snowfall{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}.is-it-snowfall span{position:absolute;top:-20px;color:#fff;animation:is-it-fall linear infinite}'
+  + '@keyframes is-it-fall{to{transform:translate(4vw,110vh)}}'
+  + '@media (prefers-reduced-motion:reduce){.is-it-snow,.is-it-ripple,.is-it-stamp,.is-it-bit,.is-it-snowfall{animation:none;display:none}.is-it-word,.is-it-fade{animation:none;opacity:1}}</style>';
 
 function run(text, api) {
   const a = isIt(text);
@@ -216,6 +254,21 @@ function run(text, api) {
     const watch = new MutationObserver(() => { if (!box.isConnected) { leaveCrowd(); watch.disconnect(); } }); watch.observe(document.body, { childList: true });
     // Christmas Eve, Christmas Day and Boxing Day: snow over the word
     const now = new Date();
+    // the midnight wave: while Christmas is somewhere on Earth, the card follows it around the world (which places have it now, which is next and
+    // when), a strip of places lights up from Kiritimati to Pago Pago, and snow falls over the whole stage while the card is open
+    if (a.festive && wave(now).on) {
+      const wv = document.createElement('div'); wv.className = 'is-it-wave';
+      const wl = document.createElement('p'); wl.className = 'is-it-wave-line'; wl.style.cssText = 'text-align:center;font-size:15px;margin:6px 0';
+      const strip = document.createElement('div'); strip.className = 'is-it-wave-strip'; strip.setAttribute('aria-hidden', 'true');
+      const chips = WAVE.map(([name]) => { const c = document.createElement('span'); c.className = 'is-it-wave-place'; c.textContent = name; strip.appendChild(c); return c; });
+      wv.append(wl, strip); crowdLine.before(wv);
+      const drawWave = () => { if (!wv.isConnected) return clearInterval(wt); const w = wave(); wl.textContent = waveLine(w); w.places.forEach((p, i) => { chips[i].dataset.state = p.state; }); };
+      const wt = setInterval(drawWave, 15000); drawWave();
+      const sky = document.createElement('div'); sky.className = 'is-it-snowfall'; sky.setAttribute('aria-hidden', 'true');
+      for (let i = 0; i < 70; i++) { const f = document.createElement('span'); f.textContent = i % 5 ? '•' : '❄'; f.style.left = ((i * 37) % 100) + 'vw'; f.style.fontSize = (6 + (i * 11) % 14) + 'px'; f.style.opacity = (0.35 + ((i * 7) % 6) / 10).toFixed(2); f.style.animationDuration = (7 + (i * 13) % 9) + 's'; f.style.animationDelay = (-((i * 17) % 11)) + 's'; sky.appendChild(f); }
+      document.body.appendChild(sky);
+      const unsnow = new MutationObserver(() => { if (!box.isConnected) { sky.remove(); unsnow.disconnect(); } }); unsnow.observe(document.body, { childList: true, subtree: true });
+    }
     if (a.festive && now.getMonth() === 11 && now.getDate() >= 24 && now.getDate() <= 26) for (let i = 0; i < 24; i++) { const f = document.createElement('span'); f.className = 'is-it-snow'; f.textContent = '❄'; f.style.left = (i * 4.2) + '%'; f.style.fontSize = (8 + (i * 7) % 12) + 'px'; f.style.animationDuration = (4 + (i * 13) % 6) + 's'; f.style.animationDelay = (-(i * 7) % 5) + 's'; box.appendChild(f); }
   }
   // the countdown runs every second while the card is open, and the word flips by itself at your midnight
