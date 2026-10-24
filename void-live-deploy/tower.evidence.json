@@ -454,45 +454,52 @@
   "encoder": {
    "speed": {
     "verdict": "better",
-    "verse": 255,
-    "best": 1085,
-    "evidence": "Verse 255 ms to the load event (median of 3, phone width) vs base64encode.org 1085 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:44:03.091Z"
+    "verse": 293,
+    "best": 857,
+    "evidence": "Verse 293 ms to the load event (median of 3, phone width) vs base64encode.org 857 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:57:36.268Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:44:03.091Z"
+    "at": "2026-10-24T16:57:36.268Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-24T15:44:03.091Z"
+    "at": "2026-10-24T16:57:36.268Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse 3 of 3 loads answered vs base64encode.org 2 of 3 loads answered",
-    "at": "2026-10-24T15:44:03.091Z"
+    "at": "2026-10-24T16:57:36.268Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:44:03.091Z"
+    "at": "2026-10-24T16:57:36.268Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:44:03.091Z"
+    "at": "2026-10-24T16:57:36.268Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 34,
+    "evidence": "Verse 0 design defects vs base64encode.org 34 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.37)",
+    "at": "2026-10-24T16:57:36.268Z"
    }
   },
   "colour": {
@@ -643,45 +650,52 @@
   "codebase": {
    "speed": {
     "verdict": "better",
-    "verse": 111,
-    "best": 342,
-    "evidence": "Verse (/g/) 111 ms to the load event (median of 3, phone width) vs codebasehq.com 342 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:45:00.966Z"
+    "verse": 117,
+    "best": 299,
+    "evidence": "Verse (/g/) 117 ms to the load event (median of 3, phone width) vs codebasehq.com 299 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:58:35.135Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 3 loads answered vs codebasehq.com 3 of 3 loads answered",
-    "at": "2026-10-24T15:45:00.966Z"
+    "at": "2026-10-24T16:58:35.135Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs codebasehq.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:45:00.966Z"
+    "at": "2026-10-24T16:58:35.135Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/g/) 0 unnamed controls or images vs codebasehq.com 8 unnamed controls or images",
-    "at": "2026-10-24T15:45:00.966Z"
+    "at": "2026-10-24T16:58:35.135Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs codebasehq.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:45:00.966Z"
+    "at": "2026-10-24T16:58:35.135Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/g/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codebasehq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:45:00.966Z"
+    "at": "2026-10-24T16:58:35.135Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 20,
+    "evidence": "Verse (/g/) 1 design defects vs codebasehq.com 20 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.25), codebasehq.com (9 low-contrast texts, 10 small tap targets, layout shift 0.30)",
+    "at": "2026-10-24T16:58:35.135Z"
    }
   },
   "password strength": {
@@ -738,52 +752,52 @@
   "base converter": {
    "speed": {
     "verdict": "better",
-    "verse": 155,
-    "best": 914,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 155 ms to the load event (median of 3, phone width) vs hextobinary.com 914 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:42:01.843Z"
+    "verse": 106,
+    "best": 1340,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 106 ms to the load event (median of 3, phone width) vs hextobinary.com 1340 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 loads answered vs hextobinary.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 (1: the page shows itself again with the network cut) vs hextobinary.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hextobinary.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 things a full answer shows vs hextobinary.com 3 of 4 things a full answer shows (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T16:42:01.843Z",
+    "at": "2026-10-24T16:57:12.795Z",
     "of": 4
    },
    "design polish": {
@@ -791,15 +805,24 @@
     "verse": 0,
     "best": 22,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 design defects vs hextobinary.com 22 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), hextobinary.com (0 low-contrast texts, 22 small tap targets, layout shift 0.07)",
-    "at": "2026-10-24T16:42:01.843Z"
+    "at": "2026-10-24T16:57:12.795Z"
    },
    "all four bases": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 shown vs hextobinary.com 3 of 4 shown (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-24T16:42:01.843Z",
+    "at": "2026-10-24T16:57:12.795Z",
     "of": 4,
+    "part": true
+   },
+   "signed reading": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 1 of 1 shown vs hextobinary.com 0 of 1 shown (Verse lacks: none; site lacks: a signed reading)",
+    "at": "2026-10-24T16:57:12.795Z",
+    "of": 1,
     "part": true
    }
   },
