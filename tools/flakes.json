@@ -99,5 +99,7 @@
   {"check": "ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer's duplicate \"copy\" pill is gone", "sha": "ad53c59aef5394d39cecb602c54345bb10420ab0", "at": "2026-10-22T05:16:53Z"},
   {"check": "suite ran to the end", "sha": "ad53c59aef5394d39cecb602c54345bb10420ab0", "at": "2026-10-22T05:16:53Z"},
   {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9", "at": "2026-10-24T01:55:35Z"},
-  {"check": "suite ran to the end", "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9", "at": "2026-10-24T01:55:35Z"}
+  {"check": "suite ran to the end", "sha": "f0759b477979bcb325a2ca292c4e0be3ff8831c9", "at": "2026-10-24T01:55:35Z"},
+  {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "d506bd2c6bf8b4188ff85130900986dab680dfb3", "at": "2026-10-24T02:34:23Z"},
+  {"check": "suite ran to the end", "sha": "d506bd2c6bf8b4188ff85130900986dab680dfb3", "at": "2026-10-24T02:34:23Z"}
 ]
