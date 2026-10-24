@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 26,
+  "tested": 24,
   "checked": 14,
-  "proven": 291
+  "proven": 293
  },
  "families": [
   {
@@ -25,17 +25,19 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 10,
+    "tested": 9,
     "checked": 1,
-    "proven": 34
+    "proven": 35
    },
    "skills": [
     {
      "name": "imgfit",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
+     "tier": "proven",
+     "why": "1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-24",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "forge",
@@ -1077,17 +1079,19 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 1,
+    "tested": 2,
+    "checked": 2,
     "proven": 14
    },
    "skills": [
     {
      "name": "baseconv",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
+     "tier": "checked",
+     "why": "1 browser-suite mention, 1 real ask in the benchmark",
      "last_tested": "2026-10-24",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-24"
     },
     {
      "name": "calc",
@@ -3346,16 +3350,17 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 4
+    "checked": 0,
+    "proven": 5
    },
    "skills": [
     {
      "name": "pwcheck",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-10-24"
     },
     {

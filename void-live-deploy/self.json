@@ -483,6 +483,54 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T06:59:55Z",
+   "subject": "Verse fixes its pwcheck skill: learn to handle \"how secure is my password\""
+  },
+  {
+   "at": "2026-10-24T06:06:58Z",
+   "subject": "Incident: the browser suite failed on d491f43f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T06:00:01Z",
+   "subject": "Verse hardens itself: 3 benchmark ask(s) for imgfit"
+  },
+  {
+   "at": "2026-10-24T05:27:18Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T05:13:05Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T05:10:33Z",
+   "subject": "Incident: the browser suite failed on ddc707fd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T05:01:42Z",
+   "subject": "Photo resizer: the third floor from the data (pancardresizer.com): one step instead of a three-step wizard behind ads"
+  },
+  {
+   "at": "2026-10-24T05:01:38Z",
+   "subject": "Verse hardens itself: 4 benchmark ask(s) for pwcheck, baseconv"
+  },
+  {
+   "at": "2026-10-24T04:58:55Z",
+   "subject": "Incident: the browser suite failed on 6ce81fd0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:58:16Z",
+   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
+  },
+  {
+   "at": "2026-10-24T04:57:45Z",
+   "subject": "Incident: the browser suite failed on f439d29b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-24T04:51:05Z",
+   "subject": "Incident: the browser suite failed on 34f04b75 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-24T04:50:46Z",
    "subject": "Cartoon rows: the prefix strip handles two digits (cartoon10 leaked into the painting prompt)"
   },
@@ -513,54 +561,6 @@
   {
    "at": "2026-10-24T04:33:37Z",
    "subject": "Incident: the browser suite failed on a15502f1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:32:18Z",
-   "subject": "Verse hardens itself: nothing to add this cycle"
-  },
-  {
-   "at": "2026-10-24T04:28:58Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T04:27:27Z",
-   "subject": "Cartoon from a photo: say why the photo was not used (photoWhy), and a fresh row (cartoon8)"
-  },
-  {
-   "at": "2026-10-24T04:24:52Z",
-   "subject": "Password strength: the next floor, found by data (howsecureismypassword.net, the easiest real one-tool site in the filtered scan)"
-  },
-  {
-   "at": "2026-10-24T04:16:49Z",
-   "subject": "Incident: the browser suite failed on d034ca30 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:15:47Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T04:14:42Z",
-   "subject": "Incident: the browser suite failed on 488990e1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:13:21Z",
-   "subject": "Incident: the browser suite failed on 97f7a0d2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:12:59Z",
-   "subject": "Spotter: 7 check(s) healed with no revert after 97f7a0d2277487a373af88f5a3261a6affd01019 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-24T04:11:19Z",
-   "subject": "Incident: the browser suite failed on 6d14971a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:10:30Z",
-   "subject": "Incident: the browser suite failed on 4a1ddc08 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:08:25Z",
-   "subject": "Cartoon from a real photo: Wikipedia's lead photo of the named page, described by the vision model, and the page's title as the usual…"
   }
  ],
  "builders": {

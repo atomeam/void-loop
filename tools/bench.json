@@ -6789,5 +6789,8 @@
   {"ask": "how secure is my password", "want": "skill:pwcheck"},
   {"ask": "is my password strong", "want": "skill:pwcheck"},
   {"ask": "check my password strength", "want": "skill:pwcheck"},
-  {"ask": "ff hex to binary", "want": "skill:baseconv"}
+  {"ask": "ff hex to binary", "want": "skill:baseconv"},
+  {"ask": "resize a photo to 3.5 x 2.5 cm under 50 kb", "want": "skill:imgfit"},
+  {"ask": "compress my image to 100kb", "want": "skill:imgfit"},
+  {"ask": "image resizer", "want": "skill:imgfit"}
 ]
