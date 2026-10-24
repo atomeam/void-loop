@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T14:24:04Z",
+   "subject": "Fix: Verse's \"make a sphere\" pattern also took \"game box\"; without \"3d\" the other words must be colours"
+  },
+  {
+   "at": "2026-10-24T14:20:56Z",
+   "subject": "Beat-locked film cuts (frontier #26): every scene change lands on the song's beat, and a sync frame lines the sound up with the picture"
+  },
+  {
    "at": "2026-10-24T12:21:36Z",
    "subject": "Verse fixes its make skill: learn to handle \"make a sphere\""
   },
@@ -505,6 +513,10 @@
   {
    "at": "2026-10-24T11:37:17Z",
    "subject": "Trial watch: the registry checked; what changed is in the ledger"
+  },
+  {
+   "at": "2026-10-24T11:20:52Z",
+   "subject": "Verse hardens itself: nothing to add this cycle"
   },
   {
    "at": "2026-10-24T11:19:25Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T04:58:55Z",
    "subject": "Incident: the browser suite failed on 6ce81fd0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:58:16Z",
-   "subject": "Tower gate: the one-tool floors measured against their live sites; a floor Verse's own skill answers falls by itself"
-  },
-  {
-   "at": "2026-10-24T04:57:45Z",
-   "subject": "Incident: the browser suite failed on f439d29b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T04:51:05Z",
-   "subject": "Incident: the browser suite failed on 34f04b75 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
