@@ -35,6 +35,19 @@ async function get(host, ms = 7000) {
   } catch (_) { return null; } finally { clearTimeout(t); }
 }
 
+// --rank a.com,b.org: where named sites stand in the Tranco ranking (1 = most visited), smallest last; a site outside the top million says so
+// (owner, 2026-10-24: "find the smallest github first": the code hosts, from least used to most)
+async function rankMode(list) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
+  execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);
+  const want = new Set(list.map((h) => h.trim().toLowerCase()).filter(Boolean)), found = new Map();
+  for (const l of fs.readFileSync(path.join(dir, 'top-1m.csv'), 'utf8').split('\n')) { const [r, h] = l.split(','); if (h && want.has(h.trim())) found.set(h.trim(), +r); }
+  const rows = [...want].map((h) => ({ host: h, rank: found.get(h) || null })).sort((a, b) => (b.rank || 2e6) - (a.rank || 2e6));
+  console.log('Tranco ranks, smallest (least visited) first; "-" is outside the top million:');
+  for (const r of rows) console.log(String(r.rank || '-').padStart(8), r.host);
+  return rows;
+}
+if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] === '--rank') { await rankMode(String(process.argv[3] || '').split(',')); process.exit(0); }
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const n = Math.min(100000, Math.max(100, +process.argv[2] || 5000)), outFile = process.argv[3] || 'easiest-sites.json', dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
   execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);

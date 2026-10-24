@@ -7,6 +7,9 @@ on:
       top:
         description: how many of the top of the list to scan
         default: '5000'
+      rank:
+        description: instead of a scan, the Tranco rank of these sites (comma separated)
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -21,7 +24,8 @@ jobs:
       - name: Scan
         env:
           TOP: ${{ inputs.top }}
-        run: node tools/easiest-sites.mjs "$TOP" easiest-sites.json
+          RANK: ${{ inputs.rank }}
+        run: if [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
