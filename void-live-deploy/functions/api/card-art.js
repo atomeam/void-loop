@@ -195,13 +195,17 @@ export async function onRequestPost({ request, env }) {
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
   } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
   if (!img) return plate('busy'); // nothing usable: nothing is kept
+  const told = kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {};
+  // a cartoon painted without a look because the look failed (no photo, and the text model erred or said nothing; 'unknown' is an answer and is kept) is a guess at the subject: shown once, never kept, so the next ask tries
+  // again instead of serving the guess for ever (2026-10-24: the kept "dimebag darrel" was a smiling stranger in a blue shirt, painted when the look timed out)
+  if (kind === 'cartoon' && !look && /^(?:error|empty)\b/.test(seen.why || '')) return json({ state: 'art', key, img, cached: false, kept: false, ...told });
   await keepName(env, key, seen.name);
   try {
     await ensure(env);
-    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) }); }
+    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...told }); }
     await env.DB.prepare('INSERT OR IGNORE INTO void_art (subject, img, day) VALUES (?, ?, ?)').bind(key, img, today()).run();
     const won = await cached(env, key); // two people at once: both get the picture stored first
-    if (won) return json({ ...hit(won, key), cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) });
+    if (won) return json({ ...hit(won, key), cached: false, ...told });
   } catch (_) {}
-  return json({ state: 'art', key, img, cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {}) });
+  return json({ state: 'art', key, img, cached: false, ...told });
 }

@@ -228,13 +228,15 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon10 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon11 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
   assert.equal(pre.dcalls[0].o.max_tokens, 700); assert.equal(pre.dcalls[0].o.chat_template_kwargs.enable_thinking, false, 'no thinking: it ate the whole answer');
   const u = world({ scene: 'UNKNOWN' }); await post(u.env, 'zorblax', 'cartoon'); assert.match(u.calls[0].o.prompt, /^a zorblax as a flat 2D cartoon/);
   const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
+  assert.equal(rows(f.env).length, 0, 'a cartoon painted after the look failed is shown but never kept: the next ask tries again');
+  assert.equal(rows(u.env).length, 1, 'an unknown subject is an answer, kept');
 });
 // the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the look reply's Name line, kept only when it is the same name
 test('a cartoon takes the usual spelling from the look reply, paints and shows it, and keeps it for the next ask; a different name is never taken', async () => {

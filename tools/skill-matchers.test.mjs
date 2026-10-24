@@ -55,8 +55,8 @@ test('cartoon: a 2D cartoon of the subject asked for, painted in its own cartoon
   assert.equal(cartoonTake('cat').emoji, '🐱');
   assert.equal(cartoonTake('dragon').name, 'Cartoon dragon');
   assert.equal(kindWordOf('cartoon'), 'cartoon');
-  assert.equal(cartoonKey('cat'), 'cartoon10 cat');
-  const p = artPrompt('cartoon10 cat', 'cartoon');
+  assert.equal(cartoonKey('cat'), 'cartoon11 cat');
+  const p = artPrompt('cartoon11 cat', 'cartoon');
   assert.match(p, /^a cat as a flat 2D cartoon drawing/);
   assert.doesNotMatch(p, /tarot|arcane|photoreal|cinematic/);
 });

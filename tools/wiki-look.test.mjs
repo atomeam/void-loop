@@ -50,8 +50,8 @@ test('photoLook paints from the photo description and says where it came from; n
     const r = await route.photoLook(e, 'dimebag darrel', wiki());
     assert.equal(r.source, 'wikipedia'); assert.equal(r.name, 'Dimebag Darrell'); assert.match(r.look, /goatee dyed bright pink.*lightning bolt/); assert.equal(e.calls.vision, 1);
     const none = await route.photoLook(env(look), 'zorblax', wiki({ title: 'Quantum computing' })); assert.equal(none, null);
-    const l = await route.lookFor(env(look), 'cartoon10 dimebag darrel'); assert.equal(l.source, 'wikipedia'); assert.equal(l.name, 'Dimebag Darrell');
-    const e2 = env(look); globalThis.fetch = wiki({ fail: true }); const f = await route.lookFor(e2, 'cartoon10 dimebag darrel');
+    const l = await route.lookFor(env(look), 'cartoon11 dimebag darrel'); assert.equal(l.source, 'wikipedia'); assert.equal(l.name, 'Dimebag Darrell');
+    const e2 = env(look); globalThis.fetch = wiki({ fail: true }); const f = await route.lookFor(e2, 'cartoon11 dimebag darrel');
     assert.equal(e2.calls.vision, 0); assert.equal(e2.calls.text, 1); assert.match(f.look, /generic man/, 'without a page the text model is asked as before'); assert.match(f.photoWhy, /search error down/, 'and it says why the photo was not used');
   } finally { globalThis.fetch = realFetch; }
 });
