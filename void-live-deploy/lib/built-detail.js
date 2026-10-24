@@ -31,15 +31,17 @@ export function builtByFamily(ledger, fam, limit = 40) {
     .slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   const skills = F.flatMap((f) => (f.skills || []).filter((s) => s && s.name && String(s.name).length > 2).map((s) => ({ fam: f, name: String(s.name), re: reOf(s.name) })));
-  // a hardening line with its phrases reads as the phrases themselves: what was added and which skill each now opens
-  const words = (x) => Array.isArray(x.phrases) && x.phrases.length ? 'New phrases: ' + x.phrases.map((p) => '\u201c' + p.ask + '\u201d now opens ' + p.skill).join('; ') : x.what.trim();
-  const item = (x) => ({ at: x.at, day: String(x.at || '').slice(0, 10), kind: x.kind, depth: depthOf(x.kind), what: words(x), show: x.show || '', pr: prOf(x) });
+  // a hardening line with its phrases reads as the phrases themselves; under a skill, only the phrases that open that skill (the whole
+  // batch under every skill it named read as nine copies of one line: owner's self-card screenshot, 2026-10-24)
+  const words = (x, only) => { const ps = Array.isArray(x.phrases) ? x.phrases.filter((p) => !only || p.skill === only) : [];
+    return ps.length ? 'New phrases: ' + ps.map((p) => '\u201c' + p.ask + '\u201d now opens ' + p.skill).join('; ') : x.what.trim(); };
+  const item = (x, only) => ({ at: x.at, day: String(x.at || '').slice(0, 10), kind: x.kind, depth: depthOf(x.kind), what: words(x, only), show: x.show || '', pr: prOf(x) });
   const by = new Map(), across = [];
   for (const x of L) {
     const text = x.what.toLowerCase(), named = new Set((Array.isArray(x.phrases) ? x.phrases : []).map((p) => p.skill));
     const hit = named.size ? skills.filter((s) => named.has(s.name)) : skills.filter((s) => s.re.test(text));
     if (!hit.length) { across.push(item(x)); continue; }
-    for (const s of hit) { const k = s.fam.id + '|' + s.name; if (!by.has(k)) by.set(k, { fam: s.fam, name: s.name, items: [] }); by.get(k).items.push(item(x)); }
+    for (const s of hit) { const k = s.fam.id + '|' + s.name; if (!by.has(k)) by.set(k, { fam: s.fam, name: s.name, items: [] }); by.get(k).items.push(item(x, s.name)); }
   }
   const families = F.map((f) => {
     const sk = [...by.values()].filter((v) => v.fam === f).map((v) => ({ name: v.name, items: v.items.slice(0, limit) }))

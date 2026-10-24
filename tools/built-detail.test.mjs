@@ -16,3 +16,11 @@ test('the per-skill view comes from the ledger, whole lines, no ellipsis', () =>
   const r = builtByFamily(ledger, fam); assert.ok(r.families.length >= 5);
   const h = builtDetailHtml(r); assert.ok(h.includes('data-sec="built-detail"')); assert.ok(!/\u2026<\/li>/.test(h));
 });
+
+test('under each skill, a batch of new phrases lists only the phrases that open that skill', () => {
+  const fam = { families: [{ id: 'make', name: 'Making things', skills: [{ name: 'gradient' }, { name: 'wheel' }] }] };
+  const led = [{ at: '2026-10-24T16:00:00Z', kind: 'grow', what: 'Verse hardened itself: 2 benchmark ask(s) for gradient, wheel.', phrases: [{ ask: 'css gradient', skill: 'gradient' }, { ask: 'spin the wheel', skill: 'wheel' }] }];
+  const r = builtByFamily(led, fam), by = Object.fromEntries(r.families[0].skills.map((s) => [s.name, s.items[0].what]));
+  assert.equal(by.gradient, 'New phrases: “css gradient” now opens gradient');
+  assert.equal(by.wheel, 'New phrases: “spin the wheel” now opens wheel');
+});
