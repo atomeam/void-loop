@@ -6792,5 +6792,14 @@
   {"ask": "ff hex to binary", "want": "skill:baseconv"},
   {"ask": "resize a photo to 3.5 x 2.5 cm under 50 kb", "want": "skill:imgfit"},
   {"ask": "compress my image to 100kb", "want": "skill:imgfit"},
-  {"ask": "image resizer", "want": "skill:imgfit"}
+  {"ask": "image resizer", "want": "skill:imgfit"},
+  {"ask": "random user generator", "want": "skill:fakeuser"},
+  {"ask": "fake name generator", "want": "skill:fakeuser"},
+  {"ask": "generate 5 fake german women", "want": "skill:fakeuser"},
+  {"ask": "spin the wheel", "want": "skill:wheel"},
+  {"ask": "wheel of names", "want": "skill:wheel"},
+  {"ask": "spin a wheel with pizza, tacos and sushi", "want": "skill:wheel"},
+  {"ask": "gradient generator", "want": "skill:gradient"},
+  {"ask": "css gradient", "want": "skill:gradient"},
+  {"ask": "make a gradient from red to blue", "want": "skill:gradient"}
 ]
