@@ -92,15 +92,16 @@ export function directedPrompt(scene, rarity = 'common') {
 // is a real cartoon drawing of a cat, not the cards' dark arcane look. The subject first, then a plain cartoon style and the same framing cues.
 // (no "children's picture-book style": it turned every person into a child)
 export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful, bold clean black outlines, flat vivid colours, expressive eyes where it has a face, simple soft pastel background, the whole subject centered and fully inside the frame, classic animated cartoon style';
-/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon3': painted from its look (below); the
+/** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon4': painted from its look (below); the
  *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
  *  was a smiling boy in a blue t-shirt). Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon3 ' + key : '');
+export const cartoonKey = (key) => (key ? 'cartoon4 ' + key : '');
 // the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
 // subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
 export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
   + 'In at most 40 words, the things that make it recognisable: for a person their age, build, hair, beard, face, usual clothes and what they are known for holding; '
   + 'for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
+  + 'Reply in exactly two lines: "Name: " and its name as it is usually spelled, then "Look: " and the description. '
   + 'If you do not know it, reply only UNKNOWN.';
 /** the text model's look -> one clean line, or '' (UNKNOWN, refused, or too short): the longest line of the reply, so a preamble such as
  *  "Here is a description:" is never taken for the look, then the same checks as the Director's scene. Pure. */
@@ -109,10 +110,26 @@ export function lookOf(text, isSecret = () => false) {
   const best = lines.sort((a, b) => b.length - a.length)[0] || '';
   return /\bunknown\b/i.test(best) && best.split(' ').length < 6 ? '' : sceneOf(best, isSecret);
 }
-export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon[23]? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
+/** the usual spelling the text model gave, kept only when it is the same name as asked, near enough letter for letter (at most a third of
+ *  the letters changed and the same number of words): "dimebag darrel" may become "Dimebag Darrell", never a different subject. Pure. */
+export function spellingOf(asked, said) {
+  const a = String(asked || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+  const n = String(said || '').replace(/[^A-Za-z0-9 .'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60), b = n.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
+  if (!a || !b || a.split(' ').length !== b.split(' ').length) return '';
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length] <= Math.floor(a.length / 3) ? n : '';
+}
+/** the look reply's two parts: { name, text } ("Name: ..." and "Look: ..."); a reply without them is all look. Pure. */
+export function lookParts(text) {
+  const t = String(text == null ? '' : text), name = (/^\W*name\s*:\s*(.+)$/im.exec(t) || [])[1] || '', look = (/^\W*look\s*:\s*([\s\S]+)$/im.exec(t) || [])[1];
+  return { name: name.replace(/[*_]/g, '').trim(), text: look != null ? look : t.replace(/^\W*name\s*:.*$/im, '') };
+}
+export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon\d? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
 /** a cartoon's prompt: from its look when there is one, else from its name. Pure. */
 export function cartoonPrompt(key, look = '') {
-  const name = String(key).replace(/^cartoon[23]? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
+  const name = String(key).replace(/^cartoon\d? /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
   return (seen ? 'a cartoon of ' + name + ': ' + seen : 'a ' + name) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
 }
 

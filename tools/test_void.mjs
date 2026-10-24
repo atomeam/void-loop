@@ -583,7 +583,7 @@ try {
   if (want("cartoon: draw a cartoon cat puts a 2D cartoon of a cat on the stage, its own painting swapped in, and says why when none comes")) {
     const P = await fresh(); const posts = [];
     const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'cartoon ' + b.subject, img: PNG }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'cartoon ' + b.subject, img: PNG, ...(b.subject === 'dimebag darrel' ? { name: 'Dimebag Darrell' } : {}) }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
     await P.ask('draw a cartoon cat', 1500);
     const cat = await until(async () => P.p.$eval('.cartoon-card[data-subject="cat"]', (e) => ({ head: e.querySelector('div').textContent, alt: (e.querySelector('.cartoon-pic img') || {}).alt || '', status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
     const figs = (await P.state()).filter((x) => x.kind === 'figure' || x.kind === 'fig3d').length;
@@ -593,6 +593,12 @@ try {
     const dragon = await until(async () => P.p.$eval('.cartoon-card[data-subject="dragon"]', (e) => ({ pic: e.querySelector('.cartoon-pic').textContent, status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
     check('cartoon: with no painting left today the dragon card still draws a dragon (its emoji) and says plainly why the painting waits',
       !!dragon && /🐉/.test(dragon.pic) && /used up/.test(dragon.status) && !P.errors.length, JSON.stringify({ dragon, errors: P.errors }));
+    // the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the forge's usual spelling replaces the typed one, kept on reload
+    await P.ask('draw a cartoon dimebag darrel', 1500);
+    const dime = await until(async () => P.p.$eval('.cartoon-card[data-subject="dimebag darrel"]', (e) => { const h = e.querySelector('div').textContent; return /Darrell/.test(h) ? h : null; }).catch(() => null), 8000);
+    const kept = (await P.state()).find((x) => x.kind === 'cartoon' && x.subject === 'dimebag darrel');
+    check('cartoon: a misspelt name ("dimebag darrel") is titled as usually spelled once the forge answers ("Cartoon Dimebag Darrell"), and the stage keeps that title',
+      dime === 'Cartoon Dimebag Darrell' && !!kept && kept.name === 'Cartoon Dimebag Darrell' && !P.errors.length, JSON.stringify({ dime, kept: kept && kept.name, errors: P.errors }));
     await P.ctx.close();
   }
   // the coin flip sites (scout report, 2026-10-23: a 3-second fake wait, ads, paragraphs of text): a coin that lands at once, with a quiet tally

@@ -24,7 +24,7 @@ import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, cartoonPrompt } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -44,6 +44,15 @@ async function ensure(env) {
 }
 export const resetReady = () => { ready = null; }; // tests: a new fake database needs its table made again
 
+// a cartoon's name as usually spelled (lookFor), kept beside its picture so a later ask with the same misspelling gets the right name too
+async function nameOf(env, key) {
+  if (!/^cartoon\d /.test(key)) return '';
+  try { const r = await env.DB.prepare('SELECT name FROM void_art_name WHERE subject = ?').bind(key).first(); return (r && r.name) || ''; } catch (_) { return ''; }
+}
+async function keepName(env, key, name) {
+  if (!name) return;
+  try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_name (subject TEXT PRIMARY KEY, name TEXT NOT NULL)').run(); await env.DB.prepare('INSERT OR REPLACE INTO void_art_name (subject, name) VALUES (?, ?)').bind(key, name).run(); } catch (_) {}
+}
 async function cached(env, key) {
   try { await ensure(env); return await env.DB.prepare('SELECT img, day FROM void_art WHERE subject = ?').bind(key).first(); } catch (_) { return null; }
 }
@@ -68,6 +77,22 @@ export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_
     ]);
     return clean(scrubOut(redact(String(pick(r))), env), isSecret);
   } catch (_) { return ''; }
+}
+// a cartoon's look (lib/art-rules.js LOOK_SYSTEM): { look, why } where why says, when there is no look, what happened: 'error <name>', 'empty'
+// (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
+// builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
+export async function lookFor(env, key) {
+  let text = '';
+  try {
+    const r = await Promise.race([
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: LOOK_SYSTEM }, { role: 'user', content: lookPrompt(key) }], max_tokens: 400 }),
+      new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
+    ]);
+    text = scrubOut(redact(String(pick(r))), env);
+    if (!text.trim()) return { look: '', why: 'empty ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) : typeof r) };
+  } catch (e) { return { look: '', why: 'error ' + String(e && e.message || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 80) }; }
+  const parts = lookParts(text), name = spellingOf(String(key).replace(/^cartoon\d? /, ''), parts.name), look = lookOf(parts.text, isSecret), said = text.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+  return look ? { look, name, why: '' } : { look: '', name, why: (/\bunknown\b/i.test(text) ? 'unknown' : 'refused') + ': ' + said };
 }
 // one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window (its steps are fixed at 4); schnell takes JSON
 // and paints a square. The reply is { image: base64 }, or a stream of the image's bytes, read here.
@@ -110,7 +135,7 @@ export async function onRequestGet({ request, env }) {
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
   const row = await cached(env, key);
-  if (row) return json(hit(row, key), 200, { 'cache-control': 'public, max-age=3600' });
+  if (row) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}) }, 200, { 'cache-control': 'public, max-age=3600' }); }
   if (!on(env)) return plate('off', {}); // nothing can be painted: the page shows no button
   if ((await madeToday(env)) >= capOf(env)) return plate('cap');
   return json({ state: 'none', key }, 200, { 'cache-control': 'no-store' });
@@ -127,16 +152,16 @@ export async function onRequestPost({ request, env }) {
   const row = await cached(env, key), again = !!(body && body.again === true);
   // a new painting of a subject already painted (owner, 2026-10-18: "each card could have a regenerate card art button"): at most once a day per
   // subject (the row's day says when it was last painted), counted in the same daily cap and rate limit; the old picture stays if the new one fails
-  if (row && (!again || row.day === today())) return json(again ? { ...hit(row, key), why: 'again-today' } : hit(row, key));
+  if (row && (!again || row.day === today())) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}), ...(again ? { why: 'again-today' } : {}) }); }
   if (!on(env)) return plate('off');
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
-  const look = kind === 'cartoon' ? await direct(env, key, kind, '', '', [LOOK_SYSTEM, lookPrompt(key)], lookOf, 400) : '', scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
+  const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
   let img = '';
   try {
-    const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
+    const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(seen.name ? 'cartoon ' + seen.name.toLowerCase() : key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
     let r = null;
     if (!overWorkers) {
       try { r = await Promise.race([paintOnce(env, models('art'), prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }
@@ -148,12 +173,13 @@ export async function onRequestPost({ request, env }) {
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
   } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
   if (!img) return plate('busy'); // nothing usable: nothing is kept
+  await keepName(env, key, seen.name);
   try {
     await ensure(env);
-    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(look ? { look } : {}) }); }
+    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, ...(seen.name ? { name: seen.name } : {}) } : {}) }); }
     await env.DB.prepare('INSERT OR IGNORE INTO void_art (subject, img, day) VALUES (?, ?, ?)').bind(key, img, today()).run();
     const won = await cached(env, key); // two people at once: both get the picture stored first
-    if (won) return json({ ...hit(won, key), cached: false, ...(look ? { look } : {}) });
+    if (won) return json({ ...hit(won, key), cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, ...(seen.name ? { name: seen.name } : {}) } : {}) });
   } catch (_) {}
-  return json({ state: 'art', key, img, cached: false, ...(look ? { look } : {}) });
+  return json({ state: 'art', key, img, cached: false, ...(kind === 'cartoon' ? { look, lookWhy: seen.why, ...(seen.name ? { name: seen.name } : {}) } : {}) });
 }

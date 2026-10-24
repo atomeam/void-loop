@@ -227,11 +227,29 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon3 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon4 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
   assert.equal(pre.dcalls[0].o.max_tokens, 400);
   const u = world({ scene: 'UNKNOWN' }); await post(u.env, 'zorblax', 'cartoon'); assert.match(u.calls[0].o.prompt, /^a zorblax as a flat 2D cartoon/);
   const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
+});
+// the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the look reply's Name line, kept only when it is the same name
+test('a cartoon takes the usual spelling from the look reply, paints and shows it, and keeps it for the next ask; a different name is never taken', async () => {
+  const { spellingOf, lookParts } = await import('../void-live-deploy/lib/art-rules.js');
+  assert.equal(spellingOf('dimebag darrel', 'Dimebag Darrell'), 'Dimebag Darrell');
+  assert.equal(spellingOf('dimebag darrel', 'Pantera'), '', 'a different subject is never taken');
+  assert.equal(spellingOf('dimebag darrel', 'Darrell Lance Abbott'), '', 'not the same words');
+  assert.equal(spellingOf('cat', 'Cat'), 'Cat');
+  const look = 'a lean grown man with long dark hair, a long goatee dyed bright pink, sleeveless black shirt, camo shorts, a blue lightning bolt shaped electric guitar';
+  assert.deepEqual(lookParts('Name: **Dimebag Darrell**\nLook: ' + look), { name: 'Dimebag Darrell', text: look });
+  const w = world({ scene: 'Name: Dimebag Darrell\nLook: ' + look });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(a.name, 'Dimebag Darrell'); assert.equal(a.look, look); assert.equal(a.lookWhy, '');
+  assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrell: a lean grown man/);
+  const again = await (await get(w.env, 'dimebag darrel', 'cartoon')).json(); assert.equal(again.name, 'Dimebag Darrell', 'kept for the next person with the same spelling');
+  const bad = world({ scene: 'Name: Pantera\nLook: ' + look }); const b = await (await post(bad.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(b.name, undefined); assert.match(bad.calls[0].o.prompt, /^a cartoon of dimebag darrel: /);
+  const none = world({ directFail: true }); const c = await (await post(none.env, 'cat', 'cartoon')).json(); assert.match(c.lookWhy, /^error slow/);
 });

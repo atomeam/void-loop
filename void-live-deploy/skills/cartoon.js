@@ -71,7 +71,7 @@ async function paint(subject, post) {
       ? await fetch('/api/card-art', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject, kind: 'cartoon' }) })
       : await fetch('/api/card-art?kind=cartoon&key=' + encodeURIComponent(subject));
     const j = await r.json();
-    out = j && j.state === 'art' && /^data:image\//.test(j.img || '') ? { img: j.img } : { why: (j && (j.state === 'none' ? 'none' : j.why)) || 'busy' };
+    out = j && j.state === 'art' && /^data:image\//.test(j.img || '') ? { img: j.img, name: typeof j.name === 'string' ? j.name : '' } : { why: (j && (j.state === 'none' ? 'none' : j.why)) || 'busy' };
   } catch (_) { out = { why: 'unreachable' }; }
   painted.set(subject, out);
   return out;
@@ -106,6 +106,8 @@ function mount(th, stageApi) {
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   const show = (r) => {
+    // the name as usually spelled, when the forge knows it ("dimebag darrel" is shown as Dimebag Darrell)
+    if (r.name && typeof r.name === 'string') { th.name = 'Cartoon ' + r.name.slice(0, 60); head.textContent = th.name; if (stageApi.save) stageApi.save(); }
     if (r.img) {
       const img = document.createElement('img');
       img.src = r.img; img.alt = 'a 2D cartoon of ' + (th.subject || 'it');
