@@ -35,3 +35,28 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
   assert.equal(probeFor('weather'), null);
   for (const f of FLOORS) assert.ok(aspectsOf(f).includes('offline') && aspectsOf(f).includes('sharing'), f.id);
 });
+test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
+  const { PARTS } = await import('./tower-probes.mjs');
+  const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['colour', 'colour codes']);
+  const has = (t) => score(t, models).has;
+  assert.deepEqual(has('OKLCH'), ['OKLCH']); assert.deepEqual(has('Hunter Lab'), ['Hunter Lab']); assert.deepEqual(has('CIE Lab'), ['CIELab']); assert.deepEqual(has('CIELCH'), ['CIELCh']); assert.deepEqual(has('CIELUV'), ['CIELUV']);
+  // hexcolor16.com's list, as the owner read it off the page on 2026-10-24
+  assert.equal(score('Hexadecimal Decimal RGB CMYK HSL HSV XYZ CIELab CIELUV CIELCH', models).n, 10);
+  assert.equal(score('shades tints tones complementary analogous triadic split-complementary tetradic square VGA random', palettes).missing.join(), 'monochromatic');
+  assert.deepEqual(probeFor('base converter').parts, {});
+});
+test('design polish counts what a design review fails first, lower is better and 0 is the best there is', async () => {
+  const { defects, designLook } = await import('./tower-gate.mjs');
+  assert.equal(defects({ contrast: 2, targets: 1, cls: 0.3 }), 4); assert.equal(defects({ contrast: 0, targets: 0, cls: 0.05 }), 0); assert.ok(Number.isNaN(defects(null)));
+  assert.equal(verdict(0, 0, MEASURES['design polish'].hi, MEASURES['design polish'].ideal), 'equal-and-better'); assert.equal(verdict(0, 2, false, 0), 'better'); assert.equal(verdict(1, 0, false, 0), 'worse');
+  const { createRequire } = await import('node:module'), req = createRequire(import.meta.url); let pw = null; for (const n of ['playwright-core', 'playwright']) { try { pw = req(n); break; } catch (_) { /* next */ } }
+  if (!pw) return; // the in-page part needs a browser
+  const b = await pw.chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
+  try {
+    const p = await b.newPage({ viewport: { width: 390, height: 800 } });
+    await p.setContent('<body style="background:#fff;color:#111"><p>plain text</p><p style="color:#bbb">faint</p><span aria-hidden="true" style="background:#ffeb3b;color:#fff">Aa</span><button style="width:10px;height:10px;padding:0;border:0">x</button><p>a line with <a href="#" style="font-size:10px">a small link</a> in it</p></body>');
+    const l = await p.evaluate(designLook);
+    assert.equal(l.contrast, 1, 'the faint line fails, the aria-hidden sample on yellow does not count'); assert.equal(l.targets, 1, 'the tiny button counts, the link inside a line does not');
+  } finally { await b.close(); }
+});
