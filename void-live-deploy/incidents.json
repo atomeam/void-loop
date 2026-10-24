@@ -2,6 +2,35 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-24T18:34:38.260Z",
+   "sha": "d3a59983588e9a7cd7f6e0e479a9de2d7852e4b3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40119269081",
+   "suite": "browser suite on main",
+   "checks": [
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
+    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
+    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "tools/tools-pack-7.test.mjs",
+    "tools/tower-gate.mjs",
+    "tools/tower-gate.test.mjs",
+    "tools/tower-probes.mjs",
+    "void-live-deploy/skills/util.js"
+   ]
+  },
+  {
    "at": "2026-10-24T18:29:47.281Z",
    "sha": "cba0fd62bd8cb64917d32c420a79ec135ea7fee4",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40118690306",
@@ -766,20 +795,6 @@
     "void-live-deploy/incidents.json",
     "void-live-deploy/tower.evidence.json",
     "void-live-deploy/tower.frontier.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T15:24:16.213Z",
-   "sha": "f537b00f9768e4172da4b74b240b899bfcae11a8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40106161364",
-   "suite": "browser suite on main",
-   "checks": [
-    "look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered",
-    "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/functions/api/card-art.js"
    ]
   }
  ]
