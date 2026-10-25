@@ -1884,59 +1884,59 @@
   "recipes": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 88,
-    "best": 340,
-    "evidence": "Verse (/recipes/?q=pancakes) 88 ms to the load event (median of 3, phone width) vs Allrecipes 340 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "verse": 126,
+    "best": 375,
+    "evidence": "Verse (/recipes/?q=pancakes) 126 ms to the load event (median of 3, phone width) vs Allrecipes 375 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs Allrecipes 3 of 3 loads answered",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs Allrecipes 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs Allrecipes 0 unnamed controls or images",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs Allrecipes 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Allrecipes 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
-    "best": 26,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs Allrecipes 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), Allrecipes (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "verse": 0,
+    "best": 27,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs Allrecipes 27 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Allrecipes (1 low-contrast texts, 26 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not Allrecipes (the site is not asked)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 5
    },
    "search by ingredient": {
@@ -1944,7 +1944,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
@@ -1953,7 +1953,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
@@ -1962,75 +1962,75 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 14,
-    "best": 1,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs Allrecipes 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T11:40:23.037Z",
-    "of": 14
+    "verse": 20,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs Allrecipes 3 of 20 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline, US / metric, Cook mode (screen stays on), Jump to recipe and print, Step-by-step mode)",
+    "at": "2026-10-25T16:48:04.865Z",
+    "of": 20
    }
   },
   "calendar": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 115,
-    "best": 1513,
-    "evidence": "Verse (/calendar/) 115 ms to the load event (median of 3, phone width) vs Google Calendar 1513 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "verse": 147,
+    "best": 1932,
+    "evidence": "Verse (/calendar/) 147 ms to the load event (median of 3, phone width) vs Google Calendar 1932 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs Google Calendar 3 of 3 loads answered",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs Google Calendar 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs Google Calendar 0 unnamed controls or images",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs Google Calendar 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Calendar 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 136,
-    "evidence": "Verse (/calendar/) 1 design defects vs Google Calendar 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "evidence": "Verse (/calendar/) 0 design defects vs Google Calendar 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not Google Calendar (the site is not asked)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 5
    },
    "reminders": {
@@ -2038,7 +2038,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 2,
     "part": true
    },
@@ -2047,7 +2047,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs Google Calendar 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 3,
     "part": true
    },
@@ -2056,17 +2056,17 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
-    "best": 4,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs Google Calendar 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:47:37.456Z",
-    "of": 15
+    "verse": 16,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 16 of 20 things a full answer shows vs Google Calendar 5 of 20 things a full answer shows (Verse lacks: a share link, notifications, Recurring events incl. custom rules, Natural-language quick add; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Day / week / month views, Import / export .ics, Search events, Natural-language quick add)",
+    "at": "2026-10-25T16:47:35.861Z",
+    "of": 20
    }
   },
   "docs and notes": {
@@ -5067,68 +5067,67 @@
   "recipes: budgetbytes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 134,
+    "verse": 104,
     "best": 200,
-    "evidence": "Verse (/recipes/?q=pancakes) 134 ms to the load event (median of 3, phone width) vs the bar (budgetbytes.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 104 ms to the load event (median of 3, phone width) vs the bar (budgetbytes.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs budgetbytes.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs the bar (budgetbytes.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs the bar (budgetbytes.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs the bar (budgetbytes.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (budgetbytes.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs the bar (budgetbytes.com unreachable) 0 design defects",
-    "at": "2026-10-25T15:46:54.545Z",
-    "was": "better"
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs the bar (budgetbytes.com unreachable) 0 design defects",
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "search by ingredient": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
@@ -5137,7 +5136,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
@@ -5146,17 +5145,17 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 14,
-    "best": 14,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs the bar (budgetbytes.com unreachable) 14 of 14 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
-    "of": 14
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs the bar (budgetbytes.com unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T16:46:41.486Z",
+    "of": 20
    }
   },
   "recipes: recipetineats.com": {
@@ -5444,68 +5443,67 @@
   "recipes: food52.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 98,
+    "verse": 114,
     "best": 200,
-    "evidence": "Verse (/recipes/?q=pancakes) 98 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 114 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs food52.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs the bar (food52.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs the bar (food52.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs the bar (food52.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (food52.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs the bar (food52.com unreachable) 0 design defects",
-    "at": "2026-10-25T15:48:54.091Z",
-    "was": "better"
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs the bar (food52.com unreachable) 0 design defects",
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "search by ingredient": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
@@ -5514,7 +5512,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
@@ -5523,17 +5521,17 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 14,
-    "best": 14,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs the bar (food52.com unreachable) 14 of 14 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
-    "of": 14
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs the bar (food52.com unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T16:47:14.555Z",
+    "of": 20
    }
   },
   "recipes: simplyrecipes.com": {
@@ -6666,69 +6664,68 @@
   },
   "calendar: calendar.zoho.com": {
    "speed": {
-    "verdict": "worse",
-    "verse": 485,
-    "best": 93,
-    "evidence": "Verse (/calendar/) 485 ms to the load event (median of 3, phone width) vs calendar.zoho.com 93 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:54:39.238Z",
-    "was": "equal-and-better"
+    "verdict": "equal-and-better",
+    "verse": 123,
+    "best": 99,
+    "evidence": "Verse (/calendar/) 123 ms to the load event (median of 3, phone width) vs calendar.zoho.com 99 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.zoho.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.zoho.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.zoho.com 1 unnamed controls or images",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.zoho.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.zoho.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.zoho.com (the site is not asked)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
-    "best": 8,
-    "evidence": "Verse (/calendar/) 1 design defects vs calendar.zoho.com 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.28)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse (/calendar/) 0 design defects vs calendar.zoho.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 2,
     "part": true
    },
@@ -6737,7 +6734,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.zoho.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 3,
     "part": true
    },
@@ -6746,17 +6743,17 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
-    "best": 5,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.zoho.com 5 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: today, repeating events, invites, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T15:54:39.238Z",
-    "of": 15
+    "verse": 16,
+    "best": 7,
+    "evidence": "Verse (/calendar/) 16 of 20 things a full answer shows vs calendar.zoho.com 7 of 20 things a full answer shows (Verse lacks: a share link, notifications, Recurring events incl. custom rules, Natural-language quick add; site lacks: today, repeating events, invites, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Recurring events incl. custom rules, Import / export .ics, Search events)",
+    "at": "2026-10-25T16:46:08.865Z",
+    "of": 20
    }
   },
   "calendar: icloud.com": {
@@ -10208,7 +10205,7 @@
   "mymemory.translated.net": "tower.icons/mymemory.translated.net.png",
   "icloud.com": "tower.icons/icloud.com.png",
   "outlook.live.com": "tower.icons/outlook.live.com.png",
-  "calendar.zoho.com": "tower.icons/calendar.zoho.com.png",
+  "calendar.zoho.com": "tower.icons/calendar.zoho.com.ico",
   "calendar.yahoo.com": "tower.icons/calendar.yahoo.com.png",
   "proton.me": "tower.icons/proton.me.png",
   "docs.google.com": "tower.icons/docs.google.com.ico",
