@@ -565,72 +565,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T03:54:55.585Z"
+    "at": "2026-10-25T04:00:40.679Z"
    }
   },
   "encoder": {
    "speed": {
     "verdict": "better",
-    "verse": 175,
-    "best": 806,
-    "evidence": "Verse (/base64/) 175 ms to the load event (median of 3, phone width) vs base64encode.org 806 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T03:53:14.780Z"
+    "verse": 124,
+    "best": 840,
+    "evidence": "Verse (/base64/) 124 ms to the load event (median of 3, phone width) vs base64encode.org 840 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T03:53:14.780Z"
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-25T03:53:14.780Z"
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 2,
-    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 2 of 3 loads answered",
-    "at": "2026-10-25T03:53:14.780Z"
+    "best": 3,
+    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 3 of 3 loads answered",
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base64/) 1 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T03:53:14.780Z"
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base64/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T03:53:14.780Z"
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
     "best": 34,
     "evidence": "Verse (/base64/) 4 design defects vs base64encode.org 34 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.37)",
-    "at": "2026-10-25T03:53:14.780Z"
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "accuracy": {
     "verdict": "unverified",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/base64/) 1 of 1 right with the question typed into its box; the gate got no answer out of base64encode.org's box (its output stayed empty, or nothing it found took the typing or the press): a fault to fix in the gate, not a win. The gate saw: typed into the largest text area, could not press \"ENCODE\" (locator.click: Timeout 3000ms exceeded.), waited 8 s; now at https://www.base64encode.org/; boxes: textarea#input holding 5 chars, input#option_text_newlines holding 2 chars, input#option_text_chunks holding 2 chars, input#option_text_urlsafe holding 2 chars, textarea#output empty, input#upload empty, input#option_file_newlines holding 2 chars, input#option_file_chunks holding 2 chars",
-    "at": "2026-10-25T03:53:14.780Z"
+    "evidence": "Verse (/base64/) 1 of 1 right with the question typed into its box; the gate got no answer out of base64encode.org's box (its output stayed empty, or nothing it found took the typing or the press): a fault to fix in the gate, not a win. The gate saw: the page did not load; then: page.goto: Timeout 30000ms exceeded.",
+    "at": "2026-10-25T03:59:34.658Z"
    },
    "decode too": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/base64/) 1 of 1 shown vs base64encode.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T03:53:14.780Z",
+    "at": "2026-10-25T03:59:34.658Z",
     "of": 1,
     "part": true
    },
@@ -639,7 +639,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/base64/) 2 of 2 shown vs base64encode.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T03:53:14.780Z",
+    "at": "2026-10-25T03:59:34.658Z",
     "of": 2,
     "part": true
    },
@@ -648,7 +648,7 @@
     "verse": 10,
     "best": 10,
     "evidence": "Verse (/base64/) 10 of 10 things a full answer shows vs base64encode.org 10 of 10 things a full answer shows (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T03:53:14.780Z",
+    "at": "2026-10-25T03:59:34.658Z",
     "of": 10
    }
   },
@@ -1859,7 +1859,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T03:56:31.510Z"
+    "at": "2026-10-25T04:02:27.554Z"
    }
   }
  }
