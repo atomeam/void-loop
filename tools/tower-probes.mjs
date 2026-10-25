@@ -5,6 +5,7 @@
 // Each is a list of [label, RegExp] read against the page's visible text after it has loaded. A floor without a probe leaves accuracy and
 // completeness unverified (never counted as beaten); a probe with truth null leaves accuracy unverified (only a site whose own address carries the
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
+import { readFileSync } from 'node:fs';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -414,4 +415,51 @@ export function score(text, items) {
   const t = String(text || ''), has = [], missing = [];
   for (const [label, re] of items || []) { let ok = false; try { ok = typeof re === 'function' ? !!re(t) : re.test(t); } catch (_) { ok = false; } (ok ? has : missing).push(label); } // a check is a pattern, or a function of the page's text
   return { n: has.length, of: has.length + missing.length, has, missing };
+}
+
+// Feature maps in the gate (owner, 2026-10-25: "make sure you research all features of every site so we have everything"): a floor with a file in
+// domains/features/ (hand research, or tools/feature-scan.mjs) adds the features Verse is marked as having to its completeness facts, so a site reads
+// surpassed only when Verse's page shows them. A feature is shown when its key words are on the page (all of them up to two, all but one past that),
+// or its own `shows` pattern when the file gives one. tools/tower-gate.mjs applies withFeatureFacts; probeFor itself is unchanged.
+const FEATURE_STOP = new Set(('a an and are as at be by can for from has have in into is it its of on or per that the this to up with without your you ' +
+  'any all more most new one own get use using via free online tool tools site page app web') .split(/\s+/));
+/** a feature name's key words as stems: "Save favourite names" -> ['save', 'favourite', 'name'], at most four. Pure. */
+export function keywordsOf(name) {
+  const words = String(name || '').toLowerCase().match(/[a-z0-9][a-z0-9+#]*/g) || [], out = [];
+  for (let w of words) { if (FEATURE_STOP.has(w) || (w.length < 3 && !/^\d+$/.test(w))) continue; if (/ies$/.test(w) && w.length > 4) w = w.slice(0, -3) + 'y'; else if (/[^s]s$/.test(w) && w.length > 3) w = w.slice(0, -1); const st = w.replace(/(?:ing|ed|ness)$/, ''); if (st.length >= 4) w = st; if (!out.includes(w)) out.push(w); if (out.length === 4) break; }
+  return out;
+}
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** whether a page's text shows a feature: { verse: has|partial|missing, found, lacking }. Pure. */
+export function showsFeature(feature, text) {
+  const f = typeof feature === 'string' ? { name: feature } : feature || {}, t = String(text || '');
+  if (f.shows) { let ok = false; try { ok = new RegExp(f.shows, 'i').test(t); } catch (_) { ok = false; } return { verse: ok ? 'has' : 'missing', found: ok ? [f.shows] : [], lacking: ok ? [] : [f.shows] }; }
+  const keys = keywordsOf(f.name), found = keys.filter((k) => new RegExp('(?<![a-z0-9])' + escRe(k) + (/[a-z]$/.test(k) ? '' : '(?![0-9])'), 'i').test(t)), need = keys.length <= 2 ? keys.length : keys.length - 1;
+  return { verse: keys.length && found.length >= need ? 'has' : found.length ? 'partial' : 'missing', found, lacking: keys.filter((k) => !found.includes(k)) };
+}
+/** a floor's features file name: a lane site ('translate: deepl.com') shares its lane's file. Pure. */
+export const featureSlug = (id) => { const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i); return (lane ? lane[1] : String(id || '')).replace(/\W+/g, '-'); };
+// a feature named for what a site lacks or costs ("No sign-up", "Free with ads, no paywall") is not something a page shows in words: never a fact
+const ABSENT = /\b(?:no|non|without|free|ads?|ad-supported|paywall|sign-?up|account)\b/i;
+/** the top `n` features a file marks Verse as having (the leader's first, then the other sites, hand research before the scan's), as completeness
+ *  facts [name, check of the page's text]. Pure. */
+export function factsFromFile(file, n = 6) {
+  const out = [], seen = new Set(), sitesOf = (s) => Object.values(s || {}).sort((a, b) => (b && b.leader ? 1 : 0) - (a && a.leader ? 1 : 0));
+  for (const site of [...sitesOf(file && file.sites), ...sitesOf(file && file.auto && file.auto.sites)]) for (const f of (site && site.features) || []) {
+    const key = String(f && f.name || '').toLowerCase().trim(); if (!key || seen.has(key) || f.verse !== 'has' || !(f.shows || keywordsOf(f.name).length) || (!f.shows && ABSENT.test(f.name))) continue;
+    seen.add(key); out.push([String(f.name), (t) => showsFeature(f, t).verse === 'has']); if (out.length >= n) return out;
+  }
+  return out;
+}
+const FEATURE_DIR = new URL('../domains/features/', import.meta.url), featureFiles = new Map();
+/** a floor's features file, read once, or null (none, or not JSON) */
+export function featuresOf(id, dir = FEATURE_DIR) {
+  const file = new URL(featureSlug(id) + '.json', dir).pathname; if (featureFiles.has(file)) return featureFiles.get(file);
+  let v = null; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (_) { v = null; } featureFiles.set(file, v); return v;
+}
+/** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */
+export function withFeatureFacts(probe, id, n = 6, dir = FEATURE_DIR) {
+  if (!probe) return probe; const file = featuresOf(id, dir); if (!file) return probe;
+  const have = new Set((probe.facts || []).map(([l]) => String(l).toLowerCase())), extra = factsFromFile(file, n).filter(([l]) => !have.has(l.toLowerCase()));
+  return extra.length ? { ...probe, facts: [...(probe.facts || []), ...extra] } : probe;
 }

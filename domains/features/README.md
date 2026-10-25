@@ -5,3 +5,7 @@ One JSON file per tower floor: every user-facing feature of the floor's leader a
 Schema: `{"floor","verse_page","researched","sites":{"<host>":{"sources":[],"features":[{"name","detail","paid","verse","verse_evidence"}]}},"union_gaps":[],"verse_extra":[]}`
 
 `union_gaps` is the build list: deduplicated, most valuable first, naming the sites that have each. Builders read it before building a floor. Owner (2026-10-25): "make sure you research all features of every site so we have everything".
+
+## Verse's own scan (`tools/feature-scan.mjs`, `docs/playbooks/feature-research.md`)
+
+Verse reads the sites itself (owner, 2026-10-25: "make it so verse does this on its own automatically also"). In a file people wrote, its findings go under `"auto": {"scanned", "sites": {"<host>": {"url", "scanned", "method", "pages", "problem"?, "features": [...]}}, "gaps": [{"name", "sites"}], "queued": [{"target", "feature", "host", "at"}]}` and nothing else in the file changes. A floor nobody has researched gets a whole file with `"source": "auto"` (same `sites`, `gaps` in place of `union_gaps`), which the scan may rewrite until a person writes over it. A feature Verse has that its page does not name in words can carry `"shows": "<regex>"`: the gate (`withFeatureFacts` in `tools/tower-probes.mjs`) counts the first six features marked `has` toward the floor's completeness.

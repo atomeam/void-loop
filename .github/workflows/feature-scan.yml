@@ -1,0 +1,74 @@
+# Verse researches every Versus site's features by itself (owner, 2026-10-25: "make sure you research all features of every site so we have
+# everything", then "ok make it so verse does this on its own automatically also"): tools/feature-scan.mjs reads each site's own pages, lists its
+# features, marks them against Verse's page and writes domains/features/<floor>.json (people's hand research is never touched: the scan goes under
+# "auto"), then puts up to three missing features on Verse's build queue (/api/queue), the lowest unbeaten floor first, each gap once ever.
+# When it runs:
+#   lib/tower.js changes on main   floors with no features file, and lane sites their floor's file lacks (--missing), at most 30 sites
+#   once a week                    files last researched or scanned 30 days ago or more, two floors a run (--stale 30)
+#   by hand                        `floor`: one floor id ("random generators"); empty means --missing
+# Cheap on Cloudflare (owner, 2026-10-15: spend actions on growth): at most FEATURE_SCAN_MAX_CALLS Workers AI calls a run (12; one per site, the
+# rest read by the heuristic), no deploy (the commit is pushed with the workflow's own token, which starts no workflow, and domains/ is not on the
+# site). The commit lands like the tower gate's: only this run's blocks, folded into the files as they stand on the newest main (--put).
+# Playbook: docs/playbooks/feature-research.md.
+name: Feature scan
+
+on:
+  push:
+    branches: [main]
+    paths: ['void-live-deploy/lib/tower.js']
+  schedule:
+    - cron: '41 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      floor:
+        description: a floor id (e.g. "random generators"); empty scans what has no features file yet
+        default: ''
+
+permissions:
+  contents: write # commit the features files
+
+concurrency:
+  group: feature-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CHROME_PATH: /usr/bin/google-chrome
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+      FEATURE_SCAN_MAX_CALLS: '12'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Read the sites and queue the gaps
+        env:
+          FLOOR: ${{ inputs.floor }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ -n "$FLOOR" ]; then set -- "$FLOOR"
+          elif [ "$EVENT" = schedule ]; then set -- --stale 30 --max-floors 2
+          else set -- --missing --max-sites 30; fi
+          node tools/feature-scan.mjs "$@" --list
+          node tools/feature-scan.mjs "$@" --queue --out "$RUNNER_TEMP/mine.json"
+      - name: Commit the features files
+        run: |
+          [ -s "$RUNNER_TEMP/mine.json" ] || { echo "nothing scanned or queued"; exit 0; }
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # people research by hand in the same folder: start again from the newest main and fold in only this run's blocks, then push
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/feature-scan.mjs --put "$RUNNER_TEMP/mine.json"
+            git add domains/features
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Feature scan: $(git diff --cached --name-only | xargs -n1 basename | sed 's/\.json$//' | paste -sd, -) researched by Verse"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done

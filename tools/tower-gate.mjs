@@ -18,7 +18,9 @@
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower , hostOf, noShotOf } from '../void-live-deploy/lib/tower.js';
-import { probeFor, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
+import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
+// a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
+const probeFor = (id) => withFeatureFacts(probeOf(id), id);
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
