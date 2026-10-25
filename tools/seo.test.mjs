@@ -87,6 +87,14 @@ test('every tool page file carries exactly the block the table gives it (node to
   for (const [p, why] of Object.entries(SKIP)) { assert.ok(pageOf(p), p + ' still has a row'); assert.ok(why.length > 10); }
 });
 
+test('every tool page and both tower pages carry a link preview: og:title, og:description, og:image and twitter:card', () => {
+  for (const p of [...PAGES.map((x) => x.path), '/conquered/', '/compare/']) {
+    const html = readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
+    for (const tag of ['property="og:title"', 'property="og:description"', 'property="og:image"', 'name="twitter:card"']) assert.ok(html.includes(tag), p + ' has ' + tag);
+    assert.match(html, /property="og:image" content="https:\/\/a-to-mind\.com\/[^"]+\.(?:png|jpg|svg)"/, p + ' og:image is an absolute image url');
+  }
+});
+
 test('llms.txt lines: one per page, honest, each ending in its url', () => {
   const lines = llmsLines();
   assert.equal(lines.length, PAGES.length);
