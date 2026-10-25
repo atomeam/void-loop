@@ -1171,52 +1171,95 @@
   "photo resizer": {
    "speed": {
     "verdict": "better",
-    "verse": 108,
-    "best": 1827,
-    "evidence": "Verse (/resize-image/) 108 ms to the load event (median of 3, phone width) vs pancardresizer.com 1827 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:51:31.375Z"
+    "verse": 111,
+    "best": 1453,
+    "evidence": "Verse (/resize-image/) 111 ms to the load event (median of 3, phone width) vs pancardresizer.com 1453 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 3 loads answered vs pancardresizer.com 3 of 3 loads answered",
-    "at": "2026-10-25T04:51:31.375Z"
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/resize-image/) 0 px sideways overflow at 390 px vs pancardresizer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:51:31.375Z"
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/resize-image/) 0 unnamed controls or images vs pancardresizer.com 1 unnamed controls or images",
-    "at": "2026-10-25T04:51:31.375Z"
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/resize-image/) 1 (1: the page shows itself again with the network cut) vs pancardresizer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:51:31.375Z"
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/resize-image/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:51:31.375Z"
+    "at": "2026-10-25T04:58:12.717Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 21,
-    "evidence": "Verse (/resize-image/) 0 design defects vs pancardresizer.com 21 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), pancardresizer.com (20 low-contrast texts, 0 small tap targets, layout shift 0.26)",
-    "at": "2026-10-25T04:51:31.375Z"
+    "best": 10,
+    "evidence": "Verse (/resize-image/) 0 design defects vs pancardresizer.com 10 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), pancardresizer.com (10 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T04:58:12.717Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/resize-image/) 3 of 3 right against the worked-out answer; judged against the standard, not pancardresizer.com (the site is not asked)",
+    "at": "2026-10-25T04:58:12.717Z",
+    "of": 3
+   },
+   "exact size": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/resize-image/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T04:58:12.717Z",
+    "of": 1,
+    "part": true
+   },
+   "size limit": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/resize-image/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T04:58:12.717Z",
+    "of": 1,
+    "part": true
+   },
+   "pdf": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/resize-image/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T04:58:12.717Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 12,
+    "best": 6,
+    "evidence": "Verse (/resize-image/) 12 of 12 things a full answer shows vs pancardresizer.com 6 of 12 things a full answer shows (Verse lacks: none; site lacks: in mm, in inches, in pixels, a resolution in dpi, a size limit in KB, a share link)",
+    "at": "2026-10-25T04:58:12.717Z",
+    "of": 12
    }
   },
   "colour codes": {
@@ -2145,6 +2188,108 @@
     "best": 20,
     "evidence": "Verse 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.02)",
     "at": "2026-10-25T04:52:29.377Z"
+   }
+  },
+  "games": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 222,
+    "best": 215,
+    "evidence": "Verse 222 ms to the load event (median of 3, phone width) vs Lichess 215 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Lichess 3 of 3 loads answered",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Lichess 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 9,
+    "evidence": "Verse 0 unnamed controls or images vs Lichess 9 unnamed controls or images",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Lichess 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 3,
+    "best": 4,
+    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Lichess 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:58:37.467Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 36,
+    "evidence": "Verse 0 design defects vs Lichess 36 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Lichess (11 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T04:58:37.467Z"
+   }
+  },
+  "learning": {
+   "speed": {
+    "verdict": "better",
+    "verse": 213,
+    "best": 532,
+    "evidence": "Verse 213 ms to the load event (median of 3, phone width) vs Khan Academy 532 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Khan Academy 3 of 3 loads answered",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Khan Academy 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse 0 unnamed controls or images vs Khan Academy 2 unnamed controls or images",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Khan Academy 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 3,
+    "best": 4,
+    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Khan Academy 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:58:49.416Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 37,
+    "evidence": "Verse 3 design defects vs Khan Academy 37 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.01), Khan Academy (0 low-contrast texts, 36 small tap targets, layout shift 0.79)",
+    "at": "2026-10-25T04:58:49.416Z"
    }
   }
  }
