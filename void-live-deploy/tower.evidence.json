@@ -4470,6 +4470,293 @@
     "at": "2026-10-25T07:21:16.673Z",
     "of": 10
    }
+  },
+  "translate: reverso.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 82,
+    "best": 435,
+    "evidence": "Verse (/translate/?q=hello&to=es) 82 ms to the load event (median of 3, phone width) vs reverso.net 435 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs reverso.net 3 of 3 loads answered",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs reverso.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs reverso.net 0 unnamed controls or images",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs reverso.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs reverso.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not reverso.net (the site is not asked)",
+    "at": "2026-10-25T07:32:58.645Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs reverso.net 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), reverso.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T07:32:58.645Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs reverso.net 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T07:32:58.645Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs reverso.net 1 of 2 shown (Verse lacks: none; site lacks: listen)",
+    "at": "2026-10-25T07:32:58.645Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs reverso.net 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T07:32:58.645Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 4,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs reverso.net 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
+    "at": "2026-10-25T07:32:58.645Z",
+    "of": 10
+   }
+  },
+  "translate: bing.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 74,
+    "best": 522,
+    "evidence": "Verse (/translate/?q=hello&to=es) 74 ms to the load event (median of 3, phone width) vs bing.com 522 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs bing.com 3 of 3 loads answered",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs bing.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs bing.com 0 unnamed controls or images",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs bing.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs bing.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not bing.com (the site is not asked)",
+    "at": "2026-10-25T07:33:25.786Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs bing.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), bing.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T07:33:25.786Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs bing.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T07:33:25.786Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs bing.com 1 of 2 shown (Verse lacks: none; site lacks: listen)",
+    "at": "2026-10-25T07:33:25.786Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs bing.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T07:33:25.786Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 4,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs bing.com 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
+    "at": "2026-10-25T07:33:25.786Z",
+    "of": 10
+   }
+  },
+  "translate: deepl.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 100,
+    "best": 461,
+    "evidence": "Verse (/translate/?q=hello&to=es) 100 ms to the load event (median of 3, phone width) vs deepl.com 461 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs deepl.com 3 of 3 loads answered",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs deepl.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs deepl.com 0 unnamed controls or images",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs deepl.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs deepl.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not deepl.com (the site is not asked)",
+    "at": "2026-10-25T07:33:43.014Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs deepl.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), deepl.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T07:33:43.014Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs deepl.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T07:33:43.014Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs deepl.com 1 of 2 shown (Verse lacks: none; site lacks: listen)",
+    "at": "2026-10-25T07:33:43.014Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs deepl.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T07:33:43.014Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 4,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs deepl.com 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
+    "at": "2026-10-25T07:33:43.014Z",
+    "of": 10
+   }
   }
+ },
+ "icons": {
+  "reverso.net": "tower.icons/reverso.net.ico",
+  "bing.com": "tower.icons/bing.com.ico",
+  "deepl.com": "tower.icons/deepl.com.ico"
  }
 }
