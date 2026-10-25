@@ -7135,67 +7135,67 @@
   "random generators: seventhsanctum.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 153,
-    "best": 658,
-    "evidence": "Verse (/generators/) 153 ms to the load event (median of 3, phone width) vs seventhsanctum.com 658 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:26:39.882Z"
+    "verse": 110,
+    "best": 577,
+    "evidence": "Verse (/generators/) 110 ms to the load event (median of 3, phone width) vs seventhsanctum.com 577 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs seventhsanctum.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:26:39.882Z"
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "mobile": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs seventhsanctum.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:26:39.882Z"
+    "best": 15,
+    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs seventhsanctum.com 15 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs seventhsanctum.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:26:39.882Z"
+    "best": 5,
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs seventhsanctum.com 5 unnamed controls or images",
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs seventhsanctum.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:26:39.882Z"
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs seventhsanctum.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:26:39.882Z"
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not seventhsanctum.com (the site is not asked)",
-    "at": "2026-10-25T15:26:39.882Z",
+    "at": "2026-10-25T15:31:18.351Z",
     "of": 2
    },
    "design polish": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 design defects vs seventhsanctum.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), seventhsanctum.com (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:26:39.882Z"
+    "best": 4,
+    "evidence": "Verse (/generators/) 0 design defects vs seventhsanctum.com 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), seventhsanctum.com (0 low-contrast texts, 4 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T15:31:18.351Z"
    },
    "generator catalogue": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:26:39.882Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T15:31:18.351Z",
     "of": 1,
     "part": true
    },
@@ -7204,7 +7204,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:26:39.882Z",
+    "at": "2026-10-25T15:31:18.351Z",
     "of": 1,
     "part": true
    },
@@ -7213,83 +7213,83 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:26:39.882Z",
+    "at": "2026-10-25T15:31:18.351Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs seventhsanctum.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:26:39.882Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs seventhsanctum.com 1 of 10 things a full answer shows (Verse lacks: none; site lacks: a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
+    "at": "2026-10-25T15:31:18.351Z",
     "of": 10
    }
   },
   "random generators: rangen.co.uk": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 141,
-    "best": 647,
-    "evidence": "Verse (/generators/) 141 ms to the load event (median of 3, phone width) vs rangen.co.uk 647 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:11:47.586Z"
+    "verse": 130,
+    "best": 4745,
+    "evidence": "Verse (/generators/) 130 ms to the load event (median of 3, phone width) vs rangen.co.uk 4745 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/generators/) 3 of 3 loads answered vs rangen.co.uk 3 of 3 loads answered",
-    "at": "2026-10-25T15:11:47.586Z"
+    "best": 2,
+    "evidence": "Verse (/generators/) 3 of 3 loads answered vs rangen.co.uk 2 of 3 loads answered",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs rangen.co.uk 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:11:47.586Z"
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs rangen.co.uk 0 unnamed controls or images",
-    "at": "2026-10-25T15:11:47.586Z"
+    "best": 10,
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs rangen.co.uk 10 unnamed controls or images",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs rangen.co.uk 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:11:47.586Z"
+    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs rangen.co.uk 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 4,
-    "best": 2,
-    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs rangen.co.uk 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:11:47.586Z"
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs rangen.co.uk 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not rangen.co.uk (the site is not asked)",
-    "at": "2026-10-25T15:11:47.586Z",
+    "at": "2026-10-25T15:31:39.892Z",
     "of": 2
    },
    "design polish": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 design defects vs rangen.co.uk 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), rangen.co.uk (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:11:47.586Z"
+    "best": 75,
+    "evidence": "Verse (/generators/) 0 design defects vs rangen.co.uk 75 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), rangen.co.uk (13 low-contrast texts, 62 small tap targets, layout shift 0.06)",
+    "at": "2026-10-25T15:31:39.892Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:11:47.586Z",
+    "at": "2026-10-25T15:31:39.892Z",
     "of": 1,
     "part": true
    },
@@ -7298,7 +7298,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:11:47.586Z",
+    "at": "2026-10-25T15:31:39.892Z",
     "of": 1,
     "part": true
    },
@@ -7307,186 +7307,186 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:11:47.586Z",
+    "at": "2026-10-25T15:31:39.892Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs rangen.co.uk 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:11:47.586Z",
+    "best": 2,
+    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs rangen.co.uk 2 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, a seed, make your own, picture it)",
+    "at": "2026-10-25T15:31:39.892Z",
     "of": 10
    }
   },
   "random generators: tools.dungeonmastersvault.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 646,
-    "evidence": "Verse (/generators/) 108 ms to the load event (median of 3, phone width) vs tools.dungeonmastersvault.com 646 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:12:08.058Z"
+    "verse": 117,
+    "best": 200,
+    "evidence": "Verse (/generators/) 117 ms to the load event (median of 3, phone width) vs the bar (tools.dungeonmastersvault.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/generators/) 3 of 3 loads answered vs tools.dungeonmastersvault.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:12:08.058Z"
+    "best": 0,
+    "evidence": "Verse (/generators/) 3 of 3 loads answered vs tools.dungeonmastersvault.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs tools.dungeonmastersvault.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:12:08.058Z"
+    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs the bar (tools.dungeonmastersvault.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs tools.dungeonmastersvault.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:12:08.058Z"
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs the bar (tools.dungeonmastersvault.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs tools.dungeonmastersvault.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:12:08.058Z"
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs the bar (tools.dungeonmastersvault.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 4,
-    "best": 2,
-    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tools.dungeonmastersvault.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:12:08.058Z"
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (tools.dungeonmastersvault.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
-    "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not tools.dungeonmastersvault.com (the site is not asked)",
-    "at": "2026-10-25T15:12:08.058Z",
+    "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T15:33:12.646Z",
     "of": 2
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 design defects vs tools.dungeonmastersvault.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), tools.dungeonmastersvault.com (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:12:08.058Z"
+    "evidence": "Verse (/generators/) 0 design defects vs the bar (tools.dungeonmastersvault.com unreachable) 0 design defects",
+    "at": "2026-10-25T15:33:12.646Z"
    },
    "generator catalogue": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs tools.dungeonmastersvault.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:12:08.058Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T15:33:12.646Z",
     "of": 1,
     "part": true
    },
    "make your own generator": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs tools.dungeonmastersvault.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:12:08.058Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T15:33:12.646Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs tools.dungeonmastersvault.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:12:08.058Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T15:33:12.646Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 10,
-    "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs tools.dungeonmastersvault.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:12:08.058Z",
+    "best": 10,
+    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs the bar (tools.dungeonmastersvault.com unreachable) 10 of 10 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T15:33:12.646Z",
     "of": 10
    }
   },
   "random generators: chaoticshiny.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 100,
-    "best": 619,
-    "evidence": "Verse (/generators/) 100 ms to the load event (median of 3, phone width) vs chaoticshiny.com 619 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:12:28.552Z"
+    "verse": 154,
+    "best": 1070,
+    "evidence": "Verse (/generators/) 154 ms to the load event (median of 3, phone width) vs chaoticshiny.com 1070 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs chaoticshiny.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:12:28.552Z"
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs chaoticshiny.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:12:28.552Z"
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs chaoticshiny.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:12:28.552Z"
+    "best": 2,
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs chaoticshiny.com 2 unnamed controls or images",
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs chaoticshiny.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:12:28.552Z"
+    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs chaoticshiny.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 2,
-    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chaoticshiny.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:12:28.552Z"
+    "best": 0,
+    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chaoticshiny.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not chaoticshiny.com (the site is not asked)",
-    "at": "2026-10-25T15:12:28.552Z",
+    "at": "2026-10-25T15:33:19.317Z",
     "of": 2
    },
    "design polish": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 design defects vs chaoticshiny.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), chaoticshiny.com (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:12:28.552Z"
+    "best": 89,
+    "evidence": "Verse (/generators/) 0 design defects vs chaoticshiny.com 89 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), chaoticshiny.com (0 low-contrast texts, 89 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:33:19.317Z"
    },
    "generator catalogue": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:12:28.552Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T15:33:19.317Z",
     "of": 1,
     "part": true
    },
    "make your own generator": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:12:28.552Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T15:33:19.317Z",
     "of": 1,
     "part": true
    },
@@ -7495,16 +7495,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:12:28.552Z",
+    "at": "2026-10-25T15:33:19.317Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs chaoticshiny.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:12:28.552Z",
+    "best": 3,
+    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs chaoticshiny.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: a count of results, regenerate, copy, a share link, a seed, picture it, works offline)",
+    "at": "2026-10-25T15:33:19.317Z",
     "of": 10
    }
   },
@@ -7981,67 +7981,67 @@
   "random generators: fantasynamegenerators.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 147,
-    "best": 646,
-    "evidence": "Verse (/generators/) 147 ms to the load event (median of 3, phone width) vs fantasynamegenerators.com 646 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:01:13.222Z"
+    "verse": 137,
+    "best": 1983,
+    "evidence": "Verse (/generators/) 137 ms to the load event (median of 3, phone width) vs fantasynamegenerators.com 1983 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs fantasynamegenerators.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:01:13.222Z"
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs fantasynamegenerators.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:01:13.222Z"
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs fantasynamegenerators.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:01:13.222Z"
+    "best": 8,
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs fantasynamegenerators.com 8 unnamed controls or images",
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs fantasynamegenerators.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:01:13.222Z"
+    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs fantasynamegenerators.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 2,
-    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs fantasynamegenerators.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:01:13.222Z"
+    "best": 1,
+    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs fantasynamegenerators.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not fantasynamegenerators.com (the site is not asked)",
-    "at": "2026-10-25T15:01:13.222Z",
+    "at": "2026-10-25T15:30:36.644Z",
     "of": 2
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 design defects vs fantasynamegenerators.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.39), fantasynamegenerators.com (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:01:13.222Z"
+    "verdict": "better",
+    "verse": 0,
+    "best": 19,
+    "evidence": "Verse (/generators/) 0 design defects vs fantasynamegenerators.com 19 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), fantasynamegenerators.com (1 low-contrast texts, 18 small tap targets, layout shift 0.04)",
+    "at": "2026-10-25T15:30:36.644Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:01:13.222Z",
+    "at": "2026-10-25T15:30:36.644Z",
     "of": 1,
     "part": true
    },
@@ -8050,7 +8050,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:01:13.222Z",
+    "at": "2026-10-25T15:30:36.644Z",
     "of": 1,
     "part": true
    },
@@ -8059,7 +8059,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:01:13.222Z",
+    "at": "2026-10-25T15:30:36.644Z",
     "of": 1,
     "part": true
    },
@@ -8068,7 +8068,7 @@
     "verse": 10,
     "best": 0,
     "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs fantasynamegenerators.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:01:13.222Z",
+    "at": "2026-10-25T15:30:36.644Z",
     "of": 10
    }
   },
@@ -9098,7 +9098,7 @@
   "claude.ai": "tower.icons/claude.ai.svg",
   "codebasehq.com": "tower.icons/codebasehq.com.png",
   "tildegit.org": "tower.icons/tildegit.org.png",
-  "seventhsanctum.com": "tower.icons/seventhsanctum.com.png",
+  "seventhsanctum.com": "tower.icons/seventhsanctum.com.ico",
   "rangen.co.uk": "tower.icons/rangen.co.uk.png",
   "tools.dungeonmastersvault.com": "tower.icons/tools.dungeonmastersvault.com.png",
   "chaoticshiny.com": "tower.icons/chaoticshiny.com.png",
@@ -9107,7 +9107,7 @@
   "writingexercises.com": "tower.icons/writingexercises.com.png",
   "behindthename.com": "tower.icons/behindthename.com.png",
   "namegenerator.com": "tower.icons/namegenerator.com.png",
-  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.png",
+  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.ico",
   "anotepad.com": "tower.icons/anotepad.com.ico",
   "notepadonline.org": "tower.icons/notepadonline.org.ico",
   "quillpad.in": "tower.icons/quillpad.in.ico",
