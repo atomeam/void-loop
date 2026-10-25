@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 840,
+ "counted": 841,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -542,18 +542,18 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/share.js",
    "skills": 3,
    "direct": 0,
    "dependants": 7,
    "tests": 3
-  },
-  {
-   "file": "lib/colour.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
   },
   {
    "file": "lib/date-words.js",
@@ -2076,6 +2076,13 @@
   },
   {
    "file": "lib/page-picture.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/palettes.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3937,6 +3944,7 @@
    "imports": [],
    "importedBy": [
     "lib/gradient.js",
+    "lib/palettes.js",
     "skills/util.js"
    ],
    "reachedBy": [
@@ -5496,6 +5504,12 @@
     "functions/api/mcp.js",
     "functions/films/rss.js"
    ]
+  },
+  "lib/palettes.js": {
+   "imports": [
+    "lib/colour.js"
+   ],
+   "importedBy": []
   },
   "lib/panel-fit.js": {
    "imports": [

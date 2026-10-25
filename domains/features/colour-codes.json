@@ -49,15 +49,15 @@
           "name": "Colour-blindness simulation (unconfirmed)",
           "detail": "how the colour looks with protanopia etc.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "How it looks with colour blindness: protanopia, deuteranopia, tritanopia (Machado 2009) and achromatopsia"
         },
         {
           "name": "CSS usage examples (unconfirmed)",
           "detail": "snippets for background, text, border",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "CSS: background with readable text colour, text, border and a custom property using the colour"
         },
         {
           "name": "Pages for every hex code",
@@ -75,8 +75,5 @@
     "Opens offline; no ads, analytics or web fonts",
     "Download JSON and CSV"
   ],
-  "gaps": [
-    "Colour-blindness simulation (unconfirmed)",
-    "CSS usage examples (unconfirmed)"
-  ]
+  "gaps": []
 }

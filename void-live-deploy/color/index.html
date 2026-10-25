@@ -35,6 +35,11 @@
   .row { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; } .row.s { grid-template-columns: repeat(4, 1fr); } .row.v { grid-template-columns: repeat(8, 1fr); }
   .sw { border: 1px solid var(--line); border-radius: 8px; height: 40px; padding: 0; cursor: pointer; position: relative; }
   .sw small { position: absolute; left: 0; right: 0; bottom: 2px; font: 10px ui-monospace, Menlo, monospace; opacity: .9; }
+  .hint { font-size: 12px; color: var(--soft); margin: 0 0 6px; } .pal { margin: 6px 0 10px; } .pal p { margin: 0 0 3px; font-size: 14px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+  .pal p button, .mine p button { font: inherit; font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; background: transparent; color: var(--ink); cursor: pointer; min-height: 28px; }
+  .row.p { grid-template-columns: repeat(10, 1fr); min-height: 40px; } .row.ws { grid-template-columns: repeat(12, 1fr); } .row.ws .sw { height: 26px; } .row.ws .sw small { display: none; }
+  #pname { font: inherit; font-size: 14px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 36px; box-sizing: border-box; width: 11em; }
+  #snip { font: 13px/1.5 ui-monospace, Menlo, monospace; background: var(--line); border-radius: 8px; padding: 8px 10px; overflow-x: auto; white-space: pre-wrap; } .blind small { display: block !important; }
   .scheme { margin: 6px 0 10px; } .scheme p { margin: 0 0 3px; font-size: 14px; }
   .ratio { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .ratio > div { border-radius: 10px; padding: 10px 12px; border: 1px solid var(--line); font-size: 14px; }
   .ratio > div { display: flex; gap: 10px; align-items: center; } .sample { flex: none; width: 52px; height: 52px; border-radius: 8px; display: grid; place-items: center; font: 700 26px/1 system-ui, sans-serif; }
@@ -45,13 +50,14 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/color/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Colour codes, shades and schemes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Colour codes, shades and schemes","item":"https://a-to-mind.com/color/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Colour codes, shades and schemes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Colour codes, shades and schemes","item":"https://a-to-mind.com/color/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/gradient.js">
 <link rel="modulepreload" href="/lib/colour.js">
+<link rel="modulepreload" href="/lib/palettes.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -70,6 +76,18 @@
   <h2>Shades, to black</h2><div class="row" id="shades"></div>
   <h2>Tones, to grey</h2><div class="row" id="tones"></div>
   <h2>Schemes</h2><div id="schemes"></div>
+  <h2>Palettes made from it</h2>
+  <p class="hint">Eight palettes of five built around this colour by the usual rules (each starts with it); tap a colour to open it, or keep a palette.</p>
+  <div id="pals"></div>
+  <h2>Your palette</h2>
+  <div class="row p" id="work"></div>
+  <div class="dl"><button type="button" id="addc">Add this colour</button><input id="pname" type="text" maxlength="40" placeholder="Palette name" aria-label="Palette name" autocomplete="off"><button type="button" id="savep">Save palette</button><button type="button" id="clearp">Clear</button></div>
+  <div id="mypals"></div>
+  <h2>How it looks with colour blindness</h2>
+  <div class="row s" id="blind"></div>
+  <h2>CSS</h2>
+  <pre id="snip"></pre>
+  <details id="websafe"><summary id="safesum">The 216 web-safe colours</summary><div class="row ws" id="safe"></div></details>
   <h2>The 16 VGA colours</h2><div class="row v" id="vga"></div>
   <div class="dl"><button type="button" id="random">Random colour</button></div>
   <div class="dl"><button type="button" id="json">Download JSON</button><button type="button" id="csv">Download CSV</button><button type="button" id="link">Copy link</button></div>
@@ -84,6 +102,7 @@
   import { mountRelated, setAccent, setPalette, shadesOf } from '/lib/toolkit.js';
   import { pack as gradientCode } from '/lib/gradient.js';
   import { parse, describe, passes, toHex } from '/lib/colour.js';
+  import { palettesFor, blindness, WEB_SAFE, webSafe } from '/lib/palettes.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   let now = null;
   const copy = async (text, b) => { try { await navigator.clipboard.writeText(text); const t = b.textContent; b.textContent = 'Copied'; setTimeout(() => { b.textContent = t; }, 1200); } catch (_) {} };
@@ -109,8 +128,32 @@
     fill('tints', d.tints); fill('shades', d.shades); fill('tones', d.tones);
     const names = { complementary: 'Complementary (opposite)', analogous: 'Analogous (neighbours, ±30°)', triadic: 'Triadic (three, 120° apart)', split: 'Split-complementary (±150°)', tetradic: 'Tetradic (rectangle: two opposite pairs, 60° apart)', square: 'Square (four, 90° apart)' };
     $('schemes').replaceChildren(...Object.entries(d.schemes).map(([k, list]) => { const r = el('div', { className: 'row s' }); r.replaceChildren(...list.map(swatch)); return el('div', { className: 'scheme' }, [el('p', { textContent: names[k] }), r]); }));
+    // palettes that use it, how it looks with colour blindness, CSS that uses it, the nearest web-safe colour
+    $('pals').replaceChildren(...palettesFor(d.hex).map((p) => { const keep = el('button', { type: 'button', textContent: 'Keep' }); keep.setAttribute('aria-label', 'Keep the ' + p.name + ' palette'); keep.addEventListener('click', () => { work = p.colors.slice(0, 10); $('pname').value = p.name + ' ' + d.hex; drawWork(); });
+      const r = el('div', { className: 'row s5' }); r.style.gridTemplateColumns = 'repeat(5, 1fr)'; r.replaceChildren(...p.colors.map(swatch)); return el('div', { className: 'pal' }, [el('p', {}, [el('span', { textContent: p.name }), keep]), r]); }));
+    $('blind').replaceChildren(...blindness(d.hex).map((b) => { const w = swatch(b.hex); w.classList.add('blind'); w.title = b.label + ': ' + b.hex; w.firstChild.textContent = b.label.split(' (')[0]; w.style.height = '48px'; return w; }));
+    const ink = d.contrast.text; $('snip').textContent = '.box {\n  background-color: ' + d.hex.toLowerCase() + ';\n  color: ' + ink.toLowerCase() + ';\n}\n.text { color: ' + d.hex.toLowerCase() + '; }\n.frame { border: 2px solid ' + d.hex.toLowerCase() + '; }\n:root { --brand: ' + d.hex.toLowerCase() + '; }';
+    $('safesum').textContent = 'The 216 web-safe colours (the nearest to this one is ' + webSafe(d.hex).toUpperCase() + ')';
     $('rest').hidden = false;
   }
+  // your palette: up to ten colours, named and saved on this device; a saved one opens back into it, copies as CSS, or paints the wheel
+  const PAL = 'a2m.void.colour.palettes.v1'; let work = [], mine = []; try { mine = JSON.parse(localStorage.getItem(PAL) || '[]').filter((p) => p && Array.isArray(p.colors)).slice(0, 40); } catch (_) {}
+  const keepMine = () => { try { localStorage.setItem(PAL, JSON.stringify(mine)); } catch (_) {} };
+  function drawWork() { $('work').replaceChildren(...(work.length ? work.map((h, i) => { const b = swatch(h); b.title = 'Take ' + h + ' out of the palette'; b.setAttribute('aria-label', 'Take ' + h + ' out of the palette'); b.onclick = (e) => { e.stopPropagation(); work.splice(i, 1); drawWork(); }; return b; }) : [el('span', { className: 'hint', textContent: 'Add colours to make a palette (tap one to take it out).' })])); $('savep').disabled = !work.length; }
+  function drawMine() {
+    $('mypals').replaceChildren(...mine.map((p, i) => { const r = el('div', { className: 'row p' }); r.replaceChildren(...p.colors.map(swatch));
+      const open = el('button', { type: 'button', textContent: 'Edit' }), css = el('button', { type: 'button', textContent: 'Copy CSS' }), wheel = el('button', { type: 'button', textContent: 'Paint the wheel' }), del = el('button', { type: 'button', textContent: '×' });
+      for (const [b, w] of [[open, 'Edit'], [css, 'Copy the CSS of'], [wheel, 'Paint the wheel with'], [del, 'Delete']]) b.setAttribute('aria-label', w + ' the palette ' + p.name);
+      open.onclick = () => { work = p.colors.slice(); $('pname').value = p.name; drawWork(); }; del.onclick = () => { mine.splice(i, 1); keepMine(); drawMine(); };
+      css.onclick = () => copy(':root {\n' + p.colors.map((c, k) => '  --' + (p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'palette') + '-' + (k + 1) + ': ' + c.toLowerCase() + ';').join('\n') + '\n}', css);
+      wheel.onclick = () => { if (setPalette(p.colors)) location.href = '/wheel/'; };
+      return el('div', { className: 'pal mine' }, [el('p', {}, [el('span', { textContent: p.name }), el('span', {}, [open, ' ', css, ' ', wheel, ' ', del])]), r]); }));
+  }
+  $('addc').addEventListener('click', () => { if (now && !work.includes(now.hex.toUpperCase()) && work.length < 10) { work.push(now.hex.toUpperCase()); drawWork(); } });
+  $('clearp').addEventListener('click', () => { work = []; $('pname').value = ''; drawWork(); });
+  $('savep').addEventListener('click', () => { if (!work.length) return; const name = ($('pname').value.trim() || 'Palette ' + (mine.length + 1)).slice(0, 40), at = mine.findIndex((p) => p.name === name);
+    if (at >= 0) mine[at].colors = work.slice(); else mine.unshift({ name, colors: work.slice() }); keepMine(); drawMine(); $('pname').value = name; const b = $('savep'), t = b.textContent; b.textContent = 'Saved'; setTimeout(() => { b.textContent = t; }, 1200); });
+  $('websafe').addEventListener('toggle', () => { if ($('websafe').open && !$('safe').children.length) fill('safe', WEB_SAFE); });
   function set(text, fromSwatch) {
     const rgb = parse(text); $('in').classList.toggle('bad', !rgb && !!String(text).trim()); $('note').textContent = rgb || !String(text).trim() ? '' : 'Not a colour I can read: try #ff5733, rgb(255 87 51), hsl(11 100% 60%) or a name like tomato.';
     if (!rgb) return; if (fromSwatch) $('in').value = toHex(rgb); show(describe(rgb));
@@ -124,7 +167,7 @@
   $('link').addEventListener('click', () => copy(location.href, $('link')));
   // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, as hexcolor16.com lists them
   const VGA = ['#000000', '#000080', '#008000', '#008080', '#800000', '#800080', '#808000', '#c0c0c0', '#808080', '#0000ff', '#00ff00', '#00ffff', '#ff0000', '#ff00ff', '#ffff00', '#ffffff'];
-  fill('vga', VGA);
+  fill('vga', VGA); drawWork(); drawMine();
   $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });
   const start = new URLSearchParams(location.search).get('c') || '6d4aff'; $('in').value = parse(start) ? (/^[0-9a-f]{3,8}$/i.test(start) ? '#' + start : start) : ''; set($('in').value || '#6d4aff');
   const curHex = () => new URLSearchParams(location.search).get('c') || '6d4aff';

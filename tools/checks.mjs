@@ -490,6 +490,7 @@ for (const [name, file] of [
   ['units', 'units.test.mjs'],
   ['calculator', 'calculator.test.mjs'],
   ['fincalc', 'fincalc.test.mjs'],
+  ['palettes', 'palettes.test.mjs'],
   ['calculator-models', 'calculator-models.test.mjs'],
   ['zones', 'zones.test.mjs'],
   ['base64', 'base64.test.mjs'],

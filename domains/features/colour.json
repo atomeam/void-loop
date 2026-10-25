@@ -49,15 +49,15 @@
           "name": "Palettes that use the colour",
           "detail": "community palettes containing it",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Palettes made from it: eight palettes of five built around the colour (monochrome, analogous, complementary, triadic, pastel, muted, with neutrals, bold contrast), each starting with it (lib/palettes.js); made by rules, not a community"
         },
         {
           "name": "Create and save palettes (account)",
           "detail": "members make, name and save palettes; likes and comments",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Your palette: add colours, name and save palettes on this device (no account), edit, copy as CSS variables, paint the wheel with one"
         },
         {
           "name": "Popular / latest palettes",
@@ -84,8 +84,8 @@
           "name": "Web-safe colours",
           "detail": "the 216 web-safe colours",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "VGA 16 shown; not the 216"
+          "verse": "has",
+          "verse_evidence": "The 216 web-safe colours, opened on tap, with the nearest web-safe colour to this one (lib/palettes.js WEB_SAFE)"
         },
         {
           "name": "Text preview on the colour",
@@ -111,10 +111,7 @@
     "No ads, analytics or web fonts; offline"
   ],
   "gaps": [
-    "Palettes that use the colour",
-    "Create and save palettes (account)",
     "Popular / latest palettes",
-    "Web-safe colours",
     "Related colours",
     "Colour names list"
   ]

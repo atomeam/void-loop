@@ -5866,6 +5866,18 @@ try {
     await Z.ctx.close();
   }
   // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  // the rest of color-hex.com on /color/ (lib/palettes.js): palettes that use the colour, one kept as your own and back after a reload, colour-blind views
+  if (want("colour: /color/ shows palettes that use the colour, keeps one as your own palette across a reload, and shows it as colour-blind people see it")) {
+    const Z = await fresh(); await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.waitForSelector('#pals .pal');
+    const pals = await Z.p.$$eval('#pals .pal', (ps) => ps.map((p) => [...p.querySelectorAll('.sw')].map((b) => b.title.toUpperCase())));
+    await Z.p.click('#pals .pal:nth-child(2) p button'); await Z.p.fill('#pname', 'Forest'); await Z.p.click('#savep'); await Z.p.reload(); await Z.p.waitForSelector('#mypals .pal');
+    const kept = await Z.p.$$eval('#mypals .pal', (ps) => ps.map((p) => p.querySelector('p span').textContent + ':' + p.querySelectorAll('.sw').length)), blind = await Z.p.$$eval('#blind .sw', (b) => b.map((x) => x.title));
+    const snip = await Z.p.$eval('#snip', (e) => e.textContent);
+    check("colour: /color/ shows palettes that use the colour, keeps one as your own palette across a reload, and shows it as colour-blind people see it",
+      pals.length === 8 && pals.every((p) => p[0] === '#1A7F37' && p.length === 5) && kept.join() === 'Forest:5' && blind.length === 4 && /^Protanopia/.test(blind[0]) && /background-color: #1a7f37/.test(snip) && !Z.errors.length,
+      JSON.stringify({ pals: pals.slice(0, 2), kept, blind, snip, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of ColorZilla's generator on /gradient/: a named gradient in the CSS, saved as your own preset that a reload keeps, and an eyedropper
   if (want("gradient: /gradient/ names a gradient in its CSS, saves it as your own preset that a reload keeps, and offers an eyedropper")) {
     const Z = await fresh(); await Z.p.goto(base + 'gradient/'); await Z.p.click('#presets button:has-text("Sunset")');
