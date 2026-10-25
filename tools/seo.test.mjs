@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PAGES, pageOf, jsonLd, headTags, asksRow, llmsLines, SITE } from '../void-live-deploy/lib/seo.js';
 import { TOOLS } from '../void-live-deploy/lib/toolkit.js';
-import { build, withBlock, seoOf, SKIP, HEAD } from './seo-pages.mjs';
+import { build, withBlock, seoOf, llmsOf, SKIP, HEAD } from './seo-pages.mjs';
 
 test('the table has one row per tool page (lib/toolkit.js TOOLS), each with 5 to 8 search phrases and a true description', () => {
   assert.deepEqual(PAGES.map((p) => p.path).sort(), Object.keys(TOOLS).sort());
@@ -73,8 +73,9 @@ test('withBlock inserts before the anchor once and rewrites between the markers 
 });
 
 test('every tool page file carries exactly the block the table gives it (node tools/seo-pages.mjs when not), one canonical and one JSON-LD', () => {
-  const pages = build();
+  const all = build(), llms = all.find((x) => x.path === '/llms.txt'), pages = all.filter((x) => x !== llms);
   assert.equal(pages.length, PAGES.length - Object.keys(SKIP).length);
+  assert.ok(llms && llms.want === llms.html, 'llms.txt is reached and up to date');
   for (const { path, html, want } of pages) {
     assert.equal(html, want, path + ' is out of date');
     assert.equal((html.match(/rel="canonical"/g) || []).length, 1, path); assert.equal((html.match(/application\/ld\+json/g) || []).length, 1, path);
@@ -95,10 +96,15 @@ test('every tool page and both tower pages carry a link preview: og:title, og:de
   }
 });
 
-test('llms.txt lines: one per page, honest, each ending in its url', () => {
+test('llms.txt lines: one per page, honest, each ending in its url; and llms.txt carries them once each under "Tool pages"', () => {
   const lines = llmsLines();
   assert.equal(lines.length, PAGES.length);
   for (const [i, l] of lines.entries()) assert.ok(l.startsWith('- ' + PAGES[i].name + ': ') && l.endsWith(' ' + SITE + PAGES[i].path), l);
+  const text = readFileSync(new URL('../void-live-deploy/llms.txt', import.meta.url), 'utf8');
+  assert.ok(text.includes('## Tool pages'), 'the section is there');
+  assert.equal(llmsOf(text), text, 'llms.txt is up to date (node tools/seo-pages.mjs)');
+  for (const p of PAGES) assert.equal((text.match(new RegExp(SITE.replace(/\./g, '\\.') + p.path.replace(/\//g, '\\/') + '(?=[\\s.,)]|$)', 'g')) || []).length, p.path === '/tools/' ? 2 : 1, p.path + ' once in llms.txt (the kit page twice: the intro and its own line); a link with a setting (?q=) is not the page');
+  assert.equal(llmsOf('no markers here'), null);
 });
 
 test('the sitemap and the table agree on which tool pages exist', () => {

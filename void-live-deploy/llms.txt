@@ -20,6 +20,29 @@
 - Fix pages: the common Zapier, Make, n8n, Power Automate and GitHub Actions errors (401, 403, 422, throttling and 429, turned-off or held Zaps, RateLimitError, ConnectionError, DataError, n8n webhook 404 and Google credential 401, Power Automate 429, GitHub Actions "Resource not accessible by integration"), each with what it means and the steps to fix it (https://a-to-mind.com/fix/).
 - "menu" or "what can I do" lists every skill, clickable.
 
+## Tool pages
+Each tool is a page of its own, free, with nothing to sign up for and no ads; all of them on one page: https://a-to-mind.com/tools/. A link can carry the setting (https://a-to-mind.com/convert/?q=100+c+to+f, https://a-to-mind.com/time/?c=tokyo, https://a-to-mind.com/base64/?mode=decode), and each page's "Common asks" row shows the ones people want most. This list is written from lib/seo.js by tools/seo-pages.mjs.
+<!-- tools -->
+- Colour codes, shades and schemes: Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Nothing sent anywhere. https://a-to-mind.com/color/
+- CSS gradient generator: Make a linear, radial or conic CSS gradient from colour stops and copy its CSS. Nothing sent anywhere. https://a-to-mind.com/gradient/
+- Wheel of names: Names or choices one a line, spun on a fair wheel; the winner is picked at random on your device. https://a-to-mind.com/wheel/
+- Made-up people for testing: Made-up people by count, gender and country, with names, addresses, dates of birth and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat. None of them is real. https://a-to-mind.com/random-user/
+- Random number: A random number between two bounds, several at once, without repeats or sorted, in decimal, binary, octal or hex; the number is on screen at once. https://a-to-mind.com/random/
+- Flip a coin: Heads or tails from a coin that lands in under a second, with no ads and nothing to accept. https://a-to-mind.com/flip/
+- Stopwatch and timer: A stopwatch with laps and a countdown timer with presets and an alarm, kept on your device, working offline. https://a-to-mind.com/stopwatch/
+- Word counter: Words, characters with and without spaces, sentences, paragraphs, reading and speaking time, as you type. Nothing sent anywhere. https://a-to-mind.com/word-count/
+- Binary, decimal, hex and octal converter: Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. https://a-to-mind.com/base-converter/
+- How secure is my password?: How long a password would take to guess, why, and what to change, worked out on your device: the password is never sent anywhere. https://a-to-mind.com/password-strength/
+- Resize and compress a photo: Make a photo or signature an exact size in cm, mm, inches or pixels and under a size limit in KB, as a JPEG or a PDF, on your device: nothing is uploaded. https://a-to-mind.com/resize-image/
+- Unit converter: Convert 22 kinds of unit, every unit of a kind at once, both ways, from exact definitions, with the formula and your choice of precision; type an ask like 100 c to f. https://a-to-mind.com/convert/
+- Scientific calculator: Brackets, powers, roots, sin, cos and tan in degrees or radians, logs, factorial, percent, memory keys, a history kept on your device, unit conversion and keyboard input; exact display (0.1 + 0.2 = 0.3). Works offline. https://a-to-mind.com/calculator/
+- Time zones: The current time in any city, a world clock of the places you pick, a time zone converter and a meeting planner, with daylight saving, from your browser’s own time-zone data. Works offline. https://a-to-mind.com/time/
+- Base64 encode and decode: Encode text to Base64 and decode Base64 to text as you type, Base64 and Base64URL, with or without padding, exact for emoji and accents in 44 character sets; files of any size become Base64 and data: URLs on your device. Works offline. https://a-to-mind.com/base64/
+- Password generator: Strong random passwords of 4 to 128 characters and passphrases of 3 to 10 words, made on your device, each with its exact entropy in bits and the time to crack. Nothing sent, works offline. https://a-to-mind.com/password/
+- Weather: The weather now, the next 24 hours and 7 days ahead for any place, in °F and °C side by side, with sunrise and sunset, the weather service’s alerts and radar for the United States, and a link that carries the place. https://a-to-mind.com/weather/
+- Every Verse tool: Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit. https://a-to-mind.com/tools/
+<!-- /tools -->
+
 ## Linking to an answer
 - https://a-to-mind.com/?q=<ask> opens Verse and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
 
