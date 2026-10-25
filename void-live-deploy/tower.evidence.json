@@ -8498,6 +8498,476 @@
     "at": "2026-10-25T15:19:23.153Z",
     "of": 17
    }
+  },
+  "docs and notes: simplenote.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 156,
+    "best": 567,
+    "evidence": "Verse (/notes/) 156 ms to the load event (median of 3, phone width) vs simplenote.com 567 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs simplenote.com 3 of 3 loads answered",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs simplenote.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs simplenote.com 0 unnamed controls or images",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs simplenote.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs simplenote.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not simplenote.com (the site is not asked)",
+    "at": "2026-10-25T15:19:50.310Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 design defects vs simplenote.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), simplenote.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:19:50.310Z"
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:19:50.310Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:19:50.310Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:19:50.310Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs simplenote.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:19:50.310Z",
+    "of": 17
+   }
+  },
+  "docs and notes: docs.zoho.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 107,
+    "best": 596,
+    "evidence": "Verse (/notes/) 107 ms to the load event (median of 3, phone width) vs docs.zoho.com 596 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs docs.zoho.com 3 of 3 loads answered",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs docs.zoho.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs docs.zoho.com 0 unnamed controls or images",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs docs.zoho.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs docs.zoho.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not docs.zoho.com (the site is not asked)",
+    "at": "2026-10-25T15:20:24.896Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 design defects vs docs.zoho.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), docs.zoho.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:20:24.896Z"
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:20:24.896Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:20:24.896Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:20:24.896Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs docs.zoho.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:20:24.896Z",
+    "of": 17
+   }
+  },
+  "docs and notes: onenote.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 173,
+    "best": 603,
+    "evidence": "Verse (/notes/) 173 ms to the load event (median of 3, phone width) vs onenote.com 603 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs onenote.com 3 of 3 loads answered",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs onenote.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs onenote.com 0 unnamed controls or images",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs onenote.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onenote.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not onenote.com (the site is not asked)",
+    "at": "2026-10-25T15:20:48.014Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 design defects vs onenote.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), onenote.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:20:48.014Z"
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs onenote.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:20:48.014Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs onenote.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:20:48.014Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs onenote.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:20:48.014Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs onenote.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:20:48.014Z",
+    "of": 17
+   }
+  },
+  "docs and notes: evernote.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 143,
+    "best": 872,
+    "evidence": "Verse (/notes/) 143 ms to the load event (median of 3, phone width) vs evernote.com 872 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs evernote.com 3 of 3 loads answered",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs evernote.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs evernote.com 0 unnamed controls or images",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs evernote.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs evernote.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not evernote.com (the site is not asked)",
+    "at": "2026-10-25T15:21:11.346Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 design defects vs evernote.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), evernote.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:21:11.346Z"
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs evernote.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:21:11.346Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs evernote.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:21:11.346Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs evernote.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:21:11.346Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs evernote.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:21:11.346Z",
+    "of": 17
+   }
+  },
+  "docs and notes: notion.so": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 101,
+    "best": 590,
+    "evidence": "Verse (/notes/) 101 ms to the load event (median of 3, phone width) vs notion.so 590 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs notion.so 3 of 3 loads answered",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs notion.so 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs notion.so 0 unnamed controls or images",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs notion.so 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs notion.so 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not notion.so (the site is not asked)",
+    "at": "2026-10-25T15:21:36.186Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 design defects vs notion.so 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), notion.so (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:21:36.186Z"
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs notion.so 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:21:36.186Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs notion.so 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:21:36.186Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs notion.so 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:21:36.186Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs notion.so 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:21:36.186Z",
+    "of": 17
+   }
   }
  },
  "icons": {
@@ -8599,6 +9069,11 @@
   "notepadonline.org": "tower.icons/notepadonline.org.ico",
   "quillpad.in": "tower.icons/quillpad.in.ico",
   "standardnotes.com": "tower.icons/standardnotes.com.ico",
-  "notepad.pw": "tower.icons/notepad.pw.ico"
+  "notepad.pw": "tower.icons/notepad.pw.ico",
+  "simplenote.com": "tower.icons/simplenote.com.ico",
+  "docs.zoho.com": "tower.icons/docs.zoho.com.ico",
+  "onenote.com": "tower.icons/onenote.com.ico",
+  "evernote.com": "tower.icons/evernote.com.ico",
+  "notion.so": "tower.icons/notion.so.ico"
  }
 }
