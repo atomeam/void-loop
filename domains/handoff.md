@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (tower run) · main · the encoder floor (base64encode.org) to surpassed: the gate presses a form's submit and reads the reply page, RFC 4648 probes, completeness and the floor's parts, and /base64/ closes its gaps (each line, LF/CRLF, downloads, any file size, every set both ways offline) · 2026-10-25 04:00 UTC
+
 - Claude (this session) · claude/nifty-rubin-foqnyb · the endless tower on top of 6bbb774 (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"; "treat all unbeaten sites as one queue sorted easiest-first"; remove tower.sentdown.json): one queue of FLOORS and tower.frontier.json, the plain card · 2026-10-24 15:40 UTC
 - opencode (memory-preview ship) · helper/memory-preview-ship · Verse's memory-preview ask (ask-20261020-2131-2): one card of memory snippets, the local patterns and the server records, with memory-graph's export look left alone · 2026-10-22 01:07 UTC
 
