@@ -1136,52 +1136,52 @@
   "photo resizer": {
    "speed": {
     "verdict": "better",
-    "verse": 146,
-    "best": 1771,
-    "evidence": "Verse (/resize-image/) 146 ms to the load event (median of 3, phone width) vs pancardresizer.com 1771 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:44:42.414Z"
+    "verse": 108,
+    "best": 1827,
+    "evidence": "Verse (/resize-image/) 108 ms to the load event (median of 3, phone width) vs pancardresizer.com 1827 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 3 loads answered vs pancardresizer.com 3 of 3 loads answered",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/resize-image/) 0 px sideways overflow at 390 px vs pancardresizer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/resize-image/) 0 unnamed controls or images vs pancardresizer.com 1 unnamed controls or images",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/resize-image/) 1 (1: the page shows itself again with the network cut) vs pancardresizer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/resize-image/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 21,
     "evidence": "Verse (/resize-image/) 0 design defects vs pancardresizer.com 21 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), pancardresizer.com (20 low-contrast texts, 0 small tap targets, layout shift 0.26)",
-    "at": "2026-10-25T04:44:42.414Z"
+    "at": "2026-10-25T04:51:31.375Z"
    }
   },
   "colour codes": {
@@ -2008,6 +2008,108 @@
     "best": 0,
     "evidence": "Verse 0 design defects vs the bar (Google Maps unreachable) 0 design defects",
     "at": "2026-10-25T04:47:59.853Z"
+   }
+  },
+  "news": {
+   "speed": {
+    "verdict": "better",
+    "verse": 367,
+    "best": 1113,
+    "evidence": "Verse 367 ms to the load event (median of 3, phone width) vs BBC News 1113 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs BBC News 3 of 3 loads answered",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs BBC News 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 16,
+    "evidence": "Verse 0 unnamed controls or images vs BBC News 16 unnamed controls or images",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs BBC News 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs BBC News 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:52:01.759Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 30,
+    "evidence": "Verse 1 design defects vs BBC News 30 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), BBC News (0 low-contrast texts, 30 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T04:52:01.759Z"
+   }
+  },
+  "photos": {
+   "speed": {
+    "verdict": "better",
+    "verse": 283,
+    "best": 752,
+    "evidence": "Verse 283 ms to the load event (median of 3, phone width) vs Google Photos 752 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Google Photos 3 of 3 loads answered",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Photos 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse 0 unnamed controls or images vs Google Photos 2 unnamed controls or images",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Photos 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Photos 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:52:29.377Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 20,
+    "evidence": "Verse 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T04:52:29.377Z"
    }
   }
  }
