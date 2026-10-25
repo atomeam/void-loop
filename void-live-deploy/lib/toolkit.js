@@ -95,6 +95,38 @@ export function setPalette(list) {
   try { if (v) s.setItem(PALETTE_KEY, JSON.stringify(v)); else s.removeItem(PALETTE_KEY); return true; } catch (_) { return false; }
 }
 
+// one ask bar on every tool page (owner, 2026-10-25: the tools "usable together"): what is typed goes to the tool that does it, with the ask in its
+// link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
+const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
+const ROUTES = [
+  [/^(?:what(?:'s| is) the )?weather(?: (?:in|for|at) (.+))?$|^forecast(?: (?:in|for) (.+))?$/i, (m) => '/weather/' + (m[1] || m[2] ? '?q=' + encodeURIComponent(m[1] || m[2]) : '')],
+  [/^(?:what )?time (?:is it )?in (.+)$|^(.+) time$/i, (m) => '/time/?q=' + encodeURIComponent(m[1] || m[2])],
+  [/^(?:is it|is today) (.+)$/i, (m) => '/is-it/' + encodeURIComponent(m[1].toLowerCase().replace(/[?!.]+$/, '').trim().replace(/\s+/g, '-'))],
+  [/^(?:flip|toss) (?:a )?coins?$|^coin ?flip$|^heads or tails$/i, () => '/flip/'],
+  [/^(?:spin (?:the |a )?)?wheel(?: of names)?$|^pick (?:a |one )?(?:name|winner)$/i, () => '/wheel/'],
+  [/^(?:a |one |some )?(?:random|fake|made-?up) (?:users?|people|persons?|names?)$|^(\d+) (?:random|fake|made-?up) (?:users?|people)$/i, (m) => '/random-user/' + (m[1] ? '?n=' + m[1] : '')],
+  [/^(?:a )?random number(?: (?:between|from) (\d+) (?:and|to) (\d+))?$|^(?:roll|dice|d\d+)$/i, () => '/random/'],
+  [/^(?:a |an? )?(?:strong )?(?:password|passphrase)(?: of (\d+)(?: characters| letters)?)?$|^(?:generate|make|new) (?:a |me a )?(?:strong )?(?:password|passphrase)(?: of (\d+))?$/i, (m) => '/password/' + (m[1] || m[2] ? '?len=' + (m[1] || m[2]) : '')],
+  [/^(?:how (?:strong|secure|safe) is|check(?: the)? (?:password|strength of)) (.+)$/i, (m) => '/password-strength/#p=' + encodeURIComponent(m[1])],
+  [/^(?:base64 )?decode (.+)$|^(.+) from base64$/i, (m) => '/base64/?mode=decode&t=' + encodeURIComponent(m[1] || m[2])],
+  [/^(?:base64 )?encode (.+)$|^(.+) (?:to|in|as) base64$/i, (m) => '/base64/?t=' + encodeURIComponent(m[1] || m[2])],
+  [/^(?:0x[0-9a-f]+|0b[01]+|\d+) (?:in|to|as) (binary|hex(?:adecimal)?|octal|decimal|base \d+)$/i, (m, t) => { const v = t.split(/\s/)[0], b = /^bin/i.test(m[1]) ? 2 : /^hex/i.test(m[1]) ? 16 : /^oct/i.test(m[1]) ? 8 : /^dec/i.test(m[1]) ? 10 : +m[1].replace(/\D/g, ''); return '/base-converter/?v=' + encodeURIComponent(v) + '&b=' + b; }],
+  [/^#?[0-9a-f]{6}$|^#?[0-9a-f]{3}$|^rgba?\(.+\)$|^hsla?\(.+\)$/i, (m, t) => '/color/?c=' + encodeURIComponent(t.replace(/^#/, ''))],
+  [/^(?:a )?gradient(?: from (.+))?$/i, () => '/gradient/'],
+  [/^(?:resize|shrink|crop) (?:an? |my |the )?(?:image|photo|picture|signature)(?: to (.+))?$/i, () => '/resize-image/'],
+  [/^(?:count (?:the )?words(?: in)?|how many words(?: in)?|word count(?: of)?) (.+)$/i, (m) => '/word-count/?t=' + encodeURIComponent(m[1])],
+  [/^(?:start (?:a )?)?(?:stopwatch|timer|countdown)(?: (?:for|of) (.+))?$|^(\d+ ?(?:min(?:ute)?s?|sec(?:ond)?s?|hours?)) timer$/i, (m) => '/stopwatch/' + (m[1] || m[2] ? '?t=' + encodeURIComponent(m[1] || m[2]) : '')],
+  [new RegExp('^(?:convert )?' + NUM + '\\s*[a-zµ°/²³]+\\s+(?:to|in|into|as)\\s+[a-zµ°/²³]+$', 'i'), (m, t) => '/convert/?q=' + encodeURIComponent(t)],
+  [/^(?:what is |what's |calculate |calc )?[-\d.(][\d\s.,+\-*×÷/^%()!πe]*(?:\s*(?:of|percent of)\s*[\d.]+)?$/i, (m, t) => '/calculator/?q=' + encodeURIComponent(t.replace(/^(?:what is |what's |calculate |calc )/i, ''))],
+];
+/** where an ask goes: the tool's link with the ask in it, or the stage for anything else. Pure. */
+export function routeAsk(text) {
+  const t = String(text || '').replace(/\s+/g, ' ').replace(/[?!.]+$/, '').trim();
+  if (!t) return '';
+  for (const [re, to] of ROUTES) { const m = re.exec(t); if (m) return to(m, t); }
+  return '/?q=' + encodeURIComponent(t);
+}
+
 /** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. */
 export function mountRelated(el, path, handoffs = []) {
   if (!el) return;
@@ -109,9 +141,13 @@ export function mountRelated(el, path, handoffs = []) {
   const h = accent(); const sw = a('/color/' + (h ? '?c=' + h.slice(1) : ''), h ? 'Accent ' + h : 'Pick an accent colour', 'tk-accent');
   sw.title = 'The colour every Verse tool wears on this device: pick it on the colour page'; row.append(sw);
   const label = d.createElement('span'); label.className = 'tk-label'; label.textContent = 'Use with';
+  // the ask bar: any ask, to the tool that does it
+  const form = d.createElement('form'); form.className = 'tk-ask'; const inp = d.createElement('input'); inp.type = 'search'; inp.placeholder = 'Ask any tool: 100 c to f, flip a coin, weather in boston'; inp.setAttribute('aria-label', 'Ask any tool'); inp.autocomplete = 'off';
+  form.append(inp); form.addEventListener('submit', (e) => { e.preventDefault(); const to = routeAsk(inp.value); if (to) d.defaultView.location.href = to; });
   const style = d.createElement('style');
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'
+    + '.tk-ask{margin:14px 0 0}.tk-ask input{font:inherit;width:100%;box-sizing:border-box;min-height:40px;padding:6px 12px;border:1px solid var(--line,#8884);border-radius:999px;background:transparent;color:inherit}.tk-ask input:focus{outline:2px solid var(--accent,#6d4aff);outline-offset:1px}'
     + '.tk-row .tk-hand{border-color:var(--accent,#6d4aff)}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
-  row.prepend(label); el.replaceChildren(style, row);
+  row.prepend(label); el.replaceChildren(style, form, row);
 }
