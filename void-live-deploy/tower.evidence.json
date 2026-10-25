@@ -4936,52 +4936,52 @@
   "recipes: budgetbytes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 112,
-    "best": 343,
-    "evidence": "Verse (/recipes/?q=pancakes) 112 ms to the load event (median of 3, phone width) vs budgetbytes.com 343 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:44:47.712Z"
+    "verse": 102,
+    "best": 366,
+    "evidence": "Verse (/recipes/?q=pancakes) 102 ms to the load event (median of 3, phone width) vs budgetbytes.com 366 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs budgetbytes.com 3 of 3 loads answered",
-    "at": "2026-10-25T08:44:47.712Z"
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs budgetbytes.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:44:47.712Z"
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs budgetbytes.com 0 unnamed controls or images",
-    "at": "2026-10-25T08:44:47.712Z"
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 0 (1: the page shows itself again with the network cut) vs budgetbytes.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:44:47.712Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs budgetbytes.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs budgetbytes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:44:47.712Z"
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not budgetbytes.com (the site is not asked)",
-    "at": "2026-10-25T08:44:47.712Z",
+    "at": "2026-10-25T08:55:48.813Z",
     "of": 5
    },
    "design polish": {
@@ -4989,14 +4989,14 @@
     "verse": 1,
     "best": 26,
     "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs budgetbytes.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), budgetbytes.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:44:47.712Z"
+    "at": "2026-10-25T08:55:48.813Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:44:47.712Z",
+    "at": "2026-10-25T08:55:48.813Z",
     "of": 1,
     "part": true
    },
@@ -5005,7 +5005,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:44:47.712Z",
+    "at": "2026-10-25T08:55:48.813Z",
     "of": 1,
     "part": true
    },
@@ -5014,7 +5014,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:44:47.712Z",
+    "at": "2026-10-25T08:55:48.813Z",
     "of": 1,
     "part": true
    },
@@ -5023,7 +5023,7 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs budgetbytes.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:44:47.712Z",
+    "at": "2026-10-25T08:55:48.813Z",
     "of": 14
    }
   },
