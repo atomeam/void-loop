@@ -18,7 +18,7 @@ import { isPayAsk, payAnswer, HONEST_RULE } from '../../lib/pay-honest.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf, basisOf } from '../../lib/automation-fix.js';
 import { guardAnswer, heldBack } from '../../lib/patch-guard.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
-import { models } from '../../lib/models.js';
+import { models, ANSWER_FALLBACK } from '../../lib/models.js';
 import { keeperOf, scrubOut } from '../../lib/keeper.js';
 import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
@@ -406,8 +406,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     } catch (e) {
       // the free allowance ran out (or Gemma is down): the free ceiling isn't a stop, but paying still needs both conditions
       later(recordShortfall(env, 'answer', String(e && e.message) === 'empty' ? 'empty' : reasonOf(e)));
-      const access = await paidAccess(env);
-      const paid = access.model ? await tryPaid(access, 'free allowance out') : '';
+      // the second free try: the other free model (lib/models.js ANSWER_FALLBACK), before anything paid or the open web
+      try { const r = await within(env.AI.run(ANSWER_FALLBACK, { messages, ...ANSWER_RUN }), STRONG_TIMEOUT_MS); const second = scrubOut(redact(String(pick(r)).trim()), env); if (second) { answer = second; model = ANSWER_FALLBACK; outcome += '; default busy, second free model'; } } catch (_) { /* both free models out: on to paid, then the web */ }
+      const access = answer ? null : await paidAccess(env);
+      const paid = answer ? answer : access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
         // no paid path: the open-web answer, as with the switch off (for an ask about Verse: its facts)
         const web = self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
@@ -415,7 +417,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
         return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
       }
-      answer = paid; model = access.model; outcome += '; default busy, paid from earnings';
+      if (!answer) { answer = paid; model = access.model; outcome += '; default busy, paid from earnings'; }
     }
   }
   log({ model });

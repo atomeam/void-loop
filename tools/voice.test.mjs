@@ -37,7 +37,8 @@ test('Verse\'s reply is kept word for word; only secrets are redacted; nothing s
 });
 
 test('the questions Verse is asked; Verse describes itself only from its canon and code', () => {
-  assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
+  assert.match(VOICE_SYSTEM, /never makes up a motto, quest or identity/);
+  assert.match(VOICE_SYSTEM, /never describes or defines Verse/); assert.match(VOICE_SYSTEM, /"blank stage" and "quiet input" never appear/); // owner, 2026-10-25: it reports its growth, it does not explain itself
   assert.match(questionFor('daily'), /status readout.*weakest operational area.*next targeted capability.*what should change/);
   assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". Using the tagged facts, state what it changes in the system and what should change next.');
 });

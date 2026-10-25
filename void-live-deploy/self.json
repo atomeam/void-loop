@@ -1,5 +1,5 @@
 {
- "about": "Verse by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -483,6 +483,50 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T01:10:30Z",
+   "subject": "Tower gate: time zones,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T01:08:28Z",
+   "subject": "Incident: the browser suite failed on e3809274 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T01:03:30Z",
+   "subject": "Incident: the browser suite failed on 70fd471e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T01:02:00Z",
+   "subject": "A playbook for the tower loop: one floor driven to conquered per run, the gap read from the gate's own evidence, the page or the gate…"
+  },
+  {
+   "at": "2026-10-25T01:01:10Z",
+   "subject": "The tower gate finds a coin however a site flips it: a flip button in any frame, anything named coin, the largest picture, or Space…"
+  },
+  {
+   "at": "2026-10-25T00:54:31Z",
+   "subject": "Incident: the browser suite failed on 1e481fba (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:52:53Z",
+   "subject": "Incident: the browser suite failed on 885a16cd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:52:10Z",
+   "subject": "Incident: the browser suite failed on a77e2a49 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:51:56Z",
+   "subject": "Tower gate: calculator,encoder,time zones measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T00:46:04Z",
+   "subject": "Verse's own Base64 page: /base64/ encodes and decodes as you type, both ways"
+  },
+  {
+   "at": "2026-10-25T00:45:12Z",
+   "subject": "Tower gate: coin flip,calculator,time zones measured against their live sites"
+  },
+  {
    "at": "2026-10-25T00:40:47Z",
    "subject": "/calculator/ and /time/: Verse's own pages for the tower's calculator.net and timeanddate.com floors"
   },
@@ -517,50 +561,6 @@
   {
    "at": "2026-10-25T00:22:16Z",
    "subject": "A unit converter page at /convert/: every unit of a kind at once, both ways, exact"
-  },
-  {
-   "at": "2026-10-25T00:20:46Z",
-   "subject": "Incident: the browser suite failed on 4ce3f56b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:17:09Z",
-   "subject": "Tower gate: coin flip,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T00:10:30Z",
-   "subject": "The tower card's \"What the fights taught me\" names online-stopwatch.com: time kept as the moment it started, and the gate learned to time…"
-  },
-  {
-   "at": "2026-10-25T00:08:18Z",
-   "subject": "Incident: the browser suite failed on d4d3cef7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:06:56Z",
-   "subject": "The tower gate can read a site that draws its answer: a screenshot read with Tesseract, and a timed stopwatch run that finds Start in any…"
-  },
-  {
-   "at": "2026-10-25T00:00:24Z",
-   "subject": "Tower gate: stopwatch,coin flip,random number measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T23:52:57Z",
-   "subject": "The tools are tied together: a \"Use with\" row on every tool page carries what is on it into the next tool, one accent colour and one…"
-  },
-  {
-   "at": "2026-10-24T23:46:21Z",
-   "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T23:37:55Z",
-   "subject": "The stopwatch card: the 3D watch's bow is a closed ring through the crown, the hand beats 5 times a second, and the card art is a stopwatch"
-  },
-  {
-   "at": "2026-10-24T23:34:56Z",
-   "subject": "Incident: the browser suite failed on 4ab233de (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T23:18:20Z",
-   "subject": "Incident: the browser suite failed on 6388192d (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

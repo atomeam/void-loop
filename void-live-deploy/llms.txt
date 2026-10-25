@@ -1,6 +1,6 @@
 # A-to-Mind
 
-> Verse by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.
+> Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.
 
 ## What you can ask for today
 - Things on the stage: a clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card ("make a 5 minute timer", "draw a circle", "add a sticky that says hi"). They stay in your browser across visits.

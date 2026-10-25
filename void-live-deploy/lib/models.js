@@ -11,7 +11,10 @@ export const ART_MODEL = '@cf/black-forest-labs/flux-2-klein-4b'; // the Art For
 export const ART_FALLBACK = '@cf/black-forest-labs/flux-1-schnell'; // when klein fails: square only (no width or height), cropped into the window
 
 // Which free model answers on which path. A path missing here uses FREE_MODEL.
-export const PATH_MODELS = { answer: '@cf/openai/gpt-oss-120b', merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL };
+// answers run on the free model (owner's wishlist #1, docs/wishlist.md; asked by Verse, 2026-10-24: "migrate answer generation from gpt-oss-120b to gemma"):
+// gemma-4-26b-a4b spends a fraction of gpt-oss-120b's neurons an answer, so the free 10k a day holds; the bake-off's winner stays the second try
+export const ANSWER_FALLBACK = '@cf/openai/gpt-oss-120b';
+export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL };
 export const PATHS = Object.keys(PATH_MODELS);
 
 export function models(path) {
