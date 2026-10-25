@@ -252,6 +252,19 @@ export const PROBES = Object.freeze({
     facts: [['a month view', /\bmonth\b/i], ['a week view', /\bweek\b/i], ['a day view', /\bday\b/i], ['today', /\btoday\b/i], ['a new event', /\bnew event\b|\badd\b/i], ['repeating events', /\brepeat|\bevery\b/i], ['reminders', /\bremind/i], ['invites', /\binvite/i],
       ['a share link', /\bshare\b/i], ['.ics import and export', /\.ics\b/i], ['search', /\bsearch\b/i], ['quick add in plain words', /\bquick add\b/i], ['keyboard shortcuts', /\barrow keys\b|\bkeyboard\b/i], ['notifications', /\bnotification/i], ['works offline', /\boffline\b/i]],
   },
+  'docs and notes': {
+    site: 'https://docs.google.com/', verse: '/notes/',
+    // the question: one line of plain words in the page's link, "note: Shopping list - milk, eggs, bread". A right answer is a note titled Shopping
+    // list holding the three things (milk, eggs, bread) as a checklist, no more worked out than that. Judged on Verse alone (the site is not asked);
+    // the same probe measures every site in the docs and notes lane (lib/tower.js LANES)
+    ask: { verse: '/notes/?q=' + encodeURIComponent('note: Shopping list - milk, eggs, bread') },
+    truth: [['the title, Shopping list', /\bShopping list\b/i], ['milk', /\bmilk\b/i], ['eggs', /\beggs\b/i], ['bread', /\bbread\b/i]],
+    askParts: { 'rich formatting': [['bold, italic or headings shown', /bold|italic|heading/i]], search: [['search shown', /search/i]], 'version history': [['history or versions shown', /history|versions?/i]] },
+    // what the best docs pages show: Google Docs' rich formatting, many documents, search, version history, share, export and print; the best add
+    // checklists, word count, markdown in and out, keyboard shortcuts, dark mode, and notes that stay on the device and open offline
+    facts: [['rich formatting', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i], ['checklists', /\bchecklists?\b|\bcheckbox/i], ['links', /\blinks?\b/i], ['many documents', /\bnew note\b|\bnotes\b/i], ['search', /\bsearch\b/i],
+      ['version history', /\bversion history\b/i], ['a word count', /\bwords\b/i], ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['markdown', /\.md\b/i], ['print', /\bprint\b/i], ['a share link', /\bshare\b/i], ['keyboard shortcuts', /\bCtrl\b|\bkeyboard\b/i], ['works offline', /\boffline\b/i], ['on this device', /\bon this device\b|\bthis browser\b/i]],
+  },
   weather: {
     site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
     // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
@@ -347,7 +360,7 @@ const PALETTES = [['shades', /\bshades?\b/i], ['tints', /\btints?\b/i], ['tones'
   ['the 16 VGA colours', /\bvga\b/i], ['a random colour', /\brandom\b/i]];
 // contrast: the colour floor's own aspect (lib/tower.js extra), whether the page says if text on the colour can be read (WCAG); only floors that list it are scored
 const COLOUR_PARTS = Object.freeze({ 'every colour model': MODELS, 'shades and palettes': PALETTES, contrast: [['text contrast', /\bcontrast\b|\bwcag\b/i], ['AA and AAA', /\bAAA?\b/]] });
-export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOUR_PARTS,
+export const PARTS = Object.freeze({ 'docs and notes': { 'rich formatting': [['bold', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i]], search: [['search across notes', /\bsearch\b/i]], 'version history': [['version history', /\bversion history\b/i]] }, colour: COLOUR_PARTS, 'colour codes': COLOUR_PARTS,
   gradient: { 'stops with opacity': [['colour stops', /\bstops?\b/i], ['opacity', /\bopacity\b/i]], 'import css': [['import', /\bimport\b|\bpaste\b/i]], presets: [['presets', /\bpresets?\b/i]] },
   'base converter': { 'signed reading': [['a signed reading', /\bsigned\b|two.?s complement/i]], 'all four bases': [['binary', /\bbinary\b/i], ['octal', /\boctal\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i]] },
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },

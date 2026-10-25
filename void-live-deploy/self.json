@@ -484,8 +484,20 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T14:54:02Z",
+   "at": "2026-10-25T14:58:52Z",
+   "subject": "Tower gate: docs and notes,random generators: seventhsanctum.com,random generators: rangen.co.uk measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:54:21Z",
+   "subject": "Refresh self card after merge"
+  },
+  {
+   "at": "2026-10-25T14:54:21Z",
    "subject": "Generators page: 27 seeded text generators, picture it, perchance.org lane and probe"
+  },
+  {
+   "at": "2026-10-25T14:54:09Z",
+   "subject": "Tower gate: docs and notes measured against their live sites"
   },
   {
    "at": "2026-10-25T14:51:54Z",
@@ -550,18 +562,6 @@
   {
    "at": "2026-10-25T14:38:41Z",
    "subject": "Tower gate: calendar: calendar.online,calendar: teamup.com,calendar: timetreeapp.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:27:15Z",
-   "subject": "Site icons: 59 kept"
-  },
-  {
-   "at": "2026-10-25T14:25:18Z",
-   "subject": "Tower gate: colour,calendar: calendar.online,calendar: teamup.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:25:02Z",
-   "subject": "Verse's logo is its natural atom galaxy; /color/ reads offline"
   }
  ],
  "builders": {

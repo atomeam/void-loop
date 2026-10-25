@@ -91,6 +91,7 @@ for (const [name, file] of [
   ['recipes', 'recipes.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
   ['generators', 'generators.test.mjs'],
+  ['notes', 'notes.test.mjs'],
   ['floor-kit', 'floor-kit.test.mjs'],
   ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['memory-preview', 'memory-preview.test.mjs'],

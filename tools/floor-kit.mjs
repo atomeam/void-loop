@@ -80,7 +80,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (argv[0] === '--add') {
     const [leader, url] = argv.slice(1); if (!leader || !LANES[leader] && !FLOORS.some((f) => f.id === leader)) { console.error('no floor ' + leader + '; floors with lanes: ' + Object.keys(LANES).join(', ')); process.exit(2); }
     const line = laneLine(leader, url); if (!line) { console.log(hostOf(url) + ' is already in the ' + leader + ' lane'); process.exit(0); }
-    const src = fs.readFileSync(TOWER_JS, 'utf8'), re = new RegExp('^  ' + leader.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ": \\[[^\\n]*\\],$", 'm');
+    const src = fs.readFileSync(TOWER_JS, 'utf8'), re = new RegExp('^  ["\']?' + leader.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '["\']?' + ": \\[[^\\n]*\\],$", 'm');
     if (!re.test(src)) { console.error('the ' + leader + ' lane is not one line in lib/tower.js LANES; add it by hand'); process.exit(2); }
     fs.writeFileSync(TOWER_JS, src.replace(re, line)); console.log('added ' + hostOf(url) + ' at the bottom of the ' + leader + ' lane: it is that lane\'s next fight'); process.exit(0);
   }
