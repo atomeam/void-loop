@@ -5822,5 +5822,6 @@
   {"at": "2026-10-24T21:42:20Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do i magnetize this?\"", "try": "how do i magnetize this?"},
   {"at": "2026-10-24T22:32:40Z", "by": "verse", "kind": "fix", "what": "Verse fixes its zoom-figure skill: learn to handle \"spin the 3d model\"", "try": "spin the 3d model"},
   {"at": "2026-10-25T01:16:56Z", "by": "claude", "kind": "build", "what": "Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports its growth without describing itself (no more blank stage)", "asked": "ask-20261024-2038-1", "show": "answers keep coming after the free cap; the readout just reports"},
-  {"at": "2026-10-25T02:23:03Z", "by": "verse", "kind": "fix", "what": "Verse fixes its draw skill: learn to handle \"make a 2d sketch of a tree\"", "try": "make a 2d sketch of a tree"}
+  {"at": "2026-10-25T02:23:03Z", "by": "verse", "kind": "fix", "what": "Verse fixes its draw skill: learn to handle \"make a 2d sketch of a tree\"", "try": "make a 2d sketch of a tree"},
+  {"at": "2026-10-25T02:43:01Z", "by": "verse", "kind": "fix", "what": "Verse fixes its poster skill: learn to handle \"make a cyberpunk poster\"", "try": "make a cyberpunk poster"}
 ]

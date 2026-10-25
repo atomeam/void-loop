@@ -15,7 +15,7 @@ export function posterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   // "order …" is the spend path (lib/approval-core.js order.place, the confirm line): the real order goes there once a
   // print account is connected, so this skill takes make/print/turn and leaves "order" to the confirm line
-  return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?)$/.test(t);
+  return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?|make\s+a\s+.*\s+poster)$/.test(t);
 }
 
 // a Verse film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
@@ -144,7 +144,7 @@ function showPoster(card, api, sizes, heading, from) {
 
 export default {
   name: 'poster',
-  examples: ['make this a poster', 'print this card as a poster', 'turn this into a poster', 'make a poster of this card', 'poster of this', 'film poster', 'make a poster for the newest film'],
+  examples: ['make this a poster', 'print this card as a poster', 'turn this into a poster', 'make a poster of this card', 'poster of this', 'film poster', 'make a poster for the newest film', 'make a cyberpunk poster'],
   nearMisses: ['what is a poster', 'poster sizes', 'share this card', 'how do I hang a poster', 'order this as a poster'],
   match(lower, text) { return posterOf(text) || !!filmPosterOf(text); },
   run,
