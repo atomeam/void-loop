@@ -441,6 +441,7 @@ for (const [name, file] of [
   ['units', 'units.test.mjs'],
   ['calculator', 'calculator.test.mjs'],
   ['zones', 'zones.test.mjs'],
+  ['base64', 'base64.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],

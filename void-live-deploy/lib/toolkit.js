@@ -12,7 +12,7 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
-  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones',
+  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -30,6 +30,7 @@ export const RELATED = Object.freeze({
   '/resize-image/': ['/color/'],
   '/calculator/': ['/base-converter/', '/convert/', '/random/'],
   '/time/': ['/stopwatch/'],
+  '/base64/': ['/word-count/', '/base-converter/'],
 });
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */
 export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p]).map((href) => ({ href, label: TOOLS[href] }));

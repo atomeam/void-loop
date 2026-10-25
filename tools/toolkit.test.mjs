@@ -9,7 +9,7 @@ test('every tool page is linked to at least one other, only to tools that exist,
     assert.ok(TOOLS[p], p); assert.ok(rel.length >= 1, p); assert.ok(!rel.includes(p), p);
     for (const r of rel) assert.ok(TOOLS[r], p + ' -> ' + r);
     const html = fs.readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
-    assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '\/[a-z-]+\/'/, p);
+    assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '\/[a-z0-9-]+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');
   assert.deepEqual(relatedOf('/random-user/')[0], { href: '/wheel/', label: 'Wheel of names' }); assert.deepEqual(relatedOf('/nope/'), []);

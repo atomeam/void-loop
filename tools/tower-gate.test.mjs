@@ -146,6 +146,25 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   } finally { await b.close(); server.close(); }
 });
 
+test('Verse\'s own /base64/ answers the encoder floor both ways the gate asks: the text in its link, and the text typed into its box', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const root = new URL('../void-live-deploy/', import.meta.url);
+  const server = http.createServer((q, r) => {
+    const u = q.url.split('?')[0], file = new URL('.' + (u.endsWith('/') ? u + 'index.html' : u), root);
+    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
+  }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, e = probeFor('encoder');
+  try {
+    assert.equal(e.verse, '/base64/');
+    assert.equal(score(await answer(b, at(e.ask.verse), null), e.truth).n, 1, 'the link carries the text and the page shows its Base64');
+    assert.equal(score(await answer(b, at('/base64/'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'typed into the largest box, the Base64 fills the other');
+  } finally { await b.close(); server.close(); }
+});
 test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real length and holds it; a fast clock is wrong; a drawn clock is read off the screen; a clock it cannot read is not measured', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);

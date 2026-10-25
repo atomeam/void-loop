@@ -483,8 +483,28 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T00:33:22Z",
+   "at": "2026-10-25T00:40:47Z",
    "subject": "/calculator/ and /time/: Verse's own pages for the tower's calculator.net and timeanddate.com floors"
+  },
+  {
+   "at": "2026-10-25T00:39:54Z",
+   "subject": "Tower gate: coin flip,password strength,password measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T00:39:45Z",
+   "subject": "Incident: the browser suite failed on f4fa1e5a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:36:44Z",
+   "subject": "Incident: the browser suite failed on 25433038 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:26:34Z",
+   "subject": "Password strength: every control is a full tap target, a Copy link button, and the empty time boxes stay hidden until something is typed"
+  },
+  {
+   "at": "2026-10-25T00:26:34Z",
+   "subject": "Photo resizer: a Share this size button sends the form's size rules as a link, and the file picker is a full tap target"
   },
   {
    "at": "2026-10-25T00:23:21Z",
@@ -541,26 +561,6 @@
   {
    "at": "2026-10-24T23:18:20Z",
    "subject": "Incident: the browser suite failed on 6388192d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T23:13:02Z",
-   "subject": "Incident: the browser suite failed on 320c6ddf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T23:04:19Z",
-   "subject": "Tower gate: stopwatch accuracy measured head to head; a 3 s run timed by the gate's own clock, read back and checked for holding still"
-  },
-  {
-   "at": "2026-10-24T22:56:38Z",
-   "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T22:48:23Z",
-   "subject": "Tower: the stopwatch floor names its FATALITY (time a reload or a background tab never loses, fastest and slowest lap, an alarm with no…"
-  },
-  {
-   "at": "2026-10-24T22:42:27Z",
-   "subject": "Stopwatch: a full /stopwatch/ page against online-stopwatch.com, the stage stopwatch marks fastest and slowest laps, and the tower card…"
   }
  ],
  "builders": {

@@ -5549,6 +5549,21 @@ try {
       && conv[0] === '12:00 PM' && kept.includes('Tokyo') && kept.includes('Paris') && !Z.errors.length, JSON.stringify({ top, after, conv, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's base64encode.org floor: /base64/ encodes and decodes live both ways, exact for emoji, names bad input, and turns a file into a data: URL
+  if (want("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base64/?t=hello');
+    const linked = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.fill('#text', 'café 🎉'); const enc = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.fill('#b64', 'aGVs*G8='); const bad = { note: await Z.p.$eval('#note', (e) => e.textContent), invalid: await Z.p.$eval('#b64', (e) => e.getAttribute('aria-invalid')) };
+    await Z.p.fill('#b64', '8J-YgA'); const dec = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.fill('#text', '😀'); await Z.p.selectOption('#alpha', 'url'); await Z.p.uncheck('#pad'); const url = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.setInputFiles('#file', { name: 'x.png', mimeType: 'image/png', buffer: Buffer.from([137, 80, 78, 71]) }); await Z.p.waitForTimeout(200);
+    const file = await Z.p.$eval('#fileout', (e) => e.value);
+    check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+      linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
+      && file === 'data:image/png;base64,iVBORw==' && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);

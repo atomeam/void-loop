@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Base64 encode and decode, live as you type · Verse</title>
+<meta name="description" content="Encode text to Base64 and decode Base64 to text as you type, in both directions: RFC 4648 Base64 and URL-safe Base64URL, with or without padding, exact for emoji and accents (UTF-8, UTF-16LE or Latin-1). Bad input is named, not turned into garbage. Files become data: URLs on this device. Works offline, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Base64 encode and decode · Verse">
+<meta property="og:description" content="Base64 and Base64URL both ways, live as you type, exact for emoji and accents; files to data: URLs on the device. Offline, nothing sent.">
+<meta property="og:url" content="https://a-to-mind.com/base64/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/base64/ (the tower's base64encode.org floor): one file and one small module, no third party */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b3261e; --good: #1f7a45; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a80; --good: #6fd49a; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  label.head { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 600; color: var(--soft); margin: 12px 0 4px; }
+  label.head span { font-weight: 400; font-variant-numeric: tabular-nums; }
+  textarea { box-sizing: border-box; width: 100%; font: 15px/1.5 ui-monospace, Menlo, Consolas, monospace; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; resize: vertical; overflow-wrap: anywhere; }
+  #text { min-height: 200px; font-family: system-ui, sans-serif; font-size: 16px; }
+  #b64 { min-height: 150px; }
+  #b64[aria-invalid="true"] { border-color: var(--bad); }
+  #text.stale { opacity: .55; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .opts { font-size: 14px; gap: 6px 14px; }
+  .opts label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+  select, button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  select { border-radius: 10px; padding: 6px 10px; } select option { background: var(--bg); color: var(--ink); }
+  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 1.5em; }
+  .note.bad { color: var(--bad); } .note.good { color: var(--good); }
+  output.hex { display: block; font: 13px/1.6 ui-monospace, Menlo, Consolas, monospace; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; overflow-wrap: anywhere; color: var(--soft); white-space: pre-wrap; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 14px; text-align: center; }
+  .drop.over { border-color: var(--accent); }
+  .drop input[type=file] { font-size: 14px; max-width: 100%; }
+  #fileout { min-height: 90px; font-size: 13px; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/base64.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Base64 encode and decode</h1>
+  <div class="row opts" role="group" aria-label="Options">
+    <label>Alphabet <select id="alpha"><option value="std">Standard (+ /)</option><option value="url">URL-safe Base64URL (- _)</option></select></label>
+    <label><input type="checkbox" id="pad" checked> = padding</label>
+    <label><input type="checkbox" id="wrap"> Lines of 76 (MIME)</label>
+    <label>Character set <select id="cs"><option value="utf-8">UTF-8</option><option value="utf-16le">UTF-16LE</option><option value="latin1">ISO-8859-1 (Latin-1)</option></select></label>
+    <label><input type="checkbox" id="showhex"> Bytes in hex</label>
+  </div>
+  <label class="head" for="text">Text <span id="tcount"></span></label>
+  <textarea id="text" spellcheck="false" placeholder="Type or paste text: it is encoded as you type"></textarea>
+  <label class="head" for="b64">Base64 <span id="bcount"></span></label>
+  <textarea id="b64" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Or paste Base64 (or a data: URL) here: it is decoded as you type"></textarea>
+  <p class="note" id="note" role="status" aria-live="polite"></p>
+  <output class="hex" id="hex" hidden aria-label="The bytes in hex"></output>
+  <div class="row">
+    <button type="button" id="copyb">Copy Base64</button><button type="button" id="copyt">Copy text</button><button type="button" id="link">Copy link</button>
+    <button type="button" id="dl" hidden>Download the bytes</button><button type="button" id="clear">Clear</button>
+  </div>
+  <h2>A file to Base64</h2>
+  <div class="drop" id="drop">
+    <input type="file" id="file" aria-label="Choose a file to turn into Base64">
+    <p class="note">Or drop a file here. It is read on this device and never uploaded.</p>
+  </div>
+  <p class="note" id="fnote"></p>
+  <div id="fbox" hidden>
+    <label class="head" for="fileout">data: URL <span id="fcount"></span></label>
+    <textarea id="fileout" readonly></textarea>
+    <div class="row"><button type="button" id="copyu">Copy data: URL</button><button type="button" id="copyf">Copy Base64 only</button></div>
+  </div>
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Encoded and decoded on this device as you type, in both directions; nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another character set, so emoji and accents come back exactly. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { encodeText, decodeText, encodeBytes, textToBytes, hexOf, dataUrl, sizeOf } from '/lib/base64.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.base64.v1', text = $('text'), b64 = $('b64'), note = $('note');
+  const q = new URLSearchParams(location.search);
+  let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
+  const pick = (k, d) => (q.has(k) ? q.get(k) : kept[k] ?? d);
+  $('alpha').value = pick('a', 'std') === 'url' ? 'url' : 'std'; $('pad').checked = pick('pad', '1') !== '0'; $('wrap').checked = pick('wrap', '0') === '1';
+  $('cs').value = ['utf-8', 'utf-16le', 'latin1'].includes(pick('cs', 'utf-8')) ? pick('cs', 'utf-8') : 'utf-8'; $('showhex').checked = kept.hex === '1';
+  const opts = () => ({ url: $('alpha').value === 'url', pad: $('pad').checked, wrap: $('wrap').checked ? 76 : 0, charset: $('cs').value });
+  const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ a: $('alpha').value, pad: $('pad').checked ? '1' : '0', wrap: $('wrap').checked ? '1' : '0', cs: $('cs').value, hex: $('showhex').checked ? '1' : '0' })); } catch (_) {} };
+  const chars = (s) => Array.from(s).length.toLocaleString('en');
+  let last = 'text', bytes = new Uint8Array(0), binary = false;
+  function say(msg, cls) { note.textContent = msg; note.className = 'note' + (cls ? ' ' + cls : ''); }
+  function counts() {
+    $('tcount').textContent = text.value ? chars(text.value) + ' characters' + (text.classList.contains('stale') ? ' (not from this Base64)' : ' · ' + sizeOf(bytes.length)) : '';
+    $('bcount').textContent = b64.value ? chars(b64.value.replace(/\s/g, '')) + ' characters' : '';
+    $('hex').hidden = !$('showhex').checked; $('hex').textContent = bytes.length ? hexOf(bytes.length > 4096 ? bytes.subarray(0, 4096) : bytes) + (bytes.length > 4096 ? '\n(the first 4,096 of ' + bytes.length.toLocaleString('en') + ' bytes)' : '') : 'No bytes yet';
+    $('dl').hidden = !binary;
+  }
+  function fromText() {
+    last = 'text'; text.classList.remove('stale'); b64.removeAttribute('aria-invalid'); binary = false;
+    const r = encodeText(text.value, opts());
+    if (!r.ok) { bytes = new Uint8Array(0); b64.value = ''; say('Not encoded: ' + r.error + '.', 'bad'); return counts(); }
+    bytes = r.bytes; b64.value = r.base64;
+    say(text.value ? 'Encoded: ' + sizeOf(bytes.length) + ' of ' + $('cs').selectedOptions[0].textContent + ' as ' + (opts().url ? 'Base64URL' : 'Base64') + (opts().pad ? '' : ', no padding') + '.' : '', 'good'); counts();
+  }
+  function fromB64() {
+    last = 'b64'; const r = decodeText(b64.value, $('cs').value); binary = false;
+    if (r.ok) {
+      bytes = r.bytes; text.value = r.text; text.classList.remove('stale'); b64.removeAttribute('aria-invalid');
+      say(b64.value.trim() ? 'Decoded: ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
+    } else {
+      bytes = r.bytes || new Uint8Array(0); binary = !!r.binary; text.classList.add('stale'); b64.setAttribute('aria-invalid', 'true');
+      say((r.binary ? 'Decoded, but not text: ' : 'Not Base64: ') + r.error + '.', 'bad');
+    }
+    counts();
+  }
+  text.addEventListener('input', fromText); b64.addEventListener('input', fromB64);
+  // a new character set reads the same Base64 again (or encodes the same text again); a new alphabet, padding or wrapping rewrites the Base64
+  $('cs').addEventListener('change', () => { keep(); (last === 'b64' ? fromB64 : fromText)(); });
+  for (const id of ['alpha', 'pad', 'wrap']) $(id).addEventListener('change', () => { keep(); (last === 'b64' ? reencode : fromText)(); });
+  // the alphabet, padding or wrapping changed while Base64 was being read: write the same bytes again in the new form (the text stays as it is)
+  function reencode() { if (b64.getAttribute('aria-invalid') === 'true' && !binary) return; b64.value = encodeBytes(bytes, opts()); fromB64(); }
+  $('showhex').addEventListener('change', () => { keep(); counts(); });
+  const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+  const copy = async (b, v, said = 'Copied') => { try { await navigator.clipboard.writeText(v); toast(b, said); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+  $('copyb').addEventListener('click', () => copy($('copyb'), b64.value)); $('copyt').addEventListener('click', () => copy($('copyt'), text.value));
+  $('link').addEventListener('click', () => {
+    const o = opts(), u = new URLSearchParams(); const fits = (s) => s && s.length <= 2000;
+    if (last === 'b64' && fits(b64.value)) u.set('b', b64.value); else if (fits(text.value)) u.set('t', text.value);
+    if (o.url) u.set('a', 'url'); if (!o.pad) u.set('pad', '0'); if (o.wrap) u.set('wrap', '1'); if (o.charset !== 'utf-8') u.set('cs', o.charset);
+    const s = u.toString(), short = u.has('t') || u.has('b') || !(text.value || b64.value);
+    copy($('link'), location.origin + location.pathname + (s ? '?' + s : ''), short ? 'Copied' : 'Copied (too long to carry the text)');
+  });
+  $('dl').addEventListener('click', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes])); a.download = 'decoded.bin'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
+  $('clear').addEventListener('click', () => { text.value = ''; b64.value = ''; fromText(); text.focus(); });
+  // a file, read here: its bytes as a data: URL and as plain Base64 (up to 25 MB, as far as a text box stays usable)
+  const MAX = 25 * 1048576; let fileB64 = '', fileUrl = '';
+  async function takeFile(f) {
+    if (!f) return; if (f.size > MAX) { $('fnote').textContent = f.name + ' is ' + sizeOf(f.size) + ': files up to 25 MB are encoded here.'; $('fbox').hidden = true; return; }
+    const b = new Uint8Array(await f.arrayBuffer()); fileB64 = encodeBytes(b); fileUrl = dataUrl(b, f.type || 'application/octet-stream');
+    $('fileout').value = fileUrl; $('fbox').hidden = false; $('fcount').textContent = chars(fileUrl) + ' characters';
+    $('fnote').textContent = f.name + ': ' + sizeOf(b.length) + ' of ' + (f.type || 'unknown type') + ', ' + sizeOf(fileB64.length) + ' as Base64 (a third larger, as Base64 always is).';
+  }
+  $('file').addEventListener('change', (e) => takeFile(e.target.files[0]));
+  const drop = $('drop');
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); }); drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); takeFile(e.dataTransfer.files[0]); });
+  $('copyu').addEventListener('click', () => copy($('copyu'), fileUrl)); $('copyf').addEventListener('click', () => copy($('copyf'), fileB64));
+  if (q.has('b')) { b64.value = q.get('b'); fromB64(); } else { text.value = q.get('t') || ''; fromText(); }
+  mountRelated($('related'), '/base64/', [
+    { label: 'Count the words of the text', href: () => (text.value ? '/word-count/?t=' + encodeURIComponent(text.value.slice(0, 4000)) : null) },
+    { label: 'Its bytes as one hex number', href: () => (bytes.length && bytes.length <= 1000 ? '/base-converter/?v=' + hexOf(bytes).replace(/ /g, '') + '&b=16' : null) },
+  ]);
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

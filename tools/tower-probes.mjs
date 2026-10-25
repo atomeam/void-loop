@@ -172,8 +172,9 @@ export const PROBES = Object.freeze({
     truth: [['212 °F', /(?<![\d.])212(?:\.0+)?(?![\d.])\s*(?:°\s*F|degrees? fahrenheit|fahrenheit)?/i]],
   },
   encoder: {
-    site: 'https://www.base64encode.org/', verse: null,
-    ask: { site: 'https://www.base64encode.org/', type: 'hello', box: true, verse: '/?q=' + encodeURIComponent('base64 encode hello') },
+    site: 'https://www.base64encode.org/', verse: '/base64/',
+    // Verse's own page (/base64/) takes the same text in its link; the site gets it typed into its box
+    ask: { site: 'https://www.base64encode.org/', type: 'hello', box: true, verse: '/base64/?t=hello' },
     truth: [['aGVsbG8=', /aGVsbG8=/]],
   },
   'base converter': {
