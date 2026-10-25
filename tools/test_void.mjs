@@ -7871,6 +7871,17 @@ try {
   // the weather card on a phone (owner, 2026-10-14: the hourly row read "11 AM2 PMPM2 PM3" and the card lagged over the moving stars):
   // each hour stays legible beside the next (the row scrolls sideways instead of squeezing), and a card on a phone draws no
   // backdrop blur, so the stars moving behind it no longer make the browser blur the card again every frame
+  // the rest of weather.gov on the stage weather card: the pressure and visibility now, the hours from the hour now, and the hour-by-hour graph to 7 days
+  if (want("weather card: pressure and visibility now, the hours start at the hour now, and a graph hour by hour to seven days")) {
+    const H = await fresh({ phone: true }); await H.ask('weather in Lisbon', 1200); await until(async () => /hPa/.test(await H.page()), 5000);
+    const m = await H.p.evaluate(() => { const card = document.querySelector('.vpage.on'), g = card && card.querySelector('.wx-graph svg');
+      return { sub: card ? card.querySelector('.sub').textContent : '', first: card ? card.querySelector('.wx-hours > div > div').textContent : '', hours: card ? card.querySelectorAll('.wx-hours > div').length : 0,
+        days: g ? [...g.querySelectorAll('text')].filter((t) => /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)$/.test(t.textContent)).length : 0, line: g ? g.querySelector('polyline').getAttribute('points').split(' ').length : 0, bars: g ? g.querySelectorAll('rect').length : 0,
+        wide: g ? g.getBoundingClientRect().width <= innerWidth : false }; });
+    const nowHour = await H.p.evaluate(() => new Date(new Date().setMinutes(0, 0, 0)).toLocaleTimeString([], { hour: 'numeric' }));
+    check("weather card: pressure and visibility now, the hours start at the hour now, and a graph hour by hour to seven days",
+      /pressure 1016 hPa/.test(m.sub) && /visibility 24 km/.test(m.sub) && m.first === nowHour && m.hours === 8 && m.days === 7 && m.line === 168 && m.bars === 168 && m.wide && !H.errors.length, JSON.stringify({ ...m, nowHour, errors: H.errors }));
+    await H.ctx.close(); }
   if (want("weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur")) {
     const H = await fresh(); await H.p.setViewportSize({ width: 320, height: 640 });
     await H.ask('weather in Lisbon', 1200); await until(async () => /20°|68°/.test(await H.page()), 5000);

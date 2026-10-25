@@ -34,21 +34,21 @@
           "detail": "temperature, wind chill, heat index, dew point, wind, gusts, rain chance, rain and snow amounts, sky cover, humidity, out to 7 days",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "\"Next 24 hours\" list; no graph, no 7-day hourly, no snow amounts or sky cover"
+          "verse_evidence": "stage weather card (skills/weather.js graph): temperature and chance of rain hour by hour to 7 days, each midnight named, the hour now marked; no wind, dew point or sky cover lines; /weather/ unchanged"
         },
         {
           "name": "Tabular forecast",
           "detail": "hour-by-hour table",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "next 24 hours only"
+          "verse_evidence": "stage weather card: the next 8 hours from the hour now in one scrolling row, and the 7-day graph; no hour-by-hour table"
         },
         {
           "name": "Current conditions",
           "detail": "temperature, humidity, wind, barometer, dew point, visibility, wind chill, station and time",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "now with feels-like, wind, humidity; no pressure, visibility or station name"
+          "verse_evidence": "stage weather card: temperature, feels like, wind, humidity, pressure (hPa or inHg), visibility and dew point now; no station name (Open-Meteo is a model, not a station)"
         },
         {
           "name": "Hazard alerts (watches, warnings)",
