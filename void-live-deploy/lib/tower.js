@@ -148,7 +148,9 @@ export function tower(onlySite = [], evidence = {}, frontier = null) {
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
-  const all = sites.map((f, i) => { const g = gate(f, under(evidence, f) || {}), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, order: i, ...g, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
+  // "something that shows the matchup and how aware we are of what is happening")
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, order: i, ...g, ev, coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);

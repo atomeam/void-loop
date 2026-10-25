@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { tower, gate, FLOORS, aspectsOf, towerLine } from '../void-live-deploy/lib/tower.js';
+import { towerHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
 const all = (f, v = 'better') => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: v, evidence: 'x' }]));
 test('a floor is beaten only when every aspect passes with evidence', () => {
@@ -84,4 +85,38 @@ test('a floor may name its fatality as `killshot` too: the same word for the sam
   const { fatalityOf } = await import('../void-live-deploy/lib/tower.js'), { detailText } = await import('../void-live-deploy/skills/tower.js');
   assert.equal(fatalityOf({ killshot: 'a thing it cannot do' }), 'a thing it cannot do'); assert.equal(fatalityOf({ fatality: 'a', killshot: 'b' }), 'a'); assert.equal(fatalityOf({}), '');
   assert.match(detailText({ site: 'x', n: 1, m: 9, left: [], lost: [], killshot: 'a thing it cannot do' }), /Verse's edge: a thing it cannot do\./);
+});
+test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"): the VS splash, one row per aspect with the gate\'s numbers, when it was measured, what is next', async () => {
+  const { vsHtml, matchupHtml, matchRows, metaLine, nums, ago, siteFace } = await import('../void-live-deploy/skills/tower.js');
+  const { hashOf } = await import('../void-live-deploy/lib/avatar.js'); const esc = (s) => String(s);
+  const f = FLOORS.find((x) => x.id === 'calculator');
+  const ev = { [f.id]: { speed: { verdict: 'equal-and-better', verse: 95, best: 132, evidence: 'Verse (/calculator/) 95 ms to the load event (median of 3, phone width) vs calculator.net 132 ms to the load event', at: '2026-10-25T05:46:54.276Z' },
+    reliability: { verdict: 'better', verse: 3, best: 2, evidence: 'Verse (/calculator/) 3 of 3 loads answered vs calculator.net 2 of 3 loads answered', at: '2026-10-25T06:00:00.000Z' },
+    mobile: { verdict: 'equal', verse: 0, best: 0, evidence: 'Verse (/calculator/) 0 px sideways overflow vs calculator.net 0 px' } } };
+  const t = tower([], ev), cur0 = t.floors.find((x) => x.id === f.id); assert.equal(cur0.state, 'current'); assert.equal(cur0.ev, ev[f.id], 'the floor carries its evidence rows');
+  // a loss sends a site behind every site Verse loses on nothing (lib/tower.js), so the lossy floor is read on its own
+  const evL = { [f.id]: { ...ev[f.id], accuracy: { verdict: 'worse', verse: 1, best: 3, evidence: 'Verse (/calculator/) 1 of 3 right vs calculator.net 3 of 3 right', at: '2026-10-25T05:46:54.276Z' } } }, cur = tower([], evL).floors.find((x) => x.id === f.id);
+  assert.equal(nums(ev[f.id].speed), '95 ms vs 132 ms'); assert.equal(nums(ev[f.id].reliability), '3 of 3 vs 2 of 3'); assert.equal(nums(ev[f.id].mobile), '0 px vs 0 px'); assert.equal(nums({ verdict: 'better', evidence: 'stub' }), ''); assert.equal(nums(null), '');
+  const rows = matchRows(cur), by = Object.fromEntries(rows.map((r) => [r.a, r]));
+  assert.equal(rows.length, cur.m); assert.deepEqual([by.speed.v, by.speed.say], ['won', 'equal and better']); assert.deepEqual([by.reliability.v, by.reliability.say], ['won', 'won']);
+  assert.deepEqual([by.accuracy.v, by.accuracy.say, by.accuracy.nums], ['lost', 'lost', '1 of 3 vs 3 of 3']); assert.deepEqual([by.mobile.v, by.mobile.say], ['open', 'equal, not yet better']); assert.deepEqual([by.offline.v, by.offline.say, by.offline.nums], ['open', 'not measured yet', '']);
+  const now = Date.parse('2026-10-25T09:00:00Z');
+  assert.equal(metaLine(cur, now), 'last measured 3 hours ago · next: accuracy (Verse loses on it, so it comes first)');
+  assert.equal(metaLine({ ev: {}, measured: false, lost: [] }, now), 'not measured yet · next: the gate re-measures on the next deploy');
+  assert.equal(metaLine({ ev: { speed: { verdict: 'better', evidence: 'stub' } }, measured: true, lost: [] }, now), 'last measured: time not recorded · next: the gate re-measures on the next deploy');
+  assert.equal(ago('2026-10-25T08:59:30Z', now), 'just now'); assert.equal(ago('2026-10-25T08:45:00Z', now), '15 minutes ago'); assert.equal(ago('2026-10-24T09:00:00Z', now), '24 hours ago'); assert.equal(ago('2026-10-23T09:00:00Z', now), '2 days ago'); assert.equal(ago('2026-09-01T00:00:00Z', now), 'on 2026-09-01'); assert.equal(ago('x', now), '');
+  // the splash: Verse's mark left, the site's fighter right (keyed by its host, so the same face as anywhere else), names in plain text, an energy bar each
+  const vs = vsHtml(cur, esc);
+  assert.ok(vs.indexOf('aria-label="Verse"') < vs.indexOf('class="tw-vsmark"') && vs.indexOf('class="tw-vsmark"') < vs.indexOf("calculator.net's fighter"), 'Verse, VS, the site');
+  assert.match(vs, /class="tw-who">Verse<\/span>/); assert.match(vs, /class="tw-who">calculator\.net<\/span>/); assert.match(vs, /class="tw-vs tw-in"/); assert.doesNotMatch(vsHtml(cur, esc, { enter: false }), /tw-in/);
+  assert.equal((vs.match(/<i data-k="v">/g) || []).length, 2, "Verse's bar: the two aspects it has won or is equal-and-better on"); assert.equal((vs.match(/<i data-k="s">/g) || []).length, 1, "the site's bar: the one aspect Verse loses"); assert.equal((vs.match(/<i>/g) || []).length, (cur.m - 2) + (cur.m - 1), 'the rest grey on both');
+  assert.equal(siteFace(cur, 24), siteFace({ site: 'calculator.net', url: 'https://www.calculator.net/x' }, 24)); assert.match(siteFace(cur, 24), /width="24"/); assert.doesNotMatch(vs, /<img|logo/i);
+  assert.ok(hashOf('calculator.net') !== hashOf('isitchristmas.com'));
+  // the card: the splash before the stack, the rows inside the current site's button with the numbers and the awareness line, a conquered site with its small face
+  const won = { ...ev, [FLOORS[0].id]: all(FLOORS[0]) }, t2 = tower([], won), h = towerHtml(t2, esc, { now }); assert.equal(t2.floors.find((x) => x.state === 'current').id, f.id);
+  assert.ok(h.indexOf('class="tw-vs') < h.indexOf('class="tw-stack')); assert.match(h, /95 ms vs 132 ms/); assert.match(h, /last measured 3 hours ago · next: the gate re-measures on the next deploy/);
+  assert.match(h, new RegExp('data-state="beaten"><span class="tw-face"><svg[^>]*aria-label="' + FLOORS[0].site.replace(/\./g, '\\.') + "'s fighter\""));
+  assert.equal((h.match(/<li data-v=/g) || []).length, cur0.m); assert.equal((h.match(/<li data-v="won"/g) || []).length, 2); assert.equal((h.match(/<li data-v="lost"/g) || []).length, 0);
+  const m = matchupHtml(cur, esc, { now }); assert.ok(m.startsWith('<style>') && m.includes('class="tw-vs') && m.includes('3 of 3 vs 2 of 3') && m.includes('last measured 3 hours ago'));
+  assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
 });
