@@ -18,6 +18,7 @@ Each playbook is one kind of work a builder did by hand, written so Verse's own 
 | [study-with-rea.md](study-with-rea.md) | a brief built on how the best really do it (REA, with evidence) | not yet |
 | [forge-recipe.md](forge-recipe.md) | a new thing the forge can print (a recipe, a figure as a recipe), and an offered routine forged into a skill | not yet |
 | [perf-pass.md](perf-pass.md) | the page, the 3D or the suite measurably faster, numbers before and after | not yet |
+| [changed-checks.md](changed-checks.md) | a builder's pre-push check runs only what covers the changed files (`checks.mjs --changed`); main runs everything | not yet |
 | [stage-bridge.md](stage-bridge.md) | a bridge between two kinds of thing on the stage, or a new stage card, from one of Verse's own asks | not yet |
 | [rules-engine.md](rules-engine.md) | a game's rules as a data rule set that stacks with every other (frontier #35) | not yet |
 | [inbox-health.md](inbox-health.md) | a skill-health line, map or job in the growth inbox, from files the repo already writes | not yet |

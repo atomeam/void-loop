@@ -4,6 +4,9 @@
 //   node tools/checks.mjs                 prints one line per check (always in the same order), exit 1 if any fails
 //   node tools/checks.mjs --only <words>  only the checks whose name has one of the words (a check is named in its output line)
 //   node tools/checks.mjs --skip-browser  leave out the checks that open a browser (BROWSER below)
+//   node tools/checks.mjs --changed       only the checks that cover what this branch changed (tools/checks-changed.mjs: the structural ones
+//                                         always, a test when its file, an import of it or a file named like it changed; ignored in CI, where
+//                                         main runs everything). A builder's pre-push check: VOID_SKIP_BENCH=1 node tools/checks.mjs --changed
 // The pure checks (no browser, no network, no heavy lock) run side by side, up to one per core (4 at most; one fewer while a browser
 // check runs); the browser checks run one after another beside them, each taking the heavy lock itself (tools/heavy.mjs).
 // The slowest five and the wall time print after the list (owner, 2026-10-18: "how can we speed this all up?").
@@ -13,9 +16,16 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
+import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './checks-changed.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
+const inCI = !!(process.env.CI || process.env.GITHUB_ACTIONS), changedMode = args.includes('--changed') && !inCI;
+if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: main runs everything');
+// the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
+const changedList = changedMode ? changedFiles() : null;
+// --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
+const narrowToChanged = !!(changedList && !changedList.some((f) => REACHES_ALL.test(f)));
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
 // the two browser checks that take most of a run (persona-playtest ~5 min, perf3d ~5 min) run here only when a file they cover changed
@@ -32,6 +42,8 @@ const ONLY_WHEN = {
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
+  // glitch titles in a real browser (~3 min): the titles live in the skills and the lib, their styles in the page
+  'glitch-titles.mjs': /void\.html$|void-live-deploy\/(?:skills|lib)\/.*\.js$|glitch-titles/,
 };
 let changed; // the files this branch changed against main, read once when first asked (root is set further down)
 const changedVsMain = () => {
@@ -50,12 +62,13 @@ const root = resolve(here, '..');
 // run a script: pure ones wait for a pool slot; a browser one starts at once (the heavy lock queues it). r.ms is the time it ran, not the wait.
 const run = (a, browser = false) => { const go = async () => { const t = Date.now(); const r = await runNode(a, { cwd: root }); r.ms = Date.now() - t; return r; }; return browser ? go() : gate(go); };
 const last = (r) => r.out[r.out.length - 1] || '';
-// every check is a job: [name, browser?, async () => [ok, line, ms?]]; the report keeps the order they were added in
+// every check is a job: { name, browser?, fn: async () => [ok, line, ms?], file? }; the report keeps the order they were added in.
+// file is the script it runs (tools/<file>): --changed reads a test's imports from it; a check with no file of its own is structural (always on)
 const jobs = [];
-const add = (name, fn, browser = false) => { jobs.push({ name, fn, browser }); };
+const add = (name, fn, browser = false, file) => { jobs.push({ name, fn, browser, file }); };
 // a failed script says which cases failed (its first FAIL lines), not only its last line: a flaky browser case was "36/37 passed" with no way to tell which (2026-10-18)
 const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
-const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)]) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
+const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)], false, file) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser, file);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
@@ -377,6 +390,7 @@ for (const [name, file] of [
   ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['pool', 'pool.test.mjs'],
+  ['checks-changed', 'checks-changed.test.mjs'], // which checks --changed runs (structural: the runner's own selection is proven on every change)
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
@@ -455,14 +469,16 @@ for (const [name, file] of [
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
 // a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).
-add('files', async () => { const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml', ':!archive/repos'] /* early builds kept as found (archive/repos/README.md) */, { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+// With --changed only the changed files are read (a garbled or unparsable file comes in with a change): 79 s of parsing becomes a second
+add('files', async () => { const tracked = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml', ':!archive/repos'] /* early builds kept as found (archive/repos/README.md) */, { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+  const files = narrowToChanged ? tracked.filter((f) => changedList.includes(f)) : tracked, counted = narrowToChanged ? files.length + ' changed of ' + tracked.length : String(tracked.length);
   const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
   const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(root, f), 'utf8')));
   const checked = await Promise.all(files.filter((f) => /\.m?js$/.test(f)).map(async (f) => [f, await run(['--check', resolve(root, f)])]));
   const broken = checked.filter(([, r]) => !r.ok).map(([f]) => f);
   return [!garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
-    : files.length + ' files: clean text, every script parses', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
+    : counted + ' files: clean text, every script parses', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
 // nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
 // back replaced the real folder with a link to itself
 add('tracked', async () => { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
@@ -544,7 +560,11 @@ add('noise', async () => { // test traffic (probe, ping, test) never becomes a m
 
 // Run them: the browser checks one after another in their own lane from the start, the pure ones through the gate beside them.
 // A check that throws fails with its message; the report below is in the order the checks were added, whatever finished first.
-const wanted = jobs.filter((j) => (!skipBrowser || !j.browser) && (!only.length || only.some((w) => j.name.toLowerCase().includes(w))));
+// --changed: the structural checks and the ones whose files, imports or names a changed file touches (tools/checks-changed.mjs); one line says what was left out
+const chosen = changedMode ? selectChanged(jobs, changedList, { deps: readDeps() }) : null;
+if (chosen) console.log(chosen.line);
+const picked = chosen ? new Set(chosen.run) : null;
+const wanted = jobs.filter((j) => (!skipBrowser || !j.browser) && (!only.length || only.some((w) => j.name.toLowerCase().includes(w))) && (!picked || picked.has(j)));
 const t0 = Date.now(), results = new Array(wanted.length), timings = [];
 const exec = async (j, i) => { const s = Date.now(); let r; try { r = await j.fn(); } catch (e) { r = [false, 'check crashed: ' + (e && e.message || e)]; }
   results[i] = [j.name, r[0], r[1]]; timings.push({ name: j.name, ms: r[2] ?? Date.now() - s, browser: j.browser }); };
@@ -554,6 +574,6 @@ const wall = Date.now() - t0;
 if (process.env.VOID_SKIP_BENCH && !only.length && !skipBrowser && !results.some(([n, , l]) => n === 'bench' && /^skipped/.test(l))) results.push(['self', false, 'VOID_SKIP_BENCH is set but the bench row did not say skipped']);
 for (const [n, ok, line] of results) console.log((ok ? (/^inconclusive/.test(line) ? 'inconclusive ' : 'ok   ') : 'FAIL ') + n.padEnd(9) + line);
 { const pure = timings.filter((t) => !t.browser), br = timings.filter((t) => t.browser);
-  console.log(`\n${results.length} checks in ${fmtMs(wall)} (${pure.length} pure, up to ${poolSize(false)} at once: ${fmtMs(pure.reduce((t, x) => t + x.ms, 0))} of work; ${br.length} browser: ${fmtMs(br.reduce((t, x) => t + x.ms, 0))})`);
+  console.log(`\n${results.length} checks in ${fmtMs(wall)} (${pure.length} pure, up to ${poolSize(false)} at once: ${fmtMs(pure.reduce((t, x) => t + x.ms, 0))} of work; ${br.length} browser: ${fmtMs(br.reduce((t, x) => t + x.ms, 0))})${chosen ? '; ' + chosen.line.replace(/^--changed: /, '--changed ran ') : ''}`);
   console.log('slowest: ' + slowest(timings).map((t) => `${t.name}${t.browser ? ' (browser)' : ''} ${fmtMs(t.ms)}`).join(', ')); }
 process.exit(results.every((r) => r[1]) ? 0 : 1);
