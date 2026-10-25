@@ -1,35 +1,114 @@
 /**
  * base64: RFC 4648 Base64 and Base64URL, exact (the tower's base64encode.org floor). Text becomes bytes in the character set asked (UTF-8 by
- * default, so an emoji or an accent comes back exactly; also UTF-16LE and ISO-8859-1), bytes become Base64 in the standard alphabet (+ /) or
- * the URL-safe one (- _), with or without = padding, optionally wrapped at 76 characters (MIME). Decoding takes either alphabet, padded or not,
- * ignores line breaks and spaces, takes a data: URL whole, and says plainly what is wrong (the character and where it is) instead of giving
- * garbage. Pure, no btoa/atob (they are Latin-1 only). Tests: tools/base64.test.mjs.
+ * default, so an emoji or an accent comes back exactly; also UTF-16, the ISO-8859 family, the Windows code pages, KOI8, Mac, DOS code pages
+ * and EBCDIC), bytes become Base64 in the standard alphabet (+ /) or the URL-safe one (- _), with or without = padding, optionally wrapped at
+ * 76 characters (MIME). Decoding takes either alphabet, padded or not, ignores line breaks and spaces, takes a data: URL whole, and says
+ * plainly what is wrong (the character and where it is) instead of giving garbage. Pure, no btoa/atob (they are Latin-1 only), no network:
+ * single-byte sets are read with the browser's own TextDecoder (and written with the reverse of it), the few it lacks (EBCDIC 037, DOS 437
+ * and 850, ISO-8859-16) are tables here; Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR are decode only (their tables are too
+ * big to carry). Tests: tools/base64.test.mjs.
  */
 const STD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const URL_SAFE = STD.slice(0, 62) + '-_';
-export const CHARSETS = Object.freeze({ 'utf-8': 'UTF-8', 'utf-16le': 'UTF-16LE', latin1: 'ISO-8859-1 (Latin-1)' });
 
-/** the bytes of a text in a character set: { ok, bytes } or { ok: false, error } (Latin-1 cannot hold every character). Pure. */
+// every character set offered, grouped as the page shows them: [id, label]; the name in messages is the label before " (" or ", "
+export const CHARSET_GROUPS = Object.freeze([
+  { group: 'Unicode', sets: [['utf-8', 'UTF-8'], ['utf-16le', 'UTF-16LE'], ['utf-16be', 'UTF-16BE']] },
+  { group: 'Western', sets: [['ascii', 'US-ASCII'], ['latin1', 'ISO-8859-1 (Latin-1)'], ['windows-1252', 'Windows-1252 (Western)'], ['iso-8859-15', 'ISO-8859-15 (Latin-9, with €)'],
+    ['macintosh', 'Mac OS Roman'], ['iso-8859-14', 'ISO-8859-14 (Celtic)'], ['iso-8859-10', 'ISO-8859-10 (Nordic)']] },
+  { group: 'Central European and Baltic', sets: [['iso-8859-2', 'ISO-8859-2 (Latin-2)'], ['windows-1250', 'Windows-1250 (Central European)'], ['iso-8859-16', 'ISO-8859-16 (South-East European)'],
+    ['iso-8859-3', 'ISO-8859-3 (South European)'], ['iso-8859-4', 'ISO-8859-4 (Baltic)'], ['iso-8859-13', 'ISO-8859-13 (Baltic)'], ['windows-1257', 'Windows-1257 (Baltic)']] },
+  { group: 'Cyrillic', sets: [['iso-8859-5', 'ISO-8859-5 (Cyrillic)'], ['windows-1251', 'Windows-1251 (Cyrillic)'], ['koi8-r', 'KOI8-R (Russian)'], ['koi8-u', 'KOI8-U (Ukrainian)'],
+    ['ibm866', 'CP866 (DOS Cyrillic)'], ['x-mac-cyrillic', 'Mac Cyrillic']] },
+  { group: 'Greek, Turkish, Hebrew, Arabic', sets: [['iso-8859-7', 'ISO-8859-7 (Greek)'], ['windows-1253', 'Windows-1253 (Greek)'], ['iso-8859-9', 'ISO-8859-9 (Turkish)'],
+    ['windows-1254', 'Windows-1254 (Turkish)'], ['iso-8859-8', 'ISO-8859-8 (Hebrew)'], ['windows-1255', 'Windows-1255 (Hebrew)'], ['iso-8859-6', 'ISO-8859-6 (Arabic)'], ['windows-1256', 'Windows-1256 (Arabic)']] },
+  { group: 'Asian', sets: [['windows-874', 'Windows-874 (Thai)'], ['iso-8859-11', 'ISO-8859-11 (Thai)'], ['windows-1258', 'Windows-1258 (Vietnamese)']] },
+  { group: 'Asian, decode only (Base64 to text)', decodeOnly: true, sets: [['shift_jis', 'Shift_JIS (CP932, Japanese)'], ['euc-jp', 'EUC-JP (Japanese)'], ['iso-2022-jp', 'ISO-2022-JP (Japanese)'],
+    ['gbk', 'GBK (CP936, Chinese)'], ['gb18030', 'GB18030 (Chinese)'], ['big5', 'Big5 (CP950, Chinese)'], ['euc-kr', 'EUC-KR (CP949, Korean)']] },
+  { group: 'EBCDIC and DOS', sets: [['ibm037', 'EBCDIC 037 (IBM, US and Canada)'], ['cp437', 'CP437 (DOS, US)'], ['cp850', 'CP850 (DOS, Western Europe)']] },
+]);
+/** every character set by id: its label ('utf-8': 'UTF-8', 'latin1': 'ISO-8859-1 (Latin-1)', ...). */
+export const CHARSETS = Object.freeze(Object.fromEntries(CHARSET_GROUPS.flatMap((g) => g.sets)));
+const DECODE_ONLY = new Set(CHARSET_GROUPS.filter((g) => g.decodeOnly).flatMap((g) => g.sets.map((s) => s[0])));
+/** whether text can be written in this character set here (the multi-byte Asian sets are decode only). */
+export const canEncode = (cs) => !DECODE_ONLY.has(cs);
+const nameOf = (cs) => (CHARSETS[cs] || cs).split(/ \(|, /)[0];
+
+// the sets TextDecoder lacks (or that WHATWG reads as another set), as tables checked against the Unicode consortium's mapping files
+// (VENDORS/MICSFT CP037, CP437, CP850; ISO8859/8859-16), the same table read in both directions
+const ASCII = String.fromCharCode(...Array.from({ length: 128 }, (_, i) => i)), C1 = String.fromCharCode(...Array.from({ length: 32 }, (_, i) => 128 + i));
+const TABLES = {
+  ibm037: '\x00\x01\x02\x03\x9c\x09\x86\x7f\x97\x8d\x8e\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x9d\x85\x08\x87\x18\x19\x92\x8f\x1c\x1d\x1e\x1f\x80\x81\x82\x83\x84\x0a\x17\x1b\x88\x89\x8a\x8b\x8c\x05\x06\x07\x90\x91\x16\x93\x94\x95\x96\x04\x98\x99\x9a\x9b\x14\x15\x9e\x1a \xa0âäàáãåçñ¢.<(+|&éêëèíîïìß!$*);¬-/ÂÄÀÁÃÅÇÑ¦,%_>?øÉÊËÈÍÎÏÌ`:#@\x27="Øabcdefghi«»ðýþ±°jklmnopqrªºæ¸Æ¤µ~stuvwxyz¡¿ÐÝÞ®^£¥·©§¶¼½¾[]¯¨´×{ABCDEFGHI\xadôöòóõ}JKLMNOPQR¹ûüùúÿ\x5c÷STUVWXYZ²ÔÖÒÓÕ0123456789³ÛÜÙÚ\x9f',
+  cp437: ASCII + 'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\xa0',
+  cp850: ASCII + 'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜø£Ø×ƒáíóúñÑªº¿®¬½¼¡«»░▒▓│┤ÁÂÀ©╣║╗╝¢¥┐└┴┬├─┼ãÃ╚╔╩╦╠═╬¤ðÐÊËÈıÍÎÏ┘┌█▄¦Ì▀ÓßÔÒõÕµþÞÚÛÙýÝ¯´\xad±‗¾¶§÷¸°¨·¹³²■\xa0',
+  'iso-8859-16': ASCII + C1 + '\xa0ĄąŁ€„Š§š©Ș«Ź\xadźŻ°±ČłŽ”¶·žčș»ŒœŸżÀÁÂĂÄĆÆÇÈÉÊËÌÍÎÏĐŃÒÓÔŐÖŚŰÙÚÛÜĘȚßàáâăäćæçèéêëìíîïđńòóôőöśűùúûüęțÿ',
+};
+// WHATWG reads iso-8859-9 as windows-1254 and iso-8859-11 as windows-874: the same letters, but 0x80 to 0x9F are control characters
+const WITH_C1 = { 'iso-8859-9': 'windows-1254', 'iso-8859-11': 'windows-874' };
+const tables = new Map(), reverses = new Map();
+// the 256 characters a single-byte set gives each byte ('' where a byte has none), or null for a set that is not single-byte here
+function table(cs) {
+  if (tables.has(cs)) return tables.get(cs);
+  let t = null;
+  if (TABLES[cs]) t = Array.from(TABLES[cs]);
+  else if (cs === 'latin1') t = Array.from(ASCII + C1 + String.fromCharCode(...Array.from({ length: 96 }, (_, i) => 160 + i)));
+  else if (cs === 'ascii') t = Array.from(ASCII).concat(Array(128).fill(''));
+  else if (CHARSETS[cs] && !DECODE_ONLY.has(cs) && !/^utf-/.test(cs)) {
+    try { const d = new TextDecoder(WITH_C1[cs] || cs); t = Array.from({ length: 256 }, (_, i) => { const c = d.decode(Uint8Array.of(i)); return c === '\ufffd' ? '' : c; }); } catch (_) { t = null; }
+    if (t && WITH_C1[cs]) for (let i = 128; i < 160; i++) t[i] = String.fromCharCode(i);
+  }
+  tables.set(cs, t); return t;
+}
+function reverse(cs) {
+  if (reverses.has(cs)) return reverses.get(cs);
+  const t = table(cs), m = new Map(); if (t) t.forEach((c, i) => { if (c && !m.has(c)) m.set(c, i); });
+  reverses.set(cs, m); return m;
+}
+
+/** the bytes of a text in a character set: { ok, bytes } or { ok: false, error } naming the first character the set cannot hold (never a silent
+ *  '?'), or saying that a multi-byte Asian set is decode only here. Pure. */
 export function textToBytes(text, charset = 'utf-8') {
   const t = String(text ?? '');
-  if (charset === 'utf-16le') { const out = new Uint8Array(t.length * 2); for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); out[2 * i] = c & 255; out[2 * i + 1] = c >> 8; } return { ok: true, bytes: out }; }
-  if (charset === 'latin1') {
-    const out = new Uint8Array(t.length);
-    for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); if (c > 255) { const ch = String.fromCodePoint(t.codePointAt(i)); return { ok: false, error: '“' + ch + '” (character ' + (Array.from(t.slice(0, i)).length + 1) + ') is not in ISO-8859-1: choose UTF-8 to encode it' }; } out[i] = c; }
+  if (charset === 'utf-16le' || charset === 'utf-16be') {
+    const out = new Uint8Array(t.length * 2), be = charset === 'utf-16be';
+    for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); out[2 * i + (be ? 1 : 0)] = c & 255; out[2 * i + (be ? 0 : 1)] = c >> 8; }
     return { ok: true, bytes: out };
+  }
+  if (DECODE_ONLY.has(charset)) return { ok: false, error: nameOf(charset) + ' is decode only here (its tables are too big to carry in the page): paste Base64 to read it as ' + nameOf(charset) + ', or choose UTF-8 to encode text' };
+  const tb = table(charset);
+  if (tb) {
+    const rev = reverse(charset), out = new Uint8Array(t.length); let n = 0, at = 0;
+    for (const ch of t) {
+      at++; const k = rev.get(ch);
+      if (k === undefined) return { ok: false, error: '“' + ch + '” (character ' + at + ') is not in ' + nameOf(charset) + ': choose UTF-8 to encode it' };
+      out[n++] = k;
+    }
+    return { ok: true, bytes: out.slice(0, n) };
   }
   return { ok: true, bytes: new TextEncoder().encode(t) };
 }
 /** the text that bytes hold in a character set: { ok, text } or { ok: false, error } when they are not valid text in it. Pure. */
 export function bytesToText(bytes, charset = 'utf-8') {
   const b = bytes instanceof Uint8Array ? bytes : Uint8Array.from(bytes || []);
-  if (charset === 'latin1') { let s = ''; for (let i = 0; i < b.length; i += 4096) s += String.fromCharCode(...b.subarray(i, i + 4096)); return { ok: true, text: s }; }
-  if (charset === 'utf-16le') {
+  if (charset === 'utf-16le' || charset === 'utf-16be') {
     if (b.length % 2) return { ok: false, error: b.length + ' bytes is an odd number, so they are not UTF-16 text' };
-    let s = ''; for (let i = 0; i < b.length; i += 2) s += String.fromCharCode(b[i] | (b[i + 1] << 8)); return { ok: true, text: s };
+    const be = charset === 'utf-16be'; let s = '';
+    for (let i = 0; i < b.length; i += 2) s += String.fromCharCode(be ? (b[i] << 8) | b[i + 1] : b[i] | (b[i + 1] << 8));
+    return { ok: true, text: s };
   }
-  try { return { ok: true, text: new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(b) }; } catch (_) {
-    return { ok: false, error: 'the ' + b.length + ' decoded bytes are not UTF-8 text (a file or binary data?): see them in hex, or download them' };
+  const tb = table(charset);
+  if (tb) {
+    const parts = [];
+    for (let i = 0; i < b.length; i++) {
+      const c = tb[b[i]];
+      if (!c) return { ok: false, error: 'byte ' + (i + 1) + ' (0x' + b[i].toString(16).padStart(2, '0') + ') has no character in ' + nameOf(charset) + ': choose another character set, or see the bytes in hex' };
+      parts.push(c);
+    }
+    return { ok: true, text: parts.join('') };
+  }
+  const cs = CHARSETS[charset] && DECODE_ONLY.has(charset) ? charset : 'utf-8';
+  try { return { ok: true, text: new TextDecoder(cs, { fatal: true, ignoreBOM: cs === 'utf-8' }).decode(b) }; } catch (_) {
+    return { ok: false, error: 'the ' + b.length + ' decoded bytes are not ' + nameOf(cs) + ' text (a file, binary data, or another character set?): see them in hex, or download them' };
   }
 }
 

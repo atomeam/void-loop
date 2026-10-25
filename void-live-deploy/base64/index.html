@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Base64 encode and decode, live as you type · Verse</title>
-<meta name="description" content="Encode text to Base64 and decode Base64 to text as you type, in both directions: RFC 4648 Base64 and URL-safe Base64URL, with or without padding, exact for emoji and accents (UTF-8, UTF-16LE or Latin-1). Bad input is named, not turned into garbage. Files become data: URLs on this device. Works offline, nothing sent anywhere.">
+<meta name="description" content="Encode text to Base64 and decode Base64 to text as you type, in both directions: RFC 4648 Base64 and URL-safe Base64URL, with or without padding, exact for emoji and accents (UTF-8, UTF-16, ISO-8859, Windows, KOI8, DOS, EBCDIC and more; Shift_JIS, GBK, Big5 and EUC-KR to decode). Bad input is named, not turned into garbage. Files become data: URLs on this device. Works offline, nothing sent anywhere.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Base64 encode and decode · Verse">
@@ -31,7 +31,8 @@
   .opts { font-size: 14px; gap: 6px 14px; }
   .opts label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
   select, button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
-  select { border-radius: 10px; padding: 6px 10px; } select option { background: var(--bg); color: var(--ink); }
+  select { border-radius: 10px; padding: 6px 10px; max-width: 100%; min-width: 0; } select option, select optgroup { background: var(--bg); color: var(--ink); }
+  .opts label { max-width: 100%; } #cs { width: 15em; }
   input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
   .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 1.5em; }
   .note.bad { color: var(--bad); } .note.good { color: var(--good); }
@@ -56,7 +57,7 @@
     <label>Alphabet <select id="alpha"><option value="std">Standard (+ /)</option><option value="url">URL-safe Base64URL (- _)</option></select></label>
     <label><input type="checkbox" id="pad" checked> = padding</label>
     <label><input type="checkbox" id="wrap"> Lines of 76 (MIME)</label>
-    <label>Character set <select id="cs"><option value="auto">Auto (detected)</option><option value="utf-8">UTF-8</option><option value="utf-16le">UTF-16LE</option><option value="latin1">ISO-8859-1 (Latin-1)</option></select></label>
+    <label>Character set <select id="cs"><option value="auto">Auto (detected)</option></select></label>
     <label><input type="checkbox" id="showhex"> Bytes in hex</label>
   </div>
   <label class="head" for="text">Text <span id="tcount"></span></label>
@@ -81,17 +82,19 @@
     <div class="row"><button type="button" id="copyu">Copy data: URL</button><button type="button" id="copyf">Copy Base64 only</button></div>
   </div>
   <nav id="related" aria-label="Related tools"></nav>
-  <footer>Encoded and decoded on this device as you type, in both directions; nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another character set, so emoji and accents come back exactly. <a href="/">Ask Verse anything</a></footer>
+  <footer>Encoded and decoded on this device as you type, in both directions; nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another of the 44 character sets (Unicode, the ISO-8859 family, the Windows code pages, KOI8, Mac, DOS and EBCDIC), so emoji and accents come back exactly; a character the set cannot hold is named, never turned into ?. Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR are decode only: Base64 in them is read as text, but text is not written in them. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { encodeText, decodeText, encodeBytes, textToBytes, hexOf, dataUrl, sizeOf } from '/lib/base64.js';
+  import { encodeText, decodeText, encodeBytes, textToBytes, hexOf, dataUrl, sizeOf, CHARSETS, CHARSET_GROUPS } from '/lib/base64.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.base64.v1', text = $('text'), b64 = $('b64'), note = $('note');
   const q = new URLSearchParams(location.search);
   let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
   const pick = (k, d) => (q.has(k) ? q.get(k) : kept[k] ?? d);
   $('alpha').value = pick('a', 'std') === 'url' ? 'url' : 'std'; $('pad').checked = pick('pad', '1') !== '0'; $('wrap').checked = pick('wrap', '0') === '1';
-  $('cs').value = ['auto', 'utf-8', 'utf-16le', 'latin1'].includes(pick('cs', 'auto')) ? pick('cs', 'auto') : 'auto'; $('showhex').checked = kept.hex === '1';
+  // every character set, grouped; the multi-byte Asian ones are in a group that says they are decode only
+  for (const g of CHARSET_GROUPS) { const og = document.createElement('optgroup'); og.label = g.group; for (const [v, l] of g.sets) og.append(new Option(l, v)); $('cs').append(og); }
+  $('cs').value = CHARSETS[pick('cs', 'auto')] ? pick('cs', 'auto') : 'auto'; $('showhex').checked = kept.hex === '1';
   const opts = () => ({ url: $('alpha').value === 'url', pad: $('pad').checked, wrap: $('wrap').checked ? 76 : 0, charset: $('cs').value === 'auto' ? 'utf-8' : $('cs').value });
   const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ a: $('alpha').value, pad: $('pad').checked ? '1' : '0', wrap: $('wrap').checked ? '1' : '0', cs: $('cs').value, hex: $('showhex').checked ? '1' : '0' })); } catch (_) {} };
   const chars = (s) => Array.from(s).length.toLocaleString('en');
@@ -114,7 +117,7 @@
     last = 'b64'; const r = decodeText(b64.value, $('cs').value); binary = false;
     if (r.ok) {
       bytes = r.bytes; text.value = r.text; text.classList.remove('stale'); b64.removeAttribute('aria-invalid');
-      say(b64.value.trim() ? 'Decoded: ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + ($('cs').value === 'auto' && r.charset ? ', read as ' + ({ 'utf-8': 'UTF-8', 'utf-16le': 'UTF-16LE', latin1: 'Latin-1' })[r.charset] : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
+      say(b64.value.trim() ? 'Decoded: ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + ($('cs').value === 'auto' && r.charset ? ', read as ' + CHARSETS[r.charset] : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
     } else {
       bytes = r.bytes || new Uint8Array(0); binary = !!r.binary; text.classList.add('stale'); b64.setAttribute('aria-invalid', 'true');
       say((r.binary ? 'Decoded, but not text: ' : 'Not Base64: ') + r.error + '.', 'bad');
