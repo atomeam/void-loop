@@ -1,4 +1,6 @@
-# Tower loop: take one floor of the tower all the way to conquered
+# Tower loop: take one floor of Versus all the way to conquered
+
+**The name (owner, 2026-10-25: "the tower rename is easy its versus"):** what a person sees is called Versus (the card's head, /conquered/, the 3D miniature's label); the identifiers keep `tower` (`lib/tower.js`, `skills/tower.js`, `tower-gate.yml`, `tower.evidence.json`, the `tower` skill), and "the tower" still opens the card beside "versus". This playbook's "tower" names those files; "floor" stays a floor.
 
 **Starts when:** the scheduled tower run fires (every hour, a fresh session), or a builder has nothing more urgent. The owner (2026-10-25): Verse should always be working on the tower, with everything it needs to test everything, so it moves through each site faster. One run takes ONE floor and drives it to conquered; it never spreads itself over several.
 
@@ -6,7 +8,7 @@
 
 ## The run
 
-1. **Find the floor.** Pull main. The current fight is the first unbeaten floor of `tower()` in `void-live-deploy/lib/tower.js` (ask the page: `node tools/ask.mjs "the tower"`, or read `void-live-deploy/tower.evidence.json` floors[<id>] for each aspect's verdict and evidence). If `domains/handoff.md` has a line from another tower run on that floor in the last 2 hours, take the next floor instead. Add your line to `domains/handoff.md` before you start.
+1. **Find the floor.** Pull main. The current fight is the first unbeaten floor of `tower()` in `void-live-deploy/lib/tower.js` (ask the page: `node tools/ask.mjs "versus"`, or read `void-live-deploy/tower.evidence.json` floors[<id>] for each aspect's verdict and evidence). If `domains/handoff.md` has a line from another tower run on that floor in the last 2 hours, take the next floor instead. Add your line to `domains/handoff.md` before you start.
 2. **Read what is left, in the gate's own words.** Every row in `tower.evidence.json` carries `evidence`: both sides' numbers and what each lacks (completeness says "Verse lacks: ..."; an unverified row says what the gate could not do and what it saw). The aspects are measured by `tools/tower-gate.mjs` (`measure`, `answer`, `flipControl`, `motionOf`, `designLook`) with the probes in `tools/tower-probes.mjs` (truth = right answers worked out independently of both sites; facts = what a full answer shows; parts = a floor's own aspects).
 3. **Decide which kind of gap each one is, and fix that:**
    - **Verse lacks a feature** ("Verse lacks: sunrise and sunset", `worse` on a measured number): build it on Verse's page (each floor has one, `page:` in FLOORS; a floor without one gets one, like `/stopwatch/` with `lib/stopwatch.js`: a pure lib with a unit test, link-preview tags, a Copy link, offline via `sw.js` TOOLS, the "Use with" row from `lib/toolkit.js`).
@@ -17,6 +19,6 @@
 6. **Read the verdict, then loop.** The gate commits "Tower gate: ..." about 5 minutes after the deploy. Read the floor's rows again. Still something left: back to 3. Every aspect better or equal-and-better: the floor is conquered (`tower()` does that by itself); write its `learned` line in FLOORS (what this fight taught, true of the page) and its `fatality` once built, bump the `?v=` of `lib/tower.js` in `skills/tower.js`, push. Then move your handoff line and take the next floor if the run has time.
 7. **A gate run by hand** when the post-deploy run did not pick the floor: `gh workflow run tower-gate.yml -f floor="<id>"` (several: `-f floor="a,b"`; or the GitHub API's workflow dispatch). It queues behind a running fight run and is never cancelled by one. Every floor: `gh workflow run tower-gate.yml -f floor=all` runs the sharded sweep (six runners, each measuring its own slice, `node tools/tower-gate.mjs --shard i/N --list` shows a slice; a merge job folds the slices into `tower.evidence.json`, newer rows over older ones only), about eight minutes, the same as the daily cron.
 
-**How to tell it worked:** the floor reads conquered on the card (`node tools/ask.mjs "the tower"`) and its row in "What each site taught me" is there.
+**How to tell it worked:** the floor reads conquered on the Versus card (`node tools/ask.mjs "versus"`) and its row in "What each site taught me" is there.
 
 **Mistakes made:** improving several floors a little instead of one to the end (2026-10-25: four floors each stalled one aspect short); a commit message starting "Tower gate:" (the gate skipped it, and the skipped run cancelled the manual run); a test that started the OCR worker and never closed it (the test never ended: close it with `closeEyes()`); reading a site from memory instead of the gate's evidence; a trial press that flipped the coin before the gate read the starting count (a count off by one went unseen).

@@ -1,6 +1,6 @@
 /**
- * tower miniature — the tower as a thing (owner, 2026-10-25: "so you see all the layers. some things are missing, like a 3d tower"): stacked
- * floors rising from a dark base in deep space, one floor per site in tower order (the first conquest at the bottom). A surpassed floor is lit
+ * tower miniature — Versus in 3D (owner, 2026-10-25: "so you see all the layers. some things are missing, like a 3d tower"): the ladder as a
+ * tower of stacked floors rising from a dark base in deep space, one floor per site in Versus order (the first conquest at the bottom). A surpassed floor is lit
  * and solid, its site's name etched in gold on its face; the current floor is under construction, a glowing scaffold with its "n of m" progress
  * ring; the few floors ahead are faint dark outlines (the queue has no end, so only the next AHEAD_SHOWN are drawn); the top carries Verse's
  * mark, a glowing core with three thin tilted rings. It turns slowly on its own (still with reduced motion). Tapping a floor calls

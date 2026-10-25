@@ -27,7 +27,7 @@
 <!-- /modulepreload -->
 </head>
 <body>
-<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">The tower</a></header>
+<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">Versus</a></header>
 <details id="vs" open hidden><summary id="vsum">The matchup</summary><div id="vsin"></div></details>
 <main>
   <section><h2><span id="vn">Verse</span><a id="vo" href="/" target="_blank" rel="noopener">open</a></h2><iframe id="vf" title="Verse's page" src="about:blank"></iframe></section>
@@ -47,11 +47,11 @@
     document.title = 'Side by side: Verse and ' + f.site; $('who').textContent = 'Verse and ' + f.site + ', side by side';
     $('vo').href = vp; $('vf').src = vp; $('sn').textContent = f.site; $('so').href = site;
     // the two avatars over the panes (owner, 2026-10-25: "each site and verse should have an avatar face for the battle"): Verse's mark and the site's
-    // drawn fighter (lib/avatar.js, never its logo); the site's host is the seed, so it is the same face as on the tower card
+    // drawn fighter (lib/avatar.js, never its logo); the site's host is the seed, so it is the same face as on the Versus card
     $('vn').innerHTML = verseFace({ size: 26 }) + 'Verse'; $('sn').innerHTML = (fl.icon ? '<img src="/' + fl.icon + '" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle">' : faceSvg(f.site, { size: 26, facing: 'left' })) + esc(f.site);
     // sites refuse to be framed (X-Frame-Options, every one measured so far), so the site is shown as the tower gate saw it: its screenshot at phone
     // width from the last measurement (tower.shots/<id>.jpg, written by tools/tower-gate.mjs), dated; the site itself opens in a window beside this one
-    const slug = f.id.replace(/\W+/g, '-'), img = $('si'); img.src = '/tower.shots/' + slug + '.jpg'; img.alt = f.site + ' as the tower gate saw it';
+    const slug = f.id.replace(/\W+/g, '-'), img = $('si'); img.src = '/tower.shots/' + slug + '.jpg'; img.alt = f.site + ' as the gate saw it';
     img.onload = () => { img.hidden = false; fetch(img.src, { method: 'HEAD' }).then((r) => { const d = r.headers.get('last-modified'); $('cap').textContent = f.site + ' as the gate saw it' + (d ? ' on ' + new Date(d).toLocaleDateString() : '') + ', at phone width. It does not allow itself inside another page, so this is a picture.'; }).catch(() => { $('cap').textContent = f.site + ' as the gate saw it, at phone width.'; }); };
     img.onerror = () => { img.hidden = true; $('cap').textContent = 'No picture of ' + f.site + ' yet: the gate takes one at its next measurement. It does not allow itself inside another page.'; };
     const beside = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };
@@ -59,7 +59,7 @@
     // where each aspect stands, from the gate's last verdicts
     fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e, null, e.icons || null); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
       $('st').innerHTML = (fl.beaten ? '<b>surpassed</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : '');
-      // the matchup (skills/tower.js matchupHtml, the same as the tower card): the VS splash, one row per aspect with the gate's numbers, when it was measured, what is next
+      // the matchup (skills/tower.js matchupHtml, the same as the Versus card): the VS splash, one row per aspect with the gate's numbers, when it was measured, what is next
       $('vsum').textContent = 'The matchup: Verse vs ' + f.site + ' · ' + fl.n + ' of ' + fl.m + ' aspects ahead'; $('vsin').innerHTML = matchupHtml(fl, esc); $('vs').hidden = false; }).catch(() => {});
   }
 </script>

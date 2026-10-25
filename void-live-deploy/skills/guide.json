@@ -5518,15 +5518,15 @@
    "chapter": "self",
    "name": "tower",
    "title": "Tower",
-   "line": "\"the tower\", \"verse tower\", \"which sites have you beaten\": the only-site-you-need ladder",
+   "line": "Versus, the only-site-you-need ladder where Verse fights real sites: \"versus\", \"verse versus\", \"which sites have you beaten\" open it, and \"the tower\", \"verse tower\" still do",
    "examples": [
-    "the tower",
-    "verse tower",
-    "which sites have you surpassed"
+    "versus",
+    "verse versus",
+    "the versus"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "An old art of the verse itself, tested each day before the sun is up. Let the stage be the proof.",
+   "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
+   "flavor": "Asked 6 times in earnest, and never once left unanswered. Let the stage be the proof.",
    "glow": 100,
    "n": 298
   },
@@ -5949,7 +5949,7 @@
    ],
    "tier": "proven",
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Let the stage be the proof.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
    "n": 323
   },
@@ -6068,7 +6068,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Let the stage be the proof.",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
    "n": 330
   },
@@ -6151,7 +6151,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. It has not failed a reader yet.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
    "n": 335
   },
@@ -7091,11 +7091,11 @@
    "chapter": "minis",
    "name": "tower",
    "title": "Tower",
-   "line": "The tower as a thing: stacked floors rising from a dark base in deep space, one floor per site in tower order (the first conquest at the bottom)",
+   "line": "Versus in 3D: the ladder as a tower of stacked floors rising from a dark base in deep space, one floor per site in Versus order (the first conquest at the bottom)",
    "card": "Tower",
    "examples": [
-    "the tower",
-    "verse tower"
+    "versus",
+    "verse versus"
    ],
    "owner": "tower",
    "ownerPage": 298,
@@ -7716,7 +7716,7 @@
     {
      "rank": 49,
      "name": "tower",
-     "catches": "the tower"
+     "catches": "versus"
     },
     {
      "rank": 50,

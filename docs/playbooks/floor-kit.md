@@ -1,6 +1,8 @@
-# Floor kit: one site of the tower, from "next in the queue" to "gate dispatched", in minutes
+# Floor kit: one site of Versus, from "next in the queue" to "gate dispatched", in minutes
 
-**Starts when:** a builder (a person, an agent, Verse itself) takes the tower's next fight, or the owner names a site. The owner (2026-10-25): "build what you need to move faster so any agent can move ultra fast on the tower"; "we are just a little fish we eat little sites first"; "we dont have to test rival"; "each site should only take minutes to surpass".
+**The name (owner, 2026-10-25: "the tower rename is easy its versus"):** the ladder a person sees is Versus; `tower` stays in every identifier this playbook names (`lib/tower.js`, `tower-gate.yml`, `tower.shots/`, `tools/tower-probes.mjs`), and "the tower" still opens the card.
+
+**Starts when:** a builder (a person, an agent, Verse itself) takes the next fight of Versus, or the owner names a site. The owner (2026-10-25): "build what you need to move faster so any agent can move ultra fast on the tower"; "we are just a little fish we eat little sites first"; "we dont have to test rival"; "each site should only take minutes to surpass".
 
 **Why it is shaped this way:** a floor used to take an hour of reading (which aspects, which probe, which page, which workflow input) before any building. The kit reads it all out of the repo in one command and drafts the pieces that were being written by hand. It never loads the rival: the gate's own screenshot (`void-live-deploy/tower.shots/<site>.jpg`) and its verdicts are the whole picture of the site.
 
@@ -16,6 +18,6 @@
 4. **Test what you changed:** `node --test tools/floor-kit.test.mjs tools/tower.test.mjs tools/tower-gate.test.mjs`, the page's own test, a 390 px screenshot you read (what does it show, without its name?), `VOID_SKIP_BENCH=1 node tools/checks.mjs --changed`.
 5. **Ship** with a plain commit message (never one starting "Tower gate:"), push to main, dispatch the gate for the floor, read its rows with the kit again. Loop until the kit says "nothing left".
 
-**How to tell it worked:** `node tools/floor-kit.mjs <id>` reads every aspect `better` or `equal-and-better` and the card (`node tools/ask.mjs "the tower"`) lists the site as surpassed; the next run of the kit names the next site of the lane.
+**How to tell it worked:** `node tools/floor-kit.mjs <id>` reads every aspect `better` or `equal-and-better` and the Versus card (`node tools/ask.mjs "versus"`) lists the site as surpassed; the next run of the kit names the next site of the lane.
 
 **Mistakes made:** reading the rival's site by hand to write a probe (the gate's screenshot is enough, and the owner said not to); building the page and forgetting one registration (the checks name each: openapi for a new `/api/` route, preload, refresh, seo, MAP); dispatching the gate before the deploy was live (the page measures 0 of 3 loads and every row reads worse); starting a lane at its biggest site (little fish: the smallest site is the next fight, the leader is the last).

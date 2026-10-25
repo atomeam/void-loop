@@ -1,3 +1,4 @@
+// Versus (owner, 2026-10-25: "the tower rename is easy its versus"): the name a person reads; the identifiers keep `tower`.
 // Real sites (owner, 2026-10-22: "let's tackle real sites"): each floor is one named, real site, named in plain text only as a comparison
 // (nothing implying affiliation; Verse's own skills keep their own names). A site's own icon stands beside its name on the card (owner,
 // 2026-10-25: "should be the sites logos not whatever this is"): the gate keeps each site's favicon beside its screenshot (tower.icons/), so
@@ -176,5 +177,5 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
-/** the tower in one line: the site Verse is on now and how many it has conquered. Pure. */
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Tower: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead)' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+/** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead)' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };

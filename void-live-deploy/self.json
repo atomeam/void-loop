@@ -476,7 +476,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-24T21:42:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -484,7 +484,31 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T07:27:57Z",
+   "at": "2026-10-25T07:36:53Z",
+   "subject": "Incident: the browser suite failed on 9ca44e4a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T07:35:13Z",
+   "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T07:34:47Z",
+   "subject": "The tower card says when a newer Verse is live"
+  },
+  {
+   "at": "2026-10-25T07:34:03Z",
+   "subject": "Tower gate: translate: reverso.net,translate: bing.com,translate: deepl.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T07:31:25Z",
+   "subject": "Brands and famous characters are drawn like anything else"
+  },
+  {
+   "at": "2026-10-25T07:28:53Z",
+   "subject": "Verse fixes its cartoon skill: learn to handle \"make a 2d toon dog\""
+  },
+  {
+   "at": "2026-10-25T07:28:03Z",
    "subject": "/api/weather: a place and its forecast in one round trip, kept on the edge, so /weather/ draws at once"
   },
   {
@@ -538,34 +562,14 @@
   {
    "at": "2026-10-25T06:58:54Z",
    "subject": "Tower gate: translate: randomtranslator.com,translate: translate.com,translate: systransoft.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:54:50Z",
-   "subject": "Tower gate: translate: translator.eu,translate: onlinedoctranslator.com,translate: translatedict.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:53:15Z",
-   "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:52:22Z",
-   "subject": "Tower gate: translate: tradukka.com,weather,translate: freetranslations.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:51:37Z",
-   "subject": "Verse fixes its magnetize skill: learn to handle \"how do magnets work in motors\""
-  },
-  {
-   "at": "2026-10-25T06:51:00Z",
-   "subject": "The battle has faces: a VS splash and the matchup rows on the tower card and /compare/ (asked by the owner, 2026-10-25)"
-  },
-  {
-   "at": "2026-10-25T06:49:46Z",
-   "subject": "A page that marks itself busy is read by the gate once it is done; /weather/ says so while it fetches"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (Versus rename, 2026-10-25, 08:00)",
+    "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
+   },
    {
     "name": "Claude (tower session, 2026-10-25, 07:05)",
     "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
@@ -585,10 +589,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 05:00)",
     "line": "the photo resizer floor (pancardresizer.com) surpassed in one gate run after its probe: the gate puts its own one-pixel PNG into /resize-image/ with the size in the link (verseFile, PIXEL in tower-gate.mjs), 3 of 3 against the arithmetic…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25)",
-    "line": "the password strength floor (howsecureismypassword.net) surpassed in one gate run after its probe: qwerty123 typed into /password-strength/ (never in the address), 5 of 5 against the worked-out truth, crack time and reasons read off the…"
    }
   ],
   "ladders": [

@@ -20,7 +20,7 @@ test('one queue, easiest first: conquered sites, then the one with the fewest as
   // a site Verse is losing on is not easy to beat: an easier site is fought first, and the hard one stays in the queue
   assert.notEqual(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].id, FLOORS[4].id); assert.equal(t.floors[0].state, 'current');
   assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).state, 'ahead');
-  assert.match(towerLine(t), /^Tower: now [^ ]+ \(\d+ of \d+ aspects ahead\), 0 surpassed$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b/);
+  assert.match(towerLine(t), /^Versus: now [^ ]+ \(\d+ of \d+ aspects ahead\), 0 surpassed$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b|Tower/);
   ev[FLOORS[1].id].speed = { verdict: 'better', evidence: 'fixed' }; t = tower([], ev);
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); // its loss fixed, it falls
 });
@@ -42,11 +42,13 @@ test('no opponent downgrades: color-hex.com is a floor again, beside hexcolor16.
 test('verdicts come from numbers only', () => {
   assert.equal(verdict(100, 200), 'better'); assert.equal(verdict(3, 3, true), 'equal'); assert.equal(verdict(NaN, 1), 'unverified');
 });
-test('the tower skill answers its asks and not near misses', async () => {
+test('the tower skill answers its asks and not near misses; the card is headed Versus (owner, 2026-10-25) and every old "tower" ask still opens it', async () => {
   const { default: sk } = await import('../void-live-deploy/skills/tower.js');
   for (const a of sk.examples) assert.equal(sk.match(a.toLowerCase(), a), true, a);
+  for (const a of ['versus', 'Verse versus', 'the versus', 'show me versus', 'open versus', 'Versus?', 'the tower', 'verse tower', 'show me the tower']) assert.equal(sk.match(a.toLowerCase(), a), true, a);
   for (const a of sk.nearMisses) assert.equal(sk.match(a.toLowerCase(), a), false, a);
   const t = tower([], {}), h = sk.towerHtml(t, (s) => String(s));
+  assert.match(h, /<div class="tw-head">Versus<\/div>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
   assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.doesNotMatch(h, /<img|logo/i);

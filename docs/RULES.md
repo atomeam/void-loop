@@ -10,6 +10,15 @@ is never a cost to cut: Verse grows toward doing everything. Nothing is retired,
 salvage shelf because people did not use it or because there are many: real use only ever adds (an experiment opened on
 many days becomes a candidate for a core skill, `tools/lab-use.mjs`), it never takes away.
 
+## The ladder a person sees is Versus; the code keeps `tower` (owner, 2026-10-25)
+"the tower rename is easy its versus" and "just thought it was right there because Verse". Done the way V01D became Verse
+(`AGENTS.md`): everything a person reads says Versus (the card's head, the spoken line "Versus: now ...", /conquered/ and
+/compare/, the 3D miniature's label, the docs going forward), while the identifiers keep `tower` (`lib/tower.js`,
+`skills/tower.js`, `skills/mini/tower.js`, `tower-gate.yml`, `tower.evidence.json`, `tower.shots/`, `tower.icons/`,
+`tower.frontier.json`, the `tower` skill name, the `tower-floor` classes, `?v=ladder-NN`). Every ask that said "the tower"
+or "verse tower" still opens the card, beside "versus", "verse versus", "show me versus". "Floor" stays a floor. Old lines of
+the agent log, the ledger and the owner's quotes are not reworded.
+
 ## Only Verse's words are on the site (owner, 2026-10-18)
 
 The owner: "my quoted words shouldn't be on the site, only Verse's". Builders keep quoting the owner in the repo (build notes, the frontier, the append-only ledger and log): that is where a rule's source lives. What the site serves never carries those quotes: the deploy runs `tools/public-ledger.mjs` and `tools/public-quotes.mjs` on its own copy, and `tools/self-context.mjs` writes `self.json` without them (`tools/private.mjs` `quoteFree`). Do not put the owner's words in a string a visitor sees; say what Verse does instead.

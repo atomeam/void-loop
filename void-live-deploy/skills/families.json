@@ -2920,7 +2920,7 @@
     {
      "name": "tower",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-24",
      "last_tested_by": "its tests",
      "success_rate": 1,
