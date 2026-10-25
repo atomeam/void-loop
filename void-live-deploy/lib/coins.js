@@ -52,8 +52,10 @@ export function pickPhoto(json, side) {
 }
 /** both sides of a coin from Commons: { heads, tails } (tails falls back to the heads photo when no reverse is found), or null. */
 export async function findCoin(name, get = (u) => fetch(u).then((r) => r.json())) {
-  const [o, r] = await Promise.all([get(sideUrl(name, 'obverse')).catch(() => null), get(sideUrl(name, 'reverse')).catch(() => null)]);
-  const heads = pickPhoto(o, 'obverse') || pickPhoto(r, 'obverse');
+  let [o, r] = await Promise.all([get(sideUrl(name, 'obverse')).catch(() => null), get(sideUrl(name, 'reverse')).catch(() => null)]);
+  let heads = pickPhoto(o, 'obverse') || pickPhoto(r, 'obverse');
+  // a coin whose photos never say obverse, reverse or coin (the Canadian Gold Maple Leaf): its name alone, the side read from the file names
+  if (!heads) { const plain = await get(API + encodeURIComponent(name + ' filetype:bitmap')).catch(() => null); heads = pickPhoto(plain, 'obverse'); if (heads) r = r || plain; if (heads && !pickPhoto(r, 'reverse')) r = plain; }
   if (!heads) return null;
   let tails = pickPhoto(r, 'reverse'); if (!tails || tails.src === heads.src) tails = pickPhoto(o, 'reverse');
   const own = tails && tails.src !== heads.src;

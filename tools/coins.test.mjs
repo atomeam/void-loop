@@ -23,6 +23,9 @@ test('the photo for each side: a JPEG or PNG, the one named for the side first; 
   const own = await findCoin('x', async (u) => (/obverse/.test(decodeURIComponent(u)) ? { query: { pages: { a: wide(1, 'File:X obverse.jpg') } } } : { query: { pages: { b: page(2, 'File:X reverse.jpg') } } }));
   assert.equal(own.heads.half, 'left'); assert.equal(own.tails.half, null, 'its own narrow reverse photo is shown whole');
   assert.equal(await findCoin('x', async () => ({})), null);
+  // nothing under obverse or reverse: the name alone finds it, heads and tails told apart by their file names
+  const plain = await findCoin('maple', async (u) => (/obverse|reverse/.test(decodeURIComponent(u)) ? {} : { query: { pages: { a: page(1, 'File:Maple leaf 2014 front.jpg'), b: page(2, 'File:Maple leaf 2014 back.jpg') } } }));
+  assert.equal(plain.heads.src, 'https://u/1'); assert.equal(plain.tails.src, 'https://u/2');
   assert.match(decodeURIComponent(sideUrl('Lydian stater', 'reverse')), /origin=\*.*Lydian stater reverse coin filetype:bitmap/);
 });
 test('a made coin keeps only what is safe: a known metal, short sides, no markup, photos only as small data URLs', () => {
