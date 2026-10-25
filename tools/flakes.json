@@ -110,5 +110,15 @@
   {"check": "look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pop", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
   {"check": "suite ran to the end", "sha": "97f7a0d2277487a373af88f5a3261a6affd01019", "at": "2026-10-24T04:12:59Z"},
   {"check": "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; ", "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1", "at": "2026-10-24T04:35:06Z"},
-  {"check": "suite ran to the end", "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1", "at": "2026-10-24T04:35:06Z"}
+  {"check": "suite ran to the end", "sha": "d2cb96099515dc75af5bb076b3ac63fb3905f5b1", "at": "2026-10-24T04:35:06Z"},
+  {"check": "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "paid: signed out, a price question says the membership line AND opens the services card under it", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "worldtime: takes no other skill's examples (collision)", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in pa", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"},
+  {"check": "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract", "sha": "ec74e1145b621e108c6c3217f37e37ccba412b72", "at": "2026-10-25T06:31:09Z"}
 ]
