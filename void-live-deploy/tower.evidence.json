@@ -5783,67 +5783,67 @@
   "recipes: delish.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 89,
-    "best": 389,
-    "evidence": "Verse (/recipes/?q=pancakes) 89 ms to the load event (median of 3, phone width) vs delish.com 389 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:31:50.873Z"
+    "verse": 131,
+    "best": 387,
+    "evidence": "Verse (/recipes/?q=pancakes) 131 ms to the load event (median of 3, phone width) vs delish.com 387 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs delish.com 3 of 3 loads answered",
-    "at": "2026-10-25T08:31:50.873Z"
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs delish.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:31:50.873Z"
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs delish.com 0 unnamed controls or images",
-    "at": "2026-10-25T08:31:50.873Z"
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs delish.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:31:50.873Z"
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs delish.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:31:50.873Z"
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not delish.com (the site is not asked)",
-    "at": "2026-10-25T08:31:50.873Z",
+    "at": "2026-10-25T08:32:31.828Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 8,
-    "best": 26,
-    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs delish.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), delish.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:31:50.873Z"
+    "best": 25,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs delish.com 25 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), delish.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:32:31.828Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs delish.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:31:50.873Z",
+    "at": "2026-10-25T08:32:31.828Z",
     "of": 1,
     "part": true
    },
@@ -5852,7 +5852,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs delish.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:31:50.873Z",
+    "at": "2026-10-25T08:32:31.828Z",
     "of": 1,
     "part": true
    },
@@ -5861,7 +5861,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs delish.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:31:50.873Z",
+    "at": "2026-10-25T08:32:31.828Z",
     "of": 1,
     "part": true
    },
@@ -5870,74 +5870,74 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs delish.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:31:50.873Z",
+    "at": "2026-10-25T08:32:31.828Z",
     "of": 14
    }
   },
   "recipes: cookpad.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 137,
-    "best": 355,
-    "evidence": "Verse (/recipes/?q=pancakes) 137 ms to the load event (median of 3, phone width) vs cookpad.com 355 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:32:23.954Z"
+    "verse": 151,
+    "best": 321,
+    "evidence": "Verse (/recipes/?q=pancakes) 151 ms to the load event (median of 3, phone width) vs cookpad.com 321 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs cookpad.com 3 of 3 loads answered",
-    "at": "2026-10-25T08:32:23.954Z"
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs cookpad.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:32:23.954Z"
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs cookpad.com 0 unnamed controls or images",
-    "at": "2026-10-25T08:32:23.954Z"
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "offline": {
-    "verdict": "better",
-    "verse": 1,
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs cookpad.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:32:23.954Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 0 (1: the page shows itself again with the network cut) vs cookpad.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs cookpad.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:32:23.954Z"
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not cookpad.com (the site is not asked)",
-    "at": "2026-10-25T08:32:23.954Z",
+    "at": "2026-10-25T08:33:07.942Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
-    "verse": 8,
-    "best": 26,
-    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs cookpad.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), cookpad.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:32:23.954Z"
+    "verse": 1,
+    "best": 25,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs cookpad.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), cookpad.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:33:07.942Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs cookpad.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:32:23.954Z",
+    "at": "2026-10-25T08:33:07.942Z",
     "of": 1,
     "part": true
    },
@@ -5946,7 +5946,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs cookpad.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:32:23.954Z",
+    "at": "2026-10-25T08:33:07.942Z",
     "of": 1,
     "part": true
    },
@@ -5955,7 +5955,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs cookpad.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:32:23.954Z",
+    "at": "2026-10-25T08:33:07.942Z",
     "of": 1,
     "part": true
    },
@@ -5964,74 +5964,74 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs cookpad.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:32:23.954Z",
+    "at": "2026-10-25T08:33:07.942Z",
     "of": 14
    }
   },
   "recipes: yummly.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 167,
-    "best": 362,
-    "evidence": "Verse (/recipes/?q=pancakes) 167 ms to the load event (median of 3, phone width) vs yummly.com 362 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:32:59.185Z"
+    "verse": 154,
+    "best": 313,
+    "evidence": "Verse (/recipes/?q=pancakes) 154 ms to the load event (median of 3, phone width) vs yummly.com 313 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs yummly.com 3 of 3 loads answered",
-    "at": "2026-10-25T08:32:59.185Z"
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs yummly.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:32:59.185Z"
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs yummly.com 0 unnamed controls or images",
-    "at": "2026-10-25T08:32:59.185Z"
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 (1: the page shows itself again with the network cut) vs yummly.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:32:59.185Z"
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs yummly.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:32:59.185Z"
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not yummly.com (the site is not asked)",
-    "at": "2026-10-25T08:32:59.185Z",
+    "at": "2026-10-25T08:33:38.612Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
-    "best": 26,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs yummly.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), yummly.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:32:59.185Z"
+    "best": 25,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs yummly.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), yummly.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:33:38.612Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:32:59.185Z",
+    "at": "2026-10-25T08:33:38.612Z",
     "of": 1,
     "part": true
    },
@@ -6040,7 +6040,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:32:59.185Z",
+    "at": "2026-10-25T08:33:38.612Z",
     "of": 1,
     "part": true
    },
@@ -6049,7 +6049,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:32:59.185Z",
+    "at": "2026-10-25T08:33:38.612Z",
     "of": 1,
     "part": true
    },
@@ -6058,7 +6058,7 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs yummly.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:32:59.185Z",
+    "at": "2026-10-25T08:33:38.612Z",
     "of": 14
    }
   }
