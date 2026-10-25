@@ -565,7 +565,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T02:21:26.808Z"
+    "at": "2026-10-25T02:27:55.668Z"
    }
   },
   "encoder": {
@@ -723,59 +723,59 @@
   "time zones": {
    "speed": {
     "verdict": "better",
-    "verse": 124,
-    "best": 454,
-    "evidence": "Verse (/time/?c=Tokyo) 124 ms to the load event (median of 3, phone width) vs timeanddate.com 454 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T00:51:22.410Z"
+    "verse": 170,
+    "best": 640,
+    "evidence": "Verse (/time/?c=Tokyo) 170 ms to the load event (median of 3, phone width) vs timeanddate.com 640 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "reliability": {
-    "verdict": "unverified",
+    "verdict": "better",
     "verse": 3,
-    "best": 0,
-    "evidence": "timeanddate.com answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T01:05:25.145Z"
+    "best": 2,
+    "evidence": "Verse (/time/?c=Tokyo) 3 of 3 loads answered vs timeanddate.com 2 of 3 loads answered",
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 0 px sideways overflow at 390 px vs timeanddate.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T00:51:22.410Z"
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 0 unnamed controls or images vs timeanddate.com 0 unnamed controls or images",
-    "at": "2026-10-25T00:51:22.410Z"
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 1 (1: the page shows itself again with the network cut) vs timeanddate.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T00:51:22.410Z"
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/time/?c=Tokyo) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs timeanddate.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T00:51:22.410Z"
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
-    "best": 34,
-    "evidence": "Verse (/time/?c=Tokyo) 1 design defects vs timeanddate.com 34 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.53), timeanddate.com (0 low-contrast texts, 34 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T00:51:22.410Z"
+    "best": 35,
+    "evidence": "Verse (/time/?c=Tokyo) 1 design defects vs timeanddate.com 35 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.84), timeanddate.com (0 low-contrast texts, 35 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T02:27:19.016Z"
    },
    "accuracy": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 0,
-    "evidence": "Verse (/time/?c=Tokyo) 3 of 3 checked facts right for the same question vs timeanddate.com 0 of 3 checked facts right for the same question (Verse missed: none; site missed: the time in Tokyo now, to the minute, Tokyo's date today, UTC+9)",
-    "at": "2026-10-25T00:51:22.410Z",
+    "best": 3,
+    "evidence": "Verse (/time/?c=Tokyo) 3 of 3 checked facts right for the same question vs timeanddate.com 3 of 3 checked facts right for the same question",
+    "at": "2026-10-25T02:27:19.016Z",
     "of": 3
    },
    "world time": {
@@ -783,7 +783,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/time/?c=Tokyo) 2 of 2 shown vs timeanddate.com 1 of 2 shown (Verse lacks: none; site lacks: the UTC offset)",
-    "at": "2026-10-25T00:51:22.410Z",
+    "at": "2026-10-25T02:27:19.016Z",
     "of": 2,
     "part": true
    },
@@ -792,17 +792,17 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/time/?c=Tokyo) 2 of 2 shown vs timeanddate.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T00:51:22.410Z",
+    "at": "2026-10-25T02:27:19.016Z",
     "of": 2,
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 10,
-    "best": 10,
-    "evidence": "Verse (/time/?c=Tokyo) 10 of 11 things a full answer shows vs timeanddate.com 10 of 11 things a full answer shows (Verse lacks: sunrise and sunset; site lacks: the UTC offset)",
-    "at": "2026-10-25T00:51:22.410Z",
-    "of": 11
+    "verdict": "better",
+    "verse": 13,
+    "best": 11,
+    "evidence": "Verse (/time/?c=Tokyo) 13 of 13 things a full answer shows vs timeanddate.com 11 of 13 things a full answer shows (Verse lacks: none; site lacks: the UTC offset, solar noon)",
+    "at": "2026-10-25T02:27:19.016Z",
+    "of": 13
    }
   },
   "codebase": {
@@ -1833,7 +1833,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T02:23:15.088Z"
+    "at": "2026-10-25T02:29:37.298Z"
    }
   }
  }
