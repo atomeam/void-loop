@@ -89,7 +89,8 @@
      "detail": "",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "2026-10-25: a Location on every event (editor #eLoc), shown with a Map link to OpenStreetMap; written to and read from .ics as LOCATION (lib/calendar.js)"
+     "verse_evidence": "2026-10-25: a Location on every event (editor #eLoc), shown with a Map link to OpenStreetMap; written to and read from .ics as LOCATION (lib/calendar.js)",
+     "shows": "location with a map link"
     },
     {
      "name": "Video meeting link (Meet)",
