@@ -484,8 +484,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T15:13:38Z",
+   "at": "2026-10-25T15:17:29Z",
+   "subject": "Notes and generators get their stage cards and links both ways"
+  },
+  {
+   "at": "2026-10-25T15:17:29Z",
    "subject": "Every tool page links to its card on the stage, and every tool page has a card that links back"
+  },
+  {
+   "at": "2026-10-25T15:15:43Z",
+   "subject": "Generators open offline: static imports (cached with the page) and a hold-paint timeout"
+  },
+  {
+   "at": "2026-10-25T15:14:51Z",
+   "subject": "Deploys run side by side: one group per run, a run stops itself when a newer head's deploy is on its way"
+  },
+  {
+   "at": "2026-10-25T15:14:29Z",
+   "subject": "Tower gate: docs and notes: anotepad.com,random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators…"
   },
   {
    "at": "2026-10-25T15:11:33Z",
@@ -546,22 +562,6 @@
   {
    "at": "2026-10-25T14:49:55Z",
    "subject": "A deploy re-measures every floor on the page it changed"
-  },
-  {
-   "at": "2026-10-25T14:49:22Z",
-   "subject": "Tower gate: docs and notes measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:49:03Z",
-   "subject": "Incident: the browser suite failed on 6ffc4ead (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T14:48:05Z",
-   "subject": "Tower gate: calendar: any.do,calendar: cozi.com,calendar: proton.me,calendar measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:48:00Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
   }
  ],
  "builders": {

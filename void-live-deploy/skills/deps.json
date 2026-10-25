@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 792,
+ "counted": 794,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -934,6 +934,13 @@
    "tests": 1
   },
   {
+   "file": "lib/notes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
@@ -1005,6 +1012,13 @@
   },
   {
    "file": "lib/calc-more.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/chat-notes.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1894,13 +1908,6 @@
   },
   {
    "file": "lib/md.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/notes.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3387,6 +3394,14 @@
     "skills/walker.js"
    ]
   },
+  "lib/chat-notes.js": {
+   "imports": [
+    "lib/notes.js"
+   ],
+   "importedBy": [
+    "skills/notes-fill.js"
+   ]
+  },
   "lib/chess-replay.js": {
    "imports": [],
    "importedBy": [
@@ -4799,7 +4814,10 @@
   },
   "lib/notes.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/chat-notes.js",
+    "skills/notes-fill.js"
+   ]
   },
   "lib/observations.js": {
    "imports": [],
@@ -8851,6 +8869,13 @@
     "skills/list-tools.js",
     "skills/othello.js"
    ]
+  },
+  "skills/notes-fill.js": {
+   "imports": [
+    "lib/notes.js",
+    "lib/chat-notes.js"
+   ],
+   "importedBy": []
   },
   "skills/noun-heat.js": {
    "imports": [

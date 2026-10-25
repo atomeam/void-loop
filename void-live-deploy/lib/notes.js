@@ -115,11 +115,11 @@ export function importText(name, text) {
 export const uid = (now = Date.now(), r = Math.random()) => now.toString(36) + Math.floor(r * 1e6).toString(36);
 export function newDoc(now = Date.now(), over = {}) { return { id: uid(now), title: '', html: '', updated: now, versions: [], ...over, html: clean(over.html || '') }; }
 export function withDoc(docs, doc) { const a = (docs || []).filter((d) => d.id !== doc.id); a.unshift(doc); return a; }
-export function sorted(docs) { return [...(docs || [])].sort((a, b) => b.updated - a.updated); }
+export function sorted(docs) { return [...(docs || [])].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.updated - a.updated); }
 /** the stored value cleaned: only documents with an id, bodies cleaned, versions an array. */
 export function load(raw) {
   let v = raw; if (typeof raw === 'string') { try { v = JSON.parse(raw); } catch (_) { v = null; } }
-  const docs = ((v && v.docs) || []).filter((d) => d && d.id).map((d) => ({ id: String(d.id), title: String(d.title || ''), html: clean(d.html || ''), updated: +d.updated || 0, versions: Array.isArray(d.versions) ? d.versions.filter((x) => x && x.t).map((x) => ({ t: +x.t, title: String(x.title || ''), html: clean(x.html || '') })) : [] }));
+  const docs = ((v && v.docs) || []).filter((d) => d && d.id).map((d) => ({ id: String(d.id), title: String(d.title || ''), html: clean(d.html || ''), updated: +d.updated || 0, ...(d.pinned ? { pinned: true } : {}), ...(Array.isArray(d.tags) && d.tags.length ? { tags: d.tags.map((x) => String(x).slice(0, 30)).slice(0, 20) } : {}), versions: Array.isArray(d.versions) ? d.versions.filter((x) => x && x.t).map((x) => ({ t: +x.t, title: String(x.title || ''), html: clean(x.html || '') })) : [] }));
   return { docs, cur: v && v.cur && docs.some((d) => d.id === v.cur) ? v.cur : docs.length ? sorted(docs)[0].id : null };
 }
 

@@ -295,6 +295,7 @@
       const n = N.quickNote(q.get('q'));
       if (n) { const had = store.docs.find((d) => d.title === n.title && d.html === N.clean(n.html)); if (had) store.cur = had.id; else { const e = cur(); if (e && !e.title && !e.html) { put({ ...e, ...n, html: N.clean(n.html), updated: now() }); } else blank(n); } keep(); }
     }
+    if (q.get('id') && store.docs.some((d) => d.id === q.get('id'))) store.cur = q.get('id'); // a link from the stage's card (skills/notes-fill.js)
     show(cur()); drawList();
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); document.documentElement.classList.remove('pre');
