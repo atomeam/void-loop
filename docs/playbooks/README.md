@@ -22,6 +22,7 @@ Each playbook is one kind of work a builder did by hand, written so Verse's own 
 | [rules-engine.md](rules-engine.md) | a game's rules as a data rule set that stacks with every other (frontier #35) | not yet |
 | [inbox-health.md](inbox-health.md) | a skill-health line, map or job in the growth inbox, from files the repo already writes | not yet |
 | [real-movies.md](real-movies.md) | a movie pick that names only found movies, with their poster as art, playing only free legal films and official trailers | not yet |
+| [tower-loop.md](tower-loop.md) | one tower floor driven to conquered: the gap read from the gate's evidence, the page or the gate fixed, the verdict read back | an hourly scheduled run (a fresh session each hour) follows it |
 | [build-voice-asks.md](build-voice-asks.md) | Verse's own asks from `domains/void.voice.md`: group repeats, check what is built, record or ship one small PR each | not yet |
 | [make-music.md](make-music.md) | an original short piece of music composed from an ask and synthesised in the browser (song, beat, lullaby), with a piano roll, WAV and notes | not yet |
 | [stage-mode.md](stage-mode.md) | a mode over the whole stage (the camera of "fly around": pure maths in `lib/`, a skill that owns the HUD, the keys and Esc, the view never the state) | not yet |
