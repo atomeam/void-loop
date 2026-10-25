@@ -5826,5 +5826,6 @@
   {"at": "2026-10-25T02:43:01Z", "by": "verse", "kind": "fix", "what": "Verse fixes its poster skill: learn to handle \"make a cyberpunk poster\"", "try": "make a cyberpunk poster"},
   {"at": "2026-10-25T04:52:39Z", "by": "claude", "kind": "grow", "what": "The 3D calculator comes in five Verse models that take turns on new cards: SL-200 SOLAR pocket, FX-900 SCIENTIFIC, DT-12 DESK printing, RP-11 FINANCIAL, GX-84 GRAPHING; each badge says VERSE, the model and what kind it is, and the keys work by hand on every one", "show": "each new calculator card is the next Verse model, five in a cycle", "try": "open a calculator"},
   {"at": "2026-10-25T05:46:19Z", "by": "verse", "kind": "fix", "what": "Verse fixes its figure skill: learn to handle \"low poly wolf\"", "try": "low poly wolf"},
-  {"at": "2026-10-25T06:25:18Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"how to print a bolt\"", "try": "how to print a bolt"}
+  {"at": "2026-10-25T06:25:18Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"how to print a bolt\"", "try": "how to print a bolt"},
+  {"at": "2026-10-25T06:44:49Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do magnets work in motors\"", "try": "how do magnets work in motors"}
 ]

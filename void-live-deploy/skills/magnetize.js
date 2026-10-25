@@ -14,6 +14,7 @@ export function magnetizeOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:please\s+)?(?:show\s+)?(?:me\s+)?the magnetize step$/i.test(t)) return true;
   if (/^(?:how do I|how to) magnetize (?:a printed motor|this|it)$/i.test(t)) return true;
+  if (/^how do (?:magnets|magnetism) work in (?:motors|motor)$/i.test(t)) return true;
   if (/^magnetize a printed motor$/i.test(t)) return true;
   if (/^figure-scale benchtop magnetize$/i.test(t)) return true;
   return false;
