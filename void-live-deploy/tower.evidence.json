@@ -122,69 +122,68 @@
   },
   "coin flip": {
    "speed": {
-    "verdict": "worse",
-    "verse": 177,
-    "best": 148,
-    "evidence": "Verse (/flip/) 177 ms to the load event (median of 3, phone width) vs justflipacoin.com 148 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:10:19.801Z",
-    "was": "better"
+    "verdict": "better",
+    "verse": 152,
+    "best": 186,
+    "evidence": "Verse (/flip/) 152 ms to the load event (median of 3, phone width) vs justflipacoin.com 186 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:10:19.801Z"
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-24T16:10:19.801Z"
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:10:19.801Z"
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:10:19.801Z"
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:10:19.801Z"
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/flip/) 3 of 3 things a full answer shows vs justflipacoin.com 2 of 3 things a full answer shows (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-24T16:10:19.801Z",
+    "at": "2026-10-25T00:00:01.385Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 3,
-    "best": 11,
-    "evidence": "Verse (/flip/) 3 design defects vs justflipacoin.com 11 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.03), justflipacoin.com (2 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:10:19.801Z"
+    "best": 12,
+    "evidence": "Verse (/flip/) 3 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.05), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T00:00:01.385Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-24T16:10:19.801Z",
+    "at": "2026-10-25T00:00:01.385Z",
     "of": 1,
     "part": true
    }
@@ -192,67 +191,67 @@
   "random number": {
    "speed": {
     "verdict": "better",
-    "verse": 122,
-    "best": 230,
-    "evidence": "Verse (/random/?min=1&max=100) 122 ms to the load event (median of 3, phone width) vs random.org 230 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:34:38.097Z"
+    "verse": 97,
+    "best": 195,
+    "evidence": "Verse (/random/?min=1&max=100) 97 ms to the load event (median of 3, phone width) vs random.org 195 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-24T16:34:38.097Z"
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:34:38.097Z"
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-24T16:34:38.097Z"
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:34:38.097Z"
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:34:38.097Z"
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
     "best": 4,
     "evidence": "Verse (/random/?min=1&max=100) 10 of 10 things a full answer shows vs random.org 4 of 10 things a full answer shows (Verse lacks: none; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base)",
-    "at": "2026-10-24T16:34:38.097Z",
+    "at": "2026-10-25T00:00:12.740Z",
     "of": 10
    },
    "design polish": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 0,
     "best": 29,
-    "evidence": "Verse (/random/?min=1&max=100) 3 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:34:38.097Z"
+    "evidence": "Verse (/random/?min=1&max=100) 0 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.06), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T00:00:12.740Z"
    },
    "range choice": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 shown vs random.org 1 of 3 shown (Verse lacks: none; site lacks: how many, no repeats)",
-    "at": "2026-10-24T16:34:38.097Z",
+    "at": "2026-10-25T00:00:12.740Z",
     "of": 3,
     "part": true
    },
@@ -261,7 +260,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 1 of 1 checked facts right for the same question vs random.org 1 of 1 checked facts right for the same question",
-    "at": "2026-10-24T16:34:38.097Z",
+    "at": "2026-10-25T00:00:12.740Z",
     "of": 1
    },
    "true randomness": {
@@ -269,7 +268,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 2 of 2 shown vs random.org 1 of 2 shown (Verse lacks: none; site lacks: a draw others can check)",
-    "at": "2026-10-24T16:34:38.097Z",
+    "at": "2026-10-25T00:00:12.740Z",
     "of": 2,
     "part": true
    }
@@ -362,59 +361,59 @@
   "stopwatch": {
    "speed": {
     "verdict": "better",
-    "verse": 132,
-    "best": 1873,
-    "evidence": "Verse (/stopwatch/) 132 ms to the load event (median of 3, phone width) vs online-stopwatch.com 1873 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T23:39:58.819Z"
+    "verse": 172,
+    "best": 3102,
+    "evidence": "Verse (/stopwatch/) 172 ms to the load event (median of 3, phone width) vs online-stopwatch.com 3102 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 0 px sideways overflow at 390 px vs online-stopwatch.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T23:39:58.819Z"
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/stopwatch/) 0 unnamed controls or images vs online-stopwatch.com 1 unnamed controls or images",
-    "at": "2026-10-24T23:39:58.819Z"
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/stopwatch/) 3 of 3 loads answered vs online-stopwatch.com 3 of 3 loads answered",
-    "at": "2026-10-24T23:39:58.819Z"
+    "best": 1,
+    "evidence": "Verse (/stopwatch/) 3 of 3 loads answered vs online-stopwatch.com 1 of 3 loads answered",
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 (1: the page shows itself again with the network cut) vs online-stopwatch.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T23:39:58.819Z"
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/stopwatch/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs online-stopwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T23:39:58.819Z"
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse (/stopwatch/) 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.02)",
-    "at": "2026-10-24T23:39:58.819Z"
+    "evidence": "Verse (/stopwatch/) 0 design defects vs online-stopwatch.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), online-stopwatch.com (0 low-contrast texts, 7 small tap targets, layout shift 0.01)",
+    "at": "2026-10-24T23:54:54.164Z"
    },
    "alarms": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: an alarm)",
-    "at": "2026-10-24T23:39:58.819Z",
+    "at": "2026-10-24T23:54:54.164Z",
     "of": 1,
     "part": true
    },
@@ -423,7 +422,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/stopwatch/) 1 of 1 shown vs online-stopwatch.com 0 of 1 shown (Verse lacks: none; site lacks: laps)",
-    "at": "2026-10-24T23:39:58.819Z",
+    "at": "2026-10-24T23:54:54.164Z",
     "of": 1,
     "part": true
    },
@@ -432,15 +431,16 @@
     "verse": 10,
     "best": 2,
     "evidence": "Verse (/stopwatch/) 10 of 10 things a full answer shows vs online-stopwatch.com 2 of 10 things a full answer shows (Verse lacks: none; site lacks: laps, fastest and slowest lap, alarm, presets, keyboard shortcuts, pause and resume, share a timer, keeps time in a background tab)",
-    "at": "2026-10-24T23:39:58.819Z",
+    "at": "2026-10-24T23:54:54.164Z",
     "of": 10
    },
    "accuracy": {
-    "verdict": "unverified",
+    "verdict": "better",
     "verse": 2,
-    "best": 2,
-    "evidence": "Verse (/stopwatch/) 2 of 2 right on a 3 s run timed by the gate; the gate could not start or read online-stopwatch.com's clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win",
-    "at": "2026-10-24T23:39:58.819Z"
+    "best": 0,
+    "evidence": "Verse (/stopwatch/) 2 of 2 checked facts right for the same question vs online-stopwatch.com 0 of 2 checked facts right for the same question (Verse missed: none; site missed: the time shown is the real length of the run, to its last digit plus 0.3 s, it holds still once stopped)",
+    "at": "2026-10-24T23:54:54.164Z",
+    "of": 2
    }
   },
   "unit converter": {
