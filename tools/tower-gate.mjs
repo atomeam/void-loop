@@ -253,7 +253,11 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
         }
         return moved ? out.join('\n' + FLIPPED + '\n') : null;
       }
-      if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
+      if (!type) { // a page that answers after a network call (the weather, a translation): read once its text has stopped changing, up to 12 s more
+        // (weather was read at 3 s with "Looking…" on it and scored 1 of 5 for an answer that landed a moment later)
+        let r = await read(), t0 = Date.now();
+        for (;;) { await p.waitForTimeout(800); const n = await read().catch(() => r); const same = n.text === r.text; r = n; if (same || Date.now() - t0 > 12000) break; }
+        return r.text + '\n' + r.boxes; }
       // a cookie or consent wall in front of the page is accepted first, as a person does, so the typing and the press below land on the page
       const wall = p.locator('button:visible, [role=button]:visible, a:visible').filter({ hasText: /^\s*(?:accept(?: all)?(?: cookies)?|i agree|agree(?: and continue)?|allow all|got it|ok(?:ay)?|consent|continue)\s*[!.]?\s*$/i }).first();
       if (await wall.count().catch(() => 0)) { await wall.click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(500); }

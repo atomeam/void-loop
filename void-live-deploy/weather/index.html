@@ -92,7 +92,7 @@
       $('radar').innerHTML = '<p class="note">Radar loop from ' + esc(st) + ', the nearest weather service radar.</p><img src="' + esc(radarLoop(st)) + '" alt="Radar loop from ' + esc(st) + ', the weather service\'s nearest radar to ' + esc(loc.name.split(',')[0]) + '" loading="lazy">'; }).catch(() => { $('radar').textContent = 'The weather service did not name a radar for this place just now.'; });
   }
   async function look(place, coords) {
-    $('status').textContent = 'Looking…';
+    $('status').textContent = 'Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset…';
     try {
       let loc = coords || null;
       if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
