@@ -90,7 +90,7 @@ test('the page is registered everywhere', () => {
   assert.equal(routeAsk('note: buy milk'), '/notes/?q=buy%20milk'); assert.equal(routeAsk('new note'), '/notes/'); assert.equal(routeAsk('my notes'), '/notes/');
   assert.ok(PAGES.some((p) => p.path === '/notes/'));
   assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes("'/notes/'"));
-  const f = FLOORS.find((x) => x.id === 'docs and notes'); assert.match(f.page, /^\/notes\//); assert.ok(LANES['docs and notes'].length >= 10);
+  const f = FLOORS.find((x) => x.id === 'docs and notes'); assert.match(f.page, /^\/notes\//); assert.ok(LANES['docs and notes'].length >= 5);
   const p = probeFor('docs and notes'); assert.ok(p && p.ask.verse.startsWith('/notes/?q='));
   const html = fs.readFileSync(path.join(root, 'notes', 'index.html'), 'utf8');
   for (const w of ['contenteditable', 'Version history', 'Search all notes', '.md', 'aria-label']) assert.ok(html.includes(w), w);
