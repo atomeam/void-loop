@@ -1,0 +1,205 @@
+{
+ "floor": "jobs",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "linkedin.com/jobs": {
+   "sources": [
+    "https://www.linkedin.com/jobs/",
+    "https://www.linkedin.com/help/linkedin/answer/110912",
+    "https://www.linkedin.com/help/linkedin/topics/6058/6059",
+    "https://www.linkedin.com/premium/products/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Job search",
+     "detail": "Keyword and location search over millions of listings",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/work.js: remote jobs from Remotive (keyless), a calm listing with a check-yourself line, \"find me work as a designer\"; remote jobs only, one source"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Date posted, experience level, job type, remote/hybrid/on-site, company, industry, salary, Easy Apply, under 10 applicants",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Job detail page",
+     "detail": "Description, company, salary range, applicants count, skills match, how you connect",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "work.js lists title, company and link out"
+    },
+    {
+     "group": "core",
+     "name": "Easy Apply",
+     "detail": "Apply in a few steps with LinkedIn profile and saved resume",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Apply on company site",
+     "detail": "Link out to employer ATS",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "work.js links each job to its listing"
+    },
+    {
+     "group": "core",
+     "name": "Saved jobs",
+     "detail": "Save and come back; My Jobs tracks saved, applied, in progress, archived",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Job alerts",
+     "detail": "Daily/weekly email and push alerts for a saved search (about 10 for free)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Profile and resume",
+     "detail": "Profile as CV, uploaded resumes, Open to Work signal",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Recommended jobs",
+     "detail": "Jobs matched to profile and activity, \"top job picks\"",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Skills match and qualification check",
+     "detail": "How your skills match the posting",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Company pages and Life tab",
+     "detail": "Company info, employees, jobs, insights",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Salary insights",
+     "detail": "Salary ranges by title and place",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Network connections at company",
+     "detail": "See who you know and alumni",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Application tracking",
+     "detail": "Status of applications, viewed by employer notices",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Interview prep",
+     "detail": "Practice questions and AI feedback",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "AI job search",
+     "detail": "Search in natural language (\"remote marketing jobs at climate startups\")",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "work.js reads a plain-words ask"
+    },
+    {
+     "group": "power",
+     "name": "Job scam caution",
+     "detail": "Verification badges on companies and recruiters",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "work.js adds a plain check-yourself line, no fake scam score"
+    },
+    {
+     "group": "sharing",
+     "name": "Share a job",
+     "detail": "Share listing in messages or a post; refer a friend",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Message recruiters",
+     "detail": "InMail and messages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "App with alerts and Easy Apply",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible site",
+     "detail": "Screen reader, keyboard nav",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Premium Career",
+     "detail": "Applicant insights, InMail credits, who viewed profile, top applicant jobs, AI writing help",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "search across several keyless job sources (Remotive, Arbeitnow, Himalayas, USAJOBS)",
+  "filters: remote, type, posted date, salary",
+  "saved jobs and an application tracker on the device",
+  "saved searches with \"new since you last looked\"",
+  "job detail view"
+ ],
+ "verse_extra": [
+  "no account, no tracking, no fake scam score",
+  "remote jobs from a plain-words ask"
+ ],
+ "first_page": "Jobs page /jobs/ for job seekers who want listings without a profile. First: one search across keyless public job feeds with filters (remote, type, date, salary when given), a detail view, save and a tracker (saved, applied, interview, offer) kept on the device, and saved searches that mark what is new. Will not build: profiles, Easy Apply, recruiter messaging or paid insights."
+}
