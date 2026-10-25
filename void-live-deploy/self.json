@@ -483,6 +483,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T00:06:56Z",
+   "subject": "The tower gate can read a site that draws its answer: a screenshot read with Tesseract, and a timed stopwatch run that finds Start in any…"
+  },
+  {
+   "at": "2026-10-25T00:00:24Z",
+   "subject": "Tower gate: stopwatch,coin flip,random number measured against their live sites"
+  },
+  {
    "at": "2026-10-24T23:52:57Z",
    "subject": "The tools are tied together: a \"Use with\" row on every tool page carries what is on it into the next tool, one accent colour and one…"
   },
@@ -553,14 +561,6 @@
   {
    "at": "2026-10-24T19:26:42Z",
    "subject": "Incident: the browser suite failed on bf1cdef9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-24T19:25:52Z",
-   "subject": "Tower gate: stopwatch,random user,password measured against their live sites"
-  },
-  {
-   "at": "2026-10-24T19:19:12Z",
-   "subject": "randomuser.me, design polish: the country and field checkboxes are 24 px tap targets"
   }
  ],
  "builders": {
