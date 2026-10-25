@@ -475,7 +475,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T21:42:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -483,7 +483,51 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T03:12:37Z",
+   "at": "2026-10-25T03:48:19Z",
+   "subject": "The tower gate gets a boxed answer out of a site the way a person does, and says what it saw when it cannot; the encoder floor gets its…"
+  },
+  {
+   "at": "2026-10-25T03:47:44Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:42:57Z",
+   "subject": "Handoff: a tower run takes the encoder floor"
+  },
+  {
+   "at": "2026-10-25T03:42:27Z",
+   "subject": "Incident: the browser suite failed on 3592cacb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T03:40:03Z",
+   "subject": "Card art in the atom galaxy theme, bigger, and back on phones"
+  },
+  {
+   "at": "2026-10-25T03:38:16Z",
+   "subject": "Incident: the browser suite failed on fdcdc570 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T03:20:51Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:19:54Z",
+   "subject": "Incident: the browser suite failed on 83686813 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T03:17:42Z",
+   "subject": "Incident: the browser suite failed on a39f97a4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T03:15:25Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:12:49Z",
+   "subject": "Incident: the browser suite failed on c9300773 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T03:12:39Z",
    "subject": "/base64/ offers 44 character sets: ISO-8859, Windows, KOI8, Mac, DOS and EBCDIC both ways; Shift_JIS, GBK, Big5, EUC-KR decode only"
   },
   {
@@ -517,50 +561,6 @@
   {
    "at": "2026-10-25T02:47:04Z",
    "subject": "A coin whose Commons photos never say obverse or reverse is found by its name alone: the Canadian Gold Maple Leaf showed a question mark"
-  },
-  {
-   "at": "2026-10-25T02:46:21Z",
-   "subject": "The tower speaks plainly: sites are surpassed, not conquered; Verse's edge, not a killshot; \"What each site taught me\"; every surpassed…"
-  },
-  {
-   "at": "2026-10-25T02:44:19Z",
-   "subject": "Incident: the browser suite failed on afbe0dc8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T02:43:11Z",
-   "subject": "Verse fixes its poster skill: learn to handle \"make a cyberpunk poster\""
-  },
-  {
-   "at": "2026-10-25T02:39:08Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:31:52Z",
-   "subject": "Tower gate: time zones,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:31:47Z",
-   "subject": "Incident: the browser suite failed on e1aa7f19 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T02:30:13Z",
-   "subject": "Incident: the browser suite failed on f042453f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T02:29:15Z",
-   "subject": "The tower gate never hangs a run: each floor gets 6 minutes at most and the OCR worker is closed after every floor"
-  },
-  {
-   "at": "2026-10-25T02:25:29Z",
-   "subject": "Tower gate: coin flip,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:24:00Z",
-   "subject": "A famous coin shows one face at a time: a Commons photo that holds both faces side by side is cut in half, obverse for heads and reverse…"
-  },
-  {
-   "at": "2026-10-25T02:23:15Z",
-   "subject": "Verse fixes its draw skill: learn to handle \"make a 2d sketch of a tree\""
   }
  ],
  "builders": {

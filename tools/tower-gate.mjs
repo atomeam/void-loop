@@ -238,23 +238,46 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
         return moved ? out.join('\n' + FLIPPED + '\n') : null;
       }
       if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
-      // the box a person types into: the page's largest visible text area, else its first visible text input (unitconverters.net's "From")
-      const areas = p.locator('textarea:visible'), n = await areas.count(); let box = null, best = -1;
+      // a cookie or consent wall in front of the page is accepted first, as a person does, so the typing and the press below land on the page
+      const wall = p.locator('button:visible, [role=button]:visible, a:visible').filter({ hasText: /^\s*(?:accept(?: all)?(?: cookies)?|i agree|agree(?: and continue)?|allow all|got it|ok(?:ay)?|consent|continue)\s*[!.]?\s*$/i }).first();
+      if (await wall.count().catch(() => 0)) { await wall.click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(500); }
+      // what the page offers, for the evidence when the gate gets no answer out of it: its boxes (a text area that cannot be typed into is
+      // marked), what the gate pressed and what came of it
+      const boxesSeen = () => p.evaluate(() => [...document.querySelectorAll('textarea, input:not([type=hidden])')].filter((e) => e.offsetParent).map((e) => e.tagName.toLowerCase() + (e.id ? '#' + e.id : e.name ? '[name=' + e.name + ']' : '') + (e.readOnly || e.disabled ? ' (read only)' : '') + (e.value ? ' holding ' + e.value.length + ' chars' : ' empty')).slice(0, 8).join(', ')).catch(() => 'no boxes read');
+      let pressed = 'nothing pressed'; answer.lastSeen = 'loaded ' + p.url().slice(0, 60) + '; boxes: ' + await boxesSeen();
+      // the box a person types into: the page's largest visible text area that takes typing (an encoder's output box is read only, whatever its
+      // size), else its first visible text input (unitconverters.net's "From")
+      const areas = p.locator('textarea:visible:not([readonly]):not([disabled])'), n = await areas.count(); let box = null, best = -1;
       for (let i = 0; i < n; i++) { const bb = await areas.nth(i).boundingBox().catch(() => null); const a = bb ? bb.width * bb.height : 0; if (a > best) { best = a; box = areas.nth(i); } }
       if (!box) box = p.locator('input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first();
       const before0 = await read(), before = before0.text;
-      await box.fill(type, { timeout: 8000 }); if (best < 0) await box.press('Enter').catch(() => {}); // Enter in a text area would add a line to what is counted
-      const go = p.locator('button:visible, input[type=submit]:visible, input[type=button]:visible').filter({ hasText: /convert|calculate|encode|count|submit|go\b/i }).first();
-      if (await go.count()) await go.click({ timeout: 2000 }).catch(() => {}); else await p.locator('input[type=submit]:visible').first().click({ timeout: 2000 }).catch(() => {});
-      await p.waitForTimeout(2000);
+      try { await box.fill(type, { timeout: 8000 }); } catch (e) { answer.lastSeen += '; no box took the typing (' + String(e && e.message || e).split('\n')[0].slice(0, 80) + ')'; return null; }
+      if (best < 0) await box.press('Enter').catch(() => {}); // Enter in a text area would add a line to what is counted
+      // the control a person presses, named for the job: a button first (a submit's value counts as its name), a link only when no button is
+      // (base64encode.org's header links to its decoder, which must not be the press), else the first submit
+      const named = /convert|calculate|encode|count|submit|go\b/i, btns = p.locator('button:visible, input[type=submit]:visible, input[type=button]:visible, [role=button]:visible');
+      let go = btns.filter({ hasText: named }).first();
+      if (!(await go.count().catch(() => 0))) go = p.locator('input[type=submit]:visible[value*="convert" i], input[type=submit]:visible[value*="encode" i], input[type=button]:visible[value*="convert" i], input[type=button]:visible[value*="encode" i]').first();
+      // never a link, whatever it says: one leads to another page (Verse's own "Count the words of the text" hand-off under the encoder, a
+      // "#" link that sets its address when pressed, carried the gate to the word counter), and a site whose only control is a link is reported
+      // as nothing pressed, for the next skill to be made from what the gate saw
+      if (!(await go.count().catch(() => 0))) go = p.locator('input[type=submit]:visible').first();
+      if (await go.count().catch(() => 0)) { const label = (await go.evaluate((e) => (e.value || e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30)).catch(() => '?')); try { await go.click({ timeout: 3000 }); pressed = 'pressed "' + label + '"'; } catch (e) { pressed = 'could not press "' + label + '" (' + (String(e && e.message || e).split('\n').map((l) => l.trim()).find((l) => /intercept|not visible|timeout|detached|outside/i.test(l)) || 'it did not take the press').slice(0, 120) + ')'; } }
+      // the answer lands when the site has done the work: a script at once, a round trip to its server, or a whole new page (a form posted). A
+      // boxed answer is read as soon as its box fills, up to 8 s; an answer in the text gets 2 s, as before (a read during a page change fails,
+      // and the last reading stands until the next)
+      const filled = (x) => x.boxes.split(type).join('').trim() !== before0.boxes.trim();
+      const t0 = Date.now(); let r = await read().catch(() => before0);
+      for (;;) { const dt = Date.now() - t0; if ((inBox ? filled(r) : dt >= 2000) || dt >= 8000) break; await p.waitForTimeout(300); r = await read().catch(() => r); }
+      if (inBox && filled(r)) { await p.waitForTimeout(500); r = await read().catch(() => r); } // a moment more, for a box still being written
       // scored on what typing changed and what the boxes hold, never on text the page had before (unitconverters.net's definitions mention 212°F);
       // what was typed is taken out, so the question never counts as its own answer
-      const r = await read(), had = new Set(before.split('\n').map((l) => l.trim()));
+      const had = new Set(before.split('\n').map((l) => l.trim()));
       // a site whose answer goes in a box (an encoder's output): a box that never filled means the gate got no answer out of it, which is
-      // not measured, never a loss for the site (base64encode.org was once scored 0 that way)
-      if (inBox && r.boxes.split(type).join('').trim() === before0.boxes.trim()) return null;
+      // not measured, never a loss for the site (base64encode.org was once scored 0 that way); what the gate saw goes in the evidence
+      if (inBox && !filled(r)) { answer.lastSeen = 'typed into the largest text area, ' + pressed + ', waited 8 s; now at ' + p.url().slice(0, 60) + '; boxes: ' + await boxesSeen(); return null; }
       const changed = r.text.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
-      return (changed + '\n' + r.boxes).split(type).join(' '); } catch (_) { return null; } finally { await ctx.close(); } }
+      return (changed + '\n' + r.boxes).split(type).join(' '); } catch (e) { answer.lastSeen = (answer.lastSeen || 'the page did not load') + '; then: ' + String(e && e.message || e).split('\n')[0].slice(0, 80); return null; } finally { await ctx.close(); } }
 
 export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
@@ -310,6 +333,8 @@ async function measureFloor(f, data) {
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
     // a timed run the gate could not start or read on the site is written as that, so the card says why accuracy is open (never a loss for it)
     if (probe && probe.ask && probe.ask.time && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on a ' + probe.ask.time / 1000 + ' s run timed by the gate; the gate could not start or read ' + f.site + "'s clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
+    // a boxed answer the gate could not get out of the site is written as that too, with what the gate saw, so the fault can be fixed from the card
+    if (probe && probe.ask && probe.ask.box && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right with the question typed into its box; the gate got no answer out of ' + f.site + "'s box (its output stayed empty, or nothing it found took the typing or the press): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
     if (probe && probe.ask && probe.ask.presses && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on ' + probe.ask.presses + ' flips pressed by the gate; the gate could not find ' + f.site + "'s flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
     if (v.truth && s.truth) put('accuracy', v.truth.n, s.truth.n, ' of ' + v.truth.of + ' checked facts right for the same question', { of: v.truth.of, note: v.truth.missing.length || s.truth.missing.length ? ' (Verse missed: ' + (v.truth.missing.join(', ') || 'none') + '; site missed: ' + (s.truth.missing.join(', ') || 'none') + ')' : '' });
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');

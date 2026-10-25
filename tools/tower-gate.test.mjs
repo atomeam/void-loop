@@ -43,7 +43,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'gradient', 'random number', 'random user', 'stopwatch', 'time zones', 'wheel', 'word count']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'random number', 'random user', 'stopwatch', 'time zones', 'wheel', 'word count']);
   const has = (t) => score(t, models).has;
   assert.deepEqual(has('OKLCH'), ['OKLCH']); assert.deepEqual(has('Hunter Lab'), ['Hunter Lab']); assert.deepEqual(has('CIE Lab'), ['CIELab']); assert.deepEqual(has('CIELCH'), ['CIELCh']); assert.deepEqual(has('CIELUV'), ['CIELUV']);
   // hexcolor16.com's list, as the owner read it off the page on 2026-10-24
@@ -137,12 +137,24 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   if (!exe) return t.skip('no browser here');
   const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
   const page = (works) => '<textarea id=i style="width:500px;height:200px"></textarea><button id=e>ENCODE</button><textarea id=o style="width:500px;height:200px"></textarea><script>e.onclick=()=>{' + (works ? 'o.value=btoa(i.value)' : '') + '}</script>';
-  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + page(q.url === '/ok')); }).listen(0);
+  // the ways a real encoder page differs from that: its answer comes back from its server after a while; a cookie wall sits over its button; its
+  // output box is the bigger one and read only, and a header link names encoding before the button does (base64encode.org links to its decoder)
+  const PAGES = { '/ok': page(true), '/stuck': page(false),
+    '/slow': '<textarea id=i style="width:500px;height:200px"></textarea><button id=e>&lt; ENCODE &gt;</button><textarea id=o style="width:500px;height:200px"></textarea><script>e.onclick=()=>{setTimeout(()=>{o.value=btoa(i.value)},3000)}</script>',
+    '/wall': page(true) + '<div id=w style="position:fixed;inset:0;background:rgba(0,0,0,.5)"><div style="background:#fff;padding:20px">We use cookies. <button id=a>Accept all</button></div></div><script>a.onclick=()=>w.remove()</script>',
+    '/readonly': '<nav><a href="/decode">Base64 Decode</a> <a href="/readonly">Base64 Encode</a></nav><textarea id=i style="width:300px;height:100px"></textarea><button id=e>ENCODE</button><textarea id=o readonly style="width:500px;height:300px"></textarea><script>e.onclick=()=>{o.value=btoa(i.value)}</script>' };
+  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '<p>nothing</p>')); }).listen(0);
   await new Promise((r) => server.once('listening', r));
   const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, e = probeFor('encoder');
   try {
     assert.equal(score(await answer(b, at('/ok'), e.ask.type, false, e.ask.box), e.truth).n, 1);
     assert.equal(await answer(b, at('/stuck'), e.ask.type, false, e.ask.box), null, 'an empty output box is no answer, not a wrong one');
+    assert.match(answer.lastSeen, /pressed "ENCODE".*textarea#o empty/, 'the evidence says what the gate pressed and which box stayed empty: ' + answer.lastSeen);
+    assert.equal(score(await answer(b, at('/slow'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'an answer that takes its server 3 s is waited for');
+    assert.equal(score(await answer(b, at('/wall'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'a cookie wall is accepted first, then the box is typed into and the button pressed');
+    assert.equal(score(await answer(b, at('/readonly'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'the read-only output box is never typed into, and the header link is not the press');
+    assert.equal(await answer(b, at('/decode'), e.ask.type, false, e.ask.box), null, 'no box at all: not measured');
+    assert.match(answer.lastSeen, /no box took the typing/, answer.lastSeen);
   } finally { await b.close(); server.close(); }
 });
 

@@ -68,7 +68,7 @@
   <output class="hex" id="hex" hidden aria-label="The bytes in hex"></output>
   <div class="row">
     <button type="button" id="copyb">Copy Base64</button><button type="button" id="copyt">Copy text</button><button type="button" id="link">Copy link</button>
-    <button type="button" id="dl" hidden>Download the bytes</button><button type="button" id="clear">Clear</button>
+    <button type="button" id="dltxt">Download .txt</button><button type="button" id="dl" hidden>Download the bytes</button><button type="button" id="clear">Clear</button>
   </div>
   <h2>A file to Base64</h2>
   <div class="drop" id="drop">
@@ -142,6 +142,9 @@
     copy($('link'), location.origin + location.pathname + (s ? '?' + s : ''), short ? 'Copied' : 'Copied (too long to carry the text)');
   });
   $('dl').addEventListener('click', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes])); a.download = 'decoded.bin'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
+  // the side last written, saved as a text file: the Base64 after encoding, the text after decoding (a long result is easier carried as a file than copied)
+  $('dltxt').addEventListener('click', () => { const out = last === 'b64' && !text.classList.contains('stale') ? text.value : b64.value; if (!out) return say('Nothing to download yet: type some text, or paste Base64.', 'bad');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([out], { type: 'text/plain;charset=utf-8' })); a.download = last === 'b64' && !text.classList.contains('stale') ? 'decoded.txt' : 'base64.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
   $('clear').addEventListener('click', () => { text.value = ''; b64.value = ''; fromText(); text.focus(); });
   // a file, read here: its bytes as a data: URL and as plain Base64 (up to 25 MB, as far as a text box stays usable)
   const MAX = 25 * 1048576; let fileB64 = '', fileUrl = '';
