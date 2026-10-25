@@ -1,0 +1,879 @@
+{
+ "floor": "calendar",
+ "verse_page": "void-live-deploy/calendar/index.html",
+ "researched": "2026-10-25",
+ "sites": {
+  "calendar.google.com": {
+   "sources": [
+    "https://calendar.google.com/",
+    "https://support.google.com/a/users/answer/9282964?hl=en",
+    "https://workspace.google.co.ke/products/calendar",
+    "https://www.zapier.com/blog/google-calendar-tips"
+   ],
+   "features": [
+    {
+     "name": "Day / week / month views",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons"
+    },
+    {
+     "name": "Year, schedule (agenda) and custom N-day views",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+    },
+    {
+     "name": "Multiple calendars shown together, each with a colour",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Event colours",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Recurring events incl. custom rules",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190)"
+    },
+    {
+     "name": "Notifications and email reminders",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications); no email reminders"
+    },
+    {
+     "name": "Guests with RSVP (yes/no/maybe) and guest list",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+    },
+    {
+     "name": "Find a time / see guests' availability",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Appointment schedules (booking pages)",
+     "detail": "basic free; extras need Workspace",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Time zones per event, secondary time zone, world clock",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "lib/calendar.js:1-7 dates are device wall clock, never a zone"
+    },
+    {
+     "name": "Location with map link",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Video meeting link (Meet)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Attachments",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Tasks on the calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Out of office, focus time, working location",
+     "detail": "auto-decline meetings (Workspace)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Holidays and birthdays calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Subscribe to a calendar by URL (iCal feed)",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Import / export .ics",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Search events",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:110 Search"
+    },
+    {
+     "name": "Keyboard shortcuts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:162 arrows, T, M/W/D, N, /"
+    },
+    {
+     "name": "Natural-language quick add",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:106 Quick add in plain words"
+    },
+    {
+     "name": "Drag to move and resize events",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Share a calendar with people (see / edit permissions), public link, embed",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:92 print stylesheet"
+    },
+    {
+     "name": "Sync across devices and apps",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:169 srcs: everything stays in this browser, nothing synced"
+    },
+    {
+     "name": "Week start and week numbers setting",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "lib/calendar.js:34 weekStart parameter exists; page fixes Monday, no setting"
+    },
+    {
+     "name": "All-day events and notes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:177 All day; void-live-deploy/calendar/index.html:194 Notes"
+    },
+    {
+     "name": "Duplicate event, undo, trash",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    }
+   ]
+  },
+  "outlook.live.com": {
+   "sources": [
+    "https://outlook.live.com/calendar",
+    "https://www.windowscentral.com/outlookcom-gets-family-calendar-support-improved-sharing-and-more",
+    "https://microsoft.com/en-us/microsoft-365/blog/2013/04/02/take-control-of-your-schedule-with-a-modern-calendar-experience-for-outlook-com"
+   ],
+   "features": [
+    {
+     "name": "Share a calendar by email or link (view / edit)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Family calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Scheduling assistant (find a time)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Categories with colours",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Birthdays calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Weather forecast on the calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Holiday calendars by region",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Interesting calendars (sports, TV)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Events found in email (flights, bookings)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Skype / Teams meeting link",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Work week and split views",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons"
+    },
+    {
+     "name": "Invites with RSVP",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+    },
+    {
+     "name": "Reminders and recurring events",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications); void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190)"
+    },
+    {
+     "name": "Copilot scheduling help",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    }
+   ]
+  },
+  "cozi.com": {
+   "sources": [
+    "https://www.cozi.com/",
+    "https://apps.apple.com/app/id407108860",
+    "https://mobile.softpedia.com/android/cozi-family-organizer-android-review-3796.html"
+   ],
+   "features": [
+    {
+     "name": "Colour-coded family calendar, one colour per person",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Plain-language event entry",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:106 Quick add in plain words"
+    },
+    {
+     "name": "Shared shopping lists, live",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "To-do lists (chores, packing)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Recipe box and meal planner, ingredients to the shopping list",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Daily / weekly agenda email",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Gold: ad-free, events beyond 30 days in app, more reminders, mobile month view, change notifications, birthday tracker, shopping mode",
+     "detail": "about 29.99/year",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons; void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications) (free on Verse); no change notifications or birthdays"
+    }
+   ]
+  },
+  "timetreeapp.com": {
+   "sources": [
+    "https://timetreeapp.com/",
+    "https://apps.apple.com/app/952578473",
+    "https://www.whistleout.com/CellPhones/Apps/timetree-app-shared-calendar"
+   ],
+   "features": [
+    {
+     "name": "Shared calendars with a group",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Chat on each event",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Memos and shared to-dos",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:194 Notes (per event only)"
+    },
+    {
+     "name": "Shared photo albums",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Several calendars for different groups",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Widgets and web version",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html is the web version; no widget"
+    },
+    {
+     "name": "Sync with device / Google calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Premium: ad-free and extras",
+     "detail": "about 44.99/year",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html has no ads"
+    }
+   ]
+  },
+  "teamup.com": {
+   "sources": [
+    "https://www.teamup.com/",
+    "https://www.getapp.com/collaboration-software/a/teamup-calendar/",
+    "https://us.fitgap.com/products/teamup-calendar"
+   ],
+   "features": [
+    {
+     "name": "Access links with roles, no accounts",
+     "detail": "view-only, add-only, modify",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:146 event share link only; no calendar access link"
+    },
+    {
+     "name": "Sub-calendars toggled on and off",
+     "detail": "free 8, Plus 12, Premium 50",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Table, list, timeline, scheduler, year and multi-day views",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+    },
+    {
+     "name": "Event sign-up",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Comments on events",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Custom event fields",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Paid plans (more sub-calendars, history, attachments)",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    }
+   ]
+  },
+  "any.do": {
+   "sources": [
+    "https://www.any.do/calendar",
+    "https://apps.apple.com/app/id497328576",
+    "https://www.zapier.com/blog/anydo-features"
+   ],
+   "features": [
+    {
+     "name": "Tasks and events in one calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Daily planner",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons (Day view, no task planning)"
+    },
+    {
+     "name": "Sync with Google, Outlook and phone calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Sub-tasks, notes, attachments",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:194 Notes"
+    },
+    {
+     "name": "Location reminders, WhatsApp reminders, colour tags",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Recurring tasks",
+     "detail": "",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190) (events)"
+    },
+    {
+     "name": "Family plan: shared lists and family calendar",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    }
+   ]
+  },
+  "proton.me": {
+   "sources": [
+    "https://proton.me/calendar",
+    "https://9to5mac.com/2023/04/12/proton-launches-shared-calendars-with-encryption/",
+    "https://proton.me/news/calendar-android-app"
+   ],
+   "features": [
+    {
+     "name": "End-to-end encrypted events",
+     "detail": "title, notes, location, participants encrypted",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:169 srcs: everything stays in this browser, nothing synced (private by never leaving the device; no sync)"
+    },
+    {
+     "name": "Share with people (view / edit), revoke",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Public link",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:146 per-event link"
+    },
+    {
+     "name": "Invitations with RSVP, works with other calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+    },
+    {
+     "name": "Import .ics",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Subscribe to a calendar by URL",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Several calendars (3 free, 25 paid)",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Time zones",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    }
+   ]
+  },
+  "calendar.zoho.com": {
+   "sources": [
+    "https://www.zoho.com/calendar/",
+    "https://www.zoho.com/calendar/features.html?src=cdd",
+    "https://www.softwareadvice.com/calendar-app/zoho-calendar-profile/"
+   ],
+   "features": [
+    {
+     "name": "Group and public calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Embed a calendar on a website / private URL",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Secondary time zone, events in any zone",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Reminders by pop-up and email",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications)"
+    },
+    {
+     "name": "Booking pages (Zoho Bookings)",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Invitations with RSVP",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+    }
+   ]
+  },
+  "icloud.com": {
+   "sources": [
+    "https://www.icloud.com/calendar",
+    "https://support.apple.com/guide/calendar/toc/10.0/localeselector",
+    "https://support.readdle.com/calendars/getting-started/icloud-calendars-share-a-calendar-with-others"
+   ],
+   "features": [
+    {
+     "name": "Share a calendar privately (view / edit) or publicly",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Invitations from the iCloud address",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+    },
+    {
+     "name": "Birthdays calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Holidays calendar",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Location and travel time",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Several calendars with colours",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Alerts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications)"
+    },
+    {
+     "name": "Sync to all Apple devices",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:169 srcs: everything stays in this browser, nothing synced"
+    }
+   ]
+  },
+  "calendar.yahoo.com": {
+   "sources": [
+    "https://calendar.yahoo.com/",
+    "https://help.yahoo.com/kb/SLN22051.html",
+    "https://savvycal.com/articles/yahoo-calendar"
+   ],
+   "features": [
+    {
+     "name": "Day, week, month, year and event-list views",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons"
+    },
+    {
+     "name": "Share by invitation or view-only link, reset links",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Tasks with priority and due date",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Follow holiday and sports calendars",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Subscribe to any iCal URL",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Reminders and repeats",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications); void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190)"
+    }
+   ]
+  },
+  "calendar.online": {
+   "sources": [
+    "https://calendar.online/",
+    "https://alternativeto.net/software/calendar-online/about"
+   ],
+   "features": [
+    {
+     "name": "No-login access links, each with read / write per sub-calendar",
+     "detail": "free: 3 links, 6 sub-calendars",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Password on an access link",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Booking link",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+    },
+    {
+     "name": "Print and PDF export",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/calendar/index.html:92 print stylesheet"
+    },
+    {
+     "name": "Import and export events",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+    },
+    {
+     "name": "Email and SMS reminders",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "void-live-deploy/calendar/index.html:193 reminder choices, fired on this device (:111 Allow notifications) (device only)"
+    },
+    {
+     "name": "Hosted in Germany, GDPR",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/calendar/index.html:169 srcs: everything stays in this browser, nothing synced (nothing hosted at all)"
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  "Several calendars / sub-calendars with colours, toggled on and off: calendar.google.com, outlook.live.com, cozi.com, timetreeapp.com, teamup.com, proton.me, icloud.com, calendar.online",
+  "Share a whole calendar with people or by a no-login link with view/edit roles: calendar.google.com, outlook.live.com, teamup.com, calendar.online, proton.me, icloud.com, calendar.yahoo.com, calendar.zoho.com, timetreeapp.com",
+  "Holidays and birthdays calendars: calendar.google.com, outlook.live.com, icloud.com, calendar.yahoo.com, cozi.com (Gold)",
+  "Subscribe to a calendar by URL (iCal feed), sports/TV feeds: calendar.google.com, outlook.live.com, calendar.yahoo.com, proton.me",
+  "RSVP tracking on invites: calendar.google.com, outlook.live.com, proton.me, calendar.zoho.com, icloud.com",
+  "Tasks / to-dos on the calendar: calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
+  "Location and travel time, map link: calendar.google.com, icloud.com",
+  "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
+  "Drag to move and resize events: calendar.google.com, outlook.live.com",
+  "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",
+  "Booking pages / find a time: calendar.google.com, outlook.live.com, calendar.online, calendar.zoho.com (paid)",
+  "Sync across devices: every site in the floor",
+  "Event chat, comments and sign-up: timetreeapp.com, teamup.com",
+  "Shared shopping lists and meal planner beside the calendar: cozi.com, any.do (paid)",
+  "Email reminders and agenda emails: calendar.google.com, cozi.com, calendar.zoho.com, calendar.online (paid)",
+  "Embed on a website: calendar.zoho.com, calendar.google.com",
+  "Weather on the calendar: outlook.live.com",
+  "Events detected in email: outlook.live.com",
+  "Video meeting links: calendar.google.com, outlook.live.com",
+  "Week start setting and week numbers: calendar.google.com",
+  "Undo / duplicate / trash: calendar.google.com"
+ ],
+ "verse_extra": [
+  "An invite is a link that carries the whole event: opens with 'Add to my calendar' for anyone, no account (calendar/index.html:121, :146)",
+  "One line of plain English or German sets time, reminder and repeat at once (calendar/index.html:106)",
+  "Everything on the device and offline; nothing goes to a server (calendar/index.html:169 srcs)",
+  "Reminders, month view and events far ahead with no paid tier (cozi.com Gold gates these)",
+  "Keyboard: arrows, T, M/W/D, N, / (calendar/index.html:162)",
+  "No ads (timetreeapp.com, cozi.com free tiers carry ads)"
+ ]
+}
