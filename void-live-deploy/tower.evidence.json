@@ -2165,53 +2165,53 @@
   },
   "sports": {
    "speed": {
-    "verdict": "better",
-    "verse": 236,
-    "best": 380,
-    "evidence": "Verse 236 ms to the load event (median of 3, phone width) vs ESPN 380 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:02:18.299Z"
+    "verdict": "equal-and-better",
+    "verse": 194,
+    "best": 450,
+    "evidence": "Verse 194 ms to the load event (median of 3, phone width) vs ESPN 450 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T16:02:18.299Z"
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:02:18.299Z"
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "accessibility": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 41,
-    "evidence": "Verse 0 unnamed controls or images vs ESPN 41 unnamed controls or images",
-    "at": "2026-10-25T16:02:18.299Z"
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 0 unnamed controls or images",
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:02:18.299Z"
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 3,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:02:18.299Z"
+    "best": 0,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:31:54.841Z"
    },
    "design polish": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 78,
-    "evidence": "Verse 0 design defects vs ESPN 78 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (65 low-contrast texts, 13 small tap targets, layout shift 0.07)",
-    "at": "2026-10-25T16:02:18.299Z"
+    "best": 0,
+    "evidence": "Verse 0 design defects vs ESPN 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T16:31:54.841Z"
    }
   },
   "finance": {
@@ -9013,6 +9013,212 @@
     "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs notion.so 1 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, keyboard shortcuts, works offline, on this device)",
     "at": "2026-10-25T15:38:51.115Z",
     "of": 17
+   }
+  },
+  "image boards: bbs.progrider.org": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs bbs.progrider.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 109,
+    "best": 200,
+    "evidence": "Verse (/boards/) 109 ms to the load event (median of 3, phone width) vs the bar (bbs.progrider.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (bbs.progrider.org unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (bbs.progrider.org unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (bbs.progrider.org unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 3,
+    "best": 4,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (bbs.progrider.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 7,
+    "best": 0,
+    "evidence": "Verse (/boards/) 7 design defects vs the bar (bbs.progrider.org unreachable) 0 design defects",
+    "at": "2026-10-25T16:32:33.073Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 13,
+    "best": 14,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (bbs.progrider.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 14
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (bbs.progrider.org unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:33.073Z",
+    "of": 1,
+    "part": true
+   }
+  },
+  "image boards: textboard.org": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs textboard.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 103,
+    "best": 200,
+    "evidence": "Verse (/boards/) 103 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (textboard.org unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (textboard.org unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (textboard.org unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 3,
+    "best": 4,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 7,
+    "best": 0,
+    "evidence": "Verse (/boards/) 7 design defects vs the bar (textboard.org unreachable) 0 design defects",
+    "at": "2026-10-25T16:32:53.422Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 13,
+    "best": 14,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (textboard.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 14
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (textboard.org unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T16:32:53.422Z",
+    "of": 1,
+    "part": true
    }
   }
  },
