@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/image/': 'AI image generator', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -36,7 +36,8 @@ export const RELATED = Object.freeze({
   '/translate/': ['/word-count/', '/time/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
-  '/generators/': ['/random/', '/flip/', '/wheel/'],
+  '/generators/': ['/image/', '/random/', '/flip/', '/wheel/'],
+  '/image/': ['/generators/', '/resize-image/', '/color/'],
   '/notes/': ['/word-count/', '/translate/', '/calendar/'],
   '/base64/': ['/word-count/', '/base-converter/'],
   '/boards/': ['/resize-image/', '/translate/', '/notes/'],
@@ -50,7 +51,7 @@ export const CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/image/': 'draw a cartoon cat',
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
@@ -126,6 +127,10 @@ const ROUTES = [
   [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
   [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],
   [/^(?:the |open (?:the )?)?(?:image ?boards?|text ?boards?|chans?|imageboards?|boards)$/i, () => '/boards/'],
+  // image: 'ai image generator', 'text to image', 'generate an image of a fox in snow', 'ai art of a castle'; 'make a random generator' opens the editor
+  [/^(?:free )?(?:ai )?(?:image|picture|art) generator$|^text to (?:image|picture)$|^(?:ai art|ai image|ai picture)$/i, () => '/image/'],
+  [/^(?:generate|create|make) (?:an? )?(?:ai )?(?:image|picture|photo|art) (?:of|showing) (.+)$|^ai (?:art|image|picture) of (.+)$/i, (m) => '/image/?' + new URLSearchParams({ prompt: m[1] || m[2], go: '1' })],
+  [/^(?:make|create|write|build) (?:a |my own |your own )?(?:random )?generator$|^(?:perchance|generator editor|list generator)$/i, () => '/generators/make/'],
   // notes: 'note: buy milk', 'note: Shopping list - milk, eggs, bread', 'new note', 'my notes'
   [/^(?:(?:new|add|make|create) )?note[:,] ?(.+)$/i, (m) => '/notes/?q=' + encodeURIComponent(m[1])],
   [/^(?:new note|my notes|(?:open )?(?:my )?notes)$/i, () => '/notes/'],

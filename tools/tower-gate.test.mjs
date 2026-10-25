@@ -342,3 +342,33 @@ test('the image boards floor and its lane are never pictured (noShot): no screen
   const boards = fs.readFileSync(new URL('../void-live-deploy/boards/index.html', import.meta.url), 'utf8').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<template[\s\S]*?<\/template>|<[^>]+>/g, ' ');
   for (const [a, items] of Object.entries(p.parts)) assert.equal(score(boards, items).n, items.length, a + ': the page says it before any board exists');
 });
+test('image generation needs a picture the page really made: a button, a placeholder or a "resting" message is not one', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { pictureOf, MADE_SRC } = await import('./tower-gate.mjs');
+  const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+  const PAGES = {
+    '/made': '<main><p>Painting…</p></main><script>setTimeout(()=>{const i=new Image();i.alt="a fox";i.src="' + PNG + '";document.querySelector("main").replaceChildren(i)},1200)</script>',
+    '/button': '<main><button>Picture it</button><img src="/logo.png" alt="logo"></main>',
+    '/resting': '<main><p>The painter is resting right now.</p></main>',
+  };
+  const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '')); }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u;
+  try {
+    assert.equal((await pictureOf(b, at('/made'), 6000)).n, 1, 'a data: picture that loaded');
+    const btn = await pictureOf(b, at('/button'), 2000); assert.equal(btn.n, 0); assert.match(btn.missing[0], /Picture it/);
+    const rest = await pictureOf(b, at('/resting'), 2000); assert.equal(rest.n, 0); assert.match(rest.missing[0], /resting/);
+    assert.ok(MADE_SRC.test('blob:https://a-to-mind.com/x') && MADE_SRC.test('/api/image/x') && !MADE_SRC.test('/og.png'));
+  } finally { await b.close(); server.close(); }
+});
+test('the random generators floor: image generation, list language and publish and remix are asked at their own pages, never a button', async () => {
+  const p = probeFor('random generators'), { LIST_PROBE } = await import('./tower-probes.mjs'), L = await import('../void-live-deploy/lib/listgen.js');
+  assert.equal(p.pageParts['image generation'].img, true); assert.match(p.pageParts['image generation'].verse, /^\/image\/\?.*go=1/);
+  assert.ok(!Object.values(p.parts).flat().some(([l]) => /picture/i.test(l)) && !p.askParts['image generation'], 'no picture button counts');
+  for (const a of ['image generation', 'list language', 'publish and remix']) assert.ok(aspectsOf(FLOORS.find((f) => f.id === 'random generators')).includes(a), a);
+  const text = await L.unpackShare(LIST_PROBE), out = L.generate(text, 11, 8).results.map((r) => r.output).join('\n');
+  assert.equal(score(out, p.pageParts['list language'].items).n, 2, 'a working engine passes');
+  assert.equal(score('Cat x #7\nOwl x #7', p.pageParts['list language'].items).n, 0, 'a page that ignores odds or shows too few fails');
+});

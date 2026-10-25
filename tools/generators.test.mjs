@@ -41,7 +41,8 @@ test('the probe reads the page\'s list: five names and the seed', () => {
   const names = G.generate('fantasy-names', 7, 5), page = ['Random generators', 'seed 7'].concat(...names.map((n) => [n, 'Copy', 'Keep', 'Picture it'])).join('\n');
   assert.equal(score(page, p.truth).n, 2, JSON.stringify(score(page, p.truth)));
   assert.equal(score('nothing here', p.truth).n, 0);
-  assert.equal(score('27 generators Picture it Make your own generator', [].concat(...Object.values(p.askParts))).n, 3);
+  assert.equal(score('27 generators Picture it Make your own generator', [].concat(...Object.values(p.askParts))).n, 2);
+  assert.equal(p.pageParts['image generation'].img, true, 'a picture button is not image generation: the gate needs a real picture on /image/');
 });
 test('registered: tool name, related, ask routes, sw, seo, the lane and the floor\'s page', () => {
   assert.equal(TOOLS['/generators/'], 'Generators'); assert.ok(RELATED['/generators/'].includes('/random/'));

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make a random generator: lists, odds, share and publish · Verse</title>
+<meta name="description" content="Write your own random generator in plain lists, with a live preview: nested lists, [list] references, {a|b} choices, odds (^2), {1-6}, {a}/{an}, titleCase and pluralForm, kept values, a picture prompt that goes straight to the image generator. Share it as a link, publish it to the hub, remix anyone's, embed it, download it. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Make a random generator · Verse">
+<meta property="og:description" content="Lists in, random results out, live. Share, publish, remix, embed, picture it.">
+<meta property="og:url" content="https://a-to-mind.com/generators/make/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/generators/make/ (the random generators floor's editor): the list language is lib/listgen.js; nothing leaves the device
+     unless you publish or picture */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--soft); margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 14px 0 6px; }
+  input, textarea, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  #src { width: 100%; min-height: 360px; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; white-space: pre; overflow: auto; resize: vertical; }
+  #name { width: 100%; font-weight: 600; }
+  input[type=number] { width: 80px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; box-sizing: border-box; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 760px) { .panes { grid-template-columns: 1fr; } }
+  .errs { margin: 8px 0 0; padding: 0; list-style: none; }
+  .errs li { color: var(--bad); font-size: 14px; padding: 4px 0; }
+  .errs button { font-size: 13px; min-height: 32px; padding: 2px 10px; margin-right: 6px; color: var(--bad); border-color: var(--bad); }
+  ol.res { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); min-height: 120px; }
+  .res > li { padding: 10px 12px; border-top: 1px solid var(--line); }
+  .res > li:first-child { border-top: 0; }
+  .txt { font-size: 17px; overflow-wrap: anywhere; white-space: pre-line; }
+  .imgp { font-size: 13px; color: var(--soft); margin-top: 4px; overflow-wrap: anywhere; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .acts button, .acts a { font-size: 13px; padding: 4px 12px; min-height: 36px; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; overflow-wrap: anywhere; }
+  .seed { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; }
+  details { margin-top: 14px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); }
+  summary { cursor: pointer; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--hi); padding: 1px 4px; border-radius: 4px; }
+  .help dt { margin-top: 6px; } .help dd { margin: 0 0 4px 0; color: var(--soft); font-size: 14px; }
+  .mine li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; }
+  .mine { list-style: none; padding: 0; margin: 0; }
+  [hidden] { display: none !important; }
+  html.embed .noembed { display: none !important; }
+  html.embed main { padding: 8px; } html.embed .panes { grid-template-columns: 1fr; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+</style>
+<link rel="canonical" href="https://a-to-mind.com/generators/make/">
+</head>
+<body>
+<main>
+  <h1 id="h">Make a random generator</h1>
+  <p class="sub noembed" id="sub">Write lists on the left; results show on the right as you type. <a href="#help">How to write one</a> · <a href="/generators/">All generators</a></p>
+  <p class="note" id="from" hidden></p>
+  <div class="panes">
+    <section class="noembed" id="editor">
+      <label for="name" class="sub" style="display:block;margin:0 0 4px">Name</label>
+      <input id="name" maxlength="60" placeholder="My generator">
+      <h2><label for="src">Lists</label></h2>
+      <textarea id="src" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="20000" aria-describedby="errs"></textarea>
+      <ul class="errs" id="errs" role="alert"></ul>
+      <div class="row">
+        <button type="button" id="save">Save on this device</button>
+        <button type="button" id="share">Share link</button>
+        <button type="button" id="publish">Publish to the hub</button>
+        <button type="button" id="embed">Embed</button>
+        <button type="button" id="download">Download .html</button>
+        <button type="button" id="new">New</button>
+      </div>
+      <div class="note" id="note" role="status"></div>
+    </section>
+    <section id="out">
+      <h2 id="outH">Results</h2>
+      <div class="row" style="margin:0 0 8px">
+        <button type="button" class="go" id="regen">Regenerate</button>
+        <label class="seed">Results <input type="number" id="n" min="1" max="20" value="5" inputmode="numeric"></label>
+        <button type="button" id="copyAll">Copy all</button>
+        <button type="button" id="remix" hidden>Remix (edit a copy)</button>
+        <button type="button" id="report" hidden>Report</button>
+        <span class="seed" id="seed">seed 0</span>
+      </div>
+      <ol class="res" id="res" aria-live="polite"></ol>
+    </section>
+  </div>
+
+  <section class="noembed">
+    <h2>Your generators on this device</h2>
+    <ul class="mine" id="mine"></ul>
+  </section>
+
+  <details class="noembed help" id="help">
+    <summary>How to write a generator</summary>
+    <dl>
+      <dt><code>output</code> then indented lines</dt><dd>A list is a name on its own line with its entries indented under it. The list called <code>output</code> makes each result (or write <code>$output = [something]</code> on one line).</dd>
+      <dt><code>[animal]</code></dt><dd>A random entry of the list called animal. Entries can use other lists, so results build up.</dd>
+      <dt>Nested lists: an entry with entries under it</dt><dd><code>[animal]</code> picks through every level; <code>[animal.bird]</code> picks only from the nested list called bird.</dd>
+      <dt><code>cat ^2</code></dt><dd>Odds: twice as likely as an entry without them; <code>^0.5</code> half as likely, <code>^1/10</code> a tenth, <code>^0</code> never.</dd>
+      <dt><code>{big|small|tiny}</code></dt><dd>Pick one inline; options can carry odds too: <code>{big^3|small}</code>.</dd>
+      <dt><code>{1-6}</code> <code>{a-z}</code> <code>{2d6+1}</code></dt><dd>A whole number, a letter, dice.</dd>
+      <dt><code>{a}</code> <code>{A}</code> and <code>{s}</code></dt><dd>"a" or "an" to fit the word after it; an "s" unless the number before it is 1: <code>{1-3} cat{s}</code>.</dd>
+      <dt><code>[animal.titleCase]</code></dt><dd>Also <code>.upperCase</code> <code>.lowerCase</code> <code>.sentenceCase</code> <code>.pluralForm</code> <code>.singularForm</code> <code>.possessiveForm</code> <code>.pastTense</code>.</dd>
+      <dt><code>[animal.selectUnique(3).joinItems(", ")]</code></dt><dd>Several at once: <code>selectMany(n)</code> may repeat, <code>selectUnique(n)</code> never does, <code>selectAll</code> takes every entry.</dd>
+      <dt><code>[hero = name, ""]</code> then <code>[hero]</code></dt><dd>Keep a pick and say it again later; the <code>""</code> keeps it quiet the first time.</dd>
+      <dt><code>[deck = card.consumableList, ""]</code> then <code>[deck] [deck]</code></dt><dd>Deal without repeats until the list is used up.</dd>
+      <dt><code>image</code></dt><dd>A list called image is a picture prompt: "Picture it" sends it to the image generator.</dd>
+      <dt><code>$title = My generator</code>, <code>// a comment</code>, <code>&lt;br&gt;</code>, <code>\[</code> <code>\{</code> <code>\|</code> <code>\s</code></dt><dd>A name, a note to yourself, a new line, and the characters themselves.</dd>
+    </dl>
+  </details>
+  
+<nav id="related" class="noembed" aria-label="Related tools"></nav>
+  <footer class="noembed" id="foot">Generators are kept in this browser. A share link carries the whole generator in the link itself; nothing is stored anywhere until you publish. Results are plain text.</footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import * as L from '/lib/listgen.js';
+  addEventListener('load', async () => {
+    const $ = (id) => document.getElementById(id), q = new URLSearchParams(location.search), embed = q.get('embed') === '1';
+    if (embed) document.documentElement.classList.add('embed');
+    const KEY = 'a2m.void.listgen.v1';
+    let store = { mine: [] };
+    try { const s = JSON.parse(localStorage.getItem(KEY) || '{}'); if (s && Array.isArray(s.mine)) store = { mine: s.mine.filter((g) => g && typeof g.text === 'string').slice(0, 100) }; } catch (_) {}
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) { say('This browser would not keep it (storage is full or off).'); } };
+    const state = { seed: /^\d{1,10}$/.test(q.get('seed') || '') ? +q.get('seed') : L.rng(Date.now())() * 1e9 >>> 0, n: Math.max(1, Math.min(20, +q.get('n') || 5)), localId: null, pubId: null };
+    const say = (t) => { $('note').textContent = t || ''; };
+    const copy = async (text) => { try { await navigator.clipboard.writeText(text); return true; } catch (_) { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (__) {} t.remove(); return true; } };
+    let current = [], compiled = null;
+    function lineOf(n) { const ta = $('src'), lines = ta.value.split('\n'); let at = 0; for (let i = 0; i < n - 1 && i < lines.length; i++) at += lines[i].length + 1; ta.focus(); ta.setSelectionRange(at, at + (lines[n - 1] || '').length); }
+    function draw() {
+      compiled = L.compile($('src').value);
+      const r = L.generate(compiled, state.seed, state.n); current = r.results;
+      $('errs').replaceChildren(...r.errors.slice(0, 8).map((e) => { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.textContent = 'line ' + e.line; b.addEventListener('click', () => lineOf(e.line)); li.append(b, document.createTextNode(' ' + e.message)); return li; }));
+      $('seed').textContent = 'seed ' + state.seed;
+      if (compiled.title && !$('name').value) $('name').placeholder = compiled.title;
+      if (r.errors.length && !current.length) { $('res').replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Fix the line marked on the left and the results come back.' })); return; }
+      $('res').replaceChildren(...current.map((x, i) => row(x, i)));
+      $('outH').textContent = (($('name').value || compiled.title || '').trim() || 'Results');
+    }
+    function row(x, i) {
+      const li = document.createElement('li'), t = document.createElement('div'); t.className = 'txt'; t.textContent = x.output;
+      const acts = document.createElement('div'); acts.className = 'acts';
+      const mk = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => fn(b)); acts.append(b); return b; };
+      mk('Copy', async (b) => { await copy(li.querySelector('.txt').textContent); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); });
+      mk('Re-roll this one', () => { const r = L.run(compiled, (L.rng(Date.now() + i)() * 4294967296) >>> 0); if (!r.errors.length) { current[i] = { output: r.output, image: r.image }; li.replaceWith(row(current[i], i)); } });
+      const pic = document.createElement('a'); pic.className = 'btn'; pic.textContent = 'Picture it →'; pic.href = '/image/?' + new URLSearchParams({ prompt: (x.image || x.output).slice(0, 400), go: '1' }); acts.append(pic);
+      if ('speechSynthesis' in window) mk('Read aloud', () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(li.querySelector('.txt').textContent)); } catch (_) {} });
+      li.append(t); if (x.image) { const ip = document.createElement('div'); ip.className = 'imgp'; ip.textContent = 'Picture prompt: ' + x.image; li.append(ip); }
+      li.append(acts); return li;
+    }
+    let timer = 0; $('src').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(draw, 200); });
+    $('src').addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey && !e.altKey) { e.preventDefault(); const ta = e.target, s = ta.selectionStart; ta.setRangeText('  ', s, ta.selectionEnd, 'end'); draw(); } if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); save(); } });
+    $('name').addEventListener('input', () => { $('outH').textContent = $('name').value.trim() || 'Results'; });
+    $('regen').addEventListener('click', () => { state.seed = (L.rng(Date.now())() * 4294967296) >>> 0; draw(); });
+    $('n').addEventListener('change', () => { state.n = Math.max(1, Math.min(20, +$('n').value || 5)); $('n').value = state.n; draw(); });
+    $('copyAll').addEventListener('click', async () => { await copy(current.map((x) => x.output).join('\n')); say('Copied'); });
+    // on this device: a list of generators, each keeping its last 10 versions
+    function save(silent) {
+      const text = $('src').value, title = ($('name').value || (compiled && compiled.title) || 'My generator').trim().slice(0, 60);
+      let g = store.mine.find((x) => x.id === state.localId);
+      if (!g) { g = { id: 'g' + Date.now().toString(36), title, text, at: Date.now(), versions: [] }; store.mine.unshift(g); state.localId = g.id; }
+      else if (g.text !== text) { g.versions = [{ text: g.text, at: g.at }].concat(g.versions || []).slice(0, 10); }
+      g.title = title; g.text = text; g.at = Date.now(); keep(); drawMine(); if (!silent) say('Saved in this browser.');
+    }
+    function drawMine() {
+      $('mine').replaceChildren(...(store.mine.length ? store.mine.map((g) => {
+        const li = document.createElement('li'), open = document.createElement('button'); open.type = 'button'; open.textContent = g.title || 'Untitled'; open.addEventListener('click', () => load(g.text, g.title, g.id));
+        li.append(open);
+        if ((g.versions || []).length) { const sel = document.createElement('select'); sel.setAttribute('aria-label', 'Earlier versions of ' + (g.title || 'this generator')); sel.append(new Option('Earlier versions (' + g.versions.length + ')', '')); g.versions.forEach((v, i) => sel.append(new Option(new Date(v.at).toLocaleString(), String(i)))); sel.addEventListener('change', () => { if (sel.value !== '') { load(g.versions[+sel.value].text, g.title, g.id); say('An earlier version is open; save to keep it.'); } }); li.append(sel); }
+        const del = document.createElement('button'); del.type = 'button'; del.textContent = 'Delete'; del.setAttribute('aria-label', 'Delete ' + (g.title || 'this generator')); del.addEventListener('click', () => { if (confirm('Delete "' + g.title + '" from this browser?')) { store.mine = store.mine.filter((x) => x !== g); keep(); drawMine(); } });
+        li.append(del); return li;
+      }) : [Object.assign(document.createElement('li'), { textContent: 'None yet: "Save on this device" keeps the one you are writing.' })]));
+    }
+    function load(text, title, localId = null) { $('src').value = text; $('name').value = title || ''; state.localId = localId; draw(); }
+    $('save').addEventListener('click', () => save());
+    $('new').addEventListener('click', () => { load(L.STARTER, ''); state.pubId = null; $('from').hidden = true; $('remix').hidden = true; $('report').hidden = true; try { history.replaceState(null, '', '/generators/make/'); } catch (_) {} say('A new generator from the starter.'); });
+    // share: the whole generator in the link (#g=), nothing stored anywhere
+    async function shareLink() { const code = await L.packShare(($('name').value ? '$title = ' + $('name').value.replace(/\n/g, ' ') + '\n' : '') + $('src').value.replace(/^\$title = .*\n?/m, '')); return location.origin + '/generators/make/#g=' + code; }
+    $('share').addEventListener('click', async () => { const url = await shareLink(); if (navigator.share) { try { await navigator.share({ title: 'A random generator', url }); return; } catch (_) {} } await copy(url); say('Link copied. It carries the whole generator: ' + url.length + ' characters.'); });
+    $('embed').addEventListener('click', async () => { const src = state.pubId ? location.origin + '/generators/make/?id=' + state.pubId + '&embed=1' : (await shareLink()).replace('/#g=', '/?embed=1#g='); const code = '<iframe src="' + src + '" title="Random generator" width="100%" height="480" style="border:0"></iframe>'; await copy(code); say('Embed code copied: ' + code); });
+    $('publish').addEventListener('click', async () => {
+      if (compiled && compiled.errors.length) { say('Fix the marked lines first.'); return; }
+      if (!confirm('Publish "' + (($('name').value || (compiled && compiled.title) || 'Untitled').trim()) + '" to the hub? Anyone can then see it, play it and remix it.')) return;
+      say('Publishing…');
+      try { const r = await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: $('name').value || (compiled && compiled.title) || '', text: $('src').value }) }); const j = await r.json();
+        if (j.ok) { state.pubId = j.id; const url = location.origin + '/generators/make/?id=' + j.id; save(true); await copy(url); say('Published. Its link (copied): ' + url); try { history.replaceState(null, '', '/generators/make/?id=' + j.id); } catch (_) {} }
+        else say(j.error || 'It could not be published just now.'); } catch (_) { say(navigator.onLine ? 'It could not be published just now.' : 'Publishing needs the internet.'); }
+    });
+    $('remix').addEventListener('click', () => { const t = $('name').value; state.pubId = null; state.localId = null; $('name').value = ('Remix of ' + (t || 'a generator')).slice(0, 60); document.documentElement.classList.remove('embed'); save(true); $('remix').hidden = true; $('report').hidden = true; $('from').textContent = 'A copy of your own: change anything, it is saved in this browser.'; try { history.replaceState(null, '', '/generators/make/'); } catch (_) {} draw(); $('src').focus(); });
+    $('report').addEventListener('click', async () => { if (!state.pubId || !confirm('Report this generator as harmful or rude? Three reports take it down until it is looked at.')) return; try { await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: state.pubId, act: 'report' }) }); } catch (_) {} $('report').textContent = 'Reported'; $('report').disabled = true; });
+    // download: one .html file that runs the generator offline, with the engine inside it
+    $('download').addEventListener('click', async () => {
+      try {
+        const engine = await (await fetch('/lib/listgen.js')).text(), title = ($('name').value || (compiled && compiled.title) || 'Random generator').trim();
+        const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(title) + '</title><style>body{font:17px/1.5 system-ui,sans-serif;max-width:640px;margin:24px auto;padding:0 16px}li{margin:8px 0;white-space:pre-line}button{font:inherit;padding:8px 16px;border-radius:999px}</style></head><body><h1>' + esc(title) + '</h1><button id="go">Regenerate</button><ol id="res"></ol><p style="font-size:13px;color:#666">Made with Verse, a-to-mind.com/generators/make/</p>'
+          + '<script type="application/json" id="gen">' + JSON.stringify($('src').value).replace(/</g, '\\u003c') + '<\/script><script type="module">' + engine.replace(/<\/script/gi, '<\\/script') + '\nconst T = JSON.parse(document.getElementById("gen").textContent); const go = () => { const r = generate(T, (Math.random() * 4294967296) >>> 0, 5); document.getElementById("res").replaceChildren(...(r.errors.length ? r.errors.map((e) => "line " + e.line + ": " + e.message) : r.results.map((x) => x.output)).map((t) => Object.assign(document.createElement("li"), { textContent: t }))); }; document.getElementById("go").onclick = go; go();<\/script></body></html>';
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) + '.html'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); say('Downloaded: it runs offline in any browser.');
+      } catch (_) { say('The download needs the page loaded once online.'); }
+    });
+    // what opens: a published one (?id=), a shared one (#g=), the last one kept here, or the starter
+    let opened = false;
+    if (/^[a-z2-7]{8}$/.test(q.get('id') || '')) {
+      try { const j = await (await fetch('/api/generators?id=' + q.get('id'))).json();
+        if (j.ok) { load(j.text, j.title); state.pubId = j.id; opened = true; $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }
+        else { $('from').hidden = false; $('from').textContent = 'That generator is not in the hub (it may have been taken down).'; } } catch (_) { $('from').hidden = false; $('from').textContent = 'The hub needs the internet.'; }
+    }
+    const hash = new URLSearchParams(location.hash.slice(1)).get('g');
+    if (!opened && hash) { const text = await L.unpackShare(hash); if (text != null) { const t = text.match(/^\$title = (.*)$/m); load(text, t ? t[1] : ''); opened = true; $('remix').hidden = false; $('from').hidden = false; $('from').textContent = 'A shared generator. Remix to keep your own copy.'; } }
+    if (!opened && store.mine[0]) { load(store.mine[0].text, store.mine[0].title, store.mine[0].id); opened = true; }
+    if (!opened) load(L.STARTER, '');
+    drawMine();
+    if (!embed) mountRelated($('related'), '/generators/');
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

@@ -20,8 +20,8 @@ export const rawSubject = (v) => String(v == null ? '' : v).replace(/[\u0000-\u0
 /** the folded cache key of a subject (letters, digits, spaces; same fold as the merge cards), or ''. Pure. */
 export const subjectKey = (v) => ideaKey(rawSubject(v));
 
-const SEXUAL = /\b(sex\w*|porn\w*|nude\w*|naked|nsfw|erotic\w*|fetish\w*|orgy|genital\w*|penis|vagina|boob\w*|hentai|rape\w*|incest\w*|xxx)\b/;
-const HATE = /\b(nazi\w*|swastika\w*|kkk|white power|genocide|lynch\w*|slur\w*|terroris\w*|isis|jihad\w*|suicid\w*|self harm|child abuse|gore|beheading)\b/;
+export const SEXUAL = /\b(sex\w*|porn\w*|nude\w*|naked|nsfw|erotic\w*|fetish\w*|orgy|genital\w*|penis|vagina|boob\w*|hentai|rape\w*|incest\w*|xxx)\b/;
+export const HATE = /\b(nazi\w*|swastika\w*|kkk|white power|genocide|lynch\w*|slur\w*|terroris\w*|isis|jihad\w*|suicid\w*|self harm|child abuse|gore|beheading)\b/;
 // brands and famous characters are drawn like anything else (owner, 2026-10-25: "no reason why we cant draw brands or famous characters i dont think";
 // "stop with the rules"): the old list that refused them is gone; the picture is Verse's own cartoon of what was asked
 

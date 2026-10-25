@@ -1,0 +1,101 @@
+// The list language (void-live-deploy/lib/listgen.js): perchance's way of writing a generator. Run: node --test tools/listgen.test.mjs
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import * as L from '../void-live-deploy/lib/listgen.js';
+
+const count = (text, n, seed = 1) => { const g = L.compile(text), c = {}; for (let i = 0; i < n; i++) { const o = L.run(g, L.seedFor(seed, i)).output; c[o] = (c[o] || 0) + 1; } return c; };
+
+test('the starter compiles, runs, and the same seed gives the same results', () => {
+  const g = L.compile(L.STARTER); assert.deepEqual(g.errors, []); assert.equal(g.title, 'Tavern of the day');
+  const a = L.generate(g, 7, 5), b = L.generate(L.STARTER, 7, 5);
+  assert.deepEqual(a, b); assert.equal(a.results.length, 5);
+  for (const r of a.results) { assert.match(r.output, /^The [A-Z]/); assert.match(r.image, /tavern called the /); assert.doesNotMatch(r.output, /[[\]{}\u0001]/); }
+  // a kept value ([t = ...]) says the same thing in the output and in the picture prompt
+  for (const r of a.results) assert.ok(r.image.includes(r.output.match(/^The (.+?), /)[1]), r.output + ' / ' + r.image);
+  assert.notDeepEqual(L.generate(g, 8, 5).results, a.results);
+  // each result is made again on its own from seedFor
+  assert.equal(L.run(g, L.seedFor(7, 3)).output, a.results[3].output);
+});
+test('nested lists: [list] picks through every level, [list.sub] only from that one', () => {
+  const text = 'output\n  [animal]\nbirds\n  [animal.bird]\nanimal\n  cat\n  bird\n    owl\n    crow\n';
+  const c = count(text, 400); assert.deepEqual(Object.keys(c).sort(), ['cat', 'crow', 'owl']);
+  assert.ok(c.cat > 140 && c.cat < 260, 'cat is half: ' + c.cat); // the top level is two items, cat and the birds
+  const b = count('output\n  [animal.bird]\nanimal\n  cat\n  bird\n    owl\n    crow\n', 100); assert.deepEqual(Object.keys(b).sort(), ['crow', 'owl']);
+});
+test('odds: ^2 twice as likely, ^0 never, ^1/4 a quarter; in {a^3|b} too', () => {
+  const c = count('output\n  [x]\nx\n  a ^2\n  b\n  c ^0\n', 3000); assert.equal(c.c, undefined); assert.ok(c.a / c.b > 1.7 && c.a / c.b < 2.3, JSON.stringify(c));
+  const q = count('output\n  [x]\nx\n  a ^1/4\n  b\n', 3000); assert.ok(q.b / q.a > 3.3 && q.b / q.a < 4.8, JSON.stringify(q));
+  const i = count('output\n  {a^3|b}\n', 3000); assert.ok(i.a / i.b > 2.5 && i.a / i.b < 3.6, JSON.stringify(i));
+  assert.match(L.compile('output\n  a ^lots\n').errors[0].message, /odds are a number/);
+});
+test('inline: {a|b}, {1-6}, {a} before a word, \\ escapes, <br>, comments', () => {
+  const r = L.generate('output\n  {red|blue} {1-6} {a} [w] {A} [w] \\[x\\] \\{y\\} 5\\|6 http://x.y // a comment<br>\nw\n  owl\n  hour\n  unicorn\n  cat\n', 3, 40).results.map((x) => x.output);
+  for (const o of r) {
+    assert.match(o, /^(?:red|blue) [1-6] /); assert.match(o, /\[x\] \{y\} 5\|6 http:\/\/x\.y$/);
+    for (const m of o.matchAll(/\b(a|an|A|An) (owl|hour|unicorn|cat)\b/g)) assert.equal(m[1].toLowerCase(), { owl: 'an', hour: 'an', unicorn: 'a', cat: 'a' }[m[2]], o);
+  }
+  assert.equal(L.run('output\n  one<br>two\n', 1).output, 'one\ntwo');
+  assert.equal(L.run('output\n  a\\sb\n', 1).output, 'a b');
+});
+test('methods: titleCase, upperCase, lowerCase, sentenceCase, pluralForm, singularForm, selectMany, selectUnique, joinItems, selectAll', () => {
+  const run = (expr, items = '  big cat\n') => L.run('output\n  ' + expr + '\nx\n' + items, 5).output;
+  assert.equal(run('[x.titleCase]'), 'Big Cat'); assert.equal(run('[x.upperCase]'), 'BIG CAT'); assert.equal(run('[x.sentenceCase]'), 'Big cat');
+  assert.equal(run('[x.pluralForm]'), 'big cats'); assert.equal(run('[x.pluralForm]', '  wolf\n'), 'wolves'); assert.equal(run('[x.pluralForm]', '  pony\n'), 'ponies'); assert.equal(run('[x.pluralForm]', '  box\n'), 'boxes'); assert.equal(run('[x.pluralForm]', '  Child\n'), 'Children');
+  assert.equal(run('[x.singularForm]', '  ponies\n'), 'pony'); assert.equal(run('[x.singularForm]', '  people\n'), 'person');
+  assert.equal(run('[x.selectMany(3).joinItems(" + ")]'), 'big cat + big cat + big cat');
+  const u = run('[x.selectUnique(3).joinItems("|")]', '  a\n  b\n  c\n').split('|'); assert.deepEqual([...u].sort(), ['a', 'b', 'c']);
+  assert.equal(run('[x.selectUnique(9)]', '  a\n  b\n').split(', ').length, 2, 'never more than there are');
+  assert.equal(run('[x.selectAll.joinItems(" ")]', '  a\n  b\n  c\n'), 'a b c');
+  assert.equal(run('[x.selectAll.titleCase]', '  a b\n  c\n'), 'A B, C');
+});
+test('kept values: [n = list] says the pick, [n] repeats it, [n = list, ""] says nothing', () => {
+  for (let s = 1; s < 30; s++) { const o = L.run('output\n  [n = x.titleCase, ""]<[n]> and [n]\nx\n  ann\n  bo\n  cy\n', s).output; const m = o.match(/^<(\w+)> and (\w+)$/); assert.ok(m, o); assert.equal(m[1], m[2]); }
+  assert.match(L.run('output\n  [n = x] [n]\nx\n  a\n', 1).output, /^a a$/);
+});
+test('a plain list (nothing indented) is one list, one entry per line, with odds', () => {
+  const g = L.compile('alpha\nbeta ^0\n\ngamma'); assert.equal(g.plain, true); assert.deepEqual(g.errors, []);
+  assert.deepEqual(Object.keys(count('alpha\nbeta ^0\n\ngamma', 200)).sort(), ['alpha', 'gamma']);
+  assert.match(L.compile('').errors[0].message, /no entries/); assert.equal(L.generate('a\nb', 1, 3).results.length, 3); assert.equal(L.generate('a', 1, 999).results.length, 50, 'at most 50 a go');
+});
+test('errors are plain words with the line they are on', () => {
+  const e = (t) => L.compile(t).errors.map((x) => x.line + ': ' + x.message).join('\n');
+  assert.match(e('animal\n  cat\n'), /^1: there is no output list/m);
+  assert.match(e('output\n  [anmal]\nanimal\n  cat\n'), /^2: there is no list called anmal/m);
+  assert.match(e('output\n  [Animal]\nanimal\n  cat\n'), /did you mean animal\?/);
+  assert.match(e('output\n  [x\nx\n  a\n'), /^2: a \[ is never closed/m);
+  assert.match(e('output\n  x}\n'), /^2: a \} closes something/m);
+  assert.match(e('output\n  [x]\nmy list\n  a\n'), /^3: "my list" is not a list name/m);
+  assert.match(e('output\n  [x]\nx\n  big cat\n    tabby\n'), /^4: "big cat" has entries under it/m);
+  assert.match(e('output\n  [x]\nx\n'), /the list x has no entries/);
+  assert.match(e('output\n  [selectOne]\nselectOne\n  a\n'), /a word the language uses/);
+  // at run time: a list that picks from itself, and a list with only ^0
+  assert.match(L.run('output\n  [o]\no\n  [o] again\n', 1).errors[0].message, /without end|too much work/);
+  assert.match(L.run('output\n  [x]\nx\n  a ^0\n', 1).errors[0].message, /odds of 0/);
+  assert.match(L.run('output\n  [x.nope]\nx\n  a\n', 1).errors[0].message, /no nested list or way called nope/);
+});
+test('the $output = ... one-line form, $title, and an image list', () => {
+  const g = L.compile('$title = Names\n$output = [n.titleCase]\n$image = a portrait of [n]\nn\n  zed\n'); assert.deepEqual(g.errors, []);
+  assert.equal(g.title, 'Names'); assert.deepEqual(L.run(g, 1), { output: 'Zed', image: 'a portrait of zed', errors: [] });
+});
+test('limits: text, output length, work', () => {
+  assert.ok(L.compile('output\n  a\n' + 'x'.repeat(L.MAX_TEXT)).errors.length >= 0);
+  const big = L.run('output\n  [x.selectMany(100)][x.selectMany(100)][x.selectMany(100)]\nx\n  ' + 'y'.repeat(200) + '\n', 1).output; assert.ok(big.length <= L.MAX_OUT);
+  const work = L.run('output\n  [a.selectMany(100)]\na\n  [b.selectMany(100)]\nb\n  [c.selectMany(100)]\nc\n  z\n', 1); assert.match(work.errors[0].message, /too much work/);
+});
+test('share codes round-trip, compressed and plain; junk is null', async () => {
+  const p = L.toShare(L.STARTER); assert.match(p, /^p\.[A-Za-z0-9_-]+$/); assert.equal(await L.unpackShare(p), L.STARTER);
+  const z = await L.packShare(L.STARTER); assert.match(z, /^z\./); assert.ok(z.length < p.length); assert.equal(await L.unpackShare(z), L.STARTER);
+  const uni = 'output\n  ünïcödé ✨ 名前\n'; assert.equal(await L.unpackShare(await L.packShare(uni)), uni);
+  for (const bad of ['', 'x.abc', 'z.!!!!', 'p.%%%']) assert.equal(await L.unpackShare(bad), null, bad);
+});
+test('decks, {s}, letters, dice, possessiveForm, pastTense', () => {
+  for (let s = 1; s < 20; s++) {
+    const o = L.run('output\n  [d = x.consumableList, ""][d] [d] [d]|[d]\nx\n  a\n  b\n  c\n', s).output, [three, fourth] = o.split('|');
+    assert.deepEqual(three.split(' ').sort(), ['a', 'b', 'c'], o); assert.match(fourth, /^[abc]$/, 'a used-up deck starts over');
+    assert.match(L.run('output\n  {1-3} cat{s}, {a-c}, {2d6+1}\n', s).output, /^(?:1 cat|[23] cats), [abc], (?:[3-9]|1[0-3])$/);
+  }
+  assert.equal(L.run('output\n  [x.possessiveForm] [y.possessiveForm]\nx\n  cat\ny\n  cats\n', 1).output, "cat's cats'");
+  assert.equal(L.run('output\n  [v.pastTense]\nv\n  fly away\n', 1).output, 'flew away');
+  assert.equal(L.run('output\n  [v.pastTense]\nv\n  stop it\n', 1).output, 'stopped it');
+  assert.equal(L.run('output\n  [v.pastTense]\nv\n  carry on\n', 1).output, 'carried on');
+});

@@ -21,6 +21,7 @@
 // returns something that is not a small jpeg or png gives { state: 'plate' } and writes NOTHING, so a bad moment is never cached and the card keeps
 // Verse's ink plate. Over the cap is the same answer.
 import { rateLimited } from './answer.js';
+import { imageAiToday } from './image.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
@@ -57,8 +58,9 @@ async function keepName(env, key, name) {
 async function cached(env, key) {
   try { await ensure(env); return await env.DB.prepare('SELECT img, day FROM void_art WHERE subject = ?').bind(key).first(); } catch (_) { return null; }
 }
+// the image page's Workers AI pictures (functions/api/image.js) count here too: the two share one daily cap, so /image/ spends nothing new
 async function madeToday(env) {
-  try { await ensure(env); const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(today()).first(); return Number(r && r.n) || 0; } catch (_) { return Infinity; }
+  try { await ensure(env); const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(today()).first(); return (Number(r && r.n) || 0) + (await imageAiToday(env)); } catch (_) { return Infinity; }
 }
 // why a paint gave the plate, counted by day (owner, 2026-10-17: "still no art": three paintings in a day, and nothing said why). The reason is the model's
 // own error (cut to 80 characters, keys and secrets removed), "timeout" or "not an image"; never a subject or anything typed. Read with D1: void_art_miss.
