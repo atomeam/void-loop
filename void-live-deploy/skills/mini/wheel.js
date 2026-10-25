@@ -16,7 +16,7 @@ export default function build(ctx, data) {
       const span = (e.w / total) * Math.PI * 2; g.beginPath(); g.moveTo(mid, mid); g.arc(mid, mid, 500, a, a + span); g.closePath(); g.fillStyle = HUES[i % HUES.length]; g.fill();
       g.strokeStyle = '#ffffff'; g.lineWidth = 6; g.stroke();
       g.save(); g.translate(mid, mid); g.rotate(a + span / 2); g.fillStyle = '#ffffff'; g.textAlign = 'right'; g.textBaseline = 'middle';
-      const t = e.label.length > 16 ? e.label.slice(0, 15) + '…' : e.label; g.font = '700 ' + Math.max(30, Math.min(120, Math.round(span * 70), Math.round(900 / Math.max(3, t.length)))) + 'px system-ui, sans-serif';
+      const t = e.label; g.font = '700 ' + Math.max(t.length > 16 ? 16 : 30, Math.min(120, Math.round(span * 70), Math.round(900 / Math.max(3, t.length)))) + 'px system-ui, sans-serif';
       g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 6; g.fillText(t, 470, 0); g.restore();
       a += span;
     });
