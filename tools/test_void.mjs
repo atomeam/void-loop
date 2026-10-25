@@ -2052,6 +2052,67 @@ try {
       !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
+  // The translate page at 390 px, as a person uses it: tone, a word swapped, a word looked up, a .docx round trip, a website. The real
+  // /api/translate handler answers (functions/api/translate.js); its model, Wiktionary, MyMemory and the website are stubbed here.
+  if (want('translate page at 390 px: formal tone, a word swapped, a word looked up, a .docx round trip with its layout, a website by address')) {
+    const T = await fresh({ phone: true }), api = await import(new URL('../void-live-deploy/functions/api/translate.js', import.meta.url).href), docsLib = await import(new URL('../void-live-deploy/lib/translate-docs.js', import.meta.url).href);
+    const M2M = { 'How are you?': 'Wie geht es dir?', 'The cat is very happy today.': 'El gato está muy feliz hoy.', bank: 'banco', 'Annual report': 'Informe anual', 'Good morning & welcome': 'Buenos días y bienvenidos', 'World news': 'Noticias del mundo', 'The weather is fine.': 'El tiempo es bueno.', 'Home': 'Inicio', 'News of the day': 'Noticias del día' };
+    const env = { AI: { run: async (m, a) => {
+      if (!a.messages) return { translated_text: M2M[a.text] || ('[' + a.target_lang + '] ' + a.text) };
+      const u = a.messages[1].content;
+      if (/Return \{"pos"/.test(u)) return { response: JSON.stringify({ pos: [{ pos: 'noun', senses: [{ def: 'a place for money', example: 'The bank opens at nine.', example_tr: 'El banco abre a las nueve.' }] }], alternatives: [{ text: 'banco', freq: 'common', means: 'money' }, { text: 'orilla', freq: 'rare', means: 'of a river' }], forms: ['banks'] }) };
+      if (/stand in for "feliz"/.test(u)) return { response: '{"alternatives":[{"text":"contento","sentence":"El gato está muy contento hoy."},{"text":"alegre","sentence":"El gato está muy alegre hoy."}]}' };
+      if (/formal register/.test(u)) return { response: 'Wie geht es Ihnen?' };
+      return { response: '' };
+    } } };
+    const outside = async (url) => {
+      if (/wiktionary/.test(url)) return new Response(JSON.stringify({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'An institution where one can place and borrow money.', examples: ['She went to the <b>bank</b>.'] }] }] }), { headers: { 'content-type': 'application/json' } });
+      if (/news\.site\.org/.test(url)) return new Response('<html><head><title>Home</title><script>alert(1)</script></head><body><h1>World news</h1><p>The weather is fine.</p><a href="/today">News of the day</a></body></html>', { headers: { 'content-type': 'text/html' } });
+      return new Response('{}', { status: 404 });
+    };
+    const was = globalThis.fetch; globalThis.fetch = outside;
+    await T.ctx.route(/\/api\/translate$/, async (r) => { const res = await api.onRequestPost({ request: new Request('https://a-to-mind.com/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: r.request().postData() || '{}' }), env });
+      return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await T.ctx.addInitScript(() => { window.__cls = 0; try { new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); } catch (_) {} });
+    const P = T.p, outText = () => P.$eval('#out', (e) => e.textContent);
+    try {
+      await P.goto(base + 'translate/?q=' + encodeURIComponent('How are you?') + '&from=en&to=de');
+      await until(async () => /Wie geht es dir/.test(await outText()), 4000);
+      const plain = await outText(), opts = await P.$$eval('#tone option', (o) => o.map((x) => x.textContent)), toneOn = await P.$eval('#tone', (s) => !s.disabled);
+      const load = await P.evaluate(() => { const n = performance.getEntriesByType('navigation')[0]; return Math.round(n.loadEventStart); }), cls = await P.evaluate(() => window.__cls);
+      await P.selectOption('#tone', 'formal'); await until(async () => /Ihnen/.test(await outText()), 4000); const formal = await outText();
+      check('translate page, tone: German offers Formal (Sie) and Informal (du); choosing Formal turns "Wie geht es dir?" into "Wie geht es Ihnen?"; the page loads under 150 ms here and nothing shifts (CLS < 0.1)',
+        /Wie geht es dir\?/.test(plain) && toneOn && opts.some((o) => /Formal \(Sie\)/.test(o)) && opts.some((o) => /Informal \(du\)/.test(o)) && formal === 'Wie geht es Ihnen?' && load < 150 && cls < 0.1, JSON.stringify({ plain, opts, formal, load, cls }));
+      await P.selectOption('#to', 'es'); await P.fill('#in', 'The cat is very happy today.'); await P.click('#go');
+      await until(async () => /feliz/.test(await outText()), 4000);
+      await P.click('#out .w >> text=feliz'); await until(() => P.$eval('#pop', (p) => !p.hidden && /contento/.test(p.textContent)).catch(() => false), 4000);
+      const popFits = await P.$eval('#pop', (p) => { const b = p.getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth; });
+      await P.click('#pop li button >> text=contento'); await P.waitForTimeout(150);
+      const swapped = await outText(), popGone = await P.$eval('#pop', (p) => p.hidden), kept = await P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.translate.v1')).hist[0].out);
+      check('translate page, a word swapped: tapping "feliz" in the result lists other words (contento, alegre) inside the 390 px screen; tapping contento rewrites the sentence and the history keeps it',
+        swapped === 'El gato está muy contento hoy.' && popGone && popFits && kept === swapped, JSON.stringify({ swapped, popFits, kept }));
+      await P.selectOption('#from', 'en'); await P.fill('#in', 'bank'); await P.click('#go');
+      await until(() => P.$eval('#dict', (d) => !d.hidden && /banco/.test(d.textContent)).catch(() => false), 4000);
+      const dict = await P.$eval('#dict', (d) => d.innerText), bars = await P.$$eval('#dict .freq', (f) => f.map((x) => x.getAttribute('aria-label')));
+      check('translate page, a word looked up: "bank" shows the dictionary: Wiktionary\'s meaning with its example, the translations with how common each is (banco common, orilla rare), an example pair and the forms',
+        /institution where one can place and borrow money/.test(dict) && /She went to the bank/.test(dict) && /banco/.test(dict) && /orilla/.test(dict) && bars[0] === 'common' && bars[1] === 'rare' && /El banco abre a las nueve/.test(dict) && /banks/.test(dict) && /Wiktionary/.test(dict), dict.slice(0, 400) + ' | ' + bars);
+      const doc = '<w:document xmlns:w="w"><w:body><w:p><w:pPr><w:pStyle w:val="Title"/></w:pPr><w:r><w:t>Annual </w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>report</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>Good morning &amp; welcome</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>42</w:t></w:r></w:p></w:tc></w:tr></w:tbl></w:body></w:document>';
+      const docx = await docsLib.zip([{ name: '[Content_Types].xml', data: '<Types/>' }, { name: 'word/document.xml', data: doc }, { name: 'word/media/logo.png', data: new Uint8Array([137, 80, 78, 71, 1, 2]) }]);
+      const dl = P.waitForEvent('download', { timeout: 8000 });
+      await P.setInputFiles('#doc', { name: 'report.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: Buffer.from(docx) });
+      const got = await dl, gotPath = await got.path(), files = await docsLib.unzip(fs.readFileSync(gotPath)), xml = new TextDecoder().decode(files.find((f) => f.name === 'word/document.xml').data);
+      const said = await P.$eval('#note', (n) => n.textContent);
+      check('translate page, a .docx round trip: report.docx comes back as report.es.docx with its title style, bold run, table, number and picture where they were and the words in Spanish',
+        got.suggestedFilename() === 'report.es.docx' && /<w:pStyle w:val="Title"\/><\/w:pPr><w:r><w:t xml:space="preserve">Informe anual<\/w:t><\/w:r><w:r><w:rPr><w:b\/><\/w:rPr><w:t><\/w:t>/.test(xml) && /Buenos días y bienvenidos/.test(xml) && /<w:t>42<\/w:t>/.test(xml)
+        && files.find((f) => f.name === 'word/media/logo.png').data.length === 6 && /layout kept/.test(said), got.suggestedFilename() + ' | ' + said + ' | ' + xml.slice(0, 300));
+      await P.click('#webS'); await P.fill('#url', 'news.site.org'); await P.click('#webGo');
+      await until(() => P.$eval('#web', (w) => /Noticias del mundo/.test(w.textContent)).catch(() => false), 5000);
+      const web = await P.$eval('#web', (w) => w.innerText), scripts = await P.$$eval('#web script', (s) => s.length), sideways = await P.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      check('translate page, a website by address: news.site.org comes back as its words in Spanish (title, heading, paragraph, its link as a button), no script of the site on the page, nothing scrolls sideways at 390 px',
+        /Inicio/.test(web) && /Noticias del mundo/.test(web) && /El tiempo es bueno/.test(web) && /Noticias del día/.test(web) && !scripts && !sideways && !/alert/.test(web), web.slice(0, 300));
+      check('the translate page batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { globalThis.fetch = was; await T.ctx.close(); }
+  }
   // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
   if (want("Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail ")) { const P = await fresh();
     await P.ask('summon linemote-1', 900); const lm = await P.page();

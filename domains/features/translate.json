@@ -43,8 +43,8 @@
      "name": "Listen (text to speech)",
      "detail": "both input and output read aloud, slow replay on second tap",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:92 Listen button (device voices); output only, no slow replay"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:106 Listen on both the typed text and the translation; a second tap within 8 s reads it slowly (:300)"
     },
     {
      "name": "Voice input",
@@ -86,14 +86,14 @@
      "detail": ".docx, .pdf, .pptx, .xlsx uploaded, translated file downloaded with layout kept",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page)"
     },
     {
      "name": "Website translation",
      "detail": "paste a URL, browse the whole site translated",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Conversation mode",
@@ -141,22 +141,22 @@
      "name": "Alternative translations",
      "detail": "click a word or sentence for other translations",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:230 every word of the result is a button; tapping one lists other words, each with the sentence rewritten around it (functions/api/translate.js:89), and swaps it in (:434)"
     },
     {
      "name": "Dictionary panel",
      "detail": "definitions, synonyms, examples and how common each translation is, for single words",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Transliteration / romanization",
      "detail": "e.g. pinyin or Latin spelling under non-Latin text",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:117 romanized line under the result, worked out on the device for Cyrillic, Greek, Korean and kana (lib/translate-langs.js:208); not Chinese pinyin, kanji, Arabic or Indic scripts"
     },
     {
      "name": "Gender-specific translations",
@@ -197,8 +197,8 @@
      "name": "Practice (language learning)",
      "detail": "AI listening and speaking practice in the app (2025)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:153 Practice: flashcards from saved phrases (or the history), tap to show and hear the answer (no AI listening/speaking practice)"
     },
     {
      "name": "5000-character input with counter",
@@ -229,49 +229,49 @@
      "detail": ".docx, .pptx, .xlsx, .pdf, .txt, .html; Pro edits the result, larger files, monthly quota",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page)"
     },
     {
      "name": "Editable translated documents and larger files",
      "detail": "Pro: 20-100+ editable files a month",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:109 Document button takes .docx/.pptx/.xlsx, unzipped on the device, each paragraph translated whole into its first run and zipped back with styles, tables, pictures, formulas kept (lib/translate-docs.js:113 readOffice); chunks with progress and Stop (:353)"
     },
     {
      "name": "Glossary",
      "detail": "fix how a term is translated; Pro: many glossaries and upload term lists",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:148 Glossary: \"term = translation\" lines per target language, kept on the device, sent with text and documents and applied by Verse's model (lib/translate-words.js glossaryOf, tonePrompt)"
     },
     {
      "name": "Multiple glossaries and upload",
      "detail": "Advanced/Ultimate plans",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:148 Glossary: \"term = translation\" lines per target language, kept on the device, sent with text and documents and applied by Verse's model (lib/translate-words.js glossaryOf, tonePrompt): one glossary per target language, pasted as lines (no file upload, no several glossaries)"
     },
     {
      "name": "Formal / informal tone",
      "detail": "choose formality for selected languages",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:126 Tone select: Formal/Informal for T-V languages, Korean Formal (합쇼체)/Polite (해요체)/Casual (반말), Japanese polite/plain (lib/translate-langs.js:158), applied by Verse's model editing the translation (functions/api/translate.js:129)"
     },
     {
      "name": "Click a word for alternatives",
      "detail": "the rest of the sentence rewrites to fit the chosen word",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:230 every word of the result is a button; tapping one lists other words, each with the sentence rewritten around it (functions/api/translate.js:89), and swaps it in (:434)"
     },
     {
      "name": "Dictionary under the translation",
      "detail": "single word gives Linguee dictionary entries",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "DeepL Write",
@@ -378,29 +378,29 @@
      "name": "Tone choice",
      "detail": "standard, casual, formal (and Translator app LLM tones)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:126 Tone select: Formal/Informal for T-V languages, Korean Formal (합쇼체)/Polite (해요체)/Casual (반말), Japanese polite/plain (lib/translate-langs.js:158), applied by Verse's model editing the translation (functions/api/translate.js:129)"
     },
     {
      "name": "Bilingual dictionary with alternatives",
      "detail": "other translations with examples and a confidence bar",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Example sentences",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 examples: Wiktionary's real usage examples (source language) and bilingual example pairs written by Verse's model, not from translated documents"
     },
     {
      "name": "Transliteration",
      "detail": "script-to-script (e.g. pinyin) under the text",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:117 romanized line under the result, worked out on the device for Cyrillic, Greek, Korean and kana (lib/translate-langs.js:208); not Chinese pinyin, kanji, Arabic or Indic scripts"
     },
     {
      "name": "Listen and microphone",
@@ -427,15 +427,15 @@
      "name": "Website translation (Edge)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site (on the page, not inside the browser)"
     },
     {
      "name": "Document translation",
      "detail": "via Microsoft Translator / Azure",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:109 Document button takes .docx/.pptx/.xlsx, unzipped on the device, each paragraph translated whole into its first run and zipped back with styles, tables, pictures, formulas kept (lib/translate-docs.js:113 readOffice); chunks with progress and Stop (:353)"
     },
     {
      "name": "Copy, share, feedback",
@@ -464,22 +464,22 @@
      "name": "Context examples",
      "detail": "the word or phrase shown in real bilingual sentences from documents and subtitles",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 examples: Wiktionary's real usage examples (source language) and bilingual example pairs written by Verse's model, not from translated documents"
     },
     {
      "name": "Synonyms",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:230 every word of the result is a button; tapping one lists other words, each with the sentence rewritten around it (functions/api/translate.js:89), and swaps it in (:434) (target-language words in context; no source-language synonym list)"
     },
     {
      "name": "Verb conjugation",
      "detail": "10 languages",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 the dictionary lists a word's main forms (plural, main verb forms) from Verse's model; no full conjugation tables"
     },
     {
      "name": "Grammar / spell check",
@@ -499,8 +499,8 @@
      "name": "Document translation",
      "detail": "file quota with Premium",
      "paid": true,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:109 Document button takes .docx/.pptx/.xlsx, unzipped on the device, each paragraph translated whole into its first run and zipped back with styles, tables, pictures, formulas kept (lib/translate-docs.js:113 readOffice); chunks with progress and Stop (:353)"
     },
     {
      "name": "No text limit and no ads",
@@ -527,8 +527,8 @@
      "name": "Flashcards and learning games from saved words",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:153 Practice: flashcards from saved phrases (or the history), tap to show and hear the answer"
     },
     {
      "name": "Browser extension",
@@ -558,8 +558,8 @@
      "name": "Website translation",
      "detail": "whole sites in the app or browser",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Image translation with overlay",
@@ -573,14 +573,14 @@
      "detail": ".docx, .pdf, .xlsx, .pptx",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page)"
     },
     {
      "name": "Dictionary with usage examples",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Voice input and listen",
@@ -614,8 +614,8 @@
      "name": "Transliteration",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:117 romanized line under the result, worked out on the device for Cyrillic, Greek, Korean and kana (lib/translate-langs.js:208); not Chinese pinyin, kanji, Arabic or Indic scripts"
     }
    ]
   },
@@ -630,22 +630,22 @@
      "name": "Bilingual dictionary entries",
      "detail": "part of speech, main and less common translations",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Example sentences from real translated sources",
      "detail": "with links to the original sites",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 examples: Wiktionary's real usage examples (source language) and bilingual example pairs written by Verse's model, not from translated documents"
     },
     {
      "name": "Frequency markers",
      "detail": "which translation is common, less common, rare",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Pronunciation audio by professional speakers",
@@ -696,15 +696,15 @@
      "name": "Honorifics toggle",
      "detail": "Korean polite/plain speech level",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:126 Tone select: Formal/Informal for T-V languages, Korean Formal (합쇼체)/Polite (해요체)/Casual (반말), Japanese polite/plain (lib/translate-langs.js:158), applied by Verse's model editing the translation (functions/api/translate.js:129)"
     },
     {
      "name": "Website translation",
      "detail": "enter a URL",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Image translation",
@@ -724,8 +724,8 @@
      "name": "Edu mode / My Note",
      "detail": "photograph a passage to study its words; vocabulary flashcards",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:153 Practice: flashcards from saved phrases (or the history), tap to show and hear the answer (no photographed-passage study mode)"
     },
     {
      "name": "Handwriting input",
@@ -745,8 +745,8 @@
      "name": "Dictionary",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Global conversation phrasebook",
@@ -875,15 +875,15 @@
      "name": "Website translation",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Verb conjugations",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 the dictionary lists a word's main forms (plural, main verb forms) from Verse's model; no full conjugation tables"
     },
     {
      "name": "Keyboard extension",
@@ -896,8 +896,8 @@
      "name": "Dictionary with meanings",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     }
    ]
   },
@@ -921,7 +921,7 @@
      "detail": "web document translator from about 7/month",
      "paid": true,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page); no .odt"
     },
     {
      "name": "Voice and audio-file translation",
@@ -963,7 +963,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:102 Saved phrases list (this device)"
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124); saved phrases, no built-in phrasebook"
     }
    ]
   },
@@ -986,8 +986,8 @@
      "name": "Dictionary panel with alternatives",
      "detail": "words in the text with other meanings",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:230 every word of the result is a button; tapping one lists other words, each with the sentence rewritten around it (functions/api/translate.js:89), and swaps it in (:434)"
     },
     {
      "name": "Industry-specific models",
@@ -1001,14 +1001,14 @@
      "detail": "Word, PowerPoint, Excel, PDF",
      "paid": true,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page)"
     },
     {
      "name": "User dictionaries / glossaries",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:148 Glossary: \"term = translation\" lines per target language, kept on the device, sent with text and documents and applied by Verse's model (lib/translate-words.js glossaryOf, tonePrompt)"
     },
     {
      "name": "Office add-in",
@@ -1036,15 +1036,15 @@
      "name": "Document upload",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:109 Document button takes .docx/.pptx/.xlsx, unzipped on the device, each paragraph translated whole into its first run and zipped back with styles, tables, pictures, formulas kept (lib/translate-docs.js:113 readOffice); chunks with progress and Stop (:353)"
     },
     {
      "name": "Website translation",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Human / post-edited translation",
@@ -1080,7 +1080,7 @@
      "detail": ".pdf, .docx, .xlsx, .pptx and more",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse_evidence": "void-live-deploy/translate/index.html:109 .docx/.pptx/.xlsx come back with their layout (lib/translate-docs.js:113); a .pdf is read by pdf.js on the device (:368) and comes back as a .docx page by page, paragraph by paragraph: PDF layout kept as text only (said on the page)"
     },
     {
      "name": "Many languages (Google engine)",
@@ -1128,8 +1128,8 @@
      "name": "Dictionary",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     }
    ]
   },
@@ -1194,8 +1194,8 @@
      "name": "Back translation",
      "detail": "translate the result back to check it",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:70 Swap languages button (swap puts output in the box; not shown side by side)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:125 Back-translate puts the result back into the source language under it"
     },
     {
      "name": "Compare engines",
@@ -1208,8 +1208,8 @@
      "name": "Dictionary",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Text to speech",
@@ -1266,15 +1266,15 @@
      "name": "Web page translation",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:138 Translate a website: the server fetches one public page's words only (lib/translate-web.js:40 extract; :5 what a stranger could make it do), the page translates them in chunks; its links open translated (:475); ?url= opens it; no pictures or styling of the site"
     },
     {
      "name": "Document translation",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/translate/index.html:83 File button takes .txt/.srt/.vtt/.json/.md only (no .docx/.pdf/.pptx/.xlsx, no layout)"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:109 Document button takes .docx/.pptx/.xlsx, unzipped on the device, each paragraph translated whole into its first run and zipped back with styles, tables, pictures, formulas kept (lib/translate-docs.js:113 readOffice); chunks with progress and Stop (:353)"
     },
     {
      "name": "Professional human translation quote",
@@ -1287,8 +1287,8 @@
      "name": "Dictionaries",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     }
    ]
   },
@@ -1324,15 +1324,15 @@
      "name": "One text into several languages at once",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:143 Into several languages: one text into up to 8 languages listed by name, each with Copy"
     },
     {
      "name": "Dictionary and context",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/translate/index.html"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/translate/index.html:454 dictionary for one word: meanings by part of speech with examples from Wiktionary (lib/translate-words.js:48), translations with how common each is (bar), example pairs, forms; opens by itself for a typed word, or from Dictionary (:124)"
     },
     {
      "name": "Android app",
@@ -1345,39 +1345,36 @@
   }
  },
  "union_gaps": [
-  "Document translation of .docx/.pdf/.pptx/.xlsx keeping layout (Verse only .txt/.srt/.vtt/.json/.md): translate.google.com, deepl.com, translate.yandex.com, lingvanex.com, systransoft.com, onlinedoctranslator.com, translate.com, freetranslations.org, bing.com/translator",
-  "Dictionary for single words: definitions, alternative translations, frequency, examples: translate.google.com, deepl.com, bing.com/translator, reverso.net, translate.yandex.com, linguee.com, papago.naver.com, systransoft.com, imtranslator.net, tradukka.com",
-  "Click a word for alternatives that rewrite the sentence: deepl.com, translate.google.com, bing.com/translator",
-  "Formal/informal tone or honorifics: deepl.com, bing.com/translator, papago.naver.com",
-  "Website translation by URL: translate.google.com, translate.yandex.com, papago.naver.com, itranslate.com, translate.com, freetranslations.org, lingvanex.com, bing.com/translator",
+  "PDF translated with its exact layout (Verse gives the words back page by page as a .docx; .docx/.pptx/.xlsx keep their layout): translate.google.com, deepl.com, onlinedoctranslator.com, systransoft.com, translate.yandex.com, lingvanex.com",
   "Conversation mode (two speakers, spoken back): translate.google.com, bing.com/translator, papago.naver.com, itranslate.com, deepl.com (Voice, paid)",
   "Image translation drawn over the photo, and live camera overlay (Verse returns text only): translate.google.com, translate.yandex.com, papago.naver.com, itranslate.com",
-  "Glossary / custom terms: deepl.com, systransoft.com, mymemory.translated.net",
-  "Transliteration / romanization: translate.google.com, bing.com/translator, translate.yandex.com",
+  "Transliteration for Chinese (pinyin), kanji, Arabic and Indic scripts (Verse romanizes Cyrillic, Greek, Korean and kana): translate.google.com, bing.com/translator, translate.yandex.com",
   "Real offline translation with downloadable language packs (Verse only replays history): translate.google.com, bing.com/translator, translate.yandex.com, papago.naver.com, itranslate.com, lingvanex.com, linguee.com",
   "Continuous transcribe / live translate of speech: translate.google.com, deepl.com, lingvanex.com",
   "Handwriting input and virtual keyboard: translate.google.com, papago.naver.com, imtranslator.net",
   "Rephrase / grammar and spell check: deepl.com (Write), reverso.net, imtranslator.net, translate.yandex.com",
-  "Example sentences from real translated sources: linguee.com, reverso.net, bing.com/translator, translate.yandex.com",
-  "Verb conjugation: reverso.net, itranslate.com",
-  "One text into several languages at once: tradukka.com",
-  "Back translation and engine comparison side by side: imtranslator.net",
+  "Example sentences from real translated sources with links (Verse's pairs are model-written; Wiktionary's examples are one-language): linguee.com, reverso.net",
+  "Full verb conjugation tables (Verse lists a word's main forms): reverso.net, itranslate.com",
+  "Engine comparison side by side: imtranslator.net",
   "Feedback / suggest a better translation: translate.google.com, bing.com/translator, mymemory.translated.net",
   "Gender-specific alternatives: translate.google.com",
   "Built-in travel phrasebook: itranslate.com, papago.naver.com",
-  "Flashcards / learning from saved words: reverso.net, papago.naver.com, translate.google.com (Practice)",
   "Domain-specific models: systransoft.com",
-  "Browser extension / translate inside other apps: translate.google.com, deepl.com, reverso.net, imtranslator.net, itranslate.com, lingvanex.com",
+  "Browser extension / translate inside other apps (and translate a site inside the browser): translate.google.com, deepl.com, reverso.net, imtranslator.net, itranslate.com, lingvanex.com, bing.com/translator",
   "Audio-file translation: lingvanex.com",
-  "Human / certified translation ordering (paid): translate.com, freetranslations.org"
+  "Human / certified translation ordering (paid): translate.com, freetranslations.org",
+  "Website translation with the site's own look (Verse shows its words, headings and links as text, by design no scripts): translate.google.com"
  ],
  "verse_extra": [
-  "Subtitle (.srt, .vtt) and JSON/Markdown file translation with timings and keys kept, downloaded under the target language's name (translate/index.html:83)",
-  "Share link that carries the text and both languages, opening straight to the translation (translate/index.html:94)",
+  "Subtitle (.srt, .vtt) and JSON/Markdown file translation with timings and keys kept, downloaded under the target language's name (translate/index.html:109)",
+  "Share link that carries the text and both languages, opening straight to the translation (translate/index.html:122)",
   "History and saved phrases stay on the device and answer offline (translate/index.html:178)",
   "No account, no ads, nothing stored on the server (translate/index.html:112)",
   "Page words switch to German for German browsers (translate/index.html:120)",
   "Right-to-left output direction set for Arabic, Persian, Hebrew, Urdu, Pashto, Sindhi, Yiddish (translate/index.html:163)",
-  "Hand-off to word count with the typed text (related tools row)"
- ]
+  "Hand-off to word count with the typed text (related tools row)",
+  "Documents opened and put back together on the device: only the words travel, in chunks, nothing stored (translate/index.html:353, lib/translate-docs.js)",
+  "A swapped word rewrites the whole sentence and the history keeps the edited translation (translate/index.html:434)"
+ ],
+ "updated": "2026-10-25"
 }
