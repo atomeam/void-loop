@@ -14,7 +14,7 @@
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
-import { probeFor, score, SPUN, TIMED } from './tower-probes.mjs';
+import { probeFor, score, SPUN, TIMED, clockReadings } from './tower-probes.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -152,15 +152,28 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
         // (its Start and Stop buttons, as a person presses them, in the page or any frame in it: online-stopwatch.com keeps its clock in an
         // iframe; else the Space key); what it shows is scored against the gate's own measure of the run, written after a marker (TIMED)
         const all = async () => (await Promise.all(p.frames().map((f) => f.evaluate(() => (document.body ? document.body.innerText : '')).catch(() => '')))).join('\n');
-        const before = await all(), had = new Set(before.split('\n').map((l) => l.trim()));
+        const before = await all(), had = new Set(before.split('\n').map((l) => l.trim())), fresh0 = (t) => t.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
         const find = async (re) => { for (const f of p.frames()) { const b = f.locator('button:visible, input[type=button]:visible, [role=button]:visible, a:visible').filter({ hasText: re }).first(); if (await b.count().catch(() => 0)) return b; } return null; };
-        const press = async (re) => { const t0 = Date.now(), btn = await find(re); if (btn) await btn.click({ timeout: 3000 }); else await p.keyboard.press('Space'); return (t0 + Date.now()) / 2; };
+        // how it is started: its Start button in any frame; else the Space key; else, for a clock drawn on a canvas that neither moves, a tap
+        // where it is drawn. Started means the text or the picture changed; the way that started it stops it
+        const shot = () => p.screenshot().catch(() => null), same = (x, y) => !!x && !!y && x.equals(y);
+        const centre = async () => { for (const f of p.frames()) { const cv = f.locator('canvas:visible'), k = await cv.count().catch(() => 0); let bb = null, area = 0; for (let i = 0; i < k; i++) { const x = await cv.nth(i).boundingBox().catch(() => null); if (x && x.width * x.height > area) { area = x.width * x.height; bb = x; } } if (bb) return bb; } return null; };
+        const ways = [async () => { const btn = await find(/^\s*start\b/i); if (!btn) return null; await btn.click({ timeout: 3000 }); return async () => { const s2 = await find(/^\s*(?:stop|pause)\b/i); if (s2) await s2.click({ timeout: 3000 }); else await btn.click({ timeout: 3000 }); }; },
+          async () => { await p.keyboard.press('Space'); return () => p.keyboard.press('Space'); },
+          async () => { const bb = await centre(); if (!bb) return null; const at = [bb.x + bb.width / 2, bb.y + bb.height / 2]; await p.mouse.click(...at); return () => p.mouse.click(...at); }];
         answer.lastSeen = await Promise.all(p.frames().map(async (f) => f.url().slice(0, 80) + ' (' + (await f.locator('canvas').count().catch(() => 0)) + ' canvas, ' + (await f.locator('button, [role=button]').count().catch(() => 0)) + ' buttons)')).then((l) => l.join('; '));
-        const started = await press(/^\s*start\b/i); await p.waitForTimeout(timed); const stopped = await press(/^\s*(?:stop|pause)\b/i);
-        await p.waitForTimeout(300); const a = await all(); await p.waitForTimeout(1500); const c = await all();
-        const fresh = (t) => t.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
-        if (!fresh(a).trim()) return null; // nothing on the page changed: the gate could not start it or cannot read its clock (not measured)
-        return fresh(a) + '\n' + TIMED + Math.round(stopped - started) + TIMED + '\n' + fresh(c);
+        let stop = null, started = 0;
+        for (const way of ways) {
+          const t = await all(), pic = await shot(), t0 = Date.now(); const st = await way().catch(() => null); if (!st) continue; const t1 = Date.now();
+          await p.waitForTimeout(700); if ((await all()) !== t || !same(pic, await shot())) { stop = st; started = (t0 + t1) / 2; break; }
+        }
+        if (!stop) return null; // nothing the gate did started it: not measured
+        await p.waitForTimeout(Math.max(0, timed - (Date.now() - started))); const s0 = Date.now(); await stop(); const stopped = (s0 + Date.now()) / 2;
+        await p.waitForTimeout(300); let a = fresh0(await all()); await p.waitForTimeout(1500); let c = fresh0(await all());
+        // a clock drawn where text cannot be read: read off the screen (tools/screen-read.mjs), the way a person reads it
+        if (!a.trim()) { const { readScreen } = await import('./screen-read.mjs'); a = await readScreen(p); await p.waitForTimeout(800); c = await readScreen(p); answer.read = 'read off the screen'; }
+        if (!clockReadings(a).some((r) => r.s > 0)) return null; // no clock that ran: the gate did not start it or cannot read it, never a wrong answer
+        return a + '\n' + TIMED + Math.round(stopped - started) + TIMED + '\n' + c;
       }
       if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
       // the box a person types into: the page's largest visible text area, else its first visible text input (unitconverters.net's "From")

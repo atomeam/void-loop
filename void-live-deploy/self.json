@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-24T23:52:57Z",
+   "subject": "The tools are tied together: a \"Use with\" row on every tool page carries what is on it into the next tool, one accent colour and one…"
+  },
+  {
    "at": "2026-10-24T23:46:21Z",
    "subject": "Tower gate: stopwatch,password,maps measured against their live sites"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-24T19:19:12Z",
    "subject": "randomuser.me, design polish: the country and field checkboxes are 24 px tap targets"
-  },
-  {
-   "at": "2026-10-24T19:14:54Z",
-   "subject": "Incident: the browser suite failed on cf301dc7 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

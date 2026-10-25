@@ -146,7 +146,7 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   } finally { await b.close(); server.close(); }
 });
 
-test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real length and holds it; a fast clock is wrong; a clock it cannot read is not measured', async (t) => {
+test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real length and holds it; a fast clock is wrong; a drawn clock is read off the screen; a clock it cannot read is not measured', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
   if (!exe) return t.skip('no browser here');
@@ -154,7 +154,9 @@ test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real
   const root = new URL('../void-live-deploy/', import.meta.url);
   // a stopwatch that runs twice as fast, and one drawn on a canvas with no text the gate can read
   const fake = '<div id=f>0:00.00</div><button id=g>Start</button><script>let t0=0,iv;g.onclick=()=>{if(g.textContent==="Start"){t0=Date.now();g.textContent="Stop";iv=setInterval(()=>{f.textContent="0:"+String(((Date.now()-t0)*2/1000).toFixed(2)).padStart(5,"0")},30)}else{clearInterval(iv);g.textContent="Start"}}</script>';
-  const PAGES = { '/fast': fake, '/canvas': '<canvas width=300 height=200></canvas>' };
+  // a stopwatch drawn on a canvas that starts and stops on a tap, with no text anywhere (the gate reads it off the screen)
+  const drawn = '<canvas id=c width=420 height=160 style="background:#fff"></canvas><script>const g=c.getContext("2d");let t0=0,acc=0,run=false;const show=()=>{const ms=acc+(run?Date.now()-t0:0),s=ms/1000;g.fillStyle="#fff";g.fillRect(0,0,420,160);g.fillStyle="#000";g.font="bold 72px monospace";g.fillText("0:"+s.toFixed(2).padStart(5,"0"),40,105);requestAnimationFrame(show)};show();c.onclick=()=>{if(run){acc+=Date.now()-t0;run=false}else{t0=Date.now();run=true}}</script>';
+  const PAGES = { '/fast': fake, '/canvas': '<canvas width=300 height=200></canvas>', '/drawn': drawn };
   const server = http.createServer((q, r) => {
     if (PAGES[q.url]) { r.writeHead(200, { 'content-type': 'text/html' }); return r.end('<!doctype html><body>' + PAGES[q.url]); }
     const file = new URL('.' + (q.url.split('?')[0].endsWith('/') ? q.url.split('?')[0] + 'index.html' : q.url.split('?')[0]), root);
@@ -167,5 +169,6 @@ test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real
     assert.equal(score(await answer(b, at(s.ask.verse), null, false, false, s.ask.time), s.truth).n, 2, 'the real length of the run, held once stopped');
     assert.equal(score(await answer(b, at('/fast'), null, false, false, s.ask.time), s.truth).n, 0, 'a clock running twice as fast is wrong');
     assert.equal(await answer(b, at('/canvas'), null, false, false, s.ask.time), null, 'a clock the gate cannot read is not measured, never a loss');
-  } finally { await b.close(); server.close(); }
+    assert.equal(score(await answer(b, at('/drawn'), null, false, false, s.ask.time), s.truth).n, 2, 'a clock drawn on a canvas, started by a tap and read off the screen');
+  } finally { await (await import('./screen-read.mjs')).closeEyes(); await b.close(); server.close(); }
 });
