@@ -4036,7 +4036,7 @@ say('nothing selected to remove');
     function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
-      const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; }); el.dataset.page = '/calculator/'; // the card links to the full calculator (lib/card-frame.js pageOfCard)
 
       let hit = false;
       const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
@@ -5736,7 +5736,7 @@ say('nothing selected to remove');
     // Stopwatch: a page that counts up, with start / stop / lap / reset
     function showStopwatch() {
       let t0 = performance.now(), acc = 0, running = true, laps = [], raf = 0;
-      const el = showPage((p) => { p.innerHTML = '<h2>Stopwatch</h2><div class="sw" style="font-size:56px;font-weight:300;font-variant-numeric:tabular-nums;margin:6px 0">0:00.0</div>'
+      const el = showPage((p) => { p.dataset.page = '/stopwatch/'; p.innerHTML = '<h2>Stopwatch</h2><div class="sw" style="font-size:56px;font-weight:300;font-variant-numeric:tabular-nums;margin:6px 0">0:00.0</div>'
         + '<div style="display:flex;gap:8px"><button type="button" class="tr-copy sw-go">stop</button><button type="button" class="tr-copy sw-lap">lap</button><button type="button" class="tr-copy sw-reset">reset</button></div><ol class="sw-laps" style="margin-top:10px"></ol><p style="color:#8a8a8a;font-size:13px"><a href="/stopwatch/">The full stopwatch and countdown timer: an alarm, presets, keys, and it keeps time offline</a></p>'; });
       const fmt = (ms) => { const s = ms / 1000, m = Math.floor(s / 60); return (m >= 60 ? Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') : m) + ':' + (s % 60).toFixed(1).padStart(4, '0'); };
       const now = () => acc + (running ? performance.now() - t0 : 0);
@@ -5778,7 +5778,7 @@ say('nothing selected to remove');
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
-        if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+        if (c) { showPage((p) => { if (c.title === 'Random number') p.dataset.page = '/random/'; p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }

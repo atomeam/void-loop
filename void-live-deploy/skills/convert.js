@@ -35,7 +35,9 @@ function mount(th, stageApi) {
   const swap = stop(document.createElement('button')); swap.type = 'button'; swap.className = 'g-btn cv-swap'; swap.textContent = '⇅ swap'; swap.setAttribute('aria-label', 'Swap the units');
   const all = document.createElement('div'); all.className = 'cv-all g-sub'; all.setAttribute('aria-live', 'polite'); all.style.cssText = 'display:block;margin-top:8px;white-space:pre-line;line-height:1.5';
   const src = document.createElement('div'); src.className = 'src'; src.style.cssText = 'margin-top:6px;font-size:11px;opacity:.7'; src.textContent = 'Factors: NIST SP 811 · US cups and gallons';
-  el.append(head, pick, A.row, swap, B.row, all, src);
+  // the full page of the same tool, every unit and the history (owner, 2026-10-25: "why are you not linking the cards to the pages?")
+  const full = stop(document.createElement('a')); full.className = 'vc-page'; full.href = '/convert/'; full.textContent = 'Open the full Unit converter page →'; full.style.cssText = 'display:inline-block;margin:8px 0 2px;font-size:13px;font-weight:600';
+  el.append(head, pick, A.row, swap, B.row, all, src, full);
 
   const fill = (k) => { for (const s of [A.sel, B.sel]) { s.innerHTML = ''; KINDS[k].units.forEach((u, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = u[0]; s.appendChild(o); }); } };
   const state = () => ({ k: pick.value, f: +A.sel.value, t: +B.sel.value });

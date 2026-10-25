@@ -212,9 +212,15 @@ export const PAGE_OF = Object.freeze({ calendar: ['/calendar/', 'Calendar'], 'ca
   convert: ['/convert/', 'Unit converter'], gradient: ['/gradient/', 'Gradient'], wheel: ['/wheel/', 'Wheel of names'], coin: ['/flip/', 'Coin flip'],
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
-  password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'] });
+  password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
+  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'] });
+// a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
+// stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
+export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
+/** the [href, label] of a card's full page: its own data-page when it is a known page, else its skill's; null when it has none. Pure. */
+export const pageOfCard = (name, page) => (page && PAGE_PATHS[page] ? [page, PAGE_PATHS[page]] : PAGE_OF[name] || null);
 /** the link to a skill's full page, or '' when it has none. Pure. */
-export const pageLinkHtml = (name, esc) => { const p = PAGE_OF[name]; return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
+export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
 
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */
 export function keep(el, esc, stats) {
@@ -226,7 +232,7 @@ export function keep(el, esc, stats) {
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  if (name && PAGE_OF[name] && !el.querySelector(':scope > .vc-page')) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
+  if (pageOfCard(name, el.dataset.page) && !el.querySelector(':scope > .vc-page')) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, el.dataset.page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
   const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
   // the art is of the subject (owner, 2026-10-17: the art should be of the subject of each card): when the answer carries a picture of the thing
   // (its source's thumbnail), the art box shows that picture in its true colour (owner, 2026-10-17: the ink filter stripped a poster's colour), under a light ink texture; with none, the plate of its kind

@@ -36,3 +36,23 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random-user/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
 });
+
+test('every tool page links to its own card on the stage, and every page has a card that links back (owner, 2026-10-25: "and vice versa")', async () => {
+  const { CARD_ASK, cardLinkOf } = await import('../void-live-deploy/lib/toolkit.js');
+  const { PAGE_PATHS, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const p of Object.keys(TOOLS)) {
+    assert.ok(CARD_ASK[p], p + ' has a stage ask'); assert.equal(cardLinkOf(p), '/?q=' + encodeURIComponent(CARD_ASK[p]));
+    assert.ok(PAGE_PATHS[p], p + ' is linked from a card (PAGE_OF)');
+  }
+  assert.equal(cardLinkOf('/nope/'), '');
+  assert.deepEqual(pageOfCard('', '/color/'), ['/color/', 'Colour codes']);
+  assert.equal(pageOfCard('', 'https://evil.example/'), null, 'only a known page is linked');
+  assert.deepEqual(pageOfCard('calendar', ''), ['/calendar/', 'Calendar']);
+  // the row puts the card link first
+  const { mountRelated } = await import('../void-live-deploy/lib/toolkit.js');
+  const made = []; const mk = (tag) => { const n = { tag, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener() {}, replaceChildren(...c) { this.children = c; } }; made.push(n); return n; };
+  const host = mk('nav'); host.ownerDocument = { createElement: mk, defaultView: {} };
+  mountRelated(host, '/flip/');
+  const row = host.children.find((c) => c.className === 'tk-row'), links = row.children.filter((c) => c.tag === 'a');
+  assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
+});

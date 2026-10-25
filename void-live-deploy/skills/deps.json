@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 790,
+ "counted": 791,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -462,7 +462,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 6
+   "tests": 7
   },
   {
    "file": "lib/success-pulse.js",
@@ -1375,6 +1375,13 @@
    "tests": 1
   },
   {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 7
+  },
+  {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
@@ -1996,13 +2003,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 7
   },
   {
    "file": "lib/units.js",
@@ -6519,7 +6519,9 @@
   },
   "lib/toolkit.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/toolkit.js"
+   ]
   },
   "lib/tower.js": {
    "imports": [],
@@ -10023,6 +10025,12 @@
     "skills/notepad.js",
     "lib/bridges.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/toolkit.js": {
+   "imports": [
+    "lib/toolkit.js"
    ],
    "importedBy": []
   },

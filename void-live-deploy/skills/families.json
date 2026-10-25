@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 26,
   "checked": 16,
   "proven": 294
@@ -1119,7 +1119,7 @@
    "name": "Numbers and money",
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 2,
     "checked": 2,
     "proven": 14
@@ -1134,6 +1134,14 @@
      "success_rate": 1,
      "promoted": "2026-10-24",
      "streak": 2
+    },
+    {
+     "name": "toolkit",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-25"
     },
     {
      "name": "calc",

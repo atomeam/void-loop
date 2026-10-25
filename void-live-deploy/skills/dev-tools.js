@@ -142,6 +142,10 @@ function mount(th, stageApi) {
     };
     el.append(area(th, stageApi, HINTS.commit, 3, paint), out); paint();
   }
+  if (th.mode === 'base64') { // the full Base64 page (files, URL-safe, every charset) is one tap away (owner, 2026-10-25: "why are you not linking the cards to the pages?")
+    const full = h('a', 'display:inline-block;margin:8px 0 2px;font-size:13px;font-weight:600', 'Open the full Base64 page →', { class: 'vc-page', href: '/base64/' });
+    full.addEventListener('pointerdown', (e) => e.stopPropagation()); el.append(full);
+  }
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
 }

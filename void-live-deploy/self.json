@@ -484,6 +484,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T15:11:33Z",
+   "subject": "Incident: the browser suite failed on 5c1954f4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T15:04:22Z",
+   "subject": "Generators: reserve space for the chips and results, chips in one swipe row (layout shift 0.39 to 0.02)"
+  },
+  {
+   "at": "2026-10-25T15:03:49Z",
+   "subject": "Notes page: rich text, search, version history (Versus floor docs and notes, lane of ten)"
+  },
+  {
+   "at": "2026-10-25T15:03:15Z",
+   "subject": "Tower gate: docs and notes,random generators: reedsy.com,random generators: writingexercises.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T15:02:41Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-25T15:01:33Z",
+   "subject": "Tower gate: random generators: reedsy.com,random generators: writingexercises.com,random generators: behindthename.com,random generators…"
+  },
+  {
+   "at": "2026-10-25T15:01:25Z",
+   "subject": "Incident: the browser suite failed on 52540791 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T15:01:11Z",
+   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com,random…"
+  },
+  {
    "at": "2026-10-25T14:58:52Z",
    "subject": "Tower gate: docs and notes,random generators: seventhsanctum.com,random generators: rangen.co.uk measured against their live sites"
   },
@@ -530,38 +562,6 @@
   {
    "at": "2026-10-25T14:47:10Z",
    "subject": "Tower gate: colour codes measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:45:54Z",
-   "subject": "Incident: the browser suite failed on ab307708 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T14:45:32Z",
-   "subject": "Parallel gate runs no longer erase each other's verdicts"
-  },
-  {
-   "at": "2026-10-25T14:44:23Z",
-   "subject": "Tower gate: colour,calendar: any.do,calendar: cozi.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:42:15Z",
-   "subject": "Tower gate: colour,calendar: any.do,calendar: cozi.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:42:03Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
-  },
-  {
-   "at": "2026-10-25T14:41:23Z",
-   "subject": "Tower gate: calendar: any.do,calendar: cozi.com,calendar: proton.me measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:40:35Z",
-   "subject": "Incident: the browser suite failed on 93731ad6 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T14:38:41Z",
-   "subject": "Tower gate: calendar: calendar.online,calendar: teamup.com,calendar: timetreeapp.com measured against their live sites"
   }
  ],
  "builders": {

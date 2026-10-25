@@ -41,6 +41,17 @@ export const RELATED = Object.freeze({
   '/base64/': ['/word-count/', '/base-converter/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
+// the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
+// "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
+export const CARD_ASK = Object.freeze({
+  '/color/': 'color #ff5733', '/gradient/': 'gradient from red to blue', '/wheel/': 'spin the wheel with ann, bob and cat', '/random-user/': 'fake name generator',
+  '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
+  '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
+  '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+});
+/** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
+export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */
 export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p]).map((href) => ({ href, label: TOOLS[href] }));
 
@@ -152,6 +163,7 @@ export function mountRelated(el, path, handoffs = []) {
   if (!el) return;
   const d = el.ownerDocument, a = (href, text, cls) => { const x = d.createElement('a'); x.href = href; x.textContent = text; if (cls) x.className = cls; return x; };
   const row = d.createElement('div'); row.className = 'tk-row';
+  { const c = cardLinkOf(path); if (c) row.append(a(c, 'See it as a card on the stage →', 'tk-card')); } // first: the page's own card (owner, 2026-10-25: "and vice versa")
   for (const h of handoffs) {
     if (h.run) { const b = d.createElement('button'); b.type = 'button'; b.className = 'tk-hand'; b.textContent = h.label; b.addEventListener('click', () => { const said = h.run(); if (said) { b.textContent = said; setTimeout(() => { b.textContent = h.label; }, 1600); } }); row.append(b); continue; }
     const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);
@@ -168,6 +180,6 @@ export function mountRelated(el, path, handoffs = []) {
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'
     + '.tk-ask{margin:14px 0 0}.tk-ask input{font:inherit;width:100%;box-sizing:border-box;min-height:40px;padding:6px 12px;border:1px solid var(--line,#8884);border-radius:999px;background:transparent;color:inherit}.tk-ask input:focus{outline:2px solid var(--accent,#6d4aff);outline-offset:1px}'
-    + '.tk-row .tk-hand{border-color:var(--accent,#6d4aff)}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
+    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
   row.prepend(label); el.replaceChildren(style, form, row);
 }

@@ -157,6 +157,9 @@ async function run(text, api) {
   } else if (q.kind === 'lorem') {
     el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><div class="util-out">' + Array.from({ length: q.n || 1 }, () => '<p>' + esc(LOREM) + '</p>').join('\n\n') + '</div>' + copyBtn; });
   }
+  // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
+  const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
+  if (el && el.dataset && page) el.dataset.page = page;
   const b = el && el.querySelector && el.querySelector('.util-copy');
   if (b) b.addEventListener('click', async () => { const s = (el.querySelector('.util-out') || el.querySelector('p')).textContent; let ok = false; try { await navigator.clipboard.writeText(s); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'select it to copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600); });
   return 'util';
