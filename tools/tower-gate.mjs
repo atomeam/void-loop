@@ -75,6 +75,7 @@ export const MEASURES = Object.freeze({ speed: { hi: false }, reliability: { hi:
   'design polish': { hi: false, ideal: 0 } });
 // a floor's own named aspects scored from a list (tools/tower-probes.mjs PARTS): more of the list is better, the whole list is the best there is
 const PART = Object.freeze({ hi: true });
+export const SPEED_BAR = 200; // ms to the load event at phone width: Verse's own bar for speed (owner, 2026-10-25)
 /** stored measured rows scored again by today's rule, numbers unchanged (no site is loaded). Pure. */
 export function rescore(rows = {}) {
   const out = { ...rows };
@@ -342,12 +343,17 @@ async function measureFloor(f, data) {
   await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed
   const ev = (data.floors[f.id] = data.floors[f.id] || {});
   const where = 'Verse' + (versePage ? ' (' + versePage + ')' : '');
-  const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of; ev[aspect] = { ...record(ev[aspect], verdict(a, c, m.hi, ideal), a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || ''), at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
+  // speed has a bar of its own (owner, 2026-10-25: Verse's own bar, the site's number is context): a page at its load event under SPEED_BAR ms is as
+  // fast as a page needs to be, so it passes whatever the site's time; above the bar the two are compared as before
+  const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of;
+    const v = aspect === 'speed' && Number.isFinite(a) && a <= SPEED_BAR ? 'equal-and-better' : verdict(a, c, m.hi, ideal), note = aspect === 'speed' && v === 'equal-and-better' && a > c ? ' (under the ' + SPEED_BAR + ' ms bar: as fast as a page needs to be; the site\'s time is context)' : '';
+    ev[aspect] = { ...record(ev[aspect], v, a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || '') + note, at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
   // a site that answered none of the loads turned the gate away. That no longer holds a floor (owner, 2026-10-25: "we shouldnt be stopped by our
   // own standards"; "no need to test the competition"): Verse is judged against the best score there is for each aspect (MEASURES ideal) and a
   // 200 ms bar for speed (the owner's own bar, 2026-10-25), the evidence saying so; the site's reliability row keeps what the gate saw
   if (!s.reliability) {
-    ev.reliability = { verdict: 'unverified', verse: v.reliability, best: 0, evidence: f.site + ' answered none of 3 loads from an ordinary phone browser; Verse ' + v.reliability + ' of 3; the other aspects are judged against the best score there is', at };
+    // a site that answers none of its loads is behind on reliability, by the numbers (3 of 3 against 0 of 3): the row is a verdict, not a blank
+    ev.reliability = { ...record(ev.reliability, verdict(v.reliability, 0, true, 3), v.reliability, 0, where + ' ' + v.reliability + ' of 3 loads answered vs ' + f.site + ' 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is', at) };
     const bar = { speed: 200, mobile: 0, a11y: 0, offline: 1, sharing: 4, german: 1 }, site = f.site;
     f = { ...f, site: 'the bar (' + site + ' unreachable)' };
     put('speed', v.speed, bar.speed, ' ms to the load event (median of 3, phone width)');
