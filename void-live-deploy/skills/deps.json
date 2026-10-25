@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 794,
+ "counted": 795,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -906,6 +906,13 @@
    "tests": 3
   },
   {
+   "file": "lib/notes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 3
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -934,11 +941,11 @@
    "tests": 1
   },
   {
-   "file": "lib/notes.js",
+   "file": "lib/note-extras.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 2,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/repo-look.js",
@@ -3396,7 +3403,8 @@
   },
   "lib/chat-notes.js": {
    "imports": [
-    "lib/notes.js"
+    "lib/notes.js",
+    "lib/note-extras.js"
    ],
    "importedBy": [
     "skills/notes-fill.js"
@@ -4797,6 +4805,17 @@
     "skills/miss-jobs.js"
    ]
   },
+  "lib/note-extras.js": {
+   "imports": [
+    "lib/notes.js"
+   ],
+   "importedBy": [
+    "lib/chat-notes.js"
+   ],
+   "reachedBy": [
+    "skills/notes-fill.js"
+   ]
+  },
   "lib/note-tools.js": {
    "imports": [],
    "importedBy": [
@@ -4816,6 +4835,7 @@
    "imports": [],
    "importedBy": [
     "lib/chat-notes.js",
+    "lib/note-extras.js",
     "skills/notes-fill.js"
    ]
   },

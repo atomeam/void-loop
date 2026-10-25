@@ -84,3 +84,16 @@ test('the hint, and nothing in the added html can carry markup', () => {
   const r = with1(empty(), 'add a note: T: <img src=x onerror=alert(1)>, <b>x</b>');
   assert.doesNotMatch(r.store.docs[0].html, /<img|<b>|<script/);
 });
+test('tables, links, pins and tags by sentence', () => {
+  assert.equal(run(empty(), 'make a table with City, Nights in my trip note').kind, 'none', 'no such note: nothing is guessed');
+  let s = with1(empty(), 'make a table with City, Nights', T0).store; assert.equal(s.docs[0].title, 'City table');
+  s = with1(s, 'add a column Status to my city table', T0 + 1e5).store; s = with1(s, 'add row Rome, 10, booked to my city table', T0 + 2e5).store; s = with1(s, 'add row Lisbon, 3 to my city table', T0 + 3e5).store;
+  assert.match(s.docs[0].html, /<th>Status<\/th>/); assert.equal(run(s, 'add a column status to my city table').kind, 'show');
+  s = with1(s, 'sort my city table by nights', T0 + 4e5).store; assert.ok(s.docs[0].html.indexOf('Lisbon') < s.docs[0].html.indexOf('Rome'));
+  assert.match(run(s, 'sort my city table by colour').lines[0], /No column/);
+  s = with1(s, 'make a note about Packing: socks', T0 + 5e5).store; s = with1(s, 'link my city table to packing', T0 + 6e5).store; assert.match(s.docs.find((d) => d.title === 'City table').html, /\[\[Packing\]\]/);
+  assert.equal(run(s, 'what links to packing').hits[0].title, 'City table');
+  s = with1(s, 'pin packing', T0 + 7e5).store; s = with1(s, 'tag my packing note as trip', T0 + 8e5).store;
+  assert.equal(run(s, 'show my pinned notes').hits.length, 1); assert.equal(run(s, 'show notes tagged trip').hits.length, 1);
+  assert.equal(run(empty(), 'add a table to my x note').kind, 'none');
+});

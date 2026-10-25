@@ -65,6 +65,23 @@
   li.chk.done:after { content: ""; position: absolute; left: .6em; top: .42em; width: .28em; height: .55em; border: solid var(--on-accent, #fff); border-width: 0 2px 2px 0; transform: rotate(40deg); }
   li.chk.done { color: var(--soft); text-decoration: line-through; }
   .status { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--soft); margin: 4px 0 0; }
+  /* Notion's core: tables, dividers, links, tags, the slash menu */
+  .body table, .doc table { border-collapse: collapse; width: 100%; table-layout: fixed; margin: 0 0 .6em; }
+  .body th, .body td, .doc th, .doc td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; min-width: 3em; font-size: 16px; line-height: 1.4; }
+  .body th, .doc th { background: var(--tint); font-weight: 600; }
+  .body hr, .doc hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+  #filters { display: flex; gap: 6px; overflow-x: auto; margin: 8px 0 0; min-height: 44px; padding-bottom: 2px; align-items: center; }
+  #filters button { flex: none; padding: 4px 12px; }
+  #meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0 0; }
+  #meta input { flex: 1 1 200px; min-height: 40px; }
+  #links { min-height: 3.2em; margin: 8px 0 0; font-size: 14px; color: var(--soft); }
+  #links .lk { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0; } #links button { min-height: 36px; padding: 2px 12px; }
+  #slash, #tblbar { position: fixed; z-index: 30; background: var(--box); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 24px #0004; padding: 4px; }
+  #slash { width: min(280px, calc(100vw - 24px)); max-height: 260px; overflow-y: auto; }
+  #slash [role=option] { display: block; width: 100%; text-align: left; border: 0; border-radius: 8px; background: none; padding: 6px 10px; min-height: 44px; }
+  #slash [role=option][aria-selected=true] { background: var(--tint); } #slash small { display: block; color: var(--soft); font-size: 12px; }
+  #tblbar { display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100vw - 24px); } #tblbar button { padding: 2px 12px; min-height: 40px; }
+  #tplSel { min-height: 40px; padding: 4px 10px; border-radius: 999px; font-size: 14px; }
   /* version history */
   #hist #vlist { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
   #vlist li { border-top: 1px solid var(--line); } #vlist li:first-child { border-top: 0; }
@@ -74,7 +91,7 @@
   .srcs { font-size: 12px; color: var(--soft); margin: 18px 0 6px; }
   footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
   #related, #asks { margin-top: 14px; }
-  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard { display: none !important; } #dtitle, .body { border: 0; } }
+  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #filters, #slash, #tblbar { display: none !important; } #dtitle, .body { border: 0; } }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/notes/">
@@ -88,6 +105,7 @@
 
   <div class="row" style="margin-top:0">
     <button type="button" class="go" id="newBtn" data-w="newDoc">New note</button>
+    <select id="tplSel" aria-label="Start from a template" data-wal="tpl"><option value="">Start from a template</option><option value="meeting">Meeting</option><option value="trip">Trip</option><option value="shopping">Shopping list</option><option value="weekly">Weekly plan</option></select>
     <button type="button" id="importBtn" data-w="importFile">Import .md or .txt</button><input type="file" id="file" accept=".md,.markdown,.txt,text/plain,text/markdown" hidden>
   </div>
   <div class="note" id="say" role="status"></div>
@@ -101,6 +119,7 @@
   <div class="layout">
     <section class="pane" id="side" aria-label="Notes">
       <form id="sf" role="search" onsubmit="return false"><label class="vh" for="sq" id="sqL" data-w="search">Search all notes</label><input type="search" id="sq" placeholder="Search all notes" data-wph="searchPh" maxlength="100" autocomplete="off"></form>
+      <div id="filters" role="group" aria-label="Show"><button type="button" id="fAll" aria-pressed="true" data-w="all">All</button><button type="button" id="fPin" aria-pressed="false" data-w="pinnedF">Pinned</button><span id="tagchips" style="display:contents"></span></div>
       <ul id="list"></ul>
       <div class="note" id="count"></div>
     </section>
@@ -122,6 +141,8 @@
       <div id="dtitle" contenteditable="true" role="textbox" aria-label="Title" data-wal="titlePh" data-ph="Title" spellcheck="true"></div>
       <div class="body" id="body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Note" data-ph="Start writing…" spellcheck="true"></div>
       <div class="status"><span id="words">0 words</span><span id="saved" data-w="saved">Saved on this device</span></div>
+      <div id="meta"><button type="button" id="pinBtn" aria-pressed="false" data-w="pin">Pin</button><label class="vh" for="tagsIn" data-w="tagsLabel">Tags</label><input id="tagsIn" maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></div>
+      <div id="links" aria-label="Links between notes"></div>
       <div class="row" id="tools">
         <button type="button" id="histBtn" aria-expanded="false" aria-controls="hist" data-w="history">Version history</button>
         <button type="button" id="verBtn" data-w="saveVersion">Save a version</button>
@@ -144,6 +165,9 @@
     </section>
   </div>
 
+  <div id="slash" role="listbox" aria-label="Insert a block" data-wal="slash" hidden></div>
+  <div id="tblbar" role="toolbar" aria-label="Table" data-wal="tbl" hidden><button type="button" data-t="row" data-w="addRow">Row +</button><button type="button" data-t="col" data-w="addCol">Column +</button><button type="button" data-t="up" data-w="sortUp">Sort A-Z</button><button type="button" data-t="down" data-w="sortDown">Sort Z-A</button><button type="button" class="bad" data-t="del" data-w="delTable">Remove table</button></div>
+
   <p class="note" id="keys" data-w="keys">Ctrl+B bold, Ctrl+I italic, Ctrl+U underline, Ctrl+K link, Ctrl+Alt+1 and 2 headings, Ctrl+Shift+7 and 8 lists, Ctrl+/ searches, Ctrl+Alt+N is a new note</p>
 
   <!-- asks -->
@@ -158,7 +182,7 @@
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, N] = await Promise.all([import('/lib/toolkit.js'), import('/lib/notes.js')]);
+    const [{ mountRelated }, N, X] = await Promise.all([import('/lib/toolkit.js'), import('/lib/notes.js'), import('/lib/note-extras.js')]);
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = N.wordsFor(lang);
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     if (de) {
@@ -178,13 +202,13 @@
     const blank = (over) => { const d = N.newDoc(now(), over); put(d); store.cur = d.id; return d; };
 
     // ---- the list and search ----
-    let query = '';
+    let query = '', filter = 'all';
     function drawList() {
       const ul = $('list'); ul.replaceChildren();
-      const docs = N.sorted(store.docs), res = query ? N.search(docs, query) : docs.map((d) => ({ id: d.id, title: N.titleOf(d), snippet: N.toText(d.html).replace(/\s+/g, ' ').slice(0, 90) }));
+      const docs = X.filterDocs(N.sorted(store.docs), filter), pins = new Set(store.docs.filter((d) => d.pinned).map((d) => d.id)), res = query ? N.search(docs, query) : docs.map((d) => ({ id: d.id, title: N.titleOf(d), snippet: N.toText(d.html).replace(/\s+/g, ' ').slice(0, 90) }));
       for (const r of res) {
         const li = el('li'), b = el('button'); b.type = 'button'; if (r.id === store.cur) b.setAttribute('aria-current', 'true');
-        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = query ? N.mark(r.title, query) : ''; if (!query) t.textContent = r.title; s.innerHTML = N.mark(r.snippet || '', query);
+        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = query ? N.mark(r.title, query) : ''; if (!query) t.textContent = (pins.has(r.id) ? '\u2605 ' : '') + r.title; s.innerHTML = N.mark(r.snippet || '', query);
         b.append(t, s); b.addEventListener('click', () => open(r.id)); li.append(b); ul.append(li);
       }
       if (!res.length) ul.append(el('li', 'note', query ? W.noMatch : W.none));
@@ -195,7 +219,7 @@
     // ---- the note being written ----
     let timer = 0, dirty = false;
     function show(d) {
-      $('dtitle').textContent = d.title; $('body').innerHTML = d.html; stats(); drawList(); hideHist();
+      $('dtitle').textContent = d.title; $('body').innerHTML = d.html; stats(); drawList(); hideHist(); drawMeta(d); drawLinks(d);
     }
     function open(id) { flush(); store.cur = id; const d = cur(); if (d) show(d); keep(); }
     function stats() { const n = N.wordCount($('body').innerHTML); $('words').textContent = n + ' ' + W.words; }
@@ -205,7 +229,7 @@
       d = { ...d, title: $('dtitle').textContent.replace(/\s+/g, ' ').trim(), html: N.clean($('body').innerHTML), updated: now() };
       d = N.snapshot(d, now()); put(d); keep();
     }
-    function changed() { dirty = true; stats(); clearTimeout(timer); timer = setTimeout(() => { flush(); drawList(); }, 400); }
+    function changed() { dirty = true; stats(); clearTimeout(timer); timer = setTimeout(() => { flush(); drawList(); const c = cur(); if (c) drawLinks(c); }, 400); }
     $('body').addEventListener('input', changed); $('dtitle').addEventListener('input', changed);
     $('dtitle').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('body').focus(); } });
     setInterval(() => { flush(); const d = cur(); if (d) { const s = N.snapshot(d, now()); if (s !== d) { put(s); keep(); if (!$('hist').hidden) drawHist(); } } }, N.EVERY);
@@ -244,6 +268,75 @@
       const run = (f) => { e.preventDefault(); f(); changed(); };
       if (k === 'k') run(CMD.link); else if (e.altKey && e.code === 'Digit1') run(CMD.h1); else if (e.altKey && e.code === 'Digit2') run(CMD.h2);
       else if (e.shiftKey && e.code === 'Digit7') run(CMD.ol); else if (e.shiftKey && e.code === 'Digit8') run(CMD.ul);
+    });
+
+    // ---- Notion's core: pin and tags, links between notes, templates, the slash menu, tables ----
+    function drawFilters() {
+      const chips = $('tagchips'); chips.replaceChildren();
+      for (const t of X.tagCounts(store.docs).slice(0, 12)) { const b = el('button', '', '#' + t.tag); b.type = 'button'; b.setAttribute('aria-pressed', String(filter === '#' + t.tag)); b.addEventListener('click', () => setFilter('#' + t.tag)); chips.append(b); }
+      $('fAll').setAttribute('aria-pressed', String(filter === 'all')); $('fPin').setAttribute('aria-pressed', String(filter === 'pinned'));
+    }
+    function setFilter(f) { filter = filter === f && f !== 'all' ? 'all' : f; drawFilters(); drawList(); }
+    $('fAll').addEventListener('click', () => setFilter('all')); $('fPin').addEventListener('click', () => setFilter('pinned'));
+    function drawMeta(d) { $('pinBtn').setAttribute('aria-pressed', String(!!d.pinned)); $('pinBtn').textContent = d.pinned ? W.unpin : W.pin; $('tagsIn').value = (d.tags || []).join(', '); drawFilters(); }
+    function setMeta(patch) { flush(); const d = cur(); if (!d) return; put({ ...d, ...patch, updated: now() }); keep(); drawMeta(cur()); drawList(); }
+    $('pinBtn').addEventListener('click', () => setMeta({ pinned: !(cur() || {}).pinned }));
+    $('tagsIn').addEventListener('change', () => setMeta({ tags: X.parseTags($('tagsIn').value) }));
+    function drawLinks(d) {
+      const box = $('links'); box.replaceChildren(); const out = X.linksOf(d.html), back = X.backlinks(store.docs, d);
+      if (!out.length && !back.length) { box.textContent = W.linkHint; return; }
+      const row = (label, items) => { if (!items.length) return; const r = el('div', 'lk'); r.append(el('span', '', label)); for (const it of items) r.append(it); box.append(r); };
+      row(W.linksTo, out.map((t) => { const n = X.noteByTitle(store.docs, t), b = el('button', '', n ? t : t + ' (' + W.newLink + ')'); b.type = 'button'; b.addEventListener('click', () => { flush(); let id = n && n.id; if (!id) { const x = blank({ title: t }); id = x.id; keep(); } open(id); }); return b; }));
+      row(W.linkedFrom, back.map((n) => { const b = el('button', '', n.title); b.type = 'button'; b.addEventListener('click', () => open(n.id)); return b; }));
+    }
+    $('tplSel').addEventListener('change', () => {
+      const k = $('tplSel').value; $('tplSel').value = ''; const T = X.TEMPLATES[k]; if (!T) return; flush();
+      const d = blank({ title: T.title + (k === 'shopping' ? '' : ' ' + new Date().toISOString().slice(0, 10)), html: T.html }); keep(); show(d); $('dtitle').focus();
+    });
+    // the slash menu: type / in a line and pick a block
+    const sl = { on: false, items: [], i: 0, node: null, a: 0, b: 0 };
+    function slashClose() { if (!sl.on) return; sl.on = false; $('slash').hidden = true; $('body').removeAttribute('aria-activedescendant'); }
+    function slashDraw() {
+      const box = $('slash'); box.replaceChildren();
+      sl.items.forEach((c, i) => { const o = el('button'); o.type = 'button'; o.id = 'sl-' + c.key; o.setAttribute('role', 'option'); o.setAttribute('aria-selected', String(i === sl.i)); o.tabIndex = -1; o.append(c.label); const h = el('small', '', c.hint); o.append(h); o.addEventListener('mousedown', (e) => { e.preventDefault(); slashApply(c); }); box.append(o); });
+      $('body').setAttribute('aria-activedescendant', 'sl-' + sl.items[sl.i].key);
+    }
+    function slashCheck() {
+      const s = getSelection(); if (!s || !s.isCollapsed || !s.anchorNode || s.anchorNode.nodeType !== 3 || !$('body').contains(s.anchorNode)) return slashClose();
+      const t = s.anchorNode.data.slice(0, s.anchorOffset), m = /(?:^|\s)\/([a-z0-9-]{0,12})$/i.exec(t); if (!m) return slashClose();
+      const items = X.slashFor(m[1]); if (!items.length) return slashClose();
+      sl.items = items; sl.i = 0; sl.node = s.anchorNode; sl.b = s.anchorOffset; sl.a = s.anchorOffset - m[1].length - 1; sl.on = true;
+      const r = s.getRangeAt(0).cloneRange(); r.collapse(true); let rc = r.getClientRects()[0] || r.getBoundingClientRect(); if (!rc || (!rc.width && !rc.height && !rc.top)) rc = $('body').getBoundingClientRect();
+      const box = $('slash'); box.hidden = false; slashDraw();
+      box.style.left = Math.max(8, Math.min(rc.left, innerWidth - box.offsetWidth - 8)) + 'px'; const below = rc.bottom + 6; box.style.top = (below + box.offsetHeight > innerHeight - 8 ? Math.max(8, rc.top - box.offsetHeight - 6) : below) + 'px';
+    }
+    function slashApply(c) {
+      const s = getSelection(), r = document.createRange(); r.setStart(sl.node, sl.a); r.setEnd(sl.node, sl.b); r.deleteContents(); r.collapse(true); s.removeAllRanges(); s.addRange(r); slashClose();
+      const k = c.key; if (k === 'heading') block('h2'); else if (k === 'todo') todo(); else if (k === 'bullet') ex('insertUnorderedList'); else if (k === 'number') ex('insertOrderedList'); else if (k === 'quote') ex('formatBlock', 'blockquote');
+      else if (k === 'code') ex('insertHTML', '<pre><code><br></code></pre><p><br></p>'); else if (k === 'divider') ex('insertHTML', '<hr><p><br></p>'); else if (k === 'table') ex('insertHTML', X.newTable(['Name', 'Status', 'Notes'], 2) + '<p><br></p>');
+      changed();
+    }
+    $('body').addEventListener('input', slashCheck);
+    $('body').addEventListener('keydown', (e) => {
+      if (!sl.on) return; const k = e.key;
+      if (k === 'ArrowDown' || k === 'ArrowUp') { e.preventDefault(); sl.i = (sl.i + (k === 'ArrowDown' ? 1 : sl.items.length - 1)) % sl.items.length; slashDraw(); }
+      else if (k === 'Enter' || k === 'Tab') { e.preventDefault(); slashApply(sl.items[sl.i]); } else if (k === 'Escape') { e.preventDefault(); slashClose(); }
+    });
+    $('body').addEventListener('blur', () => setTimeout(slashClose, 120));
+    // a table: while the caret is in one, a small bar to add a row or column, sort by the caret's column, or remove it
+    let tcell = null;
+    function tableCheck() {
+      const s = getSelection(), n = s && s.anchorNode && (s.anchorNode.nodeType === 1 ? s.anchorNode : s.anchorNode.parentElement), c = n && $('body').contains(n) && n.closest ? n.closest('td,th') : null;
+      tcell = c; const bar = $('tblbar'); if (!c) { bar.hidden = true; return; }
+      const r = c.closest('table').getBoundingClientRect(); bar.hidden = false; bar.style.left = Math.max(8, Math.min(r.left, innerWidth - bar.offsetWidth - 8)) + 'px'; bar.style.top = (r.top > bar.offsetHeight + 12 ? r.top - bar.offsetHeight - 6 : Math.min(innerHeight - bar.offsetHeight - 8, r.bottom + 6)) + 'px';
+    }
+    document.addEventListener('selectionchange', tableCheck); addEventListener('scroll', () => { if (!$('tblbar').hidden) tableCheck(); }, { passive: true });
+    $('tblbar').addEventListener('mousedown', (e) => e.preventDefault());
+    $('tblbar').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-t]'); if (!b || !tcell) return; const tb = tcell.closest('table'), col = tcell.cellIndex, h = N.clean(tb.outerHTML), a = b.dataset.t; let nh;
+      if (a === 'del') { tb.remove(); $('tblbar').hidden = true; changed(); return; }
+      if (a === 'row') nh = X.addRow(h, []); else if (a === 'col') { const name = prompt(W.colAsk, ''); if (name === null) return; nh = X.addColumn(h, name || undefined); } else nh = X.sortTable(h, col, a === 'down' ? 'desc' : 'asc');
+      const t = document.createElement('template'); t.innerHTML = N.clean(nh); tb.replaceWith(t.content); tcell = null; $('tblbar').hidden = true; changed();
     });
 
     // ---- new, delete, import, export, print, share ----

@@ -5,6 +5,7 @@
 // "ask" that lists them. Every write keeps the note's earlier state as a version first (notes.snapshot) and records the notes it touched, so undo is
 // a real restore (or a removal for a note the sentence made). No model is called: the structure is rules. Tests: tools/chat-notes.test.mjs.
 import { clean, toText, newDoc, snapshot, search, titleOf, uid } from './notes.js';
+import { TEMPLATES, backlinks, filterDocs, newTable, addColumn, addRow, sortTable, mapTable, parseTable, colIndex, parseTags } from './note-extras.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const unent = (s) => String(s).replace(/&(?:amp|lt|gt|quot|#39|nbsp);/g, (m) => ({ '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&nbsp;': ' ' }[m]));
@@ -24,6 +25,16 @@ export function parseIntent(raw) {
   const t = lead(String(raw || '').replace(/\s+/g, ' ').trim().replace(/[.!]+$/, '')); if (!t || t.length > 600) return null;
   let m;
   if ((m = /^undo (?:that |the last |my last )?(?:note|notes)(?: change| edit)?$/i.exec(t))) return { op: 'undo' };
+  // Notion's core: tables, links, pins and tags
+  if ((m = /^add (?:a |another )?column(?: called| named)? (.+?) to (?:my |the )?(.+?)(?: table| note)?$/i.exec(t))) return { op: 'tableCol', name: m[1].trim(), target: m[2].trim() };
+  if ((m = /^add (?:a |another )?row[:,]? (.+?) to (?:my |the )?(.+?)(?: table| note)?$/i.exec(t))) return { op: 'tableRow', cells: m[1].split(/\s*[,;|]\s*/).filter(Boolean), target: m[2].trim() };
+  if ((m = /^sort (?:my |the )?(.+?)(?: table| note)? by (.+?)(?: (ascending|descending|asc|desc))?$/i.exec(t))) return { op: 'tableSort', target: m[1].trim(), by: m[2].trim(), dir: /^d/i.test(m[3] || '') ? 'desc' : 'asc' };
+  if ((m = /^(?:make|create|add|insert) (?:me )?(?:a |an )?(?:new )?table (?:with|of|for) (?:columns? )?(.+?)(?: (?:in|to|into) (?:my |the )?(.+?)(?: note)?)?$/i.exec(t))) return { op: 'tableMake', cols: m[1].split(/\s*(?:,|;| and )\s*/).filter(Boolean), target: (m[2] || '').trim() };
+  if ((m = /^(?:make|create|add|insert) (?:me )?(?:a |an )?(?:new )?table(?: (?:in|to|into) (?:my |the )?(.+?)(?: note)?)?$/i.exec(t))) return { op: 'tableMake', cols: [], target: (m[1] || '').trim() };
+  if ((m = /^link (?:my |the )?(.+?)(?: note)? to (?:my |the )?(.+?)(?: note)?$/i.exec(t))) return { op: 'link', target: m[1].trim(), to: m[2].trim() };
+  if ((m = /^(?:what|which notes?)(?: notes?)? links? to (?:my |the )?(.+?)(?: note)?$/i.exec(t)) || (m = /^backlinks (?:of|for|to) (?:my |the )?(.+?)(?: note)?$/i.exec(t))) return { op: 'backlinks', target: m[1].trim() };
+  if (/^(?:show|list)(?: me)?(?: all)? (?:my )?pinned notes$/i.test(t)) return { op: 'filter', f: 'pinned' };
+  if ((m = /^(?:show|list)(?: me)?(?: all)? (?:my )?notes (?:tagged|with the tag|tagged with|with tag) #?([\w-]+)$/i.exec(t))) return { op: 'filter', f: '#' + m[1].toLowerCase() };
   // find
   if ((m = /^(?:what|which)(?: notes?)? (?:did|have|do) (?:i|my notes?) (?:write|wrote|written|say|said|note|noted|save|saved|keep|kept|jot|jotted)(?: down)? (?:about|on|regarding|for)\s+(.+)$/i.exec(t))
     || (m = /^(?:find|search|look up|look for|show|list)(?: me)?(?: (?:all )?(?:my )?notes?)? (?:about|on|for|with|mentioning|containing)\s+(.+?)(?: in my notes?)?$/i.exec(t))
@@ -78,7 +89,7 @@ const todoOf = (items) => '<ul class="todo">' + items.map((x) => liHtml(x, false
 export function noteFrom(rest) {
   let s = String(rest || '').trim().replace(/^(?:about|on|called|titled|named|for)\s+/i, ''), title = '', body = '';
   const m = /^(.{1,80}?)\s*[:\-–—]\s+(.+)$/s.exec(s) || /^([^:\n]{1,80}):\s*(.+)$/s.exec(s);
-  if (m) { title = m[1].trim(); body = m[2].trim(); } else if (s.length <= 60) title = s; else { const cut = s.slice(0, 50).replace(/\s+\S*$/, ''); title = cut + '…'; body = s; }
+  if (m) { title = m[1].trim(); body = m[2].trim(); } else if (s.length <= 60) title = s; else { const cut = s.slice(0, 50).replace(/\s+\S*$/, ''); title = cut; body = s; }
   title = cap(title);
   if (!body) return { title, html: '' };
   const parts = body.split(/\s*[,;\n]\s*/).map((x) => x.trim()).filter(Boolean);
@@ -92,12 +103,7 @@ export function noteFrom(rest) {
   return { title, html };
 }
 
-export const TEMPLATES = {
-  meeting: { title: 'Meeting', html: '<h2>Date and people</h2><p><br></p><h2>Agenda</h2><ul><li></li></ul><h2>Notes</h2><p><br></p><h2>Actions</h2><ul class="todo"><li class="chk"></li></ul>' },
-  trip: { title: 'Trip', html: '<h2>Flights</h2><p><br></p><h2>Stay</h2><p><br></p><h2>Plans</h2><ul><li></li></ul><h2>Packing list</h2><ul class="todo"><li class="chk"></li></ul>' },
-  shopping: { title: 'Shopping list', html: '<ul class="todo"><li class="chk"></li></ul>' },
-  weekly: { title: 'Weekly plan', html: '<h2>Goals</h2><ul class="todo"><li class="chk"></li></ul><h2>Monday</h2><p><br></p><h2>Tuesday</h2><p><br></p><h2>Wednesday</h2><p><br></p><h2>Thursday</h2><p><br></p><h2>Friday</h2><p><br></p><h2>Weekend</h2><p><br></p>' },
-};
+export { TEMPLATES };
 const templateKey = (k) => (/meet/.test(k) ? 'meeting' : /trip|travel|reise/.test(k) ? 'trip' : /shop|einkauf/.test(k) ? 'shopping' : 'weekly');
 
 // ---------------------------------------------------------------- which note is meant
@@ -235,6 +241,13 @@ export function plan(store, it, now = Date.now()) {
       const { doc, item } = hits[0], r = touch(S, doc.id, (x) => ({ html: setItems(x.html, (i) => i.index === item.index, (i) => (it.op === 'removeItem' ? '' : liHtml(i.text, tickOp))) }), now);
       return done({ store: r.store, changes: [r.change] }, (it.op === 'removeItem' ? 'Removed "' : tickOp ? 'Ticked "' : 'Unticked "') + item.text + '" ' + (it.op === 'removeItem' ? 'from ' : 'in ') + titleOf(doc), doc.id);
     }
+    case 'filter': { const hits = filterDocs(S.docs, it.f).map((d) => ({ id: d.id, title: titleOf(d), snippet: toText(d.html).slice(0, 100) })); return { kind: 'show', title: it.f === 'pinned' ? 'Pinned notes' : 'Notes tagged ' + it.f, hits, lines: hits.length ? [] : ['None yet.'], openId: (hits[0] || {}).id }; }
+    case 'tableMake': {
+      const html = newTable(it.cols); if (!it.target) { const d0 = newDoc(now, { title: it.cols.length ? cap(it.cols[0]) + ' table' : 'Table', html }); const r0 = made(S, d0); return done({ store: r0.store, changes: [r0.change] }, 'Made a table with ' + (it.cols.length ? it.cols.join(', ') : 'Name, Status, Notes'), d0.id); }
+      const res = pick(S, it.target, it.docId); if (res.level === 'none') return { kind: 'none' }; const q = needs(res, it.target, (id, sure) => ({ ...it, docId: id, sure: sure || it.sure }), (d) => 'Add a table to "' + titleOf(d) + '"', it.sure || !!it.docId); if (q) return q;
+      const r = touch(S, res.docs[0].id, (x) => ({ html: (x.html || '') + html }), now); return done({ store: r.store, changes: [r.change] }, 'Added a table (' + (it.cols.join(', ') || 'Name, Status, Notes') + ') to ' + titleOf(res.docs[0]), res.docs[0].id);
+    }
+    case 'backlinks': { const res = resolve(S, it.target); if (res.level === 'none') return { kind: 'none' }; const d = res.docs[0], bl = backlinks(S.docs, d); return { kind: 'show', title: 'Linked to ' + titleOf(d), hits: bl.map((b) => ({ id: b.id, title: b.title, snippet: 'links to [[' + titleOf(d) + ']]' })), lines: bl.length ? [] : ['No note links to it yet. Write [[' + titleOf(d) + ']] in another note.'], openId: d.id }; }
     default: break;
   }
   // verbs on one whole note
@@ -244,6 +257,16 @@ export function plan(store, it, now = Date.now()) {
   if (q) return q;
   const d = res.docs[0];
   switch (it.op) {
+    case 'tableCol': case 'tableRow': case 'tableSort': {
+      let note = '', found = false;
+      const fn = (t) => { found = true; if (it.op === 'tableCol') { if (colIndex(t, it.name) >= 0) { note = 'It already has a column "' + it.name + '".'; return t; } return addColumn(t, cap(it.name)); }
+        if (it.op === 'tableRow') return addRow(t, it.cells); if (colIndex(t, it.by) < 0) { note = 'No column "' + it.by + '". Columns: ' + parseTable(t).head.map((h) => h.replace(/<[^>]+>/g, '')).join(', ') + '.'; return t; } return sortTable(t, it.by, it.dir); };
+      const probe = mapTable(d.html, fn); if (!probe.found) return { kind: 'show', title: titleOf(d), lines: ['There is no table in this note. Say "make a table with Name, Status in my ' + titleOf(d) + ' note".'], openId: d.id };
+      if (note) return { kind: 'show', title: titleOf(d), lines: [note], openId: d.id };
+      const r = touch(S, d.id, (x) => ({ html: mapTable(x.html, fn).html }), now); const said = it.op === 'tableCol' ? 'Added the column ' + cap(it.name) : it.op === 'tableRow' ? 'Added a row (' + it.cells.join(', ') + ')' : 'Sorted the table by ' + it.by + (it.dir === 'desc' ? ', largest first' : '');
+      return done({ store: r.store, changes: [r.change] }, said + ' in ' + titleOf(d), d.id);
+    }
+    case 'link': { const rb = resolve(S, it.to); if (rb.level === 'none') return { kind: 'none' }; const b = rb.docs[0]; if (b.id === d.id) return { kind: 'none' }; if (toText(d.html).includes('[[' + titleOf(b) + ']]')) return { kind: 'show', title: titleOf(d), lines: ['It already links to ' + titleOf(b) + '.'], openId: d.id }; const r = touch(S, d.id, (x) => ({ html: (x.html || '') + '<p>See [[' + esc(titleOf(b)) + ']]</p>' }), now); return done({ store: r.store, changes: [r.change] }, 'Linked ' + titleOf(d) + ' to [[' + titleOf(b) + ']]; it shows under Linked from in ' + titleOf(b), d.id); }
     case 'open': return { kind: 'show', title: titleOf(d), lines: toText(d.html).split('\n').slice(0, 12), openId: d.id };
     case 'summary': return { kind: 'show', title: 'Summary of ' + titleOf(d), lines: summaryOf(d), openId: d.id, offer: { label: 'Add this summary to the note', intent: { op: 'addSummary', docId: d.id } } };
     case 'addSummary': { const r = touch(S, d.id, (x) => ({ html: (x.html || '') + '<h2>Summary</h2>' + summaryOf(x).map((l) => '<p>' + esc(l) + '</p>').join('') }), now); return done({ store: r.store, changes: [r.change] }, 'Added a summary to ' + titleOf(d), d.id); }
