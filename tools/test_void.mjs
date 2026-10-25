@@ -5878,7 +5878,7 @@ try {
       /Ask, and it appears/.test(how) && /timer/.test(lit) && /sticky/.test(lit2) && built === 0 && !net.length, JSON.stringify({ lit, lit2, built, net }));
     await H.ask('close', 300); await H.ask('what are you', 900); const self = await H.page();
     const slogan = await H.p.evaluate(async () => {
-      const want = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
+      const want = 'A-to-Mind. Whatever comes to mind.';
       let wrap = null, text = '', inPage = false, fits = false;
       for (let i = 0; i < 20; i++) {
         wrap = document.querySelector('.vslogan');
@@ -5892,7 +5892,7 @@ try {
     });
     check('"what are you" is the self page', /Ask, and it appears/.test(self) && !net.length, self.slice(0, 80));
     check('"what are you" shows the A-to-Mind slogan as real text inside the self card (exact line, never cut off on the right)',
-      slogan.has && slogan.count === 1 && slogan.text === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.' && slogan.inPage && slogan.fits,
+      slogan.has && slogan.count === 1 && slogan.text === 'A-to-Mind. Whatever comes to mind.' && slogan.inPage && slogan.fits,
       JSON.stringify(slogan).slice(0, 220));
     await H.ask('close', 300);
     const gone = await H.p.evaluate(() => document.querySelectorAll('.vslogan').length);
@@ -9391,7 +9391,7 @@ try {
   if (want("block at line 2982")) { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
-      slog.SLOGAN === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'
+      slog.SLOGAN === 'A-to-Mind. Whatever comes to mind.'
       && doc.includes(slog.SLOGAN) && /REDUCE=true/.test(doc) && !/three\.js|cdn\./i.test(doc),
       slog.SLOGAN.slice(0, 40) + ' reduce=' + /REDUCE=true/.test(doc));
   }
