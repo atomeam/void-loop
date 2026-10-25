@@ -766,51 +766,51 @@
    "speed": {
     "verdict": "equal-and-better",
     "verse": 113,
-    "best": 497,
-    "evidence": "Verse (/color/?c=ff5733) 113 ms to the load event (median of 3, phone width) vs color-hex.com 497 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:17:23.251Z"
+    "best": 429,
+    "evidence": "Verse (/color/?c=ff5733) 113 ms to the load event (median of 3, phone width) vs color-hex.com 429 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:17:23.251Z"
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs color-hex.com 1 unnamed controls or images",
-    "at": "2026-10-25T14:17:23.251Z"
+    "best": 2,
+    "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs color-hex.com 2 unnamed controls or images",
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs color-hex.com 3 of 3 loads answered",
-    "at": "2026-10-25T14:17:23.251Z"
+    "best": 2,
+    "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs color-hex.com 2 of 3 loads answered",
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 0 (1: the page shows itself again with the network cut) vs color-hex.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:17:23.251Z"
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs color-hex.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:17:23.251Z"
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 right against the worked-out answer; judged against the standard, not color-hex.com (the site is not asked)",
-    "at": "2026-10-25T14:17:23.251Z",
+    "at": "2026-10-25T14:23:12.345Z",
     "of": 4
    },
    "completeness": {
@@ -818,22 +818,22 @@
     "verse": 13,
     "best": 11,
     "evidence": "Verse (/color/?c=ff5733) 13 of 13 things a full answer shows vs color-hex.com 11 of 13 things a full answer shows (Verse lacks: none; site lacks: tones, text contrast)",
-    "at": "2026-10-25T14:17:23.251Z",
+    "at": "2026-10-25T14:23:12.345Z",
     "of": 13
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 23,
-    "evidence": "Verse (/color/?c=ff5733) 0 design defects vs color-hex.com 23 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), color-hex.com (11 low-contrast texts, 12 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:17:23.251Z"
+    "best": 25,
+    "evidence": "Verse (/color/?c=ff5733) 0 design defects vs color-hex.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), color-hex.com (11 low-contrast texts, 14 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:23:12.345Z"
    },
    "every colour model": {
     "verdict": "better",
     "verse": 15,
     "best": 10,
     "evidence": "Verse (/color/?c=ff5733) 15 of 15 shown vs color-hex.com 10 of 15 shown (Verse lacks: none; site lacks: HWB, CIELUV, CIELCh, Oklab, OKLCH)",
-    "at": "2026-10-25T14:17:23.251Z",
+    "at": "2026-10-25T14:23:12.345Z",
     "of": 15,
     "part": true
    },
@@ -842,7 +842,7 @@
     "verse": 12,
     "best": 7,
     "evidence": "Verse (/color/?c=ff5733) 12 of 12 shown vs color-hex.com 7 of 12 shown (Verse lacks: none; site lacks: tones, split-complementary, tetradic, square, the 16 VGA colours)",
-    "at": "2026-10-25T14:17:23.251Z",
+    "at": "2026-10-25T14:23:12.345Z",
     "of": 12,
     "part": true
    },
@@ -851,7 +851,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 2 of 2 shown vs color-hex.com 0 of 2 shown (Verse lacks: none; site lacks: text contrast, AA and AAA)",
-    "at": "2026-10-25T14:17:23.251Z",
+    "at": "2026-10-25T14:23:12.345Z",
     "of": 2,
     "part": true
    }
@@ -6062,6 +6062,194 @@
     "at": "2026-10-25T11:41:21.573Z",
     "of": 14
    }
+  },
+  "calendar: calendar.online": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 130,
+    "best": 1180,
+    "evidence": "Verse (/calendar/) 130 ms to the load event (median of 3, phone width) vs calendar.online 1180 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.online 3 of 3 loads answered",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.online 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.online 0 unnamed controls or images",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.online 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.online 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.online (the site is not asked)",
+    "at": "2026-10-25T14:24:25.923Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 136,
+    "evidence": "Verse (/calendar/) 1 design defects vs calendar.online 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.online (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:24:25.923Z"
+   },
+   "reminders": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.online 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:24:25.923Z",
+    "of": 2,
+    "part": true
+   },
+   "invites": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.online 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:24:25.923Z",
+    "of": 3,
+    "part": true
+   },
+   "recurring events": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.online 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:24:25.923Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 4,
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.online 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:24:25.923Z",
+    "of": 15
+   }
+  },
+  "calendar: teamup.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 103,
+    "best": 1224,
+    "evidence": "Verse (/calendar/) 103 ms to the load event (median of 3, phone width) vs teamup.com 1224 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs teamup.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs teamup.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs teamup.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs teamup.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs teamup.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not teamup.com (the site is not asked)",
+    "at": "2026-10-25T14:24:51.884Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 136,
+    "evidence": "Verse (/calendar/) 1 design defects vs teamup.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), teamup.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:24:51.884Z"
+   },
+   "reminders": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs teamup.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:24:51.884Z",
+    "of": 2,
+    "part": true
+   },
+   "invites": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs teamup.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:24:51.884Z",
+    "of": 3,
+    "part": true
+   },
+   "recurring events": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs teamup.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:24:51.884Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 4,
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs teamup.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:24:51.884Z",
+    "of": 15
+   }
   }
  },
  "icons": {
@@ -6087,6 +6275,8 @@
   "cookpad.com": "tower.icons/cookpad.com.png",
   "yummly.com": "tower.icons/yummly.com.png",
   "hexcolor16.com": "tower.icons/hexcolor16.com.png",
-  "color-hex.com": "tower.icons/color-hex.com.ico"
+  "color-hex.com": "tower.icons/color-hex.com.ico",
+  "calendar.online": "tower.icons/calendar.online.png",
+  "teamup.com": "tower.icons/teamup.com.png"
  }
 }
