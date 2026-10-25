@@ -94,8 +94,8 @@
      "name": "Browse by category, cuisine, occasion, diet",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/recipes/index.html:198 area and category shown as a label only"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Browse by cuisine (28) and category (14) from TheMealDB (/api/recipes ?a= ?c=, closed lists), and by diet (Diets pane); no occasion"
     },
     {
      "name": "Submit your own recipe",
@@ -890,7 +890,7 @@
  "union_gaps": [
   "Send the shopping list to a grocery cart (the kept list across recipes is built, 2026-10-25): yummly.com, allrecipes.com, tasty.co, bbcgoodfood.com, epicurious.com, skinnytaste.com",
   "Public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
-  "Browse by category, cuisine, time, occasion: allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
+  "Browse by time and occasion (cuisine, category and diet are built, 2026-10-25): allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
   "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
   "Cost per serving: budgetbytes.com",
   "Post your own recipe, cooksnaps: cookpad.com, allrecipes.com, food52.com",

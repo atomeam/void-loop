@@ -116,7 +116,12 @@
     <button type="button" id="listBtn" aria-expanded="false" aria-controls="listPane">Shopping list</button>
     <button type="button" id="filtBtn" aria-expanded="false" aria-controls="filt">Diets</button>
     <button type="button" id="planBtn" aria-expanded="false" aria-controls="planPane">Meal plan</button>
+    <button type="button" id="browseBtn" aria-expanded="false" aria-controls="browse">Browse</button>
   </div>
+  <section class="pane" id="browse" hidden aria-labelledby="browseH" style="margin-top:8px;min-height:0">
+    <h2 id="browseH" style="margin:0 0 4px">Browse</h2>
+    <div class="row"><label class="vh" for="bArea" id="bAreaL">Cuisine</label><select class="box" id="bArea"></select><label class="vh" for="bCat" id="bCatL">Category</label><select class="box" id="bCat"></select></div>
+  </section>
   <section class="pane" id="planPane" hidden aria-labelledby="planH" style="margin-top:8px;min-height:0">
     <h2 id="planH" style="margin:0 0 4px">Meal plan</h2>
     <ul class="list" id="planList"></ul>
@@ -216,7 +221,7 @@
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
       if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
@@ -301,6 +306,7 @@
       try {
         const p = new URLSearchParams(params); let j;
         if (p.get('id')) { j = await (await fetch(MEALDB + 'lookup.php?i=' + encodeURIComponent(p.get('id')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean) }; }
+        if (p.get('c') || p.get('a')) { const k = p.get('c') ? 'c' : 'a'; j = await (await fetch(MEALDB + 'filter.php?' + k + '=' + encodeURIComponent(p.get(k)))).json(); return { ok: true, list: (j.meals || []).slice(0, 30).map((m) => ({ id: String(m.idMeal), name: m.strMeal, image: m.strMealThumb })), all: true }; }
         if (p.get('q')) { j = await (await fetch(MEALDB + 'search.php?s=' + encodeURIComponent(p.get('q')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean).slice(0, 12) }; }
         j = await (await fetch(MEALDB + 'filter.php?i=' + encodeURIComponent(R.ingredientsOf(p.get('i'))[0] || ''))).json(); return { ok: true, list: (j.meals || []).slice(0, 12).map((m) => ({ id: String(m.idMeal), name: m.strMeal, image: m.strMealThumb })), all: true };
       } catch (_) { return null; }
@@ -418,7 +424,14 @@
     $('shopCopy').addEventListener('click', () => copy($('shopCopy'), K.listText(store.shop)));
     $('shopDone').addEventListener('click', () => { store.shop = store.shop.filter((x) => !x.done); keep(); drawShop(); });
     $('shopAll').addEventListener('click', () => { if (store.shop.length && !confirm(KW.clearAll + '?')) return; store.shop = []; keep(); drawShop(); });
-    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan);
+    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan); pane('browseBtn', 'browse', drawBrowse);
+    // browsing TheMealDB by cuisine or by category (its own closed lists, lib/recipes.js): the meals as a list to open
+    function drawBrowse() { for (const [id, list, label] of [['bArea', R.AREAS, KW.cuisine], ['bCat', R.CATEGORIES, KW.category]]) { const sel = $(id); if (sel.options.length) continue; sel.append(Object.assign(el('option', '', label + ': ' + KW.pick), { value: '' })); for (const x of list) sel.append(Object.assign(el('option', '', x), { value: x })); } }
+    for (const [id, k, other] of [['bArea', 'a', 'bCat'], ['bCat', 'c', 'bArea']]) $(id).addEventListener('change', async () => {
+      const v = $(id).value; if (!v) return; $(other).value = ''; if (!navigator.onLine) return say(W.offline, true);
+      const j = await ask(k + '=' + encodeURIComponent(v)); if (!j || !j.list || !j.list.length) return say(W.none, true);
+      results(j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: v + ' · TheMealDB' })), v + ': ' + j.list.length + ' ' + KW.found); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
 
     // step mode: one step in large type, Previous and Next (the arrow keys too), the screen kept awake, every "for 10 minutes" a countdown to tap
     let lock = null, timer = null, tLeft = 0, tEnd = 0;

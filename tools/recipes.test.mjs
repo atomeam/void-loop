@@ -105,3 +105,10 @@ test('the route: 400 for no ask, 502 for the catalogue away (never cached), 200 
     const again = await (await onRequestGet({ request: req('?q=Pancakes'), env: {}, fetchFn: fake(calls) })).json(); assert.equal(again.cached, true); assert.equal(calls.length, 1, 'the repeat cost TheMealDB nothing');
   } finally { delete globalThis.caches; }
 });
+
+test('browsing: a category or a cuisine from the closed lists, nothing else; the meals come back as a list', async () => {
+  assert.deepEqual(askIn('https://x.test/api/recipes?c=Seafood'), { kind: 'c', value: 'Seafood' }); assert.deepEqual(askIn('https://x.test/api/recipes?a=Italian'), { kind: 'a', value: 'Italian' });
+  for (const bad of ['c=seafood', 'c=Seafood%26x%3D1', 'a=Atlantis', 'a=' + encodeURIComponent('http://evil.test')]) assert.equal(askIn('https://x.test/api/recipes?' + bad), null, bad);
+  const calls = []; const fetchFn = async (u) => { calls.push(u); return new Response(JSON.stringify({ meals: [{ idMeal: '52959', strMeal: 'Baked salmon with fennel', strMealThumb: 'https://img/x.jpg' }] })); };
+  const r = await lookRecipes({ kind: 'a', value: 'Italian' }, fetchFn); assert.equal(calls[0], HOST + 'filter.php?a=Italian'); assert.deepEqual(r.list, [{ id: '52959', name: 'Baked salmon with fennel', image: 'https://img/x.jpg' }]);
+});
