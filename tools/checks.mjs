@@ -445,6 +445,7 @@ for (const [name, file] of [
   ['well-known', 'well-known.test.mjs'],
   ['preload', 'preload.test.mjs'],
   ['pwcheck', 'pwcheck.test.mjs'],
+  ['weather-page', 'weather.test.mjs'],
   ['baseconv', 'baseconv.test.mjs'],
   ['imgfit', 'imgfit.test.mjs'],
   ['arrange', 'arrange.test.mjs'],

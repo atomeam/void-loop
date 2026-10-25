@@ -202,6 +202,22 @@ export const PROBES = Object.freeze({
     facts: [['a strength rating', /\b(?:very weak|weak|fair|strong|very strong)\b|\bstrength\b/i], ['the time to crack', /\bcrack/i], ['why it is weak', /\bwhy\b|\breasons?\b/i], ['how to fix it', /\bfix\b|\btips?\b|\bimprove\b/i],
       ['a leak check', /\bleak|\bbreach|\bpwned\b/i], ['nothing sent anywhere', /never sent|not sent|on (?:this|your) device|in your browser/i], ['show the password', /\bshow\b/i]],
   },
+  weather: {
+    site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
+    // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
+    // temperature in °F and °C that agree with each other (F = C × 9/5 + 32), starts the days ahead with today in Boston's own zone, names
+    // the hours ahead, and gives sunrise and sunset. Judged on Verse alone (the site is not asked)
+    ask: { verse: '/weather/?q=Boston' },
+    truth: () => [['the place asked for', /\bBoston\b/],
+      ['a temperature in °F and °C that agree', (t) => { const ps = [...String(t).matchAll(/(-?\d+) °F \/ (-?\d+) °C/g)]; return ps.length > 0 && ps.every((m) => Math.abs(+m[1] - (+m[2] * 9 / 5 + 32)) <= 1.5); }],
+      ['today first in the days ahead', (t) => { const m = String(t).match(/\b(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\b/); return !!m && m[1] === new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'America/New_York' }).format(new Date()); }],
+      ['the hours ahead named', /\b\d{1,2}(?:am|pm)\b/i], ['sunrise and sunset', (t) => /\bsunrise\b/i.test(t) && /\bsunset\b/i.test(t)]],
+    askParts: { 'hourly and daily forecast': [['the next 24 hours', /next 24 hours|\bhourly\b/i], ['the 7 days ahead', /7 days ahead|\bdaily\b/i]], alerts: [['alerts', /\balerts?\b/i]], radar: [['radar', /\bradar\b/i]] },
+    // what the best weather pages show (weather.gov's conditions, hourly and 7-day forecasts, alerts and radar; the best add both scales, feels like,
+    // humidity, wind, the chance of rain, sunrise and sunset, and a link to share)
+    facts: [['conditions now', /\bnow\b/i], ['°F', /°\s?F\b/], ['°C', /°\s?C\b/], ['feels like', /feels like/i], ['humidity', /\bhumidity\b/i], ['wind', /\bwind\b/i], ['the chance of rain', /chance of rain|\bprecipitation\b|\bprobab/i],
+      ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['an hourly forecast', /\bhourly\b|next 24 hours/i], ['a daily forecast', /\bdaily\b|days ahead|7.day|extended forecast/i], ['alerts', /\balerts?\b/i], ['radar', /\bradar\b/i], ['a share link', /\bshare\b|copy link/i]],
+  },
   'photo resizer': {
     site: 'https://pancardresizer.com/', verse: '/resize-image/',
     // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL) with the size in the link: the

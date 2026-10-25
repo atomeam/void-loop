@@ -476,7 +476,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T21:42:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -484,8 +484,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T05:20:59Z",
+   "at": "2026-10-25T05:26:49Z",
    "subject": "The 3D calculator comes in five Verse models that take turns on new cards: SL-200 SOLAR pocket, FX-900 SCIENTIFIC, DT-12 DESK printing…"
+  },
+  {
+   "at": "2026-10-25T05:24:40Z",
+   "subject": "An ask bar on every tool page, and the 3D tower first on the card"
+  },
+  {
+   "at": "2026-10-25T05:22:22Z",
+   "subject": "Incident: the browser suite failed on 79a919b3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T05:21:59Z",
+   "subject": "/compare/ shows each site as the gate saw it, since every site refuses to be framed"
+  },
+  {
+   "at": "2026-10-25T05:21:45Z",
+   "subject": "The tower card gets a 3D tower: floors on a plinth in deep space, names in gold, the current floor a scaffold"
   },
   {
    "at": "2026-10-25T05:20:08Z",
@@ -546,22 +562,6 @@
   {
    "at": "2026-10-25T04:56:20Z",
    "subject": "Tower gate: password measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:55:28Z",
-   "subject": "Password strength surpassed, its learned line written; the photo resizer floor gets its probe: the gate puts a picture into Verse's page…"
-  },
-  {
-   "at": "2026-10-25T04:53:25Z",
-   "subject": "/password/: the password floor's own page, with its probe and the gate's truth"
-  },
-  {
-   "at": "2026-10-25T04:52:46Z",
-   "subject": "Tower gate: photo resizer,news,photos measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:51:04Z",
-   "subject": "Tower gate: unit converter measured against their live sites"
   }
  ],
  "builders": {
