@@ -123,52 +123,52 @@
   "coin flip": {
    "speed": {
     "verdict": "better",
-    "verse": 181,
-    "best": 255,
-    "evidence": "Verse (/flip/) 181 ms to the load event (median of 3, phone width) vs justflipacoin.com 255 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T00:12:58.345Z"
+    "verse": 155,
+    "best": 262,
+    "evidence": "Verse (/flip/) 155 ms to the load event (median of 3, phone width) vs justflipacoin.com 262 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T00:12:58.345Z"
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-25T00:12:58.345Z"
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-25T00:12:58.345Z"
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T00:12:58.345Z"
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/flip/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T00:12:58.345Z"
+    "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/flip/) 3 of 3 things a full answer shows vs justflipacoin.com 2 of 3 things a full answer shows (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-25T00:12:58.345Z",
+    "at": "2026-10-25T00:36:11.776Z",
     "of": 3
    },
    "design polish": {
@@ -176,15 +176,30 @@
     "verse": 3,
     "best": 12,
     "evidence": "Verse (/flip/) 3 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.05), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T00:12:58.345Z"
+    "at": "2026-10-25T00:36:11.776Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-25T00:12:58.345Z",
+    "at": "2026-10-25T00:36:11.776Z",
     "of": 1,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "unverified",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/flip/) 3 of 3 right on 10 flips pressed by the gate; the gate could not find justflipacoin.com's flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win",
+    "at": "2026-10-25T00:36:11.776Z"
+   },
+   "flip animation": {
+    "verdict": "unverified",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/flip/) 1 of 1 seen; the gate could not find justflipacoin.com's flip control, or its screen never rests: a fault to fix in the gate, not a win",
+    "at": "2026-10-25T00:36:11.776Z",
     "part": true
    }
   },
@@ -515,7 +530,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T00:13:13.477Z"
+    "at": "2026-10-25T00:38:18.033Z"
    }
   },
   "encoder": {
@@ -775,52 +790,52 @@
   "password strength": {
    "speed": {
     "verdict": "better",
-    "verse": 135,
-    "best": 1855,
-    "evidence": "Verse (/password-strength/) 135 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 1855 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:34:53.943Z"
+    "verse": 189,
+    "best": 21778,
+    "evidence": "Verse (/password-strength/) 189 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 21778 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 1,
-    "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 1 of 3 loads answered",
-    "at": "2026-10-24T16:34:53.943Z"
+    "best": 3,
+    "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:34:53.943Z"
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-24T16:34:53.943Z"
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:34:53.943Z"
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 4,
     "best": 1,
-    "evidence": "Verse (/password-strength/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:34:53.943Z"
+    "evidence": "Verse (/password-strength/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T00:36:39.451Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/password-strength/) 1 design defects vs howsecureismypassword.net 0 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), howsecureismypassword.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T16:34:53.943Z"
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/password-strength/) 0 design defects vs howsecureismypassword.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), howsecureismypassword.net (0 low-contrast texts, 1 small tap targets, layout shift 0.16)",
+    "at": "2026-10-25T00:36:39.451Z"
    }
   },
   "base converter": {
