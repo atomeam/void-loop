@@ -565,72 +565,73 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:13:07.125Z"
+    "at": "2026-10-25T04:18:26.361Z"
    }
   },
   "encoder": {
    "speed": {
     "verdict": "better",
-    "verse": 141,
-    "best": 835,
-    "evidence": "Verse (/base64/) 141 ms to the load event (median of 3, phone width) vs base64encode.org 835 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:11:38.030Z"
+    "verse": 161,
+    "best": 836,
+    "evidence": "Verse (/base64/) 161 ms to the load event (median of 3, phone width) vs base64encode.org 836 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 3 of 3 loads answered",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base64/) 1 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base64/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
     "best": 34,
     "evidence": "Verse (/base64/) 4 design defects vs base64encode.org 34 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.37)",
-    "at": "2026-10-25T04:11:38.030Z"
+    "at": "2026-10-25T04:17:50.967Z"
    },
    "accuracy": {
-    "verdict": "unverified",
+    "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/base64/) 1 of 1 right with the question typed into its box; the gate got no answer out of base64encode.org's box (its output stayed empty, or nothing it found took the typing or the press): a fault to fix in the gate, not a win. The gate saw: the page did not load; then: page.goto: Timeout 30000ms exceeded.",
-    "at": "2026-10-25T04:11:38.030Z"
+    "evidence": "Verse (/base64/) 1 of 1 right against the worked-out answer; judged against the standard, not base64encode.org (the site is not asked)",
+    "at": "2026-10-25T04:17:50.967Z",
+    "of": 1
    },
    "decode too": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/base64/) 1 of 1 shown vs base64encode.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T04:11:38.030Z",
+    "at": "2026-10-25T04:17:50.967Z",
     "of": 1,
     "part": true
    },
@@ -639,7 +640,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/base64/) 2 of 2 shown vs base64encode.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T04:11:38.030Z",
+    "at": "2026-10-25T04:17:50.967Z",
     "of": 2,
     "part": true
    },
@@ -648,7 +649,7 @@
     "verse": 10,
     "best": 10,
     "evidence": "Verse (/base64/) 10 of 10 things a full answer shows vs base64encode.org 10 of 10 things a full answer shows (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T04:11:38.030Z",
+    "at": "2026-10-25T04:17:50.967Z",
     "of": 10
    }
   },
@@ -1859,7 +1860,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:14:51.864Z"
+    "at": "2026-10-25T04:20:11.288Z"
    }
   }
  }
