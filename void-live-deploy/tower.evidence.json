@@ -3624,6 +3624,288 @@
     "at": "2026-10-25T06:54:30.295Z",
     "of": 10
    }
+  },
+  "translate: randomtranslator.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 133,
+    "best": 745,
+    "evidence": "Verse (/translate/?q=hello&to=es) 133 ms to the load event (median of 3, phone width) vs randomtranslator.com 745 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs randomtranslator.com 3 of 3 loads answered",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs randomtranslator.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs randomtranslator.com 0 unnamed controls or images",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs randomtranslator.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs randomtranslator.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not randomtranslator.com (the site is not asked)",
+    "at": "2026-10-25T06:57:48.540Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs randomtranslator.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), randomtranslator.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:57:48.540Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs randomtranslator.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:57:48.540Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs randomtranslator.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T06:57:48.540Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs randomtranslator.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:57:48.540Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs randomtranslator.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:57:48.540Z",
+    "of": 10
+   }
+  },
+  "translate: translate.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 160,
+    "best": 751,
+    "evidence": "Verse (/translate/?q=hello&to=es) 160 ms to the load event (median of 3, phone width) vs translate.com 751 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs translate.com 3 of 3 loads answered",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs translate.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs translate.com 0 unnamed controls or images",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs translate.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs translate.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not translate.com (the site is not asked)",
+    "at": "2026-10-25T06:58:10.816Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs translate.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), translate.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:58:10.816Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs translate.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:58:10.816Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translate.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T06:58:10.816Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translate.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:58:10.816Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs translate.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:58:10.816Z",
+    "of": 10
+   }
+  },
+  "translate: systransoft.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 171,
+    "best": 892,
+    "evidence": "Verse (/translate/?q=hello&to=es) 171 ms to the load event (median of 3, phone width) vs systransoft.com 892 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs systransoft.com 3 of 3 loads answered",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs systransoft.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs systransoft.com 0 unnamed controls or images",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs systransoft.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs systransoft.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not systransoft.com (the site is not asked)",
+    "at": "2026-10-25T06:58:32.394Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs systransoft.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), systransoft.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:58:32.394Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs systransoft.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:58:32.394Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs systransoft.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T06:58:32.394Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs systransoft.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:58:32.394Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs systransoft.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:58:32.394Z",
+    "of": 10
+   }
   }
  }
 }
