@@ -12,7 +12,7 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
-  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image',
+  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -24,7 +24,8 @@ export const RELATED = Object.freeze({
   '/flip/': ['/wheel/', '/random/'],
   '/stopwatch/': ['/word-count/'],
   '/word-count/': ['/stopwatch/'],
-  '/base-converter/': ['/color/', '/random/'],
+  '/base-converter/': ['/convert/', '/color/', '/random/'],
+  '/convert/': ['/base-converter/', '/stopwatch/'],
   '/password-strength/': ['/random-user/'],
   '/resize-image/': ['/color/'],
 });

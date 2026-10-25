@@ -133,8 +133,9 @@ export const PROBES = Object.freeze({
     truth: [['13 words', /(?<![\d,])13\s+words?\b|\bwords?\s*:?\s*13(?![\d,])/i], ['63 characters', /(?<![\d,])63\s+characters?\b|\bcharacters?\s*:?\s*63(?![\d,])/i]],
   },
   'unit converter': {
-    site: 'https://www.unitconverters.net/', verse: null,
-    ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', box: true, verse: '/?q=' + encodeURIComponent('100 c to f') },
+    site: 'https://www.unitconverters.net/', verse: '/convert/',
+    // the same question to both: 100 typed into the site's Celsius-to-Fahrenheit box, and the same words in Verse's page link (its ask box reads them)
+    ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', box: true, verse: '/convert/?q=' + encodeURIComponent('100 c to f') },
     truth: [['212 °F', /(?<![\d.])212(?:\.0+)?(?![\d.])\s*(?:°\s*F|degrees? fahrenheit|fahrenheit)?/i]],
   },
   encoder: {

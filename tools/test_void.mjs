@@ -5505,6 +5505,20 @@ try {
       && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's unitconverters.net floor: /convert/ answers the gate's own question from its link, shows every unit of the kind at once, and a
+  // box typed in either direction moves all the others; Copy link carries the conversion
+  if (want("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it")) {
+    const Z = await fresh(); await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('100 c to f')); await Z.p.waitForSelector('#u-F');
+    const first = { answer: await Z.p.$eval('#answer', (e) => e.textContent), f: await Z.p.$eval('#u-F', (e) => e.value), k: await Z.p.$eval('#u-K', (e) => e.value), rows: await Z.p.$$eval('#units li', (l) => l.length) };
+    await Z.p.fill('#u-F', '-40'); const back = { c: await Z.p.$eval('#u-C', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
+    await Z.p.fill('#ask', '5 km in miles'); await Z.p.waitForTimeout(100); const km = { mi: await Z.p.$eval('#u-mi', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
+    await Z.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {}); await Z.p.click('#link'); const link = await Z.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    await Z.p.goto(link || base + 'convert/'); await Z.p.waitForSelector('#u-mi'); const kept = await Z.p.$eval('#answer', (e) => e.textContent);
+    check("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it",
+      first.answer === '100 °C = 212 °F' && first.f === '212' && first.k === '373.15' && first.rows === 5 && back.c === '-40' && /^-40 °F = -40 °C$/.test(back.answer)
+      && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !Z.errors.length, JSON.stringify({ first, back, km, link, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);

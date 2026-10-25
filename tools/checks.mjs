@@ -438,6 +438,7 @@ for (const [name, file] of [
   ['beacon', 'beacon.test.mjs'],
   ['wordcount', 'wordcount.test.mjs'],
   ['stopwatch', 'stopwatch.test.mjs'],
+  ['units', 'units.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
