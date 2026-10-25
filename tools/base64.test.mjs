@@ -1,7 +1,7 @@
 // lib/base64.js: RFC 4648 Base64 and Base64URL, exact for UTF-8 text (emoji, accents), plain errors on bad input, files as data: URLs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { encodeText, decodeText, encodeBytes, decodeBytes, textToBytes, bytesToText, hexOf, dataUrl, dataUrlParts, sizeOf } from '../void-live-deploy/lib/base64.js';
+import { encodeText, decodeText, encodeBytes, decodeBytes, textToBytes, bytesToText, hexOf, dataUrl, dataUrlParts, sizeOf, sniffCharset } from '../void-live-deploy/lib/base64.js';
 
 test('the RFC 4648 test vectors (section 10), both ways', () => {
   const V = [['', ''], ['f', 'Zg=='], ['fo', 'Zm8='], ['foo', 'Zm9v'], ['foob', 'Zm9vYg=='], ['fooba', 'Zm9vYmE='], ['foobar', 'Zm9vYmFy']];
@@ -45,8 +45,10 @@ test('invalid input is said plainly, never decoded into garbage', () => {
   assert.match(bad('a+b-'), /mixes the standard alphabet/);
   assert.match(bad('aGVsb'), /5 characters long/);
   assert.match(bad('aGVsbG8=x'), /after the = padding/);
-  assert.match(bad('aGVsbG8==='), /too much = padding/);
-  assert.match(bad('aGVsbG8=='), /padding does not fit/); assert.equal(decodeText('aGVsbG==').text, 'hell');
+  // padding of the wrong length is decoded anyway and said so (the owner, 2026-10-25: tolerate a missing or extra =)
+  for (const off of ['aGVsbG8===', 'aGVsbG8==', 'aGVsbA=']) { const r = decodeText(off); assert.equal(r.ok, true, off); assert.match(r.note, /padding at the end was the wrong length/, off); }
+  assert.equal(decodeText('aGVsbG8==').text, 'hello'); assert.equal(decodeText('aGVsbA').text, 'hell', 'no padding at all needs no note'); assert.equal(decodeText('aGVsbA').note, undefined);
+  assert.equal(decodeText('aGVsbG==').text, 'hell');
   assert.match(bad('/w=='), /not UTF-8 text/, 'one byte 0xff: decodes, but is not text');
   const r = decodeText('/w=='); assert.equal(r.binary, true); assert.deepEqual([...r.bytes], [255], 'the bytes are kept, for hex and download');
   assert.ok(decodeBytes('aGVsbG9=').note, 'leftover bits that are not zero are noted');
@@ -67,4 +69,15 @@ test('character sets: UTF-16LE and Latin-1 as base64encode.org offers, Latin-1 s
 });
 test('hex and sizes', () => {
   assert.equal(hexOf(textToBytes('hé').bytes), '68 c3 a9'); assert.equal(sizeOf(1), '1 byte'); assert.equal(sizeOf(2048), '2.0 KB');
+});
+
+test('the character set is detected when decoding: a byte-order mark, then UTF-8, then UTF-16LE, else Latin-1', () => {
+  const b = (...x) => new Uint8Array(x);
+  assert.equal(sniffCharset(b(0xef, 0xbb, 0xbf, 0x68)), 'utf-8'); assert.equal(sniffCharset(b(0xff, 0xfe, 0x68, 0)), 'utf-16le');
+  assert.equal(sniffCharset(new TextEncoder().encode('café 🎉')), 'utf-8'); assert.equal(sniffCharset(b(0x68, 0, 0x69, 0)), 'utf-16le');
+  assert.equal(sniffCharset(b(0x63, 0x61, 0x66, 0xe9)), 'latin1', 'café in Latin-1 is not valid UTF-8');
+  const auto = (txt, cs) => decodeText(encodeText(txt, { charset: cs }).base64, 'auto');
+  assert.deepEqual([auto('café', 'utf-8').text, auto('café', 'utf-8').charset], ['café', 'utf-8']);
+  assert.deepEqual([auto('hello', 'utf-16le').text, auto('hello', 'utf-16le').charset], ['hello', 'utf-16le']);
+  assert.deepEqual([auto('café', 'latin1').text, auto('café', 'latin1').charset], ['café', 'latin1']);
 });

@@ -483,6 +483,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T02:47:04Z",
+   "subject": "A coin whose Commons photos never say obverse or reverse is found by its name alone: the Canadian Gold Maple Leaf showed a question mark"
+  },
+  {
+   "at": "2026-10-25T02:46:21Z",
+   "subject": "The tower speaks plainly: sites are surpassed, not conquered; Verse's edge, not a killshot; \"What each site taught me\"; every surpassed…"
+  },
+  {
+   "at": "2026-10-25T02:44:19Z",
+   "subject": "Incident: the browser suite failed on afbe0dc8 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T02:43:11Z",
+   "subject": "Verse fixes its poster skill: learn to handle \"make a cyberpunk poster\""
+  },
+  {
    "at": "2026-10-25T02:39:08Z",
    "subject": "Tower gate: encoder,password,maps measured against their live sites"
   },
@@ -545,22 +561,6 @@
   {
    "at": "2026-10-25T01:18:06Z",
    "subject": "self.json refreshed after the /time/ sun, moon and dates work"
-  },
-  {
-   "at": "2026-10-25T01:17:55Z",
-   "subject": "/time/ adds twilight, solar noon, golden hour and the moon, date to date, and an event link that shows one moment in every city"
-  },
-  {
-   "at": "2026-10-25T01:17:49Z",
-   "subject": "/time/ shows sunrise, sunset and the day's length for the shown city, worked out on the device"
-  },
-  {
-   "at": "2026-10-25T01:17:14Z",
-   "subject": "Answers run on the free model first, asked by Verse: gemma answers, gpt-oss-120b is the second try, so the free 10k neurons a day hold…"
-  },
-  {
-   "at": "2026-10-25T01:16:00Z",
-   "subject": "Incident: the browser suite failed on 9e16dc83 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

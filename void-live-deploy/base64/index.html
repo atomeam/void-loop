@@ -56,7 +56,7 @@
     <label>Alphabet <select id="alpha"><option value="std">Standard (+ /)</option><option value="url">URL-safe Base64URL (- _)</option></select></label>
     <label><input type="checkbox" id="pad" checked> = padding</label>
     <label><input type="checkbox" id="wrap"> Lines of 76 (MIME)</label>
-    <label>Character set <select id="cs"><option value="utf-8">UTF-8</option><option value="utf-16le">UTF-16LE</option><option value="latin1">ISO-8859-1 (Latin-1)</option></select></label>
+    <label>Character set <select id="cs"><option value="auto">Auto (detected)</option><option value="utf-8">UTF-8</option><option value="utf-16le">UTF-16LE</option><option value="latin1">ISO-8859-1 (Latin-1)</option></select></label>
     <label><input type="checkbox" id="showhex"> Bytes in hex</label>
   </div>
   <label class="head" for="text">Text <span id="tcount"></span></label>
@@ -91,8 +91,8 @@
   let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
   const pick = (k, d) => (q.has(k) ? q.get(k) : kept[k] ?? d);
   $('alpha').value = pick('a', 'std') === 'url' ? 'url' : 'std'; $('pad').checked = pick('pad', '1') !== '0'; $('wrap').checked = pick('wrap', '0') === '1';
-  $('cs').value = ['utf-8', 'utf-16le', 'latin1'].includes(pick('cs', 'utf-8')) ? pick('cs', 'utf-8') : 'utf-8'; $('showhex').checked = kept.hex === '1';
-  const opts = () => ({ url: $('alpha').value === 'url', pad: $('pad').checked, wrap: $('wrap').checked ? 76 : 0, charset: $('cs').value });
+  $('cs').value = ['auto', 'utf-8', 'utf-16le', 'latin1'].includes(pick('cs', 'auto')) ? pick('cs', 'auto') : 'auto'; $('showhex').checked = kept.hex === '1';
+  const opts = () => ({ url: $('alpha').value === 'url', pad: $('pad').checked, wrap: $('wrap').checked ? 76 : 0, charset: $('cs').value === 'auto' ? 'utf-8' : $('cs').value });
   const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ a: $('alpha').value, pad: $('pad').checked ? '1' : '0', wrap: $('wrap').checked ? '1' : '0', cs: $('cs').value, hex: $('showhex').checked ? '1' : '0' })); } catch (_) {} };
   const chars = (s) => Array.from(s).length.toLocaleString('en');
   let last = 'text', bytes = new Uint8Array(0), binary = false;
@@ -108,13 +108,13 @@
     const r = encodeText(text.value, opts());
     if (!r.ok) { bytes = new Uint8Array(0); b64.value = ''; say('Not encoded: ' + r.error + '.', 'bad'); return counts(); }
     bytes = r.bytes; b64.value = r.base64;
-    say(text.value ? 'Encoded: ' + sizeOf(bytes.length) + ' of ' + $('cs').selectedOptions[0].textContent + ' as ' + (opts().url ? 'Base64URL' : 'Base64') + (opts().pad ? '' : ', no padding') + '.' : '', 'good'); counts();
+    say(text.value ? 'Encoded: ' + sizeOf(bytes.length) + ' of ' + ($('cs').value === 'auto' ? 'UTF-8' : $('cs').selectedOptions[0].textContent) + ' as ' + (opts().url ? 'Base64URL' : 'Base64') + (opts().pad ? '' : ', no padding') + '.' : '', 'good'); counts();
   }
   function fromB64() {
     last = 'b64'; const r = decodeText(b64.value, $('cs').value); binary = false;
     if (r.ok) {
       bytes = r.bytes; text.value = r.text; text.classList.remove('stale'); b64.removeAttribute('aria-invalid');
-      say(b64.value.trim() ? 'Decoded: ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
+      say(b64.value.trim() ? 'Decoded: ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + ($('cs').value === 'auto' && r.charset ? ', read as ' + ({ 'utf-8': 'UTF-8', 'utf-16le': 'UTF-16LE', latin1: 'Latin-1' })[r.charset] : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
     } else {
       bytes = r.bytes || new Uint8Array(0); binary = !!r.binary; text.classList.add('stale'); b64.setAttribute('aria-invalid', 'true');
       say((r.binary ? 'Decoded, but not text: ' : 'Not Base64: ') + r.error + '.', 'bad');

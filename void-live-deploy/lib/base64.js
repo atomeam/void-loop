@@ -79,23 +79,39 @@ export function decodeBytes(input) {
       return { ok: false, error: '“' + ch + '” at character ' + at + ' is not a Base64 character (A to Z, a to z, 0 to 9, ' + (url ? '- and _' : '+ and /') + ', and = at the end)' };
     }
   }
-  if (tail && !/^={1,2}$/.test(tail)) return { ok: false, error: /[^=]/.test(tail) ? 'there is text after the = padding, which only ever comes at the very end' : 'too much = padding: there are at most two at the end' };
+  if (/[^=]/.test(tail)) return { ok: false, error: 'there is text after the = padding, which only ever comes at the very end' };
   if (body.length % 4 === 1) return { ok: false, error: 'it is ' + body.length + ' characters long, one too many or three too few: some of it is missing' };
-  if (tail && (body.length + tail.length) % 4) return { ok: false, error: 'the = padding does not fit the length: with padding the length is a multiple of 4' };
+  // padding of the wrong length (one = where two belong, three or more) says nothing the length does not: decoded, and said so
+  const padOff = !!tail && (tail.length > 2 || (body.length + tail.length) % 4 !== 0);
   const out = new Uint8Array(Math.floor(body.length * 3 / 4)); let o = 0, bits = 0, acc = 0;
   for (let i = 0; i < body.length; i++) { acc = (acc << 6) | A.indexOf(body[i]); bits += 6; if (bits >= 8) { bits -= 8; out[o++] = (acc >> bits) & 255; } }
   const r = { ok: true, bytes: out, alphabet: url ? 'url' : 'standard', padded: !!tail, mime };
   if (bits && acc & ((1 << bits) - 1)) r.note = 'the last character carries leftover bits that are not zero; decoded anyway, but this text was not made by a standard encoder';
+  if (padOff) r.note = (r.note ? r.note + '; ' : '') + 'the = padding at the end was the wrong length (' + tail.length + '); decoded anyway';
   return r;
 }
 // where body[i] sits in the text as typed (1-based, counted in characters people see), spaces and line breaks included
 function positionIn(raw, body, i) { let k = -1; for (let j = 0, seen = 0; j < raw.length; j++) { if (/\s/.test(raw[j])) continue; if (seen === i) { k = j; break; } seen++; } return k < 0 ? i + 1 : Array.from(raw.slice(0, k)).length + 1; }
 
-/** Base64 as text in `charset` (UTF-8 by default): { ok, text, bytes, ... } or { ok: false, error, bytes? } (bytes when they decode but are not text). Pure. */
+/** which character set bytes are most likely text in: a byte-order mark first, then UTF-8 when they are valid UTF-8, then UTF-16LE when every
+ *  other byte is zero (ASCII stored two bytes a letter), else Latin-1 (every byte is some character). Pure. */
+export function sniffCharset(bytes) {
+  const b = bytes || new Uint8Array(0);
+  if (b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf) return 'utf-8';
+  if (b[0] === 0xff && b[1] === 0xfe) return 'utf-16le';
+  try { new TextDecoder('utf-8', { fatal: true }).decode(b); } catch (_) {
+    let odd = 0; for (let i = 1; i < b.length; i += 2) if (b[i] === 0) odd++;
+    return b.length >= 2 && b.length % 2 === 0 && odd >= (b.length / 2) * 0.6 ? 'utf-16le' : 'latin1';
+  }
+  let odd = 0; for (let i = 1; i < b.length; i += 2) if (b[i] === 0) odd++;
+  return b.length >= 4 && b.length % 2 === 0 && odd === b.length / 2 ? 'utf-16le' : 'utf-8';
+}
+
+/** Base64 as text in `charset` (UTF-8 by default; 'auto' reads it in the set sniffCharset finds and says which in `charset`): { ok, text, bytes, ... } or { ok: false, error, bytes? } (bytes when they decode but are not text). Pure. */
 export function decodeText(input, charset = 'utf-8') {
   const r = decodeBytes(input); if (!r.ok) return r;
-  const t = bytesToText(r.bytes, charset);
-  return t.ok ? { ...r, text: t.text } : { ...r, ok: false, error: t.error, binary: true };
+  const cs = charset === 'auto' ? sniffCharset(r.bytes) : charset, t = bytesToText(r.bytes, cs);
+  return t.ok ? { ...r, text: t.text, charset: cs } : { ...r, ok: false, error: t.error, binary: true };
 }
 
 /** bytes in hex, two digits each, a space between: "68 65 6c 6c 6f". Pure. */
