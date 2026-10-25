@@ -51,3 +51,7 @@ test('limits, reports and the owner', async () => {
   const del = (k) => route.onRequestDelete({ env, request: new Request('https://x/api/comments?id=' + other, { method: 'DELETE', headers: k ? { authorization: 'Bearer ' + k } : {} }) });
   assert.equal((await del('x')).status, 401); assert.equal((await del(KEY)).status, 200); assert.equal((await get(env, 'image')).items.length, 0);
 });
+test('the widget (lib/comments-ui.js): nothing to mount on is a no-op; the full form is driven in a real browser by tools/generators-e2e.mjs', async () => {
+  const { mountComments } = await import('../void-live-deploy/lib/comments-ui.js');
+  assert.equal(mountComments(null, 'image'), undefined);
+});
