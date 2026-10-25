@@ -484,6 +484,46 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T14:44:23Z",
+   "subject": "Tower gate: colour,calendar: any.do,calendar: cozi.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:42:15Z",
+   "subject": "Tower gate: colour,calendar: any.do,calendar: cozi.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:42:03Z",
+   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
+  },
+  {
+   "at": "2026-10-25T14:41:23Z",
+   "subject": "Tower gate: calendar: any.do,calendar: cozi.com,calendar: proton.me measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:40:35Z",
+   "subject": "Incident: the browser suite failed on 93731ad6 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T14:38:41Z",
+   "subject": "Tower gate: calendar: calendar.online,calendar: teamup.com,calendar: timetreeapp.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:27:15Z",
+   "subject": "Site icons: 59 kept"
+  },
+  {
+   "at": "2026-10-25T14:25:18Z",
+   "subject": "Tower gate: colour,calendar: calendar.online,calendar: teamup.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:25:02Z",
+   "subject": "Verse's logo is its natural atom galaxy; /color/ reads offline"
+  },
+  {
+   "at": "2026-10-25T14:23:09Z",
+   "subject": "Site icons: fetch every Versus floor's own logo into tower.icons"
+  },
+  {
    "at": "2026-10-25T14:19:54Z",
    "subject": "Calendar: 'Next reminder:' without a stray space, '1 event' singular"
   },
@@ -522,46 +562,6 @@
   {
    "at": "2026-10-25T12:05:51Z",
    "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-25T12:04:35Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-25T12:02:02Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-25T11:58:54Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-10-25T11:46:30Z",
-   "subject": "Tower gate: every floor measured against its live site (6 slices)"
-  },
-  {
-   "at": "2026-10-25T09:54:35Z",
-   "subject": "Verse fixes its fakeuser skill: learn to handle \"can u make a fake user profile\""
-  },
-  {
-   "at": "2026-10-25T09:44:37Z",
-   "subject": "Verse fixes its gradient skill: learn to handle \"generate a gradient blue to pink\""
-  },
-  {
-   "at": "2026-10-25T09:22:38Z",
-   "subject": "Incident: the browser suite failed on 9fb2b5d5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T09:20:13Z",
-   "subject": "Incident: the browser suite failed on 21b8e837 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T09:01:52Z",
-   "subject": "Incident: the browser suite failed on 4850e837 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T08:58:17Z",
-   "subject": "Tower gate: recipes,recipes: budgetbytes.com,recipes: cookpad.com,recipes: yummly.com measured against their live sites"
   }
  ],
  "builders": {

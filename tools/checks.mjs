@@ -87,6 +87,7 @@ for (const [name, file] of [
   ['loop-parts', 'loop-parts.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
+  ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
   ['floor-kit', 'floor-kit.test.mjs'],

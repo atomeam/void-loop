@@ -75,12 +75,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add void-live-deploy/tower.evidence.json
-          git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
-          # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
-          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          # hand runs go in parallel and each starts from its own copy of main: keep only what this run measured (its floors' rows, icons, screenshots),
+          # start again from the newest main, put those back by timestamp, and push; rows other runs landed meanwhile stay (tools/gate-land.mjs)
+          node tools/gate-land.mjs take floors.txt "$RUNNER_TEMP/mine.json"
+          mkdir -p "$RUNNER_TEMP/keep"; for d in tower.shots tower.icons; do [ -d void-live-deploy/$d ] && cp -r void-live-deploy/$d "$RUNNER_TEMP/keep/"; done
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/gate-land.mjs put "$RUNNER_TEMP/mine.json"
+            for d in tower.shots tower.icons; do [ -d "$RUNNER_TEMP/keep/$d" ] && cp -r "$RUNNER_TEMP/keep/$d" void-live-deploy/; done
+            git add void-live-deploy/tower.evidence.json
+            git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done
           gh workflow run deploy.yml --ref main -f after_merge=true
 
   # the sweep: slice i of N of every floor on its own runner, written to a slice file and uploaded; N is the length of the matrix list below

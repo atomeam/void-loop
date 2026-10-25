@@ -595,7 +595,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/field-attention.js",
