@@ -6066,52 +6066,52 @@
   "calendar: calendar.online": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 130,
-    "best": 1180,
-    "evidence": "Verse (/calendar/) 130 ms to the load event (median of 3, phone width) vs calendar.online 1180 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:24:25.923Z"
+    "verse": 85,
+    "best": 2241,
+    "evidence": "Verse (/calendar/) 85 ms to the load event (median of 3, phone width) vs calendar.online 2241 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.online 3 of 3 loads answered",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.online 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.online 0 unnamed controls or images",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.online 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.online 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.online (the site is not asked)",
-    "at": "2026-10-25T14:24:25.923Z",
+    "at": "2026-10-25T14:36:59.809Z",
     "of": 5
    },
    "design polish": {
@@ -6119,14 +6119,14 @@
     "verse": 1,
     "best": 136,
     "evidence": "Verse (/calendar/) 1 design defects vs calendar.online 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.online (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:24:25.923Z"
+    "at": "2026-10-25T14:36:59.809Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.online 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:24:25.923Z",
+    "at": "2026-10-25T14:36:59.809Z",
     "of": 2,
     "part": true
    },
@@ -6135,7 +6135,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.online 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:24:25.923Z",
+    "at": "2026-10-25T14:36:59.809Z",
     "of": 3,
     "part": true
    },
@@ -6144,7 +6144,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.online 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:24:25.923Z",
+    "at": "2026-10-25T14:36:59.809Z",
     "of": 2,
     "part": true
    },
@@ -6153,59 +6153,59 @@
     "verse": 13,
     "best": 4,
     "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.online 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:24:25.923Z",
+    "at": "2026-10-25T14:36:59.809Z",
     "of": 15
    }
   },
   "calendar: teamup.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 103,
-    "best": 1224,
-    "evidence": "Verse (/calendar/) 103 ms to the load event (median of 3, phone width) vs teamup.com 1224 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:24:51.884Z"
+    "verse": 120,
+    "best": 1843,
+    "evidence": "Verse (/calendar/) 120 ms to the load event (median of 3, phone width) vs teamup.com 1843 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs teamup.com 3 of 3 loads answered",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs teamup.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs teamup.com 0 unnamed controls or images",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs teamup.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs teamup.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not teamup.com (the site is not asked)",
-    "at": "2026-10-25T14:24:51.884Z",
+    "at": "2026-10-25T14:37:39.383Z",
     "of": 5
    },
    "design polish": {
@@ -6213,14 +6213,14 @@
     "verse": 1,
     "best": 136,
     "evidence": "Verse (/calendar/) 1 design defects vs teamup.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), teamup.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:24:51.884Z"
+    "at": "2026-10-25T14:37:39.383Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs teamup.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:24:51.884Z",
+    "at": "2026-10-25T14:37:39.383Z",
     "of": 2,
     "part": true
    },
@@ -6229,7 +6229,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs teamup.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:24:51.884Z",
+    "at": "2026-10-25T14:37:39.383Z",
     "of": 3,
     "part": true
    },
@@ -6238,7 +6238,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs teamup.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:24:51.884Z",
+    "at": "2026-10-25T14:37:39.383Z",
     "of": 2,
     "part": true
    },
@@ -6247,7 +6247,101 @@
     "verse": 13,
     "best": 4,
     "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs teamup.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:24:51.884Z",
+    "at": "2026-10-25T14:37:39.383Z",
+    "of": 15
+   }
+  },
+  "calendar: timetreeapp.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 153,
+    "best": 1739,
+    "evidence": "Verse (/calendar/) 153 ms to the load event (median of 3, phone width) vs timetreeapp.com 1739 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs timetreeapp.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs timetreeapp.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs timetreeapp.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs timetreeapp.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs timetreeapp.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not timetreeapp.com (the site is not asked)",
+    "at": "2026-10-25T14:38:09.808Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 136,
+    "evidence": "Verse (/calendar/) 1 design defects vs timetreeapp.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), timetreeapp.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:38:09.808Z"
+   },
+   "reminders": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs timetreeapp.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:38:09.808Z",
+    "of": 2,
+    "part": true
+   },
+   "invites": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs timetreeapp.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:38:09.808Z",
+    "of": 3,
+    "part": true
+   },
+   "recurring events": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs timetreeapp.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:38:09.808Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 4,
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs timetreeapp.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:38:09.808Z",
     "of": 15
    }
   }
@@ -6322,7 +6416,7 @@
   "photos.google.com": "tower.icons/photos.google.com.svg",
   "khanacademy.org": "tower.icons/khanacademy.org.ico",
   "lichess.org": "tower.icons/lichess.org.svg",
-  "timetreeapp.com": "tower.icons/timetreeapp.com.ico",
+  "timetreeapp.com": "tower.icons/timetreeapp.com.png",
   "open.spotify.com": "tower.icons/open.spotify.com.png",
   "podcasts.apple.com": "tower.icons/podcasts.apple.com.png",
   "amazon.com": "tower.icons/amazon.com.ico",
