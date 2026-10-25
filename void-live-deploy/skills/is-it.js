@@ -17,8 +17,8 @@ export function easter(y) {
   const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
   return new Date(y, month - 1, day);
 }
-// the days it knows: a name people type -> [the day's name, the date in a given year]
-const DAYS = {
+// the days it knows: a name people type -> [the day's name, the date in a given year] (exported so tools/sitemap.mjs lists /is-it/<day> pages)
+export const DAYS = {
   christmas: ['Christmas', (y) => new Date(y, 11, 25)], 'christmas day': ['Christmas', (y) => new Date(y, 11, 25)], xmas: ['Christmas', (y) => new Date(y, 11, 25)],
   'christmas eve': ['Christmas Eve', (y) => new Date(y, 11, 24)], 'boxing day': ['Boxing Day', (y) => new Date(y, 11, 26)],
   halloween: ['Halloween', (y) => new Date(y, 9, 31)], 'new year': ['New Year’s Day', (y) => new Date(y, 0, 1)], 'new years': ['New Year’s Day', (y) => new Date(y, 0, 1)],
