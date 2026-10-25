@@ -5,7 +5,7 @@
 // "ask" that lists them. Every write keeps the note's earlier state as a version first (notes.snapshot) and records the notes it touched, so undo is
 // a real restore (or a removal for a note the sentence made). No model is called: the structure is rules. Tests: tools/chat-notes.test.mjs.
 import { clean, toText, newDoc, snapshot, search, titleOf, uid } from './notes.js';
-import { TEMPLATES, backlinks, filterDocs, newTable, addColumn, addRow, sortTable, mapTable, parseTable, colIndex, parseTags } from './note-extras.js';
+import { TEMPLATES, replaceIn, outlineOf, toTrash, fromTrash, backlinks, filterDocs, newTable, addColumn, addRow, sortTable, mapTable, parseTable, colIndex, parseTags } from './note-extras.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const unent = (s) => String(s).replace(/&(?:amp|lt|gt|quot|#39|nbsp);/g, (m) => ({ '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&nbsp;': ' ' }[m]));
@@ -25,6 +25,10 @@ export function parseIntent(raw) {
   const t = lead(String(raw || '').replace(/\s+/g, ' ').trim().replace(/[.!]+$/, '')); if (!t || t.length > 600) return null;
   let m;
   if ((m = /^undo (?:that |the last |my last )?(?:note|notes)(?: change| edit)?$/i.exec(t))) return { op: 'undo' };
+  if (/^(?:what(?:'s| is) in|show|open|list)(?: me)? (?:my )?(?:trash|bin|deleted notes)$/i.test(t)) return { op: 'trash' };
+  if ((m = /^(?:restore|undelete|bring back|recover)\s+(?:my |the )?(.+?)(?: note)?(?: from (?:the )?trash)?$/i.exec(t))) return { op: 'restore', target: m[1].trim() };
+  if ((m = /^(?:replace|change)\s+(.+?)\s+(?:with|to)\s+(.+?)\s+in\s+(?:my |the )?(.+?)(?: note)?$/i.exec(t))) return { op: 'replace', find: m[1].trim().replace(/^["']|["']$/g, ''), to: m[2].trim().replace(/^["']|["']$/g, ''), target: m[3].trim() };
+  if ((m = /^(?:outline|table of contents|toc|headings)\s+(?:of|for|in)\s+(?:my |the )?(.+?)(?: note)?$/i.exec(t))) return { op: 'outline', target: m[1].trim() };
   // Notion's core: tables, links, pins and tags
   if ((m = /^add (?:a |another )?column(?: called| named)? (.+?) to (?:my |the )?(.+?)(?: table| note)?$/i.exec(t))) return { op: 'tableCol', name: m[1].trim(), target: m[2].trim() };
   if ((m = /^add (?:a |another )?row[:,]? (.+?) to (?:my |the )?(.+?)(?: table| note)?$/i.exec(t))) return { op: 'tableRow', cells: m[1].split(/\s*[,;|]\s*/).filter(Boolean), target: m[2].trim() };
@@ -191,7 +195,7 @@ const sectionsOf = (html) => { const parts = String(html || '').split(/(?=<h[1-3
  */
 export function plan(store, it, now = Date.now()) {
   if (!it) return { kind: 'none' };
-  const S = { docs: store.docs || [], cur: store.cur || null };
+  const S = { docs: store.docs || [], ...(store.trash ? { trash: store.trash } : {}), cur: store.cur || null };
   const needs = (res, phrase, mk, what, sure) => {
     if (res.level === 'none') return { kind: 'none' };
     if (res.level === 'exact' || res.level === 'title') { if (res.docs.length === 1) return null; return { kind: 'ask', question: 'Which note do you mean by "' + phrase + '"?', options: opts(res.docs, mk) }; }
@@ -240,6 +244,13 @@ export function plan(store, it, now = Date.now()) {
       const { doc, item } = hits[0], r = touch(S, doc.id, (x) => ({ html: setItems(x.html, (i) => i.index === item.index, (i) => (it.op === 'removeItem' ? '' : liHtml(i.text, tickOp))) }), now);
       return done({ store: r.store, changes: [r.change] }, (it.op === 'removeItem' ? 'Removed "' : tickOp ? 'Ticked "' : 'Unticked "') + item.text + '" ' + (it.op === 'removeItem' ? 'from ' : 'in ') + titleOf(doc), doc.id);
     }
+    case 'trash': return { kind: 'show', title: 'Trash', hits: (S.trash || []).map((x) => ({ id: x.doc.id, title: titleOf(x.doc), snippet: 'deleted ' + new Date(x.at).toISOString().slice(0, 10) + ': say "restore ' + titleOf(x.doc) + '"' })), lines: (S.trash || []).length ? [] : ['The trash is empty. Deleted notes stay here for 30 days.'] };
+    case 'restore': {
+      const tdocs = (S.trash || []).map((x) => x.doc), res = resolve({ docs: tdocs }, it.target); if (res.level === 'none' || !tdocs.length) return { kind: 'none' };
+      const q = needs(res, it.target, (id, sure) => ({ ...it, docId: id, sure: sure || it.sure }), (d) => 'Restore "' + titleOf(d) + '" from the trash', it.sure || !!it.docId); if (q) return q;
+      const d = it.docId ? tdocs.find((x) => x.id === it.docId) : res.docs[0]; if (!d) return { kind: 'none' }; const entry = (S.trash || []).find((x) => x.doc.id === d.id);
+      return done({ store: fromTrash(S, d.id, now), changes: [{ id: d.id, before: null, fromTrash: entry }] }, 'Restored "' + titleOf(d) + '" from the trash', d.id);
+    }
     case 'filter': { const hits = filterDocs(S.docs, it.f).map((d) => ({ id: d.id, title: titleOf(d), snippet: toText(d.html).slice(0, 100) })); return { kind: 'show', title: it.f === 'pinned' ? 'Pinned notes' : 'Notes tagged ' + it.f, hits, lines: hits.length ? [] : ['None yet.'], openId: (hits[0] || {}).id }; }
     case 'tableMake': {
       const html = newTable(it.cols); if (!it.target) { const d0 = newDoc(now, { title: it.cols.length ? cap(it.cols[0]) + ' table' : 'Table', html }); const r0 = made(S, d0); return done({ store: r0.store, changes: [r0.change] }, 'Made a table with ' + (it.cols.length ? it.cols.join(', ') : 'Name, Status, Notes'), d0.id); }
@@ -266,6 +277,9 @@ export function plan(store, it, now = Date.now()) {
       return done({ store: r.store, changes: [r.change] }, said + ' in ' + titleOf(d), d.id);
     }
     case 'link': { const rb = resolve(S, it.to); if (rb.level === 'none') return { kind: 'none' }; const b = rb.docs[0]; if (b.id === d.id) return { kind: 'none' }; if (toText(d.html).includes('[[' + titleOf(b) + ']]')) return { kind: 'show', title: titleOf(d), lines: ['It already links to ' + titleOf(b) + '.'], openId: d.id }; const r = touch(S, d.id, (x) => ({ html: (x.html || '') + '<p>See [[' + esc(titleOf(b)) + ']]</p>' }), now); return done({ store: r.store, changes: [r.change] }, 'Linked ' + titleOf(d) + ' to [[' + titleOf(b) + ']]; it shows under Linked from in ' + titleOf(b), d.id); }
+    case 'replace': { let n = 0; const r = touch(S, d.id, (x) => { const o = replaceIn(x.html, it.find, it.to); n = o.count; return { html: o.html, title: replaceIn(x.title || '', it.find, it.to).html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"') }; }, now);
+      if (!n) return { kind: 'show', title: titleOf(d), lines: ['"' + it.find + '" is not in ' + titleOf(d) + '. Nothing changed.'], openId: d.id }; return done({ store: r.store, changes: [r.change] }, 'Replaced "' + it.find + '" with "' + it.to + '" ' + n + (n === 1 ? ' time' : ' times') + ' in ' + titleOf(d), d.id); }
+    case 'outline': { const o = outlineOf(d.html); return { kind: 'show', title: 'Outline of ' + titleOf(d), lines: o.length ? o.map((h) => '  '.repeat(h.level - Math.min(...o.map((x) => x.level))) + h.text) : ['No headings in it yet. Type /heading in the note, or say "under X in my ' + titleOf(d) + ' note add ...".'], openId: d.id }; }
     case 'open': return { kind: 'show', title: titleOf(d), lines: toText(d.html).split('\n').slice(0, 12), openId: d.id };
     case 'summary': return { kind: 'show', title: 'Summary of ' + titleOf(d), lines: summaryOf(d), openId: d.id, offer: { label: 'Add this summary to the note', intent: { op: 'addSummary', docId: d.id } } };
     case 'addSummary': { const r = touch(S, d.id, (x) => ({ html: (x.html || '') + '<h2>Summary</h2>' + summaryOf(x).map((l) => '<p>' + esc(l) + '</p>').join('') }), now); return done({ store: r.store, changes: [r.change] }, 'Added a summary to ' + titleOf(d), d.id); }
@@ -273,7 +287,7 @@ export function plan(store, it, now = Date.now()) {
     case 'rename': { if (!it.to) return { kind: 'none' }; const r = touch(S, d.id, () => ({ title: cap(it.to).slice(0, 200) }), now); return done({ store: r.store, changes: [r.change] }, 'Renamed "' + titleOf(d) + '" to "' + cap(it.to) + '"', d.id); }
     case 'pin': case 'unpin': { const r = touch(S, d.id, () => ({ pinned: it.op === 'pin' }), now); return done({ store: r.store, changes: [r.change] }, (it.op === 'pin' ? 'Pinned ' : 'Unpinned ') + titleOf(d), d.id); }
     case 'tag': { const g = it.tag.toLowerCase().replace(/^#/, '').slice(0, 30); const r = touch(S, d.id, (x) => ({ tags: [...new Set([...(x.tags || []), g])] }), now); return done({ store: r.store, changes: [r.change] }, 'Tagged ' + titleOf(d) + ' #' + g, d.id); }
-    case 'delete': { const r = { store: { ...S, docs: S.docs.filter((x) => x.id !== d.id), cur: S.docs.find((x) => x.id !== d.id) ? S.docs.find((x) => x.id !== d.id).id : null }, change: { id: d.id, before: d } }; return done({ store: r.store, changes: [r.change] }, 'Deleted "' + titleOf(d) + '" (Undo brings it back with its history)', null); }
+    case 'delete': { const r = { store: toTrash(S, d, now), change: { id: d.id, before: d, trashed: true } }; return done({ store: r.store, changes: [r.change] }, 'Moved "' + titleOf(d) + '" to the trash (Undo or "restore ' + titleOf(d) + '" brings it back; it stays 30 days)', null); }
     case 'merge': {
       const rb = pick(S, it.b, it.docIdB); const qb = needs(rb, it.b, (id, sure) => ({ ...it, docIdB: id, sure: sure || it.sure }), (x) => 'Merge "' + titleOf(d) + '" with "' + titleOf(x) + '"', it.sure || !!it.docIdB); if (qb) return qb;
       let a = d, b = rb.docs[0]; if (a.id === b.id) return { kind: 'show', title: titleOf(a), lines: ['That is one note; nothing to merge.'], openId: a.id }; if (it.into === 'b') [a, b] = [b, a];
@@ -292,13 +306,15 @@ export function plan(store, it, now = Date.now()) {
 
 /** the notes put back as they were before the changes: a made note is removed, an edited one gets its earlier content (what it held is kept as a version), a deleted one returns. Pure. */
 export function undoOf(store, changes, now = Date.now()) {
-  let docs = [...(store.docs || [])];
+  let docs = [...(store.docs || [])], trash = [...(store.trash || [])];
   for (const c of [...changes].reverse()) {
     const cur = docs.find((d) => d.id === c.id);
+    if (c.trashed) trash = trash.filter((x) => x.doc.id !== c.id);
+    if (c.fromTrash) { docs = docs.filter((d) => d.id !== c.id); trash = [c.fromTrash, ...trash.filter((x) => x.doc.id !== c.id)]; continue; }
     if (!c.before) docs = docs.filter((d) => d.id !== c.id);
     else if (cur) { const kept = snapshot(cur, now, true); docs = [{ ...c.before, versions: kept.versions, updated: now }, ...docs.filter((d) => d.id !== c.id)]; }
     else docs = [c.before, ...docs];
   }
-  return { docs, cur: docs.length ? docs[0].id : null };
+  return { ...store, docs, ...(trash.length ? { trash } : { trash: undefined }), cur: docs.length ? docs[0].id : null };
 }
 export { uid };

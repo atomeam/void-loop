@@ -70,8 +70,15 @@ test('under a heading, tidy, summary, rename, pin, tag, merge, split, delete, fi
   s = with1(s, 'add a note: Ideas - one, two', T0 + 8e5).store;
   const merged = with1(s, 'merge ideas into lisbon 2027', T0 + 9e5); assert.equal(merged.store.docs.length, 1); assert.match(merged.store.docs[0].html, /<h2>Ideas<\/h2>/);
   assert.equal(C.undoOf(merged.store, merged.changes, T0 + 1e7).docs.length, 2);
-  const del = with1(s, 'delete my ideas note', T0 + 1e6); assert.equal(del.store.docs.length, 1); assert.equal(C.undoOf(del.store, del.changes).docs.length, 2);
+  const del = with1(s, 'delete my ideas note', T0 + 1e6); assert.equal(del.store.docs.length, 1); assert.equal(C.undoOf(del.store, del.changes).docs.length, 2); assert.equal(del.store.trash.length, 1); assert.equal(C.undoOf(del.store, del.changes).trash, undefined);
+  const rs = with1(del.store, 'restore my ideas note', T0 + 2e6); assert.equal(rs.store.docs.length, 2); assert.equal(rs.store.trash.length, 0); assert.equal(C.undoOf(rs.store, rs.changes).trash.length, 1); assert.match(run(del.store, 'show my trash').hits[0].title, /Ideas/);
   const tp = with1(s, 'start a trip note for Rome', T0); assert.equal(tp.store.docs[0].title, 'Rome trip'); assert.match(tp.store.docs[0].html, /Packing list/);
+});
+test('replace and outline', () => {
+  let s = with1(empty(), 'make a note about my trip to Lisbon: flights Friday, hotel Alfama').store;
+  const r = with1(s, 'replace alfama with Baixa in my lisbon note', T0 + 1e5); assert.match(r.store.docs[0].html, /<p>Baixa<\/p>/); assert.match(r.said, /1 time/); assert.equal(C.undoOf(r.store, r.changes).docs[0].html, s.docs[0].html);
+  assert.equal(run(s, 'replace zzz with y in my lisbon note').kind, 'show'); assert.equal(run(s, 'replace a with b in my nothing note').kind, 'none');
+  assert.deepEqual(run(s, 'outline of my lisbon note').lines, ['Flights', 'Hotel']);
 });
 test('german verbs write the same way', () => {
   let s = with1(empty(), 'neue Notiz: Einkaufsliste - Milch, Eier').store;

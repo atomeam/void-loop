@@ -91,7 +91,8 @@
   .srcs { font-size: 12px; color: var(--soft); margin: 18px 0 6px; }
   footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
   #related, #asks { margin-top: 14px; }
-  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #filters, #slash, #tblbar { display: none !important; } #dtitle, .body { border: 0; } }
+  #trash li { border-top: 1px solid var(--line); padding: 4px 0; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } #trash li span { flex: 1 1 160px; overflow-wrap: anywhere; } #fr input { flex: 1 1 140px; }
+  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #filters, #slash, #tblbar, #fr, #trash { display: none !important; } #dtitle, .body { border: 0; } }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/notes/">
@@ -151,8 +152,12 @@
         <button type="button" id="htmlBtn" data-w="exportHtml">Export .html</button>
         <button type="button" id="txtBtn" data-w="exportTxt">Export .txt</button>
         <button type="button" id="printBtn" data-w="print">Print</button>
+        <button type="button" id="frBtn" aria-expanded="false" aria-controls="fr" data-w="fr">Find and replace</button>
+        <button type="button" id="trashBtn" aria-expanded="false" aria-controls="trash" data-w="trash">Trash</button>
         <button type="button" class="bad" id="delBtn" data-w="del">Delete</button>
       </div>
+      <form id="fr" class="row" hidden onsubmit="return false" aria-label="Find and replace"><label class="vh" for="frF" data-w="frFind">Find</label><input id="frF" maxlength="200" placeholder="Find" data-wph="frFind" autocomplete="off"><label class="vh" for="frR" data-w="frWith">Replace with</label><input id="frR" maxlength="200" placeholder="Replace with" data-wph="frWith" autocomplete="off"><button type="submit" class="go" id="frGo" data-w="frAll">Replace all</button><span class="note" id="frMsg" role="status"></span></form>
+      <section id="trash" hidden aria-labelledby="tH" style="margin-top:10px"><h2 id="tH" data-w="trash">Trash</h2><ul id="tlist" style="list-style:none;margin:0;padding:0"></ul><div class="row"><button type="button" class="bad" id="tEmpty" data-w="emptyTrash">Empty trash</button></div></section>
       <section id="hist" hidden aria-labelledby="hH" style="margin-top:10px">
         <h2 id="hH" data-w="history">Version history</h2>
         <ul id="vlist"></ul>
@@ -195,6 +200,7 @@
     const q = new URLSearchParams(location.search), now = () => Date.now();
     let store = { docs: [], cur: null };
     try { store = N.load(localStorage.getItem(N.KEY)); } catch (_) {}
+    store = X.purgeTrash(store, Date.now());
     const keep = () => { try { localStorage.setItem(N.KEY, JSON.stringify(store)); $('saved').textContent = W.saved; } catch (_) { $('saved').textContent = '—'; } };
     const say = (t) => { $('say').textContent = t || ''; };
     const cur = () => store.docs.find((d) => d.id === store.cur);
@@ -284,9 +290,11 @@
     $('tagsIn').addEventListener('change', () => setMeta({ tags: X.parseTags($('tagsIn').value) }));
     function drawLinks(d) {
       const box = $('links'); box.replaceChildren(); const out = X.linksOf(d.html), back = X.backlinks(store.docs, d);
-      if (!out.length && !back.length) { box.textContent = W.linkHint; return; }
+      const outl = X.outlineOf(d.html);
+      if (!out.length && !back.length && outl.length < 2) { box.textContent = W.linkHint; return; }
       const row = (label, items) => { if (!items.length) return; const r = el('div', 'lk'); r.append(el('span', '', label)); for (const it of items) r.append(it); box.append(r); };
       row(W.linksTo, out.map((t) => { const n = X.noteByTitle(store.docs, t), b = el('button', '', n ? t : t + ' (' + W.newLink + ')'); b.type = 'button'; b.addEventListener('click', () => { flush(); let id = n && n.id; if (!id) { const x = blank({ title: t }); id = x.id; keep(); } open(id); }); return b; }));
+      row(W.outline, outl.map((h, i) => { const b = el('button', '', h.text.slice(0, 40)); b.type = 'button'; b.addEventListener('click', () => { const t = $('body').querySelectorAll('h1,h2,h3')[i]; if (t) t.scrollIntoView({ block: 'center' }); }); return b; }));
       row(W.linkedFrom, back.map((n) => { const b = el('button', '', n.title); b.type = 'button'; b.addEventListener('click', () => open(n.id)); return b; }));
     }
     $('tplSel').addEventListener('change', () => {
@@ -342,10 +350,26 @@
     // ---- new, delete, import, export, print, share ----
     function newNote() { flush(); const d = blank(); keep(); show(d); $('dtitle').focus(); }
     $('newBtn').addEventListener('click', newNote);
-    $('delBtn').addEventListener('click', () => {
-      const d = cur(); if (!d || !confirm(W.delSure)) return; dirty = false; clearTimeout(timer);
-      store.docs = store.docs.filter((x) => x.id !== d.id); const n = N.sorted(store.docs)[0]; if (n) store.cur = n.id; else blank(); keep(); show(cur());
+    $('delBtn').addEventListener('click', () => { // into the trash for 30 days, not gone (Notion, Simplenote, OneNote and Evernote all keep one)
+      const d = cur(); if (!d) return; dirty = false; clearTimeout(timer);
+      store = X.toTrash(store, d, now()); if (!store.docs.length) blank(); keep(); show(cur()); drawTrash(); say(W.movedTrash);
     });
+    function drawTrash() {
+      const n = (store.trash || []).length; $('trashBtn').textContent = W.trash + (n ? ' (' + n + ')' : ''); const ul = $('tlist'); ul.replaceChildren();
+      if (!n) ul.append(el('li', 'note', W.trashEmpty));
+      for (const x of store.trash || []) { const li = el('li'); li.append(el('span', '', N.titleOf(x.doc))); const r = el('button', '', W.restoreN); r.type = 'button'; r.addEventListener('click', () => { flush(); store = X.fromTrash(store, x.doc.id, now()); keep(); show(cur()); drawTrash(); }); const f = el('button', 'bad', W.foreverN); f.type = 'button'; f.addEventListener('click', () => { store = { ...store, trash: store.trash.filter((t) => t.doc.id !== x.doc.id) }; keep(); drawTrash(); }); li.append(r, f); ul.append(li); }
+      $('tEmpty').hidden = !n;
+    }
+    $('trashBtn').addEventListener('click', () => { const open = $('trash').hidden; $('trash').hidden = !open; $('trashBtn').setAttribute('aria-expanded', String(open)); if (open) drawTrash(); });
+    $('tEmpty').addEventListener('click', () => { if (!confirm(W.emptyTrash + '?')) return; store = { ...store, trash: [] }; keep(); drawTrash(); });
+    $('frBtn').addEventListener('click', () => { const open = $('fr').hidden; $('fr').hidden = !open; $('frBtn').setAttribute('aria-expanded', String(open)); if (open) $('frF').focus(); });
+    addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'h') { e.preventDefault(); $('fr').hidden = false; $('frBtn').setAttribute('aria-expanded', 'true'); $('frF').focus(); } });
+    $('fr').addEventListener('submit', () => {
+      const f = $('frF').value; if (!f) return; flush(); const d = cur(); if (!d) return; const o = X.replaceIn(d.html, f, $('frR').value);
+      if (!o.count) { $('frMsg').textContent = W.frNone; return; }
+      put(N.snapshot({ ...d, html: N.clean(o.html), updated: now() }, now(), true)); keep(); show(cur()); $('frMsg').textContent = o.count + ' ' + W.frDone;
+    });
+    drawTrash();
     const give = (name, type, text) => { const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
     const fname = (ext) => (N.titleOf(cur()).replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').toLowerCase() || 'note') + ext;
     const out = (f, ext, type) => () => { flush(); give(fname(ext), type, f(cur())); };

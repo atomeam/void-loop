@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T16:04:24Z",
+   "subject": "Chat fills Calendar, Recipes and Generators from a sentence, with Undo"
+  },
+  {
+   "at": "2026-10-25T16:04:01Z",
+   "subject": "Notes lane: drop quillpad.in (an Indian-language typing tool, not a notes app)"
+  },
+  {
    "at": "2026-10-25T16:03:19Z",
    "subject": "Feature map: image boards floor (4chan, other image boards and textboards, text only) vs Verse /boards/ (missing)"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-25T15:55:49Z",
    "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net,translate: translator.eu,translate…"
-  },
-  {
-   "at": "2026-10-25T15:55:45Z",
-   "subject": "Tower gate: docs and notes: quillpad.in measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T15:55:18Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com measured against their live sites"
   }
  ],
  "builders": {

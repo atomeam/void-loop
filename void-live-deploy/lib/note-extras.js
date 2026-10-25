@@ -62,6 +62,24 @@ export const SLASH = Object.freeze([
 ]);
 /** the commands matching what was typed after the slash, best first. Pure. */
 export function slashFor(q) { const k = norm(q); if (!k) return [...SLASH]; return SLASH.filter((c) => c.key.startsWith(k) || c.label.toLowerCase().startsWith(k) || c.words.split(' ').some((w) => w.startsWith(k))).sort((a, b) => (b.key.startsWith(k) ? 1 : 0) - (a.key.startsWith(k) ? 1 : 0)); }
+// ---- find and replace, outline, trash ----
+/** the body with every match of `find` in its text (never inside a tag) replaced: { html, count }. Pure. */
+export function replaceIn(html, find, repl, matchCase = false) {
+  const f = String(find || ''); if (!f) return { html: String(html || ''), count: 0 };
+  const re = new RegExp(esc(f).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), matchCase ? 'g' : 'gi'), r = esc(String(repl || '')); let count = 0;
+  const out = String(html || '').split(/(<[^>]*>)/).map((seg) => (seg.startsWith('<') ? seg : seg.replace(re, () => { count++; return r; }))).join('');
+  return { html: out, count };
+}
+/** the headings of a body, in order: [{ level: 1-3, text }]. Pure. */
+export const outlineOf = (html) => [...String(html || '').matchAll(/<h([1-3])>([\s\S]*?)<\/h\1>/g)].map((m) => ({ level: +m[1], text: plain(m[2]) })).filter((h) => h.text);
+export const TRASH_DAYS = 30;
+/** the store with a note moved to the trash (kept 30 days). Pure. */
+export function toTrash(store, doc, now = Date.now()) { const docs = (store.docs || []).filter((d) => d.id !== doc.id); return { ...store, docs, trash: [{ at: now, doc }, ...(store.trash || []).filter((x) => x.doc.id !== doc.id)].slice(0, 200), cur: store.cur === doc.id ? (docs[0] ? docs[0].id : null) : store.cur }; }
+/** the store with a note taken out of the trash (a title the notes already use is kept as it is). Pure. */
+export function fromTrash(store, id, now = Date.now()) { const x = (store.trash || []).find((t) => t.doc.id === id); if (!x) return store; return { ...store, docs: [{ ...x.doc, updated: now }, ...(store.docs || [])], trash: (store.trash || []).filter((t) => t.doc.id !== id), cur: id }; }
+/** the trash without what is over 30 days old. Pure. */
+export const purgeTrash = (store, now = Date.now()) => (store.trash || []).some((x) => now - x.at > TRASH_DAYS * 864e5) ? { ...store, trash: store.trash.filter((x) => now - x.at <= TRASH_DAYS * 864e5) } : store;
+
 /** the starting points "start a meeting note" and the page's template menu make. Pure. */
 export const TEMPLATES = {
   meeting: { title: 'Meeting', html: '<h2>Date and people</h2><p><br></p><h2>Agenda</h2><ul><li></li></ul><h2>Notes</h2><p><br></p><h2>Actions</h2><ul class="todo"><li class="chk"></li></ul>' },
