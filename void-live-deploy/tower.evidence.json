@@ -1695,59 +1695,59 @@
   "weather": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 131,
-    "best": 519,
-    "evidence": "Verse (/weather/?q=Boston) 131 ms to the load event (median of 3, phone width) vs weather.gov 519 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T07:01:51.398Z"
+    "verse": 109,
+    "best": 455,
+    "evidence": "Verse (/weather/?q=Boston) 109 ms to the load event (median of 3, phone width) vs weather.gov 455 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/weather/?q=Boston) 3 of 3 loads answered vs weather.gov 3 of 3 loads answered",
-    "at": "2026-10-25T07:01:51.398Z"
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 600,
     "evidence": "Verse (/weather/?q=Boston) 0 px sideways overflow at 390 px vs weather.gov 600 px sideways overflow at 390 px",
-    "at": "2026-10-25T07:01:51.398Z"
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
     "evidence": "Verse (/weather/?q=Boston) 0 unnamed controls or images vs weather.gov 7 unnamed controls or images",
-    "at": "2026-10-25T07:01:51.398Z"
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/weather/?q=Boston) 1 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T07:01:51.398Z"
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/weather/?q=Boston) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T07:01:51.398Z"
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 68,
-    "evidence": "Verse (/weather/?q=Boston) 1 design defects vs weather.gov 68 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.48), weather.gov (0 low-contrast texts, 67 small tap targets, layout shift 0.11)",
-    "at": "2026-10-25T07:01:51.398Z"
+    "evidence": "Verse (/weather/?q=Boston) 1 design defects vs weather.gov 68 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.48), weather.gov (0 low-contrast texts, 68 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T07:40:21.559Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 5,
     "best": 5,
-    "evidence": "Verse (/weather/?q=Boston) 2 of 5 right against the worked-out answer (missed: a temperature in °F and °C that agree, today first in the days ahead, the hours ahead named); judged against the standard, not weather.gov (the site is not asked). The page showed: \"Weather Look Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset… Use with The time in this place Time zones Stopwatch and timer All to\"",
-    "at": "2026-10-25T07:01:51.398Z",
+    "evidence": "Verse (/weather/?q=Boston) 5 of 5 right against the worked-out answer; judged against the standard, not weather.gov (the site is not asked)",
+    "at": "2026-10-25T07:40:21.559Z",
     "of": 5
    },
    "hourly and daily forecast": {
@@ -1755,7 +1755,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/weather/?q=Boston) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T07:01:51.398Z",
+    "at": "2026-10-25T07:40:21.559Z",
     "of": 2,
     "part": true
    },
@@ -1764,7 +1764,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T07:01:51.398Z",
+    "at": "2026-10-25T07:40:21.559Z",
     "of": 1,
     "part": true
    },
@@ -1773,7 +1773,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T07:01:51.398Z",
+    "at": "2026-10-25T07:40:21.559Z",
     "of": 1,
     "part": true
    },
@@ -1782,7 +1782,7 @@
     "verse": 13,
     "best": 4,
     "evidence": "Verse (/weather/?q=Boston) 13 of 13 things a full answer shows vs weather.gov 4 of 13 things a full answer shows (Verse lacks: none; site lacks: conditions now, °F, °C, feels like, humidity, sunrise and sunset, an hourly forecast, a daily forecast, a share link)",
-    "at": "2026-10-25T07:01:51.398Z",
+    "at": "2026-10-25T07:40:21.559Z",
     "of": 13
    }
   },
