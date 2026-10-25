@@ -74,7 +74,9 @@ export default function build(ctx, data) {
   root.add(caseM, face, bez, lcdM);
   // key labels: one atlas
   const AC = document.createElement('canvas'); AC.width = 1024; AC.height = 512; const ag = AC.getContext('2d'); ag.textAlign = 'center'; ag.textBaseline = 'middle';
-  const keyW = 0.0128, keyH = 0.0098, gapX = (W - 0.012 - 4 * keyW) / 3, gapZ = 0.0042, z0 = -L / 2 + 0.06;
+  // five rows from just under the bezel to 5 mm short of the case's lower edge (the last row hung over it; owner, 2026-10-25: "the bottom keys hang over")
+  const keyW = 0.0128, keyH = 0.0098, gapX = (W - 0.012 - 4 * keyW) / 3, gapZ = 0.003, z0 = -L / 2 + 0.057;
+  const keysInside = z0 + (ROWS.length - 1) * (keyH + gapZ) + keyH / 2 <= L / 2 - 0.004;
   const keyGeo = (w) => G(new THREE.ExtrudeGeometry(rrect(THREE, w, keyH, 0.0022), { depth: 0.0018, bevelEnabled: true, bevelThickness: 0.0008, bevelSize: 0.0007, bevelSegments: 3, curveSegments: 6 }).rotateX(-Math.PI / 2));
   const kg1 = keyGeo(keyW), kg2 = keyGeo(keyW * 2 + gapX);
   const keys = new Map(); let n = 0;
@@ -118,7 +120,7 @@ export default function build(ctx, data) {
   ctx.onTap((hits) => { const o = hits && hits.find((h) => h.object.userData.key); if (o) { keys.get(o.object.userData.key).t = 1; ctx.requestRender(); } });
   return {
     update(nd) { apply(nd, false); ctx.requestRender(); },
-    state: () => ({ display: shown, op, pending: queue.length }), // for tests
+    state: () => ({ display: shown, op, pending: queue.length, keysInside }), // for tests (keysInside: the last row ends inside the case)
     tick(dt) {
       let moved = false;
       if (queue.length) { wait -= dt; if (wait <= 0) { const s = queue.shift(); keys.get(s.k) && (keys.get(s.k).t = 1); show(s.txt, s.op); wait = s.k === '=' ? 0.3 : 0.17; moved = true; } }

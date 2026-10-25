@@ -15,7 +15,13 @@ test('the photo for each side: a JPEG or PNG, the one named for the side first; 
   const j = { query: { pages: { a: page(1, 'File:Morgan dollar 1881.jpg'), b: page(2, 'File:Morgan dollar reverse.jpg'), c: page(0, 'File:Morgan.svg', 'image/svg+xml') } } };
   assert.equal(pickPhoto(j, 'reverse').src, 'https://u/2'); assert.equal(pickPhoto(j, 'obverse').src, 'https://u/1'); assert.equal(pickPhoto({}, 'obverse'), null);
   const one = await findCoin('x', async (u) => (/obverse/.test(decodeURIComponent(u)) ? { query: { pages: { a: page(1, 'File:X obverse.jpg') } } } : {}));
-  assert.equal(one.tails, one.heads);
+  assert.equal(one.tails.src, one.heads.src); assert.equal(one.heads.half, null); assert.equal(one.tails.half, null, 'a narrow photo shows the same face twice');
+  // one wide photo holds both faces side by side: heads is its left half, tails its right (the Lydian stater showed both faces squashed into one circle)
+  const wide = (i, title) => ({ ...page(i, title), imageinfo: [{ mime: 'image/jpeg', thumburl: 'https://u/' + i, descriptionurl: 'https://c/' + i, width: 900, height: 400 }] });
+  const two = await findCoin('x', async (u) => (/obverse/.test(decodeURIComponent(u)) ? { query: { pages: { a: wide(1, 'File:X obverse.jpg') } } } : {}));
+  assert.equal(two.heads.half, 'left'); assert.equal(two.tails.half, 'right'); assert.equal(two.tails.src, two.heads.src);
+  const own = await findCoin('x', async (u) => (/obverse/.test(decodeURIComponent(u)) ? { query: { pages: { a: wide(1, 'File:X obverse.jpg') } } } : { query: { pages: { b: page(2, 'File:X reverse.jpg') } } }));
+  assert.equal(own.heads.half, 'left'); assert.equal(own.tails.half, null, 'its own narrow reverse photo is shown whole');
   assert.equal(await findCoin('x', async () => ({})), null);
   assert.match(decodeURIComponent(sideUrl('Lydian stater', 'reverse')), /origin=\*.*Lydian stater reverse coin filetype:bitmap/);
 });

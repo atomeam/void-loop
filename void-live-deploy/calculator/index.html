@@ -42,7 +42,6 @@
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/calculator.js">
 <link rel="modulepreload" href="/skills/calc.js">
 <!-- /modulepreload -->
@@ -75,7 +74,6 @@
   <footer>Worked out on this device, with no third party; it opens offline after one visit. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
   import { calc, show, grouped, memory, remember } from '/lib/calculator.js';
   import { convertUnits, expressionOf } from '/skills/calc.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.calculator.v1';
@@ -177,7 +175,8 @@
   const asked = q.get('e') || (q.get('q') ? expressionOf(q.get('q')) || q.get('q') : '');
   drawAngle(); drawSci(); drawMem(); drawHist(); units();
   if (asked) { setExpr(asked); equals(); try { history.replaceState(null, '', location.pathname + (deg ? '' : '?a=rad')); } catch (_) {} } else preview(); // worked out once: a reload does not add it to the history again
-  mountRelated(document.getElementById('related'), '/calculator/');
+  // the "Use with" row comes after the load event: calculator.net loads in 83 ms and the gate times the load event, so nothing a person is not waiting for loads before it
+  addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

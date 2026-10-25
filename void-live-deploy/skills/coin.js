@@ -59,7 +59,9 @@ const CSS = '<style>.vpage:has(.coin-row) .vc-art{display:none}.coin-row{display
 // a coin's two faces, drawn without ever putting a person's words into markup: { bg, ink, txt, img } a side
 function paintFace(f, side) {
   f.textContent = side.img ? '' : side.txt || ''; f.style.color = side.ink || '#5a4106';
-  f.style.background = side.img ? 'center / cover no-repeat url("' + String(side.img).replace(/["\\\n]/g, '') + '"), #222' : side.bg;
+  // a photo that holds both faces (lib/coins.js `half`) is drawn twice as wide as the face and slid to its own half, so one face shows at a time
+  const url = side.img ? 'url("' + String(side.img).replace(/["\\\n]/g, '') + '")' : '';
+  f.style.background = side.img ? (side.half ? side.half + ' center / 200% 100% no-repeat ' : 'center / cover no-repeat ') + url + ', #222' : side.bg;
 }
 
 /** a photo (a URL this page may read, or a data URL) as a small JPEG data URL for the appraiser, or null. */
@@ -108,7 +110,7 @@ function run(text, api) {
       const card = typeof el === 'object' && el && el.querySelector ? el : null; if (!card || !card.isConnected) return;
       const src = card.querySelector('.src');
       if (!c) { src.textContent = 'Wikimedia Commons has no photo of a "' + more.name + '" coin. Try its full name ("Athenian owl tetradrachm"), or flip a famous coin.'; card.querySelectorAll('.coin .fc').forEach((f) => { f.textContent = '?'; }); return; }
-      card.querySelectorAll('.coin').forEach((b) => { paintFace(b.querySelector('.fc.h'), { img: c.heads.src }); paintFace(b.querySelector('.fc.t'), { img: c.tails.src }); });
+      card.querySelectorAll('.coin').forEach((b) => { paintFace(b.querySelector('.fc.h'), { img: c.heads.src, half: c.heads.half }); paintFace(b.querySelector('.fc.t'), { img: c.tails.src, half: c.tails.half }); });
       src.textContent = 'Heads is its obverse, tails its reverse: real photos from Wikimedia Commons (';
       const a1 = document.createElement('a'); a1.href = c.heads.page; a1.target = '_blank'; a1.rel = 'noopener'; a1.textContent = c.heads.title;
       src.append(a1); if (c.tails !== c.heads) { const a2 = document.createElement('a'); a2.href = c.tails.page; a2.target = '_blank'; a2.rel = 'noopener'; a2.textContent = c.tails.title; src.append(', ', a2); }

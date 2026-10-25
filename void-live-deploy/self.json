@@ -483,6 +483,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T02:13:45Z",
+   "subject": "checks.mjs: glitch-titles runs only when a file with a glitch title, the films page or void.html changed"
+  },
+  {
+   "at": "2026-10-25T02:00:58Z",
+   "subject": "checks.mjs --changed: a builder's pre-push check runs only what covers the changed files"
+  },
+  {
+   "at": "2026-10-25T02:00:11Z",
+   "subject": "The tower gate's full sweep runs as six runner slices and a merge job; fight runs queue instead of cancelling each other"
+  },
+  {
+   "at": "2026-10-25T01:56:24Z",
+   "subject": "Incident: the browser suite failed on 967fde67 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T01:46:00Z",
+   "subject": "Incident: the browser suite failed on 630e666f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T01:32:02Z",
+   "subject": "Incident: the browser suite failed on fe1573d2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T01:30:01Z",
+   "subject": "Incident: the browser suite failed on 69392bd2 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-25T01:18:06Z",
    "subject": "self.json refreshed after the /time/ sun, moon and dates work"
   },
@@ -533,38 +561,14 @@
   {
    "at": "2026-10-25T00:52:10Z",
    "subject": "Incident: the browser suite failed on a77e2a49 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:51:56Z",
-   "subject": "Tower gate: calculator,encoder,time zones measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T00:46:04Z",
-   "subject": "Verse's own Base64 page: /base64/ encodes and decodes as you type, both ways"
-  },
-  {
-   "at": "2026-10-25T00:45:12Z",
-   "subject": "Tower gate: coin flip,calculator,time zones measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T00:40:47Z",
-   "subject": "/calculator/ and /time/: Verse's own pages for the tower's calculator.net and timeanddate.com floors"
-  },
-  {
-   "at": "2026-10-25T00:39:54Z",
-   "subject": "Tower gate: coin flip,password strength,password measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T00:39:45Z",
-   "subject": "Incident: the browser suite failed on f4fa1e5a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:36:44Z",
-   "subject": "Incident: the browser suite failed on 25433038 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (changed-checks helper, 2026-10-25)",
+    "line": "VOID_SKIP_BENCH=1 node tools/checks.mjs --changed is the builder's pre-push check: tools/checks-changed.mjs keeps the 54 structural checks on and runs a test only when its file, an import of it (two levels, or through skills/deps.json) or…"
+   },
    {
     "name": "grok-bot (podcast)",
     "line": "Verse Out Loud, Verse's own weekly podcast: tools/podcast.mjs reads the week from the record, Piper voices it in CI (free: no Workers AI neurons, no key, lib/models.js untouched), /podcast/rss.xml is Apple/Spotify-ready, \"play the…"
@@ -584,10 +588,6 @@
    {
     "name": "Lists caught up, run 2 (Grok Bot, 2026-10-21)",
     "line": "run 1's lists PR (https://github.com/atomeam/void-loop/pull/1195) was stuck on a ledger conflict and is merged. The fast checks that were red on main are green except two: fuzzy, privacy-guard (a standard's section number like \"section…"
-   },
-   {
-    "name": "Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/voi…",
-    "line": "main had two wiped page scripts (lib/stage-tools.js was the word PLACEHOLDER_REPLACE_ME, lib/tome.js cut off mid-comment) and both are whole again with their intended changes, plus tools/wiped-files.test.mjs in the fast checks. Built from…"
    }
   ],
   "ladders": [

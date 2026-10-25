@@ -37,7 +37,7 @@ export const FAMOUS = [
   ['Canadian gold maple leaf', 'Canada, 1979'], ['One euro coin', 'since 2002'],
 ];
 
-const API = 'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url|mime&iiurlwidth=360&gsrsearch=';
+const API = 'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=360&gsrsearch=';
 /** the Commons search address for one side of a coin. Pure. */
 export const sideUrl = (name, side) => API + encodeURIComponent(name + ' ' + side + ' coin filetype:bitmap');
 /** the best photo in a Commons answer: a JPEG or PNG thumbnail, the one whose title names the side first. Pure. */
@@ -46,7 +46,9 @@ export function pickPhoto(json, side) {
   pages.sort((a, b) => (a.index || 0) - (b.index || 0));
   const named = pages.find((p) => new RegExp(side === 'obverse' ? 'obv|avers|front|heads' : 'rev|back|tails', 'i').test(p.title));
   const p = named || pages[0];
-  return p ? { src: p.imageinfo[0].thumburl, page: p.imageinfo[0].descriptionurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(p.title)), title: p.title.replace(/^File:/, '').replace(/\.[a-z]+$/i, '') } : null;
+  // a photo much wider than tall holds both faces side by side (most Commons coin photos do): each face then shows its own half
+  const i = p && p.imageinfo[0], wide = !!(i && i.width > 0 && i.height > 0 && i.width / i.height >= 1.6);
+  return p ? { src: i.thumburl, page: i.descriptionurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(p.title)), title: p.title.replace(/^File:/, '').replace(/\.[a-z]+$/i, ''), wide } : null;
 }
 /** both sides of a coin from Commons: { heads, tails } (tails falls back to the heads photo when no reverse is found), or null. */
 export async function findCoin(name, get = (u) => fetch(u).then((r) => r.json())) {
@@ -54,7 +56,10 @@ export async function findCoin(name, get = (u) => fetch(u).then((r) => r.json())
   const heads = pickPhoto(o, 'obverse') || pickPhoto(r, 'obverse');
   if (!heads) return null;
   let tails = pickPhoto(r, 'reverse'); if (!tails || tails.src === heads.src) tails = pickPhoto(o, 'reverse');
-  return { heads, tails: tails && tails.src !== heads.src ? tails : heads };
+  const own = tails && tails.src !== heads.src;
+  // one photo for both: a wide one is cut in half (obverse left, reverse right); a narrow one shows the same face twice, as it always did
+  const h = { ...heads, half: heads.wide ? 'left' : null }, t = own ? { ...tails, half: tails.wide ? 'right' : null } : { ...heads, half: heads.wide ? 'right' : null };
+  return { heads: h, tails: t };
 }
 
 // a coin a person makes: its metal, a short word or emoji on each side, the words around the rim, and maybe a photo for a side (kept small)

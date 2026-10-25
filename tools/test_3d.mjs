@@ -521,7 +521,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     const typed = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('tcalc'); return s && !s.pending && s.display === '84' ? s : false; }), 30000);
     check('miniatures: the stopwatch\u2019s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, \u00d7, 7, = and then shows 84 ("15% of 240" types 15%\u00d7240)',
-      r.sw.second && r.sw.minute && r.typing.pending > 0 && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
+      r.sw.second && r.sw.minute && r.typing.pending > 0 && r.typing.keysInside === true && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
     await F.ask('make a calculator', 600);
     const card = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:calc')); return l && l.draws > 0 && !!document.querySelector('.calc-card .void-mini canvas') ? window.__voidMini.state(l.key) : false; }), 60000);
     await F.ask('calculate 12*7', 600);
