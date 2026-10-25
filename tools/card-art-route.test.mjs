@@ -228,7 +228,7 @@ test('a cartoon asks the text model for the look and paints from it; UNKNOWN or 
   assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
   assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
   assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
-  assert.equal(rows(w.env)[0].subject, 'cartoon12 dimebag darrel');
+  assert.equal(rows(w.env)[0].subject, 'cartoon13 dimebag darrel');
   assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
   const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
   assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');

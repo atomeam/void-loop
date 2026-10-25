@@ -25,7 +25,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -83,8 +83,10 @@ export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_
 // (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
 // builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
 export async function lookFor(env, key) {
-  const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d* /, ''), undefined, photoWhy); if (seen) return { look: seen.look, name: seen.name, why: '', source: seen.source };
-  const res = await lookFromText(env, key); return { ...res, photoWhy: photoWhy.join('; ').slice(0, 200) }; // why the photo was not used, so a builder can see it
+  const photoWhy = [], seen = await photoLook(env, String(key).replace(/^cartoon\d* /, ''), undefined, photoWhy);
+  if (seen && drawableLook(seen.look)) return { look: seen.look, name: seen.name, why: '', source: seen.source };
+  if (seen) photoWhy.push('the photo is a table or text, not a thing to draw'); // lib/art-rules.js FLAT_LOOK: the text model is asked instead
+  const res = await lookFromText(env, key); return { ...res, ...(seen && !res.look ? { flat: true } : {}), photoWhy: photoWhy.join('; ').slice(0, 200) }; // why the photo was not used, so a builder can see it
 }
 // whether a cartoon's painting may be kept for ever: drawn from the photo, or from words when there is no photo to be had (no page by that name, no free
 // image). A photo that exists but was lost on the way (a Commons, download or vision error) or a look that failed leaves the painting unkept, so the
@@ -109,6 +111,7 @@ async function lookFromText(env, key) {
     if (!text.trim()) return { look: '', why: 'empty ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) + (r.choices && r.choices[0] ? ' finish ' + String(r.choices[0].finish_reason || '').slice(0, 20) : '') : typeof r) };
   } catch (e) { return { look: '', why: 'error ' + String(e && e.message || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 80) }; }
   const parts = lookParts(text), name = spellingOf(String(key).replace(/^cartoon\d* /, ''), parts.name), look = lookOf(parts.text, isSecret), said = text.replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+  if (look && !drawableLook(look)) return { look: '', name, flat: true, why: 'flat: ' + said }; // a table or text again: the mascot prompt draws it (lib/art-rules.js cartoonPrompt)
   return look ? { look, name, why: '' } : { look: '', name, why: (/\bunknown\b/i.test(text) ? 'unknown' : 'refused') + ': ' + said };
 }
 // a cartoon's look from a real photo (lib/wiki-look.js; owner, 2026-10-24, the "dimebag darrel" cartoon was a made-up guitarist because a language model
@@ -195,7 +198,7 @@ export async function onRequestPost({ request, env }) {
   const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = kind === 'cartoon' || kind === 'poster' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
   let img = '';
   try {
-    const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(seen.name ? 'cartoon ' + seen.name.toLowerCase() : key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
+    const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(seen.name ? 'cartoon ' + seen.name.toLowerCase() : key, look, { mascot: !!seen.flat }) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
     let r = null;
     if (!overWorkers) {
       try { r = await Promise.race([paintOnce(env, models('art'), prompt, size), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }

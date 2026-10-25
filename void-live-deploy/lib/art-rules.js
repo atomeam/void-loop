@@ -97,13 +97,16 @@ export const CARTOON_STYLE = 'as a flat 2D cartoon drawing, bright and cheerful,
 /** a cartoon's cache key: its own row, so a cartoon cat never replaces a card's painting of a cat. 'cartoon10': painted from its look (below); the
  *  rows painted from the bare name are left behind, since a name the painter does not know came out as a stock figure ("Cartoon Dimebag Darrel"
  *  was a smiling boy in a blue t-shirt). Pure. */
-export const cartoonKey = (key) => (key ? 'cartoon12 ' + key : '');
+export const cartoonKey = (key) => (key ? 'cartoon13 ' + key : ''); // 13 (2026-10-25): looks of tables and text are dropped, so a kept grid is painted again
 // the look (2026-10-24): the image model only knows famous names loosely and misspelt ones not at all, so the free text model first says what the
 // subject looks like in plain visual words, and the cartoon is drawn from that. Checked by sceneOf like the Director's scene; '' paints from the name.
 export const LOOK_SYSTEM = 'You describe what something looks like so an illustrator who has never heard of it can draw it and anyone who knows it recognises it. '
   + 'In at most 55 words, the signature details fans recognise first, exact and specific, with their real colours: for a person their hair (length, '
   + 'curl, colour), facial hair (shape, and its colour if dyed), their best-known outfit piece by piece, and the exact shape and colour of what they are '
-  + 'known for holding; for anything else its shape, colours and parts. Plain visual words only: no names, no brands, no words or letters. '
+  + 'known for holding; for anything else its shape, colours and parts. For something with no physical shape of its own (an idea, a code or file format, '
+  + 'software, a feeling, a field of study), describe ONE friendly cartoon character or object that stands for it, its shape, face and colours, never '
+  + 'text, tables, grids, charts or symbols. For a sentence or a question, describe ONE funny cartoon scene that acts it out: who is in it, what they '
+  + 'are doing and the one object that tells the story. Plain visual words only: no names, no brands, no words or letters. '
   + 'Reply in exactly two lines: "Name: " and its name as it is usually spelled, then "Look: " and the description. '
   + 'If you do not know it, reply only UNKNOWN.';
 /** the text model's look -> one clean line, or '' (UNKNOWN, refused, or too short): the longest line of the reply, so a preamble such as
@@ -131,10 +134,20 @@ export function lookParts(text) {
   return { name: name.replace(/[*_]/g, '').trim(), text: look != null ? look : t.replace(/^\W*name\s*:.*$/im, '') };
 }
 export const lookPrompt = (key) => 'Describe: ' + String(key).replace(/^cartoon\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60);
-/** a cartoon's prompt: from its look when there is one, else from its name. Pure. */
-export function cartoonPrompt(key, look = '') {
-  const name = String(key).replace(/^cartoon\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) ? '' : String(look || '');
-  return (seen ? 'a cartoon of ' + name + ': ' + seen : 'a ' + name) + ' ' + CARTOON_STYLE + ', ' + FRAMING;
+// a look that describes writing or a diagram is not a picture of anything (2026-10-25: "cartoon base64" came out as a table of garbled glyphs, drawn from
+// the vision model's reading of Wikipedia's lead image, a table of characters): such a look is dropped, and a subject left without one is drawn as a mascot
+export const FLAT_LOOK = /\b(?:tables?|grids?|charts?|diagrams?|graphs?|spreadsheets?|screenshots?|text|letters?|characters?|symbols?|glyphs?|digits?|numerals?|rows? and columns?|columns?|code|logos?|typography|writing)\b/i;
+/** whether a look describes something drawable (not a table, chart or text). Pure. */
+export const drawableLook = (look) => !!look && !FLAT_LOOK.test(String(look));
+/** a cartoon's prompt: from its look when there is one; a subject whose only look was a table or text gets a cartoon mascot (a bare "a base64" painted a page of text); else its name. Pure. */
+export function cartoonPrompt(key, look = '', { mascot = false } = {}) {
+  const name = String(key).replace(/^cartoon\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60), seen = /\bunknown\b/i.test(look) || !drawableLook(look) ? '' : String(look || '');
+  // a sentence or a question ("is base64 surpassed yet") is acted out as one scene; without that the painter drew a stock smiling boy (2026-10-25)
+  const sentence = name.split(' ').length >= 4;
+  const what = seen ? (sentence ? 'a funny cartoon scene that shows "' + name + '": ' : 'a cartoon of ' + name + ': ') + seen
+    : sentence ? 'a funny cartoon scene that acts out "' + name + '", characters doing it, no writing anywhere'
+    : mascot || (look && !drawableLook(look)) ? 'a cute friendly cartoon mascot character that stands for ' + name + ', with a face and simple limbs, no writing on it' : 'a ' + name;
+  return what + ' ' + CARTOON_STYLE + ', ' + FRAMING;
 }
 
 /** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
