@@ -565,7 +565,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:26:21.215Z"
+    "at": "2026-10-25T04:33:05.823Z"
    }
   },
   "encoder": {
@@ -886,52 +886,95 @@
   "password strength": {
    "speed": {
     "verdict": "better",
-    "verse": 115,
-    "best": 20135,
-    "evidence": "Verse (/password-strength/) 115 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 20135 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:24:44.457Z"
+    "verse": 102,
+    "best": 20807,
+    "evidence": "Verse (/password-strength/) 102 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 20807 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/password-strength/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/password-strength/) 0 design defects vs howsecureismypassword.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), howsecureismypassword.net (0 low-contrast texts, 1 small tap targets, layout shift 0.16)",
-    "at": "2026-10-25T04:24:44.457Z"
+    "at": "2026-10-25T04:31:08.822Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/password-strength/) 5 of 5 right against the worked-out answer; judged against the standard, not howsecureismypassword.net (the site is not asked)",
+    "at": "2026-10-25T04:31:08.822Z",
+    "of": 5
+   },
+   "leak check": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/password-strength/) 1 of 1 shown vs howsecureismypassword.net 0 of 1 shown (Verse lacks: none; site lacks: a leak check)",
+    "at": "2026-10-25T04:31:08.822Z",
+    "of": 1,
+    "part": true
+   },
+   "crack time": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T04:31:08.822Z",
+    "of": 2,
+    "part": true
+   },
+   "reasons and fixes": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T04:31:08.822Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 0,
+    "evidence": "Verse (/password-strength/) 7 of 7 things a full answer shows vs howsecureismypassword.net 0 of 7 things a full answer shows (Verse lacks: none; site lacks: a strength rating, the time to crack, why it is weak, how to fix it, a leak check, nothing sent anywhere, show the password)",
+    "at": "2026-10-25T04:31:08.822Z",
+    "of": 7
    }
   },
   "base converter": {
@@ -1860,7 +1903,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:28:05.451Z"
+    "at": "2026-10-25T04:34:52.695Z"
    }
   }
  }
