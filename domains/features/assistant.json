@@ -1,0 +1,198 @@
+{
+ "floor": "assistant",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "claude.ai": {
+   "sources": [
+    "https://claude.ai/",
+    "https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them",
+    "https://support.claude.com/en/",
+    "https://www.anthropic.com/pricing",
+    "https://www.tomsguide.com/ai/claude-just-made-two-of-its-best-features-free-heres-how-to-use-projects-and-artifacts"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chat with an AI",
+     "detail": "Multi-turn conversation answering anything",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "functions/api/answer.js: any ask no skill covers is answered by the free Workers AI model with a Wikipedia source cited when one matches, plain Wikipedia extract without a model; one ask at a time on the stage"
+    },
+    {
+     "group": "core",
+     "name": "Writing and editing",
+     "detail": "Drafts, rewrites, summaries, translation",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/writing-aids.js, translate.js, answer engine"
+    },
+    {
+     "group": "core",
+     "name": "Code help",
+     "detail": "Write, explain and debug code",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "answer engine; skills/terminal.js is a rule-based command line"
+    },
+    {
+     "group": "core",
+     "name": "File and image uploads",
+     "detail": "PDFs, images, docs, spreadsheets in the chat",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "device-only cards: photos, pdf-card, csv-table; not read by a model"
+    },
+    {
+     "group": "core",
+     "name": "Conversation history",
+     "detail": "Past chats listed and searchable",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/recent.js and ask-clipboard keep recent asks on the device"
+    },
+    {
+     "group": "core",
+     "name": "Artifacts",
+     "detail": "Self-contained pages, documents, code and apps made in the chat",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Verse makes working cards and pages from an ask (calculator, games, flashcards) - its core"
+    },
+    {
+     "group": "power",
+     "name": "Projects",
+     "detail": "Workspaces with shared files and instructions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Memory",
+     "detail": "Remembers context across chats",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/memory-graph.js notes which skills answered and patterns; skills/codex.js files cards"
+    },
+    {
+     "group": "power",
+     "name": "Web search",
+     "detail": "Answers with current web sources",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "answer engine cites Wikipedia; live data skills (weather, news, markets)"
+    },
+    {
+     "group": "power",
+     "name": "Research",
+     "detail": "Multi-step research report with citations",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Code execution and file creation",
+     "detail": "Runs code, makes xlsx/docx/pptx/pdf files",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/print-download.js, csv-table and stage-export make files from cards"
+    },
+    {
+     "group": "power",
+     "name": "Connectors (MCP)",
+     "detail": "Gmail, Calendar, Drive, Slack and more",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Extended thinking and model choice",
+     "detail": "Choose model, think longer",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Voice mode",
+     "detail": "Speak and listen",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Styles and custom instructions",
+     "detail": "Set tone and preferences",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Builds itself",
+     "detail": "n/a",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Verse files its own misses as jobs (lib/learn.js) and agents ship new skills daily"
+    },
+    {
+     "group": "sharing",
+     "name": "Share chats and artifacts",
+     "detail": "Public links, publish artifacts",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/share.js and card share links; invite.js shared stage"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Desktop and mobile apps",
+     "detail": "Mac, Windows, iOS, Android; Chrome extension",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Screen reader and voice",
+     "detail": "Accessible web app, dictation",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Pro / Max",
+     "detail": "Higher limits, more models, Research, Claude Code",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Team / Enterprise",
+     "detail": "Admin, SSO, larger context, shared projects",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a conversation thread so follow-ups keep context",
+  "ask about a file you drop in (on the device first)",
+  "memory the visitor can read and edit",
+  "research mode with sources"
+ ],
+ "verse_extra": [
+  "an ask becomes a working tool, not text",
+  "device-first: most cards send nothing",
+  "grows itself from what it could not answer"
+ ],
+ "first_page": "Conversation page /ask/ for people who want to keep talking to Verse. First: a thread where each turn can be a plain answer or a live card (the same skills as the stage), follow-ups carry the last answer as context to the answer engine, the thread kept on the device and shareable as a link, and a visible \"what I remember\" list the visitor can edit. Will not build: paid models, connectors to private accounts, voice mode or file reading by a model."
+}
