@@ -8,7 +8,8 @@ test('every tool page is linked to at least one other, only to tools that exist,
   for (const [p, rel] of Object.entries(RELATED)) {
     assert.ok(TOOLS[p], p); assert.ok(rel.length >= 1, p); assert.ok(!rel.includes(p), p);
     for (const r of rel) assert.ok(TOOLS[r], p + ' -> ' + r);
-    const html = fs.readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
+    let html = fs.readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
+    for (const m of html.matchAll(/<script type="module" src="(\/[^"]+)"/g)) html += fs.readFileSync(new URL('../void-live-deploy' + m[1], import.meta.url), 'utf8'); // a page whose code is in a file of its own
     assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '\/[a-z0-9-]+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');
