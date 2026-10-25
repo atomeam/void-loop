@@ -9220,6 +9220,418 @@
     "of": 1,
     "part": true
    }
+  },
+  "image boards: lainchan.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 105,
+    "best": 141,
+    "evidence": "Verse (/boards/) 105 ms to the load event (median of 3, phone width) vs lainchan.org 141 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs lainchan.org 3 of 3 loads answered",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs lainchan.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs lainchan.org 3 unnamed controls or images",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs lainchan.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs lainchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not lainchan.org (the site is not asked)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 60,
+    "evidence": "Verse (/boards/) 7 design defects vs lainchan.org 60 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), lainchan.org (55 low-contrast texts, 4 small tap targets, layout shift 0.47)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs lainchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 3,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs lainchan.org 3 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, search, a thread watcher, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 14
+   }
+  },
+  "image boards: 7chan.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 176,
+    "best": 579,
+    "evidence": "Verse (/boards/) 176 ms to the load event (median of 3, phone width) vs 7chan.org 579 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 7chan.org 3 of 3 loads answered",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 580,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 7chan.org 580 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 11,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 7chan.org 11 unnamed controls or images",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 7chan.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 7chan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 7chan.org (the site is not asked)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 48,
+    "evidence": "Verse (/boards/) 7 design defects vs 7chan.org 48 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 7chan.org (0 low-contrast texts, 48 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 7chan.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 6,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 7chan.org 6 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: an archive, greentext, tripcodes, sage, spoilers, search, a thread watcher, make your own board)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 14
+   }
+  },
+  "image boards: 2chan.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 198,
+    "best": 1073,
+    "evidence": "Verse (/boards/) 198 ms to the load event (median of 3, phone width) vs 2chan.net 1073 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 2chan.net 3 of 3 loads answered",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 298,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 2chan.net 298 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 2chan.net 0 unnamed controls or images",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 2chan.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 2chan.net 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 2chan.net (the site is not asked)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 77,
+    "evidence": "Verse (/boards/) 7 design defects vs 2chan.net 77 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 2chan.net (0 low-contrast texts, 76 small tap targets, layout shift 0.24)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 2chan.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 0,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 2chan.net 0 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 14
+   }
+  },
+  "image boards: 5ch.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 123,
+    "best": 357,
+    "evidence": "Verse (/boards/) 123 ms to the load event (median of 3, phone width) vs 5ch.net 357 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 5ch.net 3 of 3 loads answered",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 5ch.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 5ch.net 2 unnamed controls or images",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 5ch.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 2,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 5ch.net 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 5ch.net (the site is not asked)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 32,
+    "evidence": "Verse (/boards/) 7 design defects vs 5ch.net 32 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 5ch.net (12 low-contrast texts, 20 small tap targets, layout shift 0.03)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 5ch.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 0,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 5ch.net 0 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 14
+   }
   }
  },
  "icons": {
@@ -9326,6 +9738,10 @@
   "docs.zoho.com": "tower.icons/docs.zoho.com.ico",
   "onenote.com": "tower.icons/onenote.com.ico",
   "evernote.com": "tower.icons/evernote.com.ico",
-  "notion.so": "tower.icons/notion.so.ico"
+  "notion.so": "tower.icons/notion.so.ico",
+  "lainchan.org": "tower.icons/lainchan.org.png",
+  "7chan.org": "tower.icons/7chan.org.ico",
+  "2chan.net": "tower.icons/2chan.net.ico",
+  "5ch.net": "tower.icons/5ch.net.png"
  }
 }
