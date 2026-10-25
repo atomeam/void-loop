@@ -8075,67 +8075,67 @@
   "docs and notes: anotepad.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 123,
-    "best": 577,
-    "evidence": "Verse (/notes/) 123 ms to the load event (median of 3, phone width) vs anotepad.com 577 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:11:00.185Z"
+    "verse": 98,
+    "best": 380,
+    "evidence": "Verse (/notes/) 98 ms to the load event (median of 3, phone width) vs anotepad.com 380 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs anotepad.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:11:00.185Z"
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs anotepad.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:11:00.185Z"
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 unnamed controls or images vs anotepad.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:11:00.185Z"
+    "best": 2,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs anotepad.com 2 unnamed controls or images",
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs anotepad.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:11:00.185Z"
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 4,
-    "best": 1,
-    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotepad.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:11:00.185Z"
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotepad.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not anotepad.com (the site is not asked)",
-    "at": "2026-10-25T15:11:00.185Z",
+    "at": "2026-10-25T15:33:00.869Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/notes/) 0 design defects vs anotepad.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), anotepad.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:11:00.185Z"
+    "best": 26,
+    "evidence": "Verse (/notes/) 0 design defects vs anotepad.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), anotepad.com (25 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:33:00.869Z"
    },
    "rich formatting": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:11:00.185Z",
+    "best": 1,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 1 of 1 shown (Verse lacks: none; site lacks: bold, headings)",
+    "at": "2026-10-25T15:33:00.869Z",
     "of": 1,
     "part": true
    },
@@ -8144,7 +8144,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:11:00.185Z",
+    "at": "2026-10-25T15:33:00.869Z",
     "of": 1,
     "part": true
    },
@@ -8153,16 +8153,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:11:00.185Z",
+    "at": "2026-10-25T15:33:00.869Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 16,
-    "best": 0,
-    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs anotepad.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:11:00.185Z",
+    "best": 7,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs anotepad.com 7 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, search, version history, a word count, markdown, print, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:33:00.869Z",
     "of": 17
    }
   },
@@ -8263,67 +8263,67 @@
   "docs and notes: quillpad.in": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 86,
-    "best": 569,
-    "evidence": "Verse (/notes/) 86 ms to the load event (median of 3, phone width) vs quillpad.in 569 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:18:37.950Z"
+    "verse": 91,
+    "best": 40,
+    "evidence": "Verse (/notes/) 91 ms to the load event (median of 3, phone width) vs quillpad.in 40 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs quillpad.in 3 of 3 loads answered",
-    "at": "2026-10-25T15:18:37.950Z"
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "mobile": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs quillpad.in 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:18:37.950Z"
+    "best": 170,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs quillpad.in 170 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 unnamed controls or images vs quillpad.in 0 unnamed controls or images",
-    "at": "2026-10-25T15:18:37.950Z"
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs quillpad.in 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:18:37.950Z"
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 1,
-    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs quillpad.in 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:18:37.950Z"
+    "best": 0,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs quillpad.in 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not quillpad.in (the site is not asked)",
-    "at": "2026-10-25T15:18:37.950Z",
+    "at": "2026-10-25T15:33:31.700Z",
     "of": 4
    },
    "design polish": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/notes/) 0 design defects vs quillpad.in 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), quillpad.in (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:18:37.950Z"
+    "best": 0,
+    "evidence": "Verse (/notes/) 0 design defects vs quillpad.in 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), quillpad.in (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:33:31.700Z"
    },
    "rich formatting": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:18:37.950Z",
+    "at": "2026-10-25T15:33:31.700Z",
     "of": 1,
     "part": true
    },
@@ -8332,7 +8332,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:18:37.950Z",
+    "at": "2026-10-25T15:33:31.700Z",
     "of": 1,
     "part": true
    },
@@ -8341,7 +8341,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:18:37.950Z",
+    "at": "2026-10-25T15:33:31.700Z",
     "of": 1,
     "part": true
    },
@@ -8350,59 +8350,59 @@
     "verse": 16,
     "best": 0,
     "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs quillpad.in 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:18:37.950Z",
+    "at": "2026-10-25T15:33:31.700Z",
     "of": 17
    }
   },
   "docs and notes: standardnotes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 497,
-    "evidence": "Verse (/notes/) 108 ms to the load event (median of 3, phone width) vs standardnotes.com 497 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:19:01.059Z"
+    "verse": 92,
+    "best": 292,
+    "evidence": "Verse (/notes/) 92 ms to the load event (median of 3, phone width) vs standardnotes.com 292 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs standardnotes.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:19:01.059Z"
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs standardnotes.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:19:01.059Z"
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 unnamed controls or images vs standardnotes.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:19:01.059Z"
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs standardnotes.com 1 unnamed controls or images",
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs standardnotes.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:19:01.059Z"
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 1,
-    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs standardnotes.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:19:01.059Z"
+    "best": 3,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs standardnotes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not standardnotes.com (the site is not asked)",
-    "at": "2026-10-25T15:19:01.059Z",
+    "at": "2026-10-25T15:33:43.342Z",
     "of": 4
    },
    "design polish": {
@@ -8410,14 +8410,14 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/notes/) 0 design defects vs standardnotes.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), standardnotes.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:19:01.059Z"
+    "at": "2026-10-25T15:33:43.342Z"
    },
    "rich formatting": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:19:01.059Z",
+    "best": 1,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 1 of 1 shown (Verse lacks: none; site lacks: bold, headings)",
+    "at": "2026-10-25T15:33:43.342Z",
     "of": 1,
     "part": true
    },
@@ -8426,7 +8426,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:19:01.059Z",
+    "at": "2026-10-25T15:33:43.342Z",
     "of": 1,
     "part": true
    },
@@ -8435,83 +8435,83 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:19:01.059Z",
+    "at": "2026-10-25T15:33:43.342Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 16,
-    "best": 0,
-    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs standardnotes.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:19:01.059Z",
+    "best": 3,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs standardnotes.com 3 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, checklists, links, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, on this device)",
+    "at": "2026-10-25T15:33:43.342Z",
     "of": 17
    }
   },
   "docs and notes: notepad.pw": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 83,
-    "best": 510,
-    "evidence": "Verse (/notes/) 83 ms to the load event (median of 3, phone width) vs notepad.pw 510 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:19:23.153Z"
+    "verse": 103,
+    "best": 365,
+    "evidence": "Verse (/notes/) 103 ms to the load event (median of 3, phone width) vs notepad.pw 365 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs notepad.pw 3 of 3 loads answered",
-    "at": "2026-10-25T15:19:23.153Z"
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs notepad.pw 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:19:23.153Z"
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 unnamed controls or images vs notepad.pw 0 unnamed controls or images",
-    "at": "2026-10-25T15:19:23.153Z"
+    "best": 1,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs notepad.pw 1 unnamed controls or images",
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs notepad.pw 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:19:23.153Z"
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 4,
-    "best": 1,
-    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs notepad.pw 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:19:23.153Z"
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs notepad.pw 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not notepad.pw (the site is not asked)",
-    "at": "2026-10-25T15:19:23.153Z",
+    "at": "2026-10-25T15:34:05.009Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/notes/) 0 design defects vs notepad.pw 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), notepad.pw (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:19:23.153Z"
+    "best": 18,
+    "evidence": "Verse (/notes/) 0 design defects vs notepad.pw 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), notepad.pw (11 low-contrast texts, 7 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:34:05.009Z"
    },
    "rich formatting": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs notepad.pw 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:19:23.153Z",
+    "at": "2026-10-25T15:34:05.009Z",
     "of": 1,
     "part": true
    },
@@ -8520,7 +8520,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs notepad.pw 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:19:23.153Z",
+    "at": "2026-10-25T15:34:05.009Z",
     "of": 1,
     "part": true
    },
@@ -8529,83 +8529,83 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs notepad.pw 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:19:23.153Z",
+    "at": "2026-10-25T15:34:05.009Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 16,
-    "best": 0,
-    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs notepad.pw 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:19:23.153Z",
+    "best": 3,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs notepad.pw 3 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, many documents, search, version history, export, import, markdown, print, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:34:05.009Z",
     "of": 17
    }
   },
   "docs and notes: simplenote.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 156,
-    "best": 567,
-    "evidence": "Verse (/notes/) 156 ms to the load event (median of 3, phone width) vs simplenote.com 567 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:19:50.310Z"
+    "verse": 94,
+    "best": 269,
+    "evidence": "Verse (/notes/) 94 ms to the load event (median of 3, phone width) vs simplenote.com 269 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs simplenote.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:19:50.310Z"
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs simplenote.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:19:50.310Z"
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 unnamed controls or images vs simplenote.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:19:50.310Z"
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs simplenote.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:19:50.310Z"
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
-    "best": 1,
-    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs simplenote.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:19:50.310Z"
+    "best": 3,
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs simplenote.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not simplenote.com (the site is not asked)",
-    "at": "2026-10-25T15:19:50.310Z",
+    "at": "2026-10-25T15:34:26.820Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/notes/) 0 design defects vs simplenote.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), simplenote.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:19:50.310Z"
+    "best": 13,
+    "evidence": "Verse (/notes/) 0 design defects vs simplenote.com 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), simplenote.com (0 low-contrast texts, 13 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:34:26.820Z"
    },
    "rich formatting": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:19:50.310Z",
+    "best": 1,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 1 of 1 shown (Verse lacks: none; site lacks: bold, headings)",
+    "at": "2026-10-25T15:34:26.820Z",
     "of": 1,
     "part": true
    },
@@ -8614,7 +8614,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:19:50.310Z",
+    "at": "2026-10-25T15:34:26.820Z",
     "of": 1,
     "part": true
    },
@@ -8623,83 +8623,83 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs simplenote.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:19:50.310Z",
+    "at": "2026-10-25T15:34:26.820Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 16,
-    "best": 0,
-    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs simplenote.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:19:50.310Z",
+    "best": 3,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs simplenote.com 3 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, checklists, links, search, version history, a word count, export, import, markdown, print, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:34:26.820Z",
     "of": 17
    }
   },
   "docs and notes: docs.zoho.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 107,
-    "best": 596,
-    "evidence": "Verse (/notes/) 107 ms to the load event (median of 3, phone width) vs docs.zoho.com 596 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:20:24.896Z"
+    "verse": 140,
+    "best": 64,
+    "evidence": "Verse (/notes/) 140 ms to the load event (median of 3, phone width) vs docs.zoho.com 64 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs docs.zoho.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:20:24.896Z"
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs docs.zoho.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:20:24.896Z"
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 unnamed controls or images vs docs.zoho.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:20:24.896Z"
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs docs.zoho.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:20:24.896Z"
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs docs.zoho.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:20:24.896Z"
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not docs.zoho.com (the site is not asked)",
-    "at": "2026-10-25T15:20:24.896Z",
+    "at": "2026-10-25T15:34:47.670Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/notes/) 0 design defects vs docs.zoho.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), docs.zoho.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:20:24.896Z"
+    "best": 7,
+    "evidence": "Verse (/notes/) 0 design defects vs docs.zoho.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), docs.zoho.com (7 low-contrast texts, 0 small tap targets, layout shift 0.05)",
+    "at": "2026-10-25T15:34:47.670Z"
    },
    "rich formatting": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:20:24.896Z",
+    "at": "2026-10-25T15:34:47.670Z",
     "of": 1,
     "part": true
    },
@@ -8708,7 +8708,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:20:24.896Z",
+    "at": "2026-10-25T15:34:47.670Z",
     "of": 1,
     "part": true
    },
@@ -8717,7 +8717,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs docs.zoho.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:20:24.896Z",
+    "at": "2026-10-25T15:34:47.670Z",
     "of": 1,
     "part": true
    },
@@ -8726,7 +8726,7 @@
     "verse": 16,
     "best": 0,
     "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs docs.zoho.com 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:20:24.896Z",
+    "at": "2026-10-25T15:34:47.670Z",
     "of": 17
    }
   },
@@ -9098,7 +9098,7 @@
   "claude.ai": "tower.icons/claude.ai.svg",
   "codebasehq.com": "tower.icons/codebasehq.com.png",
   "tildegit.org": "tower.icons/tildegit.org.png",
-  "seventhsanctum.com": "tower.icons/seventhsanctum.com.ico",
+  "seventhsanctum.com": "tower.icons/seventhsanctum.com.png",
   "rangen.co.uk": "tower.icons/rangen.co.uk.png",
   "tools.dungeonmastersvault.com": "tower.icons/tools.dungeonmastersvault.com.png",
   "chaoticshiny.com": "tower.icons/chaoticshiny.com.png",
@@ -9107,13 +9107,13 @@
   "writingexercises.com": "tower.icons/writingexercises.com.png",
   "behindthename.com": "tower.icons/behindthename.com.png",
   "namegenerator.com": "tower.icons/namegenerator.com.png",
-  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.ico",
-  "anotepad.com": "tower.icons/anotepad.com.ico",
+  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.png",
+  "anotepad.com": "tower.icons/anotepad.com.png",
   "notepadonline.org": "tower.icons/notepadonline.org.ico",
   "quillpad.in": "tower.icons/quillpad.in.ico",
-  "standardnotes.com": "tower.icons/standardnotes.com.ico",
+  "standardnotes.com": "tower.icons/standardnotes.com.png",
   "notepad.pw": "tower.icons/notepad.pw.ico",
-  "simplenote.com": "tower.icons/simplenote.com.ico",
+  "simplenote.com": "tower.icons/simplenote.com.png",
   "docs.zoho.com": "tower.icons/docs.zoho.com.ico",
   "onenote.com": "tower.icons/onenote.com.ico",
   "evernote.com": "tower.icons/evernote.com.ico",
