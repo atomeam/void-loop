@@ -9218,72 +9218,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs bbs.progrider.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 109,
+    "verse": 143,
     "best": 200,
-    "evidence": "Verse (/boards/) 109 ms to the load event (median of 3, phone width) vs the bar (bbs.progrider.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 143 ms to the load event (median of 3, phone width) vs the bar (bbs.progrider.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (bbs.progrider.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (bbs.progrider.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (bbs.progrider.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (bbs.progrider.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (bbs.progrider.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs the bar (bbs.progrider.org unreachable) 0 design defects",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (bbs.progrider.org unreachable) 0 design defects",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
-    "best": 14,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (bbs.progrider.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
-    "at": "2026-10-25T16:32:33.073Z",
-    "of": 14
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (bbs.progrider.org unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:12:23.855Z",
+    "of": 20
    },
    "catalog": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    },
@@ -9292,7 +9292,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (bbs.progrider.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 2,
     "part": true
    },
@@ -9301,7 +9301,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    },
@@ -9310,7 +9310,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    }
@@ -9321,72 +9321,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs textboard.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 103,
+    "verse": 127,
     "best": 200,
-    "evidence": "Verse (/boards/) 103 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 127 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (textboard.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (textboard.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (textboard.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs the bar (textboard.org unreachable) 0 design defects",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (textboard.org unreachable) 0 design defects",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
-    "best": 14,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (textboard.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
-    "at": "2026-10-25T16:32:53.422Z",
-    "of": 14
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (textboard.org unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:12:57.407Z",
+    "of": 20
    },
    "catalog": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
    },
@@ -9395,7 +9395,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (textboard.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 2,
     "part": true
    },
@@ -9404,7 +9404,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
    },
@@ -9413,7 +9413,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
    }
@@ -9936,67 +9936,67 @@
   "image boards: uboachan.net": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 117,
-    "best": 434,
-    "evidence": "Verse (/boards/) 117 ms to the load event (median of 3, phone width) vs uboachan.net 434 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:40:57.222Z"
+    "verse": 112,
+    "best": 275,
+    "evidence": "Verse (/boards/) 112 ms to the load event (median of 3, phone width) vs uboachan.net 275 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs uboachan.net 3 of 3 loads answered",
-    "at": "2026-10-25T16:40:57.222Z"
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs uboachan.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:40:57.222Z"
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs uboachan.net 0 unnamed controls or images",
-    "at": "2026-10-25T16:40:57.222Z"
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs uboachan.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:40:57.222Z"
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 4,
     "best": 1,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs uboachan.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:40:57.222Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs uboachan.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not uboachan.net (the site is not asked)",
-    "at": "2026-10-25T16:40:57.222Z",
+    "at": "2026-10-25T17:13:06.553Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs uboachan.net 0 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), uboachan.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T16:40:57.222Z"
+    "evidence": "Verse (/boards/) 0 design defects vs uboachan.net 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), uboachan.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:13:06.553Z"
    },
    "catalog": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
-    "at": "2026-10-25T16:40:57.222Z",
+    "at": "2026-10-25T17:13:06.553Z",
     "of": 1,
     "part": true
    },
@@ -10005,7 +10005,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/boards/) 2 of 2 shown vs uboachan.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
-    "at": "2026-10-25T16:40:57.222Z",
+    "at": "2026-10-25T17:13:06.553Z",
     "of": 2,
     "part": true
    },
@@ -10014,7 +10014,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
-    "at": "2026-10-25T16:40:57.222Z",
+    "at": "2026-10-25T17:13:06.553Z",
     "of": 1,
     "part": true
    },
@@ -10023,17 +10023,17 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
-    "at": "2026-10-25T16:40:57.222Z",
+    "at": "2026-10-25T17:13:06.553Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
+    "verse": 20,
     "best": 0,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs uboachan.net 0 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board)",
-    "at": "2026-10-25T16:40:57.222Z",
-    "of": 14
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs uboachan.net 0 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 20
    }
   },
   "image boards: desuchan.net": {
@@ -10042,72 +10042,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs desuchan.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T16:41:15.865Z"
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 98,
+    "verse": 117,
     "best": 200,
-    "evidence": "Verse (/boards/) 98 ms to the load event (median of 3, phone width) vs the bar (desuchan.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:41:15.865Z"
+    "evidence": "Verse (/boards/) 117 ms to the load event (median of 3, phone width) vs the bar (desuchan.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (desuchan.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:41:15.865Z"
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (desuchan.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T16:41:15.865Z"
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (desuchan.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:41:15.865Z"
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (desuchan.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:41:15.865Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (desuchan.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs the bar (desuchan.net unreachable) 0 design defects",
-    "at": "2026-10-25T16:41:15.865Z"
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (desuchan.net unreachable) 0 design defects",
+    "at": "2026-10-25T17:13:26.289Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T16:41:15.865Z",
+    "at": "2026-10-25T17:13:26.289Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
-    "best": 14,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (desuchan.net unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
-    "at": "2026-10-25T16:41:15.865Z",
-    "of": 14
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (desuchan.net unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 20
    },
    "catalog": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:41:15.865Z",
+    "at": "2026-10-25T17:13:26.289Z",
     "of": 1,
     "part": true
    },
@@ -10116,7 +10116,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (desuchan.net unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:41:15.865Z",
+    "at": "2026-10-25T17:13:26.289Z",
     "of": 2,
     "part": true
    },
@@ -10125,7 +10125,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:41:15.865Z",
+    "at": "2026-10-25T17:13:26.289Z",
     "of": 1,
     "part": true
    },
@@ -10134,7 +10134,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:41:15.865Z",
+    "at": "2026-10-25T17:13:26.289Z",
     "of": 1,
     "part": true
    }
@@ -10142,67 +10142,67 @@
   "image boards: kissu.moe": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 81,
-    "best": 258,
-    "evidence": "Verse (/boards/) 81 ms to the load event (median of 3, phone width) vs kissu.moe 258 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:45:09.862Z"
+    "verse": 130,
+    "best": 401,
+    "evidence": "Verse (/boards/) 130 ms to the load event (median of 3, phone width) vs kissu.moe 401 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs kissu.moe 3 of 3 loads answered",
-    "at": "2026-10-25T16:45:09.862Z"
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs kissu.moe 2 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:45:09.862Z"
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 23,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs kissu.moe 23 unnamed controls or images",
-    "at": "2026-10-25T16:45:09.862Z"
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs kissu.moe 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:45:09.862Z"
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs kissu.moe 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:45:09.862Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs kissu.moe 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not kissu.moe (the site is not asked)",
-    "at": "2026-10-25T16:45:09.862Z",
+    "at": "2026-10-25T17:17:17.955Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
-    "verse": 7,
+    "verse": 0,
     "best": 46,
-    "evidence": "Verse (/boards/) 7 design defects vs kissu.moe 46 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), kissu.moe (2 low-contrast texts, 44 small tap targets, layout shift 0.07)",
-    "at": "2026-10-25T16:45:09.862Z"
+    "evidence": "Verse (/boards/) 0 design defects vs kissu.moe 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kissu.moe (2 low-contrast texts, 44 small tap targets, layout shift 0.07)",
+    "at": "2026-10-25T17:17:17.955Z"
    },
    "catalog": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
-    "at": "2026-10-25T16:45:09.862Z",
+    "at": "2026-10-25T17:17:17.955Z",
     "of": 1,
     "part": true
    },
@@ -10211,7 +10211,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/boards/) 2 of 2 shown vs kissu.moe 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
-    "at": "2026-10-25T16:45:09.862Z",
+    "at": "2026-10-25T17:17:17.955Z",
     "of": 2,
     "part": true
    },
@@ -10220,7 +10220,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
-    "at": "2026-10-25T16:45:09.862Z",
+    "at": "2026-10-25T17:17:17.955Z",
     "of": 1,
     "part": true
    },
@@ -10229,83 +10229,84 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
-    "at": "2026-10-25T16:45:09.862Z",
+    "at": "2026-10-25T17:17:17.955Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
-    "best": 3,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs kissu.moe 3 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, a thread watcher, picture posts, work-safe and 18+ boards, make your own board)",
-    "at": "2026-10-25T16:45:09.862Z",
-    "of": 14
+    "verse": 20,
+    "best": 5,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs kissu.moe 5 of 20 things a full answer shows (Verse lacks: none; site lacks: a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, a thread watcher, picture posts, work-safe and 18+ boards, make your own board, Front page, Board index pages, Catalog, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 20
    }
   },
   "image boards: wizchan.org": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 91,
-    "best": 124,
-    "evidence": "Verse (/boards/) 91 ms to the load event (median of 3, phone width) vs wizchan.org 124 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:45:29.749Z"
+    "verdict": "worse",
+    "verse": 271,
+    "best": 161,
+    "evidence": "Verse (/boards/) 271 ms to the load event (median of 3, phone width) vs wizchan.org 161 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "was": "equal-and-better"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs wizchan.org 3 of 3 loads answered",
-    "at": "2026-10-25T16:45:29.749Z"
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 284,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs wizchan.org 284 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:45:29.749Z"
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs wizchan.org 4 unnamed controls or images",
-    "at": "2026-10-25T16:45:29.749Z"
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs wizchan.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:45:29.749Z"
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 4,
     "best": 0,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs wizchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:45:29.749Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wizchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not wizchan.org (the site is not asked)",
-    "at": "2026-10-25T16:45:29.749Z",
+    "at": "2026-10-25T17:17:39.034Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "better",
+    "verse": 0,
     "best": 4,
-    "evidence": "Verse (/boards/) 7 design defects vs wizchan.org 4 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), wizchan.org (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T16:45:29.749Z"
+    "evidence": "Verse (/boards/) 0 design defects vs wizchan.org 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wizchan.org (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:17:39.034Z"
    },
    "catalog": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
-    "at": "2026-10-25T16:45:29.749Z",
+    "at": "2026-10-25T17:17:39.034Z",
     "of": 1,
     "part": true
    },
@@ -10314,7 +10315,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/boards/) 2 of 2 shown vs wizchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
-    "at": "2026-10-25T16:45:29.749Z",
+    "at": "2026-10-25T17:17:39.034Z",
     "of": 2,
     "part": true
    },
@@ -10323,7 +10324,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T16:45:29.749Z",
+    "at": "2026-10-25T17:17:39.034Z",
     "of": 1,
     "part": true
    },
@@ -10332,17 +10333,17 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
-    "at": "2026-10-25T16:45:29.749Z",
+    "at": "2026-10-25T17:17:39.034Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
+    "verse": 20,
     "best": 4,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs wizchan.org 4 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, a thread watcher, work-safe and 18+ boards, make your own board)",
-    "at": "2026-10-25T16:45:29.749Z",
-    "of": 14
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs wizchan.org 4 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, a thread watcher, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 20
    }
   }
  },
