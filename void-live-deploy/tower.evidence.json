@@ -565,7 +565,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:18:26.361Z"
+    "at": "2026-10-25T04:26:21.215Z"
    }
   },
   "encoder": {
@@ -886,52 +886,52 @@
   "password strength": {
    "speed": {
     "verdict": "better",
-    "verse": 189,
-    "best": 21778,
-    "evidence": "Verse (/password-strength/) 189 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 21778 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T00:36:39.451Z"
+    "verse": 115,
+    "best": 20135,
+    "evidence": "Verse (/password-strength/) 115 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 20135 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/password-strength/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/password-strength/) 0 design defects vs howsecureismypassword.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), howsecureismypassword.net (0 low-contrast texts, 1 small tap targets, layout shift 0.16)",
-    "at": "2026-10-25T00:36:39.451Z"
+    "at": "2026-10-25T04:24:44.457Z"
    }
   },
   "base converter": {
@@ -1860,7 +1860,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:20:11.288Z"
+    "at": "2026-10-25T04:28:05.451Z"
    }
   }
  }
