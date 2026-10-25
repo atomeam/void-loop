@@ -5861,6 +5861,22 @@ try {
       JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of wheelofnames.com on /wheel/ (a picture entry, a spin time, confetti, auto-remove), and the stage wheel card's winner seen in full at 390 px
+  if (want("wheel: a picture becomes an entry, a 2 s spin ends with confetti and auto-removes its winner, and the stage card shows the winner inside the card at 390 px")) {
+    const Z = await fresh({ mini3d: true, phone: true }); await Z.p.goto(base + 'wheel/'); await Z.p.fill('#entries', 'Ann\nBob\nCat'); await Z.p.dispatchEvent('#entries', 'input');
+    const png = await Z.p.evaluate(async () => { const c = document.createElement('canvas'); c.width = c.height = 300; const x = c.getContext('2d'); x.fillStyle = '#e96'; x.fillRect(0, 0, 300, 300); const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (const v of u) s += String.fromCharCode(v); return btoa(s); });
+    await Z.p.setInputFiles('#pics', { name: 'Dora.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') }); await Z.p.waitForTimeout(200);
+    const listed = await Z.p.$eval('#entries', (e) => e.value), kept = await Z.p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('a2m.void.wheel.pics.v1') || '{}')));
+    await Z.p.selectOption('#spintime', '2000'); await Z.p.check('#autoremove'); const t0 = Date.now(); await Z.p.click('#spin');
+    await until(async () => (await Z.p.$eval('#winner', (e) => e.textContent)).includes('The winner is'), 6000); const took = Date.now() - t0;
+    const party = await Z.p.$eval('#confetti', (c) => c.width > 0); await Z.p.waitForTimeout(2000); const left = await Z.p.$eval('#count', (e) => e.textContent);
+    await Z.p.goto(base); await Z.ask('spin a wheel with ann, bob and cat', 1500); await Z.p.waitForTimeout(1500);
+    const seen = await Z.p.evaluate(() => { const c = document.querySelector('.vpage.on'), w = c && c.querySelector('.wh-band-win'); if (!w) return null; const a = c.getBoundingClientRect(), b = w.getBoundingClientRect(); return { text: w.textContent, inside: b.top >= a.top && b.bottom <= a.bottom && b.height > 10, h: Math.round(b.height) }; });
+    check("wheel: a picture becomes an entry, a 2 s spin ends with confetti and auto-removes its winner, and the stage card shows the winner inside the card at 390 px",
+      /\nDora$/.test(listed) && kept.includes('Dora') && took < 4000 && party && /^3 entries/.test(left) && seen && ['ann', 'bob', 'cat'].includes(seen.text) && seen.inside && !Z.errors.length,
+      JSON.stringify({ listed, kept, took, party, left, seen, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);

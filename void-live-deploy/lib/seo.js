@@ -17,7 +17,7 @@ export const PAGES = Object.freeze([
     links: [['#ff5733', '/color/?c=ff5733'], ['#6d4aff', '/color/?c=6d4aff'], ['#ff0000', '/color/?c=ff0000'], ['#00ff00', '/color/?c=00ff00'], ['#0000ff', '/color/?c=0000ff'], ['#ffa500', '/color/?c=ffa500'], ['#808080', '/color/?c=808080']] },
   { path: '/gradient/', name: 'CSS gradient generator', does: 'Make a linear, radial or conic CSS gradient from colour stops and copy its CSS. Nothing sent anywhere.',
     asks: ['css gradient generator', 'linear gradient css', 'radial gradient generator', 'gradient background css', 'gradient colour generator'] },
-  { path: '/wheel/', name: 'Wheel of names', does: 'Names or choices one a line, spun on a fair wheel; the winner is picked at random on your device.',
+  { path: '/wheel/', name: 'Wheel of names', does: 'Names, choices or pictures, spun on a fair wheel with the spin time you choose, confetti and a cheer for the winner, who can leave the wheel by itself; the winner is picked at random on your device.',
     asks: ['wheel of names', 'random name picker', 'spin the wheel', 'picker wheel', 'decision wheel', 'random picker wheel'] },
   { path: '/random-user/', name: 'Made-up people for testing', does: 'Made-up people by count, gender and 22 countries, with titles, names, addresses, two phones, dates of birth, passwords to your rules and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat page by page. None of them is real.',
     asks: ['random user generator', 'fake name generator', 'fake user data for testing', 'random person generator', 'test data generator json', 'random address generator'] },

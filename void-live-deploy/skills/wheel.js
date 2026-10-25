@@ -19,7 +19,18 @@ function run(text, api) {
       + '<div class="src">The winner is drawn with this browser\'s cryptographic random numbers; "Pizza*3" is three times as likely. Nothing is sent anywhere.</div>';
   });
   // the wheel in 3D, spinning to the winner the card drew (skills/mini/wheel.js; owner, 2026-10-25: "3d figure if possible")
-  if (win) bandMini(api, card, 'wheel', { entries: e.map((x) => ({ label: x.label, weight: x.weight })), win }, '3D prize wheel stopping on ' + win);
+  if (win) {
+    bandMini(api, card, 'wheel', { entries: e.map((x) => ({ label: x.label, weight: x.weight })), win }, '3D prize wheel stopping on ' + win);
+    // the winner under the 3D wheel, inside the band, so it is seen at once (owner, 2026-10-25: at 390 px the winner in the text box sat under
+    // the card's edge, "ann" cut off): room is kept below the figure for the name, one line or two for a long one, never cut
+    const band = card && card.querySelector('.vmini');
+    if (band) {
+      const cap = document.createElement('div'); cap.className = 'wh-band-win'; cap.textContent = win; cap.setAttribute('aria-hidden', 'true');
+      cap.style.cssText = 'position:absolute;left:8px;right:8px;bottom:2px;text-align:center;font:700 ' + (win.length <= 14 ? 26 : win.length <= 28 ? 20 : 16) + 'px/1.15 system-ui,-apple-system,sans-serif;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8);overflow-wrap:anywhere;pointer-events:none';
+      band.style.position = 'relative'; band.style.boxSizing = 'content-box'; band.append(cap);
+      band.style.paddingBottom = (cap.offsetHeight || 32) + 6 + 'px';
+    }
+  }
   return 'wheel';
 }
 

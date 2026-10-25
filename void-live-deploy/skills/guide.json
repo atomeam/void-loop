@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 29
+    "proven": 30
    },
    "from": 56,
    "to": 89
@@ -1204,8 +1204,9 @@
     "wheel of names",
     "spin a wheel with pizza, tacos and sushi"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Let the stage be the proof.",
    "glow": 100,
    "n": 57
   },
@@ -2259,7 +2260,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Let the stage be the proof.",
+   "flavor": "Of all the time, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
    "n": 112
   },

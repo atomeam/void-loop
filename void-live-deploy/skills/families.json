@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 4,
-  "tested": 28,
+  "tested": 27,
   "checked": 17,
-  "proven": 294
+  "proven": 295
  },
  "families": [
   {
@@ -479,19 +479,19 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 29
+    "proven": 30
    },
    "skills": [
     {
      "name": "wheel",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-25",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-24",
+     "promoted": "2026-10-25",
      "streak": 1
     },
     {

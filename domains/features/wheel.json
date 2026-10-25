@@ -64,8 +64,8 @@
           "name": "Images as entries",
           "detail": "a picture on a slice instead of text",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "text entries only"
+          "verse": "has",
+          "verse_evidence": "Add pictures: each picture is an entry named after its file, drawn on its slice and shown with the winner; kept on the device (the link carries the names)"
         },
         {
           "name": "Image in the centre / wheel background",
@@ -85,8 +85,8 @@
           "name": "Spin time",
           "detail": "\"During spin\" tab: spin duration",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "fixed spin time"
+          "verse": "has",
+          "verse_evidence": "Spin time: 2 s to 20 s, kept on the device"
         },
         {
           "name": "Max names visible",
@@ -106,8 +106,8 @@
           "name": "After-spin sound and confetti",
           "detail": "cheer / applause and confetti when it stops",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no confetti or cheer"
+          "verse": "has",
+          "verse_evidence": "Confetti and a cheer for the winner (fanfare and clapping made in the browser), on by default, never with reduced motion or sound off"
         },
         {
           "name": "Custom winner message",
@@ -120,8 +120,8 @@
           "name": "Auto-remove winner after a delay",
           "detail": "option to remove the winner automatically",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "manual remove only"
+          "verse": "has",
+          "verse_evidence": "Remove each winner after its spin: the winner leaves the wheel 1.6 s after it is shown (never below two entries)"
         },
         {
           "name": "Title and description",
@@ -190,9 +190,6 @@
     "Opens offline"
   ],
   "gaps": [
-    "Images as entries",
-    "Spin time",
-    "After-spin sound and confetti",
     "Title and description",
     "Save wheels to an account",
     "Colour themes / palettes",
@@ -201,7 +198,6 @@
     "Image in the centre / wheel background",
     "Max names visible",
     "Custom winner message",
-    "Auto-remove winner after a delay",
     "Hide entries",
     "Full screen",
     "Many interface languages",

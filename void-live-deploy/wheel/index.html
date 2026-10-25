@@ -25,7 +25,11 @@
   .pointer { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 30px solid var(--ink); filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
   #spin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 22%; aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--bg); background: var(--ink); color: var(--bg); font: 700 clamp(13px, 3.4vw, 20px) system-ui, sans-serif; cursor: pointer; }
   #spin:disabled { opacity: .6; cursor: default; }
-  #winner { text-align: center; min-height: 3.2em; margin: 10px 0 0; }
+  #winner { text-align: center; min-height: 3.2em; margin: 10px 0 0; } #winpic { display: block; width: 96px; height: 96px; object-fit: cover; border-radius: 12px; margin: 0 auto 4px; } #winpic[hidden] { display: none; }
+  #confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; border-radius: 0; cursor: default; }
+  .filebtn { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 13px; color: var(--ink); cursor: pointer; } .filebtn input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .filebtn:focus-within { outline: 2px solid var(--accent); } .hint { font-size: 12px; color: var(--soft); margin: 2px 0 8px; }
+  .opts { display: grid; gap: 6px; margin: 8px 0; } .opts label { display: flex; align-items: center; gap: 8px; } .opts select { font: inherit; font-size: 14px; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; min-height: 32px; } .opts input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
   #winner b { display: block; font-size: clamp(24px, 6vw, 40px); line-height: 1.15; overflow-wrap: anywhere; }
   label { font-size: 14px; color: var(--soft); }
   textarea { width: 100%; box-sizing: border-box; min-height: 14em; font: 15px/1.45 system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; resize: vertical; }
@@ -38,7 +42,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/wheel/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Wheel of names","url":"https://a-to-mind.com/wheel/","description":"Names or choices one a line, spun on a fair wheel; the winner is picked at random on your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"wheel of names, random name picker, spin the wheel, picker wheel, decision wheel, random picker wheel","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Wheel of names","item":"https://a-to-mind.com/wheel/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Wheel of names","url":"https://a-to-mind.com/wheel/","description":"Names, choices or pictures, spun on a fair wheel with the spin time you choose, confetti and a cheer for the winner, who can leave the wheel by itself; the winner is picked at random on your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"wheel of names, random name picker, spin the wheel, picker wheel, decision wheel, random picker wheel","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Wheel of names","item":"https://a-to-mind.com/wheel/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
@@ -50,8 +54,8 @@
 <main>
   <h1>Spin the wheel</h1>
   <section>
-    <div class="stage"><canvas id="wheel" width="1120" height="1120" role="img" aria-label="The wheel"></canvas><div class="pointer" aria-hidden="true"></div><button type="button" id="spin">SPIN</button></div>
-    <div id="winner" role="status" aria-live="polite"></div>
+    <div class="stage"><canvas id="wheel" width="1120" height="1120" role="img" aria-label="The wheel"></canvas><div class="pointer" aria-hidden="true"></div><button type="button" id="spin">SPIN</button><canvas id="confetti" aria-hidden="true"></canvas></div>
+    <div id="winner" role="status" aria-live="polite"><img id="winpic" alt="" hidden></div>
     <div class="row" style="justify-content:center"><button type="button" id="remove" hidden>Remove the winner</button><button type="button" id="again" hidden>Spin again</button></div>
   </section>
   <section>
@@ -59,6 +63,13 @@
     <textarea id="entries" spellcheck="false"></textarea>
     <div id="count"></div>
     <div class="row"><button type="button" id="shuffle">Shuffle</button><button type="button" id="sort">Sort A–Z</button><button type="button" id="link">Copy link</button><button type="button" id="sound" aria-pressed="true">Sound on</button></div>
+    <div class="row"><label class="filebtn">Add pictures<input type="file" id="pics" accept="image/*" multiple></label><button type="button" id="clearpics" hidden>Remove the pictures</button></div>
+    <p class="hint" id="pichint">A picture becomes an entry named after its file (rename the line, the picture follows it). Pictures stay on this device; the link carries the names.</p>
+    <div class="opts">
+      <label>Spin time <select id="spintime"><option value="2000">2 s</option><option value="3500">3.5 s</option><option value="5200" selected>5 s</option><option value="8000">8 s</option><option value="12000">12 s</option><option value="20000">20 s</option></select></label>
+      <label><input type="checkbox" id="party" checked> Confetti and a cheer for the winner</label>
+      <label><input type="checkbox" id="autoremove"> Remove each winner after its spin</label>
+    </div>
     <label>Winners so far</label>
     <ol id="history"></ol>
     <p id="fair">Fair: the winner is drawn with this browser's cryptographic random numbers before the wheel moves, each entry's chance exactly its share of the wheel; the spin then lands on it.</p>
@@ -69,10 +80,16 @@
 <script type="module">
   import { mountRelated, paletteOf, setPalette } from '/lib/toolkit.js';
   import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom } from '/lib/wheel.js';
-  const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d');
+  const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d'), WINPIC = $('winpic');
   const START = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
   let lastKept = null; try { lastKept = localStorage.getItem('a2m.void.wheel.last.v1'); } catch (_) {} // the wheel you had, when a tool sends you back without one
   let entries = open(location.hash.slice(1)) || open(lastKept) || entriesOf(START), rot = 0, spinning = false, last = -1, sound = true, actx = null, won = -1;
+  // the settings and the pictures are kept on this device: { spin ms, party, autoremove }, and { label: a small JPEG data URL }
+  const OPT = 'a2m.void.wheel.opts.v1', PICS = 'a2m.void.wheel.pics.v1';
+  let opts = { spin: 5200, party: true, autoremove: false }; try { opts = { ...opts, ...JSON.parse(localStorage.getItem(OPT) || '{}') }; } catch (_) {}
+  let pics = {}; try { pics = JSON.parse(localStorage.getItem(PICS) || '{}') || {}; } catch (_) {}
+  const imgs = new Map(); // label -> a loaded Image, made once
+  const imgOf = (label) => { const u = pics[label]; if (!u) return null; let im = imgs.get(u); if (!im) { im = new Image(); im.onload = () => draw(); im.src = u; imgs.set(u, im); } return im.complete && im.naturalWidth ? im : null; };
   const OWN = ['#6d4aff', '#ff5f6d', '#ffb347', '#2bb3a3', '#4a90e2', '#c86dd7', '#7ac943', '#ff7f50', '#20b2aa', '#e05297', '#f4c430', '#5b6ee1'];
   let COLORS = paletteOf() || OWN; // the palette set on the colour or gradient page (lib/toolkit.js), else the wheel's own
   const colorAt = (i, n) => COLORS[(i % COLORS.length === 0 && i === n - 1 && n % COLORS.length === 1) ? 1 : i % COLORS.length]; // the last slice never matches the first
@@ -84,16 +101,46 @@
       cx.beginPath(); cx.moveTo(0, 0); cx.arc(0, 0, R, a0, a1); cx.closePath(); cx.fillStyle = col; cx.fill(); cx.strokeStyle = 'rgba(255,255,255,.65)'; cx.lineWidth = 3; cx.stroke();
       const mid = (a0 + a1) / 2, size = Math.max(14, Math.min(46, ((x.end - x.start) / 360) * 2 * Math.PI * R * 0.42)); cx.save(); cx.rotate(mid); cx.textAlign = 'right'; cx.textBaseline = 'middle';
       cx.fillStyle = lum(col) > 0.4 ? '#111' : '#fff'; cx.font = '600 ' + size + 'px system-ui, sans-serif';
-      let label = x.label; const max = R * 0.78; while (label.length > 1 && cx.measureText(label).width > max) label = label.slice(0, -2) + '…';
-      cx.fillText(label, R - 22, 0); cx.restore();
+      const im = imgOf(x.label);
+      if (im) { // a picture entry: the picture near the rim, as wide as its slice allows, upright along the slice
+        const side = Math.max(24, Math.min(R * 0.42, ((x.end - x.start) / 360) * 2 * Math.PI * R * 0.62)), at = R - 18 - side / 2, k = Math.max(side / im.naturalWidth, side / im.naturalHeight);
+        cx.save(); cx.translate(at, 0); cx.rotate(Math.PI / 2); cx.beginPath(); cx.arc(0, 0, side / 2, 0, Math.PI * 2); cx.clip(); cx.drawImage(im, -im.naturalWidth * k / 2, -im.naturalHeight * k / 2, im.naturalWidth * k, im.naturalHeight * k); cx.restore();
+      } else {
+        let label = x.label; const max = R * 0.78; while (label.length > 1 && cx.measureText(label).width > max) label = label.slice(0, -2) + '…';
+        cx.fillText(label, R - 22, 0);
+      }
+      cx.restore();
     });
     cx.restore(); cx.beginPath(); cx.arc(W / 2, W / 2, R, 0, 2 * Math.PI); cx.lineWidth = 8; cx.strokeStyle = 'rgba(0,0,0,.18)'; cx.stroke();
   }
   const tick = () => { if (!sound) return; try { actx = actx || new AudioContext(); const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = 1400; g.gain.setValueAtTime(0.07, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.04); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.05); } catch (_) {} };
-  function sync(fromText) {
+  // confetti over the wheel and a cheer made here (a rising fanfare and a burst of clapping noise), never with reduced motion or sound off
+  function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; const c = $('confetti'), r = c.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); c.width = r.width * dpr; c.height = r.height * dpr;
+    const g = c.getContext('2d'), cols = COLORS.concat(['#ffffff', '#ffd700']), bits = Array.from({ length: 140 }, () => ({ x: c.width / 2, y: c.height * 0.45, vx: (Math.random() - 0.5) * 18 * dpr, vy: (-6 - Math.random() * 12) * dpr, s: (4 + Math.random() * 6) * dpr, a: Math.random() * 6, va: (Math.random() - 0.5) * 0.4, col: cols[Math.floor(Math.random() * cols.length)] }));
+    const t0 = performance.now(), step = (now) => { const t = now - t0; g.clearRect(0, 0, c.width, c.height); g.globalAlpha = Math.max(0, 1 - Math.max(0, t - 1800) / 700);
+      for (const b of bits) { b.vy += 0.45 * dpr; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.a += b.va; g.save(); g.translate(b.x, b.y); g.rotate(b.a); g.fillStyle = b.col; g.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2); g.restore(); }
+      if (t < 2500) requestAnimationFrame(step); else g.clearRect(0, 0, c.width, c.height); };
+    requestAnimationFrame(step);
+  }
+  function cheer() {
+    if (!sound) return; try { actx = actx || new AudioContext(); const now = actx.currentTime;
+      [523, 659, 784, 1047].forEach((f, k) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = 'triangle'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, now + k * 0.11); g.gain.exponentialRampToValueAtTime(0.18, now + k * 0.11 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, now + k * 0.11 + (k === 3 ? 0.9 : 0.25)); o.connect(g).connect(actx.destination); o.start(now + k * 0.11); o.stop(now + k * 0.11 + 1); });
+      const len = Math.floor(actx.sampleRate * 1.6), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0); // clapping: noise in short random bursts that fade
+      for (let n = 0; n < len; n++) d[n] = (Math.random() * 2 - 1) * (Math.random() < 0.02 || (n % 2205) < 260 * Math.random() ? 1 : 0.15) * (1 - n / len);
+      const src = actx.createBufferSource(), bp = actx.createBiquadFilter(), g2 = actx.createGain(); bp.type = 'bandpass'; bp.frequency.value = 1800; g2.gain.value = 0.25; src.buffer = buf; src.connect(bp).connect(g2).connect(actx.destination); src.start(now + 0.35);
+    } catch (_) {}
+  }
+  const keepOpts = () => { try { localStorage.setItem(OPT, JSON.stringify(opts)); } catch (_) {} };
+  const keepPics = () => { const used = new Set(entries.map((e) => e.label)); for (const k of Object.keys(pics)) if (!used.has(k)) delete pics[k]; try { localStorage.setItem(PICS, JSON.stringify(pics)); } catch (_) { $('pichint').textContent = 'This browser is full: the newest pictures are not kept after a reload.'; } $('clearpics').hidden = !Object.keys(pics).length; };
+  function sync(fromText, keepWinner) {
     if (fromText) entries = entriesOf($('entries').value); else $('entries').value = textOf(entries);
     // a changed wheel has no winner yet: the last one belonged to the old wheel
-    if (!spinning) { $('winner').textContent = ''; $('remove').hidden = $('again').hidden = true; won = -1; }
+    if (fromText) { // a renamed line keeps its picture: a picture whose name is gone goes to the new name in the same place
+      const before = Object.keys(pics); for (const k of before) if (!entries.some((e) => e.label === k)) { const i = prevLabels.indexOf(k), e = entries[i]; if (e && !pics[e.label]) pics[e.label] = pics[k]; delete pics[k]; }
+      keepPics(); }
+    prevLabels = entries.map((e) => e.label);
+    if (!spinning && !keepWinner) { $('winner').replaceChildren(WINPIC); WINPIC.hidden = true; $('remove').hidden = $('again').hidden = true; won = -1; }
     const n = entries.length; $('count').textContent = n + (n === 1 ? ' entry' : ' entries') + (n < 2 ? ': add at least two to spin' : '');
     $('spin').disabled = spinning || n < 2; draw();
     try { history.replaceState(null, '', n ? '#' + pack(entries) : location.pathname); if (n) localStorage.setItem('a2m.void.wheel.last.v1', pack(entries)); } catch (_) {}
@@ -102,21 +149,41 @@
     if (spinning || entries.length < 2) return;
     spinning = true; $('spin').disabled = true; $('remove').hidden = $('again').hidden = true; $('winner').textContent = '';
     const i = pickIndex(entries, fairRandom()), from = rot, to = plan(entries, i, from, 5 + Math.floor(fairRandom() * 3), fairRandom());
-    const ms = matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 5200, t0 = performance.now(); last = under(entries, rot);
+    const ms = matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : opts.spin, t0 = performance.now(); last = under(entries, rot);
     const step = (now) => {
       const t = (now - t0) / ms; rot = from + (to - from) * ease(t); const at = under(entries, rot); if (at !== last) { last = at; tick(); } draw();
       if (t < 1) return requestAnimationFrame(step);
       rot = to % 360; draw(); spinning = false; won = i; const name = entries[i].label;
       $('winner').innerHTML = ''; const b = document.createElement('b'); b.textContent = name; $('winner').append('The winner is ', b); // the space: it read "The winner isCarol"
+      const pic = pics[name]; $('winner').prepend(WINPIC); WINPIC.hidden = !pic; if (pic) { WINPIC.src = pic; WINPIC.alt = name; }
       const li = document.createElement('li'); li.textContent = name; $('history').prepend(li);
       $('remove').hidden = entries.length <= 2; $('again').hidden = false; $('spin').disabled = false;
+      if (opts.party) { confetti(); cheer(); }
+      // auto-remove: the winner leaves the wheel a moment after it is shown (never below two entries)
+      if (opts.autoremove && entries.length > 2) setTimeout(() => { if (won === i && !spinning) { entries.splice(i, 1); won = -1; $('remove').hidden = true; sync(false, true); } }, 1600);
     };
     requestAnimationFrame(step);
   }
   $('spin').addEventListener('click', spin); cv.addEventListener('click', spin); $('again').addEventListener('click', spin);
   addEventListener('keydown', (e) => { if (e.code === 'Space' && document.activeElement !== $('entries') && !(document.activeElement instanceof HTMLButtonElement)) { e.preventDefault(); spin(); } });
   $('remove').addEventListener('click', () => { if (won < 0) return; entries.splice(won, 1); won = -1; $('remove').hidden = true; sync(false); });
+  let prevLabels = entries.map((e) => e.label);
   $('entries').addEventListener('input', () => sync(true));
+  // pictures as entries: each file is made small here (a 192 px JPEG) and named after the file
+  $('pics').addEventListener('change', async (ev) => {
+    for (const f of [...ev.target.files].slice(0, 40)) {
+      try { const bm = await createImageBitmap(f), k = 192 / Math.max(bm.width, bm.height), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bm.width * Math.min(1, k))); c.height = Math.max(1, Math.round(bm.height * Math.min(1, k)));
+        c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height); let name = f.name.replace(/\.[^.]+$/, '').replace(/[*\n]/g, ' ').trim().slice(0, 60) || 'Picture', n = 2; while (entries.some((e) => e.label === name)) name = name.replace(/ \d+$/, '') + ' ' + n++;
+        pics[name] = c.toDataURL('image/jpeg', 0.8); entries.push({ label: name, weight: 1 }); } catch (_) {}
+    }
+    ev.target.value = ''; sync(false); keepPics();
+  });
+  $('clearpics').addEventListener('click', () => { pics = {}; keepPics(); draw(); });
+  $('spintime').value = String(opts.spin); if ($('spintime').value !== String(opts.spin)) $('spintime').value = '5200'; $('party').checked = !!opts.party; $('autoremove').checked = !!opts.autoremove;
+  $('spintime').addEventListener('change', () => { opts.spin = +$('spintime').value || 5200; keepOpts(); });
+  $('party').addEventListener('change', () => { opts.party = $('party').checked; keepOpts(); });
+  $('autoremove').addEventListener('change', () => { opts.autoremove = $('autoremove').checked; keepOpts(); });
+  $('clearpics').hidden = !Object.keys(pics).length;
   $('shuffle').addEventListener('click', () => { entries = shuffle(entries); sync(false); });
   $('sort').addEventListener('click', () => { entries = sorted(entries); sync(false); });
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
