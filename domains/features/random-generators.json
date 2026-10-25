@@ -26,42 +26,48 @@
           "detail": "A generator is named lists, one item per line; [listName] pulls a random item from a list.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "lib/listgen.js: many named lists, [list] references (/generators/make/) (2026-10-25)"
+          "verse_evidence": "lib/listgen.js: many named lists, [list] references (/generators/make/) (2026-10-25)",
+          "shows": "plain lists"
         },
         {
           "name": "Odds / weights ^",
           "detail": "item ^3, fractional ^1/10, and dynamic odds ^[condition] change how often an item is picked.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "item ^2, ^0.5, ^1/10 and conditional ^[gender == \"female\"] (lib/listgen.js) (2026-10-25)"
+          "verse_evidence": "item ^2, ^0.5, ^1/10 and conditional ^[gender == \"female\"] (lib/listgen.js) (2026-10-25)",
+          "shows": "odds and weights like \\^2|\\^\\d"
         },
         {
           "name": "Inline choices {a|b|c}",
           "detail": "Inline random choice inside an item, weighted options allowed.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "{a|b|c} with odds {a^3|b} (lib/listgen.js) (2026-10-25)"
+          "verse_evidence": "{a|b|c} with odds {a^3|b} (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{a\\|b\\|c\\}|inline choices"
         },
         {
           "name": "Ranges {1-10} {a-z}",
           "detail": "Random number or letter range inline.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "{1-6}, {a-z}, and dice {2d6+1} (lib/listgen.js) (2026-10-25)"
+          "verse_evidence": "{1-6}, {a-z}, and dice {2d6+1} (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{1-10\\}|ranges"
         },
         {
           "name": "Smart article {a} and plural {s}",
           "detail": "{a} becomes a/an from the next word; {s} pluralises by the preceding number.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "{a}/{A} and {s} by the number before it (lib/listgen.js) (2026-10-25)"
+          "verse_evidence": "{a}/{A} and {s} by the number before it (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{a\\}[\\s\\S]{0,40}\\{s\\}|smart articles"
         },
         {
           "name": "Hierarchical / nested lists",
           "detail": "Indented sublists, dot navigation [animal.mammal], dynamic navigation [names[gender]].",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "indented sublists, [animal.bird], and by value [names[gender]] (2026-10-25)"
+          "verse_evidence": "indented sublists, [animal.bird], and by value [names[gender]] (2026-10-25)",
+          "shows": "nested lists"
         },
         {
           "name": "Methods: selectOne/selectMany/selectUnique/selectAll/joinItems",

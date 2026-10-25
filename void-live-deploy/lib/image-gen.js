@@ -7,9 +7,9 @@ import { SEXUAL, HATE } from './art-rules.js';
 import { keeperOf } from './keeper.js';
 
 export const PROMPT_MAX = 400, NEGATIVE_MAX = 200, PER_GO = 4;
-// the money rule (STANDING.md): the image page spends NOTHING the Art Forge did not already have. Its Workers AI paintings are counted together
-// with the forge's (functions/api/card-art.js capOf, at most FREE_CAP = 30 a day for both) and it may use at most AI_SHARE of them, so cards keep
-// the rest; past that the free painter (Pollinations) takes POLL_CAP a day; a connection gets PER_CONN pictures a day in all. ~104 neurons a
+// the money rule (STANDING.md): the image page has its own Workers AI share, AI_SHARE a day, inside the free daily allowance. Its paintings are
+// counted in the forge's total too (functions/api/card-art.js madeToday), so the forge paints that many fewer when /image/ paints first; both
+// together never pass AI_SHARE + FREE_CAP (40) a day (2026-10-25: a share counted under the forge's 30 left /image/ with none by the afternoon); past that the free painter (Pollinations) takes POLL_CAP a day; a connection gets PER_CONN pictures a day in all. ~104 neurons a
 // Workers AI picture (klein-4b, 26.05 neurons per 512x512 output tile, a 1024x1024 picture is 4 tiles), so the share is ~1,040 neurons a day.
 // There is deliberately no setting that raises AI_SHARE above 10: more paid pictures are the owner's call (each ~$0.0011 past the free allowance).
 export const AI_SHARE = 10, POLL_CAP = 150, PER_CONN = 24, PER_MINUTE = 6;
@@ -76,7 +76,7 @@ export function promptOf(prompt, style = 'none', negative = '') {
 }
 /** the free painter's address: the prompt, the shape, the seed, its safety filter on, no logo. Pure. */
 export function pollUrl(prompt, [w, h], seed, token = '') {
-  const q = 'width=' + w + '&height=' + h + '&seed=' + seedOf(seed) + '&nologo=true&safe=true&private=true';
+  const q = 'width=' + w + '&height=' + h + '&seed=' + seedOf(seed) + '&nologo=true&safe=true&private=true&referrer=a-to-mind.com'; // referrer: Pollinations' free tier for named apps
   return token ? 'https://gen.pollinations.ai/image/' + encodeURIComponent(prompt) + '?' + q : 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?' + q + '&model=flux';
 }
 /** what the page says for each answer that is not a picture (English, German). Pure data. */

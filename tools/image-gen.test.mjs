@@ -75,13 +75,21 @@ test('the route: past the Workers AI share, or when it fails, the free painter; 
   const none = world({ ai: 'fail' }); const j = await (await post(none.env, { prompt: 'an owl' }, { free: freeDown })).json(); assert.equal(j.state, 'resting'); assert.equal(j.why, 'busy'); assert.match(j.say, /resting/);
   const off = world(); delete off.env.SALT; assert.equal((await (await post(off.env, { prompt: 'an owl' })).json()).why, 'off');
 });
-test('the route: the Art Forge\'s paintings today count against the shared cap', async () => {
-  const { env, calls } = world();
+test('the route: the image page keeps its own Workers AI share even when the Art Forge used its day; the forge counts the page\'s pictures', async () => {
+  const { env, calls } = world({ extra: { IMAGE_AI_SHARE: '1' } });
   env.DB.raw.exec('CREATE TABLE void_art (subject TEXT PRIMARY KEY, img TEXT NOT NULL, day TEXT NOT NULL)');
   for (let i = 0; i < FREE_CAP; i++) env.DB.raw.prepare('INSERT INTO void_art VALUES (?, ?, ?)').run('s' + i, 'x', today);
-  assert.equal((await (await post(env, { prompt: 'a fox' })).json()).painter, 'pollinations'); assert.equal(calls.length, 0, 'the forge used the day: no Workers AI');
-  // and the forge counts the image page's pictures (functions/api/card-art.js madeToday)
-  const w = world(); await post(w.env, { prompt: 'a fox' }); assert.equal(await route.imageAiToday(w.env), 1);
+  assert.equal((await (await post(env, { prompt: 'a fox' })).json()).painter, 'workers-ai', 'its own share, live 2026-10-25');
+  assert.equal((await (await post(env, { prompt: 'a fox 2' })).json()).painter, 'pollinations', 'past its share: the free painter');
+  assert.equal(calls.length, 1); assert.equal(await route.imageAiToday(env), 1);
+});
+test('the route: a model that refuses the seed paints without it; misses are counted for the owner\'s diag, never a prompt', async () => {
+  const { env, calls } = world(); env.AI.run = async (m, input) => { calls.push(input); const f = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData(); if (f.has('seed')) throw new Error('unknown field seed'); return { image: JPEG }; };
+  assert.equal((await (await post(env, { prompt: 'a secret lighthouse' })).json()).painter, 'workers-ai'); assert.equal(calls.length, 2);
+  const KEY = 'owner-key-for-tests-only'; env.READ_TOKEN = KEY; // secret-scan: ok (a made-up key)
+  assert.equal((await route.onRequestGet({ env, request: new Request('https://x/api/image?diag=1') })).status, 401);
+  const d = await (await route.onRequestGet({ env, request: new Request('https://x/api/image?diag=1', { headers: { authorization: 'Bearer ' + KEY } }) })).json();
+  assert.equal(d.aiBound, true); assert.equal(d.aiUsedToday, 1); assert.match(JSON.stringify(d.missesSinceYesterday), /workers-ai: unknown field seed/); assert.doesNotMatch(JSON.stringify(d), /lighthouse|test-salt/);
 });
 test('the route: per connection, a minute and a day', async () => {
   const { env } = world({ extra: { IMAGE_AI_SHARE: '0' } });
