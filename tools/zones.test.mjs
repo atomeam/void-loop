@@ -1,7 +1,7 @@
 // lib/zones.js: the time in any city, a converter and a meeting planner, all from the browser's own zone data (Intl), daylight saving included
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin } from '../void-live-deploy/lib/zones.js';
+import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, sunDay, coordsOf, lengthText } from '../void-live-deploy/lib/zones.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
   assert.deepEqual(findPlace('tokyo'), { name: 'Tokyo', tz: 'Asia/Tokyo' }); assert.equal(findPlace('Asia/Tokyo').tz, 'Asia/Tokyo'); assert.equal(findPlace('time in Tokyo').tz, 'Asia/Tokyo');
@@ -33,4 +33,17 @@ test('the meeting planner: 24 hours of the first city\'s day, and the hours insi
   assert.equal(rows.length, 24); assert.deepEqual(rows[13].cells.map((c) => c.h), [13, 9, 14]);
   assert.deepEqual(bestSpans(rows), { kind: 'work', spans: ['12:00 PM to 5:00 PM'] });
   assert.equal(bestSpans(planner(['Europe/London', 'Asia/Tokyo', 'America/Los_Angeles'], [2026, 9, 27])).kind, 'none');
+});
+test('sunrise, sunset and day length worked out on the device, within 2 minutes of NOAA\'s solar calculator', () => {
+  const near = (d, tz, hm) => { const w = wall(tz, d), [h, m] = hm.split(':').map(Number); return Math.abs(w.h * 60 + w.m + w.s / 60 - (h * 60 + m)) <= 2; };
+  for (const [name, tz, ymd, rise, set] of [['Tokyo', 'Asia/Tokyo', [2026, 5, 21], '4:25', '19:00'], ['Tokyo', 'Asia/Tokyo', [2026, 2, 20], '5:45', '17:53'],
+    ['London', 'Europe/London', [2026, 11, 21], '8:04', '15:53'], ['New York', 'America/New_York', [2026, 5, 21], '5:25', '20:31'], ['Sydney', 'Australia/Sydney', [2026, 5, 21], '7:00', '16:54']]) {
+    const s = sunDay({ name, tz }, ymd); assert.ok(near(s.rise, tz, rise), name + ' rise ' + s.rise.toISOString()); assert.ok(near(s.set, tz, set), name + ' set ' + s.set.toISOString());
+  }
+  assert.equal(lengthText(sunDay({ name: 'Tokyo', tz: 'Asia/Tokyo' }, [2026, 5, 21]).dayMin), '14 hours 35 minutes');
+  assert.equal(sunDay({ name: 'Longyearbyen', tz: 'Arctic/Longyearbyen' }, [2026, 5, 21]).state, 'always up', 'midnight sun');
+  assert.equal(sunDay({ name: 'Longyearbyen', tz: 'Arctic/Longyearbyen' }, [2026, 11, 21]).state, 'always down', 'polar night');
+  assert.deepEqual(coordsOf({ name: 'Your time (Paris)', tz: 'Europe/Paris', you: true }), { lat: 48.86, lon: 2.35 }, 'your own zone stands at its city');
+  assert.equal(sunDay({ name: 'Eastern Time', tz: 'America/New_York' }), null, 'a zone, not a city: no coordinate guessed');
+  assert.equal(sunDay({ name: 'UTC+9', tz: 'Etc/GMT-9' }), null);
 });

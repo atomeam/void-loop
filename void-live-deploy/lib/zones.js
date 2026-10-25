@@ -5,6 +5,7 @@
  * Pure but for the browser's zone list. Tests: tools/zones.test.mjs.
  */
 import { offsetMin, instantIn, ymdIn, parseClock, gmt, zoneOf } from '../skills/worldtime.js';
+import { riseSet } from './astro.js';
 export { offsetMin, gmt };
 
 // cities people ask for whose zone is named after another city (the zone list itself covers Tokyo, Paris, Sydney and 400 more)
@@ -91,3 +92,47 @@ export function bestSpans(rows, { h24 = false } = {}) {
   rows.forEach((r, i) => { const ok = r.all === pick; if (ok && start === null) start = i; if ((!ok || i === rows.length - 1) && start !== null) { const end = ok ? i + 1 : i; spans.push(clockText(rows[start].cells[0].h, 0, { h24 }) + ' to ' + clockText((rows[end - 1].cells[0].h + 1) % 24, 0, { h24 })); start = null; } });
   return rows.some((r) => r.all !== 'night') ? { kind: pick, spans } : { kind: 'none', spans: [] };
 }
+
+// where the cities /time/ knows stand (latitude north, longitude east, to 0.01°), for their sunrise and sunset: a city a zone is named after, and
+// the cities people ask for under another city's zone. A zone with no city here (EST, UTC+5, a small zone) has no coordinate and says so: never guessed.
+const COORDS = Object.fromEntries(('tokyo 35.69 139.69;osaka 34.69 135.50;kyoto 35.01 135.77;seoul 37.57 126.98;shanghai 31.23 121.47;beijing 39.90 116.41;'
+  + 'shenzhen 22.54 114.06;guangzhou 23.13 113.26;chengdu 30.57 104.07;hong kong 22.32 114.17;taipei 25.03 121.57;manila 14.60 120.98;singapore 1.35 103.82;'
+  + 'kuala lumpur 3.14 101.69;jakarta -6.21 106.85;bangkok 13.76 100.50;hanoi 21.03 105.85;ho chi minh city 10.82 106.63;saigon 10.82 106.63;yangon 16.87 96.20;'
+  + 'dhaka 23.81 90.41;kathmandu 27.72 85.32;kolkata 22.57 88.36;calcutta 22.57 88.36;mumbai 19.08 72.88;bombay 19.08 72.88;delhi 28.70 77.10;new delhi 28.61 77.21;'
+  + 'bangalore 12.97 77.59;bengaluru 12.97 77.59;chennai 13.08 80.27;hyderabad 17.39 78.49;pune 18.52 73.86;karachi 24.86 67.01;kabul 34.56 69.21;tashkent 41.30 69.24;'
+  + 'almaty 43.24 76.89;dubai 25.20 55.27;abu dhabi 24.45 54.38;muscat 23.59 58.41;qatar 25.29 51.53;doha 25.29 51.53;riyadh 24.71 46.68;mecca 21.39 39.86;'
+  + 'baghdad 33.31 44.36;tehran 35.69 51.39;baku 40.41 49.87;tbilisi 41.72 44.78;yerevan 40.18 44.51;jerusalem 31.77 35.21;tel aviv 32.09 34.78;beirut 33.89 35.50;'
+  + 'amman 31.95 35.93;damascus 33.51 36.28;istanbul 41.01 28.98;cairo 30.04 31.24;nairobi -1.29 36.82;addis ababa 9.03 38.74;lagos 6.52 3.38;accra 5.60 -0.19;'
+  + 'casablanca 33.57 -7.59;algiers 36.75 3.06;tunis 36.81 10.18;johannesburg -26.20 28.05;cape town -33.92 18.42;kinshasa -4.44 15.27;dakar 14.72 -17.47;'
+  + 'moscow 55.76 37.62;st petersburg 59.93 30.34;saint petersburg 59.93 30.34;kyiv 50.45 30.52;kiev 50.45 30.52;minsk 53.90 27.56;warsaw 52.23 21.01;krakow 50.06 19.94;'
+  + 'prague 50.08 14.44;vienna 48.21 16.37;budapest 47.50 19.04;bucharest 44.43 26.10;sofia 42.70 23.32;athens 37.98 23.73;belgrade 44.79 20.45;zagreb 45.81 15.98;'
+  + 'berlin 52.52 13.41;munich 48.14 11.58;frankfurt 50.11 8.68;hamburg 53.55 9.99;zurich 47.38 8.54;geneva 46.20 6.14;paris 48.86 2.35;brussels 50.85 4.35;'
+  + 'amsterdam 52.37 4.90;luxembourg 49.61 6.13;copenhagen 55.68 12.57;oslo 59.91 10.75;stockholm 59.33 18.07;helsinki 60.17 24.94;tallinn 59.44 24.75;riga 56.95 24.11;'
+  + 'vilnius 54.69 25.28;rome 41.90 12.50;milan 45.46 9.19;madrid 40.42 -3.70;barcelona 41.39 2.17;lisbon 38.72 -9.14;dublin 53.35 -6.26;london 51.51 -0.13;'
+  + 'manchester 53.48 -2.24;birmingham 52.49 -1.89;edinburgh 55.95 -3.19;glasgow 55.86 -4.25;reykjavik 64.15 -21.94;'
+  + 'new york 40.71 -74.01;nyc 40.71 -74.01;boston 42.36 -71.06;washington 38.91 -77.04;washington dc 38.91 -77.04;philadelphia 39.95 -75.17;miami 25.76 -80.19;'
+  + 'atlanta 33.75 -84.39;orlando 28.54 -81.38;detroit 42.33 -83.05;toronto 43.65 -79.38;montreal 45.50 -73.57;ottawa 45.42 -75.70;chicago 41.88 -87.63;'
+  + 'dallas 32.78 -96.80;houston 29.76 -95.37;austin 30.27 -97.74;minneapolis 44.98 -93.27;new orleans 29.95 -90.07;mexico city 19.43 -99.13;winnipeg 49.90 -97.14;'
+  + 'denver 39.74 -104.99;phoenix 33.45 -112.07;salt lake city 40.76 -111.89;edmonton 53.55 -113.49;calgary 51.05 -114.07;los angeles 34.05 -118.24;'
+  + 'san francisco 37.77 -122.42;san jose 37.34 -121.89;san diego 32.72 -117.16;seattle 47.61 -122.33;portland 45.52 -122.68;las vegas 36.17 -115.14;'
+  + 'vancouver 49.28 -123.12;anchorage 61.22 -149.90;honolulu 21.31 -157.86;hawaii 21.31 -157.86;halifax 44.65 -63.58;st johns 47.56 -52.71;'
+  + 'bogota 4.71 -74.07;lima -12.05 -77.04;caracas 10.48 -66.90;santiago -33.45 -70.67;buenos aires -34.60 -58.38;montevideo -34.90 -56.16;sao paulo -23.55 -46.63;'
+  + 'rio de janeiro -22.91 -43.17;rio -22.91 -43.17;havana 23.11 -82.37;panama 8.98 -79.52;sydney -33.87 151.21;melbourne -37.81 144.96;brisbane -27.47 153.03;'
+  + 'perth -31.95 115.86;adelaide -34.93 138.60;darwin -12.46 130.84;hobart -42.88 147.33;canberra -35.28 149.13;auckland -36.85 174.76;wellington -41.29 174.78;'
+  + 'fiji -18.14 178.44;longyearbyen 78.22 15.65').split(';').map((r) => { const m = /^(.+) (-?[\d.]+) (-?[\d.]+)$/.exec(r); return [m[1], [+m[2], +m[3]]]; }));
+/** where a place stands: { lat, lon } from the table by its own name, else by the city its zone is named after when the name is that city; or null. Pure. */
+export function coordsOf(place) {
+  if (!place) return null; const n = key(place.name), z = key(cityOf(place.tz || ''));
+  const c = COORDS[n] || (place.you || n === z ? COORDS[z] : null); return c ? { lat: c[0], lon: c[1] } : null;
+}
+/** sunrise, sunset and the day's length for a place on its own day `ymd` ([y, mo0, d], today there by default), computed here from the sun's
+ *  position (lib/astro.js riseSet: the upper edge with the usual refraction, held to an independent almanac): { rise, set (Dates or null),
+ *  dayMin, state ('always up' | 'always down' | null) }, or null when the place has no coordinate. Pure. */
+export function sunDay(place, ymd, now = new Date()) {
+  const c = coordsOf(place); if (!c) return null;
+  const [y, mo, d] = ymd || ymdIn(place.tz, now), start = instantIn(place.tz, y, mo, d, 0, 0).getTime(), r = riseSet('sun', start, c.lat, c.lon);
+  const dayMin = r.rise && r.set && r.set > r.rise ? Math.round((r.set - r.rise) / 60000) : r.state === 'always up' ? 1440 : r.state === 'always down' ? 0 : null;
+  return { ...c, rise: r.rise, set: r.set, dayMin, state: r.state };
+}
+/** "10 hours 42 minutes". Pure. */
+export const lengthText = (min) => { const h = Math.floor(min / 60), m = min % 60; return h + (h === 1 ? ' hour ' : ' hours ') + m + (m === 1 ? ' minute' : ' minutes'); };

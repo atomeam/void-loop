@@ -20,7 +20,7 @@
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
   h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 22px 0 6px; }
-  .big { text-align: center; font: 700 clamp(44px, 15vw, 96px)/1.1 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; margin: 6px 0 2px; letter-spacing: -.02em; }
+  .big { text-align: center; font: 700 clamp(36px, 12.5vw, 96px)/1.1 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; margin: 6px 0 2px; letter-spacing: -.02em; }
   .place { text-align: center; font-size: 20px; font-weight: 600; margin: 0; } .sub { text-align: center; color: var(--soft); font-size: 14px; margin: 2px 0; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 10px 0; }
   button, select, input { font: inherit; font-size: 15px; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
@@ -43,6 +43,8 @@
 <link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/zones.js">
 <link rel="modulepreload" href="/skills/worldtime.js">
+<link rel="modulepreload" href="/lib/astro.js">
+<link rel="modulepreload" href="/lib/sky-math.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -52,6 +54,7 @@
   <div class="big" id="big" aria-live="off">--:--</div>
   <p class="sub" id="date"></p>
   <p class="sub" id="zone"></p>
+  <p class="sub" id="sun"></p>
   <div class="row"><button type="button" id="h24" aria-pressed="false">24-hour</button><button type="button" id="link">Copy link</button></div>
 
   <section aria-labelledby="wh"><h2 id="wh">World clock</h2>
@@ -75,11 +78,11 @@
   </section>
 
   <nav id="related" aria-label="Related tools"></nav>
-  <footer>From your browser's own time-zone data, daylight saving included: nothing is asked of a time service, so it opens offline after one visit. Your cities are kept on this device. <a href="/">Ask Verse anything</a></footer>
+  <footer>From your browser's own time-zone data, daylight saving included: nothing is asked of a time service, so it opens offline after one visit. Sunrise and sunset are worked out on this device from the sun's position (the sun's upper edge, with the usual refraction; good to a minute). Your cities are kept on this device. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt } from '/lib/zones.js';
+  import { sunDay, lengthText, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt } from '/lib/zones.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -97,6 +100,16 @@
   const fmtDate = (tz, d) => new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(d);
   const abbr = (tz, d) => { try { return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' }).formatToParts(d).find((x) => x.type === 'timeZoneName').value; } catch (_) { return ''; } };
 
+  // sunrise, sunset and the day's length where the shown city stands, worked out once a day per city (lib/zones.js sunDay)
+  let sunKey = '';
+  function drawSun(p, ymd) {
+    const k = p.name + '|' + p.tz + '|' + ymd.join('-') + '|' + h24; if (k === sunKey) return; sunKey = k;
+    const s = sunDay(p, ymd), at = (d) => { const x = wall(p.tz, d); return clockText(x.h, x.m, { h24 }); };
+    $('sun').textContent = !s ? 'No sunrise and sunset for ' + p.name + ': it is a time zone, not a city whose place on the map is known here. Add a city in it to see them.'
+      : s.state === 'always up' ? 'No sunset today: the sun stays up all day (midnight sun). Day length 24 hours.'
+      : s.state === 'always down' ? 'No sunrise today: the sun stays below the horizon all day (polar night).'
+      : (s.rise ? 'Sunrise ' + at(s.rise) : 'No sunrise today') + ' · ' + (s.set ? 'Sunset ' + at(s.set) : 'no sunset today') + (s.dayMin !== null ? ' · day length ' + lengthText(s.dayMin) : '');
+  }
   function drawTop() {
     const p = main || youPlace, now = at(), w = wall(p.tz, now), off = offsetMin(p.tz, now), d = dst(p.tz, now);
     $('place').textContent = main ? 'Time in ' + p.name : p.name;
@@ -104,6 +117,7 @@
     $('date').textContent = fmtDate(p.tz, now);
     $('zone').textContent = p.tz.replace(/_/g, ' ') + ' · ' + abbr(p.tz, now) + ' · ' + gmt(off) + ' · ' + (d.observes ? (d.now ? 'daylight saving time now' : 'standard time now (it keeps daylight saving)') : 'no daylight saving') + (main && p.tz !== you ? ' · ' + gapText(off - offsetMin(you, now)) + ' of you' : '');
     document.title = (main ? clockText(w.h, w.m, { h24 }) + ' in ' + p.name : 'Time zones') + ' · Verse';
+    drawSun(p, w.ymd);
   }
   function drawClocks() {
     const now = at(), yo = offsetMin(you, now), yd = Date.UTC(...wall(you, now).ymd);

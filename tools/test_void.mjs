@@ -5538,14 +5538,14 @@ try {
   // plans a meeting across the cities, and keeps them across a reload
   if (want('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept')) {
     const Z = await fresh(); await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(200);
-    const top = await Z.p.evaluate(() => ({ place: document.getElementById('place').textContent, big: document.getElementById('big').textContent, zone: document.getElementById('zone').textContent,
+    const top = await Z.p.evaluate(() => ({ place: document.getElementById('place').textContent, big: document.getElementById('big').textContent, zone: document.getElementById('zone').textContent, sun: document.getElementById('sun').textContent,
       want: new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: '2-digit' }).format(new Date()).replace(/ /g, ' ') }));
     await Z.p.fill('#add', 'Paris'); await Z.p.click('#addgo');
     const after = await Z.p.evaluate(() => ({ clocks: [...document.querySelectorAll('#clocks b')].map((b) => b.textContent), conv: document.querySelectorAll('#convout li').length, plan: document.querySelectorAll('#plan tr').length, best: document.getElementById('best').textContent }));
     await Z.p.fill('#ct', 'noon'); const conv = await Z.p.$$eval('#convout .t', (t) => t.map((x) => x.textContent));
     await Z.p.goto(base + 'time/'); const kept = await Z.p.$$eval('#clocks b', (b) => b.map((x) => x.textContent));
     check('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept',
-      top.place === 'Time in Tokyo' && top.big.replace(/:\d\d (?=[AP]M)/, ' ') === top.want && /UTC\+9/.test(top.zone) && after.clocks.includes('Paris') && after.conv === 3 && after.plan === 3 && /meet|working|daytime/i.test(after.best)
+      top.place === 'Time in Tokyo' && top.big.replace(/:\d\d (?=[AP]M)/, ' ') === top.want && /UTC\+9/.test(top.zone) && /^Sunrise \d{1,2}:\d\d [AP]M · Sunset \d{1,2}:\d\d [AP]M · day length \d+ hours \d+ minutes?$/.test(top.sun) && after.clocks.includes('Paris') && after.conv === 3 && after.plan === 3 && /meet|working|daytime/i.test(after.best)
       && conv[0] === '12:00 PM' && kept.includes('Tokyo') && kept.includes('Paris') && !Z.errors.length, JSON.stringify({ top, after, conv, kept, errors: Z.errors }));
     await Z.ctx.close();
   }

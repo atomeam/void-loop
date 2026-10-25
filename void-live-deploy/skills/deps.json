@@ -132,7 +132,7 @@
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
@@ -153,7 +153,7 @@
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 2
   },
   {
@@ -2723,6 +2723,7 @@
    ],
    "importedBy": [
     "lib/skyfacts.js",
+    "lib/zones.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -5505,6 +5506,7 @@
     "functions/api/mcp.js",
     "functions/tools.json.js",
     "lib/skyfacts.js",
+    "lib/zones.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -6401,7 +6403,8 @@
   },
   "lib/zones.js": {
    "imports": [
-    "skills/worldtime.js"
+    "skills/worldtime.js",
+    "lib/astro.js"
    ],
    "importedBy": []
   },
