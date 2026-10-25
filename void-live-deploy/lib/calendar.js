@@ -46,8 +46,10 @@ export function normalize(e) {
   const rrule = e.rrule && typeof e.rrule === 'object' && FREQS.includes(String(e.rrule.freq || '').toUpperCase()) ? normalizeRule(e.rrule) : null;
   const reminders = [...new Set((Array.isArray(e.reminders) ? e.reminders : []).map((m) => Math.round(+m)).filter((m) => Number.isFinite(m) && m >= 0 && m <= 4 * 7 * 1440))].sort((a, b) => a - b).slice(0, 5);
   const invitees = [...new Set((Array.isArray(e.invitees) ? e.invitees : String(e.invitees || '').split(/[,;\s]+/)).map((s) => String(s || '').trim()).filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))].slice(0, 50);
-  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(e.ro ? { ro: true } : {}) };
+  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
 }
+// an invite's replies (lib/rsvp.js, /api/rsvp): the organizer keeps the owner key; the link carries only the reply key
+const rsvpOk = (r) => !!r && /^[A-Za-z0-9_-]{11}$/.test(String(r.id || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.owner || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.reply || ''));
 const normalizeRule = (r) => { const out = { freq: String(r.freq).toUpperCase(), interval: Math.max(1, Math.min(999, Math.round(+r.interval) || 1)) };
   if (+r.count > 0) out.count = Math.min(10000, Math.round(+r.count)); if (r.until && parseLocal(r.until)) out.until = String(r.until).slice(0, 10);
   const byday = (Array.isArray(r.byday) ? r.byday : String(r.byday || '').split(',')).map((s) => String(s).toUpperCase().trim()).filter((s) => /^(?:-?[1-5])?(?:SU|MO|TU|WE|TH|FR|SA)$/.test(s)); if (byday.length) out.byday = byday; return out; };
@@ -181,7 +183,9 @@ const unb64url = (s) => { const bin = atob(String(s || '').replace(/-/g, '+').re
  *  invitees with the .ics text as the body, ics: that text }. Pure. */
 export function inviteLink(ev, origin = '') {
   const e = normalize(ev); if (!e) return null;
-  const { exdates, ...carried } = e; const url = String(origin || '').replace(/\/$/, '') + '/calendar/?e=' + b64url(JSON.stringify(carried));
+  const { exdates, rsvp, cal, ro, ...carried } = e; void exdates; void cal; void ro;
+  // the replies ride after # (never sent to a server): who opens the link can say yes, maybe or no and see who is coming, never the organizer's key
+  const url = String(origin || '').replace(/\/$/, '') + '/calendar/?e=' + b64url(JSON.stringify(carried)) + (rsvp ? '#rsvp=' + rsvp.id + '.' + rsvp.reply : '');
   const ics = icsOf([e]), st = parseLocal(e.start), when = e.allDay ? e.start : e.start.replace('T', ' ');
   const body = e.title + '\n' + when + (e.notes ? '\n' + e.notes : '') + '\n\n' + url + '\n\n' + ics;
   return { url, mailto: 'mailto:' + e.invitees.join(',') + '?subject=' + encodeURIComponent('Invitation: ' + e.title + ' (' + when + ')') + '&body=' + encodeURIComponent(body), ics, when: st };
@@ -294,6 +298,8 @@ export function wordsFor(lang) {
     note: 'Termine, Erinnerungen und Einladungen bleiben in diesem Browser; nichts geht an einen Server. Eine Einladung ist ein Link, der den Termin selbst trägt, oder eine E-Mail mit der .ics-Datei.',
     calendars: 'Kalender', calendar: 'Kalender', addCal: 'Kalender hinzufügen', calName: 'Name des neuen Kalenders', removeCal: 'Entfernen', colour: 'Farbe', country: 'Land', show: 'Zeigen', fromNet: 'Feiertage von Nager.Date', readOnly: 'Nur lesen',
     shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
+    subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
+    replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -307,6 +313,8 @@ export function wordsFor(lang) {
     note: 'Events, reminders and invites stay in this browser; nothing goes to a server. An invite is a link that carries the event itself, or an email with the .ics file.',
     calendars: 'Calendars', calendar: 'Calendar', addCal: 'Add calendar', calName: 'Name of the new calendar', removeCal: 'Remove', colour: 'Colour', country: 'Country', show: 'Show', fromNet: 'Holidays from Nager.Date', readOnly: 'Read only',
     shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
+    subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
+    replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
   };
 }
 

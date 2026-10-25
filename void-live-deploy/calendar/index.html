@@ -126,6 +126,7 @@
     <h2 id="calsH" style="margin:0 0 4px">Calendars</h2>
     <ul class="list" id="calList"></ul>
     <form id="calAdd" class="row" autocomplete="off"><label class="vh" for="calName" id="calNameL">Name of the new calendar</label><input id="calName" maxlength="60" placeholder="Name of the new calendar" style="flex:1 1 160px"><input type="color" id="calColor" aria-label="Colour" value="#1c7ed6"><button type="submit" id="calAddBtn">Add calendar</button></form>
+    <form id="feedAdd" class="row" autocomplete="off"><label class="vh" for="feedUrl" id="feedL">A calendar's address (https:// or webcal://)</label><input id="feedUrl" type="url" inputmode="url" maxlength="1000" placeholder="A calendar's address (https:// or webcal://)" style="flex:1 1 200px"><button type="submit" id="feedBtn">Subscribe</button></form>
     <p class="note" id="calNote"></p>
   </section>
 
@@ -136,6 +137,10 @@
     <h2 id="invH" style="margin:0 0 4px">You are invited</h2>
     <div id="invBody"></div>
     <div class="row"><button type="button" class="go" id="invAdd">Add to my calendar</button><button type="button" id="invIcs">Download .ics</button></div>
+    <div id="rsvpBox" hidden><p class="note" id="rsvpQ" style="margin-top:10px">Going?</p>
+      <div class="row"><label class="vh" for="rsvpName" id="rsvpNameL">Your name</label><input id="rsvpName" maxlength="60" placeholder="Your name" autocomplete="name" style="flex:1 1 140px">
+        <div class="seg" role="group" aria-label="Going?"><button type="button" data-a="yes" id="rsvpYes">Yes</button><button type="button" data-a="maybe" id="rsvpMaybe">Maybe</button><button type="button" data-a="no" id="rsvpNo">No</button></div></div>
+      <p class="note" id="rsvpList" role="status"></p></div>
   </section>
 
   <div class="bar">
@@ -219,16 +224,16 @@
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, C, A, SH] = await Promise.all([import('/lib/toolkit.js'), import('/lib/calendar.js'), import('/lib/agenda.js'), import('/lib/calshare.js')]);
+    const [{ mountRelated }, C, A, SH, R] = await Promise.all([import('/lib/toolkit.js'), import('/lib/calendar.js'), import('/lib/agenda.js'), import('/lib/calshare.js'), import('/lib/rsvp.js')]);
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = C.wordsFor(lang);
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     const REM_CHOICES = [[0, W.atTime], [10, '10 ' + W.minBefore], [30, '30 ' + W.minBefore], [60, '1 ' + W.hourBefore], [1440, '1 ' + W.dayBefore]];
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        calsBtn: 'calendars', calsH: 'calendars', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
-      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
+      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
     }
     const narrow = matchMedia('(max-width: 640px)');
@@ -246,7 +251,14 @@
     const sharedOf = (calId) => sharedCals().find((c) => c.id === calId) || null;
     const copyOf = (c) => (store.shared && store.shared[c.share.id]) || { events: [], rev: 0 };
     const sharedEvents = () => sharedCals().flatMap((c) => SH.eventsOf(c.id, c.share.role, copyOf(c).events));
-    const shown = () => C.shownEvents(store.events, cals(), [...extra(), ...sharedEvents()]);
+    // calendars subscribed by address (an iCal feed, read by /api/icsfeed): read only, kept here (store.feeds[id] = { events, at }) so they show offline
+    const feedCals = () => cals().filter((c) => c.kind === 'url' && c.url);
+    const feedEvents = () => feedCals().flatMap((c) => (((store.feeds || {})[c.id] || {}).events || []).map((e) => ({ ...e, id: c.id + ':' + e.id, cal: c.id, ro: true })));
+    async function readFeed(c) {
+      const r = await fetch('/api/icsfeed?url=' + encodeURIComponent(c.url)).then(async (x) => ({ status: x.status, j: await x.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
+      if (!r.j.ok) return r.j.error || W.feedFail; store.feeds = store.feeds || {}; store.feeds[c.id] = { events: (r.j.events || []).map(C.normalize).filter(Boolean), at: Date.now(), name: r.j.name }; keep(); return '';
+    }
+    const shown = () => C.shownEvents(store.events, cals(), [...extra(), ...sharedEvents(), ...feedEvents()]);
     const callShare = (method, share, { body, op } = {}) => fetch('/api/calshare' + (share ? '?id=' + share.id + (op ? '&op=' + op : '') : ''), { method, headers: { ...(share ? { 'x-cal-key': share.key } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
       .then(async (r) => ({ status: r.status, j: await r.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
     const keepCopy = (c, j) => { store.shared = store.shared || {}; store.shared[c.share.id] = { events: (j.events || []).map(C.normalize).filter(Boolean), rev: j.rev }; };
@@ -316,6 +328,7 @@
       state.sel = o; $('detail').hidden = false; $('detTitle').textContent = o.title; const dl = $('detList'); dl.replaceChildren();
       const add = (k, v) => { if (!v) return; dl.append(el('dt', '', k), el('dd', '', v)); };
       add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes); add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
+      const b0 = baseOf(o); if (b0.rsvp) { const dt = el('dt', '', W.replies), dd = el('dd', '', '…'); dl.append(dt, dd); rsvpCall('GET', { id: b0.rsvp.id, key: b0.rsvp.owner }).then((r) => { dd.textContent = r.j.ok ? (r.j.replies.length ? R.tally(r.j.replies, RW) + ': ' + r.j.replies.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies) : '—'; }); }
       $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
     }
     const baseOf = (o) => store.events.find((e) => e.id === o.id) || (sharedOf(o.cal) && SH.eventsOf(o.cal, sharedOf(o.cal).share.role, copyOf(sharedOf(o.cal)).events).find((e) => e.id === o.id)) || o;
@@ -365,10 +378,19 @@
       keep(); $('detail').hidden = true; state.sel = null; render();
     });
     // invites: a link that carries the event, a mail with the .ics, the .ics itself
-    const inv = () => state.sel && C.inviteLink(baseOf(state.sel), location.origin);
-    $('detShare').addEventListener('click', async () => { const i = inv(); if (!i) return; if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.sel.title, text: whenOf(state.sel), url: i.url }); return; } catch (_) {} } copy($('detShare'), i.url); });
-    $('detMail').addEventListener('click', () => { const i = inv(); if (i) location.href = i.mailto; });
-    $('detIcs').addEventListener('click', () => { const i = inv(); if (i) download(state.sel.title.replace(/[^\w.-]+/g, '_') + '.ics', i.ics); });
+    // an invite that can take replies: made the first time it is shared (the organizer keeps the owner key with the event; the link carries only the reply key)
+    const rsvpCall = (method, k, { op, body } = {}) => fetch('/api/rsvp' + (k ? '?id=' + k.id + (op ? '&op=' + op : '') : ''), { method, headers: { ...(k ? { 'x-cal-key': k.key } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
+      .then(async (r) => ({ status: r.status, j: await r.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
+    const RW = { yes: W.yes.toLowerCase(), maybe: W.maybe.toLowerCase(), no: W.no.toLowerCase() }; // "2 yes, 1 maybe"
+    async function withReplies(b) {
+      if (b.rsvp || b.ro || sharedOf(b.cal) || !store.events.some((e) => e.id === b.id) || !navigator.onLine) return b;
+      const r = await rsvpCall('POST'); if (!r.j.ok) return b;
+      const u = C.normalize({ ...b, rsvp: { id: r.j.id, owner: r.j.owner, reply: r.j.reply } }); store.events = C.withEvent(store.events, u); keep(); return u;
+    }
+    const inv = async () => state.sel && C.inviteLink(await withReplies(baseOf(state.sel)), location.origin);
+    $('detShare').addEventListener('click', async () => { const i = await inv(); if (!i) return; if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.sel.title, text: whenOf(state.sel), url: i.url }); return; } catch (_) {} } copy($('detShare'), i.url); });
+    $('detMail').addEventListener('click', async () => { const i = await inv(); if (i) location.href = i.mailto; });
+    $('detIcs').addEventListener('click', async () => { const i = await inv(); if (i) download(state.sel.title.replace(/[^\w.-]+/g, '_') + '.ics', i.ics); });
     $('exportBtn').addEventListener('click', () => { download('verse-calendar.ics', C.icsOf(store.events)); toast($('exportBtn'), store.events.length + ' ' + W.exportDone); });
     $('importBtn').addEventListener('click', () => $('icsFile').click());
     $('icsFile').addEventListener('change', async () => { const f = $('icsFile').files[0]; if (!f) return; const got = C.parseIcs(await f.text()); for (const e of got) store.events = C.withEvent(store.events, e); keep(); render(); say(got.length + ' ' + W.imported); $('icsFile').value = ''; });
@@ -376,7 +398,17 @@
     if (q.get('e')) { const e = C.eventFromLink(q.get('e')); if (e) { $('inviteCard').hidden = false; const b = $('invBody'); b.replaceChildren(el('b', '', e.title), el('div', '', whenOf(e))); if (e.rrule) b.append(el('div', '', W.repeat + ': ' + C.repeatText(e.rrule, lang))); if (e.reminders.length) b.append(el('div', '', W.reminder + ': ' + e.reminders.map((m) => C.reminderText(m, lang)).join(', '))); if (e.notes) b.append(el('div', '', e.notes));
       const had = store.events.some((x) => x.id === e.id); if (had) { $('invAdd').textContent = W.alreadyIn; $('invAdd').disabled = true; }
       $('invAdd').addEventListener('click', () => { store.events = C.withEvent(store.events, e); keep(); $('inviteCard').hidden = true; state.cursor = C.startOfDay(C.parseLocal(e.start)); state.view = 'day'; render(); showDetail(C.occurrences(e, e.start, e.start)[0] || e); say(W.added + ': ' + e.title); history.replaceState(null, '', '/calendar/?d=' + C.dayKey(state.cursor) + '&view=day'); });
-      $('invIcs').addEventListener('click', () => download(e.title.replace(/[^\w.-]+/g, '_') + '.ics', C.icsOf([e]))); state.cursor = C.startOfDay(C.parseLocal(e.start)); } }
+      $('invIcs').addEventListener('click', () => download(e.title.replace(/[^\w.-]+/g, '_') + '.ics', C.icsOf([e]))); state.cursor = C.startOfDay(C.parseLocal(e.start));
+      // the invite takes replies (#rsvp=): a name and yes, maybe or no; who is coming, shown to whoever has the link
+      const rk = R.rsvpFromHash(location.hash);
+      if (rk) { $('rsvpBox').hidden = false; $('rsvpName').value = store.me || '';
+        const showReplies = (list) => { $('rsvpList').textContent = list.length ? R.tally(list, RW) + ': ' + list.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies; };
+        rsvpCall('GET', rk).then((r) => { if (r.j.ok) showReplies(r.j.replies); });
+        for (const btn of $('rsvpBox').querySelectorAll('button[data-a]')) btn.addEventListener('click', async () => {
+          const name = $('rsvpName').value.trim(); if (!name) { $('rsvpList').textContent = W.nameFirst; $('rsvpName').focus(); return; }
+          const r = await rsvpCall('POST', rk, { op: 'reply', body: { name, answer: btn.dataset.a } }); if (!r.j.ok) { $('rsvpList').textContent = r.j.error || W.needNet; return; }
+          store.me = name; keep(); for (const x of $('rsvpBox').querySelectorAll('button[data-a]')) x.setAttribute('aria-pressed', String(x === btn)); showReplies(r.j.replies); say(W.replied); });
+      } } }
     // quick add: the box, or ?q= in the link (added once: the same title at the same time is not added twice)
     function quick(text) {
       const e = C.quickAdd(text, now()); if (!e) return say(W.nothing, true);
@@ -399,6 +431,7 @@
         cb.addEventListener('change', () => setCal(c.id, { on: cb.checked }));
         col.type = 'color'; col.value = c.color; col.setAttribute('aria-label', W.colour + ': ' + c.name); col.addEventListener('change', () => setCal(c.id, { color: col.value })); li.append(lb, col);
         if (c.kind === 'holidays') { const sel = el('select'); sel.setAttribute('aria-label', W.country); for (const k of [...new Set([c.cc, ...COUNTRIES])]) { const o = el('option', '', k); o.value = k; sel.append(o); } sel.value = c.cc; sel.addEventListener('change', () => { setCal(c.id, { cc: sel.value }); holidays(); }); li.append(sel); }
+        if (c.kind === 'url') lb.append(el('span', 'note', ' · ' + W.feedNote));
         if (c.kind === 'shared') { // a shared calendar: what this browser may do with it, and the owner's links
           lb.append(el('span', 'note', ' · ' + (c.gone ? W.sharedGone : c.share.role === 'owner' ? W.yours : c.share.role === 'edit' ? W.canEdit : W.viewOnly)));
           if (c.share.role === 'owner' && !c.gone) { const row = el('div', 'row'); row.style.flexBasis = '100%';
@@ -415,13 +448,19 @@
             const entry = { ...SH.calendarEntry(r.j.id, r.j.owner, 'owner', c), on: c.on, share: { id: r.j.id, key: r.j.owner, role: 'owner', edit: r.j.edit, view: r.j.view } };
             keepCopy(entry, { events: mine.map((e) => ({ ...e, cal: undefined })), rev: r.j.rev }); store.events = store.events.filter((e) => e.cal !== c.id); store.calendars = cals().map((k) => (k.id === c.id ? entry : k)); keep(); drawCals(); render(); say(W.shareHint); });
         }
-        if (!['main', 'birthdays', 'holidays'].includes(c.id) && !(c.share && c.share.role === 'owner' && !c.gone)) { const x = el('button', 'bad', W.removeCal); x.type = 'button'; x.setAttribute('aria-label', W.removeCal + ': ' + c.name); x.addEventListener('click', () => { const n = store.events.filter((e) => e.cal === c.id).length; if (n && !confirm(W.removeCal + ' "' + c.name + '" (' + n + ' ' + W.events + ')?')) return; store.events = store.events.filter((e) => e.cal !== c.id); if (c.share && store.shared) delete store.shared[c.share.id]; store.calendars = cals().filter((k) => k.id !== c.id); keep(); drawCals(); render(); }); li.append(x); }
+        if (!['main', 'birthdays', 'holidays'].includes(c.id) && !(c.share && c.share.role === 'owner' && !c.gone)) { const x = el('button', 'bad', W.removeCal); x.type = 'button'; x.setAttribute('aria-label', W.removeCal + ': ' + c.name); x.addEventListener('click', () => { const n = store.events.filter((e) => e.cal === c.id).length; if (n && !confirm(W.removeCal + ' "' + c.name + '" (' + n + ' ' + W.events + ')?')) return; store.events = store.events.filter((e) => e.cal !== c.id); if (c.share && store.shared) delete store.shared[c.share.id]; if (store.feeds) delete store.feeds[c.id]; store.calendars = cals().filter((k) => k.id !== c.id); keep(); drawCals(); render(); }); li.append(x); }
         ul.append(li);
       }
       $('calNote').textContent = W.shareHint + (holCal() && holCal().on ? ' ' + W.fromNet + '.' : '');
     }
     const setCal = (id, patch) => { store.calendars = cals().map((c) => (c.id === id ? { ...c, ...patch } : c)); keep(); drawCals(); render(); };
     $('calsBtn').addEventListener('click', () => { const open = $('cals').hidden; $('cals').hidden = !open; $('calsBtn').setAttribute('aria-expanded', String(open)); if (open) drawCals(); });
+    $('feedAdd').addEventListener('submit', async (e) => {
+      e.preventDefault(); const url = $('feedUrl').value.trim(); if (!url) { $('feedUrl').focus(); return; } if (!navigator.onLine) return say(W.needNet, true);
+      const id = 'u-' + C.newId(), c = { id, name: '…', color: C.PALETTE[cals().length % C.PALETTE.length], on: true, kind: 'url', url: url.replace(/^webcals?:\/\//i, 'https://') };
+      const err = await readFeed(c); if (err) { say(err, true); return; }
+      c.name = (store.feeds[id] && store.feeds[id].name) || 'Calendar'; store.calendars = [...cals(), c]; keep(); $('feedUrl').value = ''; drawCals(); render(); say(W.subscribed + ': ' + c.name + ' (' + store.feeds[id].events.length + ' ' + W.events + ')');
+    });
     $('calAdd').addEventListener('submit', (e) => { e.preventDefault(); const c = C.newCalendar(cals(), $('calName').value, $('calColor').value); if (!c) { $('calName').focus(); return; } store.calendars = [...cals(), c]; keep(); $('calName').value = ''; drawCals(); render(); say(W.added + ': ' + c.name); });
     // public holidays for the year shown and the next (Nager.Date, no key), fetched after load and kept here so they show offline
     async function holidays() {
@@ -461,7 +500,9 @@
       store.calendars = had ? cals().map((c) => (c.id === had.id ? entry : c)) : [...cals(), entry]; keepCopy(entry, r.j); keep(); render(); say(W.sharedAdded + ': ' + r.j.name + ' (' + (r.j.role === 'view' ? W.viewOnly : W.canEdit) + ')'); })(); }
     // shared calendars as they are now: on opening and when the page is looked at again (not on a timer)
     let pulled = 0; const pullAll = async () => { if (!navigator.onLine || Date.now() - pulled < 20000) return; pulled = Date.now(); let changed = false; for (const c of sharedCals()) if (await pull(c)) changed = true; if (changed) render(); };
-    if (!link) pullAll(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pullAll(); });
+    if (!link) pullAll();
+    // subscribed calendars read again when their copy is over an hour old (on opening, never on a timer)
+    (async () => { let changed = false; for (const c of feedCals()) { const f = (store.feeds || {})[c.id]; if (navigator.onLine && (!f || Date.now() - f.at > 3600000) && !(await readFeed(c))) changed = true; } if (changed) render(); })(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pullAll(); });
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500);
     mountRelated($('related'), '/calendar/', [{ label: de ? 'Timer bis zum Termin' : 'Countdown to the next event', href: () => { const o = C.agenda(store.events, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 60))).find((x) => !x.allDay); const m = o ? Math.max(1, Math.round((C.parseLocal(o.start) - now()) / 60000)) : 10; return '/stopwatch/?t=' + encodeURIComponent(m + ' minutes'); } }, { label: de ? 'Wetter am Tag' : 'Weather that day', href: () => '/weather/' }]);
   });
