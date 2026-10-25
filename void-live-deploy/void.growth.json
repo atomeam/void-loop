@@ -5835,5 +5835,6 @@
   {"at": "2026-10-25T07:40:42Z", "by": "claude", "kind": "build", "what": "Versus is the name of the ladder where Verse fights real sites (owner, 2026-10-25: the tower rename is easy its versus): the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label and the book say Versus; the identifiers keep tower; versus, verse versus, show me versus open the card and every tower ask still does", "show": "the ladder of real sites is now called Versus", "try": "versus"},
   {"at": "2026-10-25T08:04:43Z", "by": "verse", "kind": "fix", "what": "Verse fixes its cartoon skill: learn to handle \"create a toon style bird\"", "try": "create a toon style bird"},
   {"at": "2026-10-25T09:44:26Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"generate a gradient blue to pink\"", "try": "generate a gradient blue to pink"},
-  {"at": "2026-10-25T09:54:23Z", "by": "verse", "kind": "fix", "what": "Verse fixes its fakeuser skill: learn to handle \"can u make a fake user profile\"", "try": "can u make a fake user profile"}
+  {"at": "2026-10-25T09:54:23Z", "by": "verse", "kind": "fix", "what": "Verse fixes its fakeuser skill: learn to handle \"can u make a fake user profile\"", "try": "can u make a fake user profile"},
+  {"at": "2026-10-25T17:12:06Z", "by": "verse", "kind": "fix", "what": "Verse fixes its figure skill: learn to handle \"low poly fox\"", "try": "low poly fox"}
 ]
