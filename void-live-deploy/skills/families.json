@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 26,
-  "checked": 15,
+  "checked": 16,
   "proven": 294
  },
  "families": [
@@ -2022,7 +2022,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 6,
+    "checked": 7,
     "proven": 88
    },
    "skills": [
@@ -2892,6 +2892,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 6
+    },
+    {
+     "name": "backdrop",
+     "tier": "checked",
+     "why": "a self-test, 7 browser-suite mentions",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "its tests"
     }
    ]
   },

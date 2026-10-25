@@ -484,6 +484,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T07:21:35Z",
+   "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T07:21:01Z",
+   "subject": "Incident: the browser suite failed on d2196b4e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T07:20:40Z",
+   "subject": "Verse fixes its make skill: learn to handle \"low poly cat\""
+  },
+  {
+   "at": "2026-10-25T07:20:00Z",
+   "subject": "Tower gate: translate: lingvanex.com,translate: itranslate.com,translate: mymemory.translated.net measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T07:13:01Z",
+   "subject": "Incident: the browser suite failed on b7755d02 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T07:05:54Z",
+   "subject": "The cartoon you drew walks the stage: Let it walk on every cartoon card, a figure on the floor with a shadow, a tap makes it speak"
+  },
+  {
    "at": "2026-10-25T07:03:44Z",
    "subject": "Handoff: the weather floor at 11 of 12, why its accuracy row still says Looking, and what the next run tries first"
   },
@@ -538,30 +562,6 @@
   {
    "at": "2026-10-25T06:43:31Z",
    "subject": "Tower gate: weather measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:38:26Z",
-   "subject": "The tower gate says what Verse's page showed when an accuracy case is missed"
-  },
-  {
-   "at": "2026-10-25T06:32:20Z",
-   "subject": "The translate page, the translate lane, and the floor kit"
-  },
-  {
-   "at": "2026-10-25T06:31:09Z",
-   "subject": "Spotter: 10 check(s) healed with no revert after ec74e1145b621e108c6c3217f37e37ccba412b72 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-25T06:26:23Z",
-   "subject": "Verse fixes its print-file skill: learn to handle \"how to print a bolt\""
-  },
-  {
-   "at": "2026-10-25T06:12:16Z",
-   "subject": "Tower gate: translate measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:09:09Z",
-   "subject": "Incident: the browser suite failed on 747b0851 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

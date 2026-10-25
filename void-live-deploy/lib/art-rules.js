@@ -7,8 +7,8 @@ import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
 export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
-export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster' };
-const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon', poster: 'poster' };
+export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster', backdrop: 'a backdrop' };
+const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon', poster: 'poster', backdrop: 'backdrop', scene: 'backdrop', stage: 'backdrop' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a halo of arcane sigils', rare: 'warm gold light, floating glyphs', uncommon: 'cool silver light, faint runes', common: 'moody indigo light, soft mist' };
 
 /** the kind word we accept from the page: one of KINDS' keys, 'person' (refused), or 'answer'. Pure. */
@@ -159,13 +159,30 @@ export const POSTER_STYLE = 'as a striking poster artwork, tall vertical composi
 export const posterKey = (key) => (key ? 'poster1 ' + key : '');
 /** a poster's prompt from its folded subject. Pure. */
 export const posterPrompt = (key) => 'a ' + String(key).replace(/^poster\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' scene ' + POSTER_STYLE + ', ' + FRAMING;
-/** the cache key for a subject of a kind: a cartoon and a poster keep rows of their own. Pure. */
-export const keyOfKind = (key, kind) => (kindWordOf(kind) === 'cartoon' ? cartoonKey(key) : kindWordOf(kind) === 'poster' ? posterKey(key) : key);
-/** the painting's size for a kind: a poster is tall, everything else the card's 16:9 window. Pure. */
-export const sizeOfKind = (kind) => (kindWordOf(kind) === 'poster' ? [POSTER_W, POSTER_H] : [ART_W, ART_H]);
+// a backdrop (skills/backdrop.js, owner 2026-10-25: "a static, beautifully lit 2D painted scene with fixed camera angles, where real-time elements like our
+// little cartoon ... card or interactive utility cards project shadows and walk along defined floor meshes ... swap pre-rendered backdrops depending on the
+// rung or theme you're working on (a retro server room, a cyberpunk rooftop, or an atmospheric study) ... the heavy lifting is baked into the background
+// image"): one wide painting of the named scene, as a late-90s pre-rendered game background. Painted once per scene and kept for ever, inside the day's
+// cap, like every other picture. Wide 16:9 at 1536x864 (multiples of 16, the models' grid), the floor in the lower quarter so the walker's horizon and the
+// cards' cast shadows land on painted ground; no text and no people, so nothing in it can be read or mistaken for someone.
+export const BACKDROP_W = 1536, BACKDROP_H = 864;
+export const BACKDROP_STYLE = 'as a pre-rendered late-1990s adventure game background, a static beautifully lit painted 2D scene from one fixed camera angle, '
+  + 'rich atmospheric lighting with soft volumetric light and deep shadows, painterly detail, a clear flat floor across the lower quarter of the frame, the scene empty and waiting, '
+  + 'no people, no characters, no creatures';
+/** a backdrop's cache key: its own row, so a cyberpunk rooftop scene never replaces a card's painting. Pure. */
+export const backdropKey = (key) => (key ? 'backdrop1 ' + key : '');
+/** a backdrop's prompt from its folded subject. Pure. */
+export const backdropPrompt = (key) => 'a ' + String(key).replace(/^backdrop\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' ' + BACKDROP_STYLE + ', ' + FRAMING;
+/** the cache key for a subject of a kind: a cartoon, a poster and a backdrop keep rows of their own. Pure. */
+export const keyOfKind = (key, kind) => (kindWordOf(kind) === 'cartoon' ? cartoonKey(key) : kindWordOf(kind) === 'poster' ? posterKey(key) : kindWordOf(kind) === 'backdrop' ? backdropKey(key) : key);
+/** the painting's size for a kind: a poster is tall, a backdrop wide, everything else the card's 16:9 window. Pure. */
+export const sizeOfKind = (kind) => (kindWordOf(kind) === 'poster' ? [POSTER_W, POSTER_H] : kindWordOf(kind) === 'backdrop' ? [BACKDROP_W, BACKDROP_H] : [ART_W, ART_H]);
+/** a kind painted from its fixed template alone, with no Art Director scene (a cartoon has its look, a poster and a backdrop their own style). Pure. */
+export const undirected = (kind) => /^(?:cartoon|poster|backdrop)$/.test(kindWordOf(kind));
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
   if (kindWordOf(kind) === 'cartoon') return cartoonPrompt(key);
   if (kindWordOf(kind) === 'poster') return posterPrompt(key);
+  if (kindWordOf(kind) === 'backdrop') return backdropPrompt(key);
   return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 

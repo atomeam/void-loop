@@ -25,7 +25,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook, undirected } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -195,7 +195,7 @@ export async function onRequestPost({ request, env }) {
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
-  const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = kind === 'cartoon' || kind === 'poster' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
+  const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = undirected(kind) ? '' : await direct(env, key, kind, body && body.family, body && body.take); // a cartoon, a poster and a backdrop paint from their own templates (lib/art-rules.js)
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(seen.name ? 'cartoon ' + seen.name.toLowerCase() : key, look, { mascot: !!seen.flat }) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));

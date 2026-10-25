@@ -644,6 +644,35 @@ try {
       !!back && back.src === PNG && back.above >= 24 && back.above <= 27 && after === null && kept === null && !P.errors.length, JSON.stringify({ back: back && { above: back.above, src: back.src.slice(0, 20) }, after, kept, errors: P.errors }));
     await P.ctx.close();
   }
+  // the backdrop (owner, 2026-10-25: "a static, beautifully lit 2D painted scene with fixed camera angles, where ... cards project shadows and walk along
+  // defined floor meshes ... swap pre-rendered backdrops depending on the rung or theme"): the forge paints the scene once (kind 'backdrop'), it is a layer
+  // behind every card, cover-fit and bottom-anchored, the cards cast shadows on it, it is back after a reload, and "clear the backdrop" brings the void back
+  if (want("backdrop: set the stage to a retro server room paints the scene once and shows it behind every card with shadows under them, it is back after a reload, clear the backdrop brings the void back, and a used-up day says so")) {
+    const P = await fresh(); const posts = [];
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'cyberpunk rooftop' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'backdrop1 ' + b.subject, img: PNG }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('sticky note buy milk', 800); // a card to cast a shadow
+    await P.ask('set the stage to a retro server room', 1500);
+    const sceneOf = () => P.p.evaluate(() => { const l = document.getElementById('void-scene'), st = document.getElementById('stage'); if (!l || !l.classList.contains('on')) return null;
+      const img = l.querySelector('img'), sh = st.querySelectorAll('#scene-shadows .scene-shadow'), th = st.querySelector(':scope > .thing[data-id]'), s0 = sh[0];
+      return { src: img && img.getAttribute('src'), fit: getComputedStyle(img).objectFit, pos: getComputedStyle(img).objectPosition, behind: !!(l.compareDocumentPosition(st) & Node.DOCUMENT_POSITION_FOLLOWING) && getComputedStyle(l).position === 'fixed', z: getComputedStyle(l).zIndex,
+        scene: document.documentElement.dataset.scene || '', shadows: sh.length, under: s0 && th ? parseInt(s0.style.top, 10) - th.offsetTop : null, sameLeft: !!(s0 && th) && parseInt(s0.style.left, 10) === th.offsetLeft, shadowBehind: !!(s0 && th && (s0.compareDocumentPosition(th) & Node.DOCUMENT_POSITION_FOLLOWING)), // the layout box (a sticky is drawn rotated, so its bounding box is not its box)
+        kept: (() => { try { return JSON.parse(localStorage.getItem('a2m.void.backdrop.v1')); } catch (_) { return null; } })() }; });
+    const on = await until(sceneOf, 8000);
+    check('backdrop: "set the stage to a retro server room" asks the forge for one backdrop of that scene and shows it as a fixed layer behind the stage, cover-fit with the floor at the bottom; the sticky on the stage casts a soft shadow 18 px below it, under the card; the scene is kept in a2m.void.backdrop.v1',
+      !!on && on.src === PNG && on.fit === 'cover' && /100%$/.test(on.pos) && on.behind && on.z === '0' && on.scene === 'retro server room' && on.shadows >= 1 && on.under === 18 && on.sameLeft && on.shadowBehind && posts.filter((b) => b.kind === 'backdrop').length === 1 && posts[0].subject === 'retro server room' && on.kept && on.kept.src === PNG && !P.errors.length,
+      JSON.stringify({ on: on && { ...on, src: on.src && on.src.slice(0, 20), kept: on.kept && { ...on.kept, src: on.kept.src.slice(0, 20) } }, posts, errors: P.errors }));
+    await P.p.reload(); await skillsUp(P.p);
+    const back = await until(sceneOf, 8000);
+    await P.ask('clear the backdrop', 900);
+    const after = await P.p.evaluate(() => ({ on: !!document.querySelector('#void-scene.on'), scene: document.documentElement.dataset.scene || '', kept: localStorage.getItem('a2m.void.backdrop.v1'), shadows: document.querySelectorAll('#scene-shadows .scene-shadow').length, said: document.getElementById('whisper').textContent }));
+    check('backdrop: after a reload the scene is back with the same picture and no new painting; "clear the backdrop" takes it off, forgets it, drops the shadows and says the void is back',
+      !!back && back.src === PNG && back.shadows >= 1 && posts.length === 1 && !after.on && !after.scene && after.kept === null && after.shadows === 0 && /void is back/.test(after.said) && !P.errors.length, JSON.stringify({ back: back && { shadows: back.shadows, src: back.src && back.src.slice(0, 20) }, after, posts: posts.length, errors: P.errors }));
+    await P.ask('backdrop: a cyberpunk rooftop', 1200);
+    const capped = await P.p.evaluate(() => ({ on: !!document.querySelector('#void-scene.on'), said: document.getElementById('whisper').textContent }));
+    check('backdrop: with no painting left today the ask says so plainly and the void stays', !capped.on && /used up/.test(capped.said) && !P.errors.length, JSON.stringify({ capped, errors: P.errors }));
+    await P.ctx.close();
+  }
   // a poster OF something (2026-10-25: "make a cyberpunk poster" said "Open or summon a card first"): the Art Forge paints the subject tall (kind 'poster'),
   // the title is set over it in a real font, the finished poster is the card's art, and the print files wait for the painting
   if (want("poster of a theme: make a cyberpunk poster paints a cyberpunk poster, titles it, makes it the card art and offers the print files")) {

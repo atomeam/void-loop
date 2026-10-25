@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 782,
+ "counted": 784,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -63,7 +63,7 @@
    "skills": 20,
    "direct": 0,
    "dependants": 45,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/ladder.js",
@@ -981,6 +981,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/backdrop.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/backlog-digest.js",
@@ -2953,6 +2960,12 @@
    "imports": [],
    "importedBy": [
     "skills/tower.js"
+   ]
+  },
+  "lib/backdrop.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/backdrop.js"
    ]
   },
   "lib/backlog-digest.js": {
@@ -6748,6 +6761,12 @@
   },
   "skills/automations.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/backdrop.js": {
+   "imports": [
+    "lib/backdrop.js"
+   ],
    "importedBy": []
   },
   "skills/backlog-digest.js": {
