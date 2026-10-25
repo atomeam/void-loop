@@ -601,6 +601,23 @@ try {
       dime === 'Cartoon Dimebag Darrell' && !!kept && kept.name === 'Cartoon Dimebag Darrell' && !P.errors.length, JSON.stringify({ dime, kept: kept && kept.name, errors: P.errors }));
     await P.ctx.close();
   }
+  // a poster OF something (2026-10-25: "make a cyberpunk poster" said "Open or summon a card first"): the Art Forge paints the subject tall (kind 'poster'),
+  // the title is set over it in a real font, the finished poster is the card's art, and the print files wait for the painting
+  if (want("poster of a theme: make a cyberpunk poster paints a cyberpunk poster, titles it, makes it the card art and offers the print files")) {
+    const P = await fresh(); const posts = [];
+    const TALL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAADCAYAAAC56t6BAAAAGklEQVR42mNkYPhfz8DAwMDEwMDAwMDAwAAAPw8DAfYvF7EAAAAASUVORK5CYII=';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'poster1 ' + b.subject, img: TALL }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('make a cyberpunk poster', 1500);
+    const read = () => P.p.$eval('.vpage.on', (c) => ({ h: (c.querySelector('h2') || {}).textContent || '', art: !!c.querySelector('.vc-art img.vc-art-photo[src^="data:image/jpeg"]'), poster: c.dataset.poster || '', alt: (c.querySelector('.vc-art img.vc-art-photo') || {}).alt || '', status: (c.querySelector('.poster-status') || {}).textContent || '', ready: [...c.querySelectorAll('.poster-size')].filter((b) => !b.disabled).length, again: !(c.querySelector('.poster-again') || { hidden: true }).hidden })).catch(() => null);
+    const cyber = await until(async () => { const r = await read(); return r && r.art ? r : null; }, 8000);
+    check('poster of a theme: "make a cyberpunk poster" asks the forge for a poster of cyberpunk, puts the titled poster in the card\'s art box (portrait layout), and offers the three print files',
+      !!cyber && /cyberpunk poster/i.test(cyber.h) && cyber.poster === '1' && /titled CYBERPUNK/.test(cyber.alt) && cyber.ready === 3 && !cyber.status && posts.some((b) => b.subject === 'cyberpunk' && b.kind === 'poster') && !P.errors.length, JSON.stringify({ cyber, posts, errors: P.errors }));
+    await P.ask('create a poster of a dragon', 1500);
+    const dragon = await until(async () => { const r = await read(); return r && /dragon/.test(r.h) && r.status ? r : null; }, 8000);
+    check('poster of a theme: with no painting left today the dragon poster says plainly why, offers no print file of an empty poster, and "make this a poster" is still the open card\'s',
+      !!dragon && /used up/.test(dragon.status) && dragon.ready === 0 && !dragon.art, JSON.stringify(dragon));
+    await P.ctx.close();
+  }
   // the coin flip sites (scout report, 2026-10-23: a 3-second fake wait, ads, paragraphs of text): a coin that lands at once, with a quiet tally
   if (want("coin: flip a coin lands a 3D coin on its face at once, says the side, keeps this visit's tally, and a tap flips it again")) {
     const P = await fresh(); const t0 = Date.now(); await P.ask('flip a coin', 400);
@@ -5578,6 +5595,25 @@ try {
     check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
       linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
       && file === 'data:image/png;base64,iVBORw==' && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // base64encode.org offers dozens of character sets: /base64/ groups 44 of them, writes Windows-1252 and EBCDIC with the browser's own decoder
+  // (or its tables), names a character a set cannot hold, and reads Shift_JIS while saying it is decode only
+  if (want("base64 character sets: grouped, Windows-1252 and EBCDIC both ways, an unencodable character named, Shift_JIS decode only, fits 390 px")) {
+    const Z = await fresh(); await Z.p.setViewportSize({ width: 390, height: 844 }); await Z.p.goto(base + 'base64/');
+    const groups = await Z.p.$$eval('#cs optgroup', (g) => g.map((x) => x.label + ':' + x.children.length)), first = await Z.p.$eval('#cs', (e) => e.value);
+    const b64 = () => Z.p.$eval('#b64', (e) => e.value), note = () => Z.p.$eval('#note', (e) => e.textContent);
+    await Z.p.selectOption('#cs', 'windows-1252'); await Z.p.fill('#text', 'café €'); const w1252 = await b64();
+    await Z.p.fill('#text', 'Hi 😀'); const unenc = await note();
+    await Z.p.selectOption('#cs', 'ibm037'); await Z.p.fill('#text', 'HELLO'); const ebcdic = await b64();
+    await Z.p.fill('#b64', 'yMXT09Y='); const ebcdicBack = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.selectOption('#cs', 'shift_jis'); await Z.p.fill('#b64', 'grGC8YLJgr+CzQ=='); const sjis = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.fill('#text', 'x'); const sjisEnc = await note();
+    const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth);
+    check("base64 character sets: grouped, Windows-1252 and EBCDIC both ways, an unencodable character named, Shift_JIS decode only, fits 390 px",
+      first === 'auto' && groups.length >= 6 && groups.some((g) => /^EBCDIC and DOS:/.test(g)) && groups.some((g) => /decode only/.test(g)) && w1252 === 'Y2Fm6SCA'
+      && /“😀” \(character 4\) is not in Windows-1252/.test(unenc) && ebcdic === 'yMXT09Y=' && ebcdicBack === 'HELLO' && sjis === 'こんにちは' && /decode only/.test(sjisEnc) && wide <= 390 && !Z.errors.length,
+      JSON.stringify({ groups, first, w1252, unenc, ebcdic, ebcdicBack, sjis, sjisEnc, wide, errors: Z.errors }));
     await Z.ctx.close();
   }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {

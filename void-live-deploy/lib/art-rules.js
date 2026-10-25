@@ -7,8 +7,8 @@ import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
 export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
-export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon' };
-const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon' };
+export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster' };
+const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon', poster: 'poster' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a halo of arcane sigils', rare: 'warm gold light, floating glyphs', uncommon: 'cool silver light, faint runes', common: 'moody indigo light, soft mist' };
 
 /** the kind word we accept from the page: one of KINDS' keys, 'person' (refused), or 'answer'. Pure. */
@@ -136,8 +136,21 @@ export function cartoonPrompt(key, look = '') {
 }
 
 /** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
+// a poster (skills/poster.js, "make a cyberpunk poster"): the picture of what was named, painted tall at the print shape (2:3, the 12x18 and 24x36 sizes), with
+// no lettering: the title is set by the page in a real font over the painting, so the words are spelled right every time (image models garble text).
+export const POSTER_W = 768, POSTER_H = 1152;
+export const POSTER_STYLE = 'as a striking poster artwork, tall vertical composition, one bold focal subject, dramatic lighting, rich saturated colours, graphic and cinematic, the upper third calm and darker so a title can sit on it';
+/** a poster's cache key: its own row, so a cyberpunk poster never replaces a card's painting. Pure. */
+export const posterKey = (key) => (key ? 'poster1 ' + key : '');
+/** a poster's prompt from its folded subject. Pure. */
+export const posterPrompt = (key) => 'a ' + String(key).replace(/^poster\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' scene ' + POSTER_STYLE + ', ' + FRAMING;
+/** the cache key for a subject of a kind: a cartoon and a poster keep rows of their own. Pure. */
+export const keyOfKind = (key, kind) => (kindWordOf(kind) === 'cartoon' ? cartoonKey(key) : kindWordOf(kind) === 'poster' ? posterKey(key) : key);
+/** the painting's size for a kind: a poster is tall, everything else the card's 16:9 window. Pure. */
+export const sizeOfKind = (kind) => (kindWordOf(kind) === 'poster' ? [POSTER_W, POSTER_H] : [ART_W, ART_H]);
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
   if (kindWordOf(kind) === 'cartoon') return cartoonPrompt(key);
+  if (kindWordOf(kind) === 'poster') return posterPrompt(key);
   return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 

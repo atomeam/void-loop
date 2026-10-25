@@ -226,9 +226,9 @@
     {
      "name": "poster",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-24",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 17 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 7
     },

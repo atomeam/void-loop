@@ -25,7 +25,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, cartoonKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -128,11 +128,11 @@ export async function photoLook(env, asked, get = (u, o) => fetch(u, o), why = [
     return { look: role ? look + '; ' + role.charAt(0).toLowerCase() + role.slice(1) : look, name: ph.usual, source: 'wikipedia' };
   } catch (e) { why.push('vision error ' + String((e && e.message) || e).replace(/[^A-Za-z0-9 .:-]/g, ' ').slice(0, 60)); return null; }
 }
-// one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window (its steps are fixed at 4); schnell takes JSON
+// one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window or a poster's tall 2:3 (its steps are fixed at 4); schnell takes JSON
 // and paints a square. The reply is { image: base64 }, or a stream of the image's bytes, read here.
-export function paintOnce(env, model, prompt) {
+export function paintOnce(env, model, prompt, [w, h] = [ART_W, ART_H]) {
   if (!/flux-2/.test(model)) return env.AI.run(model, { prompt, steps: 4 });
-  const form = new FormData(); form.append('prompt', prompt); form.append('width', String(ART_W)); form.append('height', String(ART_H));
+  const form = new FormData(); form.append('prompt', prompt); form.append('width', String(w)); form.append('height', String(h));
   const body = new Response(form);
   return env.AI.run(model, { multipart: { body: body.body, contentType: body.headers.get('content-type') } });
 }
@@ -145,15 +145,15 @@ export async function asImage(r) {
 // Pollinations (open source, free): with a POLLINATIONS_KEY secret (a free account's key) its keyed endpoint, else the anonymous one. The prompt is the same
 // fixed or directed prompt (nothing typed), the size the card's 16:9 window, the seed the subject's, so a subject asks for one picture. ART_POLLINATIONS=0 turns it off.
 export const pollOn = (env) => !/^(0|false|no|off)$/i.test(String((env && env.ART_POLLINATIONS) || '').trim());
-export function pollinationsUrl(prompt, key, token = '') {
+export function pollinationsUrl(prompt, key, token = '', [w, h] = [ART_W, ART_H]) {
   let seed = 0; for (const ch of String(key)) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
-  const q = 'width=' + ART_W + '&height=' + ART_H + '&seed=' + (seed % 1000000) + '&nologo=true';
+  const q = 'width=' + w + '&height=' + h + '&seed=' + (seed % 1000000) + '&nologo=true';
   return token ? 'https://gen.pollinations.ai/image/' + encodeURIComponent(prompt) + '?' + q : 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?' + q + '&model=flux';
 }
-export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u, o)) {
+export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u, o), size = [ART_W, ART_H]) {
   const token = String((env && env.POLLINATIONS_KEY) || '').trim(), ac = new AbortController(), t = setTimeout(() => ac.abort(), TIMEOUT_MS);
   try {
-    const res = await fetchFn(pollinationsUrl(prompt, key, token), { headers: token ? { authorization: 'Bearer ' + token } : {}, signal: ac.signal });
+    const res = await fetchFn(pollinationsUrl(prompt, key, token, size), { headers: token ? { authorization: 'Bearer ' + token } : {}, signal: ac.signal });
     const type = (res.headers.get('content-type') || '').toLowerCase();
     if (!res.ok || !/^image\/(jpeg|png)/.test(type)) throw new Error('answered ' + res.status + ' ' + type.slice(0, 20));
     return imageOf(await asImage(res.body));
@@ -164,7 +164,7 @@ const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
 
 export async function onRequestGet({ request, env }) {
   const u = new URL(request.url), raw = u.searchParams.get('key'), kind = u.searchParams.get('kind');
-  const key = kindWordOf(kind) === 'cartoon' ? cartoonKey(subjectKey(raw)) : subjectKey(raw);
+  const key = keyOfKind(subjectKey(raw), kind); // a cartoon and a poster keep rows of their own (lib/art-rules.js)
   if (!key) return json({ error: 'a subject, please' }, 400);
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
@@ -179,7 +179,7 @@ export async function onRequestPost({ request, env }) {
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 2000)); } catch (_) { return new Response('bad', { status: 400 }); }
   const raw = rawSubject(body && body.subject), kind = kindWordOf(body && body.kind), rarity = rarityOf(body && body.rarity);
-  const key = kind === 'cartoon' ? cartoonKey(subjectKey(raw)) : subjectKey(raw); // a cartoon keeps its own row (lib/art-rules.js cartoonKey)
+  const key = keyOfKind(subjectKey(raw), kind), size = sizeOfKind(kind); // a cartoon and a poster keep rows of their own; a poster is painted tall (lib/art-rules.js)
   if (!key) return json({ error: 'a subject, please' }, 400);
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
@@ -192,17 +192,17 @@ export async function onRequestPost({ request, env }) {
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
-  const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = kind === 'cartoon' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
+  const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = kind === 'cartoon' || kind === 'poster' ? '' : await direct(env, key, kind, body && body.family, body && body.take);
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : kind === 'cartoon' ? cartoonPrompt(seen.name ? 'cartoon ' + seen.name.toLowerCase() : key, look) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
     let r = null;
     if (!overWorkers) {
-      try { r = await Promise.race([paintOnce(env, models('art'), prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }
-      if (!img && models('art') !== ART_FALLBACK) { try { r = await Promise.race([paintOnce(env, ART_FALLBACK, prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'schnell ' + missWhy(e)); } } // the square model, cropped into the window
+      try { r = await Promise.race([paintOnce(env, models('art'), prompt, size), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }
+      if (!img && models('art') !== ART_FALLBACK) { try { r = await Promise.race([paintOnce(env, ART_FALLBACK, prompt, size), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'schnell ' + missWhy(e)); } } // the square model, cropped into the window
     }
     // past the Workers AI share, or when it failed: Pollinations, free (owner, 2026-10-18: "try to find fallbacks ... for free")
-    if (!img && pollOn(env)) { try { img = await pollinations(env, prompt, key); } catch (e) { await noteMiss(env, 'pollinations ' + missWhy(e)); } }
+    if (!img && pollOn(env)) { try { img = await pollinations(env, prompt, key, undefined, size); } catch (e) { await noteMiss(env, 'pollinations ' + missWhy(e)); } }
     if (!img && !r) throw new Error('no painter answered');
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
   } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }

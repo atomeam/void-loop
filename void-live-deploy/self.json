@@ -483,6 +483,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T02:54:15Z",
+   "subject": "/base64/ detects the character set when decoding and decodes padding of the wrong length"
+  },
+  {
+   "at": "2026-10-25T02:53:54Z",
+   "subject": "Incident: the browser suite failed on 35e4f7f3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T02:52:57Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
    "at": "2026-10-25T02:47:04Z",
    "subject": "A coin whose Commons photos never say obverse or reverse is found by its name alone: the Canadian Gold Maple Leaf showed a question mark"
   },
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-25T01:46:00Z",
    "subject": "Incident: the browser suite failed on 630e666f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:32:02Z",
-   "subject": "Incident: the browser suite failed on fe1573d2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:30:01Z",
-   "subject": "Incident: the browser suite failed on 69392bd2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:18:06Z",
-   "subject": "self.json refreshed after the /time/ sun, moon and dates work"
   }
  ],
  "builders": {
