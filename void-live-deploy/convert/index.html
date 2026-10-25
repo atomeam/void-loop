@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Unit converter: every unit at once, exact · Verse</title>
-<meta name="description" content="Convert length, mass, temperature, volume, area, speed, time, data, pressure, energy and power. Type a value in any unit and every other unit of its kind updates at once, both ways, from exact definitions (an inch is 0.0254 m exactly). Type 100 c to f. Works offline. No ads.">
+<meta name="description" content="Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology. Type a value in any unit and every other unit of its kind updates at once, both ways, from exact definitions (an inch is 0.0254 m exactly), with the formula and your choice of precision. Type 100 c to f. Works offline. No ads.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Unit converter · Verse">
-<meta property="og:description" content="Every unit of a kind at once, both ways, exact to 12 digits. Type 100 c to f. Share a conversion as a link.">
+<meta property="og:description" content="22 kinds of unit, every unit of a kind at once, both ways, exact, with the formula. Type 100 c to f. Share a conversion as a link.">
 <meta property="og:url" content="https://a-to-mind.com/convert/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,13 +19,17 @@
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
-  input { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 26px; box-sizing: border-box; min-width: 0; }
+  input, select { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 26px; box-sizing: border-box; min-width: 0; }
+  select { min-height: 40px; max-width: 100%; } select option, select optgroup { color: var(--ink); background: var(--bg); }
   #ask { width: 100%; font-size: 18px; }
   .answer { text-align: center; font: 700 clamp(24px, 7vw, 40px)/1.2 system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; margin: 14px 0 6px; overflow-wrap: anywhere; }
   .answer.bad { color: var(--bad); font-size: 16px; font-weight: 500; }
+  #formula { text-align: center; font-size: 15px; color: var(--soft); margin: 0 0 8px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-height: 1.5em; }
   .row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; margin: 10px 0; }
+  .row label { font-size: 14px; color: var(--soft); display: inline-flex; gap: 6px; align-items: center; }
   button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
   button[aria-pressed=true], button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+  button:disabled { opacity: .5; cursor: default; }
   #units { list-style: none; margin: 10px 0 0; padding: 0; }
   #units li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 10px; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--line); border-radius: 8px; }
   #units li.from, #units li.to { background: var(--tint); }
@@ -34,47 +38,60 @@
   #units input { width: 100%; text-align: right; font-variant-numeric: tabular-nums; }
   #units input.bad { border-color: var(--bad); }
   .note { font-size: 13px; color: var(--soft); text-align: center; }
+  #kinds { font-size: 13px; color: var(--soft); margin: 14px 0 0; } #kinds b { color: var(--ink); font-weight: 600; } #kinds a { color: inherit; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/units.js">
 <!-- /modulepreload -->
 </head>
 <body>
 <main>
   <h1>Unit converter</h1>
-  <label for="ask" class="note" style="display:block;text-align:left">Type a conversion, or a value in any unit below</label>
+  <label for="ask" class="note" style="display:block;text-align:left">Type a conversion from any unit to any other, or a value in any unit below</label>
   <input type="text" id="ask" value="1 m" spellcheck="false" autocomplete="off" placeholder="100 c to f, 5 km in miles, how many feet in a mile">
   <p class="answer" id="answer" aria-live="polite"></p>
-  <div class="row" id="kinds" role="group" aria-label="Kind of unit"></div>
+  <p id="formula" aria-live="polite"></p>
+  <div class="row">
+    <label>Kind <select id="kind" aria-label="Kind of unit"></select></label>
+    <label>Precision <select id="sig" aria-label="Significant digits"></select> digits</label>
+  </div>
   <ul id="units" aria-label="Every unit of this kind"></ul>
   <div class="row"><button type="button" id="swap">Swap the two units</button><button type="button" id="link">Copy link</button></div>
-  <p class="note">Every unit of a kind at once, both ways: type in any box and the rest follow. Exact: each unit comes from its definition (an inch is 0.0254 m, a pound 0.45359237 kg, a US gallon 231 cubic inches), worked out as fractions, and shown to 12 significant digits.</p>
+  <p class="note">Every unit of a kind at once, both ways: type in any box and the rest follow. Exact: each unit comes from its definition (an inch is 0.0254 m, a pound 0.45359237 kg, a US gallon 231 cubic inches), worked out as fractions, and rounded only when shown, to the precision you choose.</p>
+  <p id="kinds"></p>
   <nav id="related" aria-label="Related tools"></nav>
   <footer>Works offline after one visit; nothing you type leaves this device. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
-  import { KINDS, unitOf, parseNum, fmt, convert, convertAll, parseAsk } from '/lib/units.js';
+  import { KINDS, GROUPS, kindsInOrder, unitOf, parseNum, fmt, convert, convertAll, parseAsk, formulaOf } from '/lib/units.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.convert.v1';
-  // the state: a kind, the unit typed in (from), the number as typed, and the unit asked for (to, or null)
+  // the state: a kind, the unit typed in (from), the number as typed, the unit asked for (to, or null), and how many significant digits to show
   let st = { kind: 'length', from: unitOf('length', 'm'), text: '1', to: null };
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ kind: st.kind, from: st.from.id, text: st.text, to: st.to ? st.to.id : null })); } catch (_) {} };
+  let sig = 12; try { sig = Math.min(15, Math.max(3, +localStorage.getItem(KEY + '.sig') || 12)); } catch (_) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ kind: st.kind, from: st.from.id, text: st.text, to: st.to ? st.to.id : null })); localStorage.setItem(KEY + '.sig', String(sig)); } catch (_) {} };
   const restore = (o) => { const f = o && KINDS[o.kind] && unitOf(o.kind, o.from); if (!f || !parseNum(o.text)) return false; st = { kind: o.kind, from: f, text: String(o.text), to: unitOf(o.kind, o.to) }; return true; };
   const q = new URLSearchParams(location.search);
   const asked = q.get('q') ? parseAsk(q.get('q')) : null;
   if (asked) st = { kind: asked.kind, from: asked.from, text: asked.text, to: asked.to };
   else if (!restore({ kind: q.get('k'), from: q.get('from'), text: q.get('v') || '1', to: q.get('to') })) { try { restore(JSON.parse(localStorage.getItem(KEY) || 'null')); } catch (_) {} }
+  if (q.get('sig') && +q.get('sig') >= 3 && +q.get('sig') <= 15) sig = +q.get('sig');
+
+  // the kinds, grouped as unitconverters.net groups them (common, then the engineering groups), as a select and as a line of words
+  const kinds = kindsInOrder();
+  $('kind').replaceChildren(...Object.entries(GROUPS).map(([g, label]) => { const og = document.createElement('optgroup'); og.label = label;
+    og.append(...kinds.filter(([, k]) => k.group === g).map(([id, k]) => { const o = document.createElement('option'); o.value = id; o.textContent = k.label; return o; })); return og; }));
+  $('kinds').replaceChildren(...Object.entries(GROUPS).flatMap(([g, label]) => { const b = document.createElement('b'); b.textContent = label + ': ';
+    const names = kinds.filter(([, k]) => k.group === g).map(([id, k]) => { const a = document.createElement('a'); a.href = '?k=' + id; a.textContent = k.label; a.addEventListener('click', (e) => { e.preventDefault(); pick(id); }); return a; });
+    return [b, ...names.flatMap((a, i) => (i ? [', ', a] : [a])), document.createElement('br')]; }));
+  $('sig').replaceChildren(...Array.from({ length: 13 }, (_, i) => { const o = document.createElement('option'); o.value = o.textContent = String(i + 3); return o; }));
+  $('sig').value = String(sig);
+  function pick(k) { if (k === st.kind) return; st = { kind: k, from: KINDS[k].units[0], text: '1', to: null }; build(); $('ask').value = says(); }
 
   const inputs = new Map(); // unit id -> its box, for the kind on show
-  function drawKinds() {
-    $('kinds').replaceChildren(...Object.entries(KINDS).map(([k, v]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = v.label; b.setAttribute('aria-pressed', String(k === st.kind));
-      b.addEventListener('click', () => { if (k === st.kind) return; st = { kind: k, from: KINDS[k].units[0], text: '1', to: null }; build(); $('ask').value = '1 ' + st.from.sym; }); return b; }));
-  }
   function build() { // the kind's rows, made once per kind so a box keeps its focus while the others change
-    drawKinds(); inputs.clear();
+    $('kind').value = st.kind; inputs.clear();
     $('units').replaceChildren(...KINDS[st.kind].units.map((u) => {
       const li = document.createElement('li'), label = document.createElement('label'), box = document.createElement('input'), small = document.createElement('small');
       box.type = 'text'; box.inputMode = 'decimal'; box.id = 'u-' + u.id; box.spellcheck = false; box.autocomplete = 'off'; label.htmlFor = box.id;
@@ -84,23 +101,28 @@
     draw(null);
   }
   const says = () => st.text.trim() + ' ' + st.from.sym + (st.to ? ' to ' + st.to.sym : '');
+  const show = (v) => (v ? fmt(v, sig) : '∞'); // only 0 through a reciprocal unit (L/100km) has no value
   function draw(typing) {
     const v = parseNum(st.text);
     for (const li of $('units').children) { li.classList.toggle('from', li.dataset.unit === st.from.id); li.classList.toggle('to', !!st.to && li.dataset.unit === st.to.id); }
     for (const [id, box] of inputs) box.classList.toggle('bad', !v && id === st.from.id);
-    if (!v) { $('answer').className = 'answer bad'; $('answer').textContent = 'That is not a number: try 100, -40, 1.5e3, 3/8 or 1 1/2.'; return; }
-    for (const { unit, value } of convertAll(st.kind, v, st.from)) { const box = inputs.get(unit.id); if (box && box !== typing) box.value = unit === st.from ? st.text : fmt(value); }
+    if (!v) { $('answer').className = 'answer bad'; $('answer').textContent = 'That is not a number: try 100, -40, 1.5e3, 3/8 or 1 1/2.'; $('formula').textContent = ''; return; }
+    for (const { unit, value } of convertAll(st.kind, v, st.from)) { const box = inputs.get(unit.id); if (box && box !== typing) box.value = unit === st.from ? st.text : show(value); }
     $('answer').className = 'answer';
-    $('answer').textContent = st.to ? fmt(v) + ' ' + st.from.sym + ' = ' + fmt(convert(v, st.from, st.to)) + ' ' + st.to.sym : fmt(v) + ' ' + st.from.sym + ' in every ' + KINDS[st.kind].label.toLowerCase() + ' unit';
+    $('answer').textContent = st.to ? show(v) + ' ' + st.from.sym + ' = ' + show(convert(v, st.from, st.to)) + ' ' + st.to.sym : show(v) + ' ' + st.from.sym + ' in every ' + KINDS[st.kind].label.toLowerCase() + ' unit';
+    $('formula').textContent = st.to ? 'From ' + st.from.sym + ' to ' + st.to.sym + ', the formula: ' + formulaOf(st.from, st.to, sig) : 'Pick a second unit (type "' + st.text.trim() + ' ' + st.from.sym + ' to …") for the formula from one to the other.';
     $('swap').disabled = !st.to;
     save();
   }
   $('ask').addEventListener('input', () => { const a = parseAsk($('ask').value); if (!a) return; const same = a.kind === st.kind; st = { kind: a.kind, from: a.from, text: a.text, to: a.to }; if (same) draw(null); else build(); });
-  $('swap').addEventListener('click', () => { if (!st.to) return; const v = parseNum(st.text); const to = st.from; st.from = st.to; st.to = to; if (v) st.text = fmt(convert(v, to, st.from)); draw(null); $('ask').value = says(); });
-  $('link').addEventListener('click', async () => { const p = new URLSearchParams({ k: st.kind, from: st.from.id, v: st.text.trim() }); if (st.to) p.set('to', st.to.id);
+  $('kind').addEventListener('change', () => pick($('kind').value));
+  $('sig').addEventListener('change', () => { sig = +$('sig').value; draw(null); });
+  $('swap').addEventListener('click', () => { if (!st.to) return; const v = parseNum(st.text); const to = st.from; st.from = st.to; st.to = to; const r = v && convert(v, to, st.from); if (r) st.text = fmt(r, sig); draw(null); $('ask').value = says(); });
+  $('link').addEventListener('click', async () => { const p = new URLSearchParams({ k: st.kind, from: st.from.id, v: st.text.trim() }); if (st.to) p.set('to', st.to.id); if (sig !== 12) p.set('sig', String(sig));
     const u = location.origin + location.pathname + '?' + p; try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
   build(); $('ask').value = says();
-  mountRelated(document.getElementById('related'), '/convert/');
+  // the "Use with" row is not needed for the first paint: it comes after the load event (as /calculator/ does), so the converter paints first
+  addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/convert/')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

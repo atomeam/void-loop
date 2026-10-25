@@ -2,8 +2,9 @@
  * units: a unit converter that is exact (the tower's unitconverters.net floor, page /convert/). Every unit is defined by its exact SI
  * definition as a fraction (an inch is 0.0254 m exactly, a pound 0.45359237 kg, a US gallon 231 cubic inches), values are kept as BigInt
  * fractions, and only the shown number is rounded, to 12 significant digits with trailing zeros trimmed, so 0.1 + 0.2 noise never shows.
- * Temperature is affine: kelvin = (value + offset) x factor. A unit converts to every other unit of its kind at once. Pure.
- * Tests: tools/units.test.mjs.
+ * Temperature is affine: kelvin = (value + offset) x factor. Fuel consumption in L/100km is the reciprocal of km/L (inv). A unit converts
+ * to every other unit of its kind at once; formulaOf writes how. The kinds are unitconverters.net's: its common converters and its engineering
+ * groups (heat, fluids, light, electricity, magnetism, radiology), each from exact definitions. Pure. Tests: tools/units.test.mjs.
  */
 
 // --- exact fractions: { n, d } as BigInt, d > 0, in lowest terms
@@ -57,6 +58,8 @@ export function fmt(v, sig = 12) {
 // --- the units: [id, name, symbol, factor to the kind's base unit (exact), words that name it, offset (temperature only)]
 const IN = q('0.0254'), FT = q('0.3048'), YD = q('0.9144'), MI = q('1609.344'), LB = q('0.45359237'), G0 = q('9.80665');
 const LBF = mul(LB, G0), USGAL = mul(q('231'), mul(IN, mul(IN, IN))), IMPGAL = q('0.00454609'), FLOZ = div(USGAL, q('128')), BTU = q('1055.05585262');
+const PI = q('3.141592653589793238462643383279502884197'); // pi to 40 digits: an angle shown to 15 digits never sees the difference
+const INV = Symbol('inverse'); // a unit that is the reciprocal of its kind's base (L/100km against km/L): base = factor / value
 const sq = (x) => mul(x, x), cube = (x) => mul(x, mul(x, x)), x = (a, k) => mul(a, typeof k === 'string' ? q(k) : k), per = (a, k) => div(a, typeof k === 'string' ? q(k) : k);
 const pl = (...w) => w.flatMap((s) => (s.endsWith('s') || s.includes(' per ') ? [s] : [s, s.endsWith('inch') ? s + 'es' : s + 's'])); // a word and its plural
 
@@ -78,7 +81,7 @@ export const KINDS = Object.freeze({
     ['au', 'astronomical unit', 'au', q('149597870700'), ['au', 'AU', ...pl('astronomical unit')]],
     ['ly', 'light-year', 'ly', q('9460730472580800'), ['ly', ...pl('light-year', 'light year', 'lightyear')]],
   ] },
-  mass: { label: 'Mass', units: [
+  mass: { label: 'Weight and mass', units: [
     ['kg', 'kilogram', 'kg', q('1'), ['kg', 'kgs', 'kilo', 'kilos', ...pl('kilogram', 'kilogramme')]],
     ['g', 'gram', 'g', q('0.001'), ['g', 'gm', ...pl('gram', 'gramme')]],
     ['mg', 'milligram', 'mg', q('1e-6'), ['mg', ...pl('milligram')]],
@@ -152,7 +155,7 @@ export const KINDS = Object.freeze({
     ['dec', 'decade', 'decade', q('315569520'), [...pl('decade')]],
     ['cen', 'century', 'century', q('3155695200'), ['century', 'centuries']],
   ] },
-  data: { label: 'Data', units: [
+  data: { label: 'Data storage', units: [
     ['B', 'byte', 'B', q('1'), ['B', ...pl('byte')]],
     ['bit', 'bit', 'bit', q('0.125'), ['b', ...pl('bit')]],
     ['kB', 'kilobyte', 'kB', q('1e3'), ['kB', 'KB', ...pl('kilobyte')]],
@@ -203,8 +206,121 @@ export const KINDS = Object.freeze({
     ['PS', 'metric horsepower', 'PS', q('735.49875'), ['ps', 'cv', 'metric horsepower']],
     ['BTUh', 'BTU per hour', 'BTU/h', div(BTU, q('3600')), ['btu/h', 'btu/hr', 'btuh', 'btu per hour']],
   ] },
+  force: { label: 'Force', units: [
+    ['N', 'newton', 'N', q('1'), ['n', ...pl('newton')]],
+    ['kN', 'kilonewton', 'kN', q('1000'), [...pl('kilonewton')]],
+    ['MN', 'meganewton', 'MN', q('1e6'), ['mn', ...pl('meganewton')]],
+    ['dyn', 'dyne', 'dyn', q('1e-5'), ['dyn', ...pl('dyne')]],
+    ['lbf', 'pound-force', 'lbf', LBF, ['lbf', 'lbs force', ...pl('pound-force', 'pound force')]],
+    ['kip', 'kip', 'kip', x(LBF, '1000'), ['kip', 'kips']],
+    ['ozf', 'ounce-force', 'ozf', per(LBF, '16'), ['ozf', ...pl('ounce-force', 'ounce force')]],
+    ['kgf', 'kilogram-force', 'kgf', G0, ['kgf', 'kp', ...pl('kilogram-force', 'kilogram force', 'kilopond')]],
+    ['pdl', 'poundal', 'pdl', mul(LB, FT), ['pdl', ...pl('poundal')]],
+  ] },
+  angle: { label: 'Angle', units: [
+    ['deg', 'degree', '°', per(PI, '180'), ['°', 'deg', 'degs', ...pl('degree')]],
+    ['rad', 'radian', 'rad', q('1'), ['rad', 'rads', ...pl('radian')]],
+    ['mrad', 'milliradian', 'mrad', q('0.001'), ['mrad', ...pl('milliradian')]],
+    ['grad', 'gradian (gon)', 'gon', per(PI, '200'), ['gon', 'grad', 'grads', ...pl('gradian', 'gon')]],
+    ['arcmin', 'arcminute', '′', per(PI, '10800'), ['arcmin', 'moa', ...pl('arcminute', 'minute of arc')]],
+    ['arcsec', 'arcsecond', '″', per(PI, '648000'), ['arcsec', ...pl('arcsecond', 'second of arc')]],
+    ['turn', 'turn (revolution)', 'turn', x(PI, '2'), ['turn', 'turns', 'rev', 'revs', ...pl('revolution', 'rotation', 'circle')]],
+    ['amil', 'NATO mil (6400 a turn)', 'mil (NATO)', per(x(PI, '2'), '6400'), ['nato mil', 'nato mils', 'angular mil', 'angular mils']],
+  ] },
+  frequency: { label: 'Frequency', units: [
+    ['Hz', 'hertz', 'Hz', q('1'), ['hz', 'hertz', 'cps', 'per second']],
+    ['kHz', 'kilohertz', 'kHz', q('1000'), ['khz', 'kilohertz']],
+    ['MHz', 'megahertz', 'MHz', q('1e6'), ['mhz', 'megahertz']],
+    ['GHz', 'gigahertz', 'GHz', q('1e9'), ['ghz', 'gigahertz']],
+    ['THz', 'terahertz', 'THz', q('1e12'), ['thz', 'terahertz']],
+    ['rpm', 'revolution per minute', 'rpm', div(q('1'), q('60')), ['rpm', 'rev/min', 'revolutions per minute']],
+    ['rads', 'radian per second', 'rad/s', div(q('1'), x(PI, '2')), ['rad/s', 'radians per second']],
+  ] },
+  fuel: { label: 'Fuel consumption', units: [
+    ['mpg', 'mile per US gallon', 'mpg (US)', div(MI, x(USGAL, '1e6')), ['mpg', 'mpg (us)', 'us mpg', 'miles per gallon', 'miles per us gallon']],
+    ['mpgi', 'mile per imperial gallon', 'mpg (UK)', div(MI, x(IMPGAL, '1e6')), ['mpg (uk)', 'uk mpg', 'imperial mpg', 'miles per imperial gallon', 'miles per uk gallon']],
+    ['kml', 'kilometre per litre', 'km/L', q('1'), ['km/l', 'kmpl', 'kilometers per liter', 'kilometres per litre']],
+    ['mipl', 'mile per litre', 'mi/L', per(MI, '1000'), ['mi/l', 'miles per liter', 'miles per litre']],
+    ['l100', 'litre per 100 km', 'L/100km', q('100'), ['l/100km', 'l/100 km', 'liters per 100 km', 'litres per 100 km', 'liters per 100km', 'litres per 100km'], INV],
+  ] },
+  // unitconverters.net's engineering groups, each by its most-asked quantity, from the same exact definitions
+  heat: { label: 'Heat: thermal conductivity', group: 'engineering', units: [
+    ['WmK', 'watt per metre-kelvin', 'W/(m·K)', q('1'), ['w/(m·k)', 'w/m·k', 'w/mk', 'w/m/k', 'watts per meter kelvin', 'watts per metre kelvin']],
+    ['kWmK', 'kilowatt per metre-kelvin', 'kW/(m·K)', q('1000'), ['kw/(m·k)', 'kw/mk']],
+    ['calscm', 'calorie per second-centimetre-°C', 'cal/(s·cm·°C)', q('418.4'), ['cal/(s·cm·°c)', 'cal/s·cm·°c', 'cal/s/cm/c']],
+    ['kcalhm', 'kilocalorie per hour-metre-°C', 'kcal/(h·m·°C)', div(q('4184'), q('3600')), ['kcal/(h·m·°c)', 'kcal/h·m·°c', 'kcal/h/m/c']],
+    ['btuhft', 'BTU per hour-foot-°F', 'BTU/(h·ft·°F)', mul(BTU, div(q('9'), x(FT, '18000'))), ['btu/(h·ft·°f)', 'btu/h·ft·°f', 'btu/h/ft/f', 'btu/hr/ft/f']],
+    ['btuinh', 'BTU-inch per hour-square foot-°F', 'BTU·in/(h·ft²·°F)', per(mul(BTU, div(q('9'), x(FT, '18000'))), '12'), ['btu·in/(h·ft²·°f)', 'btu in/h ft2 f', 'btu-in/h-ft2-f']],
+  ] },
+  fluids: { label: 'Fluids: flow rate', group: 'engineering', units: [
+    ['m3s', 'cubic metre per second', 'm³/s', q('1'), ['m3/s', 'm³/s', 'cubic meters per second', 'cubic metres per second']],
+    ['m3h', 'cubic metre per hour', 'm³/h', div(q('1'), q('3600')), ['m3/h', 'm³/h', 'cubic meters per hour', 'cubic metres per hour']],
+    ['ls', 'litre per second', 'L/s', q('0.001'), ['l/s', 'lps', 'liters per second', 'litres per second']],
+    ['lmin', 'litre per minute', 'L/min', div(q('0.001'), q('60')), ['l/min', 'lpm', 'liters per minute', 'litres per minute']],
+    ['lh', 'litre per hour', 'L/h', div(q('0.001'), q('3600')), ['l/h', 'lph', 'liters per hour', 'litres per hour']],
+    ['gpm', 'US gallon per minute', 'gal/min (US)', per(USGAL, '60'), ['gpm', 'gal/min', 'us gpm', 'gallons per minute', 'us gallons per minute']],
+    ['gph', 'US gallon per hour', 'gal/h (US)', per(USGAL, '3600'), ['gph', 'gal/h', 'gallons per hour']],
+    ['igpm', 'imperial gallon per minute', 'gal/min (UK)', per(IMPGAL, '60'), ['uk gpm', 'imperial gpm', 'imperial gallons per minute']],
+    ['cfm', 'cubic foot per minute', 'ft³/min', per(cube(FT), '60'), ['cfm', 'ft3/min', 'ft³/min', 'cubic feet per minute']],
+    ['cfs', 'cubic foot per second', 'ft³/s', cube(FT), ['cfs', 'ft3/s', 'ft³/s', 'cubic feet per second']],
+    ['bbld', 'oil barrel per day', 'bbl/d', per(x(USGAL, '42'), '86400'), ['bbl/d', 'bpd', 'barrels per day']],
+  ] },
+  light: { label: 'Light: illuminance', group: 'engineering', units: [
+    ['lx', 'lux', 'lx', q('1'), ['lx', 'lux', 'lm/m2', 'lm/m²', 'lumens per square meter', 'lumens per square metre']],
+    ['klx', 'kilolux', 'klx', q('1000'), ['klx', 'kilolux']],
+    ['mlx', 'millilux', 'mlx', q('0.001'), ['mlx', 'millilux']],
+    ['fc', 'foot-candle', 'fc', div(q('1'), sq(FT)), ['fc', 'lm/ft2', 'lm/ft²', ...pl('foot-candle', 'footcandle', 'foot candle')]],
+    ['ph', 'phot', 'ph', q('10000'), ['ph', 'phot', 'phots', 'lm/cm2', 'lm/cm²']],
+    ['nx', 'nox', 'nx', q('0.001'), ['nx', 'nox']],
+  ] },
+  electricity: { label: 'Electricity: charge', group: 'engineering', units: [
+    ['Cb', 'coulomb', 'C', q('1'), [...pl('coulomb')]],
+    ['kC', 'kilocoulomb', 'kC', q('1000'), ['kc', ...pl('kilocoulomb')]],
+    ['mC', 'millicoulomb', 'mC', q('0.001'), ['mc', ...pl('millicoulomb')]],
+    ['uC', 'microcoulomb', 'µC', q('1e-6'), ['µc', 'uc', ...pl('microcoulomb')]],
+    ['Ah', 'ampere-hour', 'Ah', q('3600'), ['ah', ...pl('ampere-hour', 'amp-hour', 'amp hour', 'ampere hour')]],
+    ['mAh', 'milliampere-hour', 'mAh', q('3.6'), ['mah', ...pl('milliampere-hour', 'milliamp-hour', 'milliamp hour')]],
+    ['statC', 'statcoulomb (franklin)', 'statC', div(q('1'), q('2997924580')), ['statc', 'fr', ...pl('statcoulomb', 'franklin')]],
+    ['e', 'elementary charge', 'e', q('1.602176634e-19'), ['elementary charge', 'elementary charges', 'electron charge']],
+  ] },
+  magnetism: { label: 'Magnetism: flux density', group: 'engineering', units: [
+    ['T', 'tesla', 'T', q('1'), ['tesla', 'teslas']],
+    ['mT', 'millitesla', 'mT', q('0.001'), ['mt', 'millitesla']],
+    ['uT', 'microtesla', 'µT', q('1e-6'), ['µt', 'ut', 'microtesla']],
+    ['nT', 'nanotesla', 'nT', q('1e-9'), ['nt', 'nanotesla']],
+    ['G', 'gauss', 'G', q('1e-4'), ['gauss', 'gs']],
+    ['kG', 'kilogauss', 'kG', q('0.1'), ['kilogauss']],
+    ['mG', 'milligauss', 'mG', q('1e-7'), ['milligauss']],
+    ['gamma', 'gamma', 'γ', q('1e-9'), ['gamma', 'gammas']],
+  ] },
+  radiology: { label: 'Radiology: absorbed dose', group: 'engineering', units: [
+    ['Gy', 'gray', 'Gy', q('1'), ['gy', 'gray', 'grays']],
+    ['mGy', 'milligray', 'mGy', q('0.001'), ['mgy', 'milligray']],
+    ['uGy', 'microgray', 'µGy', q('1e-6'), ['µgy', 'ugy', 'microgray']],
+    ['rd', 'rad (dose)', 'rd', q('0.01'), ['rd', 'rad (dose)', 'rads (dose)']],
+    ['mrd', 'millirad', 'mrd', q('1e-5'), ['mrd', 'millirad', 'millirads']],
+    ['Sv', 'sievert (equivalent dose)', 'Sv', q('1'), ['sv', 'sievert', 'sieverts']],
+    ['mSv', 'millisievert', 'mSv', q('0.001'), ['msv', 'millisievert', 'millisieverts']],
+    ['uSv', 'microsievert', 'µSv', q('1e-6'), ['µsv', 'usv', 'microsievert', 'microsieverts']],
+    ['rem', 'rem', 'rem', q('0.01'), ['rem', 'rems']],
+    ['mrem', 'millirem', 'mrem', q('1e-5'), ['mrem', 'millirem', 'millirems']],
+  ] },
+  radioactivity: { label: 'Radiology: radioactivity', group: 'engineering', units: [
+    ['Bq', 'becquerel', 'Bq', q('1'), ['bq', 'becquerel', 'becquerels', 'dps', 'disintegrations per second']],
+    ['kBq', 'kilobecquerel', 'kBq', q('1000'), ['kbq', 'kilobecquerel']],
+    ['MBq', 'megabecquerel', 'MBq', q('1e6'), ['mbq', 'megabecquerel']],
+    ['GBq', 'gigabecquerel', 'GBq', q('1e9'), ['gbq', 'gigabecquerel']],
+    ['Ci', 'curie', 'Ci', q('3.7e10'), ['ci', 'curie', 'curies']],
+    ['mCi', 'millicurie', 'mCi', q('3.7e7'), ['mci', 'millicurie']],
+    ['uCi', 'microcurie', 'µCi', q('3.7e4'), ['µci', 'uci', 'microcurie']],
+    ['nCi', 'nanocurie', 'nCi', q('37'), ['nci', 'nanocurie']],
+    ['dpm', 'disintegration per minute', 'dpm', div(q('1'), q('60')), ['dpm', 'disintegrations per minute']],
+    ['Rd', 'rutherford', 'Rd', q('1e6'), ['rutherford', 'rutherfords']],
+  ] },
 });
-for (const k of Object.values(KINDS)) k.units = k.units.map(([id, name, sym, f, words, o]) => Object.freeze({ id, name, sym, f, o: o || null, words }));
+for (const k of Object.values(KINDS)) { k.group = k.group || 'common'; k.units = k.units.map(([id, name, sym, f, words, o]) => Object.freeze({ id, name, sym, f, o: o === INV ? null : o || null, inv: o === INV, words })); }
+/** the two groups the kinds fall in, in the order the page lists them, with the words unitconverters.net uses for them. */
+export const GROUPS = Object.freeze({ common: 'Common converters', engineering: 'Engineering converters: heat, fluids, light, electricity, magnetism, radiology' });
 
 /** a unit of a kind by its id, or null. Pure. */
 export const unitOf = (kind, id) => (KINDS[kind] ? KINDS[kind].units.find((u) => u.id === id) : null) || null;
@@ -221,13 +337,29 @@ export function unitsNamed(word) {
   return [...exact, ...loose];
 }
 
-/** a value in one unit in another of the same kind, exactly: kelvin-like base = (v + offset) x factor. Pure. */
+/** a value in one unit in another of the same kind, exactly: kelvin-like base = (v + offset) x factor; a reciprocal unit (L/100km) is
+ * factor / value both ways. null only for 0 through a reciprocal (0 L/100km is no consumption at all). Pure. */
 export function convert(v, from, to) {
-  const base = mul(from.o ? add(v, from.o) : v, from.f), out = div(base, to.f);
+  if (v.n === 0n && (from.inv || to.inv)) return null;
+  const base = from.inv ? div(from.f, v) : mul(from.o ? add(v, from.o) : v, from.f), out = to.inv ? div(to.f, base) : div(base, to.f);
   return to.o ? sub(out, to.o) : out;
+}
+/** how one unit becomes another, as a line a person can check: "°F = °C × 9/5 + 32", "°C = (°F − 32) × 5/9", "m = mi × 1609.344",
+ * "L/100km = 100 ÷ km/L"; the shorter of the two affine forms, a ratio as a small fraction when that is shorter than its decimal. Pure. */
+export function formulaOf(from, to, sig = 12) {
+  if (!from || !to || from === to) return '';
+  const r = (v) => { const f = fmt(v, sig); return v.d !== 1n && v.d <= 1000n && (v.n < 0n ? -v.n : v.n) < 10000n && (v.n.toString().length + v.d.toString().length + 1) <= f.length ? v.n + '/' + v.d : f; };
+  const neg = (v) => v.n < 0n, abs = (v) => ({ n: neg(v) ? -v.n : v.n, d: v.d }), one = (v) => v.n === v.d;
+  if (from.inv !== to.inv) return to.sym + ' = ' + r(from.inv ? div(from.f, to.f) : div(to.f, from.f)) + ' ÷ ' + from.sym;
+  const ratio = from.inv ? div(to.f, from.f) : div(from.f, to.f), k = sub(mul(from.o || R(0n), ratio), to.o || R(0n));
+  const times = one(ratio) ? '' : ' × ' + r(ratio), plus = (v) => (v.n === 0n ? '' : (neg(v) ? ' − ' : ' + ') + r(abs(v)));
+  const a = to.sym + ' = ' + from.sym + times + plus(k); if (k.n === 0n || one(ratio)) return a;
+  const b = to.sym + ' = (' + from.sym + plus(div(k, ratio)) + ')' + times; return b.length < a.length ? b : a;
 }
 /** a value in one unit in every unit of its kind: [{ unit, value }], in the kind's order. Pure. */
 export const convertAll = (kind, v, from) => KINDS[kind].units.map((u) => ({ unit: u, value: u === from ? v : convert(v, from, u) }));
+/** the unit whose words make the fewest false friends when the kinds are listed: KINDS in page order, common before engineering. Pure. */
+export const kindsInOrder = () => Object.entries(KINDS).sort((a, b) => (a[1].group === b[1].group ? 0 : a[1].group === 'common' ? -1 : 1));
 
 const NUM = '[-+−]?(?:\\d[\\d,_]*(?:\\.\\d*)?|\\.\\d+)(?:e[-+]?\\d{1,4})?(?:\\s+\\d+/\\d+|/\\d+)?';
 /** what an ask means: "100 c to f", "5 km in miles", "convert 3.5 lb to kg", "how many feet in a mile", "250 ml", "kg to lb". Gives

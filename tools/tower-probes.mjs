@@ -170,6 +170,13 @@ export const PROBES = Object.freeze({
     // the same question to both: 100 typed into the site's Celsius-to-Fahrenheit box, and the same words in Verse's page link (its ask box reads them)
     ask: { site: 'https://www.unitconverters.net/temperature/celsius-to-fahrenheit.htm', type: '100', box: true, verse: '/convert/?q=' + encodeURIComponent('100 c to f') },
     truth: [['212 °F', /(?<![\d.])212(?:\.0+)?(?![\d.])\s*(?:°\s*F|degrees? fahrenheit|fahrenheit)?/i]],
+    // what a full converter page shows: unitconverters.net's own kinds (its common converters and its engineering groups: heat, fluids, light,
+    // electricity, magnetism, radiology), and what its conversion pages add: a swap, the formula ("how to convert"), the result's precision
+    facts: [['common converters', /\bcommon\b/i], ['length', /\blength\b/i], ['temperature', /\btemperature\b/i], ['area', /\barea\b/i], ['volume', /\bvolume\b/i], ['weight or mass', /\bweight\b|\bmass\b/i],
+      ['time', /\btime\b/i], ['speed', /\bspeed\b|\bvelocity\b/i], ['pressure', /\bpressure\b/i], ['energy', /\benergy\b/i], ['power', /\bpower\b/i], ['force', /\bforce\b/i], ['data storage', /\bdata\b/i],
+      ['angle', /\bangle\b/i], ['fuel consumption', /\bfuel\b/i], ['frequency', /\bfrequency\b/i], ['engineering', /\bengineering\b/i], ['heat', /\bheat\b/i], ['fluids', /\bfluids?\b|\bflow\b/i], ['light', /\blight\b|\billumin/i],
+      ['electricity', /\belectric/i], ['magnetism', /\bmagnet/i], ['radiology', /\bradiolog|\bradiation\b/i], ['a swap or reverse control', /\bswap\b|\breverse\b|⇄|↔/i],
+      ['the formula', /\bformula\b|how (?:it is|to) convert/i], ['precision', /\bprecision\b|\bsignificant digits\b|\bdecimal places\b/i]],
   },
   encoder: {
     site: 'https://www.base64encode.org/', verse: '/base64/',
@@ -241,6 +248,10 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   stopwatch: { alarms: [['an alarm', /\balarm\b/i]], laps: [['laps', /\blaps?\b/i]] },
   calculator: { history: [['a history of results', /\bhistory\b/i]], 'unit and scientific modes': [['scientific functions', /\bsin\b[\s\S]{0,80}\bcos\b/i], ['degrees and radians', /\bdeg(?:rees?)?\b[\s\S]{0,80}\brad(?:ians?)?\b/i], ['unit conversion', /\bunit conver|\bconvert\b|\bmiles\b[\s\S]{0,40}\bkm\b/i]] },
   'time zones': { 'world time': [['several cities at once', /\bworld ?clock\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/]], 'meeting planner': [['a meeting planner', /\bmeeting planner\b/i], ['the hours that suit everyone', /\bbest time\b|\bworking hours\b/i]] },
+  'unit converter': { 'unit breadth': [['length', /\blength\b/i], ['temperature', /\btemperature\b/i], ['area', /\barea\b/i], ['volume', /\bvolume\b/i], ['weight or mass', /\bweight\b|\bmass\b/i], ['time', /\btime\b/i], ['speed', /\bspeed\b|\bvelocity\b/i],
+      ['pressure', /\bpressure\b/i], ['energy', /\benergy\b/i], ['power', /\bpower\b/i], ['force', /\bforce\b/i], ['data storage', /\bdata\b/i], ['angle', /\bangle\b/i], ['fuel consumption', /\bfuel\b/i], ['frequency', /\bfrequency\b/i],
+      ['heat', /\bheat\b/i], ['fluids', /\bfluids?\b|\bflow\b/i], ['light', /\blight\b|\billumin/i], ['electricity', /\belectric/i], ['magnetism', /\bmagnet/i], ['radiology', /\bradiolog|\bradiation\b/i]],
+    'both directions': [['swap', /\bswap\b|\breverse\b|⇄|↔/i], ['from and to', /\bfrom\b[\s\S]{0,60}\bto\b/i]] },
   'word count': { 'live counting': [['counts as you type', /\bas you (?:type|edit)\b/i]], 'characters and sentences': [['characters', /\bcharacters\b/i], ['characters without spaces', /without spaces/i], ['sentences', /\bsentences\b/i], ['paragraphs', /\bparagraphs\b/i]] },
   'random user': { 'output formats': [['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]], seed: [['a seed', /\bseed\b/i]], nationalities: [['United States', /united states|\bamerican\b/i], ['United Kingdom', /united kingdom|\bbritish\b/i], ['France', /\bfrance\b|\bfrench\b/i], ['Germany', /\bgermany\b|\bgerman\b/i], ['Spain', /\bspain\b|\bspanish\b/i], ['Brazil', /\bbrazil/i], ['India', /\bindia\b|\bindian\b/i], ['Japan', /\bjapan/i]] },
 });

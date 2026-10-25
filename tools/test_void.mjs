@@ -5528,12 +5528,20 @@ try {
     const Z = await fresh(); await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('100 c to f')); await Z.p.waitForSelector('#u-F');
     const first = { answer: await Z.p.$eval('#answer', (e) => e.textContent), f: await Z.p.$eval('#u-F', (e) => e.value), k: await Z.p.$eval('#u-K', (e) => e.value), rows: await Z.p.$$eval('#units li', (l) => l.length) };
     await Z.p.fill('#u-F', '-40'); const back = { c: await Z.p.$eval('#u-C', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
+    // the formula under the answer, in both directions through Swap (unitconverters.net's "how to convert"), and the precision choice
+    const formula = await Z.p.$eval('#formula', (e) => e.textContent); await Z.p.click('#swap'); const swapped = { answer: await Z.p.$eval('#answer', (e) => e.textContent), formula: await Z.p.$eval('#formula', (e) => e.textContent) };
     await Z.p.fill('#ask', '5 km in miles'); await Z.p.waitForTimeout(100); const km = { mi: await Z.p.$eval('#u-mi', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
-    await Z.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {}); await Z.p.click('#link'); const link = await Z.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    await Z.p.selectOption('#sig', '4'); const four = await Z.p.$eval('#answer', (e) => e.textContent); await Z.p.selectOption('#sig', '12');
+    // every kind unitconverters.net lists is on the page, grouped as it groups them, and picking one shows its units
+    const text = await Z.p.$eval('main', (e) => e.textContent); const kinds = ['length', 'temperature', 'area', 'volume', 'weight', 'time', 'speed', 'pressure', 'energy', 'power', 'force', 'data', 'angle', 'fuel', 'frequency', 'heat', 'fluids', 'light', 'electricity', 'magnetism', 'radiology'].filter((k) => !new RegExp('\\b' + k, 'i').test(text));
+    await Z.p.selectOption('#kind', 'fuel'); await Z.p.fill('#u-mpg', '30'); const fuel = await Z.p.$eval('#u-l100', (e) => e.value);
+    await Z.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {}); await Z.p.fill('#ask', '5 km in miles'); await Z.p.waitForTimeout(100); await Z.p.click('#link'); const link = await Z.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
     await Z.p.goto(link || base + 'convert/'); await Z.p.waitForSelector('#u-mi'); const kept = await Z.p.$eval('#answer', (e) => e.textContent);
+    const thirdParty = await Z.p.evaluate(() => performance.getEntriesByType('resource').map((r) => r.name).filter((n) => !n.startsWith(location.origin)));
     check("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it",
       first.answer === '100 °C = 212 °F' && first.f === '212' && first.k === '373.15' && first.rows === 5 && back.c === '-40' && /^-40 °F = -40 °C$/.test(back.answer)
-      && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !Z.errors.length, JSON.stringify({ first, back, km, link, kept, errors: Z.errors }));
+      && /From °F to °C, the formula: °C = \(°F − 32\) × 5\/9/.test(formula) && swapped.answer === '-40 °C = -40 °F' && /°F = °C × 9\/5 \+ 32/.test(swapped.formula) && four === '5 km = 3.107 mi' && !kinds.length && fuel === '7.84048611111'
+      && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !thirdParty.length && !Z.errors.length, JSON.stringify({ first, back, formula, swapped, four, kinds, fuel, km, link, kept, thirdParty, errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's calculator.net floor: /calculator/ works out an ask in its link, typing and its keys, with no floating noise, in degrees or
