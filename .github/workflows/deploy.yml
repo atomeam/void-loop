@@ -5,8 +5,7 @@
 # (verify.yml, verify-main, which no longer waits for this deploy), and a failure reverts the commit that broke it and redeploys.
 #   PR                  the quick checks (seconds), no preview deploy (owner, 2026-10-15: Cloudflare is spent on growth);
 #                       Verse's review is its own workflow, void-review.yml
-#   push to main        the quick checks, then deploy (one production group: deploys stay serialized and only the newest
-#                       pending one runs); the full suite is verify.yml, started by the same push, never by this deploy
+#   push to main        the quick checks, then deploy (deploys run side by side; a run stops itself when a newer head's deploy is already on its way); the full suite is verify.yml, started by the same push, never by this deploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
 name: Verse deploy
 
@@ -40,7 +39,7 @@ jobs:
     # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
     # (Only the newest pending production deploy runs; the suite is verify.yml, one run per head, so no head goes untested.)
     concurrency:
-      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -130,6 +129,21 @@ jobs:
       - name: CSP script hashes
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && vars.CSP_HASHES == 'true'
         run: node tools/csp-hashes.mjs --write
+
+      # Deploys run side by side (owner, 2026-10-25: "no need to serialize we should be able to do many things at once"): each run has its own
+      # group. What serializing protected is that an older run never lands after a newer one, so just before the upload a run asks whether a
+      # newer main head already has a deploy queued or running; if it does, this one stops (that run deploys a superset of it).
+      - name: A newer deploy is on its way (stop this one)
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch -q origin main
+          head=$(git rev-parse origin/main)
+          if [ "$head" != "$(git rev-parse HEAD)" ] && git merge-base --is-ancestor HEAD "$head"; then
+            n=$(gh run list --workflow deploy.yml --json headSha,status,databaseId -q "[.[] | select(.headSha == \"$head\" and (.status == \"queued\" or .status == \"in_progress\" or .status == \"waiting\"))] | length")
+            if [ "${n:-0}" -gt 0 ]; then echo "main moved to $head and its deploy is running: this run stops"; gh run cancel "$GITHUB_RUN_ID"; sleep 60; fi
+          fi
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy

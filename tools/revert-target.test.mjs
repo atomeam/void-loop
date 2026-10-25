@@ -186,7 +186,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /Verse-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
-  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'production' \}\}/, 'deploys stay serialized in production');
+  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| format\('run-\{0\}', github\.run_id\) \}\}/, 'deploys run side by side, each in its own group');
   assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
 });
 
