@@ -21,8 +21,9 @@
      "name": "Ingredient search, include and exclude",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:91 \"By ingredient\" (include only, up to 5; no exclude)"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: By ingredient (include), and \"without eggs\" in the search or the Without box (exclude); lib/kitchen.js askOf, fits",
+     "shows": "\"without\" any ingredient"
     },
     {
      "name": "Scale servings (1/2x, 1x, 2x)",
@@ -42,8 +43,8 @@
      "name": "Star ratings and written reviews",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own 1 to 5 stars and notes per recipe, on this device (#stars, #myNote); no public reviews"
     },
     {
      "name": "Cook photos ('I made it')",
@@ -56,22 +57,24 @@
      "name": "Nutrition facts per serving",
      "detail": "calories, fat, carbs, protein, sodium, full label",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: recipes/index.html #nutri: kcal, protein, fat, carbs per serving, said as an estimate from N of M ingredients (lib/kitchen.js nutritionOf; tools/kitchen.test.mjs)",
+     "shows": "Nutrition per serving"
     },
     {
      "name": "Save recipes into collections",
      "detail": "account recipe box",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save on a recipe, into a collection (new or existing); the Saved pane lists by collection (recipes/index.html #saveBtn, #coll, #savedPane)",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Shopping list / add to grocery cart",
      "detail": "send ingredients to Instacart / Walmart",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:121 \"Copy list\" of unticked ingredients; no kept shopping list"
+     "verse_evidence": "2026-10-25: a shopping list that collects from several recipes at their servings and units, kept on the device (#toList, #listPane); no grocery cart"
     },
     {
      "name": "Prep, cook and total time, yield",
@@ -142,29 +145,32 @@
      "name": "Diet preferences",
      "detail": "vegetarian, keto, paleo, low FODMAP shape recommendations",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Diets pane: vegetarian, vegan, gluten-free, dairy-free, egg-free, nut-free, kept for every search (lib/kitchen.js DIETS)",
+     "shows": "Diets and allergies \\(vegetarian, vegan"
     },
     {
      "name": "Allergy exclusions",
      "detail": "recipes with your allergens left out",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: gluten-, dairy-, egg- and nut-free filters and any ingredient in Without (lib/kitchen.js containsOf, fits)",
+     "shows": "gluten-free, dairy-free, egg-free, nut-free"
     },
     {
      "name": "Search filters",
      "detail": "time, course, cuisine, occasion, diet, allergy, nutrition",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet and allergy filters and without; no time, cuisine or course filter"
     },
     {
      "name": "Shopping list from any recipe",
      "detail": "one tap, suggestions, grocery ordering in the US",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:121 \"Copy list\" of unticked ingredients; no kept shopping list"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Add to shopping list on any recipe, built in or from TheMealDB (#toList)",
+     "shows": "A shopping list collects from several recipes"
     },
     {
      "name": "Meal planner with calendar and cooking reminders",
@@ -191,8 +197,9 @@
      "name": "Saved collections",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save into collections (#coll, #savedPane)",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Personal recommendations",
@@ -235,8 +242,8 @@
      "name": "Filters: diet, difficulty, time, cuisine, occasion",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet and allergy filters only"
     },
     {
      "name": "Search by ingredients",
@@ -249,8 +256,9 @@
      "name": "My Recipes cookbook",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Saved recipes, in collections, open offline (the recipe is kept with it)",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Suggestions by time of day, weekday and holiday",
@@ -263,8 +271,9 @@
      "name": "Hide meat recipes",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Vegetarian in the Diets pane, or \"vegetarian\" in the search, leaves out recipes with meat or fish",
+     "shows": "vegetarian"
     },
     {
      "name": "US and metric side by side",
@@ -313,8 +322,9 @@
      "name": "Save into themed folders",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: collections you name (#coll New collection…)",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Import a recipe from Instagram or TikTok",
@@ -371,8 +381,9 @@
      "name": "Recipe box",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Saved recipes in collections, with your stars and notes",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Voice-controlled cook mode",
@@ -386,14 +397,14 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:121 \"Copy list\" of unticked ingredients; no kept shopping list"
+     "verse_evidence": "2026-10-25: a kept shopping list from several recipes, on this device only (no sync)"
     },
     {
      "name": "Filters (holiday, simple cooking, diet...)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet and allergy filters"
     },
     {
      "name": "Reviews and 'would make again' %",
@@ -422,8 +433,9 @@
      "name": "Save recipes to My Recipes",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save (#saveBtn), the Saved pane",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Recipe videos and vertical video feed",
@@ -466,15 +478,16 @@
      "name": "Nutrition per serving",
      "detail": "kcal, fat, saturates, carbs, sugars, fibre, protein, salt",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: kcal, protein, fat, carbs per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
     },
     {
      "name": "Saved recipes and collections, synced",
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse_evidence": "2026-10-25: saved recipes and collections on this device; not synced across devices"
     },
     {
      "name": "Meal plans",
@@ -487,8 +500,9 @@
      "name": "Shopping list tool",
      "detail": "",
      "paid": true,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:121 \"Copy list\" of unticked ingredients; no kept shopping list"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: the shopping list collects from several recipes, ticked in the shop, copied as text (#listPane)",
+     "shows": "A shopping list collects from several recipes"
     },
     {
      "name": "Step-by-step videos",
@@ -508,8 +522,8 @@
      "name": "Ratings",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe, not a public rating"
     },
     {
      "name": "Collections by theme (healthy, budget, batch cooking)",
@@ -551,8 +565,8 @@
      "name": "Ratings",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
     },
     {
      "name": "Step photos",
@@ -565,15 +579,17 @@
      "name": "Nutrition facts",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
     },
     {
      "name": "Save via account (MyRecipes)",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save with no account, on this device (#saveBtn)",
+     "shows": "save recipes into collections"
     }
    ]
   },
@@ -608,8 +624,9 @@
      "name": "Bookmark recipes",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:135 History of the last 20 recipes, this device"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save (#saveBtn)",
+     "shows": "save recipes into collections"
     },
     {
      "name": "Comments on recipes",
@@ -651,15 +668,16 @@
      "name": "Ratings",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
     },
     {
      "name": "Nutrition facts",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
     },
     {
      "name": "Print",
@@ -680,8 +698,9 @@
      "name": "Macros on every recipe",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: protein, fat and carbs per serving on every recipe the table can read (#nutri)",
+     "shows": "kcal, protein, fat, carbs"
     },
     {
      "name": "WW points",
@@ -701,8 +720,8 @@
      "name": "Diet and appliance tags (air fryer, keto, gluten-free)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet tags under each recipe (vegetarian, vegan, gluten-free, ...; #tags); no appliance or keto tags"
     },
     {
      "name": "Paid meal plans (Relish+), printed planner",
@@ -751,8 +770,8 @@
      "name": "Ratings and comments",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars and notes per recipe, not public"
     },
     {
      "name": "Cook mode",
@@ -765,8 +784,8 @@
      "name": "Recipe notes, storage and make-ahead",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own notes per recipe (#myNote)"
     }
    ]
   },
@@ -824,8 +843,9 @@
      "name": "Diet browsing (vegan, gluten-free)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Vegan, gluten-free and four more in the Diets pane, and in the search (\"vegan pancakes\")",
+     "shows": "Diets and allergies \\(vegetarian, vegan"
     },
     {
      "name": "10 ingredients / 1 bowl / 30 minutes filters",
@@ -845,15 +865,16 @@
      "name": "Nutrition",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
     },
     {
      "name": "Ratings",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
     },
     {
      "name": "Print",
@@ -866,11 +887,8 @@
   }
  },
  "union_gaps": [
-  "Nutrition per serving (calories, macros): allrecipes.com, yummly.com, bbcgoodfood.com, simplyrecipes.com, seriouseats.com, skinnytaste.com, minimalistbaker.com",
-  "Diet and allergy filters, exclude ingredients: yummly.com, tasty.co, allrecipes.com, minimalistbaker.com, skinnytaste.com, epicurious.com, cookpad.com (paid)",
-  "Kept shopping list across recipes, and send to a grocery cart: yummly.com, allrecipes.com, tasty.co, bbcgoodfood.com, epicurious.com, skinnytaste.com",
-  "Saved recipes / collections (Verse keeps only history): allrecipes.com, yummly.com, tasty.co, cookpad.com, epicurious.com, delish.com, bbcgoodfood.com, food52.com",
-  "Ratings and reviews with cook tips and photos: allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
+  "Send the shopping list to a grocery cart (the kept list across recipes is built, 2026-10-25): yummly.com, allrecipes.com, tasty.co, bbcgoodfood.com, epicurious.com, skinnytaste.com",
+  "Public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
   "Meal planner: yummly.com (paid), allrecipes.com, bbcgoodfood.com, skinnytaste.com, budgetbytes.com (paid)",
   "Browse by category, cuisine, time, occasion: allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
   "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
