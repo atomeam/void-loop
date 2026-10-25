@@ -43,7 +43,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'password strength', 'random number', 'random user', 'stopwatch', 'time zones', 'wheel', 'word count']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'random number', 'random user', 'stopwatch', 'time zones', 'wheel', 'word count']);
   const has = (t) => score(t, models).has;
   assert.deepEqual(has('OKLCH'), ['OKLCH']); assert.deepEqual(has('Hunter Lab'), ['Hunter Lab']); assert.deepEqual(has('CIE Lab'), ['CIELab']); assert.deepEqual(has('CIELCH'), ['CIELCh']); assert.deepEqual(has('CIELUV'), ['CIELUV']);
   // hexcolor16.com's list, as the owner read it off the page on 2026-10-24
@@ -161,31 +161,6 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   } finally { await b.close(); server.close(); }
 });
 
-test('Verse\'s own /password-strength/ answers the password strength floor: qwerty123 typed into its box (never its address) scores the whole truth and its asked parts, and the page shows every fact and the leak check at load', async (t) => {
-  const http = await import('node:http'), fsm = await import('node:fs');
-  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
-  if (!exe) return t.skip('no browser here');
-  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
-  const root = new URL('../void-live-deploy/', import.meta.url);
-  const server = http.createServer((q, r) => {
-    const u = q.url.split('?')[0], file = new URL('.' + (u.endsWith('/') ? u + 'index.html' : u), root);
-    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
-    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
-  }).listen(0);
-  await new Promise((r) => server.once('listening', r));
-  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, p = probeFor('password strength');
-  try {
-    assert.equal(p.ask.verseType, 'qwerty123'); assert.ok(!p.ask.verse.includes('qwerty'), 'the password is never in the address');
-    const typed = await answer(b, at(p.ask.verse), p.ask.verseType, false, false);
-    assert.ok(typed && !typed.includes('qwerty123'), 'what was typed is taken out of the answer');
-    const truth = score(typed, p.truth); assert.equal(truth.n, 5, 'the truth: ' + truth.missing.join(', '));
-    for (const [a, items] of Object.entries(p.askParts)) { const s = score(typed, items); assert.equal(s.n, s.of, a + ': ' + s.missing.join(', ')); }
-    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/password-strength/'), { waitUntil: 'load' });
-    const text = await pg.evaluate(() => document.body.innerText); await ctx.close();
-    const facts = score(text, p.facts); assert.equal(facts.n, facts.of, 'facts at load: ' + facts.missing.join(', '));
-    assert.equal(score(text, p.parts['leak check']).n, 1, 'a leak check offered at load');
-  } finally { await b.close(); server.close(); }
-});
 test('Verse\'s own /base64/ answers the encoder floor both ways the gate asks: the text in its link, and the text typed into its box', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
@@ -271,5 +246,6 @@ test('the time zones probe: Tokyo now worked out from its zone rules, read in 12
   const verse = 'Time in Tokyo\n' + ((h % 12) || 12) + ':' + mm + ':30 ' + (h < 12 ? 'AM' : 'PM') + '\nSunday, ' + n.month + ' ' + n.day + ', 2026\nAsia/Tokyo · GMT+9 · UTC+9';
   const site = 'Current Local Time in Tokyo, Japan\n' + h + ':' + mm + ':30\nSunday, ' + n.day + ' ' + n.month + ' 2026\nUTC/GMT +9 hours';
   assert.equal(score(verse, p.truth).n, 3); assert.equal(score(site, p.truth).n, 3); assert.equal(score(off + ':' + mm + ' UTC+10', p.truth).n, 0);
-  assert.equal(probeFor('calculator').truth, null, "calculator.net's address cannot carry a sum: accuracy unverified"); assert.ok(probeFor('calculator').facts.length >= 15);
+  // the calculator's truth is Verse's own answer to "17% of 240" through its page link (2026-10-25: accuracy is judged against the worked-out answer, never the rival)
+  assert.equal(probeFor('calculator').ask.verse, '/calculator/?q=17%25%20of%20240'); assert.equal(score('17% of 240 = 40.8', probeFor('calculator').truth).n, 1); assert.equal(score('40.80 or 408', probeFor('calculator').truth).n, 0); assert.ok(probeFor('calculator').facts.length >= 15);
 });

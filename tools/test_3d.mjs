@@ -522,6 +522,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const typed = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('tcalc'); return s && !s.pending && s.display === '84' ? s : false; }), 30000);
     check('miniatures: the stopwatch\u2019s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, \u00d7, 7, = and then shows 84 ("15% of 240" types 15%\u00d7240)',
       r.sw.second && r.sw.minute && r.typing.pending > 0 && r.typing.keysInside === true && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
+    // the keys work by hand (owner, 2026-10-25: "the buttons are pressing but nothing is showing up"): 7 + 5 = 12, × 3 = 36, C, 9 % = 0.09, 5 ± = -5, . 5 = 0.5, 8 ÷ 0 = Error
+    const hand = await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const cm = await m.mountMiniature(document.getElementById('mc'), 'calculator', {}, { key: 'tcalc2' }); const P = (...ks) => { for (const k of ks) cm.inst.press(k); return cm.inst.state().display; };
+      return [P('7', '+', '5', '='), P('×', '3', '='), P('C'), P('9', '%'), P('C', '5', '±'), P('C', '.', '5'), P('C', '8', '÷', '0', '=')]; }).catch((e) => String(e));
+    check('miniatures: tapped keys work the calculator by hand (7 + 5 = 12, × 3 = 36, C 0, 9 % 0.09, 5 ± -5, . 5 0.5, 8 ÷ 0 Error)', Array.isArray(hand) && hand.join(' ') === '12 36 0 0.09 -5 0.5 Error', JSON.stringify(hand));
     await F.ask('make a calculator', 600);
     const card = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:calc')); return l && l.draws > 0 && !!document.querySelector('.calc-card .void-mini canvas') ? window.__voidMini.state(l.key) : false; }), 60000);
     await F.ask('calculate 12*7', 600);

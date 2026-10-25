@@ -30,12 +30,18 @@ export function towerHtml(t, esc) {
   const row = (f) => '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">'
     + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>'
     + (f.state === 'current' ? '<ul class="tw-aspects">' + aspectRows(f).map((r) => '<li data-v="' + r.v + '">' + MARK[r.v] + ' ' + esc(r.a) + '</li>').join('') + '</ul>' : '') + '</button>';
+  // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
+  // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
+  const links = (f) => (f.url || f.page ? '<div class="tw-links" style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
+    + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '')
+    + (f.page ? '<a href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '')
+    + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>' : '');
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   return TW_CSS + '<div class="tw"><div class="tw-head">The tower</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) : '') + won.map(row).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>' + takeHtml(t, esc)
+    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + won.map((f) => row(f) + links(f)).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>' + takeHtml(t, esc)
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
 /** Verse's take, from what is measured and what was built, never invented (owner, 2026-10-24: a take on the current opponent, and "include its

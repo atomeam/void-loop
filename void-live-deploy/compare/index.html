@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Side by side: Verse and the site it is up against</title>
+<meta name="description" content="Verse's page and the site it is measured against, side by side, with where each aspect stands.">
+<meta property="og:title" content="Side by side"><meta property="og:description" content="Verse's page beside the site it is up against."><meta property="og:image" content="https://a-to-mind.com/og.png">
+<link rel="modulepreload" href="/lib/tower.js">
+<style>
+  :root{color-scheme:dark}html,body{margin:0;height:100%;background:#07070b;color:#eee;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+  header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 12px;border-bottom:1px solid #2a2a36;background:#0d0d14}
+  header a{color:#d8b45a}header .st{opacity:.85}header .st b{color:#9df09d}header .st i{color:#f0b35a;font-style:normal}
+  main{display:grid;grid-template-columns:1fr 1fr;height:calc(100% - 46px)}
+  section{display:flex;flex-direction:column;min-width:0}section h2{margin:0;padding:5px 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#aaa;border-bottom:1px solid #2a2a36;display:flex;justify-content:space-between;gap:8px}
+  iframe{flex:1;border:0;width:100%;background:#fff}
+  .fallback{flex:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center}
+  .fallback.on{display:flex}button{font:inherit;padding:8px 14px;border-radius:999px;border:1px solid #d8b45a;background:transparent;color:#eee;cursor:pointer}
+  @media (max-width:700px){main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/tower.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">The tower</a></header>
+<main>
+  <section><h2><span>Verse</span><a id="vo" href="/" target="_blank" rel="noopener">open</a></h2><iframe id="vf" title="Verse's page" src="about:blank"></iframe></section>
+  <section><h2><span id="sn">The site</span><a id="so" href="#" target="_blank" rel="noopener noreferrer">open</a></h2><iframe id="sf" title="The site" src="about:blank" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+    <div class="fallback" id="fb"><p>This site does not allow itself to be shown inside another page.</p><button type="button" id="beside">Open it in a window beside this one</button></div></section>
+</main>
+<script type="module">
+  import { FLOORS, tower } from '/lib/tower.js';
+  const q = new URLSearchParams(location.search), id = (q.get('floor') || '').toLowerCase(), f = FLOORS.find((x) => x.id === id || x.aka === id) || null;
+  const $ = (i) => document.getElementById(i);
+  if (!f) { $('who').textContent = 'Side by side: say which floor, /compare/?floor=' + (FLOORS[0] && FLOORS[0].id); }
+  else {
+    const vp = f.page || ('/?q=' + encodeURIComponent(f.ask || '')), site = f.url;
+    document.title = 'Side by side: Verse and ' + f.site; $('who').textContent = 'Verse and ' + f.site + ', side by side';
+    $('vo').href = vp; $('vf').src = vp; $('sn').textContent = f.site; $('so').href = site; $('sf').src = site;
+    // most sites refuse a frame (X-Frame-Options); the frame then stays blank, so after a moment the way round is offered: a second window on the other half of the screen
+    const beside = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };
+    $('beside').onclick = beside;
+    setTimeout(() => { let blank = true; try { blank = !$('sf').contentDocument || !$('sf').contentDocument.body || !$('sf').contentDocument.body.childElementCount; } catch (_) { blank = false; } // cross-origin and loaded: not ours to read, so it is showing
+      if (blank) { $('sf').style.display = 'none'; $('fb').classList.add('on'); } }, 4000);
+    // where each aspect stands, from the gate's last verdicts
+    fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
+      $('st').innerHTML = (fl.beaten ? '<b>surpassed</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : ''); }).catch(() => {});
+  }
+</script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 /**
  * calculator miniature — a solar pocket calculator on the desk (charcoal case, solar strip, seven-segment LCD with ghost
  * segments, sculpted keys). When the card gets a new sum the keys press one by one for the expression, the display
- * follows what was typed, then "=" and the result. Tapping a key presses it.
+ * follows what was typed, then "=" and the result. Tapping a key works it as a real calculator (owner, 2026-10-25: "the buttons are
+ * pressing but nothing is showing up"): digits and the point type, + − × ÷ chain, = answers, C clears, ± and % act on what is typed.
  * data: { expression: '12*7', result: '84', typed?: bool (true = play the key presses now) }
  */
 const W = 0.074, L = 0.118, T = 0.01;
@@ -117,9 +118,25 @@ export default function build(ctx, data) {
     else { queue = []; show(d.result !== undefined && d.result !== '' ? fitDisplay(d.result) : '0', ''); }
   }
   apply(d, true);
-  ctx.onTap((hits) => { const o = hits && hits.find((h) => h.object.userData.key); if (o) { keys.get(o.object.userData.key).t = 1; ctx.requestRender(); } });
+  // a tapped key works the calculator by hand: a four-function pocket calculator's rules (a new number after an operator or =; = repeats nothing)
+  let cur = '', acc = null, pend = '', fresh = true;
+  const num = () => (cur === '' || cur === '-' ? (acc === null ? 0 : acc) : Number(cur));
+  const run = (a, o, b) => (o === '+' ? a + b : o === '−' ? a - b : o === '×' ? a * b : o === '÷' ? (b === 0 ? NaN : a / b) : b);
+  function press(lab) {
+    queue = []; const k = keys.get(lab); if (k) k.t = 1;
+    if (/[0-9]/.test(lab)) { if (fresh) cur = ''; if (cur === '0') cur = ''; if (cur.replace(/[-.]/g, '').length < 10) cur += lab; fresh = false; show(cur || '0', pend); }
+    else if (lab === '.') { if (fresh) cur = ''; if (!cur.includes('.')) cur = (cur || '0') + '.'; fresh = false; show(cur, pend); }
+    else if (lab === 'C') { cur = ''; acc = null; pend = ''; fresh = true; show('0', ''); }
+    else if (lab === '±') { cur = cur === '' || cur === '0' ? (acc === null ? '0' : fitDisplay(-acc)) : cur.startsWith('-') ? cur.slice(1) : '-' + cur; if (acc !== null && (cur === '0' || fresh)) acc = -acc; show(cur, pend); }
+    else if (lab === '%') { const v = pend && acc !== null ? acc * num() / 100 : num() / 100; cur = fitDisplay(v); fresh = true; show(cur, pend); }
+    else if (lab === '=') { const v = pend ? run(acc, pend, num()) : num(); if (!isFinite(v)) { cur = ''; acc = null; pend = ''; fresh = true; show('Error', ''); } else { acc = v; cur = ''; pend = ''; fresh = true; show(fitDisplay(v), ''); } }
+    else { const v = pend && !fresh ? run(acc, pend, num()) : num(); if (!isFinite(v)) { cur = ''; acc = null; pend = ''; fresh = true; show('Error', ''); } else { acc = v; cur = ''; pend = lab; fresh = true; show(fitDisplay(v), lab); } }
+    ctx.requestRender();
+  }
+  ctx.onTap((hits) => { const o = hits && hits.find((h) => h.object.userData.key); if (o) press(o.object.userData.key); });
   return {
     update(nd) { apply(nd, false); ctx.requestRender(); },
+    press,
     state: () => ({ display: shown, op, pending: queue.length, keysInside }), // for tests (keysInside: the last row ends inside the case)
     tick(dt) {
       let moved = false;

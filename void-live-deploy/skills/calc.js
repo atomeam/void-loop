@@ -230,6 +230,8 @@ function mount(th, stageApi) {
   stageApi.miniature(calcHost, 'calculator', { expression: th.expression || '', result: th.result || '', typed: typed === th.id + '|' + th.expression },
     { key: 'calculator:' + th.id, label: '3D calculator' + (th.result ? ' showing ' + th.result : '') }).catch(() => calcHost.remove());
   stageApi.bindDrag(el, th);
+  // the full page (owner, 2026-10-25: "theres no link to /calculator"): the scientific calculator with history and unit conversion, offline
+  if (!(typeof location !== 'undefined' && /^\/calculator\//.test(location.pathname))) { const full = document.createElement('p'); full.className = 'calc-full'; full.style.cssText = 'text-align:center;font-size:13px;margin:4px 0 2px'; const a = document.createElement('a'); a.href = '/calculator/' + (th.expression ? '?e=' + encodeURIComponent(th.expression) : ''); a.style.color = 'inherit'; a.textContent = 'The full calculator page: scientific keys, memory, history, units'; a.addEventListener('pointerdown', (e) => e.stopPropagation()); full.appendChild(a); el.appendChild(full); }
   stageApi.stage.appendChild(el);
 }
 
