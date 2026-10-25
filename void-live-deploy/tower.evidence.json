@@ -3342,6 +3342,288 @@
     "at": "2026-10-25T06:52:56.358Z",
     "of": 10
    }
+  },
+  "translate: translator.eu": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 122,
+    "best": 710,
+    "evidence": "Verse (/translate/?q=hello&to=es) 122 ms to the load event (median of 3, phone width) vs translator.eu 710 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs translator.eu 3 of 3 loads answered",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs translator.eu 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs translator.eu 0 unnamed controls or images",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs translator.eu 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs translator.eu 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not translator.eu (the site is not asked)",
+    "at": "2026-10-25T06:53:43.032Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs translator.eu 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), translator.eu (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:53:43.032Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs translator.eu 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:53:43.032Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translator.eu 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T06:53:43.032Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translator.eu 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:53:43.032Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs translator.eu 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:53:43.032Z",
+    "of": 10
+   }
+  },
+  "translate: onlinedoctranslator.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 119,
+    "best": 704,
+    "evidence": "Verse (/translate/?q=hello&to=es) 119 ms to the load event (median of 3, phone width) vs onlinedoctranslator.com 704 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs onlinedoctranslator.com 3 of 3 loads answered",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs onlinedoctranslator.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs onlinedoctranslator.com 0 unnamed controls or images",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs onlinedoctranslator.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onlinedoctranslator.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not onlinedoctranslator.com (the site is not asked)",
+    "at": "2026-10-25T06:54:09.980Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs onlinedoctranslator.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), onlinedoctranslator.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:54:09.980Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs onlinedoctranslator.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:54:09.980Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs onlinedoctranslator.com 1 of 2 shown (Verse lacks: none; site lacks: listen)",
+    "at": "2026-10-25T06:54:09.980Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs onlinedoctranslator.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:54:09.980Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 4,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs onlinedoctranslator.com 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:54:09.980Z",
+    "of": 10
+   }
+  },
+  "translate: translatedict.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 140,
+    "best": 678,
+    "evidence": "Verse (/translate/?q=hello&to=es) 140 ms to the load event (median of 3, phone width) vs translatedict.com 678 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs translatedict.com 3 of 3 loads answered",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs translatedict.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs translatedict.com 0 unnamed controls or images",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs translatedict.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs translatedict.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not translatedict.com (the site is not asked)",
+    "at": "2026-10-25T06:54:30.295Z",
+    "of": 2
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs translatedict.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), translatedict.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T06:54:30.295Z"
+   },
+   "language count": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs translatedict.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+    "at": "2026-10-25T06:54:30.295Z",
+    "of": 1,
+    "part": true
+   },
+   "speech in and out": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translatedict.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T06:54:30.295Z",
+    "of": 2,
+    "part": true
+   },
+   "camera text": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translatedict.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+    "at": "2026-10-25T06:54:30.295Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs translatedict.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T06:54:30.295Z",
+    "of": 10
+   }
   }
  }
 }
