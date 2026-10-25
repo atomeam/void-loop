@@ -3034,59 +3034,59 @@
   "random generators": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 136,
-    "best": 636,
-    "evidence": "Verse (/generators/) 136 ms to the load event (median of 3, phone width) vs perchance.org 636 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T17:09:55.493Z"
+    "verse": 141,
+    "best": 612,
+    "evidence": "Verse (/generators/) 141 ms to the load event (median of 3, phone width) vs perchance.org 612 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs perchance.org 3 of 3 loads answered",
-    "at": "2026-10-25T17:09:55.493Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs perchance.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T17:09:55.493Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs perchance.org 0 unnamed controls or images",
-    "at": "2026-10-25T17:09:55.493Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "offline": {
-    "verdict": "better",
-    "verse": 1,
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T17:09:55.493Z"
+    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs perchance.org 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T17:09:55.493Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T17:09:55.493Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not perchance.org (the site is not asked)",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 2
    },
    "generator catalogue": {
@@ -3094,7 +3094,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 1,
     "part": true
    },
@@ -3103,16 +3103,17 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "equal-and-better",
-    "verse": 1,
+    "verdict": "worse",
+    "verse": 0,
     "best": 1,
-    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T17:09:55.493Z",
+    "evidence": "Verse (/generators/) 0 of 1 shown for the question (Verse lacks: a generated picture within 60 s (the page showed: \"150 pictures left today for everyone · The painter is resting right now. Try again in a minute.\")); judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.224Z",
+    "was": "equal-and-better",
     "of": 1,
     "part": true
    },
@@ -3121,7 +3122,7 @@
     "verse": 10,
     "best": 0,
     "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs perchance.org 0 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 16
    },
    "list language": {
@@ -3129,7 +3130,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 2,
     "part": true
    },
@@ -3138,7 +3139,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T17:09:55.493Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 4,
     "part": true
    }
