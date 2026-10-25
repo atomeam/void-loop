@@ -1788,53 +1788,53 @@
   },
   "translate": {
    "speed": {
-    "verdict": "better",
-    "verse": 225,
-    "best": 556,
-    "evidence": "Verse 225 ms to the load event (median of 3, phone width) vs Google Translate 556 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:57:42.670Z"
+    "verdict": "equal-and-better",
+    "verse": 173,
+    "best": 509,
+    "evidence": "Verse 173 ms to the load event (median of 3, phone width) vs Google Translate 509 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Translate 3 of 3 loads answered",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Translate 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Translate 0 unnamed controls or images",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Translate 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Translate 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs Google Translate 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Translate (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T05:57:42.670Z"
+    "at": "2026-10-25T06:01:29.196Z"
    }
   },
   "recipes": {
