@@ -25,7 +25,9 @@ const MARK = { won: '✓', lost: '✗', open: '·' };
 export const aspectRows = (f) => (f.aspects || []).map((a) => ({ a, v: f.lost.includes(a) ? 'lost' : f.left.includes(a) ? 'open' : 'won' }));
 /** the stack scrolled to its top, where the current site is (call after drawing). */
 export function centerOnYou(root) { const stack = root && root.querySelector('.tw-stack'); if (stack) stack.scrollTop = 0; }
-export function towerHtml(t, esc) {
+/** the floors as the 3D tower wants them (skills/mini/tower.js): id, site, state, n of m, Verse's page. Pure. */
+export const miniFloors = (t) => t.floors.map((f) => ({ id: f.id, site: f.site, state: f.state, n: f.n, m: f.m, page: f.page ? f.page.replace(/\?.*$/, '') : '' }));
+export function towerHtml(t, esc, { mini = false } = {}) {
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
   const row = (f) => '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">'
     + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>'
@@ -41,7 +43,9 @@ export function towerHtml(t, esc) {
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   return TW_CSS + '<div class="tw"><div class="tw-head">The tower</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + won.map((f) => row(f) + links(f)).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>' + takeHtml(t, esc)
+    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + won.map((f) => row(f) + links(f)).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
+    // the 3D tower's host (owner, 2026-10-25: "some things are missing, like a 3d tower"): the card mounts skills/mini/tower.js into it after each draw
+    + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '') + takeHtml(t, esc)
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
 /** Verse's take, from what is measured and what was built, never invented (owner, 2026-10-24: a take on the current opponent, and "include its
@@ -95,12 +99,18 @@ async function run(text, api) {
     el.classList.add('tower-card');
     el.innerHTML = '<div class="tw-root"></div><div class="tw-live" data-share-skip aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div><div class="tw-updated" style="text-align:center;font-size:11px;opacity:.55;margin-top:6px"></div>';
     const root = el.querySelector('.tw-root'), live = el.querySelector('.tw-live'), stamp = el.querySelector('.tw-updated');
-    let picked = 0, shown = false;
+    let picked = 0, shown = false, mini = !!(api.stage && api.stage.miniature);
+    const miniKey = 'tower:' + Date.now().toString(36);
+    const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
     const draw = (flash) => {
       const keep = root.querySelector('.mk-stack'), was = keep ? keep.scrollTop : -1; // a redraw keeps where the person scrolled to; the first draw centres on the fight
-      root.innerHTML = towerHtml(t, esc); stamp.textContent = 'updated ' + clock();
+      root.innerHTML = towerHtml(t, esc, { mini }); stamp.textContent = 'updated ' + clock();
       if (was >= 0) root.querySelector('.mk-stack').scrollTop = was; else { centerOnYou(root); setTimeout(() => centerOnYou(root), 80); } // again once the card has its size
       if (picked) { const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); }
+      // the 3D tower (skills/mini/tower.js): the same key moves the live one into the fresh host and hands it the new floors; tapping a floor picks it
+      const host = root.querySelector('.tw-mini');
+      if (host) api.stage.miniature(host, 'tower', { floors: miniFloors(t), onFloor: (id) => pick(t.floors.find((x) => x.id === id)) }, { key: miniKey, label: '3D tower: ' + t.beaten + ' floors surpassed; tap a floor to read it; drag to look around', ground: 'none' })
+        .catch(() => { mini = false; host.remove(); });
       (flash || []).forEach((id) => { const b = root.querySelector('[data-id="' + id + '"]'); if (b && b.animate) b.animate([{ background: '#6a3d9a' }, { background: '' }], 1800); });
     };
     el.addEventListener('click', (e) => { const b = e.target.closest('.tower-floor'); if (!b) return; picked = +b.dataset.floor; const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); });

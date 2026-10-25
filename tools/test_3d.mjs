@@ -270,6 +270,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     check('growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmounting frees it',
       ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.growing === true && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the 3D tower (owner, 2026-10-25: "some things are missing, like a 3d tower") through the same contract: 25 floors, 20 surpassed, then 21
+  if (want("3d: the tower")) {
+    const floors = (beaten) => [...Array.from({ length: beaten }, (_, i) => ({ id: 'b' + i, site: 'site' + i + '.example', state: 'beaten', n: 11, m: 11, page: '/p/' })),
+      { id: 'cur', site: 'now.example', state: 'current', n: 4, m: 11 }, ...Array.from({ length: 24 - beaten }, (_, i) => ({ id: 'a' + i, site: 'ahead' + i + '.example', state: 'ahead', n: 0, m: 9 }))];
+    const c = await miniContract(fresh, { kind: 'tower', a: { floors: floors(20) }, b: { floors: floors(21) }, settledWhen: 'rising' });
+    const ok = (r) => r.drawn && r.colours > 30 && r.same && r.stateA && r.stateA.floors === 25 && r.stateA.labelled === 13 && r.stateA.current === 20 && r.stateA.cut === 8 && r.stateA.drawn === 24
+      && r.stateB.current === 21 && r.stateB.cut === 9 && r.stateB.labelled === 13 && r.redrew && r.settled && r.freed;
+    check('3D tower miniature: draws real pixels from 25 floors (20 surpassed, the current one, the next 3 of the queue as outlines), names the last 12 surpassed plus the current one and counts 8 cut below, a remount by key moves the live one, a 21st conquest shows on the canvas, it turns while idle but holds still under reduced motion (no redraws), and unmounting frees it',
+      ok(c.moving) && ok(c.still) && c.moving.stateA.turning === true && c.still.stateA.turning === false && c.still.idleDraws === 0 && !c.errors.length, JSON.stringify(c));
+  }
   // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
   if (want("3d: \"growth\"")) {
     const F = await fresh();
