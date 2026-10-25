@@ -4,59 +4,59 @@
   "calculator": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 102,
-    "best": 71,
-    "evidence": "Verse (/calculator/) 102 ms to the load event (median of 3, phone width) vs calculator.net 71 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-25T11:35:30.349Z"
+    "verse": 123,
+    "best": 75,
+    "evidence": "Verse (/calculator/) 123 ms to the load event (median of 3, phone width) vs calculator.net 75 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calculator/) 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-25T11:35:30.349Z"
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calculator/) 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:35:30.349Z"
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/calculator/) 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
-    "at": "2026-10-25T11:35:30.349Z"
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:35:30.349Z"
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/calculator/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:35:30.349Z"
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 46,
-    "evidence": "Verse (/calculator/) 1 design defects vs calculator.net 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.30), calculator.net (0 low-contrast texts, 46 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:35:30.349Z"
+    "evidence": "Verse (/calculator/) 0 design defects vs calculator.net 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calculator.net (0 low-contrast texts, 46 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T18:22:50.324Z"
    },
    "history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 of 1 shown vs calculator.net 0 of 1 shown (Verse lacks: none; site lacks: a history of results)",
-    "at": "2026-10-25T11:35:30.349Z",
+    "at": "2026-10-25T18:22:50.324Z",
     "of": 1,
     "part": true
    },
@@ -65,24 +65,24 @@
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/calculator/) 3 of 3 shown vs calculator.net 1 of 3 shown (Verse lacks: none; site lacks: scientific functions, unit conversion)",
-    "at": "2026-10-25T11:35:30.349Z",
+    "at": "2026-10-25T18:22:50.324Z",
     "of": 3,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
-    "best": 6,
-    "evidence": "Verse (/calculator/) 17 of 17 things a full answer shows vs calculator.net 6 of 17 things a full answer shows (Verse lacks: none; site lacks: brackets, powers, roots, sin, cos and tan, inverse trig, logarithms, pi, factorial, percent, history of results, keyboard input)",
-    "at": "2026-10-25T11:35:30.349Z",
-    "of": 17
+    "verse": 21,
+    "best": 9,
+    "evidence": "Verse (/calculator/) 21 of 22 things a full answer shows vs calculator.net 9 of 22 things a full answer shows (Verse lacks: Memory M+ M- MR; site lacks: brackets, powers, roots, sin, cos and tan, inverse trig, logarithms, pi, factorial, percent, history of results, keyboard input, Memory M+ M- MR, Ans key)",
+    "at": "2026-10-25T18:22:50.324Z",
+    "of": 22
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/calculator/) 1 of 1 right against the worked-out answer; judged against the standard, not calculator.net (the site is not asked)",
-    "at": "2026-10-25T11:35:30.349Z",
+    "at": "2026-10-25T18:22:50.324Z",
     "of": 1
    }
   },
@@ -2168,52 +2168,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 267,
-    "best": 449,
-    "evidence": "Verse 267 ms to the load event (median of 3, phone width) vs ESPN 449 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T18:12:31.934Z"
+    "verse": 214,
+    "best": 455,
+    "evidence": "Verse 214 ms to the load event (median of 3, phone width) vs ESPN 455 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T18:12:31.934Z"
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T18:12:31.934Z"
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 36,
     "evidence": "Verse 0 unnamed controls or images vs ESPN 36 unnamed controls or images",
-    "at": "2026-10-25T18:12:31.934Z"
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T18:12:31.934Z"
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T18:12:31.934Z"
+    "at": "2026-10-25T18:22:11.126Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 50,
-    "evidence": "Verse 0 design defects vs ESPN 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (39 low-contrast texts, 11 small tap targets, layout shift 0.02)",
-    "at": "2026-10-25T18:12:31.934Z"
+    "evidence": "Verse 0 design defects vs ESPN 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (39 low-contrast texts, 11 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T18:22:11.126Z"
    }
   },
   "finance": {
