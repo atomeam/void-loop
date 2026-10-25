@@ -6345,70 +6345,70 @@
     "of": 15
    }
   },
-  "calendar: any.do": {
+  "calendar: calendar.zoho.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 100,
-    "best": 2298,
-    "evidence": "Verse (/calendar/) 100 ms to the load event (median of 3, phone width) vs any.do 2298 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:39:47.718Z"
+    "verse": 104,
+    "best": 2037,
+    "evidence": "Verse (/calendar/) 104 ms to the load event (median of 3, phone width) vs calendar.zoho.com 2037 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs any.do 3 of 3 loads answered",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.zoho.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs any.do 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.zoho.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs any.do 0 unnamed controls or images",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.zoho.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs any.do 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.zoho.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
-    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs any.do 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.zoho.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
-    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not any.do (the site is not asked)",
-    "at": "2026-10-25T14:39:47.718Z",
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.zoho.com (the site is not asked)",
+    "at": "2026-10-25T14:39:59.338Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 136,
-    "evidence": "Verse (/calendar/) 1 design defects vs any.do 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), any.do (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:39:47.718Z"
+    "evidence": "Verse (/calendar/) 1 design defects vs calendar.zoho.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.zoho.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:39:59.338Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs any.do 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:39:47.718Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:39:59.338Z",
     "of": 2,
     "part": true
    },
@@ -6416,8 +6416,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/calendar/) 3 of 3 shown vs any.do 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:39:47.718Z",
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.zoho.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:39:59.338Z",
     "of": 3,
     "part": true
    },
@@ -6425,8 +6425,8 @@
     "verdict": "better",
     "verse": 2,
     "best": 0,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs any.do 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:39:47.718Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:39:59.338Z",
     "of": 2,
     "part": true
    },
@@ -6434,75 +6434,75 @@
     "verdict": "better",
     "verse": 13,
     "best": 4,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs any.do 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:39:47.718Z",
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.zoho.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:39:59.338Z",
     "of": 15
    }
   },
-  "calendar: cozi.com": {
+  "calendar: icloud.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 114,
-    "best": 1447,
-    "evidence": "Verse (/calendar/) 114 ms to the load event (median of 3, phone width) vs cozi.com 1447 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:40:23.381Z"
+    "verse": 117,
+    "best": 2095,
+    "evidence": "Verse (/calendar/) 117 ms to the load event (median of 3, phone width) vs icloud.com 2095 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs cozi.com 3 of 3 loads answered",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs icloud.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs cozi.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs icloud.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs cozi.com 0 unnamed controls or images",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs icloud.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs cozi.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs icloud.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
-    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs cozi.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs icloud.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
-    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not cozi.com (the site is not asked)",
-    "at": "2026-10-25T14:40:23.381Z",
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not icloud.com (the site is not asked)",
+    "at": "2026-10-25T14:40:31.217Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 136,
-    "evidence": "Verse (/calendar/) 1 design defects vs cozi.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), cozi.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:40:23.381Z"
+    "evidence": "Verse (/calendar/) 1 design defects vs icloud.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), icloud.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:40:31.217Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs cozi.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:40:23.381Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs icloud.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:40:31.217Z",
     "of": 2,
     "part": true
    },
@@ -6510,8 +6510,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/calendar/) 3 of 3 shown vs cozi.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:40:23.381Z",
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs icloud.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:40:31.217Z",
     "of": 3,
     "part": true
    },
@@ -6519,8 +6519,8 @@
     "verdict": "better",
     "verse": 2,
     "best": 0,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs cozi.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:40:23.381Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs icloud.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:40:31.217Z",
     "of": 2,
     "part": true
    },
@@ -6528,75 +6528,75 @@
     "verdict": "better",
     "verse": 13,
     "best": 4,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs cozi.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:40:23.381Z",
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs icloud.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:40:31.217Z",
     "of": 15
    }
   },
-  "calendar: proton.me": {
+  "calendar: calendar.yahoo.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 120,
-    "best": 1999,
-    "evidence": "Verse (/calendar/) 120 ms to the load event (median of 3, phone width) vs proton.me 1999 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:40:53.127Z"
+    "verse": 112,
+    "best": 1987,
+    "evidence": "Verse (/calendar/) 112 ms to the load event (median of 3, phone width) vs calendar.yahoo.com 1987 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs proton.me 3 of 3 loads answered",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.yahoo.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs proton.me 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.yahoo.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs proton.me 0 unnamed controls or images",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.yahoo.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs proton.me 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.yahoo.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
-    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs proton.me 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.yahoo.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
-    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not proton.me (the site is not asked)",
-    "at": "2026-10-25T14:40:53.127Z",
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.yahoo.com (the site is not asked)",
+    "at": "2026-10-25T14:41:02.791Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 136,
-    "evidence": "Verse (/calendar/) 1 design defects vs proton.me 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), proton.me (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:40:53.127Z"
+    "evidence": "Verse (/calendar/) 1 design defects vs calendar.yahoo.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.yahoo.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:41:02.791Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs proton.me 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:40:53.127Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.yahoo.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:41:02.791Z",
     "of": 2,
     "part": true
    },
@@ -6604,8 +6604,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/calendar/) 3 of 3 shown vs proton.me 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:40:53.127Z",
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.yahoo.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:41:02.791Z",
     "of": 3,
     "part": true
    },
@@ -6613,8 +6613,8 @@
     "verdict": "better",
     "verse": 2,
     "best": 0,
-    "evidence": "Verse (/calendar/) 2 of 2 shown vs proton.me 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:40:53.127Z",
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.yahoo.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:41:02.791Z",
     "of": 2,
     "part": true
    },
@@ -6622,8 +6622,102 @@
     "verdict": "better",
     "verse": 13,
     "best": 4,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs proton.me 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:40:53.127Z",
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.yahoo.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:41:02.791Z",
+    "of": 15
+   }
+  },
+  "calendar: outlook.live.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 132,
+    "best": 2056,
+    "evidence": "Verse (/calendar/) 132 ms to the load event (median of 3, phone width) vs outlook.live.com 2056 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs outlook.live.com 3 of 3 loads answered",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs outlook.live.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs outlook.live.com 0 unnamed controls or images",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs outlook.live.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs outlook.live.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not outlook.live.com (the site is not asked)",
+    "at": "2026-10-25T14:41:34.098Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 136,
+    "evidence": "Verse (/calendar/) 1 design defects vs outlook.live.com 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), outlook.live.com (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:41:34.098Z"
+   },
+   "reminders": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs outlook.live.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
+    "at": "2026-10-25T14:41:34.098Z",
+    "of": 2,
+    "part": true
+   },
+   "invites": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 3 of 3 shown vs outlook.live.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
+    "at": "2026-10-25T14:41:34.098Z",
+    "of": 3,
+    "part": true
+   },
+   "recurring events": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/calendar/) 2 of 2 shown vs outlook.live.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
+    "at": "2026-10-25T14:41:34.098Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 4,
+    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs outlook.live.com 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
+    "at": "2026-10-25T14:41:34.098Z",
     "of": 15
    }
   }
@@ -6687,8 +6781,8 @@
   "mymemory.translated.net": "tower.icons/mymemory.translated.net.png",
   "icloud.com": "tower.icons/icloud.com.png",
   "outlook.live.com": "tower.icons/outlook.live.com.png",
-  "calendar.zoho.com": "tower.icons/calendar.zoho.com.ico",
-  "calendar.yahoo.com": "tower.icons/calendar.yahoo.com.ico",
+  "calendar.zoho.com": "tower.icons/calendar.zoho.com.png",
+  "calendar.yahoo.com": "tower.icons/calendar.yahoo.com.png",
   "proton.me": "tower.icons/proton.me.png",
   "docs.google.com": "tower.icons/docs.google.com.ico",
   "google.com": "tower.icons/google.com.png",
