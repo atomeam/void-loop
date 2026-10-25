@@ -3,61 +3,60 @@
  "floors": {
   "calculator": {
    "speed": {
-    "verdict": "worse",
-    "verse": 101,
-    "best": 60,
-    "evidence": "Verse (/calculator/) 101 ms to the load event (median of 3, phone width) vs calculator.net 60 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:08:57.205Z",
-    "was": "better"
+    "verdict": "equal-and-better",
+    "verse": 95,
+    "best": 132,
+    "evidence": "Verse (/calculator/) 95 ms to the load event (median of 3, phone width) vs calculator.net 132 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calculator/) 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calculator/) 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/calculator/) 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/calculator/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 46,
     "evidence": "Verse (/calculator/) 1 design defects vs calculator.net 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.30), calculator.net (0 low-contrast texts, 46 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T05:08:57.205Z"
+    "at": "2026-10-25T05:46:54.276Z"
    },
    "history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 of 1 shown vs calculator.net 0 of 1 shown (Verse lacks: none; site lacks: a history of results)",
-    "at": "2026-10-25T05:08:57.205Z",
+    "at": "2026-10-25T05:46:54.276Z",
     "of": 1,
     "part": true
    },
@@ -66,7 +65,7 @@
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/calculator/) 3 of 3 shown vs calculator.net 1 of 3 shown (Verse lacks: none; site lacks: scientific functions, unit conversion)",
-    "at": "2026-10-25T05:08:57.205Z",
+    "at": "2026-10-25T05:46:54.276Z",
     "of": 3,
     "part": true
    },
@@ -75,7 +74,7 @@
     "verse": 17,
     "best": 6,
     "evidence": "Verse (/calculator/) 17 of 17 things a full answer shows vs calculator.net 6 of 17 things a full answer shows (Verse lacks: none; site lacks: brackets, powers, roots, sin, cos and tan, inverse trig, logarithms, pi, factorial, percent, history of results, keyboard input)",
-    "at": "2026-10-25T05:08:57.205Z",
+    "at": "2026-10-25T05:46:54.276Z",
     "of": 17
    },
    "accuracy": {
@@ -83,7 +82,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/calculator/) 1 of 1 right against the worked-out answer; judged against the standard, not calculator.net (the site is not asked)",
-    "at": "2026-10-25T05:08:57.205Z",
+    "at": "2026-10-25T05:46:54.276Z",
     "of": 1
    }
   },
@@ -510,69 +509,68 @@
   },
   "unit converter": {
    "speed": {
-    "verdict": "worse",
-    "verse": 216,
-    "best": 126,
-    "evidence": "Verse (/convert/) 216 ms to the load event (median of 3, phone width) vs unitconverters.net 126 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:50:41.303Z",
-    "was": "better"
+    "verdict": "equal-and-better",
+    "verse": 117,
+    "best": 119,
+    "evidence": "Verse (/convert/) 117 ms to the load event (median of 3, phone width) vs unitconverters.net 119 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/) 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:50:41.303Z"
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/convert/) 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
-    "at": "2026-10-25T04:50:41.303Z"
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/) 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
-    "at": "2026-10-25T04:50:41.303Z"
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/) 1 (1: the page shows itself again with the network cut) vs unitconverters.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:50:41.303Z"
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/convert/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs unitconverters.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:50:41.303Z"
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/) 1 of 1 right against the worked-out answer; judged against the standard, not unitconverters.net (the site is not asked)",
-    "at": "2026-10-25T04:50:41.303Z",
+    "at": "2026-10-25T05:47:10.406Z",
     "of": 1
    },
    "design polish": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 0,
     "best": 1,
-    "evidence": "Verse (/convert/) 1 design defects vs unitconverters.net 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.28), unitconverters.net (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T04:50:41.303Z"
+    "evidence": "Verse (/convert/) 0 design defects vs unitconverters.net 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), unitconverters.net (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:47:10.406Z"
    },
    "unit breadth": {
     "verdict": "equal-and-better",
     "verse": 21,
     "best": 21,
     "evidence": "Verse (/convert/) 21 of 21 shown vs unitconverters.net 21 of 21 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T04:50:41.303Z",
+    "at": "2026-10-25T05:47:10.406Z",
     "of": 21,
     "part": true
    },
@@ -581,7 +579,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/convert/) 2 of 2 shown vs unitconverters.net 1 of 2 shown (Verse lacks: none; site lacks: swap)",
-    "at": "2026-10-25T04:50:41.303Z",
+    "at": "2026-10-25T05:47:10.406Z",
     "of": 2,
     "part": true
    },
@@ -590,67 +588,66 @@
     "verse": 26,
     "best": 23,
     "evidence": "Verse (/convert/) 26 of 26 things a full answer shows vs unitconverters.net 23 of 26 things a full answer shows (Verse lacks: none; site lacks: a swap or reverse control, the formula, precision)",
-    "at": "2026-10-25T04:50:41.303Z",
+    "at": "2026-10-25T05:47:10.406Z",
     "of": 26
    }
   },
   "password": {
    "speed": {
-    "verdict": "better",
-    "verse": 108,
+    "verdict": "equal-and-better",
+    "verse": 143,
     "best": 200,
-    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 108 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:09:15.097Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 143 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:09:15.097Z"
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T05:09:15.097Z"
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "reliability": {
-    "verdict": "unverified",
+    "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser; Verse 3 of 3; the other aspects are judged against the best score there is",
-    "at": "2026-10-25T05:09:15.097Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 loads answered vs passwordsgenerator.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 1 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:09:15.097Z"
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:09:15.097Z"
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 11,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 11 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
-    "at": "2026-10-25T05:09:15.097Z",
-    "was": "equal-and-better"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
+    "at": "2026-10-25T05:47:25.231Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 2 of 2 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T05:09:15.097Z",
+    "at": "2026-10-25T05:47:25.231Z",
     "of": 2
    },
    "completeness": {
@@ -658,7 +655,7 @@
     "verse": 20,
     "best": 20,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 20 of 20 things a full answer shows vs the bar (passwordsgenerator.net unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T05:09:15.097Z",
+    "at": "2026-10-25T05:47:25.231Z",
     "of": 20
    },
    "length and character choice": {
@@ -666,7 +663,7 @@
     "verse": 11,
     "best": 11,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 11 of 11 shown vs the bar (passwordsgenerator.net unreachable) 11 of 11 shown (Verse lacks: none)",
-    "at": "2026-10-25T05:09:15.097Z",
+    "at": "2026-10-25T05:47:25.231Z",
     "of": 11,
     "part": true
    },
@@ -675,7 +672,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 shown vs the bar (passwordsgenerator.net unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-25T05:09:15.097Z",
+    "at": "2026-10-25T05:47:25.231Z",
     "of": 3,
     "part": true
    }
