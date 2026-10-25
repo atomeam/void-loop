@@ -29,7 +29,7 @@ test('the prompt: the named scene as a late-90s pre-rendered game background, on
   assert.ok(p.endsWith(FRAMING)); assert.ok(p.includes(BACKDROP_STYLE));
   assert.equal(artPrompt('backdrop1 retro server room', 'backdrop'), p, 'artPrompt routes the kind');
   assert.equal(backdropPrompt('backdrop1 <b>x</b>; drop table'), 'a bxb drop table ' + BACKDROP_STYLE + ', ' + FRAMING, 'only letters, digits and spaces reach the painter');
-  assert.equal(refusal('a pikachu rooftop', 'backdrop'), 'brand', 'the same refusals as every picture');
+  assert.equal(refusal('a pikachu rooftop', 'backdrop'), '', 'brands and characters are drawn (owner, 2026-10-25)');
   assert.equal(refusal('retro server room', 'backdrop'), '');
 });
 
@@ -65,5 +65,5 @@ test('a card\'s cast shadow: the same box, 18 px lower, never a negative size; t
   assert.equal(SHADOW.dy, 18);
   assert.deepEqual(shadowRect({ x: 40.4, y: 60, w: 300, h: 200.6 }), { x: 40, y: 78, w: 300, h: 201 });
   assert.deepEqual(shadowRect({}), { x: 0, y: 18, w: 0, h: 0 });
-  assert.match(whyLine('cap'), /used up/); assert.match(whyLine('brand'), /famous/); assert.match(whyLine('nope'), /No scene this time/);
+  assert.match(whyLine('cap'), /used up/); assert.match(whyLine('nope'), /No scene this time/);
 });

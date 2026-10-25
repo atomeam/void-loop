@@ -95,9 +95,9 @@ test('the kill switch ART_OFF and a missing AI binding both leave the plate, and
   const n = world({ ai: false }); assert.equal((await (await post(n.env, 'cat')).json()).why, 'off');
 });
 
-test('refusals: a person, sexual or hateful words, a brand or artist, a key, the keeper: a plate and no model call', async () => {
+test('refusals: a person, sexual or hateful words, a key, the keeper: a plate and no model call', async () => {
   const { env, calls } = world();
-  const cases = [['Jane Smith', 'person', 'person'], ['nude beach', 'answer', 'unsuitable'], ['nazi flag', 'answer', 'unsuitable'], ['Mickey Mouse', 'answer', 'brand'], ['paint like Picasso', 'answer', 'brand'],
+  const cases = [['Jane Smith', 'person', 'person'], ['nude beach', 'answer', 'unsuitable'], ['nazi flag', 'answer', 'unsuitable'],
     ['sk-abcdefghijklmnopqrstuvwxyz0123456789', 'answer', 'secret'], ['ghp_' + 'a'.repeat(36), 'answer', 'secret'], ['   ', 'answer', null]]; // secret-scan: ok (made-up shapes)
   for (const [s, kind, why] of cases) {
     const r = await post(env, s, kind);
@@ -169,7 +169,7 @@ test('the Art Director (owner, 2026-10-18): a scene from the free text model lea
   assert.ok(w.calls[0].o.prompt.includes(STYLE_LOCK) && w.calls[0].o.prompt.endsWith(FRAMING));
 });
 test('a slow, empty or refused scene falls back to the fixed template, and a family off the list is dropped', async () => {
-  for (const opt of [{ directFail: true }, { scene: '' }, { scene: 'Mickey Mouse waving at a crowd of fans' }, { scene: 'two words' }]) {
+  for (const opt of [{ directFail: true }, { scene: '' }, { scene: 'two words' }]) {
     const w = world(opt); await post(w.env, 'dragon', 'animal', 'mythic');
     assert.equal(w.calls[0].o.prompt, artPrompt('dragon', 'animal', 'mythic'), JSON.stringify(opt));
   }
@@ -179,7 +179,7 @@ test('a slow, empty or refused scene falls back to the fixed template, and a fam
 test('sceneOf keeps plain words only, one line, at most 240 characters, and refuses what a subject would be refused for', () => {
   assert.equal(sceneOf('Scene: A <i>lantern</i> "glowing" in fog; centered.\nSecond line'), 'A lantern glowing in fog centered');
   assert.equal(sceneOf('x'.repeat(10) + ' ' + 'word '.repeat(80)).length <= 240, true);
-  for (const bad of ['a nude figure in the dark', 'a swastika on a wall in the void', 'in the style of Picasso a cat sits', 'a key sk-abcdefghijklmnopqrstuvwxyz0123456789 glows']) assert.equal(sceneOf(bad), '', bad); // secret-scan: ok (made-up shape)
+  for (const bad of ['a nude figure in the dark', 'a swastika on a wall in the void', 'a key sk-abcdefghijklmnopqrstuvwxyz0123456789 glows']) assert.equal(sceneOf(bad), '', bad); // secret-scan: ok (made-up shape)
 });
 test('FLUX.2 [klein] paints first at the 16:9 window; when it fails the square model paints instead and the picture is kept', async () => {
   const w = world(); const real = w.env.AI.run;
@@ -266,5 +266,5 @@ test('a cartoon look is asked of the answer model, keeps up to 380 characters of
   const w = world({ scene: 'Name: Dimebag Darrell\nLook: a lean man with long curly dark brown hair, a long braided goatee dyed bright pink, a sleeveless black shirt, baggy green camouflage cargo shorts, a razor blade pendant necklace, playing a blue electric guitar whose body is shaped like a jagged lightning bolt with a matching lightning headstock' });
   const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
   assert.equal(w.dcalls[0].model, models('answer')); assert.match(a.look, /dyed bright pink.*camouflage cargo shorts.*lightning bolt/); assert.ok(a.look.length > 240 && a.look.length <= LOOK_MAX);
-  assert.equal(lookOf('Look: a cartoon mouse in the style of disney with big round ears and red shorts and yellow shoes'), '', 'a brand anywhere in the look is refused');
+  assert.match(lookOf('Look: a cartoon mouse in the style of disney with big round ears and red shorts and yellow shoes'), /big round ears/, 'a brand in the look is drawn like anything else (owner, 2026-10-25)');
 });
