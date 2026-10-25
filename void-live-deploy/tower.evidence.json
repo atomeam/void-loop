@@ -2071,53 +2071,96 @@
   },
   "docs and notes": {
    "speed": {
-    "verdict": "better",
-    "verse": 351,
-    "best": 706,
-    "evidence": "Verse 351 ms to the load event (median of 3, phone width) vs Google Docs 706 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:01:50.875Z"
+    "verdict": "equal-and-better",
+    "verse": 97,
+    "best": 564,
+    "evidence": "Verse (/notes/) 97 ms to the load event (median of 3, phone width) vs Google Docs 564 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs Google Docs 3 of 3 loads answered",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 3 of 3 loads answered vs Google Docs 3 of 3 loads answered",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Docs 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs Google Docs 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs Google Docs 0 unnamed controls or images",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs Google Docs 0 unnamed controls or images",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Docs 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs Google Docs 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 4,
     "best": 1,
-    "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Docs 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Docs 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:20:03.962Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:01:50.875Z"
+    "evidence": "Verse (/notes/) 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T15:20:03.962Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not Google Docs (the site is not asked)",
+    "at": "2026-10-25T15:20:03.962Z",
+    "of": 4
+   },
+   "rich formatting": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs Google Docs 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
+    "at": "2026-10-25T15:20:03.962Z",
+    "of": 1,
+    "part": true
+   },
+   "search": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs Google Docs 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
+    "at": "2026-10-25T15:20:03.962Z",
+    "of": 1,
+    "part": true
+   },
+   "version history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs Google Docs 0 of 1 shown (Verse lacks: none; site lacks: version history)",
+    "at": "2026-10-25T15:20:03.962Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 0,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs Google Docs 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
+    "at": "2026-10-25T15:20:03.962Z",
+    "of": 17
    }
   },
   "sports": {
