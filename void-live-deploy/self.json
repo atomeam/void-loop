@@ -483,8 +483,20 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T00:14:46Z",
+   "at": "2026-10-25T00:23:12Z",
+   "subject": "The coin flip floor measured on all three open aspects: a Share button on /flip/, ten flips pressed on both sites and checked for their…"
+  },
+  {
+   "at": "2026-10-25T00:22:16Z",
    "subject": "A unit converter page at /convert/: every unit of a kind at once, both ways, exact"
+  },
+  {
+   "at": "2026-10-25T00:20:46Z",
+   "subject": "Incident: the browser suite failed on 4ce3f56b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T00:17:09Z",
+   "subject": "Tower gate: coin flip,password,maps measured against their live sites"
   },
   {
    "at": "2026-10-25T00:10:30Z",
@@ -549,18 +561,6 @@
   {
    "at": "2026-10-24T21:42:35Z",
    "subject": "Verse fixes its magnetize skill: learn to handle \"how do i magnetize this?\""
-  },
-  {
-   "at": "2026-10-24T21:15:08Z",
-   "subject": "Verse fixes its gears skill: learn to handle \"steampunk clockwork\""
-  },
-  {
-   "at": "2026-10-24T20:38:37Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-10-24T19:51:24Z",
-   "subject": "Incident: the browser suite failed on 6c24f49b (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
