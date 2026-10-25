@@ -563,7 +563,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T00:38:18.033Z"
+    "at": "2026-10-25T01:06:22.314Z"
    }
   },
   "encoder": {
@@ -727,11 +727,11 @@
     "at": "2026-10-25T00:51:22.410Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "unverified",
     "verse": 3,
-    "best": 2,
-    "evidence": "Verse (/time/?c=Tokyo) 3 of 3 loads answered vs timeanddate.com 2 of 3 loads answered",
-    "at": "2026-10-25T00:51:22.410Z"
+    "best": 0,
+    "evidence": "timeanddate.com answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
+    "at": "2026-10-25T01:05:25.145Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
@@ -1831,7 +1831,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T00:14:54.261Z"
+    "at": "2026-10-25T01:08:15.447Z"
    }
   }
  }
