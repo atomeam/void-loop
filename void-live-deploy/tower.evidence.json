@@ -1793,52 +1793,52 @@
   "translate": {
    "speed": {
     "verdict": "better",
-    "verse": 216,
-    "best": 564,
-    "evidence": "Verse 216 ms to the load event (median of 3, phone width) vs Google Translate 564 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:38:02.325Z"
+    "verse": 303,
+    "best": 730,
+    "evidence": "Verse 303 ms to the load event (median of 3, phone width) vs Google Translate 730 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Translate 3 of 3 loads answered",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Translate 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Translate 0 unnamed controls or images",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Translate 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Translate 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs Google Translate 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Translate (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T05:38:02.325Z"
+    "at": "2026-10-25T05:48:33.984Z"
    }
   },
   "recipes": {
@@ -2961,6 +2961,108 @@
     "best": 23,
     "evidence": "Verse 156 design defects vs Hugging Face 23 design defects: Verse (0 low-contrast texts, 156 small tap targets, layout shift 0.00), Hugging Face (1 low-contrast texts, 22 small tap targets, layout shift 0.00)",
     "at": "2026-10-25T05:38:45.943Z"
+   }
+  },
+  "assistant": {
+   "speed": {
+    "verdict": "better",
+    "verse": 343,
+    "best": 458,
+    "evidence": "Verse 343 ms to the load event (median of 3, phone width) vs Claude 458 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Claude 3 of 3 loads answered",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Claude 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse 0 unnamed controls or images vs Claude 2 unnamed controls or images",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Claude 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Claude 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:48:54.608Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 156,
+    "best": 6,
+    "evidence": "Verse 156 design defects vs Claude 6 design defects: Verse (0 low-contrast texts, 156 small tap targets, layout shift 0.00), Claude (4 low-contrast texts, 2 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:48:54.608Z"
+   }
+  },
+  "code hosting": {
+   "speed": {
+    "verdict": "better",
+    "verse": 438,
+    "best": 856,
+    "evidence": "Verse 438 ms to the load event (median of 3, phone width) vs GitHub 856 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs GitHub 3 of 3 loads answered",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs GitHub 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs GitHub 0 unnamed controls or images",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs GitHub 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs GitHub 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:49:35.462Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 45,
+    "evidence": "Verse 0 design defects vs GitHub 45 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), GitHub (0 low-contrast texts, 44 small tap targets, layout shift 0.23)",
+    "at": "2026-10-25T05:49:35.462Z"
    }
   }
  }
