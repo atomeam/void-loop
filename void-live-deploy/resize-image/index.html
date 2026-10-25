@@ -15,17 +15,18 @@
 <style>
   /* a-to-mind.com/resize-image/ (owner, 2026-10-24: back to the easy sites; pancardresizer.com is a three-step wizard behind AdSense, tag-manager, jQuery, Bootstrap and Croppie): one step, one file and one small module, the picture never leaves the device */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --ok: #1f8a4c; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --ok: #6fd184; } }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --ok: #6fd184; --on-accent: #15131c; } }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 600px; margin: 0 auto; padding: 22px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
-  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; } .drop input { max-width: 100%; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; } .drop input { max-width: 100%; min-height: 44px; font: inherit; font-size: 15px; }
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0; } label { display: grid; gap: 3px; font-size: 13px; color: var(--soft); }
   input[type=number], select { font: inherit; font-size: 16px; color: var(--ink); background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; width: 100%; box-sizing: border-box; } select option { color: #15131c; }
   input:focus, select:focus { outline: none; border-color: var(--accent); }
   #result { margin-top: 14px; text-align: center; } #result canvas, #result img { max-width: 100%; max-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
   #line { font-size: 17px; font-weight: 600; margin: 10px 0 4px; } #line.ok { color: var(--ok); } #line.bad { color: var(--bad); } #note { color: var(--soft); font-size: 14px; min-height: 1.3em; }
   .dl { display: flex; gap: 10px; justify-content: center; margin-top: 10px; } .dl a { text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; background: var(--accent); color: var(--on-accent, #fff); } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
+  .share { text-align: center; margin: 4px 0 0; } .share button { font: inherit; font-size: 15px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; min-height: 44px; cursor: pointer; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 
@@ -46,6 +47,7 @@
     <label>Largest file size, KB (blank for none)<input id="kb" type="number" min="1" step="any" inputmode="decimal" value="50"></label>
     <label>Fit<select id="fit"><option value="fill" selected>Crop to fill the size</option><option value="fit">Keep the whole picture</option><option value="stretch">Stretch to the size</option></select></label>
   </div>
+  <p class="share"><button type="button" id="share" title="A link that opens this page with this size, unit, resolution and limit filled in (never the picture)">Share this size</button></p>
   <div id="result" hidden><canvas id="pv" aria-label="The resized picture"></canvas><div id="line" role="status" aria-live="polite"></div><div id="note"></div>
     <div class="dl"><a id="dj" href="#" download="photo.jpg">Download JPEG</a><a id="dp" class="alt" href="#" download="photo.pdf">Download PDF</a></div></div>
   <nav id="related" aria-label="Related tools"></nav>
@@ -55,7 +57,9 @@
   import { mountRelated } from '/lib/toolkit.js';
   import { toPx, fitBox, fitSize, pdfOfJpeg } from '/lib/imgfit.js';
   const $ = (id) => document.getElementById(id); let bmp = null, token = 0, urls = [];
-  const q = new URLSearchParams(location.search); for (const [k, id] of [['w', 'w'], ['h', 'h'], ['u', 'u'], ['kb', 'kb'], ['dpi', 'dpi']]) if (q.get(k)) $(id).value = q.get(k).slice(0, 12);
+  const q = new URLSearchParams(location.search); const SET = ['w', 'h', 'u', 'kb', 'dpi', 'fit'];
+  // a select only takes one of its own options from the address, so a stray value never empties it
+  for (const id of SET) { const v = (q.get(id) || '').slice(0, 12); if (v && ($(id).tagName !== 'SELECT' || [...$(id).options].some((o) => o.value === v))) $(id).value = v; }
   const kbText = (n) => (n / 1000).toFixed(1).replace(/\.0$/, '') + ' KB';
   async function render() {
     const mine = ++token; if (!bmp) return;
@@ -74,6 +78,13 @@
   }
   $('file').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { bmp = await createImageBitmap(f); const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } });
   for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', render);
+  // Share: a link to this page with the size filled in (a form's photo rules sent to someone else), through the phone's share sheet or copied;
+  // the picture stays on this device, it is never in the link
+  $('share').addEventListener('click', async () => {
+    const u = new URL(location.pathname, location.origin); for (const id of SET) if (String($(id).value).trim()) u.searchParams.set(id, String($(id).value).trim());
+    const said = 'Photo size: ' + $('w').value + ' × ' + $('h').value + ' ' + $('u').value + ($('kb').value ? ', up to ' + $('kb').value + ' KB' : '');
+    try { if (navigator.share) await navigator.share({ title: document.title, text: said, url: u.href }); else { await navigator.clipboard.writeText(u.href); $('share').textContent = 'Link copied'; setTimeout(() => { $('share').textContent = 'Share this size'; }, 1500); } } catch (_) {}
+  });
   mountRelated(document.getElementById('related'), '/resize-image/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
