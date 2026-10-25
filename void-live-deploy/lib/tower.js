@@ -53,6 +53,10 @@ const HAND_FLOORS = [
   { id: 'recipes', site: 'Allrecipes', url: 'https://www.allrecipes.com/', ask: 'pancake recipe', page: '/recipes/?q=pancakes', label: 'Recipes', glyph: '◒', extra: ['search by ingredient', 'scaling', 'step mode'] },
   { id: 'calendar', site: 'Google Calendar', url: 'https://calendar.google.com/', ask: 'my calendar', page: '/calendar/', label: 'Calendar', glyph: '▦', fatality: 'an event typed as one line of plain words, an invite that is a link carrying the whole event, and the whole calendar on the device, offline', extra: ['reminders', 'invites', 'recurring events'] },
   { id: 'docs and notes', site: 'Google Docs', url: 'https://docs.google.com/', ask: 'notepad', page: '/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread', label: 'Docs and notes', glyph: '✎', extra: ['rich formatting', 'search', 'version history'] },
+  // the chans (owner, 2026-10-25: "Let's go after the chans next ... sweep through the image boards and text boards"): boards anyone makes, so Verse's
+  // page starts blank and the probe reads its board list, its make-a-board form and its formatting preview, never a post. noShot: no picture of a
+  // rival board is ever kept (tools/tower-gate.mjs): a board's front page can carry explicit or illegal pictures, and this repository is public
+  { id: 'image boards', site: '4chan', url: 'https://www.4chan.org/', ask: 'image boards', page: '/boards/', label: 'Image boards', glyph: '▧', noShot: true, extra: ['catalog', 'replies and quoting', 'image posts', 'archive'] },
   { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
   { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
   { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
@@ -94,17 +98,21 @@ export const LANES = Object.freeze({
   translate: ['https://tradukka.com/', 'https://www.freetranslations.org/', 'https://imtranslator.net/', 'https://www.translator.eu/', 'https://www.onlinedoctranslator.com/', 'https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.translate.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
   recipes: ['https://minimalistbaker.com/', 'https://www.budgetbytes.com/', 'https://www.recipetineats.com/', 'https://www.skinnytaste.com/', 'https://www.seriouseats.com/', 'https://food52.com/', 'https://www.simplyrecipes.com/', 'https://tasty.co/', 'https://www.bbcgoodfood.com/', 'https://www.epicurious.com/', 'https://www.delish.com/', 'https://cookpad.com/', 'https://www.yummly.com/'],
   "random generators": ['https://seventhsanctum.com/', 'https://rangen.co.uk/', 'https://tools.dungeonmastersvault.com/', 'https://www.chaoticshiny.com/', 'https://www.springhole.net/', 'https://www.reedsy.com/', 'https://www.writingexercises.com/', 'https://www.behindthename.com/', 'https://namegenerator.com/', 'https://www.fantasynamegenerators.com/'],
-  "docs and notes": ['https://anotepad.com/', 'https://www.quillpad.in/', 'https://standardnotes.com/', 'https://notepad.pw/', 'https://simplenote.com/', 'https://docs.zoho.com/', 'https://onenote.com/', 'https://evernote.com/', 'https://notion.so/'],
+  "docs and notes": ['https://anotepad.com/', 'https://standardnotes.com/', 'https://notepad.pw/', 'https://simplenote.com/', 'https://docs.zoho.com/', 'https://onenote.com/', 'https://evernote.com/', 'https://notion.so/'],
+  // the image and text boards, least visited first (text boards among them), the leader last; none of them is ever pictured (noShot on the floor)
+  'image boards': ['https://bbs.progrider.org/', 'https://textboard.org/', 'https://sushigirl.us/', 'https://uboachan.net/', 'https://desuchan.net/', 'https://kissu.moe/', 'https://wizchan.org/', 'https://lainchan.org/', 'https://7chan.org/', 'https://www.2chan.net/', 'https://5ch.net/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
 export function withLanes(floors, lanes = LANES) {
   const out = [];
-  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra }); } out.push(f); }
+  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
   return out;
 }
 export const FLOORS = withLanes(HAND_FLOORS);
+/** true when no picture of a floor's site may be kept or shown (the floor, or its lane's leader, says noShot): /compare/ and the gate read it. Pure. */
+export const noShotOf = (f) => !!(f && (f.noShot || (f.lane && (HAND_FLOORS.find((x) => x.id === f.lane) || {}).noShot)));
 // fatality (owner, 2026-10-24: "i like the match then killshot", then "killshot= fatality"): once a site's aspects are matched, the one thing Verse does that the site cannot
 // answer, so the site becomes obsolete rather than equal. Only a thing that is built and live is written here; the card shows it as a plain line.
 /** a floor's fatality, which is also called its killshot (owner, 2026-10-24: "killshot= fatality", then "killshot can be kept too"): either field names it. Pure. */

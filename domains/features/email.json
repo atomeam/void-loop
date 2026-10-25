@@ -1,0 +1,235 @@
+{
+ "floor": "email",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "mail.google.com": {
+   "sources": [
+    "https://mail.google.com/",
+    "https://support.google.com/mail/",
+    "https://support.google.com/mail/answer/7190",
+    "https://www.techrepublic.com/article/news-9-gmail-features-save-time/",
+    "https://www.which.co.uk/news/article/useful-gmail-features-a47Vz3p4nltC"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Send and receive email",
+     "detail": "Address on a real domain, SMTP delivery, attachments up to 25 MB (Drive links beyond)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse has no mailbox; no skill sends or reads email"
+    },
+    {
+     "group": "core",
+     "name": "Inbox and conversation threads",
+     "detail": "Threaded view, read/unread, star, important",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Compose",
+     "detail": "Rich text, attachments, inline images, signatures, CC/BCC",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/writing-aids.js shortens and tidies text you paste; no compose-and-send"
+    },
+    {
+     "group": "core",
+     "name": "Spam and phishing filtering",
+     "detail": "Machine-learned spam, phishing and malware warnings",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search with operators",
+     "detail": "from:, to:, has:attachment, before:, label:, larger:, chips",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Labels and categories",
+     "detail": "Labels, Primary/Promotions/Social/Updates tabs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Archive, delete, mute",
+     "detail": "Archive out of inbox, trash 30 days, mute threads",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Contacts and autocomplete",
+     "detail": "Address book, recipient suggestions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Filters",
+     "detail": "Rules to label, archive, forward, delete on arrival",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Undo send",
+     "detail": "5 to 30 second window",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Schedule send",
+     "detail": "Send later; Scheduled folder",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Snooze",
+     "detail": "Hide until a time",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Templates and smart compose",
+     "detail": "Canned replies, Smart Reply, Smart Compose, Gemini \"Help me write\"",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "writing-aids.js rewrites text on request"
+    },
+    {
+     "group": "power",
+     "name": "Confidential mode",
+     "detail": "Expiry and passcode, no forward/print",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Keyboard shortcuts",
+     "detail": "j/k, e, r, a, c and more",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Multiple inboxes and accounts",
+     "detail": "Several accounts, POP/IMAP import, send as alias",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Vacation responder",
+     "detail": "Auto-reply",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Unsubscribe and manage subscriptions",
+     "detail": "One-click unsubscribe, subscriptions view",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Summaries (Gemini)",
+     "detail": "Summarise long threads",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Client-side encryption / S/MIME",
+     "detail": "Encrypted mail for Workspace",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Forward and delegate",
+     "detail": "Forward messages, delegate inbox access",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Chat and Meet in Gmail",
+     "detail": "Google Chat and Meet panels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Gmail offline",
+     "detail": "Read, search and write offline in Chrome",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile apps",
+     "detail": "Apps with push notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Screen reader and high contrast",
+     "detail": "ARIA, keyboard shortcuts, zoom",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Google One / Workspace",
+     "detail": "More storage, custom domain, admin, Gemini in Gmail",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "write an email with a plain-words draft helper and hand it to the person's own mail app (mailto) or copy",
+  "a drafts list on the device",
+  "read a pasted .eml safely (headers, links checked, attachments listed)",
+  "templates",
+  "unsubscribe helper from a pasted email"
+ ],
+ "verse_extra": [],
+ "first_page": "Email desk page /mail/ for people who write mail and want help without giving up their inbox. First: compose with subject, recipients and body, writing-aids (shorten, fix tone) on the draft, templates and drafts kept on the device, send through the person's own mail app (mailto) or copy; open a pasted or dropped .eml to see sender, real link targets and attachments with a phishing check. Will not build: a mailbox, SMTP sending, accounts or spam filtering."
+}

@@ -491,84 +491,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T15:55:49Z",
-   "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net,translate: translator.eu,translate…"
+   "at": "2026-10-25T16:08:26Z",
+   "subject": "Notes test: the lane is eight real notes apps now (a parked domain and a typing tool dropped)"
   },
   {
-   "at": "2026-10-25T15:55:45Z",
-   "subject": "Tower gate: docs and notes: quillpad.in measured against their live sites"
+   "at": "2026-10-25T16:07:44Z",
+   "subject": "Notes: a 30-day trash, find and replace, an outline; chat can restore, replace and outline"
   },
   {
-   "at": "2026-10-25T15:55:18Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com measured against their live sites"
+   "at": "2026-10-25T16:06:25Z",
+   "subject": "Feature maps: encoder, weather, codebase, tildegit"
   },
   {
-   "at": "2026-10-25T15:54:43Z",
-   "subject": "Tower gate: translate: randomtranslator.com,translate: translate.com,translate: systransoft.com,translate: lingvanex.com,translate…"
+   "at": "2026-10-25T16:05:07Z",
+   "subject": "Feature maps: gradient, wheel, random user, time zones, colour, colour codes"
   },
   {
-   "at": "2026-10-25T15:54:20Z",
-   "subject": "Incident: the browser suite failed on bb561834 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T16:04:24Z",
+   "subject": "Chat fills Calendar, Recipes and Generators from a sentence, with Undo"
   },
   {
-   "at": "2026-10-25T15:54:07Z",
-   "subject": "Tower gate: recipes: simplyrecipes.com,recipes: tasty.co,recipes: bbcgoodfood.com,recipes: epicurious.com,recipes: delish.com,recipes…"
+   "at": "2026-10-25T16:04:01Z",
+   "subject": "Notes lane: drop quillpad.in (an Indian-language typing tool, not a notes app)"
   },
   {
-   "at": "2026-10-25T15:49:15Z",
-   "subject": "Tower gate: recipes: minimalistbaker.com,recipes: budgetbytes.com,recipes: recipetineats.com,recipes: skinnytaste.com,recipes…"
+   "at": "2026-10-25T16:03:19Z",
+   "subject": "Feature map: image boards floor (4chan, other image boards and textboards, text only) vs Verse /boards/ (missing)"
   },
   {
-   "at": "2026-10-25T15:47:36Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
+   "at": "2026-10-25T16:03:11Z",
+   "subject": "Feature research: email, search, code hosting, ai models, assistant floors"
   },
   {
-   "at": "2026-10-25T15:44:55Z",
-   "subject": "Tower gate: calendar: calendar.online,calendar: teamup.com,calendar: timetreeapp.com,calendar: any.do,calendar: cozi.com,calendar…"
+   "at": "2026-10-25T16:02:59Z",
+   "subject": "Feature maps: stopwatch, unit converter, password, password strength, base converter, photo resizer"
   },
   {
-   "at": "2026-10-25T15:41:51Z",
-   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com,random…"
+   "at": "2026-10-25T16:02:52Z",
+   "subject": "Tower gate: sports measured against their live sites"
   },
   {
-   "at": "2026-10-25T15:41:18Z",
-   "subject": "Tower gate: random generators: writingexercises.com,random generators: behindthename.com,random generators: namegenerator.com,random…"
+   "at": "2026-10-25T16:02:49Z",
+   "subject": "Incident: the browser suite failed on 9bc36d37 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T15:39:17Z",
-   "subject": "Tower gate: docs and notes: onenote.com,docs and notes: evernote.com,docs and notes: notion.so measured against their live sites"
+   "at": "2026-10-25T16:01:43Z",
+   "subject": "features: calendar floor research (leader and lane sites against Verse's page)"
   },
   {
-   "at": "2026-10-25T15:38:44Z",
-   "subject": "Notes lane: quillpad at www (the bare domain is a redirect stub the gate measured)"
+   "at": "2026-10-25T16:01:43Z",
+   "subject": "features: recipes floor research (leader and lane sites against Verse's page)"
   },
   {
-   "at": "2026-10-25T15:35:30Z",
-   "subject": "Incident: the browser suite failed on ca16573c (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T16:01:42Z",
+   "subject": "features: translate floor research (leader and lane sites against Verse's page)"
   },
   {
-   "at": "2026-10-25T15:35:12Z",
-   "subject": "Tower gate: docs and notes: anotepad.com,docs and notes: quillpad.in,docs and notes: standardnotes.com,docs and notes: notepad.pw,docs and…"
+   "at": "2026-10-25T16:01:28Z",
+   "subject": "Feature research: jobs, shopping, chat, video, social floors"
   },
   {
-   "at": "2026-10-25T15:33:42Z",
-   "subject": "Tower gate: random generators: fantasynamegenerators.com,random generators: seventhsanctum.com,random generators: rangen.co.uk,random…"
+   "at": "2026-10-25T16:01:18Z",
+   "subject": "Feature map: docs and notes floor (Google Docs, Notion and the lane) vs Verse /notes/"
   },
   {
-   "at": "2026-10-25T15:33:37Z",
-   "subject": "Tower gate: random generators: springhole.net,random generators: reedsy.com,random generators: writingexercises.com,random generators…"
+   "at": "2026-10-25T16:01:08Z",
+   "subject": "Feature maps: is it, coin flip, random number, word count, calculator"
   },
   {
-   "at": "2026-10-25T15:33:03Z",
-   "subject": "Notes borrows Notion's core: wiki links and backlinks, slash menu, tables, templates, pins and tags; chat drives them"
+   "at": "2026-10-25T15:59:46Z",
+   "subject": "Feature research: sports, finance, maps, news, photos, games, learning, music, podcasts, travel floors"
   },
   {
-   "at": "2026-10-25T15:29:01Z",
-   "subject": "Gate: a lane site is measured at its own address, not its leader's"
+   "at": "2026-10-25T15:58:56Z",
+   "subject": "Incident: the browser suite failed on 0a4a1e60 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T15:27:02Z",
-   "subject": "Tower gate: random generators: seventhsanctum.com measured against their live sites"
+   "at": "2026-10-25T15:58:46Z",
+   "subject": "Feature map: random generators floor (perchance.org and its lane) vs Verse /generators/"
   }
  ],
  "builders": {

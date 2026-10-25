@@ -58,8 +58,11 @@
   .list img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex: none; background: var(--line); }
   .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
   .empty { font-size: 13px; color: var(--soft); }
-  img.hero { width: 100%; max-height: 220px; object-fit: cover; border-radius: 10px; margin: 0 0 8px; display: block; }
+  img.hero { width: 100%; height: 200px; /* its box is kept before the picture arrives: nothing below it moves */ object-fit: cover; border-radius: 10px; margin: 0 0 8px; display: block; }
   [hidden] { display: none !important; }
+  /* the Common asks row as lib/toolkit.js styles it, here for the first paint (its style lands after load and moved the row: layout shift 0.13) */
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
   .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -94,9 +97,8 @@
     </div>
     <div class="note" id="note" role="status"></div>
   </form>
-  <div class="chips" id="builtin" aria-label="Built in, works offline"></div>
-
-  <ul class="list" id="results" hidden></ul>
+  <!-- the dozen built in (lib/recipes.js BUILT_IN), in the HTML so they are there on the first paint: added after load they pushed the page down (layout shift 0.54) -->
+  <div class="chips" id="builtin" aria-label="Built in, works offline"><a href="/recipes/?q=pancakes">Pancakes</a><a href="/recipes/?q=omelette">Omelette</a><a href="/recipes/?q=tomato%20pasta">Tomato pasta</a><a href="/recipes/?q=chicken%20soup">Chicken noodle soup</a><a href="/recipes/?q=guacamole">Guacamole</a><a href="/recipes/?q=rice">Steamed rice</a><a href="/recipes/?q=oatmeal">Oatmeal</a><a href="/recipes/?q=grilled%20cheese">Grilled cheese</a><a href="/recipes/?q=vinaigrette">Salad dressing (vinaigrette)</a><a href="/recipes/?q=chocolate%20chip%20cookies">Chocolate chip cookies</a><a href="/recipes/?q=lemonade">Lemonade</a><a href="/recipes/?q=banana%20bread">Banana bread</a></div>
 
   <div class="panes" id="panes" hidden>
     <section class="pane" aria-labelledby="name">
@@ -131,6 +133,12 @@
       <ol class="steps" id="steps"></ol>
     </section>
   </div>
+
+  <!-- below the recipe: the list of more recipes arrives from the API after the built-in one is drawn, and above it pushed the recipe down (layout shift 0.11 on the live page) -->
+  <ul class="list" id="results" hidden></ul>
+
+  <h2 id="mineH" hidden>My recipes</h2>
+  <ul class="list" id="mine" hidden></ul>
 
   <h2 id="histH">History</h2>
   <ul class="list" id="hist"><li class="empty" id="histEmpty">The last 20 recipes you opened stay here, on this device, and open offline.</li></ul>
@@ -168,8 +176,10 @@
       $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nur die Suchwörter gehen an Verse; Verlauf und Häkchen bleiben auf diesem Gerät.';
     }
     const q = new URLSearchParams(location.search);
-    let store = { hist: [], ticks: {}, units: '' };
+    let store = { hist: [], ticks: {}, units: '', mine: [] };
     try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    if (!Array.isArray(store.mine)) store.mine = []; // recipes saved by chat on the stage (skills/recipes-fill.js): found by name beside the built-in ones
+    const pool = () => store.mine.filter((x) => x && x.recipe).map((x) => x.recipe).concat(R.BUILT_IN);
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
     // units: the link, then the last choice, then the browser's country (the US measures in cups; everyone else in grams)
     const state = { mode: q.has('i') ? 'i' : 'q', q: q.get('q') || '', i: q.get('i') || '', id: q.get('id') || '', recipe: null, servings: 0, units: q.get('units') || store.units || (/-US$/i.test(navigator.language || '') ? 'us' : 'metric'), step: 0 };
@@ -185,7 +195,8 @@
     const stepText = (s) => (state.units === 'metric' ? R.swapUnits(s, 'metric') : R.swapUnits(s, 'us'));
 
     // the dozen built in, as chips: each a link, so the page answers with no network
-    for (const r of R.BUILT_IN) { const a = el('a', '', r.name); a.href = linkTo(r); $('builtin').append(a); }
+    // the page carries them already; drawn again only when the list in lib/recipes.js has changed since
+    if ([...$('builtin').children].map((a) => a.getAttribute('href')).join() !== R.BUILT_IN.map(linkTo).join()) $('builtin').replaceChildren(...R.BUILT_IN.map((r) => { const a = el('a', '', r.name); a.href = linkTo(r); return a; }));
 
     function render() {
       document.documentElement.classList.remove('pre'); // drawn in this same task: the page appears whole, nothing on it moves
@@ -247,7 +258,7 @@
       if (!text) { state.recipe = null; render(); return; }
       if (state.mode === 'i') {
         state.i = text; state.q = '';
-        const mine = R.byIngredients(text), want = R.ingredientsOf(text);
+        const mine = R.byIngredients(text, pool()), want = R.ingredientsOf(text);
         const rows = mine.map((x) => ({ name: x.recipe.name, href: linkTo(x.recipe), small: W.have + ' ' + x.have.join(', ') + (x.missing.length ? ' · ' + W.missing + ': ' + x.missing.join(', ') : ''), recipe: x.recipe }));
         results(rows, rows.length ? '' : (navigator.onLine ? '' : W.none)); if (mine.length) open(mine[0].recipe); else { state.recipe = null; render(); }
         if (!navigator.onLine) return say(W.offline);
@@ -257,7 +268,7 @@
         return;
       }
       state.q = text; state.i = '';
-      const mine = R.find(text); if (mine.length) open(mine[0]); else { state.recipe = null; render(); }
+      const mine = R.find(text, pool()); if (mine.length) open(mine[0]); else { state.recipe = null; render(); }
       if (mine.length > 1) mealRows(mine.slice(1));
       if (!navigator.onLine) { if (!mine.length) say(W.offline, true); return; }
       const j = await ask('q=' + encodeURIComponent(R.dishOf(text) || text));
@@ -268,7 +279,10 @@
       if (got.length) mealRows(mine.slice(1).concat(got), W.more);
     }
     const row = (it) => { const li = el('li'), a = el('a'); a.href = linkTo(it.recipe); a.append(el('b', '', it.name)); const sm = el('small', '', new Date(it.at).toLocaleDateString()); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = it.id.startsWith('mealdb-') ? it.id.slice(7) : ''; state.q = state.id ? '' : it.recipe.id.replace(/-/g, ' '); state.i = ''; open(it.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, sm); return li; };
-    function lists() { const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
+    function lists() {
+      const ms = $('mine'); ms.replaceChildren(); $('mineH').hidden = ms.hidden = !store.mine.length;
+      for (const x of store.mine) { if (!x || !x.recipe) continue; const li = el('li'), a = el('a'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = ''; state.q = x.name; state.i = ''; open(x.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, el('small', '', x.recipe.servings + ' ' + W.servings.toLowerCase())); ms.append(li); }
+      const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
 
     // servings: every quantity on the page follows the number
     const setServ = (n) => { n = Math.max(1, Math.min(200, Math.round(+n || 1))); state.servings = n; render(); };

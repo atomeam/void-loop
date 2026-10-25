@@ -397,7 +397,7 @@
   },
   {
     "ask": "remind me to call mom at 6pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "make a shopping list",
@@ -441,7 +441,7 @@
   },
   {
     "ask": "add dentist appointment tomorrow at 3pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "what time is it in sydney",
@@ -1621,7 +1621,7 @@
   },
   {
     "ask": "add milk to my shopping list",
-    "want": "list"
+    "want": "list|skill:notes-fill"
   },
   {
     "ask": "show me a clock",
@@ -2419,7 +2419,7 @@
   },
   {
     "ask": "add dentist tomorrow at 3pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "what's on my calendar today",
@@ -2427,7 +2427,7 @@
   },
   {
     "ask": "lunch with sam on friday at noon",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "add milk to the list",
@@ -5140,7 +5140,7 @@
   {"ask": "savings calculator", "want": "skill:savings"},
   {"ask": "compound interest calculator", "want": "skill:savings"},
   {"ask": "if i put away 300 a month for 10 years how much will i have", "want": "skill:savings"},
-  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer"},
+  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer|skill:calendar-fill"},
   {"ask": "due date if my last period was march 1", "want": "skill:pregnancy"},
   {"ask": "how many weeks pregnant am i if my last period was august 10", "want": "skill:pregnancy"},
   {"ask": "i conceived on january 10 when is my baby due", "want": "skill:pregnancy"},

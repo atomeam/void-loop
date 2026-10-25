@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 3,
-  "tested": 26,
-  "checked": 16,
+  "experiment": 4,
+  "tested": 28,
+  "checked": 17,
   "proven": 294
  },
  "families": [
@@ -1993,7 +1993,7 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 0,
+    "checked": 1,
     "proven": 4
    },
    "skills": [
@@ -2014,6 +2014,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 8
+    },
+    {
+     "name": "boards",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "dating",
@@ -2040,8 +2047,8 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 1,
-    "tested": 3,
+    "experiment": 2,
+    "tested": 5,
     "checked": 7,
     "proven": 88
    },
@@ -2093,6 +2100,31 @@
     },
     {
      "name": "notes-fill",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-25"
+    },
+    {
+     "name": "calendar-fill",
+     "tier": "tested",
+     "why": "5 real asks in the benchmark",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1
+    },
+    {
+     "name": "recipes-fill",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-25"
+    },
+    {
+     "name": "generators-fill",
      "tier": "experiment",
      "why": "nothing checks it yet",
      "last_tested": "2026-10-25",

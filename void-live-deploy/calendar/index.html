@@ -46,14 +46,14 @@
   /* month: 7 columns, 6 rows; each day a button; the events as chips inside it */
   .dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-size: 12px; color: var(--soft); text-align: center; margin: 4px 0 2px; }
   .month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
-  .month button.cell { border-radius: 8px; padding: 4px 3px 3px; min-height: 64px; text-align: left; display: flex; flex-direction: column; align-items: stretch; gap: 2px; font-size: 12px; overflow: hidden; }
+  .month .cell { box-sizing: border-box; border: 1px solid var(--line); background: var(--box); border-radius: 8px; padding: 4px 3px 3px; min-height: 64px; text-align: left; display: flex; flex-direction: column; align-items: stretch; gap: 2px; font-size: 12px; overflow: hidden; }
   .month .cell .d { font-size: 13px; font-weight: 600; align-self: flex-start; min-width: 22px; line-height: 22px; text-align: center; border-radius: 11px; }
   .month .cell.other .d, .month .cell.other .chip { color: var(--soft); }
   .month .cell.today .d { background: var(--accent); color: var(--on-accent, #fff); }
   .month .cell[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
   .chip { display: block; font-size: 11px; line-height: 1.3; padding: 1px 4px; border-radius: 4px; background: var(--today); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chip.more { background: none; color: var(--soft); }
-  @media (max-width: 640px) { .month button.cell { min-height: 58px; } .chip { font-size: 10px; } }
+  @media (max-width: 640px) { .month .cell { min-height: 58px; } .chip { font-size: 10px; } }
   /* week: seven day sections (columns when there is room), day: one list */
   .week { display: grid; grid-template-columns: 1fr; gap: 6px; }
   @media (min-width: 760px) { .week { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
@@ -130,7 +130,7 @@
       <button type="button" id="today">Today</button>
       <button type="button" id="next" aria-label="Next">›</button>
     </div>
-    <h2 id="period" aria-live="polite"></h2>
+    <h2 id="period" aria-live="polite">&nbsp;</h2>
     <div class="seg" role="group" aria-label="View">
       <button type="button" id="vMonth" aria-pressed="true">Month</button>
       <button type="button" id="vWeek" aria-pressed="false">Week</button>
@@ -151,7 +151,8 @@
     </div>
   </section>
 
-  <div class="pane" id="view" style="margin-top:8px"></div>
+  <!-- the month as it will be drawn (the weekday row and 6 weeks of 7 cells, the same boxes), so nothing below it moves when the module lands after load: layout shift 0.35 before -->
+  <div class="pane" id="view" style="margin-top:8px"><div class="dow" aria-hidden="true"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div><div class="month" aria-hidden="true"><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span></div></div>
 
   <div class="row">
     <label for="icsFile" class="vh" id="icsL">Import .ics</label>

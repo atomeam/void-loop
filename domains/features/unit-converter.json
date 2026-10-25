@@ -1,0 +1,144 @@
+{
+  "floor": "unit converter",
+  "verse_page": "/convert/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "unitconverters.net": {
+      "sources": [
+        "https://www.unitconverters.net/",
+        "https://www.unitconverters.net/length-converter.html",
+        "https://www.unitconverters.net/temperature-converter.html"
+      ],
+      "features": [
+        {
+          "name": "Common converters",
+          "detail": "length, temperature, area, volume, weight, time",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "convert/index.html Kind select: Length, Weight and mass, Temperature, Volume, Area, Time"
+        },
+        {
+          "name": "Speed, pressure, energy, power, force, angle, fuel consumption, data storage",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Kind select lists each"
+        },
+        {
+          "name": "Many units per kind",
+          "detail": "long unit lists per converter (e.g. length has dozens incl. historic units)",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "length has 15 units (convert/index.html select); fewer obscure units"
+        },
+        {
+          "name": "Engineering converters",
+          "detail": "acceleration, angular velocity, density, specific volume, moment of inertia, torque",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none of these kinds in lib/units.js KINDS"
+        },
+        {
+          "name": "Heat converters",
+          "detail": "thermal conductivity plus fuel efficiency, thermal expansion, thermal resistance, specific heat, heat flux density, heat transfer coefficient",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "only \"Heat: thermal conductivity\""
+        },
+        {
+          "name": "Fluids converters",
+          "detail": "flow rate plus mass and mole flow, concentration, viscosity (dynamic and kinematic), surface tension, permeability",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "only \"Fluids: flow rate\""
+        },
+        {
+          "name": "Sound converter",
+          "detail": "sound level units",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Light converters",
+          "detail": "illuminance plus luminance, luminous intensity, digital image resolution, frequency to wavelength",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "only \"Light: illuminance\" and Frequency"
+        },
+        {
+          "name": "Electricity converters",
+          "detail": "charge plus current, voltage (electric potential), resistance, resistivity, conductance, capacitance, inductance, field strength, charge densities",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "only \"Electricity: charge\""
+        },
+        {
+          "name": "Magnetism converters",
+          "detail": "flux density plus magnetomotive force, field strength, magnetic flux",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "only \"Magnetism: flux density\""
+        },
+        {
+          "name": "Radiology converters",
+          "detail": "absorbed dose, radioactivity, radiation exposure, equivalent dose",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "absorbed dose and radioactivity; no exposure"
+        },
+        {
+          "name": "Other converters",
+          "detail": "metric prefixes, data transfer rate, typography, lumber volume, molar mass, number bases",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "number bases on /base-converter/; no prefixes, data rate, typography, lumber or molar mass"
+        },
+        {
+          "name": "Periodic table",
+          "detail": "an element table among the tools",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none on /convert/"
+        },
+        {
+          "name": "One page per unit pair with a conversion table",
+          "detail": "e.g. inch to cm page with a table of common values",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "every unit of a kind at once; no value table (1, 2, 5, 10 ... 100) for a pair"
+        },
+        {
+          "name": "Formula for each pair",
+          "detail": "how to convert, written out",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Pick a second unit ... for the formula from one to the other\""
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Swap the two units",
+    "Type in any box and every unit follows",
+    "Exact fractions from definitions, precision chosen 3 to 15 digits",
+    "Type a conversion in words (\"5 km to miles\")",
+    "Link that carries the setting",
+    "Works offline; nothing sent"
+  ],
+  "gaps": [
+    "Electricity converters",
+    "Engineering converters",
+    "Many units per kind",
+    "Heat converters",
+    "Fluids converters",
+    "Other converters",
+    "One page per unit pair with a conversion table",
+    "Sound converter",
+    "Periodic table",
+    "Light converters",
+    "Magnetism converters",
+    "Radiology converters"
+  ]
+}

@@ -17,8 +17,10 @@
 //                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, aspectsOf, tower , hostOf } from '../void-live-deploy/lib/tower.js';
-import { probeFor, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
+import { FLOORS, aspectsOf, tower , hostOf, noShotOf } from '../void-live-deploy/lib/tower.js';
+import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
+// a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
+const probeFor = (id) => withFeatureFacts(probeOf(id), id);
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
@@ -126,7 +128,10 @@ export async function motionOf(p, ms = 1500) {
   } finally { await cdp.send('Page.stopScreencast').catch(() => {}); await cdp.detach().catch(() => {}); }
 }
 
-export async function measure(browser, url, tag, ask, probe) {
+/** whether the gate may keep a picture of a page it measured: never of a rival on a noShot floor (lib/tower.js: the image boards, whose front
+ *  pages can carry explicit or illegal pictures, in a public repository); Verse's own page is not published either way. Pure. */
+export const keepShot = (tag, noShot) => /-site$/.test(tag) && !noShot;
+export async function measure(browser, url, tag, ask, probe, { noShot = false } = {}) {
   const times = [], ok = []; const out = { mobile: null, a11y: null, skill: null, offline: null, sharing: null, big: null, text: '' };
   const ctx = await browser.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US', extraHTTPHeaders: { 'accept-language': 'en-US,en;q=0.9' } });
   await ctx.addInitScript(CLS_INIT);
@@ -146,12 +151,12 @@ export async function measure(browser, url, tag, ask, probe) {
         out.design = await p.evaluate(designLook).catch(() => null);
         // which of Verse's own skills answered the ask (the page logs 'skill:<name>'; nothing logged, or the model, is not a skill)
         if (ask) for (let w = 0; w < 20 && !out.skill; w++) { out.skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^(skill:|calc$|chance$)/.test(x.note || '')); return e ? e.note.replace(/^skill:/, '') : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!out.skill) await p.waitForTimeout(500); }
-        fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') });
+        if (!(noShot && /-site$/.test(tag))) { fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') }); } // a noShot rival is not pictured even privately
         // the site as the gate saw it, published beside Verse's page on /compare/ (owner, 2026-10-25: every site refuses to be framed): one small
         // JPEG a floor at phone width, written at most once a day so the history stays light; Verse's own page is live there and needs none
-        if (/-site$/.test(tag)) { try { const dir = path.join(root, 'void-live-deploy', 'tower.shots'), file = path.join(dir, tag.replace(/-site$/, '') + '.jpg');
-          const fresh = fs.existsSync(file) && Date.now() - fs.statSync(file).mtimeMs < 86400000; if (!fresh) { fs.mkdirSync(dir, { recursive: true }); await p.screenshot({ path: file, type: 'jpeg', quality: 55 }); } } catch (_) {}
-          out.icon = await iconOf(p).catch(() => null); }
+        if (keepShot(tag, noShot)) { try { const dir = path.join(root, 'void-live-deploy', 'tower.shots'), file = path.join(dir, tag.replace(/-site$/, '') + '.jpg');
+          const fresh = fs.existsSync(file) && Date.now() - fs.statSync(file).mtimeMs < 86400000; if (!fresh) { fs.mkdirSync(dir, { recursive: true }); await p.screenshot({ path: file, type: 'jpeg', quality: 55 }); } } catch (_) {} }
+        if (/-site$/.test(tag)) out.icon = await iconOf(p).catch(() => null); // the site's own small icon is kept on every floor, noShot too
         if (probe && probe.motion && Object.keys(probe.motion).length) out.motion = await motionOf(p).catch(() => null);
         // offline: the same page reloaded with the network cut; it counts when it still shows itself (some words, not the browser's error page)
         // as for a returning visitor: a page that installs a service worker gets up to 10 s for it to be ready (the same wait for both sites; 5 s was
@@ -357,7 +362,7 @@ async function measureFloor(f, data) {
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString(), probe = probeFor(f.id), want = new Set(aspectsOf(f));
   // a floor with Verse's own page for the job (/is-it/christmas, /flip/) is measured there, as a person would open it; others through the ask
   const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = siteOf(f, probe);
-  const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe);
+  const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe, { noShot: noShotOf(f) });
   // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
   if (s && s.icon) { try { const host = hostOf(f.url) || hostOf(f.site), dir = path.join(root, 'void-live-deploy', 'tower.icons'), name = host + '.' + s.icon.ext; fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, name), s.icon.bytes); data.icons = { ...(data.icons || {}), [host]: 'tower.icons/' + name }; } catch (_) {} }
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is

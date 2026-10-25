@@ -323,3 +323,22 @@ test('a lane site is measured at its own address, never at its leader\'s (the la
   assert.equal(siteOf({ id: 'docs and notes', url: 'https://docs.google.com/' }, { site: 'https://docs.google.com/document/' }), 'https://docs.google.com/document/');
   assert.equal(siteOf({ id: 'x', url: 'https://x.example/' }, null), 'https://x.example/');
 });
+
+test('the image boards floor and its lane are never pictured (noShot): no screenshot kept, /compare/ says so; the probe posts nothing and reads the preview', async () => {
+  const { keepShot, siteOf } = await import('./tower-gate.mjs');
+  const { noShotOf, LANES } = await import('../void-live-deploy/lib/tower.js');
+  const leader = FLOORS.find((f) => f.id === 'image boards'), lane = FLOORS.filter((f) => f.lane === 'image boards');
+  assert.equal(leader.url, 'https://www.4chan.org/'); assert.equal(leader.page, '/boards/'); assert.deepEqual(leader.extra, ['catalog', 'replies and quoting', 'image posts', 'archive']);
+  assert.equal(lane.length, LANES['image boards'].length); assert.ok(lane.length >= 8);
+  const order = FLOORS.map((f) => f.id), at = order.indexOf('image boards'); assert.ok(lane.every((f) => order.indexOf(f.id) < at), 'the leader is the lane\'s last fight');
+  for (const f of [leader, ...lane]) { assert.equal(noShotOf(f), true, f.id); assert.equal(keepShot('x-site', noShotOf(f)), false, f.id); }
+  for (const f of lane) assert.equal(siteOf(f, probeFor(f.id)), f.url, 'a lane site is measured at its own address');
+  assert.equal(keepShot('x-site', noShotOf(FLOORS.find((f) => f.id === 'recipes'))), true, 'other floors keep their picture'); assert.equal(keepShot('x-verse', false), false);
+  const p = probeFor('image boards: lainchan.org'); assert.match(p.ask.verse, /^\/boards\/\?preview=/); assert.deepEqual(Object.keys(p.parts), leader.extra);
+  const shown = 'Anonymous Oct 25 No. 1\n>be me\n>>2 quoted\nhello hidden words\nReport'; assert.equal(score(shown, p.truth).n, 5);
+  assert.equal(score('>be me\n>>2 quoted\nhello [spoiler]hidden words[/spoiler]', p.truth).n < 5, true, 'the raw text alone is not a right answer');
+  const fs = await import('node:fs'); const page = fs.readFileSync(new URL('../void-live-deploy/compare/index.html', import.meta.url), 'utf8');
+  assert.match(page, /noShotOf\(f\)/); assert.match(page, /No picture kept for this kind of site/);
+  const boards = fs.readFileSync(new URL('../void-live-deploy/boards/index.html', import.meta.url), 'utf8').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<template[\s\S]*?<\/template>|<[^>]+>/g, ' ');
+  for (const [a, items] of Object.entries(p.parts)) assert.equal(score(boards, items).n, items.length, a + ': the page says it before any board exists');
+});

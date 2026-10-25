@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 803,
+ "counted": 814,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -570,6 +570,13 @@
    "tests": 2
   },
   {
+   "file": "lib/calendar.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/field-vector.js",
    "skills": 3,
    "direct": 1,
@@ -612,6 +619,13 @@
    "tests": 11
   },
   {
+   "file": "lib/chat-calendar.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/field-attention.js",
    "skills": 3,
    "direct": 1,
@@ -636,6 +650,13 @@
    "file": "lib/field-swarm.js",
    "skills": 3,
    "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/fill-card.js",
+   "skills": 3,
+   "direct": 3,
    "dependants": 3,
    "tests": 1
   },
@@ -714,6 +735,13 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
    "tests": 1
   },
   {
@@ -927,6 +955,13 @@
    "tests": 3
   },
   {
+   "file": "lib/recipes.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1039,7 +1074,21 @@
    "tests": 1
   },
   {
+   "file": "lib/chat-generators.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/chat-notes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/chat-recipes.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1173,13 +1222,6 @@
   },
   {
    "file": "lib/game-health.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/generators.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1414,7 +1456,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/web4.js",
@@ -1448,8 +1490,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 48,
-   "tests": 12
+   "dependants": 49,
+   "tests": 13
   },
   {
    "file": "lib/models.js",
@@ -1648,6 +1690,13 @@
    "tests": 9
   },
   {
+   "file": "lib/boards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/churn.js",
    "skills": 0,
    "direct": 0,
@@ -1760,13 +1809,6 @@
    "tests": 3
   },
   {
-   "file": "lib/recipes.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/scene-advance.js",
    "skills": 0,
    "direct": 0,
@@ -1859,13 +1901,6 @@
   },
   {
    "file": "lib/calculator.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/calendar.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -1988,7 +2023,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/speak.js",
@@ -2150,6 +2185,13 @@
     "functions/api/answer.js",
     "lib/router.js",
     "lib/clef.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/boards/[[path]].js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/boards.js"
    ],
    "importedBy": []
   },
@@ -2566,6 +2608,12 @@
     "lib/tower.js",
     "lib/lap.js",
     "lib/will-guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/boards/t/[[path]].js": {
+   "imports": [
+    "lib/boards.js"
    ],
    "importedBy": []
   },
@@ -3109,6 +3157,13 @@
     "skills/walker.js"
    ]
   },
+  "lib/boards.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/boards/[[path]].js",
+    "functions/boards/t/[[path]].js"
+   ]
+  },
   "lib/book-face.js": {
    "imports": [
     "lib/guide.js"
@@ -3165,7 +3220,14 @@
   },
   "lib/calendar.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/chat-calendar.js",
+    "skills/calendar.js"
+   ],
+   "reachedBy": [
+    "skills/calendar-fill.js",
+    "skills/dates.js"
+   ]
   },
   "lib/card-art.js": {
    "imports": [
@@ -3424,6 +3486,26 @@
     "skills/walker.js"
    ]
   },
+  "lib/chat-calendar.js": {
+   "imports": [
+    "lib/calendar.js"
+   ],
+   "importedBy": [
+    "skills/calendar-fill.js",
+    "skills/calendar.js"
+   ],
+   "reachedBy": [
+    "skills/dates.js"
+   ]
+  },
+  "lib/chat-generators.js": {
+   "imports": [
+    "lib/generators.js"
+   ],
+   "importedBy": [
+    "skills/generators-fill.js"
+   ]
+  },
   "lib/chat-notes.js": {
    "imports": [
     "lib/notes.js",
@@ -3431,6 +3513,14 @@
    ],
    "importedBy": [
     "skills/notes-fill.js"
+   ]
+  },
+  "lib/chat-recipes.js": {
+   "imports": [
+    "lib/recipes.js"
+   ],
+   "importedBy": [
+    "skills/recipes-fill.js"
    ]
   },
   "lib/chess-replay.js": {
@@ -3993,6 +4083,14 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/fill-card.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/calendar-fill.js",
+    "skills/generators-fill.js",
+    "skills/recipes-fill.js"
+   ]
+  },
   "lib/film-discovery.js": {
    "imports": [
     "lib/movies.js"
@@ -4081,7 +4179,11 @@
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
+    "lib/chat-generators.js",
     "skills/textgen.js"
+   ],
+   "reachedBy": [
+    "skills/generators-fill.js"
    ]
   },
   "lib/gist.js": {
@@ -4120,6 +4222,7 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
+    "functions/api/boards/[[path]].js",
     "functions/api/catalog.js",
     "functions/api/earnings.js",
     "functions/api/gumroad.js",
@@ -5472,7 +5575,11 @@
   "lib/recipes.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/recipes.js"
+    "functions/api/recipes.js",
+    "lib/chat-recipes.js"
+   ],
+   "reachedBy": [
+    "skills/recipes-fill.js"
    ]
   },
   "lib/reefwatch.js": {
@@ -7035,6 +7142,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/boards.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/bodies.js": {
    "imports": [],
    "importedBy": [
@@ -7088,12 +7199,23 @@
    ],
    "importedBy": []
   },
+  "skills/calendar-fill.js": {
+   "imports": [
+    "lib/chat-calendar.js",
+    "lib/fill-card.js",
+    "skills/calendar.js"
+   ],
+   "importedBy": []
+  },
   "skills/calendar.js": {
    "imports": [
     "skills/calendar3d.js",
-    "skills/countdown.js"
+    "skills/countdown.js",
+    "lib/chat-calendar.js",
+    "lib/calendar.js"
    ],
    "importedBy": [
+    "skills/calendar-fill.js",
     "skills/dates.js"
    ]
   },
@@ -7103,6 +7225,7 @@
     "skills/calendar.js"
    ],
    "reachedBy": [
+    "skills/calendar-fill.js",
     "skills/dates.js"
    ]
   },
@@ -7299,6 +7422,9 @@
     "skills/calendar.js",
     "skills/dates.js",
     "skills/show-countdown.js"
+   ],
+   "reachedBy": [
+    "skills/calendar-fill.js"
    ]
   },
   "skills/counter.js": {
@@ -7862,6 +7988,13 @@
    "imports": [
     "skills/gear-pair-rules.js",
     "skills/lift3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/generators-fill.js": {
+   "imports": [
+    "lib/chat-generators.js",
+    "lib/fill-card.js"
    ],
    "importedBy": []
   },
@@ -9297,6 +9430,13 @@
    "imports": [
     "lib/card-mini.js",
     "skills/swaps.js"
+   ],
+   "importedBy": []
+  },
+  "skills/recipes-fill.js": {
+   "imports": [
+    "lib/chat-recipes.js",
+    "lib/fill-card.js"
    ],
    "importedBy": []
   },

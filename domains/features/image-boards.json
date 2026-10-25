@@ -1,0 +1,666 @@
+{
+ "floor": "image-boards",
+ "verse_page": "void-live-deploy/boards/ (missing on main at 2026-10-25)",
+ "researched": "2026-10-25",
+ "method": "Text-only research: no images were saved or embedded. Hosts were unreachable by the fetch tool from this container, so features come from web search results (news, API docs listings, wiki snippets) and prior knowledge; site status lines say how sure each is. Limits (file size, bump limit) vary by board and change; check the board's rules page before copying a number.",
+ "sites": {
+  "4chan.org": {
+   "leader": true,
+   "url": "https://www.4chan.org/",
+   "status": "live (offline 2025-04-14 to 2025-04-27 after a hack; PDF uploads and /f/ removed)",
+   "sources": [
+    "https://www.4chan.org/rules",
+    "https://www.4chan.org/faq",
+    "https://github.com/4chan/4chan-API",
+    "https://www.4chan.org/pass",
+    "https://techcrunch.com/2025/04/27/4chan-is-back-online-says-its-been-starved-of-money",
+    "https://en.wikipedia.org/wiki/4chan"
+   ],
+   "features": [
+    {
+     "name": "Boards by topic",
+     "detail": "~70 boards in groups (Japanese Culture, Video Games, Interests, Creative, Other, Misc, Adult), each /x/ with a title, banner and its own rules; worksafe (blue) vs not-worksafe (red) split, board list on the front page.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Front page",
+     "detail": "Board directory, popular threads, site stats (posts, users, content), news, rules/FAQ links.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Board index pages",
+     "detail": "Threads in bump order, 10 pages x ~15 threads, each OP with its last 5 replies and an 'omitted' count with Reply link.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Catalog",
+     "detail": "Grid of every live thread: OP thumbnail, subject, teaser, reply (R) and image (I) counts; sort by bump order, last reply, creation date, reply count; small/large thumbnails; teaser on/off; search/filter box.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Threads with bump and image limits",
+     "detail": "A reply bumps the thread to the top; after the bump limit (e.g. 300-500 replies) it stops bumping; image limit per thread; oldest threads prune off the last page.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Sticky and closed threads",
+     "detail": "Pinned rules/general threads; locked threads.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Anonymous posting, no accounts",
+     "detail": "Name defaults to Anonymous; nothing to sign up for.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Post form",
+     "detail": "Name, Options (email field: 'sage'), Subject (OP), Comment (2,000 characters), File, Spoiler checkbox where enabled, captcha; new threads need an image on most boards.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Reply quotes >>12345",
+     "detail": "Clickable post links with hover preview, backlinks under the quoted post, (OP) and (You) markers; cross-thread and cross-board links >>>/g/12345 and >>>/g/.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Greentext",
+     "detail": "Lines starting with > render green as quotes.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Spoilers",
+     "detail": "[spoiler] text on some boards; spoiler image checkbox hides the thumbnail.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Board-specific markup",
+     "detail": "[code] with syntax highlight on /g/, [math]/[eqn] TeX on /sci/, [sjis] art on /jp/, oekaki/tegaki drawing on some boards.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Sage",
+     "detail": "'sage' in Options replies without bumping the thread.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Tripcodes and secure tripcodes",
+     "detail": "name#password -> !hash identity; ##password secure tripcode (server salt).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Capcodes",
+     "detail": "Staff posts marked Mod, Admin, Manager, Developer, Founder, Verified with colours/icons.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Poster IDs",
+     "detail": "Per-thread ID per poster on some boards (/pol/, /biz/, /b/...) with post count on hover.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Country and board flags",
+     "detail": "GeoIP country flag on /int/, /pol/, /sp/, /bant/...; selectable meme/board flags.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "File uploads",
+     "detail": "JPG, PNG, GIF, WEBM (no PDF since the April 2025 hack; Flash board /f/ removed); ~4 MB max (6 MB on /wsg/), 10,000 x 10,000 px; WEBM audio only on /gif/ and /wsg/; thumbnails generated; filename and size/dimensions shown, link to original.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Image expansion and hover",
+     "detail": "Click thumbnail to expand inline, hover to preview; WEBM plays inline.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Delete your own post",
+     "detail": "A password (stored in a cookie) lets the poster delete the post or only its file.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Report",
+     "detail": "Report a post with a category (rule broken / illegal content) to janitors and moderators; captcha unless Pass.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Moderation",
+     "detail": "Volunteer janitors per board, paid/unpaid mods, warnings, bans (board or global, temporary or permanent) with public ban message '(USER WAS BANNED FOR THIS POST)', ban appeal page, banned-check page.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Global and board rules",
+     "detail": "Site-wide rules (US law, no personal info, no spam, no ban evasion, worksafe boards stay worksafe, age 18+) plus each board's own rules; FAQ.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Spam controls",
+     "detail": "Own captcha (slider/text), post cooldowns per IP, flood and duplicate-image checks, range bans for VPN/proxy abuse.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "4chan Pass",
+     "detail": "~$20/yr: skip captcha when posting and reporting, reported shorter cooldowns and posting from some blocked ranges; 'since4pass' badge year optional.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Archive",
+     "detail": "Per-board archive of threads that fell off, kept a few days (archive.html, archive.json) on most boards; third-party long-term archives (4plebs, desuarchive, archived.moe, warosu) with search and image hashes.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Thread watcher",
+     "detail": "Native extension lists watched threads with new-reply counts.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Native extension (in-page settings)",
+     "detail": "Quick Reply floating box, inline quote expansion, thread auto-updater, hide/filter posts and threads, image hover, (You) highlight, custom CSS, keyboard nav.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Themes",
+     "detail": "Yotsuba, Yotsuba B, Futaba, Burichan, Tomorrow, Photon; per-board default worksafe theme.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Mobile site",
+     "detail": "Responsive mobile layout with catalog/index/thread switches and bottom post button.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Read-only JSON API",
+     "detail": "a.4cdn.org: boards.json, threads.json, catalog.json, archive.json, thread/<no>.json; no auth; 1 request/second; If-Modified-Since; images on i.4cdn.org.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Search",
+     "detail": "Catalog search per board (no full-text site search natively).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Post time and post number",
+     "detail": "Local time, unique incremental post number per board; 'get' culture for repeating digits.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Ads and advertising",
+     "detail": "Banner ads; self-serve ad purchase.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Third-party mobile apps (Android: KurobaEx, Blue Clover, Chanu; iOS: Chan, Swipechan)",
+     "detail": "Extras: watched-thread notifications, media gallery and album download, reverse image search, regex filters, saved posts, themes, pass login, offline thread save.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "8chan.moe": {
+   "url": "https://8chan.moe/",
+   "status": "live (~1.2M visits/month, Semrush Mar 2025); LynxChan software",
+   "sources": [
+    "https://8chan.moe/",
+    "https://vi.semrush.com/website/8chan.moe/competitors"
+   ],
+   "features": [
+    {
+     "name": "User-created boards",
+     "detail": "Anyone can create and own a board with its own volunteers, rules, CSS and flags.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Multiple files per post",
+     "detail": "Several attachments per post (images, video, audio), spoiler per file, strip EXIF.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Board owner moderation tools",
+     "detail": "Per-board bans, filters, word filters, custom flags, archives toggle, logs.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Overboard",
+     "detail": "A combined feed of new threads from all boards.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Tor/onion access",
+     "detail": "Onion mirror.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "JSON API",
+     "detail": "LynxChan JSON for boards, threads, catalog.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "8kun.top": {
+   "url": "https://8kun.top/",
+   "status": "live but low activity (~0.6M visits/month Mar 2025); successor to 8chan.net after 2019",
+   "sources": [
+    "https://8kun.top/",
+    "https://www.xataka.com/servicios/8chan-esta-regreso-ahora-como-8kun-advertencia-temas-ilegales-estados-unidos-estan-prohibidos-seran-eliminados"
+   ],
+   "features": [
+    {
+     "name": "User-created boards",
+     "detail": "Board owners run their own boards (vichan/OpenIB lineage).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Multiple files per post, catalog, overboard",
+     "detail": "Standard vichan features.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Public mod logs",
+     "detail": "Board logs visible.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "2chan.net": {
+   "url": "https://www.2chan.net/",
+   "status": "live (Futaba Channel, Japanese; model for 4chan)",
+   "sources": [
+    "https://www.2chan.net/"
+   ],
+   "features": [
+    {
+     "name": "Boards by topic with fast-expiring threads",
+     "detail": "Threads fall off quickly; no long archive.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Anonymous posts with 'soudane' (+1) button",
+     "detail": "Readers press そうだね to agree with a post.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Deletion requests by readers",
+     "detail": "del button: enough reader votes hide a post.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Japanese-only",
+     "detail": "Restricted posting from outside Japan on many boards.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "endchan.net": {
+   "url": "https://endchan.net/",
+   "status": "live (~0.25M visits/month Mar 2025); LynxChan",
+   "sources": [
+    "https://endchan.net/",
+    "https://sv.semrush.com/website/endchan.net/competitors"
+   ],
+   "features": [
+    {
+     "name": "User-created boards",
+     "detail": "Anyone makes a board.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Tor-friendly, minimal logs",
+     "detail": "Onion access, privacy focus.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Multiple files per post",
+     "detail": "LynxChan attachments.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "lainchan.org": {
+   "url": "https://lainchan.org/",
+   "status": "live (tech/cyberpunk niche; vichan)",
+   "sources": [
+    "https://lainchan.org/",
+    "https://www.swifdoo.com/news/sites-like-4chan"
+   ],
+   "features": [
+    {
+     "name": "Topic boards (tech, programming, art, music)",
+     "detail": "Small curated board set.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Code tags and themes",
+     "detail": "[code] blocks; many CSS themes.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Radio and IRC companions",
+     "detail": "lainchan radio streams, IRC/Matrix.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "7chan.org": {
+   "url": "https://7chan.org/",
+   "status": "live, small",
+   "sources": [
+    "https://7chan.org/"
+   ],
+   "features": [
+    {
+     "name": "Classic Kusaba boards",
+     "detail": "Stricter content rules than 4chan.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Bump limits, catalog",
+     "detail": "Standard features.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "wizchan.org": {
+   "url": "https://wizchan.org/",
+   "status": "live, small (vichan)",
+   "sources": [
+    "https://wizchan.org/"
+   ],
+   "features": [
+    {
+     "name": "Community-focused boards",
+     "detail": "Rules on who may post; moderated topics.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Catalog, multiple files",
+     "detail": "vichan standard.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "kohlchan.net": {
+   "url": "https://kohlchan.net/",
+   "status": "live (German; successor to Krautchan); LynxChan",
+   "sources": [
+    "https://kohlchan.net/"
+   ],
+   "features": [
+    {
+     "name": "Country flags and German boards",
+     "detail": "Krautchan-style flags, /int/.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Multiple files, overboard",
+     "detail": "LynxChan features.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "ylilauta.org": {
+   "url": "https://ylilauta.org/",
+   "status": "live (Finnish)",
+   "sources": [
+    "https://ylilauta.org/"
+   ],
+   "features": [
+    {
+     "name": "Up/down votes on threads and posts",
+     "detail": "Reactions and ratings.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Optional accounts and gold account",
+     "detail": "Paid Gold adds features (follow threads, hide ads).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Notifications for replies",
+     "detail": "Reply notifications.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "5ch.net": {
+   "url": "https://5ch.net/",
+   "status": "live (Japanese textboard, formerly 2channel)",
+   "type": "textboard",
+   "sources": [
+    "https://5ch.net/",
+    "https://en.wikipedia.org/wiki/2channel"
+   ],
+   "features": [
+    {
+     "name": "Text-only threads, 1000-post cap",
+     "detail": "Thread closes at 1000 posts; a new 'part N' thread continues.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Daily IDs per poster",
+     "detail": "ID per day per board.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Dedicated reader apps (JaneStyle, ChMate)",
+     "detail": "Browsers with NG filters, threading, image previews of linked pictures.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Paid Ronin/premium",
+     "detail": "Faster posting, past-log access.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "open2ch.net": {
+   "url": "https://open2ch.net/",
+   "status": "live (Japanese textboard)",
+   "type": "textboard",
+   "sources": [
+    "https://open2ch.net/"
+   ],
+   "features": [
+    {
+     "name": "2channel-style textboard",
+     "detail": "Threads, IDs, sage.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    },
+    {
+     "name": "Image upload and real-time updates",
+     "detail": "Modern extras on a textboard.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "world2ch.net": {
+   "url": "https://world2ch.net/",
+   "status": "reopened November 2022 (first English textboard, closed 2004)",
+   "type": "textboard",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Textboard"
+   ],
+   "features": [
+    {
+     "name": "Shiichan-style textboard",
+     "detail": "Threads listed on one page, posts numbered, tripcodes, sage.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  },
+  "textboard.org": {
+   "url": "https://textboard.org/",
+   "status": "live (SchemeBBS, small)",
+   "type": "textboard",
+   "sources": [
+    "https://textboard.org/"
+   ],
+   "features": [
+    {
+     "name": "SchemeBBS textboard",
+     "detail": "Minimal text threads, range links >>1-5, markup for code and spoilers.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  "Safety first, before anything else: report button with categories, a moderator queue, delete/ban tools, rate limits/cooldowns and a captcha-free spam check, and rules shown before posting (4chan, every board); Verse must not accept or show uploaded pictures without its existing image refusal rules",
+  "Boards list -> board catalog grid -> thread view, with bump order, bump/image limits and old threads pruning off (4chan, 8chan.moe, 2chan, all vichan/LynxChan boards)",
+  "Anonymous post form: name optional, subject, comment, sage, spoiler, delete-own-post password (4chan, all)",
+  "Reply links >>123 with hover preview and backlinks, (OP)/(You) markers, cross-board links (4chan, all)",
+  "Greentext, [spoiler], [code], [math] markup (4chan, lainchan, textboard.org)",
+  "Catalog with sort (bump, last reply, created, replies) and search (4chan, LynxChan boards)",
+  "Thread watcher and auto-updating threads with new-reply counts; quick reply box (4chan native extension, mobile apps)",
+  "Tripcodes / per-thread poster IDs / daily IDs for identity without accounts (4chan, 5ch, 2chan)",
+  "Archive of fallen threads with search (4chan archive.html + 4plebs/desuarchive, 5ch past logs)",
+  "Read-only JSON API (4chan a.4cdn.org, LynxChan, vichan)",
+  "Hide/filter posts and threads by words (4chan extension, 5ch NG lists, apps)",
+  "Overboard: all boards' new threads in one feed (8chan.moe, LynxChan boards)",
+  "Reader reactions: soudane +1 and vote-to-hide (2chan), up/down votes (ylilauta)",
+  "User-created boards with owner moderation (8chan.moe, endchan, 8kun)",
+  "Text-only textboard mode with 1000-post threads and part-N continuation (5ch, open2ch, world2ch, textboard.org)",
+  "Themes (Yotsuba, Tomorrow...) and worksafe/not-worksafe split (4chan)",
+  "Paid pass to skip captcha (4chan Pass, 5ch Ronin, ylilauta Gold) - money: owner decides"
+ ],
+ "verse_extra": []
+}

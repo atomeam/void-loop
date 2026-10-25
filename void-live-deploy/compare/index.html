@@ -35,7 +35,7 @@
     <div class="shot" id="shot"><img id="si" alt="" hidden><p class="cap" id="cap"></p><button type="button" id="beside">Open the site itself in a window beside this one</button></div></section>
 </main>
 <script type="module">
-  import { FLOORS, tower } from '/lib/tower.js';
+  import { FLOORS, tower, noShotOf } from '/lib/tower.js';
   import { matchupHtml } from '/skills/tower.js';
   import { faceSvg, verseFace } from '/lib/avatar.js';
   const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -51,7 +51,8 @@
     $('vn').innerHTML = '<img src="/verse-logo.webp" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;vertical-align:middle"> ' + 'Verse'; $('sn').innerHTML = '<img src="https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(f.site) + '" alt="" width="26" height="26" referrerpolicy="no-referrer" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle"> ' + esc(f.site); // the site's logo; its kept icon replaces it below when the gate has one
     // sites refuse to be framed (X-Frame-Options, every one measured so far), so the site is shown as the tower gate saw it: its screenshot at phone
     // width from the last measurement (tower.shots/<id>.jpg, written by tools/tower-gate.mjs), dated; the site itself opens in a window beside this one
-    const slug = f.id.replace(/\W+/g, '-'), img = $('si'); img.src = '/tower.shots/' + slug + '.jpg'; img.alt = f.site + ' as the gate saw it';
+    // a noShot floor (lib/tower.js: the image boards) is never pictured: its front page can carry explicit or illegal pictures
+    const slug = f.id.replace(/\W+/g, '-'), img = $('si'), noShot = noShotOf(f); if (noShot) { $('cap').textContent = 'No picture kept for this kind of site: a board\u2019s front page can carry anything its posters put there. Open it beside this one if you choose to.'; } else { img.src = '/tower.shots/' + slug + '.jpg'; } img.alt = f.site + ' as the gate saw it';
     img.onload = () => { img.hidden = false; fetch(img.src, { method: 'HEAD' }).then((r) => { const d = r.headers.get('last-modified'); $('cap').textContent = f.site + ' as the gate saw it' + (d ? ' on ' + new Date(d).toLocaleDateString() : '') + ', at phone width. It does not allow itself inside another page, so this is a picture.'; }).catch(() => { $('cap').textContent = f.site + ' as the gate saw it, at phone width.'; }); };
     img.onerror = () => { img.hidden = true; $('cap').textContent = 'No picture of ' + f.site + ' yet: the gate takes one at its next measurement. It does not allow itself inside another page.'; };
     const beside = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };

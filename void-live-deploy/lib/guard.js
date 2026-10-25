@@ -14,6 +14,7 @@ export const LIMITS = {
   answer: { rpm: 30, body: 20000 },
   appraise: { rpm: 6, body: 1200000 },
   translate: { rpm: 40, body: 1200000 }, // 5,000 characters of text, or one downsized photo whose text the vision model reads, 40 a minute: a translation model call each (functions/api/translate.js) // one downsized photo (768 px JPEG) per call, 6 a minute: a vision model call each (functions/api/appraise.js) // /api/answer also keeps its own tighter 12 a minute for model calls
+  boards: { rpm: 600, body: 4700000 }, // the boards (functions/api/boards/[[path]].js): a catalog page loads up to 150 thumbnails; a post carries one picture of up to 4 MB and its thumbnail; posting, reporting and making boards are rate-limited per hashed address in the route itself, behind a bot check
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },

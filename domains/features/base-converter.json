@@ -1,0 +1,80 @@
+{
+  "floor": "base converter",
+  "verse_page": "/base-converter/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "hextobinary.com": {
+      "sources": [
+        "https://hextobinary.com/"
+      ],
+      "features": [
+        {
+          "name": "Hex to binary conversion",
+          "detail": "type hex, get binary",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Binary / Hex boxes follow each other"
+        },
+        {
+          "name": "Binary, octal, decimal, hex both ways",
+          "detail": "converter pages between each pair (unconfirmed list)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "four boxes, type in any"
+        },
+        {
+          "name": "Step-by-step working",
+          "detail": "how each digit maps (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "answer only; \"Bits needed\" fact"
+        },
+        {
+          "name": "Digit mapping table",
+          "detail": "hex digit to 4-bit binary table (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Fractions and floating point",
+          "detail": "hex/binary fractions or IEEE 754 (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "integers only (lib/baseconv.js: \"never a float\")"
+        },
+        {
+          "name": "Other bases (3 to 36)",
+          "detail": "any radix (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "bases 2, 8, 10, 16 only"
+        },
+        {
+          "name": "Text / ASCII to hex and binary",
+          "detail": "(unconfirmed)",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"As text:\" shown for printable values; no text-in box"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Exact at any size (BigInt, 4,096 digits)",
+    "Signed two's-complement reading",
+    "Bits needed",
+    "0x / 0b / 0o prefixes and spaces understood",
+    "Copy each base",
+    "Link that opens on the number",
+    "No ads or third-party scripts"
+  ],
+  "gaps": [
+    "Step-by-step working",
+    "Fractions and floating point",
+    "Other bases (3 to 36)",
+    "Text / ASCII to hex and binary",
+    "Digit mapping table"
+  ]
+}

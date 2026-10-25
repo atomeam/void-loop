@@ -38,6 +38,14 @@ await page.click('#fPin'); ok((await page.locator('#list li button').count()) ==
 await page.locator('#tagchips button', { hasText: '#work' }).click(); ok((await page.locator('#list li button').count()) === 1, 'tag chip filters'); await page.click('#fAll');
 // template
 await page.selectOption('#tplSel', 'meeting'); await page.waitForTimeout(200); ok(/Agenda/.test(await page.locator('#body').innerText()) && /Meeting/.test(await page.locator('#dtitle').innerText()), 'template starts a meeting note');
+// find and replace, outline, trash
+await page.locator('#dtitle').click(); await page.keyboard.type(' x'); await page.locator('#body').click(); await page.keyboard.press('Control+End'); await page.keyboard.type(' Agenda again');
+await page.click('#frBtn'); await page.fill('#frF', 'agenda'); await page.fill('#frR', 'Plan'); await page.click('#frGo'); await page.waitForTimeout(200);
+ok(/2 replaced|replaced/.test(await page.locator('#frMsg').innerText()) && !/agenda/i.test(await page.locator('#body').innerText()), 'find and replace changed the text');
+ok((await page.locator('#links button', { hasText: 'Plan' }).count()) >= 1, 'outline lists the headings');
+const nBefore = (await notes()).length; await page.click('#delBtn'); await page.waitForTimeout(200); d = await notes(); const raw = await page.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1')));
+ok(raw.docs.length === nBefore - 1 && raw.trash.length === 1, 'Delete moves the note to the trash'); await page.click('#trashBtn'); await page.locator('#tlist button', { hasText: 'Restore' }).first().click(); await page.waitForTimeout(200);
+ok((await notes()).length === nBefore, 'Restore brings it back');
 // reload keeps the table (clean whitelist) and a Notes page without errors
 await page.reload(); await page.waitForTimeout(800); d = await notes(); ok(d.some((x) => /<table>/.test(x.html) && /<hr>/.test(x.html)), 'table and divider survive in the store');
 // chat on the stage writes a table into the same store

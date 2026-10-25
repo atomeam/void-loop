@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -39,6 +39,7 @@ export const RELATED = Object.freeze({
   '/generators/': ['/random/', '/flip/', '/wheel/'],
   '/notes/': ['/word-count/', '/translate/', '/calendar/'],
   '/base64/': ['/word-count/', '/base-converter/'],
+  '/boards/': ['/resize-image/', '/translate/', '/notes/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
@@ -49,7 +50,7 @@ export const CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards',
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
@@ -121,6 +122,10 @@ const ROUTES = [
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
   // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
   [/^(?:random |a )?(fantasy name|town name|band name|pet name|username|writing prompt|story prompt|superpower|haiku|villain plot|book title|album title|business name|potion name|planet name|side quest|superhero name)s?(?: generator| ideas?)?$|^(?:random )?name generator$/i, (m) => '/generators/?g=' + ({ 'fantasy name': 'fantasy-names', 'town name': 'town-names', 'band name': 'band-names', 'pet name': 'pet-names', username: 'usernames', 'writing prompt': 'writing-prompts', 'story prompt': 'story-prompts', superpower: 'superpowers', haiku: 'haiku', 'villain plot': 'villain-plots', 'book title': 'book-titles', 'album title': 'album-titles', 'business name': 'business-names', 'potion name': 'potion-names', 'planet name': 'planet-names', 'side quest': 'side-quests', 'superhero name': 'superhero-names' }[(m[1] || 'fantasy name').toLowerCase()] || 'fantasy-names')],
+  // boards: 'image boards', 'text boards', 'the chans', '/tech/', 'make a board'
+  [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
+  [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],
+  [/^(?:the |open (?:the )?)?(?:image ?boards?|text ?boards?|chans?|imageboards?|boards)$/i, () => '/boards/'],
   // notes: 'note: buy milk', 'note: Shopping list - milk, eggs, bread', 'new note', 'my notes'
   [/^(?:(?:new|add|make|create) )?note[:,] ?(.+)$/i, (m) => '/notes/?q=' + encodeURIComponent(m[1])],
   [/^(?:new note|my notes|(?:open )?(?:my )?notes)$/i, () => '/notes/'],

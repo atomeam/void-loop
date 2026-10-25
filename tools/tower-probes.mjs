@@ -5,6 +5,7 @@
 // Each is a list of [label, RegExp] read against the page's visible text after it has loaded. A floor without a probe leaves accuracy and
 // completeness unverified (never counted as beaten); a probe with truth null leaves accuracy unverified (only a site whose own address carries the
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
+import { readFileSync } from 'node:fs';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -227,6 +228,21 @@ export const PROBES = Object.freeze({
       ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
       ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
   },
+  'image boards': {
+    site: 'https://www.4chan.org/', verse: '/boards/',
+    // the boards start blank (owner, 2026-10-25: "leave the categories blank but user creatable"), so nothing here depends on a board or posts
+    // anything: the question is a post's formatting, put in the page's link and drawn by its preview on the device (/boards/?preview=...). The truth any
+    // correct board agrees on: the poster is Anonymous, the post has its number, a line starting with > stays as written (greentext), >>2 is a quote,
+    // and [spoiler] tags are not shown as text. Judged on Verse alone (a rival's board is never loaded for it, nor pictured: noShot in lib/tower.js);
+    // the same probe measures every site in the image boards lane
+    ask: { verse: '/boards/?preview=' + encodeURIComponent('>be me\n>>2 quoted\nhello [spoiler]hidden words[/spoiler]') },
+    truth: [['the name Anonymous', /\bAnonymous\b/], ['the post number', /\bNo\. 1\b/], ['the greentext line kept', /(?:^|\n)\s*>be me\b/], ['the quote of post 2', />>2 quoted/], ['the spoiler drawn, not its tags', /hello hidden words/]],
+    askParts: { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
+    // what the best boards offer (4chan's board list, catalog, archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread
+    // watcher, rules and reports, picture posts, work-safe and adult boards)
+    facts: [['a board list', /\bboards?\b/i], ['a catalog', /\bcatalog\b/i], ['an archive', /\barchive\b/i], ['replies and quotes', /\brepl(?:y|ies)\b|>>\d/i], ['greentext', /\bgreentext\b/i], ['tripcodes', /\btripcodes?\b/i],
+      ['sage', /\bsage\b/i], ['spoilers', /\bspoilers?\b/i], ['search', /\bsearch\b/i], ['a thread watcher', /\bwatch(?:er|ing)?\b/i], ['rules', /\brules\b/i], ['picture posts', /\bpictures?\b|\bimages?\b/i], ['work-safe and 18+ boards', /\b18\+|\bNSFW\b|\bwork[\s-]?safe\b|safe for work/i], ['make your own board', /\bmake (?:a|the first|your) board\b/i]],
+  },
   'random generators': {
     site: 'https://perchance.org/', verse: '/generators/',
     // the question: the fantasy-name generator at seed 7 (the link reproduces it). Any correct answer is a list of at least five names, each one
@@ -366,6 +382,7 @@ export const PARTS = Object.freeze({ 'docs and notes': { 'rich formatting': [['b
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
+  'image boards': { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
   'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
@@ -398,4 +415,51 @@ export function score(text, items) {
   const t = String(text || ''), has = [], missing = [];
   for (const [label, re] of items || []) { let ok = false; try { ok = typeof re === 'function' ? !!re(t) : re.test(t); } catch (_) { ok = false; } (ok ? has : missing).push(label); } // a check is a pattern, or a function of the page's text
   return { n: has.length, of: has.length + missing.length, has, missing };
+}
+
+// Feature maps in the gate (owner, 2026-10-25: "make sure you research all features of every site so we have everything"): a floor with a file in
+// domains/features/ (hand research, or tools/feature-scan.mjs) adds the features Verse is marked as having to its completeness facts, so a site reads
+// surpassed only when Verse's page shows them. A feature is shown when its key words are on the page (all of them up to two, all but one past that),
+// or its own `shows` pattern when the file gives one. tools/tower-gate.mjs applies withFeatureFacts; probeFor itself is unchanged.
+const FEATURE_STOP = new Set(('a an and are as at be by can for from has have in into is it its of on or per that the this to up with without your you ' +
+  'any all more most new one own get use using via free online tool tools site page app web') .split(/\s+/));
+/** a feature name's key words as stems: "Save favourite names" -> ['save', 'favourite', 'name'], at most four. Pure. */
+export function keywordsOf(name) {
+  const words = String(name || '').toLowerCase().match(/[a-z0-9][a-z0-9+#]*/g) || [], out = [];
+  for (let w of words) { if (FEATURE_STOP.has(w) || (w.length < 3 && !/^\d+$/.test(w))) continue; if (/ies$/.test(w) && w.length > 4) w = w.slice(0, -3) + 'y'; else if (/[^s]s$/.test(w) && w.length > 3) w = w.slice(0, -1); const st = w.replace(/(?:ing|ed|ness)$/, ''); if (st.length >= 4) w = st; if (!out.includes(w)) out.push(w); if (out.length === 4) break; }
+  return out;
+}
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** whether a page's text shows a feature: { verse: has|partial|missing, found, lacking }. Pure. */
+export function showsFeature(feature, text) {
+  const f = typeof feature === 'string' ? { name: feature } : feature || {}, t = String(text || '');
+  if (f.shows) { let ok = false; try { ok = new RegExp(f.shows, 'i').test(t); } catch (_) { ok = false; } return { verse: ok ? 'has' : 'missing', found: ok ? [f.shows] : [], lacking: ok ? [] : [f.shows] }; }
+  const keys = keywordsOf(f.name), found = keys.filter((k) => new RegExp('(?<![a-z0-9])' + escRe(k) + (/[a-z]$/.test(k) ? '' : '(?![0-9])'), 'i').test(t)), need = keys.length <= 2 ? keys.length : keys.length - 1;
+  return { verse: keys.length && found.length >= need ? 'has' : found.length ? 'partial' : 'missing', found, lacking: keys.filter((k) => !found.includes(k)) };
+}
+/** a floor's features file name: a lane site ('translate: deepl.com') shares its lane's file. Pure. */
+export const featureSlug = (id) => { const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i); return (lane ? lane[1] : String(id || '')).replace(/\W+/g, '-'); };
+// a feature named for what a site lacks or costs ("No sign-up", "Free with ads, no paywall") is not something a page shows in words: never a fact
+const ABSENT = /\b(?:no|non|without|free|ads?|ad-supported|paywall|sign-?up|account)\b/i;
+/** the top `n` features a file marks Verse as having (the leader's first, then the other sites, hand research before the scan's), as completeness
+ *  facts [name, check of the page's text]. Pure. */
+export function factsFromFile(file, n = 6) {
+  const out = [], seen = new Set(), sitesOf = (s) => Object.values(s || {}).sort((a, b) => (b && b.leader ? 1 : 0) - (a && a.leader ? 1 : 0));
+  for (const site of [...sitesOf(file && file.sites), ...sitesOf(file && file.auto && file.auto.sites)]) for (const f of (site && site.features) || []) {
+    const key = String(f && f.name || '').toLowerCase().trim(); if (!key || seen.has(key) || f.verse !== 'has' || !(f.shows || keywordsOf(f.name).length) || (!f.shows && ABSENT.test(f.name))) continue;
+    seen.add(key); out.push([String(f.name), (t) => showsFeature(f, t).verse === 'has']); if (out.length >= n) return out;
+  }
+  return out;
+}
+const FEATURE_DIR = new URL('../domains/features/', import.meta.url), featureFiles = new Map();
+/** a floor's features file, read once, or null (none, or not JSON) */
+export function featuresOf(id, dir = FEATURE_DIR) {
+  const file = new URL(featureSlug(id) + '.json', dir).pathname; if (featureFiles.has(file)) return featureFiles.get(file);
+  let v = null; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (_) { v = null; } featureFiles.set(file, v); return v;
+}
+/** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */
+export function withFeatureFacts(probe, id, n = 6, dir = FEATURE_DIR) {
+  if (!probe) return probe; const file = featuresOf(id, dir); if (!file) return probe;
+  const have = new Set((probe.facts || []).map(([l]) => String(l).toLowerCase())), extra = factsFromFile(file, n).filter(([l]) => !have.has(l.toLowerCase()));
+  return extra.length ? { ...probe, facts: [...(probe.facts || []), ...extra] } : probe;
 }

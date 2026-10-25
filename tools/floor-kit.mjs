@@ -9,7 +9,7 @@
 //   node tools/floor-kit.mjs --queue                  the queue, smallest site first, with each one's state
 // Pure where it can be (brief, draftProbe, laneLine): tools/floor-kit.test.mjs.
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, LANES, COMMON_ASPECTS, tower, hostOf } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, LANES, COMMON_ASPECTS, tower, hostOf, noShotOf } from '../void-live-deploy/lib/tower.js';
 import { probeFor, PROBES } from './tower-probes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,12 +63,12 @@ export function brief(f, evidence = {}, t = null) {
   for (const a of lost) next.push('fix ' + a + ': ' + (rows[a].evidence ? String(rows[a].evidence).replace(/\s+/g, ' ').slice(0, 160) : 'see the row'));
   if (unm.length && p && page) next.push('measure: dispatch the gate for "' + f.id + '" (tower-gate.yml, floor input; several: a,b,c) after the deploy');
   if (!next.length) next.push('nothing left: the gate\'s next run should read it beaten');
-  return { id: f.id, site: f.site, url: f.url, lane: f.lane || null, page, state: state ? state.state + ' (' + state.n + ' of ' + state.m + ' aspects)' : 'not in the queue', lines, lost, unmeasured: unm, next, shot: 'void-live-deploy/tower.shots/' + slug(f.site) + '.jpg' };
+  return { id: f.id, site: f.site, url: f.url, lane: f.lane || null, page, state: state ? state.state + ' (' + state.n + ' of ' + state.m + ' aspects)' : 'not in the queue', lines, lost, unmeasured: unm, next, shot: noShotOf(f) ? null : 'void-live-deploy/tower.shots/' + slug(f.site) + '.jpg' };
 }
 
 function print(b, f) {
   console.log('=== ' + b.id + ' ===  ' + b.site + '  ' + b.url + (b.lane ? '  (lane: ' + b.lane + ')' : ''));
-  console.log('state: ' + b.state + ' | Verse\'s page: ' + (b.page || '(none yet)') + ' | the site as the gate saw it: ' + (fs.existsSync(path.join(root, b.shot)) ? b.shot : '(no screenshot yet)'));
+  console.log('state: ' + b.state + ' | Verse\'s page: ' + (b.page || '(none yet)') + ' | the site as the gate saw it: ' + (!b.shot ? '(never pictured: a noShot floor, lib/tower.js)' : fs.existsSync(path.join(root, b.shot)) ? b.shot : '(no screenshot yet)'));
   console.log('aspects:\n' + b.lines.join('\n'));
   console.log('do next:\n' + b.next.map((x, i) => '  ' + (i + 1) + '. ' + x).join('\n'));
   const d = draftProbe(f); console.log((d.ready ? 'probe: ' : 'probe to add:\n') + d.text);

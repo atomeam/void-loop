@@ -19,6 +19,7 @@ export const INTERNAL = {
   '/api/merge': "the merge card's own API: two idea names in, a cached model-written name and line out; the page is the only caller (functions/api/merge.js, skills/merge.js)",
   '/api/repo': "the repo card's own API: a public GitHub owner/name in, its cleaned live facts out, no token (functions/api/repo.js, lib/repo-look.js, skills/repo.js); the page is the only caller",
   '/api/weather': "the weather page's own API: a place name in, the place found and Open-Meteo's forecast out in one round trip, GET only, edge-cached ten minutes (functions/api/weather.js, lib/weather.js); the page is the only caller",
+  '/api/boards/{[path}]': "the boards page's own API: boards, catalogs, threads, search and posting with a bot check, pictures served by name (functions/api/boards/[[path]].js, lib/boards.js); the page is the only caller",
   '/api/recipes': "the recipes page's own API: a dish, up to three ingredients or an id in, TheMealDB's recipes out, GET only, edge-cached an hour (functions/api/recipes.js, lib/recipes.js); the page is the only caller",
   '/api/media': "the song and show cards' own API: a mood or title in, real tracks or shows from free public catalogs out, GET only (functions/api/media.js, lib/media.js, skills/media-pick.js); the page is the only caller",
   '/api/filmfind': "the film-metadata card's own API: a film ask in, structured film metadata (JSON) out, GET only (functions/api/filmfind.js, lib/film-discovery.js, skills/film-metadata.js); the page is the only caller",
