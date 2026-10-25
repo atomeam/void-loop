@@ -604,11 +604,11 @@ try {
   // the coin flip sites (scout report, 2026-10-23: a 3-second fake wait, ads, paragraphs of text): a coin that lands at once, with a quiet tally
   if (want("coin: flip a coin lands a 3D coin on its face at once, says the side, keeps this visit's tally, and a tap flips it again")) {
     const P = await fresh(); const t0 = Date.now(); await P.ask('flip a coin', 400);
-    const read = () => P.p.$eval('.vpage.on', (c) => ({ coins: c.querySelectorAll('.coin').length, word: (c.querySelector('.coin-word') || {}).textContent || '', tally: (c.querySelector('.coin-tally') || {}).textContent || '', label: (c.querySelector('.coin') || { getAttribute: () => '' }).getAttribute('aria-label') })).catch(() => null);
+    const read = () => P.p.$eval('.vpage.on', (c) => ({ coins: c.querySelectorAll('.coin').length, word: (c.querySelector('.coin-word') || {}).textContent || '', tally: (c.querySelector('.coin-tally') || {}).textContent || '', label: (c.querySelector('.coin') || { getAttribute: () => '' }).getAttribute('aria-label'), full: (c.querySelector('.coin-full a') || { getAttribute: () => '' }).getAttribute('href') })).catch(() => null);
     const one = await until(async () => { const r = await read(); return r && /^(?:Heads|Tails)$/.test(r.word) ? r : null; }, 6000), ms = Date.now() - t0;
     await P.p.click('.vpage.on .coin'); await P.p.waitForTimeout(500); const two = await read();
-    check('coin: "flip a coin" shows one coin and Heads or Tails at once (no fake wait), the coin labelled with its side, the tally counting 1 flip, and a tap on the coin flips again (2 flips)',
-      !!one && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
+    check('coin: "flip a coin" shows one coin and Heads or Tails at once (no fake wait), the coin labelled with its side, the tally counting 1 flip, and a tap on the coin flips again (2 flips); the card links to the full page, /flip/',
+      !!one && one.full === '/flip/' && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
     await P.ask('flip 5 coins', 900); const five = await read();
     check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
     await P.ctx.close();

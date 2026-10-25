@@ -55,7 +55,11 @@
   addEventListener('popstate', () => coin.run(ask(new URLSearchParams(location.search).get('q') || 'flip a coin'), api));
   // the space bar or Enter flips again, as a coin site should
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|select|textarea|button)$/i.test(e.target.tagName)) { e.preventDefault(); const b = card.querySelector('.coin-again'); if (b) b.click(); } });
-  mountRelated(document.getElementById('related'), '/flip/');
+  // share this page (the tower's sharing aspect): the phone's own share sheet where there is one, else the link copied; the address keeps the coin
+  const share = () => { const url = location.href, title = document.title;
+    if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }
+    try { navigator.clipboard.writeText(url); return 'Link copied'; } catch (_) { return 'Copy the address bar'; } };
+  mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

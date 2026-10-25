@@ -43,6 +43,20 @@ export function clockReadings(text) {
 }
 // a run timed by the gate, read back: a reading is right when the run's real length falls inside what it shows (its step, plus 0.3 s for the press)
 const timedRun = (t) => { const [a = '', ms = '', c = ''] = String(t || '').split(TIMED); const real = +ms / 1000; return { real, ok: Number.isFinite(real) && real > 0 ? clockReadings(a).filter((r) => r.s > 0 && r.s - 0.3 <= real && real <= r.s + r.step + 0.3) : [], later: c }; };
+/** what a run of presses puts between each reading of the page (tower-gate.mjs answer, `presses`): the page before, then after each press */
+export const FLIPPED = '␞ after a flip ␞';
+/** the side a page shows in its text: the one short line naming heads or tails alone (no digits: "Heads 3 · Tails 1" is a count), or null. Pure. */
+export function sideOf(text) {
+  const seen = new Set();
+  for (const l of String(text || '').split('\n').map((x) => x.trim())) { if (!l || l.length > 30 || /\d/.test(l)) continue; const h = /\bheads\b/i.test(l), t = /\btails\b/i.test(l); if (h !== t) seen.add(h ? 'heads' : 'tails'); }
+  return seen.size === 1 ? [...seen][0] : null;
+}
+/** a running count in a page's text ("Heads 3 · Tails 1", "heads: 3 tails: 1"): { h, t }, or null. Pure. */
+export function countOf(text) { const m = String(text || '').match(/\bheads\s*:?\s*([\d,]+)[^\n\d]{0,12}?\btails\s*:?\s*([\d,]+)/i); return m ? { h: +m[1].replace(/,/g, ''), t: +m[2].replace(/,/g, '') } : null; }
+/** a run of presses read back: { sides: the side after each press (null where none could be read), before, after: the counts }. Pure. */
+export function flipsOf(text) { const [before = '', ...after] = String(text || '').split(FLIPPED); return { sides: after.map(sideOf), before: countOf(before), after: after.length ? countOf(after[after.length - 1]) : null }; }
+/** how many of the [label, check] items a measurement (an object, not text) passes, the same shape as score(). Pure. */
+export function scoreOf(m, items) { const has = [], missing = []; for (const [label, f] of items || []) { let ok = false; try { ok = !!f(m); } catch (_) { ok = false; } (ok ? has : missing).push(label); } return { n: has.length, of: has.length + missing.length, has, missing }; }
 const everyone = (f) => (t) => { const ps = peopleIn(t); return ps.length > 0 && ps.every(f); };
 
 export const PROBES = Object.freeze({
@@ -53,7 +67,17 @@ export const PROBES = Object.freeze({
   },
   'coin flip': {
     site: 'https://justflipacoin.com/', verse: '/flip/',
-    truth: null, // a flip has no right answer to check
+    // one flip has no right answer, but ten have a right SHAPE: the gate presses each page's own flip control 10 times, as a person would
+    // (tower-gate.mjs answer, `presses`), and reads the page each time it settles: every flip lands on one side, a fair coin shows both
+    // sides in 10 (all ten alike is 2 in 1024), and any running count the page keeps grows by exactly the flips made, heads by the heads seen
+    ask: { site: 'https://justflipacoin.com/', verse: '/flip/', presses: 10 },
+    truth: [['every flip lands on one side, heads or tails', (t) => { const f = flipsOf(t); return f.sides.length > 0 && f.sides.every(Boolean); }],
+      ['both sides come up in 10 fair flips', (t) => new Set(flipsOf(t).sides.filter(Boolean)).size === 2],
+      ['any count it shows adds up to the flips made', (t) => { const f = flipsOf(t); if (!f.after) return f.sides.length > 0; const b = f.before || { h: 0, t: 0 }, dh = f.after.h - b.h, dt = f.after.t - b.t;
+        return dh + dt === f.sides.length && dh === f.sides.filter((s) => s === 'heads').length; }]],
+    // the flip itself, seen: the screen the gate records while a flip lands (tower-gate.mjs motionOf); a page that swaps a word or a picture
+    // repaints once or twice, a coin that turns repaints frame after frame
+    motion: { 'flip animation': [['the coin moves between the tap and where it lands', (m) => m.frames >= 8]] },
     facts: [['heads or tails', /\b(?:heads|tails)\b/i], ['a flip control', /\bflip\b/i], ['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]],
   },
   'random number': {
@@ -178,7 +202,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
   const p = PROBES[id]; if (!p) return null;
-  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {

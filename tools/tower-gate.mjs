@@ -14,7 +14,7 @@
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
-import { probeFor, score, SPUN, TIMED, clockReadings } from './tower-probes.mjs';
+import { probeFor, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -82,6 +82,30 @@ export function record(prev, v, verse, best, evidence, at) {
   return { verdict: v, verse, best, evidence, at, ...(v === 'worse' && prev && (ok(prev.verdict) || prev.was) ? { was: prev.was || prev.verdict } : {}) };
 }
 
+// a coin page's own flip control, as a person finds it: a button named flip or toss (its text, label or value), else a tap at the centre of
+// the largest picture or canvas on the first screen (a coin you tap); a function that presses it once, or null when the page has neither
+export async function flipControl(p) {
+  const btn = p.getByRole('button', { name: /\b(?:flip|toss)\b/i }).filter({ visible: true }).first();
+  if (await btn.count().catch(() => 0)) return () => btn.click({ timeout: 3000 });
+  const els = p.locator('canvas:visible, img:visible, svg:visible'), k = await els.count().catch(() => 0); let bb = null, area = 0;
+  for (let i = 0; i < k; i++) { const x = await els.nth(i).boundingBox().catch(() => null); if (x && x.y < 800 && x.width * x.height > area) { area = x.width * x.height; bb = x; } }
+  return bb && area >= 64 * 64 ? () => p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2) : null;
+}
+/** the flip, seen (tower-probes.mjs `motion`): the screen the browser paints (Chrome's screencast sends a frame only when the picture changes),
+ *  counted for `ms` at rest and then for `ms` after one press of the page's flip control: { rest, frames }, or null when the page has no flip
+ *  control or never rests (an ad that moves all the time leaves the coin's own motion unknowable: not measured, never a loss) */
+export async function motionOf(p, ms = 1500) {
+  const press = await flipControl(p); if (!press) return null;
+  const cdp = await p.context().newCDPSession(p); let n = 0;
+  cdp.on('Page.screencastFrame', (f) => { n++; cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }).catch(() => {}); });
+  try {
+    await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 10, maxWidth: 390, maxHeight: 800 });
+    await p.waitForTimeout(800); n = 0; await p.waitForTimeout(ms); const rest = n; // the first frame is the screen as it is; then the page at rest
+    n = 0; await press(); await p.waitForTimeout(ms); const frames = n;
+    return rest > 3 ? null : { rest, frames };
+  } finally { await cdp.send('Page.stopScreencast').catch(() => {}); await cdp.detach().catch(() => {}); }
+}
+
 export async function measure(browser, url, tag, ask, probe) {
   const times = [], ok = []; const out = { mobile: null, a11y: null, skill: null, offline: null, sharing: null, big: null, text: '' };
   const ctx = await browser.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US', extraHTTPHeaders: { 'accept-language': 'en-US,en;q=0.9' } });
@@ -103,6 +127,7 @@ export async function measure(browser, url, tag, ask, probe) {
         // which of Verse's own skills answered the ask (the page logs 'skill:<name>'; nothing logged, or the model, is not a skill)
         if (ask) for (let w = 0; w < 20 && !out.skill; w++) { out.skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^(skill:|calc$|chance$)/.test(x.note || '')); return e ? e.note.replace(/^skill:/, '') : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!out.skill) await p.waitForTimeout(500); }
         fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') });
+        if (probe && probe.motion && Object.keys(probe.motion).length) out.motion = await motionOf(p).catch(() => null);
         // offline: the same page reloaded with the network cut; it counts when it still shows itself (some words, not the browser's error page)
         // as for a returning visitor: a page that installs a service worker gets up to 5 s for it to be ready (the same wait for both sites)
         await p.evaluate(() => (navigator.serviceWorker ? Promise.race([navigator.serviceWorker.ready.then(() => 1), new Promise((r) => setTimeout(() => r(0), 5000))]) : 0)).catch(() => 0);
@@ -122,6 +147,7 @@ export async function measure(browser, url, tag, ask, probe) {
   times.sort((a, b) => a - b);
   const reliability = ok.reduce((a, b) => a + b, 0);
   const parts = Object.fromEntries(Object.entries((probe && probe.parts) || {}).map(([a, list]) => [a, score(out.text, list)]));
+  for (const [a, list] of Object.entries((probe && probe.motion) || {})) if (out.motion) parts[a] = scoreOf(out.motion, list); // no motion read: not measured
   return { speed: times.length ? times[Math.floor(times.length / 2)] : NaN, reliability, ...out, truth: probe && probe.truth ? score(out.text, probe.truth) : null, facts: probe && probe.facts && probe.facts.length ? score(out.text, probe.facts) : null, parts };
 }
 
@@ -131,7 +157,7 @@ export async function measure(browser, url, tag, ask, probe) {
 /** the aspects the gate can measure on a floor today: the measured ones on its checklist, its PARTS, and accuracy and completeness only with a probe. Pure. */
 /** a page's answer to a question in its address, or typed into its own box (`type`) as a person would; the text it shows and its boxes hold,
  *  or null when it could not be read. Exported for tools/tower-gate.test.mjs, which runs it against local pages. */
-export async function answer(b, url, type, spin = false, inBox = false, timed = 0) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+export async function answer(b, url, type, spin = false, inBox = false, timed = 0, presses = 0) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
       if (/[?&]q=/.test(url)) await p.waitForTimeout(3000); // Verse answering an ask in the address: the card lands a moment after load
       const read = () => p.evaluate(() => ({ text: document.body ? document.body.innerText : '', boxes: [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') }));
       if (spin) { // a wheel: spin it once (a tap at the centre of its largest canvas, where both wheels put their spin), then read what the spin
@@ -175,6 +201,18 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
         if (!clockReadings(a).some((r) => r.s > 0)) return null; // no clock that ran: the gate did not start it or cannot read it, never a wrong answer
         return a + '\n' + TIMED + Math.round(stopped - started) + TIMED + '\n' + c;
       }
+      if (presses) { // a coin: its own flip control pressed `presses` times, as a person would, and the page read each time it settles (it
+        // changed, then held still 0.6 s; at most 4 s, for a page that shows the same side again unchanged); the readings go after a marker
+        // each (FLIPPED). No control, or a page whose text never changed, is not measured (a result drawn where text cannot be read): never a loss
+        const press = await flipControl(p); if (!press) return null;
+        let last = (await read()).text, moved = 0; const out = [last];
+        for (let i = 0; i < presses; i++) {
+          await press(); const t0 = Date.now(); let now = last, quiet = t0;
+          for (;;) { await p.waitForTimeout(150); const x = (await read()).text; if (x !== now) { now = x; quiet = Date.now(); } if ((now !== last && Date.now() - quiet >= 600) || Date.now() - t0 > 4000) break; }
+          if (now !== last) moved++; last = now; out.push(now); if (i === 1 && !moved) return null; // two presses and nothing changed: it cannot be read
+        }
+        return moved ? out.join('\n' + FLIPPED + '\n') : null;
+      }
       if (!type) { const r = await read(); return r.text + '\n' + r.boxes; }
       // the box a person types into: the page's largest visible text area, else its first visible text input (unitconverters.net's "From")
       const areas = p.locator('textarea:visible'), n = await areas.count(); let box = null, best = -1;
@@ -196,7 +234,7 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
 
 export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
-  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]));
+  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.motion && p.motion[a]));
 }
 /** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
 export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
@@ -236,8 +274,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
-    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin, false, probe.ask.time); answer.lastSeen = 'the page did not load';
-    const st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin, probe.ask.box, probe.ask.time);
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin, false, probe.ask.time, probe.ask.presses); answer.lastSeen = 'the page did not load';
+    const st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin, probe.ask.box, probe.ask.time, probe.ask.presses);
     v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
@@ -260,9 +298,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
     // a timed run the gate could not start or read on the site is written as that, so the card says why accuracy is open (never a loss for it)
     if (probe && probe.ask && probe.ask.time && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on a ' + probe.ask.time / 1000 + ' s run timed by the gate; the gate could not start or read ' + f.site + "'s clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
+    if (probe && probe.ask && probe.ask.presses && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on ' + probe.ask.presses + ' flips pressed by the gate; the gate could not find ' + f.site + "'s flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win", at };
     if (v.truth && s.truth) put('accuracy', v.truth.n, s.truth.n, ' of ' + v.truth.of + ' checked facts right for the same question', { of: v.truth.of, note: v.truth.missing.length || s.truth.missing.length ? ' (Verse missed: ' + (v.truth.missing.join(', ') || 'none') + '; site missed: ' + (s.truth.missing.join(', ') || 'none') + ')' : '' });
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');
     if (v.design && s.design) put('design polish', defects(v.design), defects(s.design), ' design defects', { note: ': Verse' + dd(v.design) + ', ' + f.site + dd(s.design) });
+    for (const a of Object.keys((probe && probe.motion) || {})) if (want.has(a) && v.parts && v.parts[a] && !(s.parts && s.parts[a])) ev[a] = { verdict: 'unverified', verse: v.parts[a].n, best: v.parts[a].of, evidence: where + ' ' + v.parts[a].n + ' of ' + v.parts[a].of + ' seen; the gate could not find ' + f.site + "'s flip control, or its screen never rests: a fault to fix in the gate, not a win", at, part: true };
     for (const [a, sv] of Object.entries(v.parts || {})) { const ss = s.parts && s.parts[a]; if (ss) put(a, sv.n, ss.n, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + '; site lacks: ' + (ss.missing.join(', ') || 'none') + ')' }); }
     if (v.facts && s.facts) put('completeness', v.facts.n, s.facts.n, ' of ' + v.facts.of + ' things a full answer shows', { of: v.facts.of, note: ' (Verse lacks: ' + (v.facts.missing.join(', ') || 'none') + '; site lacks: ' + (s.facts.missing.join(', ') || 'none') + ')' });
   }

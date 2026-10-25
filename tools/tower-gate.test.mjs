@@ -31,7 +31,7 @@ test('is it: the right answer depends on the day', () => {
 });
 test('a probe exists only for a floor on the tower, and floors with no fair question leave accuracy unverified', () => {
   for (const id of Object.keys(PROBES)) assert.ok(FLOORS.some((f) => f.id === id), id);
-  assert.equal(probeFor('coin flip').truth, null, 'coin flip');
+  assert.equal(probeFor('coin flip').ask.presses, 10, 'coin flip: ten flips pressed on both, checked for their shape');
   // the base converter's question is typed into hextobinary.com's box: exact digits pass, a rounded answer does not
   const bc = probeFor('base converter'); assert.equal(bc.ask.type, '123456789abcdef0123456789abcdef'); assert.ok(bc.askParts['huge numbers'].length === 3);
   assert.ok(bc.truth.every(([, re]) => re.test('1 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111 = 1,512,366,075,204,170,929,049,582,354,406,559,215')));
@@ -71,7 +71,7 @@ test('design polish counts what a design review fails first, lower is better and
 test('a run after a deploy measures the current fight, the floors whose page changed and the ones missing a measurable aspect, at most three', async () => {
   const { pick, measurable } = await import('./tower-gate.mjs'), { FLOORS: F } = await import('../void-live-deploy/lib/tower.js');
   const full = (id) => Object.fromEntries(measurable(F.find((f) => f.id === id)).map((a) => [a, { verdict: 'better', evidence: 'x', verse: 1, best: 2 }]));
-  assert.ok(measurable(F.find((f) => f.id === 'colour codes')).includes('every colour model')); assert.ok(!measurable(F.find((f) => f.id === 'coin flip')).includes('accuracy'), 'a flip has no right answer');
+  assert.ok(measurable(F.find((f) => f.id === 'colour codes')).includes('every colour model')); assert.ok(['accuracy', 'flip animation'].every((a) => measurable(F.find((f) => f.id === 'coin flip')).includes(a)), 'ten flips have a right shape, and a flip can be seen moving');
   const ev = Object.fromEntries(F.map((f) => [f.id, full(f.id)])); // every floor fully measured: only the fight is picked
   const t = pick(ev, null, []); assert.equal(t.length, 1);
   assert.deepEqual(pick(ev, null, ['void-live-deploy/flip/index.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
@@ -171,4 +171,37 @@ test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real
     assert.equal(await answer(b, at('/canvas'), null, false, false, s.ask.time), null, 'a clock the gate cannot read is not measured, never a loss');
     assert.equal(score(await answer(b, at('/drawn'), null, false, false, s.ask.time), s.truth).n, 2, 'a clock drawn on a canvas, started by a tap and read off the screen');
   } finally { await (await import('./screen-read.mjs')).closeEyes(); await b.close(); server.close(); }
+});
+
+test('a coin: its own flip control pressed 10 times by the gate, every side read, the count checked, the flip seen moving; a coin it cannot read is not measured', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer, motionOf } = await import('./tower-gate.mjs'), { probeFor, score, scoreOf } = await import('./tower-probes.mjs');
+  const root = new URL('../void-live-deploy/', import.meta.url);
+  // a coin that swaps its word at once with no motion; one whose count is off by one; one that always lands heads; one drawn with no text
+  const coin = (js) => '<h1 id=w>Heads</h1><p id=c></p><button id=b>Flip</button><script>let h=0,n=0;b.onclick=()=>{' + js + '}</script>';
+  const PAGES = { '/swap': coin('const x=Math.random()<.5;w.textContent=x?"Heads":"Tails";'), '/miscount': coin('const x=Math.random()<.5;if(x)h++;n++;w.textContent=x?"Heads":"Tails";c.textContent="Heads "+h+" · Tails "+(n-h+1)'),
+    '/always': coin('w.textContent="Heads";c.textContent="flip "+(++n)'), '/drawn': '<canvas width=200 height=200 onclick="this.getContext(\'2d\').fillRect(0,0,9,9)"></canvas>', '/plain': '<p>No coin here.</p>' };
+  const server = http.createServer((q, r) => {
+    const u = q.url.split('?')[0]; if (PAGES[u]) { r.writeHead(200, { 'content-type': 'text/html' }); return r.end('<!doctype html><body>' + PAGES[u]); }
+    const file = new URL('.' + (u.endsWith('/') ? u + 'index.html' : u), root);
+    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
+  }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, c = probeFor('coin flip');
+  try {
+    const verse = await answer(b, at(c.ask.verse), null, false, false, 0, c.ask.presses), v = score(verse, c.truth);
+    // both sides in 10 fair flips fails 2 times in 1024: the check allows that one, never the other two
+    assert.ok(v.n === 3 || (v.n === 2 && v.missing[0] === 'both sides come up in 10 fair flips'), 'Verse\'s /flip/: ' + v.missing.join());
+    assert.equal(score(await answer(b, at('/miscount'), null, false, false, 0, 10), c.truth).has.includes('any count it shows adds up to the flips made'), false, 'a count off by one is wrong');
+    assert.deepEqual(score(await answer(b, at('/always'), null, false, false, 0, 10), c.truth).missing, ['both sides come up in 10 fair flips'], 'a coin that always lands heads is not fair');
+    assert.equal(await answer(b, at('/drawn'), null, false, false, 0, 10), null, 'a side the gate cannot read is not measured, never a loss');
+    const look = async (u) => { const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), p = await ctx.newPage(); try { await p.goto(at(u)); await p.waitForTimeout(1500); return await motionOf(p); } finally { await ctx.close(); } };
+    const mv = await look('/flip/'), still = await look('/swap');
+    assert.equal(scoreOf(mv, c.motion['flip animation']).n, 1, 'Verse\'s coin turns: ' + JSON.stringify(mv));
+    assert.equal(scoreOf(still, c.motion['flip animation']).n, 0, 'a word swapped at once is not an animation: ' + JSON.stringify(still));
+    assert.equal(await look('/plain'), null, 'no flip control: not measured');
+  } finally { await b.close(); server.close(); }
 });

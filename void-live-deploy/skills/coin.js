@@ -179,7 +179,9 @@ function flipCard(text, api, ask, look, keepEl) {
     card.innerHTML = CSS + '<h2>' + esc(ask.for ? (look ? look.title + ' for ' : 'Coin for ') + ask.for : look ? look.title : ask.n > 1 ? ask.n + ' coins' : 'Coin') + '</h2>'
       + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"></div><div class="coin-everyone" hidden></div>'
       + '<div class="coin-tools"><button type="button" class="coin-again">Flip again</button><button type="button" class="coin-sound"></button><button type="button" class="coin-reset">Reset tally</button></div>'
-      + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>';
+      + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>'
+      // on the stage, the way to the coin's own page (/flip/) and what it adds there; the page itself needs no link to itself
+      + (typeof location !== 'undefined' && /^\/flip\//.test(location.pathname) ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/flip/" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
   });
   if (!el || !el.querySelector) return 'coin';
   const row = el.querySelector('.coin-row'), word = el.querySelector('.coin-word'), tally = el.querySelector('.coin-tally'), snd = el.querySelector('.coin-sound');
