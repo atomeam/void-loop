@@ -540,32 +540,53 @@
   },
   "password": {
    "speed": {
-    "verdict": "unverified",
-    "verse": 2582,
-    "best": null,
-    "evidence": "Verse 2582 ms to network idle (median of 3, phone width) vs passwordsgenerator.net NaN ms to network idle (median of 3, phone width)",
-    "at": "2026-10-24T15:03:23.394Z"
+    "verdict": "worse",
+    "verse": 323,
+    "best": 200,
+    "evidence": "Verse 323 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:45:17.020Z"
    },
    "mobile": {
-    "verdict": "unverified",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": null,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs passwordsgenerator.net null px sideways overflow at 390 px",
-    "at": "2026-10-24T15:03:23.394Z"
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:45:17.020Z"
    },
    "accessibility": {
-    "verdict": "unverified",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": null,
-    "evidence": "Verse 0 unnamed controls or images vs passwordsgenerator.net null unnamed controls or images",
-    "at": "2026-10-24T15:03:23.394Z"
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T04:45:17.020Z"
    },
    "reliability": {
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:33:05.823Z"
+    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser; Verse 3 of 3; the other aspects are judged against the best score there is",
+    "at": "2026-10-25T04:45:17.020Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:45:17.020Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:45:17.020Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
+    "at": "2026-10-25T04:45:17.020Z"
    }
   },
   "encoder": {
@@ -1074,52 +1095,52 @@
   "photo resizer": {
    "speed": {
     "verdict": "better",
-    "verse": 91,
-    "best": 1318,
-    "evidence": "Verse (/resize-image/) 91 ms to the load event (median of 3, phone width) vs pancardresizer.com 1318 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T16:42:27.530Z"
+    "verse": 146,
+    "best": 1771,
+    "evidence": "Verse (/resize-image/) 146 ms to the load event (median of 3, phone width) vs pancardresizer.com 1771 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/resize-image/) 3 of 3 loads answered vs pancardresizer.com 3 of 3 loads answered",
-    "at": "2026-10-24T16:42:27.530Z"
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/resize-image/) 0 px sideways overflow at 390 px vs pancardresizer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T16:42:27.530Z"
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/resize-image/) 0 unnamed controls or images vs pancardresizer.com 1 unnamed controls or images",
-    "at": "2026-10-24T16:42:27.530Z"
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/resize-image/) 1 (1: the page shows itself again with the network cut) vs pancardresizer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T16:42:27.530Z"
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/resize-image/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T16:42:27.530Z"
+    "evidence": "Verse (/resize-image/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs pancardresizer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:44:42.414Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 21,
-    "evidence": "Verse (/resize-image/) 1 design defects vs pancardresizer.com 21 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), pancardresizer.com (20 low-contrast texts, 0 small tap targets, layout shift 0.26)",
-    "at": "2026-10-24T16:42:27.530Z"
+    "evidence": "Verse (/resize-image/) 0 design defects vs pancardresizer.com 21 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), pancardresizer.com (20 low-contrast texts, 0 small tap targets, layout shift 0.26)",
+    "at": "2026-10-25T04:44:42.414Z"
    }
   },
   "colour codes": {
@@ -1902,8 +1923,50 @@
     "verdict": "unverified",
     "verse": 3,
     "best": 0,
-    "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-25T04:34:52.695Z"
+    "evidence": "Google Maps answered none of 3 loads from an ordinary phone browser; Verse 3 of 3; the other aspects are judged against the best score there is",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "speed": {
+    "verdict": "worse",
+    "verse": 321,
+    "best": 200,
+    "evidence": "Verse 321 ms to the load event (median of 3, phone width) vs the bar (Google Maps unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs the bar (Google Maps unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs the bar (Google Maps unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs the bar (Google Maps unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (Google Maps unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:47:59.853Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 design defects vs the bar (Google Maps unreachable) 0 design defects",
+    "at": "2026-10-25T04:47:59.853Z"
    }
   }
  }
