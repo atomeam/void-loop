@@ -5407,67 +5407,67 @@
   "recipes: simplyrecipes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 87,
-    "best": 242,
-    "evidence": "Verse (/recipes/?q=pancakes) 87 ms to the load event (median of 3, phone width) vs simplyrecipes.com 242 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:24:15.975Z"
+    "verse": 98,
+    "best": 350,
+    "evidence": "Verse (/recipes/?q=pancakes) 98 ms to the load event (median of 3, phone width) vs simplyrecipes.com 350 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs simplyrecipes.com 3 of 3 loads answered",
-    "at": "2026-10-25T08:24:15.975Z"
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs simplyrecipes.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:24:15.975Z"
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs simplyrecipes.com 0 unnamed controls or images",
-    "at": "2026-10-25T08:24:15.975Z"
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs simplyrecipes.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:24:15.975Z"
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs simplyrecipes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:24:15.975Z"
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not simplyrecipes.com (the site is not asked)",
-    "at": "2026-10-25T08:24:15.975Z",
+    "at": "2026-10-25T08:24:51.763Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 8,
-    "best": 25,
-    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs simplyrecipes.com 25 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), simplyrecipes.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:24:15.975Z"
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs simplyrecipes.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), simplyrecipes.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:24:51.763Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:24:15.975Z",
+    "at": "2026-10-25T08:24:51.763Z",
     "of": 1,
     "part": true
    },
@@ -5476,7 +5476,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:24:15.975Z",
+    "at": "2026-10-25T08:24:51.763Z",
     "of": 1,
     "part": true
    },
@@ -5485,7 +5485,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:24:15.975Z",
+    "at": "2026-10-25T08:24:51.763Z",
     "of": 1,
     "part": true
    },
@@ -5494,74 +5494,74 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs simplyrecipes.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:24:15.975Z",
+    "at": "2026-10-25T08:24:51.763Z",
     "of": 14
    }
   },
   "recipes: tasty.co": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 81,
-    "best": 258,
-    "evidence": "Verse (/recipes/?q=pancakes) 81 ms to the load event (median of 3, phone width) vs tasty.co 258 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T08:24:44.676Z"
+    "verse": 100,
+    "best": 396,
+    "evidence": "Verse (/recipes/?q=pancakes) 100 ms to the load event (median of 3, phone width) vs tasty.co 396 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs tasty.co 3 of 3 loads answered",
-    "at": "2026-10-25T08:24:44.676Z"
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs tasty.co 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T08:24:44.676Z"
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs tasty.co 0 unnamed controls or images",
-    "at": "2026-10-25T08:24:44.676Z"
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs tasty.co 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T08:24:44.676Z"
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tasty.co 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T08:24:44.676Z"
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not tasty.co (the site is not asked)",
-    "at": "2026-10-25T08:24:44.676Z",
+    "at": "2026-10-25T08:25:21.384Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 8,
-    "best": 25,
-    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs tasty.co 25 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), tasty.co (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T08:24:44.676Z"
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs tasty.co 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), tasty.co (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:25:21.384Z"
    },
    "search by ingredient": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs tasty.co 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T08:24:44.676Z",
+    "at": "2026-10-25T08:25:21.384Z",
     "of": 1,
     "part": true
    },
@@ -5570,7 +5570,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs tasty.co 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T08:24:44.676Z",
+    "at": "2026-10-25T08:25:21.384Z",
     "of": 1,
     "part": true
    },
@@ -5579,7 +5579,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs tasty.co 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T08:24:44.676Z",
+    "at": "2026-10-25T08:25:21.384Z",
     "of": 1,
     "part": true
    },
@@ -5588,7 +5588,195 @@
     "verse": 14,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs tasty.co 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T08:24:44.676Z",
+    "at": "2026-10-25T08:25:21.384Z",
+    "of": 14
+   }
+  },
+  "recipes: bbcgoodfood.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 134,
+    "best": 348,
+    "evidence": "Verse (/recipes/?q=pancakes) 134 ms to the load event (median of 3, phone width) vs bbcgoodfood.com 348 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs bbcgoodfood.com 3 of 3 loads answered",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs bbcgoodfood.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs bbcgoodfood.com 0 unnamed controls or images",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs bbcgoodfood.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs bbcgoodfood.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not bbcgoodfood.com (the site is not asked)",
+    "at": "2026-10-25T08:25:50.419Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs bbcgoodfood.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), bbcgoodfood.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:25:50.419Z"
+   },
+   "search by ingredient": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs bbcgoodfood.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+    "at": "2026-10-25T08:25:50.419Z",
+    "of": 1,
+    "part": true
+   },
+   "scaling": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs bbcgoodfood.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+    "at": "2026-10-25T08:25:50.419Z",
+    "of": 1,
+    "part": true
+   },
+   "step mode": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs bbcgoodfood.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+    "at": "2026-10-25T08:25:50.419Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 14,
+    "best": 1,
+    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs bbcgoodfood.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
+    "at": "2026-10-25T08:25:50.419Z",
+    "of": 14
+   }
+  },
+  "recipes: epicurious.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 111,
+    "best": 362,
+    "evidence": "Verse (/recipes/?q=pancakes) 111 ms to the load event (median of 3, phone width) vs epicurious.com 362 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs epicurious.com 3 of 3 loads answered",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs epicurious.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs epicurious.com 0 unnamed controls or images",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs epicurious.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs epicurious.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not epicurious.com (the site is not asked)",
+    "at": "2026-10-25T08:26:19.199Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs epicurious.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), epicurious.com (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:26:19.199Z"
+   },
+   "search by ingredient": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs epicurious.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+    "at": "2026-10-25T08:26:19.199Z",
+    "of": 1,
+    "part": true
+   },
+   "scaling": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs epicurious.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+    "at": "2026-10-25T08:26:19.199Z",
+    "of": 1,
+    "part": true
+   },
+   "step mode": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs epicurious.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+    "at": "2026-10-25T08:26:19.199Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 14,
+    "best": 1,
+    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs epicurious.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
+    "at": "2026-10-25T08:26:19.199Z",
     "of": 14
    }
   }
@@ -5608,8 +5796,9 @@
   "skinnytaste.com": "tower.icons/skinnytaste.com.png",
   "seriouseats.com": "tower.icons/seriouseats.com.png",
   "food52.com": "tower.icons/food52.com.png",
-  "calendar.google.com": "tower.icons/calendar.google.com.png",
   "simplyrecipes.com": "tower.icons/simplyrecipes.com.png",
-  "tasty.co": "tower.icons/tasty.co.png"
+  "tasty.co": "tower.icons/tasty.co.png",
+  "bbcgoodfood.com": "tower.icons/bbcgoodfood.com.png",
+  "epicurious.com": "tower.icons/epicurious.com.png"
  }
 }
