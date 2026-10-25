@@ -12,9 +12,14 @@
 // public file keeps verdicts and numbers only. A verdict that was a pass and is now worse keeps `was`, so the floor un-beats and says it
 // regressed. Passive: page loads only, no sign-in, no forms, no posting.
 //   node tools/tower-gate.mjs <floor id>     e.g. calculator; writes void-live-deploy/tower.evidence.json
+//   node tools/tower-gate.mjs --floors a,b   several floors in turn, each in its own browser, written after each
+//   node tools/tower-gate.mjs --shard 2/6    the sweep across machines (tools/tower-merge.mjs): slice 2 of 6 of the floors, written to a slice file
+//                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
+//   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
 import { probeFor, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
+import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -267,21 +272,8 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   return out;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
-  if (process.argv[2] === '--which') {
-    const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
-    for (const id of pick(data.floors || {}, fr, process.argv.slice(3))) console.log(id);
-    process.exit(0);
-  }
-  const argv = process.argv.slice(2), only = argv.includes('--rescore'), id = argv.filter((a) => a !== '--rescore').join(' '), f = FLOORS.find((x) => x.id === id);
-  if (!f) { console.error('no floor ' + id + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
-  if (only) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
-    const data = JSON.parse(fs.readFileSync(FILE, 'utf8')); data.floors[f.id] = rescore(data.floors[f.id]);
-    fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
-    for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(26) + r.verdict);
-    process.exit(0);
-  }
+/** one floor measured against its live site in its own browser, its rows written into data.floors[f.id] (the stored rows are read for `was`) */
+async function measureFloor(f, data) {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString(), probe = probeFor(f.id), want = new Set(aspectsOf(f));
@@ -300,7 +292,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
   await b.close();
-  const data = JSON.parse(fs.readFileSync(FILE, 'utf8')), ev = (data.floors[f.id] = data.floors[f.id] || {});
+  const ev = (data.floors[f.id] = data.floors[f.id] || {});
   const where = 'Verse' + (versePage ? ' (' + versePage + ')' : '');
   const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of; ev[aspect] = { ...record(ev[aspect], verdict(a, c, m.hi, ideal), a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || ''), at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
   // a site that answered none of the loads turned the gate away: nothing about it is a measurement, so nothing is written but that
@@ -327,8 +319,52 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
   // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back.
   // Rows the old gate called by itself ("called beaten by verse") are dropped on every run, in every floor: runs in flight when that was taken back
-  // pushed them in again, and a later run only re-measures four aspects
-  for (const rows of Object.values(data.floors)) for (const [k, r] of Object.entries(rows || {})) if (r && r.called && /^called beaten by verse\b/.test(String(r.evidence || ''))) delete rows[k];
-  fs.writeFileSync(FILE, JSON.stringify(data, null, 1) + '\n');
-  for (const [k, r] of Object.entries(data.floors[f.id])) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
+  // pushed them in again, and a later run only re-measures four aspects (the sweep's merge drops them too, tools/tower-merge.mjs)
+  for (const rows of Object.values(data.floors)) for (const [k, r] of Object.entries(rows || {})) if (selfCalled(r)) delete rows[k];
+  for (const [k, r] of Object.entries(ev)) console.log(k.padEnd(14) + r.verdict.padEnd(11) + r.evidence);
+  return ev;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const argv = process.argv.slice(2), read = () => JSON.parse(fs.readFileSync(FILE, 'utf8')), write = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 1) + '\n');
+  // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
+  if (argv[0] === '--which') {
+    const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
+    for (const id of pick(data.floors || {}, fr, argv.slice(1))) console.log(id);
+    process.exit(0);
+  }
+  // --merge <slice file ...>: the sweep's slices folded into the evidence file, a newer row over an older one only (tools/tower-merge.mjs); no site loaded
+  if (argv[0] === '--merge') {
+    const slices = argv.slice(1).map((p) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { console.log('::warning::' + p + ' not read: ' + e.message); return null; } }).filter(Boolean);
+    const { data, taken } = merge(read(), slices);
+    write(FILE, data);
+    console.log(slices.length + ' slice' + (slices.length === 1 ? '' : 's') + ' (' + slices.map((s) => s.shard || '?').join(', ') + '), ' + taken.length + ' rows taken' + (taken.length ? ': ' + taken.join(', ') : ''));
+    process.exit(0);
+  }
+  // the floors: one id (the words after the flags), --floors a,b,c, or --shard i/N (slice i of N of every floor, in FLOORS order)
+  const opt = {}, words = [];
+  for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (['--shard', '--floors', '--out'].includes(a)) opt[a.slice(2)] = argv[++i] || ''; else if (['--rescore', '--list'].includes(a)) opt[a.slice(2)] = true; else words.push(a); }
+  const sh = opt.shard !== undefined ? parseShard(opt.shard) : null;
+  if (opt.shard !== undefined && !(sh && sh.i >= 1 && sh.i <= sh.n)) { console.error('--shard wants i/N with 1 <= i <= N, e.g. --shard 2/6; got ' + opt.shard); process.exit(2); }
+  const ids = sh ? shard(FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
+  const floors = ids.map((id) => FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
+  if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
+  if (opt.list) { for (const f of floors) console.log(f.id); process.exit(0); } // the selection alone, nothing loaded
+  if (opt.rescore) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
+    const data = read(); for (const f of floors) { data.floors[f.id] = rescore(data.floors[f.id]); for (const [k, r] of Object.entries(data.floors[f.id])) console.log((floors.length > 1 ? f.id + ': ' : '') + k.padEnd(26) + r.verdict); }
+    write(FILE, data);
+    process.exit(0);
+  }
+  // a slice (--shard, or --out) goes to its own file holding only the floors it measured, for the sweep's merge job; anything else is written
+  // into the evidence file after every floor, so a run cut short keeps what it had. Either way the stored rows are read first, for `was`
+  const out = opt.out || (sh ? path.join(root, 'void-live-deploy', 'tower.evidence.' + sh.i + '.json') : null), data = read(), done = {};
+  let failed = 0;
+  for (const f of floors) {
+    console.log((out ? 'slice ' + (sh ? sh.i + '/' + sh.n : path.basename(out)) + ', ' : '') + 'measuring ' + f.id + (floors.length > 1 ? ' (' + (floors.indexOf(f) + 1) + ' of ' + floors.length + ')' : ''));
+    try { done[f.id] = await measureFloor(f, data); } catch (e) { failed++; console.log('::warning::' + f.id + ' not measured: ' + (e && e.message || e)); continue; }
+    if (!out) write(FILE, data);
+  }
+  if (out) write(out, { note: 'one slice of the tower gate\'s sweep (tools/tower-merge.mjs): folded into tower.evidence.json by the merge job, never committed itself', shard: sh ? sh.i + '/' + sh.n : 'floors', at: new Date().toISOString(), floors: done });
+  if (failed) console.log(failed + ' of ' + floors.length + ' floors not measured');
+  process.exit(failed && failed === floors.length ? 1 : 0);
 }

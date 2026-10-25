@@ -483,6 +483,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T01:18:06Z",
+   "subject": "self.json refreshed after the /time/ sun, moon and dates work"
+  },
+  {
    "at": "2026-10-25T01:17:55Z",
    "subject": "/time/ adds twilight, solar noon, golden hour and the moon, date to date, and an event link that shows one moment in every city"
   },
@@ -557,10 +561,6 @@
   {
    "at": "2026-10-25T00:36:44Z",
    "subject": "Incident: the browser suite failed on 25433038 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:26:34Z",
-   "subject": "Password strength: every control is a full tap target, a Copy link button, and the empty time boxes stay hidden until something is typed"
   }
  ],
  "builders": {
