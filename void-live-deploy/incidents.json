@@ -2,6 +2,29 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-25T09:22:37.939Z",
+   "sha": "9fb2b5d538c4ac95cd9455f3f9e1cce1a9959771",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40178334509",
+   "suite": "browser suite on main",
+   "checks": [
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "void-live-deploy/recipes/index.html"
+   ]
+  },
+  {
    "at": "2026-10-25T09:20:13.471Z",
    "sha": "21b8e837a66236dafc8ffcf8f551fff83e75716c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40178359631",
@@ -872,33 +895,6 @@
     "tools/wiki-look.test.mjs",
     "void-live-deploy/functions/api/card-art.js",
     "void-live-deploy/lib/art-rules.js"
-   ]
-  },
-  {
-   "at": "2026-10-25T04:27:04.632Z",
-   "sha": "a2027279939ab551df97feac45c18e686a2b578e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40160058157",
-   "suite": "browser suite on main",
-   "checks": [
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "gear explainer miniature: draws real pixels, its pair follows the data (16:32",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract",
-    "suite budget: the whole suite ran past 1680 s"
-   ],
-   "touched": [
-    "tools/void-seal.test.mjs",
-    "void-live-deploy/lib/art-rules.js",
-    "void-live-deploy/lib/void-seal.js"
    ]
   }
  ]
