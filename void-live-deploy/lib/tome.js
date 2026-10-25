@@ -86,6 +86,13 @@ export const TOME_CSS = [
   '.tome-cover .cover-art{width:78%;margin:1.4cqh auto 0;position:relative;border:1px solid rgba(214,179,92,.45);border-radius:4px;overflow:hidden;background:#120b06;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}.tome-cover .cover-art svg{display:block;width:100%;height:auto}',
   '.tome-tocover{position:absolute;top:max(10px,1.6vh);left:max(10px,1.6vw);z-index:9;font:inherit;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid rgba(214,179,92,.55);background:rgba(36,23,13,.88);color:#f0e3c4;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.5)}.tome-tocover:hover,.tome-tocover:focus-visible{border-color:rgba(240,214,140,.95)}',
   '.tome-cover .newbadge{position:relative;display:inline-block;margin-top:1.6cqh;padding:.5cqh 1.6cqh;border-radius:2cqh;background:#8f2d1c;color:#fff4dc;font-size:1.8cqh;letter-spacing:.04em;box-shadow:0 .3cqh 1cqh rgba(0,0,0,.5)}',
+  // the leather board fills the face; the words are stamped in gold into it (a gold gradient clipped to the letters, a dark lip above and a pale one below)
+  '.tome-cover .cover-art.cover-leather,.tome-backcover .cover-art.cover-leather{position:absolute!important;inset:0;width:auto!important;margin:0!important;border:0!important;border-radius:inherit;background:#3b2414;box-shadow:none;overflow:hidden}.cover-leather svg{display:block;width:100%;height:100%}',
+  '.tome-cover .face.out,.tome-backcover{justify-content:flex-start!important;overflow:hidden}.tome-cover .face.out::before{content:none}.tome-cover .seal,.tome-backcover .seal{display:none}',
+  '.tome-cover .gilt,.tome-backcover .gilt{position:relative;z-index:1;background:linear-gradient(170deg,#fff3c4 0%,#e8bf62 30%,#a06d24 55%,#f2d27c 75%,#8a5718 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 -1px 0 rgba(10,5,2,.9)) drop-shadow(0 1px 0 rgba(190,140,90,.35));text-align:center}',
+  '.tome-cover .gilt.title,.tome-backcover .gilt.title{margin-top:21.5cqh;font-size:4.8cqh;font-weight:700;letter-spacing:.08em;font-variant:small-caps;line-height:1.05;padding:0 12%}',
+  '.tome-cover .gilt.line,.tome-backcover .gilt.line{font-style:italic;font-size:2.1cqh;letter-spacing:.04em;margin-top:1cqh}.tome-cover .gilt.foot,.tome-backcover .gilt.foot{position:absolute;left:0;right:0;bottom:14cqh;margin:0;font-style:normal;font-variant:small-caps;letter-spacing:.14em;font-size:2.3cqh}',
+  '.tome-cover .newbadge{z-index:1;position:absolute!important;left:50%;bottom:7cqh;transform:translateX(-50%);white-space:nowrap}',
   '.tome-cover .title{font-variant:small-caps;letter-spacing:.14em;font-size:4cqh;position:relative}.tome-cover .line{font-style:italic;font-size:2cqh;color:rgba(214,179,92,.8);margin-top:1cqh;position:relative}',
   // the prompt, as a game writes it along the foot of the screen
   '.tome-prompt{position:absolute;left:0;right:0;bottom:2.4vh;text-align:center;color:rgba(232,214,178,.8);font-size:13px;letter-spacing:.16em;text-transform:uppercase;pointer-events:none}',
@@ -238,15 +245,64 @@ export function stacks(cur, total) { const t = Math.max(1, total || 1); return {
 /** the prompt along the foot of the screen. Pure. */
 export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Home</kbd>Cover<kbd>Esc</kbd>Close</span><span class="phone">Swipe to turn · tap the dark to close</span>';
 
-/** the shut cover's face. Pure. */
-/** the back cover: the same worn leather, the ink plate again, and the last words. Pure. */
-export function backCoverHtml(book, esc) {
-  let art = ''; try { art = artSvg({ key: 'the-v01d-book-back', name: 'The end', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
-  return '<div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">The End</div><div class="line">' + esc(book.title || 'The Verse Book') + '</div><div class="line">a-to-mind.com</div>';
+// The cover is a tooled leather binding (owner, 2026-10-25: "this should be an awesomely detailed realistic engraved leather book cover"), drawn as one
+// inline SVG so it needs no image file and works offline: pebbled leather grain lit for relief, worn darker edges and scuffs, the hinge groove by the spine,
+// two blind-tooled fillets pressed into the leather, a gilt frame with a dotted roll, gilt fleurons in the four corners, and a gilt medallion in the middle
+// stamped with Verse's mark (an atom's three orbits round a spiral galaxy). The words are real text over it, stamped in gold (TOME_CSS .gilt).
+const GOLD = '<linearGradient id="tg-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b8"/><stop offset=".22" stop-color="#e2b65a"/><stop offset=".48" stop-color="#9c6a22"/><stop offset=".7" stop-color="#f0cf78"/><stop offset="1" stop-color="#7c4d16"/></linearGradient>';
+// a corner fleuron: scrolls running along both edges and a leaf pointing in, drawn for the top-left corner (the other three are its mirror images)
+const FLEURON = 'M0 0 C40 2 70 10 92 30 C104 42 102 60 88 62 C76 63 72 50 80 44 C86 40 92 46 88 50 M0 0 C2 40 10 70 30 92 C42 104 60 102 62 88 C63 76 50 72 44 80 C40 86 46 92 50 88 '
+  + 'M0 0 C26 22 46 36 72 72 M72 72 C58 70 48 62 46 50 C58 52 66 60 72 72 C70 58 62 48 50 46 M72 72 C82 86 96 92 110 92 C100 100 86 100 78 92 '
+  + 'M18 6 C34 16 44 18 58 16 M6 18 C16 34 18 44 16 58 M30 30 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0';
+/** the leather board as one SVG, w x h in its own units (the cover is about 0.73 wide for 1 high). Pure. */
+export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
+  const fr = (i, cls) => '<rect class="' + cls + '" x="' + i + '" y="' + i + '" width="' + (w - 2 * i) + '" height="' + (h - 2 * i) + '" rx="' + Math.max(2, 14 - i / 8) + '"/>';
+  const blind = (i) => '<g fill="none"><rect x="' + i + '" y="' + i + '" width="' + (w - 2 * i) + '" height="' + (h - 2 * i) + '" stroke="#120904" stroke-width="3.2" opacity=".85"/>'
+    + '<rect x="' + (i + 1.6) + '" y="' + (i + 1.6) + '" width="' + (w - 2 * i - 3.2) + '" height="' + (h - 2 * i - 3.2) + '" stroke="#8a5a34" stroke-width="1" opacity=".55"/></g>';
+  const corner = (x, y, sx, sy) => '<g transform="translate(' + x + ' ' + y + ') scale(' + sx + ' ' + sy + ')"><path d="' + FLEURON + '" class="gold-line"/></g>';
+  const cx = w / 2, cy = h * 0.5, R = Math.min(w, h) * 0.22;
+  const orbit = (deg) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + (R * 0.86) + '" ry="' + (R * 0.3) + '" transform="rotate(' + deg + ' ' + cx + ' ' + cy + ')" class="gold-line"/>';
+  // the galaxy: a two-armed logarithmic spiral round a gold boss
+  const arm = (rot) => { let d = ''; for (let k = 0; k <= 40; k++) { const t = k / 40, a = rot + t * Math.PI * 2.1, r = R * (0.05 + t * 0.4); d += (k ? 'L' : 'M') + (cx + Math.cos(a) * r).toFixed(1) + ' ' + (cy + Math.sin(a) * r * 0.82).toFixed(1); } return '<path d="' + d + '" class="gold-line" stroke-width="2.4"/>'; };
+  const electron = (deg, at) => { const a = at * Math.PI / 180, x = Math.cos(a) * R * 0.86, y = Math.sin(a) * R * 0.3, c = Math.cos(deg * Math.PI / 180), s = Math.sin(deg * Math.PI / 180); return '<circle cx="' + (cx + x * c - y * s).toFixed(1) + '" cy="' + (cy + x * s + y * c).toFixed(1) + '" r="6" fill="url(#tg-gold)" filter="url(#tg-emboss)"/>'; };
+  const med = medallion ? '<g>'
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.12) + '" fill="#2a170b" opacity=".55"/>' // the medallion is pressed: a shade darker than the board
+    + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.12) + '" fill="none" stroke="#120904" stroke-width="3"/>'
+    + '<g filter="url(#tg-emboss)"><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.06) + '" class="gold-line" stroke-width="3"/><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.98) + '" class="gold-dots"/>'
+    + orbit(0) + orbit(60) + orbit(120) + arm(0) + arm(Math.PI) + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.07) + '" fill="url(#tg-gold)"/>'
+    + electron(0, 200) + electron(60, 330) + electron(120, 95) + '</g></g>' : '';
+  // scuffs: a few pale strokes where the board has rubbed, fixed so the book is the same for everyone
+  const scuffs = [[120, 180, 60, -8], [560, 830, 80, 12], [610, 240, 40, 30], [180, 760, 50, -20], [400, 120, 70, 4], [90, 520, 36, 70]].map(([x, y, l, a]) => '<line x1="' + x + '" y1="' + y + '" x2="' + (x + l * Math.cos(a * Math.PI / 180)).toFixed(0) + '" y2="' + (y + l * Math.sin(a * Math.PI / 180)).toFixed(0) + '" stroke="#c09468" stroke-width="2" stroke-linecap="round" opacity=".12" filter="url(#tg-soft)"/>').join('');
+  return '<svg class="tome-leather" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs>' + GOLD
+    // the leather: a fine fractal grain lit from the top left (relief), over a slow mottle of darker and lighter hide
+    + '<filter id="tg-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="3" result="n"/><feDiffuseLighting in="n" surfaceScale="1.6" lighting-color="#d9b48a" result="l"><feDistantLight azimuth="225" elevation="58"/></feDiffuseLighting><feComposite in="l" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"/></filter>'
+    + '<filter id="tg-mottle" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".006 .009" numOctaves="3" seed="11"/><feColorMatrix values="0 0 0 0 .14  0 0 0 0 .07  0 0 0 0 .02  0 0 0 .9 -.25"/></filter>'
+    // gilt: the gold catches a specular light and sits pressed into the leather (a dark lip above, a pale one below)
+    + '<filter id="tg-emboss" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="b"/><feSpecularLighting in="b" surfaceScale="3" specularConstant=".9" specularExponent="18" lighting-color="#fff6d8" result="s"><feDistantLight azimuth="225" elevation="45"/></feSpecularLighting><feComposite in="s" in2="SourceAlpha" operator="in" result="sp"/>'
+    + '<feOffset in="SourceAlpha" dx="-1" dy="-1.2" result="up"/><feFlood flood-color="#0b0502" flood-opacity=".9"/><feComposite in2="up" operator="in" result="dark"/><feOffset in="SourceAlpha" dx="1" dy="1.4" result="dn"/><feFlood flood-color="#b98552" flood-opacity=".35"/><feComposite in2="dn" operator="in" result="lite"/>'
+    + '<feMerge><feMergeNode in="dark"/><feMergeNode in="lite"/><feMergeNode in="SourceGraphic"/><feMergeNode in="sp"/></feMerge></filter>'
+    + '<filter id="tg-soft"><feGaussianBlur stdDeviation="1.4"/></filter>'
+    + '<radialGradient id="tg-wear" cx="50%" cy="46%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset=".88" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>'
+    + '<linearGradient id="tg-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient>'
+    + '<style>.gold-line{fill:none;stroke:url(#tg-gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.gold-dots{fill:none;stroke:url(#tg-gold);stroke-width:3.2;stroke-linecap:round;stroke-dasharray:0 9}</style></defs>'
+    + '<rect width="' + w + '" height="' + h + '" fill="#4a2c17"/>'
+    + '<rect width="' + w + '" height="' + h + '" fill="#4a2c17" filter="url(#tg-grain)" opacity=".85" style="mix-blend-mode:multiply"/>'
+    + '<rect width="' + w + '" height="' + h + '" filter="url(#tg-mottle)"/>'
+    // the hinge: the groove where the board bends at the spine
+    + '<rect x="22" y="0" width="5" height="' + h + '" fill="#120904" opacity=".7"/><rect x="27" y="0" width="2" height="' + h + '" fill="#a07048" opacity=".25"/>'
+    + blind(40) + blind(52)
+    + '<g filter="url(#tg-emboss)">' + fr(70, 'gold-line') + fr(78, 'gold-dots') + fr(86, 'gold-line')
+    + corner(86, 86, 1, 1) + corner(w - 86, 86, -1, 1) + corner(86, h - 86, 1, -1) + corner(w - 86, h - 86, -1, -1) + '</g>'
+    + blind(Math.round(h * 0.2)) // an inner panel pressed blind round the medallion
+    + med + scuffs
+    + '<rect width="' + w + '" height="' + h + '" fill="url(#tg-sheen)"/><rect width="' + w + '" height="' + h + '" fill="url(#tg-wear)"/>'
+    + '</svg>';
 }
+/** the back cover: the same tooled leather and medallion, and the last words. Pure. */
+export function backCoverHtml(book, esc) {
+  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Verse Book') + '</div><div class="gilt line foot">a-to-mind.com</div>';
+}
+/** the shut cover's face: the tooled leather board with the title stamped in gold above the medallion and nothing else (no tagline, no page count: owner, 2026-10-25, "no book ever lists its page count on the cover"). Pure. */
 export function coverHtml(book, esc) {
-  const t = book.totals || {};
-  // the cover carries Verse's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
-  let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The Verse Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
-  return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The Verse Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
+  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Verse Book') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }
