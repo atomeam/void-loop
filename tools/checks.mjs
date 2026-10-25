@@ -42,9 +42,12 @@ const ONLY_WHEN = {
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
-  // glitch titles in a real browser (~3 min): the titles live in the skills and the lib, their styles in the page
-  'glitch-titles.mjs': /void\.html$|void-live-deploy\/(?:skills|lib)\/.*\.js$|glitch-titles/,
+  // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
+  // (<span class="gl ...">: skills/films.js and skills/is-it.js today, any file that gains one tomorrow); the styles are the page's
+  'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
+const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title
+const covers = (rule, f) => (typeof rule === 'function' ? rule(f) : rule.test(f));
 let changed; // the files this branch changed against main, read once when first asked (root is set further down)
 const changedVsMain = () => {
   if (changed !== undefined) return changed;
@@ -54,7 +57,7 @@ const changedVsMain = () => {
   return (changed = [...new Set([git(['diff', '--name-only', base]).stdout, git(['diff', '--name-only', '--cached']).stdout].join('\n').split('\n').filter(Boolean))]);
 };
 /** why a slow check is skipped this run, or '' when it runs. */
-const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => ONLY_WHEN[file].test(f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
+const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
 const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
