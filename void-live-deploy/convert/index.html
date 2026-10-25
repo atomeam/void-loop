@@ -41,31 +41,30 @@
   #kinds { font-size: 13px; color: var(--soft); margin: 14px 0 0; } #kinds b { color: var(--ink); font-weight: 600; } #kinds a { color: inherit; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
-
-<!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/units.js">
-<!-- /modulepreload -->
 </head>
 <body>
 <main>
   <h1>Unit converter</h1>
   <label for="ask" class="note" style="display:block;text-align:left">Type a conversion from any unit to any other, or a value in any unit below</label>
   <input type="text" id="ask" value="1 m" spellcheck="false" autocomplete="off" placeholder="100 c to f, 5 km in miles, how many feet in a mile">
-  <p class="answer" id="answer" aria-live="polite"></p>
-  <p id="formula" aria-live="polite"></p>
+  <p class="answer" id="answer" aria-live="polite">1 m in every length unit</p>
+  <p id="formula" aria-live="polite">Pick a second unit (type "1 m to …") for the formula from one to the other.</p>
   <div class="row">
-    <label>Kind <select id="kind" aria-label="Kind of unit"></select></label>
-    <label>Precision <select id="sig" aria-label="Significant digits"></select> digits</label>
+    <label>Kind <select id="kind" aria-label="Kind of unit"><optgroup label="Common converters"><option value="length" selected>Length</option><option value="mass">Weight and mass</option><option value="temperature">Temperature</option><option value="volume">Volume</option><option value="area">Area</option><option value="speed">Speed</option><option value="time">Time</option><option value="data">Data storage</option><option value="pressure">Pressure</option><option value="energy">Energy</option><option value="power">Power</option><option value="force">Force</option><option value="angle">Angle</option><option value="frequency">Frequency</option><option value="fuel">Fuel consumption</option></optgroup><optgroup label="Engineering converters: heat, fluids, light, electricity, magnetism, radiology"><option value="heat">Heat: thermal conductivity</option><option value="fluids">Fluids: flow rate</option><option value="light">Light: illuminance</option><option value="electricity">Electricity: charge</option><option value="magnetism">Magnetism: flux density</option><option value="radiology">Radiology: absorbed dose</option><option value="radioactivity">Radiology: radioactivity</option></optgroup></select></label>
+    <label>Precision <select id="sig" aria-label="Significant digits"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12" selected>12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option></select> digits</label>
   </div>
-  <ul id="units" aria-label="Every unit of this kind"></ul>
+  <ul id="units" aria-label="Every unit of this kind"><li data-unit="m" class="from"><label for="u-m">Metre<small>m</small></label><input type="text" inputmode="decimal" id="u-m" spellcheck="false" autocomplete="off" value="1"></li><li data-unit="km"><label for="u-km">Kilometre<small>km</small></label><input type="text" inputmode="decimal" id="u-km" spellcheck="false" autocomplete="off" value="0.001"></li><li data-unit="cm"><label for="u-cm">Centimetre<small>cm</small></label><input type="text" inputmode="decimal" id="u-cm" spellcheck="false" autocomplete="off" value="100"></li><li data-unit="mm"><label for="u-mm">Millimetre<small>mm</small></label><input type="text" inputmode="decimal" id="u-mm" spellcheck="false" autocomplete="off" value="1000"></li><li data-unit="um"><label for="u-um">Micrometre<small>µm</small></label><input type="text" inputmode="decimal" id="u-um" spellcheck="false" autocomplete="off" value="1000000"></li><li data-unit="nm"><label for="u-nm">Nanometre<small>nm</small></label><input type="text" inputmode="decimal" id="u-nm" spellcheck="false" autocomplete="off" value="1000000000"></li><li data-unit="in"><label for="u-in">Inch<small>in</small></label><input type="text" inputmode="decimal" id="u-in" spellcheck="false" autocomplete="off" value="39.3700787402"></li><li data-unit="ft"><label for="u-ft">Foot<small>ft</small></label><input type="text" inputmode="decimal" id="u-ft" spellcheck="false" autocomplete="off" value="3.28083989501"></li><li data-unit="yd"><label for="u-yd">Yard<small>yd</small></label><input type="text" inputmode="decimal" id="u-yd" spellcheck="false" autocomplete="off" value="1.09361329834"></li><li data-unit="mi"><label for="u-mi">Mile<small>mi</small></label><input type="text" inputmode="decimal" id="u-mi" spellcheck="false" autocomplete="off" value="0.000621371192237"></li><li data-unit="nmi"><label for="u-nmi">Nautical mile<small>nmi</small></label><input type="text" inputmode="decimal" id="u-nmi" spellcheck="false" autocomplete="off" value="0.000539956803456"></li><li data-unit="mil"><label for="u-mil">Mil (thou)<small>mil</small></label><input type="text" inputmode="decimal" id="u-mil" spellcheck="false" autocomplete="off" value="39370.0787402"></li><li data-unit="fur"><label for="u-fur">Furlong<small>fur</small></label><input type="text" inputmode="decimal" id="u-fur" spellcheck="false" autocomplete="off" value="0.0049709695379"></li><li data-unit="au"><label for="u-au">Astronomical unit<small>au</small></label><input type="text" inputmode="decimal" id="u-au" spellcheck="false" autocomplete="off" value="6.68458712227e-12"></li><li data-unit="ly"><label for="u-ly">Light-year<small>ly</small></label><input type="text" inputmode="decimal" id="u-ly" spellcheck="false" autocomplete="off" value="1.05700083402e-16"></li></ul>
   <div class="row"><button type="button" id="swap">Swap the two units</button><button type="button" id="link">Copy link</button></div>
   <p class="note">Every unit of a kind at once, both ways: type in any box and the rest follow. Exact: each unit comes from its definition (an inch is 0.0254 m, a pound 0.45359237 kg, a US gallon 231 cubic inches), worked out as fractions, and rounded only when shown, to the precision you choose.</p>
-  <p id="kinds"></p>
-  <nav id="related" aria-label="Related tools"></nav>
+  <p id="kinds"><b>Common converters: </b><a href="?k=length">Length</a>, <a href="?k=mass">Weight and mass</a>, <a href="?k=temperature">Temperature</a>, <a href="?k=volume">Volume</a>, <a href="?k=area">Area</a>, <a href="?k=speed">Speed</a>, <a href="?k=time">Time</a>, <a href="?k=data">Data storage</a>, <a href="?k=pressure">Pressure</a>, <a href="?k=energy">Energy</a>, <a href="?k=power">Power</a>, <a href="?k=force">Force</a>, <a href="?k=angle">Angle</a>, <a href="?k=frequency">Frequency</a>, <a href="?k=fuel">Fuel consumption</a><br><b>Engineering converters: heat, fluids, light, electricity, magnetism, radiology: </b><a href="?k=heat">Heat: thermal conductivity</a>, <a href="?k=fluids">Fluids: flow rate</a>, <a href="?k=light">Light: illuminance</a>, <a href="?k=electricity">Electricity: charge</a>, <a href="?k=magnetism">Magnetism: flux density</a>, <a href="?k=radiology">Radiology: absorbed dose</a>, <a href="?k=radioactivity">Radiology: radioactivity</a><br></p>
+  <nav id="related" aria-label="Related tools" style="min-height:106px"></nav>
   <footer>Works offline after one visit; nothing you type leaves this device. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
-  import { KINDS, GROUPS, kindsInOrder, unitOf, parseNum, fmt, convert, convertAll, parseAsk, formulaOf } from '/lib/units.js';
+  // the default converter above is in the HTML, so the first paint is the finished page; the code comes in after the load event and redraws the
+  // same rows (nothing moves), then answers a conversion in the link or the last one kept (2026-10-25: 216 ms to the load event and a layout shift of 0.28)
+  addEventListener('load', async () => {
+  const { KINDS, GROUPS, kindsInOrder, unitOf, parseNum, fmt, convert, convertAll, parseAsk, formulaOf } = await import('/lib/units.js');
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.convert.v1';
   // the state: a kind, the unit typed in (from), the number as typed, the unit asked for (to, or null), and how many significant digits to show
   let st = { kind: 'length', from: unitOf('length', 'm'), text: '1', to: null };
@@ -121,8 +120,9 @@
   $('link').addEventListener('click', async () => { const p = new URLSearchParams({ k: st.kind, from: st.from.id, v: st.text.trim() }); if (st.to) p.set('to', st.to.id); if (sig !== 12) p.set('sig', String(sig));
     const u = location.origin + location.pathname + '?' + p; try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
   build(); $('ask').value = says();
-  // the "Use with" row is not needed for the first paint: it comes after the load event (as /calculator/ does), so the converter paints first
-  addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/convert/')).catch(() => {}); });
+  // the "Use with" row last of all
+  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/convert/')).catch(() => {});
+  });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
