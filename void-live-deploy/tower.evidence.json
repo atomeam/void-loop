@@ -1509,59 +1509,59 @@
   "wheel": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 125,
-    "best": 212,
-    "evidence": "Verse (/wheel/) 125 ms to the load event (median of 3, phone width) vs wheelofnames.com 212 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:36:00.738Z"
+    "verse": 145,
+    "best": 340,
+    "evidence": "Verse (/wheel/) 145 ms to the load event (median of 3, phone width) vs wheelofnames.com 340 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/wheel/) 3 of 3 loads answered vs wheelofnames.com 3 of 3 loads answered",
-    "at": "2026-10-25T11:36:00.738Z"
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/wheel/) 0 px sideways overflow at 390 px vs wheelofnames.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:36:00.738Z"
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/wheel/) 0 unnamed controls or images vs wheelofnames.com 2 unnamed controls or images",
-    "at": "2026-10-25T11:36:00.738Z"
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/wheel/) 1 (1: the page shows itself again with the network cut) vs wheelofnames.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:36:00.738Z"
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/wheel/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wheelofnames.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:36:00.738Z"
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 2,
     "best": 13,
-    "evidence": "Verse (/wheel/) 0 design defects vs wheelofnames.com 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 12 small tap targets, layout shift 0.04)",
-    "at": "2026-10-25T11:36:00.738Z"
+    "evidence": "Verse (/wheel/) 2 design defects vs wheelofnames.com 13 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 12 small tap targets, layout shift 0.04)",
+    "at": "2026-10-25T18:03:58.519Z"
    },
    "entries list": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T11:36:00.738Z",
+    "at": "2026-10-25T18:03:58.519Z",
     "of": 1,
     "part": true
    },
@@ -1570,24 +1570,25 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T11:36:00.738Z",
+    "at": "2026-10-25T18:03:58.519Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "equal-and-better",
-    "verse": 9,
-    "best": 9,
-    "evidence": "Verse (/wheel/) 9 of 9 things a full answer shows vs wheelofnames.com 9 of 9 things a full answer shows (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T11:36:00.738Z",
-    "of": 9
+    "verdict": "worse",
+    "verse": 12,
+    "best": 13,
+    "evidence": "Verse (/wheel/) 12 of 15 things a full answer shows vs wheelofnames.com 13 of 15 things a full answer shows (Verse lacks: Entries list, Weights (advanced mode), Images as entries; site lacks: Entries list, Images as entries)",
+    "at": "2026-10-25T18:03:58.519Z",
+    "was": "equal-and-better",
+    "of": 15
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/wheel/) 2 of 2 right against the worked-out answer; judged against the standard, not wheelofnames.com (the site is not asked)",
-    "at": "2026-10-25T11:36:00.738Z",
+    "at": "2026-10-25T18:03:58.519Z",
     "of": 2
    },
    "remove the winner": {
@@ -1595,7 +1596,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T11:36:00.738Z",
+    "at": "2026-10-25T18:03:58.519Z",
     "of": 1,
     "part": true
    }
@@ -2167,52 +2168,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 293,
-    "best": 434,
-    "evidence": "Verse 293 ms to the load event (median of 3, phone width) vs ESPN 434 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T17:45:00.286Z"
+    "verse": 342,
+    "best": 605,
+    "evidence": "Verse 342 ms to the load event (median of 3, phone width) vs ESPN 605 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T17:45:00.286Z"
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T17:45:00.286Z"
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 35,
     "evidence": "Verse 0 unnamed controls or images vs ESPN 35 unnamed controls or images",
-    "at": "2026-10-25T17:45:00.286Z"
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T17:45:00.286Z"
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T17:45:00.286Z"
+    "at": "2026-10-25T18:03:23.882Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 49,
-    "evidence": "Verse 0 design defects vs ESPN 49 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (37 low-contrast texts, 12 small tap targets, layout shift 0.02)",
-    "at": "2026-10-25T17:45:00.286Z"
+    "best": 48,
+    "evidence": "Verse 0 design defects vs ESPN 48 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (37 low-contrast texts, 11 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T18:03:23.882Z"
    }
   },
   "finance": {
@@ -10345,6 +10346,109 @@
     "at": "2026-10-25T17:17:39.034Z",
     "of": 20
    }
+  },
+  "image boards": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 4chan 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 98,
+    "best": 200,
+    "evidence": "Verse (/boards/) 98 ms to the load event (median of 3, phone width) vs the bar (4chan unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (4chan unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (4chan unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (4chan unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (4chan unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (4chan unreachable) 0 design defects",
+    "at": "2026-10-25T18:05:00.526Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (4chan unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 20
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (4chan unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (4chan unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (4chan unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (4chan unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T18:05:00.526Z",
+    "of": 1,
+    "part": true
+   }
   }
  },
  "icons": {
@@ -10459,6 +10563,7 @@
   "sushigirl.us": "tower.icons/sushigirl.us.ico",
   "uboachan.net": "tower.icons/uboachan.net.ico",
   "kissu.moe": "tower.icons/kissu.moe.png",
-  "wizchan.org": "tower.icons/wizchan.org.ico"
+  "wizchan.org": "tower.icons/wizchan.org.ico",
+  "4chan.org": "tower.icons/4chan.org.ico"
  }
 }
