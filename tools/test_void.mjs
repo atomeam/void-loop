@@ -5595,6 +5595,16 @@ try {
       && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of online-stopwatch.com: an interval timer that walks get ready, work, rest from a link, and a chess clock with an increment
+  if (want("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move")) {
+    const Z = await fresh(); await Z.p.goto(base + 'stopwatch/?iv=2,1,2,1,0,1'); await Z.p.click('#ivgo'); await Z.p.waitForTimeout(300);
+    const p1 = await Z.p.$eval('#ivphase', (e) => e.textContent); await Z.p.waitForTimeout(1200); const p2 = await Z.p.$eval('#ivphase', (e) => e.textContent), info = await Z.p.$eval('#ivinfo', (e) => e.textContent);
+    await Z.p.goto(base + 'stopwatch/?cc=1%2B5'); await Z.p.click('#cc1'); await Z.p.waitForTimeout(400); await Z.p.click('#cc0');
+    const cc = { w: await Z.p.$eval('#cc0t', (e) => e.textContent), b: await Z.p.$eval('#cc1t', (e) => e.textContent), on: await Z.p.$eval('#cc1', (e) => e.classList.contains('on')), m: await Z.p.$eval('#cc0m', (e) => e.textContent) };
+    check("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move",
+      p1 === 'Get ready' && p2 === 'Work' && /Round 1 of 2/.test(info) && cc.w === '1:05' && cc.on && /1 move/.test(cc.m) && !Z.errors.length, JSON.stringify({ p1, p2, info, cc, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the tower's unitconverters.net floor: /convert/ answers the gate's own question from its link, shows every unit of the kind at once, and a
   // box typed in either direction moves all the others; Copy link carries the conversion
   if (want("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it")) {

@@ -1,7 +1,7 @@
 // lib/stopwatch.js: a stopwatch kept as timestamps never drifts, laps with splits, deltas, fastest and slowest; durations; a countdown
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clock, fresh, act, elapsed, lapRows, parseDuration, timer, tact, remaining } from '../void-live-deploy/lib/stopwatch.js';
+import { clock, fresh, act, elapsed, lapRows, parseDuration, timer, tact, remaining, intervalSteps, intervalAt, chess, chessLeft, chessTap, chessPause, chessFlag } from '../void-live-deploy/lib/stopwatch.js';
 
 test('the clock reads as people write it', () => {
   assert.equal(clock(0), '0:00.00'); assert.equal(clock(3450), '0:03.45'); assert.equal(clock(123450), '2:03.45'); assert.equal(clock(3723450), '1:02:03.45');
@@ -28,4 +28,21 @@ test('a countdown: it ends at a fixed moment, a pause banks what is left, it nev
   let c = tact(timer(60000), 'start', 1000); assert.equal(remaining(c, 31000), 30000); assert.equal(remaining(c, 99999), 0);
   c = tact(c, 'pause', 41000); assert.equal(remaining(c, 500000), 20000);
   c = tact(c, 'start', 50000); assert.equal(remaining(c, 60000), 10000); assert.deepEqual(tact(c, 'reset', 0), timer(60000));
+});
+
+test('an interval timer: work and rest rounds in sets, no rest after the last round, a set rest between sets', () => {
+  const steps = intervalSteps({ prep: 5000, work: 20000, rest: 10000, rounds: 3, sets: 2, setRest: 60000 });
+  assert.deepEqual(steps.map((s) => s.kind + s.round + '/' + s.set), ['prep0/1', 'work1/1', 'rest1/1', 'work2/1', 'rest2/1', 'work3/1', 'setrest3/1', 'work1/2', 'rest1/2', 'work2/2', 'rest2/2', 'work3/2']);
+  const at = intervalAt(steps, 5000 + 20000 + 4000); assert.equal(at.step.kind, 'rest'); assert.equal(at.left, 6000); assert.equal(at.total, 5000 + 6 * 20000 + 4 * 10000 + 60000);
+  assert.equal(intervalAt(steps, 0).step.kind, 'prep'); assert.ok(intervalAt(steps, 10 ** 7).done);
+  assert.equal(intervalSteps({ work: 20000, rest: 10000, rounds: 8 }).length, 15, 'Tabata: 8 work, 7 rest');
+});
+test('a chess clock: the first tap starts the other side, a tap ends your turn and adds the increment, running out flags, pause banks', () => {
+  let c = chess(60000, 2000); c = chessTap(c, 1, 0); assert.equal(c.turn, 0, 'black taps to start white');
+  assert.deepEqual(chessLeft(c, 10000), [50000, 60000]); assert.equal(chessTap(c, 1, 10000), c, 'not your turn: nothing');
+  c = chessTap(c, 0, 10000); assert.deepEqual(c.left, [52000, 60000]); assert.equal(c.turn, 1); assert.deepEqual(c.moves, [1, 0]);
+  c = chessPause(c, 15000); assert.deepEqual(c.left, [52000, 55000]); assert.equal(chessTap(c, 1, 99999), c, 'paused: taps do nothing');
+  c = chessPause(c, 20000); assert.equal(c.turn, 1); assert.deepEqual(chessLeft(c, 25000), [52000, 50000]);
+  c = chessFlag(c, 20000 + 55000); assert.equal(c.flag, 1); assert.deepEqual(c.left, [52000, 0]);
+  assert.equal(chessTap(chessTap(chess(1000), 0, 0), 1, 5000).flag, 1, 'tapping after running out still flags');
 });

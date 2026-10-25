@@ -51,3 +51,56 @@ export function tact(c, what, now) {
   if (what === 'reset') return timer(c.total);
   return c;
 }
+
+/**
+ * An interval timer (work and rest rounds, in sets), as the steps it walks through: [{ kind: 'prep'|'work'|'rest'|'setrest', ms, round, set }].
+ * No rest after the last round of a set (the set rest, or the end, follows); no set rest after the last set. Pure.
+ */
+export function intervalSteps({ prep = 0, work = 20000, rest = 10000, rounds = 8, sets = 1, setRest = 0 } = {}) {
+  const out = [], n = Math.max(1, Math.min(99, Math.round(rounds) || 1)), k = Math.max(1, Math.min(20, Math.round(sets) || 1));
+  if (prep > 0) out.push({ kind: 'prep', ms: prep, round: 0, set: 1 });
+  for (let s = 1; s <= k; s++) {
+    for (let r = 1; r <= n; r++) {
+      if (work > 0) out.push({ kind: 'work', ms: work, round: r, set: s });
+      if (rest > 0 && r < n) out.push({ kind: 'rest', ms: rest, round: r, set: s });
+    }
+    if (setRest > 0 && s < k) out.push({ kind: 'setrest', ms: setRest, round: n, set: s });
+  }
+  return out;
+}
+/** where an interval run is `t` ms in: { i (step index, steps.length when done), step, left (ms of this step), total, totalLeft, done }. Pure. */
+export function intervalAt(steps, t) {
+  const total = steps.reduce((a, s) => a + s.ms, 0); let at = Math.max(0, t);
+  for (let i = 0; i < steps.length; i++) { if (at < steps[i].ms) return { i, step: steps[i], left: steps[i].ms - at, total, totalLeft: total - Math.max(0, t), done: false }; at -= steps[i].ms; }
+  return { i: steps.length, step: null, left: 0, total, totalLeft: 0, done: true };
+}
+
+/**
+ * A chess clock: two players' time, Fischer increment, a turn that runs as a timestamp. { left: [ms, ms], turn (0, 1 or null), since, paused
+ * (the side to resume, or null), moves: [n, n], base, inc, flag (the side that ran out, or null) }. Pure.
+ */
+export const chess = (base, inc = 0) => ({ left: [base, base], turn: null, since: null, paused: null, moves: [0, 0], base, inc, flag: null });
+/** each side's time left at `now` (the side to move counts down). Pure. */
+export const chessLeft = (c, now) => c.left.map((ms, i) => Math.max(0, i === c.turn && c.since !== null ? ms - (now - c.since) : ms));
+/** the clock after a side ends its turn (taps its own clock) at `now`: the other side's time starts; the first tap starts the game. Pure. */
+export function chessTap(c, side, now) {
+  if (c.flag !== null || c.paused !== null) return c;
+  if (c.turn === null) return { ...c, turn: 1 - side, since: now }; // the first tap: the side that tapped waits, the other moves
+  if (c.turn !== side) return c;
+  const used = now - c.since, left = c.left.slice(), moves = c.moves.slice();
+  if (used >= left[side]) { left[side] = 0; return { ...c, left, turn: null, since: null, flag: side }; }
+  left[side] = left[side] - used + c.inc; moves[side]++;
+  return { ...c, left, moves, turn: 1 - side, since: now };
+}
+/** pause (banks the running side) or resume. Pure. */
+export function chessPause(c, now) {
+  if (c.flag !== null) return c;
+  if (c.paused !== null) return { ...c, turn: c.paused, since: now, paused: null };
+  if (c.turn === null) return c;
+  const left = chessLeft(c, now); return { ...c, left, turn: null, since: null, paused: c.turn };
+}
+/** the clock with a flag set when the side to move has run out at `now`. Pure. */
+export function chessFlag(c, now) {
+  if (c.turn === null || c.flag !== null) return c;
+  const left = chessLeft(c, now); return left[c.turn] > 0 ? c : { ...c, left, turn: null, since: null, flag: c.turn };
+}
