@@ -1091,67 +1091,67 @@
   "base converter": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 113,
-    "best": 1942,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 113 ms to the load event (median of 3, phone width) vs hextobinary.com 1942 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:36:10.453Z"
+    "verse": 141,
+    "best": 1649,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 141 ms to the load event (median of 3, phone width) vs hextobinary.com 1649 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 loads answered vs hextobinary.com 3 of 3 loads answered",
-    "at": "2026-10-25T11:36:10.453Z"
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 px sideways overflow at 390 px vs hextobinary.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:36:10.453Z"
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 0 unnamed controls or images vs hextobinary.com 1 unnamed controls or images",
-    "at": "2026-10-25T11:36:10.453Z"
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 (1: the page shows itself again with the network cut) vs hextobinary.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:36:10.453Z"
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hextobinary.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:36:10.453Z"
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "completeness": {
     "verdict": "better",
-    "verse": 4,
-    "best": 3,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 things a full answer shows vs hextobinary.com 3 of 4 things a full answer shows (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-25T11:36:10.453Z",
-    "of": 4
+    "verse": 7,
+    "best": 5,
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 7 of 10 things a full answer shows vs hextobinary.com 5 of 10 things a full answer shows (Verse lacks: Step-by-step working, Digit mapping table, Fractions and floating point; site lacks: octal, Step-by-step working, Digit mapping table, Fractions and floating point, Other bases (3 to 36))",
+    "at": "2026-10-25T18:57:28.015Z",
+    "of": 10
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 22,
-    "evidence": "Verse (/base-converter/?v=ff&b=16) 1 design defects vs hextobinary.com 22 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.22), hextobinary.com (0 low-contrast texts, 22 small tap targets, layout shift 0.07)",
-    "at": "2026-10-25T11:36:10.453Z"
+    "evidence": "Verse (/base-converter/?v=ff&b=16) 0 design defects vs hextobinary.com 22 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), hextobinary.com (0 low-contrast texts, 22 small tap targets, layout shift 0.07)",
+    "at": "2026-10-25T18:57:28.015Z"
    },
    "all four bases": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 4 of 4 shown vs hextobinary.com 3 of 4 shown (Verse lacks: none; site lacks: octal)",
-    "at": "2026-10-25T11:36:10.453Z",
+    "at": "2026-10-25T18:57:28.015Z",
     "of": 4,
     "part": true
    },
@@ -1160,7 +1160,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 1 of 1 shown vs hextobinary.com 0 of 1 shown (Verse lacks: none; site lacks: a signed reading)",
-    "at": "2026-10-25T11:36:10.453Z",
+    "at": "2026-10-25T18:57:28.015Z",
     "of": 1,
     "part": true
    },
@@ -1169,7 +1169,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 2 of 2 right against the worked-out answer; judged against the standard, not hextobinary.com (the site is not asked)",
-    "at": "2026-10-25T11:36:10.453Z",
+    "at": "2026-10-25T18:57:28.015Z",
     "of": 2
    },
    "huge numbers": {
@@ -1177,7 +1177,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/base-converter/?v=ff&b=16) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T11:36:10.453Z",
+    "at": "2026-10-25T18:57:28.015Z",
     "of": 3,
     "part": true
    }
@@ -2168,52 +2168,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 365,
-    "best": 2580,
-    "evidence": "Verse 365 ms to the load event (median of 3, phone width) vs ESPN 2580 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T18:39:08.004Z"
+    "verse": 309,
+    "best": 473,
+    "evidence": "Verse 309 ms to the load event (median of 3, phone width) vs ESPN 473 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T18:39:08.004Z"
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T18:39:08.004Z"
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 36,
-    "evidence": "Verse 0 unnamed controls or images vs ESPN 36 unnamed controls or images",
-    "at": "2026-10-25T18:39:08.004Z"
+    "best": 37,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 37 unnamed controls or images",
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T18:39:08.004Z"
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T18:39:08.004Z"
+    "at": "2026-10-25T18:56:53.537Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 52,
-    "evidence": "Verse 0 design defects vs ESPN 52 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.04), ESPN (41 low-contrast texts, 11 small tap targets, layout shift 0.01)",
-    "at": "2026-10-25T18:39:08.004Z"
+    "best": 54,
+    "evidence": "Verse 0 design defects vs ESPN 54 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (43 low-contrast texts, 11 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T18:56:53.537Z"
    }
   },
   "finance": {
