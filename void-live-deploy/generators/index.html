@@ -12,7 +12,7 @@
 <meta property="og:url" content="https://a-to-mind.com/generators/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<script>if (/[?&](?:g|seed|n)=/.test(location.search)) document.documentElement.classList.add('pre'); // the link carries a generator and a seed: hold the paint until the result is drawn</script>
+<script>if (/[?&](?:g|seed|n)=/.test(location.search)) { document.documentElement.classList.add('pre'); setTimeout(function () { document.documentElement.classList.remove('pre'); }, 2500); } // the link carries a generator and a seed: hold the paint until the result is drawn (never for long: a page that cannot draw still shows its words)</script>
 <style>
   /* a-to-mind.com/generators/ (Versus' perchance.org floor): one file and one module; nothing leaves the device but a picture ask */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
@@ -56,6 +56,11 @@
 <link rel="canonical" href="https://a-to-mind.com/generators/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Generators","url":"https://a-to-mind.com/generators/","description":"27 random generators that run on your device: fantasy names, town names, band names, usernames, pet names, writing prompts, story prompts, D&D NPCs, haiku, limericks, superpowers, side quests and more. The same link always gives the same result, favourites are kept in the browser, and any result can be turned into a cartoon. Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random name generator, fantasy name generator, writing prompt generator, band name generator, dnd npc generator, random haiku generator, random generators","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/generators/?g={generator}"},"generator-input":"required name=generator"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Generators","item":"https://a-to-mind.com/generators/"}]}]}</script>
 <!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/generators.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main>
@@ -96,9 +101,11 @@
   <footer id="foot">Nothing is sent anywhere except when you ask for a picture.</footer>
 </main>
 <script type="module">
-  // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
+  // static imports so tools/preload.mjs lists them and sw.js keeps them whole: the page opens offline (a dynamic import was never cached)
+  import { mountRelated } from '/lib/toolkit.js';
+  import * as G from '/lib/generators.js';
+  // everything after the first paint: the page shows its words at once, the work lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, G] = await Promise.all([import('/lib/toolkit.js'), import('/lib/generators.js')]);
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = G.wordsFor(lang);
     const KEY = 'a2m.void.generators.v1';
     let store = { favs: [] };
