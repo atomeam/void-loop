@@ -5839,5 +5839,6 @@
   {"at": "2026-10-25T17:12:06Z", "by": "verse", "kind": "fix", "what": "Verse fixes its figure skill: learn to handle \"low poly fox\"", "try": "low poly fox"},
   {"at": "2026-10-25T17:39:40Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 11: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 1462 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-25T1739.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-25T1739.json"},
   {"at": "2026-10-25T17:50:22Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"print this as stl\"", "try": "print this as stl"},
-  {"at": "2026-10-25T21:59:31Z", "by": "verse", "kind": "fix", "what": "Verse fixes its cartoon skill: learn to handle \"funny cartoon dog\"", "try": "funny cartoon dog"}
+  {"at": "2026-10-25T21:59:31Z", "by": "verse", "kind": "fix", "what": "Verse fixes its cartoon skill: learn to handle \"funny cartoon dog\"", "try": "funny cartoon dog"},
+  {"at": "2026-10-25T22:09:39Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"create a vector of a leaf\"", "try": "create a vector of a leaf"}
 ]
