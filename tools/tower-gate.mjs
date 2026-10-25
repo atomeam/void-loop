@@ -85,11 +85,25 @@ export function record(prev, v, verse, best, evidence, at) {
 // a coin page's own flip control, as a person finds it: a button named flip or toss (its text, label or value), else a tap at the centre of
 // the largest picture or canvas on the first screen (a coin you tap); a function that presses it once, or null when the page has neither
 export async function flipControl(p) {
-  const btn = p.getByRole('button', { name: /\b(?:flip|toss)\b/i }).filter({ visible: true }).first();
-  if (await btn.count().catch(() => 0)) return () => btn.click({ timeout: 3000 });
-  const els = p.locator('canvas:visible, img:visible, svg:visible'), k = await els.count().catch(() => 0); let bb = null, area = 0;
-  for (let i = 0; i < k; i++) { const x = await els.nth(i).boundingBox().catch(() => null); if (x && x.y < 800 && x.width * x.height > area) { area = x.width * x.height; bb = x; } }
-  return bb && area >= 64 * 64 ? () => p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2) : null;
+  // the ways a person flips a coin on a page, tried in turn until one changes what the page shows (its text or its picture): a button named for
+  // flipping in any frame; anything whose class or id says coin; the largest picture on the first screen; the Space key (justflipacoin.com
+  // was not found by the first and third alone). The trial press is one flip; the found way is returned to press again, or null
+  const shot = () => p.screenshot().catch(() => null), text = async () => (await Promise.all(p.frames().map((f) => f.evaluate(() => (document.body ? document.body.innerText : '')).catch(() => '')))).join('\n');
+  const biggest = async (f, sel) => { const els = f.locator(sel), k = Math.min(40, await els.count().catch(() => 0)); let bb = null, area = 0; for (let i = 0; i < k; i++) { const x = await els.nth(i).boundingBox().catch(() => null); if (x && x.y < 800 && x.width * x.height > area) { area = x.width * x.height; bb = x; } } return bb && area >= 48 * 48 ? bb : null; };
+  const ways = [];
+  for (const f of p.frames()) { const btn = f.getByRole('button', { name: /\b(?:flip|toss|again|coin)\b/i }).filter({ visible: true }).first(); ways.push(async () => ((await btn.count().catch(() => 0)) ? () => btn.click({ timeout: 3000 }) : null)); }
+  for (const sel of ['[class*=coin i]:visible, [id*=coin i]:visible', 'canvas:visible, img:visible, svg:visible, video:visible']) for (const f of p.frames()) ways.push(async () => { const bb = await biggest(f, sel); return bb ? () => p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2) : null; });
+  ways.push(async () => () => p.keyboard.press('Space'));
+  for (const way of ways) {
+    const press = await way().catch(() => null); if (!press) continue;
+    const t = await text(), pic = await shot(); await press().catch(() => {}); await p.waitForTimeout(1500);
+    if ((await text()) !== t || !(pic && pic.equals((await shot()) || Buffer.alloc(0)))) return press;
+  }
+  return null;
+}
+/** what a page offers to press, for the evidence when the gate finds no way to flip it: frames, button labels, coin-like elements. */
+export async function seenOn(p) {
+  return (await Promise.all(p.frames().map(async (f) => f.url().slice(0, 70) + ' [' + (await f.locator('button:visible, [role=button]:visible').allInnerTexts().catch(() => [])).map((x) => x.trim().slice(0, 20)).filter(Boolean).slice(0, 8).join(' | ') + '] coin-like ' + (await f.locator('[class*=coin i], [id*=coin i]').count().catch(() => 0)) + ', canvas ' + (await f.locator('canvas').count().catch(() => 0))))).join('; ');
 }
 /** the flip, seen (tower-probes.mjs `motion`): the screen the browser paints (Chrome's screencast sends a frame only when the picture changes),
  *  counted for `ms` at rest and then for `ms` after one press of the page's flip control: { rest, frames }, or null when the page has no flip
@@ -204,12 +218,17 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
       if (presses) { // a coin: its own flip control pressed `presses` times, as a person would, and the page read each time it settles (it
         // changed, then held still 0.6 s; at most 4 s, for a page that shows the same side again unchanged); the readings go after a marker
         // each (FLIPPED). No control, or a page whose text never changed, is not measured (a result drawn where text cannot be read): never a loss
-        const press = await flipControl(p); if (!press) return null;
-        let last = (await read()).text, moved = 0; const out = [last];
+        // what it shows: the text of every frame; a coin whose side is only drawn is read off the screen (tools/screen-read.mjs)
+        const all = async () => (await Promise.all(p.frames().map((f) => f.evaluate(() => (document.body ? document.body.innerText : '')).catch(() => '')))).join('\n');
+        let drawn = false; const look = async () => (drawn ? (await import('./screen-read.mjs')).readScreen(p) : all());
+        let last = await look(), moved = 0; const out = [last];
+        // finding the control flips the coin once: that press is the first flip, read like the rest
+        const press = await flipControl(p); if (!press) { answer.lastSeen = await seenOn(p); return null; }
         for (let i = 0; i < presses; i++) {
-          await press(); const t0 = Date.now(); let now = last, quiet = t0;
-          for (;;) { await p.waitForTimeout(150); const x = (await read()).text; if (x !== now) { now = x; quiet = Date.now(); } if ((now !== last && Date.now() - quiet >= 600) || Date.now() - t0 > 4000) break; }
-          if (now !== last) moved++; last = now; out.push(now); if (i === 1 && !moved) return null; // two presses and nothing changed: it cannot be read
+          if (i > 0 || drawn) await press(); const t0 = Date.now(); let now = last, quiet = t0;
+          for (;;) { await p.waitForTimeout(drawn ? 700 : 150); const x = await look(); if (x !== now) { now = x; quiet = Date.now(); } if ((now !== last && Date.now() - quiet >= 600) || Date.now() - t0 > 4000) break; }
+          if (now !== last) moved++; last = now; out.push(now);
+          if (i === 1 && !moved) { if (drawn) { answer.lastSeen = 'its side could not be read off the screen either; ' + await seenOn(p); return null; } drawn = true; last = await look(); out.length = 0; out.push(last); i = -1; } // the text never changed: read the screen instead, from the start
         }
         return moved ? out.join('\n' + FLIPPED + '\n') : null;
       }
@@ -298,7 +317,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
     // a timed run the gate could not start or read on the site is written as that, so the card says why accuracy is open (never a loss for it)
     if (probe && probe.ask && probe.ask.time && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on a ' + probe.ask.time / 1000 + ' s run timed by the gate; the gate could not start or read ' + f.site + "'s clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
-    if (probe && probe.ask && probe.ask.presses && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on ' + probe.ask.presses + ' flips pressed by the gate; the gate could not find ' + f.site + "'s flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win", at };
+    if (probe && probe.ask && probe.ask.presses && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on ' + probe.ask.presses + ' flips pressed by the gate; the gate could not find ' + f.site + "'s flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
     if (v.truth && s.truth) put('accuracy', v.truth.n, s.truth.n, ' of ' + v.truth.of + ' checked facts right for the same question', { of: v.truth.of, note: v.truth.missing.length || s.truth.missing.length ? ' (Verse missed: ' + (v.truth.missing.join(', ') || 'none') + '; site missed: ' + (s.truth.missing.join(', ') || 'none') + ')' : '' });
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');
     if (v.design && s.design) put('design polish', defects(v.design), defects(s.design), ' design defects', { note: ': Verse' + dd(v.design) + ', ' + f.site + dd(s.design) });

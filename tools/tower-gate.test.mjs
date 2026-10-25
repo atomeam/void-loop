@@ -222,7 +222,7 @@ test('a coin: its own flip control pressed 10 times by the gate, every side read
     assert.equal(scoreOf(mv, c.motion['flip animation']).n, 1, 'Verse\'s coin turns: ' + JSON.stringify(mv));
     assert.equal(scoreOf(still, c.motion['flip animation']).n, 0, 'a word swapped at once is not an animation: ' + JSON.stringify(still));
     assert.equal(await look('/plain'), null, 'no flip control: not measured');
-  } finally { await b.close(); server.close(); }
+  } finally { await (await import('./screen-read.mjs')).closeEyes(); await b.close(); server.close(); }
 });
 test('the time zones probe: Tokyo now worked out from its zone rules, read in 12- or 24-hour form, on both pages; a wrong hour or offset is wrong', () => {
   assert.deepEqual(timesIn('9:05 PM · 21:05 · 9:05:07 pm · 09:05 · 25:00 · 3:61'), [1265, 1265, 1265, 545]);
