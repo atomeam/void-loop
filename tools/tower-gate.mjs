@@ -262,7 +262,12 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
       // "#" link that sets its address when pressed, carried the gate to the word counter), and a site whose only control is a link is reported
       // as nothing pressed, for the next skill to be made from what the gate saw
       if (!(await go.count().catch(() => 0))) go = p.locator('input[type=submit]:visible').first();
-      if (await go.count().catch(() => 0)) { const label = (await go.evaluate((e) => (e.value || e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30)).catch(() => '?')); try { await go.click({ timeout: 3000 }); pressed = 'pressed "' + label + '"'; } catch (e) { pressed = 'could not press "' + label + '" (' + (String(e && e.message || e).split('\n').map((l) => l.trim()).find((l) => /intercept|not visible|timeout|detached|outside/i.test(l)) || 'it did not take the press').slice(0, 120) + ')'; } }
+      if (await go.count().catch(() => 0)) { const label = (await go.evaluate((e) => (e.value || e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30)).catch(() => '?'));
+        const why = (e) => { const ls = String(e && e.message || e).split('\n').map((l) => l.trim()); return (ls.find((l) => /intercepts pointer|not visible|detached|outside of the viewport|not enabled|not stable/i.test(l)) || ls.find((l) => /timeout/i.test(l)) || 'it did not take the press').slice(0, 120); };
+        // a button the pointer cannot reach within 3 s (a banner or an ad over it: base64encode.org's ENCODE, 2026-10-25) is pressed the way a
+        // person on a keyboard presses it, focused and Enter, which reaches it under anything
+        try { await go.click({ timeout: 3000 }); pressed = 'pressed "' + label + '"'; } catch (e) {
+          try { await go.focus({ timeout: 2000 }); await p.keyboard.press('Enter'); pressed = 'pressed "' + label + '" with Enter after the pointer could not (' + why(e) + ')'; } catch (e2) { pressed = 'could not press "' + label + '" (' + why(e) + ')'; } } }
       // the answer lands when the site has done the work: a script at once, a round trip to its server, or a whole new page (a form posted). A
       // boxed answer is read as soon as its box fills, up to 8 s; an answer in the text gets 2 s, as before (a read during a page change fails,
       // and the last reading stands until the next)

@@ -142,7 +142,9 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   const PAGES = { '/ok': page(true), '/stuck': page(false),
     '/slow': '<textarea id=i style="width:500px;height:200px"></textarea><button id=e>&lt; ENCODE &gt;</button><textarea id=o style="width:500px;height:200px"></textarea><script>e.onclick=()=>{setTimeout(()=>{o.value=btoa(i.value)},3000)}</script>',
     '/wall': page(true) + '<div id=w style="position:fixed;inset:0;background:rgba(0,0,0,.5)"><div style="background:#fff;padding:20px">We use cookies. <button id=a>Accept all</button></div></div><script>a.onclick=()=>w.remove()</script>',
-    '/readonly': '<nav><a href="/decode">Base64 Decode</a> <a href="/readonly">Base64 Encode</a></nav><textarea id=i style="width:300px;height:100px"></textarea><button id=e>ENCODE</button><textarea id=o readonly style="width:500px;height:300px"></textarea><script>e.onclick=()=>{o.value=btoa(i.value)}</script>' };
+    '/readonly': '<nav><a href="/decode">Base64 Decode</a> <a href="/readonly">Base64 Encode</a></nav><textarea id=i style="width:300px;height:100px"></textarea><button id=e>ENCODE</button><textarea id=o readonly style="width:500px;height:300px"></textarea><script>e.onclick=()=>{o.value=btoa(i.value)}</script>',
+    // a banner with nothing to accept sits over the button (an ad): the pointer never reaches it, a keyboard press does
+    '/covered': page(true) + '<div style="position:fixed;left:0;right:0;top:0;height:100vh;background:rgba(0,0,0,.01)"></div>' };
   const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '<p>nothing</p>')); }).listen(0);
   await new Promise((r) => server.once('listening', r));
   const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, e = probeFor('encoder');
@@ -153,6 +155,7 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
     assert.equal(score(await answer(b, at('/slow'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'an answer that takes its server 3 s is waited for');
     assert.equal(score(await answer(b, at('/wall'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'a cookie wall is accepted first, then the box is typed into and the button pressed');
     assert.equal(score(await answer(b, at('/readonly'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'the read-only output box is never typed into, and the header link is not the press');
+    assert.equal(score(await answer(b, at('/covered'), e.ask.type, false, e.ask.box), e.truth).n, 1, 'a button under a banner is pressed with Enter');
     assert.equal(await answer(b, at('/decode'), e.ask.type, false, e.ask.box), null, 'no box at all: not measured');
     assert.match(answer.lastSeen, /no box took the typing/, answer.lastSeen);
   } finally { await b.close(); server.close(); }
