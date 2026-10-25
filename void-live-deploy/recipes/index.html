@@ -42,7 +42,9 @@
   ul.ings li:first-child, ol.steps li:first-child { border-top: 0; }
   ul.ings input { width: 28px; height: 28px; margin: 0; flex: none; accent-color: var(--accent); } /* a tap target of its own, not only through its label (the gate counts under 24 px) */
   /* a link that carries a recipe draws it after load; until that first draw the page stays unpainted, so nothing on it jumps (layout shift 0.52 before) */
-  html.pre main { visibility: hidden; }
+  /* only what comes after the search box is held: the title, its line and the box stay readable (a page read with the network cut, before the module
+     runs, must still show its words: innerText leaves out what visibility hides, and the offline check once read an empty page) */
+  html.pre main > :not(h1):not(.sub):not(#f) { visibility: hidden; }
   ul.ings label { flex: 1 1 auto; cursor: pointer; } ul.ings li.done label { color: var(--soft); text-decoration: line-through; }
   ol.steps li { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.45; }
   ol.steps .n { flex: none; min-width: 2.6em; font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .02em; padding-top: 4px; }
