@@ -19,7 +19,7 @@ export const PAGES = Object.freeze([
     asks: ['css gradient generator', 'linear gradient css', 'radial gradient generator', 'gradient background css', 'gradient colour generator'] },
   { path: '/wheel/', name: 'Wheel of names', does: 'Names or choices one a line, spun on a fair wheel; the winner is picked at random on your device.',
     asks: ['wheel of names', 'random name picker', 'spin the wheel', 'picker wheel', 'decision wheel', 'random picker wheel'] },
-  { path: '/random-user/', name: 'Made-up people for testing', does: 'Made-up people by count, gender and country, with names, addresses, dates of birth and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat. None of them is real.',
+  { path: '/random-user/', name: 'Made-up people for testing', does: 'Made-up people by count, gender and 22 countries, with titles, names, addresses, two phones, dates of birth, passwords to your rules and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat page by page. None of them is real.',
     asks: ['random user generator', 'fake name generator', 'fake user data for testing', 'random person generator', 'test data generator json', 'random address generator'] },
   { path: '/random/', name: 'Random number', does: 'A random number between two bounds, several at once, without repeats or sorted, in decimal, binary, octal or hex; the number is on screen at once.',
     asks: ['random number generator', 'random number between 1 and 100', 'random number picker', 'random numbers no repeats', 'lottery number generator'] },

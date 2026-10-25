@@ -5760,6 +5760,16 @@ try {
       JSON.stringify({ focused, lines, dlName, dlText, shown, fileName, fileBytes, preview, note, bigName, bigLen: bigOut.length, took, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
+    const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
+    const p1 = await read(); await Z.p.click('#next'); const p2 = await read(), url = Z.p.url();
+    check("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
+      p1.length === 5 && p1.every((p) => ['TR', 'NL'].includes(p.nat) && /^[A-Z0-9]{10,12}$/.test(p.password)) && p2[0].name !== p1[0].name && /page=2/.test(url) && /password=upper%2Cnumber%2C10-12/.test(url) && !Z.errors.length,
+      JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);

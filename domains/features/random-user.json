@@ -30,8 +30,8 @@
           "name": "Nationalities",
           "detail": "21 nationalities (AU, BR, CA, CH, DE, DK, ES, FI, FR, GB, IE, IN, IR, MX, NL, NO, NZ, RS, TR, UA, US)",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "8 countries: us, gb, fr, de, es, br, in, jp (lib/fakeuser.js NATS)"
+          "verse": "has",
+          "verse_evidence": "all 21 (AU, BR, CA, CH, DE, DK, ES, FI, FR, GB, IE, IN, IR, MX, NL, NO, NZ, RS, TR, UA, US) plus JP, lib/fakeuser.js NATS; ?nat=tr,nl"
         },
         {
           "name": "Seed",
@@ -44,8 +44,8 @@
           "name": "Pagination",
           "detail": "page= with a seed for the next batch",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no page parameter"
+          "verse": "has",
+          "verse_evidence": "Previous / Page / Next on /random-user/ and ?page=: the next batch from the same seed (lib/fakeuser.js people({ page }))"
         },
         {
           "name": "Include / exclude fields",
@@ -72,8 +72,8 @@
           "name": "Password options",
           "detail": "password=charsets,length range (special, upper, lower, number)",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "password field has no charset or length choice"
+          "verse": "has",
+          "verse_evidence": "Passwords: choose A-Z, a-z, 0-9, !@# and a length range; ?password=upper,number,10-12 as randomuser.me takes it (lib/fakeuser.js password)"
         },
         {
           "name": "Login hashes",
@@ -86,22 +86,22 @@
           "name": "Name title",
           "detail": "Mr, Ms, Mrs, Miss",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "first and last only"
+          "verse": "has",
+          "verse_evidence": "title field (Mr, Ms, Mrs, Miss)"
         },
         {
           "name": "Registered date and age",
           "detail": "",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "dob and age only"
+          "verse": "has",
+          "verse_evidence": "registered and registeredAge fields (after the 18th birthday, within 20 years)"
         },
         {
           "name": "Phone and cell",
           "detail": "two numbers per person",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "one phone (safe ranges where known)"
+          "verse": "has",
+          "verse_evidence": "phone and cell (second phone) fields, both in the fiction ranges where a country has one"
         },
         {
           "name": "National ID",
@@ -164,18 +164,12 @@
     "Copy link holds the setting"
   ],
   "gaps": [
-    "Nationalities",
-    "Pagination",
-    "Password options",
     "Profile photos (large, medium, thumbnail)",
     "A public JSON API endpoint",
-    "Name title",
-    "Registered date and age",
     "National ID",
     "JSONP callback",
     "API versions",
     "Login hashes",
-    "Phone and cell",
     "noinfo"
   ]
 }
