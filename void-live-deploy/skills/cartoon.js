@@ -27,7 +27,7 @@ const EMOJI = { cat: '🐱', kitten: '🐱', dog: '🐶', puppy: '🐶', dragon:
 
 const SHAPE = /^(?:[a-z]+\s+){0,2}(?:circle|line|square|triangle|rectangle|rect|star|heart|oval|dot|hexagon|pentagon|diamond|shape)s?$/;
 const NOT_A_SUBJECT = /^(?:cards?|line chart|chart|graph|map|diagram|breath|blank|conclusion|straws?|number|canvas|brush|layer|arrow|me|something|anything|with|on|in|into|using|from|for)\b|^(?:cartoons?|toons?)$/;
-const LEAD = /^(?:please\s+)?(?:can you\s+)?(?:cartoon version of |cartoon of |(?:draw|make|give|show)\s+(?:me\s+)?(?:a |an )?(?:cartoon|toon)\s+(?:version\s+)?(?:of\s+)?|draw (?:me )?(?:a |an )?(?:toon )?(?:picture of |drawing of )?|(?:a )?cartoon (?!network|series|show|character)(?:version of )?)(.+)$/;
+const LEAD = /^(?:please\s+)?(?:can you\s+)?(?:cartoon version of |cartoon of |(?:draw|make|give|show)\s+(?:me\s+)?(?:a |an )?(?:cartoon|toon|2d toon)\s+(?:version\s+)?(?:of\s+)?|draw (?:me )?(?:a |an )?(?:toon )?(?:picture of |drawing of )?|(?:a )?cartoon (?!network|series|show|character)(?:version of )?)(.+)$/;
 
 /** the subject of a cartoon ask, or null when the ask is not one. Pure. */
 export function cartoonOf(text) {
@@ -142,7 +142,7 @@ async function run(text, api) {
 
 export default {
   name: 'cartoon',
-  examples: ['draw a cartoon cat', 'cartoon version of a dog', 'make a cartoon of a dragon', 'draw a toon cat', 'cartoon version of a plague', 'draw me a robot'],
+  examples: ['draw a cartoon cat', 'cartoon version of a dog', 'make a cartoon of a dragon', 'draw a toon cat', 'cartoon version of a plague', 'draw me a robot', 'make a 2d toon dog'],
   nearMisses: ['what is a cartoon', 'cartoon network', 'make a clock', 'draw a red square', 'let me draw', 'draw a card'],
   cartoonOf,
   cartoonTake,
