@@ -327,6 +327,7 @@ async function measureFloor(f, data) {
   const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe);
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is
   // scored on those answers instead of the pages above; an answer written into a box (a converter's output field) counts as shown
+  let shown = ''; // what Verse's page showed for the question, for the evidence when a case is missed
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
@@ -335,7 +336,7 @@ async function measureFloor(f, data) {
     // `verseType`: a question Verse's page takes typed into its box, never in its address (a password: /password-strength/ keeps it out of every link)
     // `verseFile`: a page that answers once a picture is put in gets the gate's own one-pixel PNG (PIXEL), as a person chooses a photo
     const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, probe.ask.verseType || null, probe.ask.spin, false, probe.ask.time, probe.ask.presses, probe.ask.verseFile ? PIXEL : null), st = null;
-    v.truth = vt === null ? null : score(vt, probe.truth);
+    v.truth = vt === null ? null : score(vt, probe.truth); shown = vt == null ? 'nothing (the page could not be read)' : String(vt).replace(/\s+/g, ' ').trim().slice(0, 200);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers', 'crack time') are read off the same answer and judged on
     // Verse alone, like accuracy
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; if (st !== null) s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
@@ -376,7 +377,7 @@ async function measureFloor(f, data) {
     put('local language', v.german, s.german, ' (1: a German browser gets German)');
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
     // every case right against the truth is the most any page can score: equal-and-better; a case missed is worse
-    if (want.has('accuracy') && v.truth) ev.accuracy = { ...record(ev.accuracy, v.truth.n === v.truth.of ? 'equal-and-better' : 'worse', v.truth.n, v.truth.of, where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right against the worked-out answer' + (v.truth.missing.length ? ' (missed: ' + v.truth.missing.join(', ') + ')' : '') + '; judged against the standard, not ' + f.site + ' (the site is not asked)', at), of: v.truth.of };
+    if (want.has('accuracy') && v.truth) ev.accuracy = { ...record(ev.accuracy, v.truth.n === v.truth.of ? 'equal-and-better' : 'worse', v.truth.n, v.truth.of, where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right against the worked-out answer' + (v.truth.missing.length ? ' (missed: ' + v.truth.missing.join(', ') + ')' : '') + '; judged against the standard, not ' + f.site + ' (the site is not asked)' + (v.truth.n < v.truth.of ? '. The page showed: "' + shown + '"' : ''), at), of: v.truth.of };
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');
     if (v.design && s.design) put('design polish', defects(v.design), defects(s.design), ' design defects', { note: ': Verse' + dd(v.design) + ', ' + f.site + dd(s.design) });
     // a moving part the gate cannot see on the site is judged on Verse alone, like accuracy: every frame seen is the most a page can show
