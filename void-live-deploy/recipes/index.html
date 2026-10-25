@@ -132,6 +132,9 @@
     </section>
   </div>
 
+  <h2 id="mineH" hidden>My recipes</h2>
+  <ul class="list" id="mine" hidden></ul>
+
   <h2 id="histH">History</h2>
   <ul class="list" id="hist"><li class="empty" id="histEmpty">The last 20 recipes you opened stay here, on this device, and open offline.</li></ul>
 
@@ -168,8 +171,10 @@
       $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nur die Suchwörter gehen an Verse; Verlauf und Häkchen bleiben auf diesem Gerät.';
     }
     const q = new URLSearchParams(location.search);
-    let store = { hist: [], ticks: {}, units: '' };
+    let store = { hist: [], ticks: {}, units: '', mine: [] };
     try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    if (!Array.isArray(store.mine)) store.mine = []; // recipes saved by chat on the stage (skills/recipes-fill.js): found by name beside the built-in ones
+    const pool = () => store.mine.filter((x) => x && x.recipe).map((x) => x.recipe).concat(R.BUILT_IN);
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
     // units: the link, then the last choice, then the browser's country (the US measures in cups; everyone else in grams)
     const state = { mode: q.has('i') ? 'i' : 'q', q: q.get('q') || '', i: q.get('i') || '', id: q.get('id') || '', recipe: null, servings: 0, units: q.get('units') || store.units || (/-US$/i.test(navigator.language || '') ? 'us' : 'metric'), step: 0 };
@@ -247,7 +252,7 @@
       if (!text) { state.recipe = null; render(); return; }
       if (state.mode === 'i') {
         state.i = text; state.q = '';
-        const mine = R.byIngredients(text), want = R.ingredientsOf(text);
+        const mine = R.byIngredients(text, pool()), want = R.ingredientsOf(text);
         const rows = mine.map((x) => ({ name: x.recipe.name, href: linkTo(x.recipe), small: W.have + ' ' + x.have.join(', ') + (x.missing.length ? ' · ' + W.missing + ': ' + x.missing.join(', ') : ''), recipe: x.recipe }));
         results(rows, rows.length ? '' : (navigator.onLine ? '' : W.none)); if (mine.length) open(mine[0].recipe); else { state.recipe = null; render(); }
         if (!navigator.onLine) return say(W.offline);
@@ -257,7 +262,7 @@
         return;
       }
       state.q = text; state.i = '';
-      const mine = R.find(text); if (mine.length) open(mine[0]); else { state.recipe = null; render(); }
+      const mine = R.find(text, pool()); if (mine.length) open(mine[0]); else { state.recipe = null; render(); }
       if (mine.length > 1) mealRows(mine.slice(1));
       if (!navigator.onLine) { if (!mine.length) say(W.offline, true); return; }
       const j = await ask('q=' + encodeURIComponent(R.dishOf(text) || text));
@@ -268,7 +273,10 @@
       if (got.length) mealRows(mine.slice(1).concat(got), W.more);
     }
     const row = (it) => { const li = el('li'), a = el('a'); a.href = linkTo(it.recipe); a.append(el('b', '', it.name)); const sm = el('small', '', new Date(it.at).toLocaleDateString()); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = it.id.startsWith('mealdb-') ? it.id.slice(7) : ''; state.q = state.id ? '' : it.recipe.id.replace(/-/g, ' '); state.i = ''; open(it.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, sm); return li; };
-    function lists() { const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
+    function lists() {
+      const ms = $('mine'); ms.replaceChildren(); $('mineH').hidden = ms.hidden = !store.mine.length;
+      for (const x of store.mine) { if (!x || !x.recipe) continue; const li = el('li'), a = el('a'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = ''; state.q = x.name; state.i = ''; open(x.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, el('small', '', x.recipe.servings + ' ' + W.servings.toLowerCase())); ms.append(li); }
+      const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
 
     // servings: every quantity on the page follows the number
     const setServ = (n) => { n = Math.max(1, Math.min(200, Math.round(+n || 1))); state.servings = n; render(); };

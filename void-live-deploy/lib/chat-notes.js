@@ -41,13 +41,12 @@ export function parseIntent(raw) {
     || (m = /^search (?:in )?my notes?(?: for| about)\s+(.+)$/i.exec(t)) || (m = /^which notes? (?:mention|have|are about|contain)\s+(.+)$/i.exec(t))
     || (m = /^was habe ich (?:über|zu|von)\s+(.+?)\s+(?:geschrieben|notiert|gespeichert)$/i.exec(t)) || (m = /^suche (?:in )?(?:meinen )?notizen (?:nach|zu|über)\s+(.+)$/i.exec(t))) return { op: 'find', q: m[1].trim() };
   // templates
-  if ((m = /^(?:start|make|create|begin|open|new|neue?|erstelle(?: mir)?(?: eine?n?)?)\s+(?:me )?(?:a |an |my |eine?n? )?(?:new |neue?n? )?(meeting|trip|travel|shopping|weekly(?: plan)?|week plan|reise|einkaufs\w*|wochen\w*)\s*(?:note|notes|template|list|liste|plan|notiz)?(?:\s+(?:for|about|called|on|zu|für)\s+(.+))?$/i.exec(t))) return { op: 'template', kind: m[1].toLowerCase(), about: (m[2] || '').trim() };
+  if ((m = /^(?:start|make|create|begin|open|new|neue?|erstelle(?: mir)?(?: eine?n?)?)\s+(?:me )?(?:a |an |my |eine?n? )?(?:new |neue?n? )?(meeting|trip|travel|shopping|weekly(?: plan)?|week plan|reise|einkaufs\w*|wochen\w*)\s*(note|notes|template|list|liste|plan|notiz)(?:\s+(?:for|about|called|on|zu|für)\s+(.+))?$/i.exec(t)) && !(/^(?:shopping|einkaufs\w*)$/i.test(m[1]) && /^(?:list|liste)$/i.test(m[2]))) return { op: 'template', kind: m[1].toLowerCase(), about: (m[3] || '').trim() };
   // create
-  if ((m = /^(?:make|create|start|write|draft|add|new|take|save|neue?|erstelle|mach(?:e)?|schreibe?)(?: me| mir)?(?: an?| eine?)?(?: new| neue?)? (?:note|notiz)\b(?:\s+(?:about|on|for|über|zu|mit dem titel))?\s*[:,\-–]?\s*(.+)$/i.exec(t)) && !/^(?:called|titled|named)\s/i.test(m[1])
+  if ((m = /^(?:make|create|start|write|draft|add|save|neue?|erstelle|mach(?:e)?|schreibe?)(?: me| mir)?(?: an?| eine?)?(?: new| neue?)? (?:note|notiz)\b(?:\s+(?:about|on|for|über|zu|mit dem titel))?\s*[:,\-–]?\s*(.+)$/i.exec(t)) && !/^(?:called|titled|named|that says|saying|which says)\s/i.test(m[1])
     || (m = /^(?:note to self|notiz an mich)\s*[:,\-–]\s*(.+)$/i.exec(t)) || (m = /^note to self\s+(.+)$/i.exec(t))
     || (m = /^(?:write down|jot down|jot|note down|schreib auf|notiere(?: mir)?)\s*[:,]?\s*(.+)$/i.exec(t))) return { op: 'create', rest: m[1].trim() };
   if ((m = /^(?:remember to|don'?t forget to|merk dir[:,]? (?:zu )?)\s*(.+)$/i.exec(t))) return { op: 'create', rest: 'To do: ' + m[1].trim() };
-  if ((m = /^(?:make|create|start|write|new|neue?|erstelle|mach(?:e)?)(?: me| mir)?(?: an?| my| eine?)?(?: new| neue?)? ([\p{L} ]{1,30}?(?:list|todo|to-do|liste))\s*(?:[:,]|with|of|mit)\s*(.+)$/iu.exec(t))) return { op: 'create', rest: m[1].trim() + ': ' + m[2].trim() };
   // append: under a heading, to a note
   if ((m = /^(?:under|in) (?:the )?(.+?)(?: section| heading)? (?:in|of|on) (?:my |the )?(.+?)(?: note)?,? (?:add|put|write|insert)\s+(.+)$/i.exec(t))) return { op: 'under', heading: m[1].trim(), target: m[2].trim(), text: m[3].trim() };
   if ((m = /^(?:add|put|append|include)\s+to (?:my |the |our )?(.+?)\s*[:,]\s*(.+)$/i.exec(t))) return { op: 'append', target: m[1].trim(), text: m[2].trim() };
@@ -72,7 +71,7 @@ export function parseIntent(raw) {
 }
 function fromSplit(s) { const m = /^(.+?)\s+(?:from|on|in|off|von|auf|in)\s+(?:my |the |our |meiner |der )?(.+)$/i.exec(String(s || '').trim()); return m ? { item: m[1].trim(), target: m[2].trim() } : { item: String(s || '').trim(), target: '' }; }
 /** a sentence that is close to a notes ask but did not parse: the one-line hint. Pure. */
-export function looksLikeNotes(raw) { const t = String(raw || '').trim(); return /^(?:add|make|create|write|put|append|save|jot|tick|untick|remove|merge|split|tidy|rename|pin|tag|summari[sz]e)\b/i.test(t) && /\b(?:my notes?|a note|the note|my \w+ note|notiz\w*)\b/i.test(t) && !parseIntent(t); }
+export function looksLikeNotes(raw) { const t = String(raw || '').trim(); if (/\bnote\b.{0,12}\b(?:that says|saying|called|titled)\b/i.test(t)) return false; return /^(?:add|make|create|write|put|append|save|jot|tick|untick|remove|merge|split|tidy|rename|pin|tag|summari[sz]e)\b/i.test(t) && /\b(?:my notes?|a note|the note|my \w+ note|notiz\w*)\b/i.test(t) && !parseIntent(t); }
 export const HINT = 'I can fill your notes from a sentence: "add a note: buy milk", "make a note about my trip to Lisbon: flights Friday, hotel Alfama, packing list", "add eggs to my shopping list", "tick milk", "clean up my shopping list", "summarise my meeting note", "what did I write about Lisbon", "rename my X note to Y", "pin / tag / merge / split my X note", "start a meeting note". Every change has Undo.';
 
 // ---------------------------------------------------------------- the notes' html
@@ -219,7 +218,7 @@ export function plan(store, it, now = Date.now()) {
     case 'append': case 'under': {
       let res = pick(S, it.target, it.docId); const mk = (id, sure) => ({ ...it, docId: id, sure: sure || it.sure });
       if (res.level === 'none') {
-        if (it.op === 'under' || NOT_NOTE_TARGET.test(it.target) || !(LISTY.test(it.target) || /\bnote$/i.test(it.target))) return { kind: 'none' };
+        if (it.op === 'under' || NOT_NOTE_TARGET.test(it.target) || /^(?:list|todo|to-do|the list|my list)$/i.test(it.target.trim()) || !(LISTY.test(it.target) || /\bnote$/i.test(it.target))) return { kind: 'none' };
         const title = cap(it.target.replace(/\s+note$/i, '')), d0 = newDoc(now, { title, html: LISTY.test(title) ? todoOf(splitItems(it.text)) : '<p>' + esc(cap(it.text)) + '</p>' }); const r0 = made(S, d0);
         return done({ store: r0.store, changes: [r0.change] }, 'No note called "' + title + '" yet, so I made it with ' + it.text, d0.id);
       }

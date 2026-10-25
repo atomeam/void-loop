@@ -109,11 +109,13 @@
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = G.wordsFor(lang);
     const KEY = 'a2m.void.generators.v1';
     let store = { favs: [] };
-    try { const s = JSON.parse(localStorage.getItem(KEY) || '{}'); if (s && Array.isArray(s.favs)) store = { favs: s.favs.filter((f) => f && typeof f.text === 'string').slice(0, 200) }; } catch (_) {}
+    try { const s = JSON.parse(localStorage.getItem(KEY) || '{}'); if (s && Array.isArray(s.favs)) store = { favs: s.favs.filter((f) => f && typeof f.text === 'string').slice(0, 200) }; if (s && s.own && typeof s.own.text === 'string') store.own = { name: String(s.own.name || '').slice(0, 80), text: s.own.text.slice(0, 20000) }; } catch (_) {}
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
     const q = new URLSearchParams(location.search);
     const state = { g: G.byId(q.get('g')) ? q.get('g') : (G.byId(q.get('g')) ? q.get('g') : 'fantasy-names'), seed: /^\d{1,10}$/.test(q.get('seed') || '') ? +q.get('seed') : G.newSeed(), n: Math.max(1, Math.min(20, +q.get('n') || 5)), own: q.get('g') === 'own' };
     if (q.get('g') === 'own') state.g = 'own';
+    if (store.own && store.own.text) { $('ownText').value = store.own.text; if (store.own.name) $('ownH').textContent = store.own.name; } // the list made by chat (skills/generators-fill.js), or typed here before
+    $('ownText').addEventListener('change', () => { store.own = { name: (store.own && store.own.name) || '', text: $('ownText').value }; keep(); });
     if (de) { document.documentElement.lang = 'de'; document.title = 'Zufallsgeneratoren: Namen, Ideen und Geschichten · Verse'; }
     const nameOf = (x) => (de ? x.de : x.en);
     $('title').textContent = W.title; $('sub').textContent = W.sub; $('count').textContent = G.GENERATORS.length + ' ' + W.gens; $('nL').textContent = W.many; $('regen').textContent = W.regenerate; $('copyAll').textContent = W.copyAll; $('share').textContent = W.share;

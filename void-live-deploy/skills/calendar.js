@@ -8,6 +8,8 @@
  */
 import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
+import { mirror } from '../lib/chat-calendar.js';
+import { KEY as PAGE_KEY } from '../lib/calendar.js';
 const KEY = 'a2m.void.agenda.v1';
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
@@ -174,7 +176,9 @@ async function run(text, api) {
     const rows = load();
     rows.push({ id: uid(), title: q.title.slice(0, 160), at: q.at.toISOString(), text: q.raw.slice(0, 200) });
     save(rows);
-    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()));
+    // the Calendar page keeps its own events: the same add goes there too, said in words (a wrong reading shows), so a sentence on the stage fills the page
+    let also = ''; try { const pg = JSON.parse(localStorage.getItem(PAGE_KEY) || '{}'), m = mirror(pg && typeof pg === 'object' ? pg : {}, q.raw || q.title, new Date(), navigator.language || 'en'); if (m) { localStorage.setItem(PAGE_KEY, JSON.stringify(m.store)); also = ' (also in the Calendar page: ' + m.line + ')'; } } catch (_) {}
+    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()) + also);
   }
   if (api.summon) api.summon('calendar'); // the card on the stage (mount below)
   if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
