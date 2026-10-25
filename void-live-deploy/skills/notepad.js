@@ -106,6 +106,9 @@ function mount(th, stageApi) {
   }).catch(() => padHost.remove());
   el.appendChild(title);
   el.appendChild(area);
+  // the full notes page: many notes, rich text, search and history (owner, 2026-10-25: "why are you not linking the cards to the pages?")
+  const full = document.createElement('a'); full.className = 'vc-page'; full.href = '/notes/'; full.textContent = 'Open the full Notes page →'; full.style.cssText = 'display:inline-block;margin:8px 0 2px;font-size:13px;font-weight:600';
+  full.addEventListener('pointerdown', (e) => e.stopPropagation()); el.appendChild(full);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
 }

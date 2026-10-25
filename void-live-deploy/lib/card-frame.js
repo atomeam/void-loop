@@ -213,7 +213,8 @@ export const PAGE_OF = Object.freeze({ calendar: ['/calendar/', 'Calendar'], 'ca
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
   password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
-  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'] });
+  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'],
+  notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'] });
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
 export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));

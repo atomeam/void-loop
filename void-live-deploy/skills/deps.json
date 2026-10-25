@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 791,
+ "counted": 792,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1144,6 +1144,13 @@
    "tests": 1
   },
   {
+   "file": "lib/generators.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/gist.js",
    "skills": 1,
    "direct": 1,
@@ -1873,13 +1880,6 @@
   },
   {
    "file": "lib/fuzzy.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/generators.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4034,7 +4034,9 @@
   },
   "lib/generators.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/textgen.js"
+   ]
   },
   "lib/gist.js": {
    "imports": [],
@@ -9913,6 +9915,12 @@
   "skills/text-tools.js": {
    "imports": [
     "lib/text-tools.js"
+   ],
+   "importedBy": []
+  },
+  "skills/textgen.js": {
+   "imports": [
+    "lib/generators.js"
    ],
    "importedBy": []
   },

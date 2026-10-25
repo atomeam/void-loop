@@ -484,6 +484,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T15:13:38Z",
+   "subject": "Every tool page links to its card on the stage, and every tool page has a card that links back"
+  },
+  {
    "at": "2026-10-25T15:11:33Z",
    "subject": "Incident: the browser suite failed on 5c1954f4 (void-live-deploy/incidents.json)"
   },
@@ -558,10 +562,6 @@
   {
    "at": "2026-10-25T14:48:00Z",
    "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
-  },
-  {
-   "at": "2026-10-25T14:47:10Z",
-   "subject": "Tower gate: colour codes measured against their live sites"
   }
  ],
  "builders": {

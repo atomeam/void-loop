@@ -49,6 +49,7 @@ export const CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator',
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
