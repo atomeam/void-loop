@@ -1883,52 +1883,52 @@
   "recipes": {
    "speed": {
     "verdict": "better",
-    "verse": 301,
-    "best": 334,
-    "evidence": "Verse 301 ms to the load event (median of 3, phone width) vs Allrecipes 334 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:27:04.306Z"
+    "verse": 276,
+    "best": 360,
+    "evidence": "Verse 276 ms to the load event (median of 3, phone width) vs Allrecipes 360 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Allrecipes 3 of 3 loads answered",
-    "at": "2026-10-24T18:27:04.306Z"
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Allrecipes 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:27:04.306Z"
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Allrecipes 0 unnamed controls or images",
-    "at": "2026-10-24T18:27:04.306Z"
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Allrecipes 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:27:04.306Z"
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Allrecipes 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:27:04.306Z"
+    "at": "2026-10-25T08:01:50.519Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 27,
-    "evidence": "Verse 0 design defects vs Allrecipes 27 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Allrecipes (1 low-contrast texts, 26 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T18:27:04.306Z"
+    "best": 26,
+    "evidence": "Verse 0 design defects vs Allrecipes 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), Allrecipes (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T08:01:50.519Z"
    }
   },
   "calendar": {
@@ -4804,6 +4804,7 @@
   "papago.naver.com": "tower.icons/papago.naver.com.ico",
   "linguee.com": "tower.icons/linguee.com.ico",
   "translate.yandex.com": "tower.icons/translate.yandex.com.ico",
-  "translate.google.com": "tower.icons/translate.google.com.ico"
+  "translate.google.com": "tower.icons/translate.google.com.ico",
+  "allrecipes.com": "tower.icons/allrecipes.com.png"
  }
 }
