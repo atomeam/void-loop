@@ -4795,6 +4795,288 @@
     "at": "2026-10-25T07:47:22.672Z",
     "of": 10
    }
+  },
+  "recipes: minimalistbaker.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 82,
+    "best": 248,
+    "evidence": "Verse (/recipes/?q=pancakes) 82 ms to the load event (median of 3, phone width) vs minimalistbaker.com 248 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs minimalistbaker.com 3 of 3 loads answered",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs minimalistbaker.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs minimalistbaker.com 0 unnamed controls or images",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs minimalistbaker.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs minimalistbaker.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not minimalistbaker.com (the site is not asked)",
+    "at": "2026-10-25T08:13:58.648Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs minimalistbaker.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), minimalistbaker.com (1 low-contrast texts, 25 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T08:13:58.648Z"
+   },
+   "search by ingredient": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs minimalistbaker.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+    "at": "2026-10-25T08:13:58.648Z",
+    "of": 1,
+    "part": true
+   },
+   "scaling": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs minimalistbaker.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+    "at": "2026-10-25T08:13:58.648Z",
+    "of": 1,
+    "part": true
+   },
+   "step mode": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs minimalistbaker.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+    "at": "2026-10-25T08:13:58.648Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 14,
+    "best": 1,
+    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs minimalistbaker.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
+    "at": "2026-10-25T08:13:58.648Z",
+    "of": 14
+   }
+  },
+  "recipes: budgetbytes.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 75,
+    "best": 252,
+    "evidence": "Verse (/recipes/?q=pancakes) 75 ms to the load event (median of 3, phone width) vs budgetbytes.com 252 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs budgetbytes.com 3 of 3 loads answered",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs budgetbytes.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs budgetbytes.com 0 unnamed controls or images",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs budgetbytes.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs budgetbytes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not budgetbytes.com (the site is not asked)",
+    "at": "2026-10-25T08:14:30.909Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs budgetbytes.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), budgetbytes.com (1 low-contrast texts, 25 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T08:14:30.909Z"
+   },
+   "search by ingredient": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+    "at": "2026-10-25T08:14:30.909Z",
+    "of": 1,
+    "part": true
+   },
+   "scaling": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+    "at": "2026-10-25T08:14:30.909Z",
+    "of": 1,
+    "part": true
+   },
+   "step mode": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+    "at": "2026-10-25T08:14:30.909Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 14,
+    "best": 1,
+    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs budgetbytes.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
+    "at": "2026-10-25T08:14:30.909Z",
+    "of": 14
+   }
+  },
+  "recipes: recipetineats.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 61,
+    "best": 234,
+    "evidence": "Verse (/recipes/?q=pancakes) 61 ms to the load event (median of 3, phone width) vs recipetineats.com 234 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs recipetineats.com 3 of 3 loads answered",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs recipetineats.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs recipetineats.com 0 unnamed controls or images",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs recipetineats.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs recipetineats.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not recipetineats.com (the site is not asked)",
+    "at": "2026-10-25T08:15:00.638Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 26,
+    "evidence": "Verse (/recipes/?q=pancakes) 8 design defects vs recipetineats.com 26 design defects: Verse (0 low-contrast texts, 7 small tap targets, layout shift 0.52), recipetineats.com (1 low-contrast texts, 25 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T08:15:00.638Z"
+   },
+   "search by ingredient": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs recipetineats.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+    "at": "2026-10-25T08:15:00.638Z",
+    "of": 1,
+    "part": true
+   },
+   "scaling": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs recipetineats.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+    "at": "2026-10-25T08:15:00.638Z",
+    "of": 1,
+    "part": true
+   },
+   "step mode": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs recipetineats.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+    "at": "2026-10-25T08:15:00.638Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 14,
+    "best": 1,
+    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs recipetineats.com 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
+    "at": "2026-10-25T08:15:00.638Z",
+    "of": 14
+   }
   }
  },
  "icons": {
@@ -4805,6 +5087,9 @@
   "linguee.com": "tower.icons/linguee.com.ico",
   "translate.yandex.com": "tower.icons/translate.yandex.com.ico",
   "translate.google.com": "tower.icons/translate.google.com.ico",
-  "allrecipes.com": "tower.icons/allrecipes.com.png"
+  "allrecipes.com": "tower.icons/allrecipes.com.png",
+  "minimalistbaker.com": "tower.icons/minimalistbaker.com.png",
+  "budgetbytes.com": "tower.icons/budgetbytes.com.png",
+  "recipetineats.com": "tower.icons/recipetineats.com.png"
  }
 }
