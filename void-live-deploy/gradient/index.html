@@ -35,6 +35,8 @@
   textarea { width: 100%; min-height: 4.6em; resize: vertical; }
   label { font-size: 14px; color: var(--soft); }
   button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
+  #gname { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 36px; box-sizing: border-box; }
+  .hint { font-size: 12px; color: var(--soft); margin: 2px 0 8px; } .mine { display: inline-flex; gap: 2px; } .mine .x { min-width: 32px; padding-left: 0; padding-right: 0; }
   .presets button { display: inline-flex; align-items: center; gap: 6px; } .presets i { width: 22px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid var(--line); }
   pre { white-space: pre-wrap; word-break: break-all; font: 14px ui-monospace, Menlo, Consolas, monospace; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 6px 0; }
   #note { min-height: 1.2em; font-size: 14px; color: var(--bad); }
@@ -43,7 +45,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/gradient/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"CSS gradient generator","url":"https://a-to-mind.com/gradient/","description":"Make a linear, radial or conic CSS gradient from colour stops and copy its CSS. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"css gradient generator, linear gradient css, radial gradient generator, gradient background css, gradient colour generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"CSS gradient generator","item":"https://a-to-mind.com/gradient/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"CSS gradient generator","url":"https://a-to-mind.com/gradient/","description":"Make a linear, radial or conic CSS gradient from colour stops, name it, save it as your own preset on your device, pick colours from the screen, and copy its CSS. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"css gradient generator, linear gradient css, radial gradient generator, gradient background css, gradient colour generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"CSS gradient generator","item":"https://a-to-mind.com/gradient/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
@@ -60,16 +62,20 @@
   <div class="row">
     <label for="type">Type</label><select id="type"><option value="linear">Linear</option><option value="radial">Radial</option><option value="conic">Conic</option></select>
     <label for="angle">Angle</label><input id="angle" type="range" min="0" max="359" style="width:140px"><span id="deg">90°</span>
-    <select id="shape" aria-label="Radial shape"><option value="ellipse">Ellipse</option><option value="circle">Circle</option></select>
+    <select id="shape" aria-label="Radial shape" hidden><option value="ellipse">Ellipse</option><option value="circle">Circle</option></select>
   </div>
   <h2>Colour stops</h2>
   <div class="stop" aria-hidden="true" style="font-size:13px;color:var(--soft);margin:0"><span>Colour</span><span>Opacity</span><span>Position %</span><span></span></div>
-  <div id="stops"></div>
-  <div class="row"><button type="button" id="add">Add a stop</button><button type="button" id="rev">Reverse</button></div>
+  <div id="stops" style="min-height:74px"></div>
+  <div class="row"><button type="button" id="add">Add a stop</button><button type="button" id="rev">Reverse</button><button type="button" id="drop" title="Pick a colour from anywhere on your screen into the chosen stop">Pick a colour from the screen</button></div>
+  <p class="hint" id="dropnote">Takes the colour under the pointer anywhere on the screen into the chosen stop (Chrome and Edge on a computer).</p>
   <h2>Hue and saturation</h2>
   <div class="row"><label for="hue">Hue</label><input id="hue" type="range" min="-180" max="180" value="0" style="width:140px"><label for="sat">Saturation</label><input id="sat" type="range" min="0" max="200" value="100" style="width:140px"><button type="button" id="apply">Apply</button></div>
   <h2>Presets</h2>
-  <div class="row presets" id="presets"></div>
+  <div class="row presets" id="presets"><button type="button"><i style="background-image:linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)"></i>Sunset</button><button type="button"><i style="background-image:linear-gradient(180deg, #2193b0 0%, #6dd5ed 100%)"></i>Ocean</button><button type="button"><i style="background-image:linear-gradient(90deg, #6d4aff 0%, #c86dd7 100%)"></i>Violet</button><button type="button"><i style="background-image:linear-gradient(160deg, #134e5e 0%, #71b280 100%)"></i>Forest</button><button type="button"><i style="background-image:linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0) 100%)"></i>Fade to clear</button><button type="button"><i style="background-image:radial-gradient(circle at center, #fff7c2 0%, #f7b733 45%, #1f1c2c 100%)"></i>Spotlight</button><button type="button"><i style="background-image:conic-gradient(from 0deg at center, #ff0000 0%, #ffff00 16.7%, #00ff00 33.3%, #00ffff 50%, #0000ff 66.7%, #ff00ff 83.3%, #ff0000 100%)"></i>Colour wheel</button></div>
+  <h2>Your gradients</h2>
+  <div class="row"><label for="gname">Name</label><input id="gname" type="text" maxlength="40" placeholder="e.g. Brand hero" autocomplete="off" style="width:12em"><button type="button" id="save">Save as preset</button></div>
+  <div class="row presets" id="mine"><span class="hint" id="minenote">Save a gradient to keep it here, on this device. Its name goes into the CSS.</span></div>
   <h2>CSS</h2>
   <div class="row"><label for="fmt">Colours as</label><select id="fmt"><option value="hex">hex</option><option value="rgb">rgb / rgba</option><option value="hsl">hsl / hsla</option></select><label><input type="checkbox" id="asScss"> SCSS</label></div>
   <pre id="out"></pre>
@@ -86,7 +92,7 @@
   import { mountRelated, along, setPalette } from '/lib/toolkit.js';
   import { css, cssIn, rule, scss, read, pack, open, fallback, textContrast, normal, reverse, adjust, fromSamples, PRESETS, inFormat } from '/lib/gradient.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
-  let g = open(location.hash.slice(1)) || normal(PRESETS[2].g), on = 0;
+  let g = open(location.hash.slice(1)) || normal(PRESETS[2].g), on = 0, name = '';
   const hex = (c) => '#' + [c.r, c.g, c.b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
   const toast = (b, t) => { const was = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = was; }, 1200); };
   function draw() {
@@ -108,7 +114,8 @@
       return el('div', { className: 'stop' + (i === on ? ' on' : '') }, [col, op, pos, del]);
     }));
     $('type').value = g.type; $('angle').value = g.angle; $('deg').textContent = g.angle + '°'; $('shape').value = g.shape; $('shape').hidden = g.type !== 'radial'; $('angle').disabled = g.type === 'radial';
-    const f = $('fmt').value; $('out').textContent = $('asScss').checked ? scss(g, 'gradient', f) : 'background-color: ' + fallback(g) + ';\nbackground-image: ' + cssIn(g, f) + ';';
+    const f = $('fmt').value, slug = name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'gradient';
+    $('out').textContent = (name ? '/* ' + name.replace(/\*\//g, '') + ' */\n' : '') + ($('asScss').checked ? scss(g, slug, f) : (name ? '.' + slug + ' {\n  background-color: ' + fallback(g) + ';\n  background-image: ' + cssIn(g, f) + ';\n}' : 'background-color: ' + fallback(g) + ';\nbackground-image: ' + cssIn(g, f) + ';'));
     try { history.replaceState(null, '', '#' + pack(g)); } catch (_) {}
   }
   $('bar').addEventListener('click', (e) => { const r = $('bar').getBoundingClientRect(), p = Math.round(((e.clientX - r.left) / r.width) * 100), n = normal(g), st = n.stops, i = st.findIndex((x) => x.pos >= p), a = st[Math.max(0, i - 1)], b = st[i < 0 ? st.length - 1 : i];
@@ -121,7 +128,25 @@
   $('angle').addEventListener('input', () => { g.angle = Number($('angle').value); draw(); });
   $('shape').addEventListener('change', () => { g.shape = $('shape').value; draw(); });
   $('fmt').addEventListener('change', draw); $('asScss').addEventListener('change', draw);
-  $('presets').replaceChildren(...PRESETS.map((p) => { const b = el('button', { type: 'button' }, [el('i'), p.name]); b.firstChild.style.backgroundImage = css(p.g); b.addEventListener('click', () => { g = normal(p.g); on = 0; draw(); }); return b; }));
+  // the presets are drawn in the HTML (so nothing moves as the page loads); each is wired here, and made only if one is missing
+  { const drawn = [...$('presets').children]; PRESETS.forEach((p, i) => { let b = drawn[i]; if (!b || b.textContent !== p.name) { b = el('button', { type: 'button' }, [el('i'), p.name]); b.firstChild.style.backgroundImage = css(p.g); $('presets').append(b); } b.addEventListener('click', () => { g = normal(p.g); on = 0; name = p.name; $('gname').value = name; draw(); }); }); }
+  // your own presets and the gradient's name, kept on this device: [{ name, code }] (code is the link's pack); the name goes into the CSS
+  const MINE = 'a2m.void.gradient.mine.v1'; let mine = []; try { mine = JSON.parse(localStorage.getItem(MINE) || '[]').filter((x) => x && open(x.code)).slice(0, 40); } catch (_) {}
+  const keepMine = () => { try { localStorage.setItem(MINE, JSON.stringify(mine)); } catch (_) { $('minenote').textContent = 'This browser will not keep presets.'; } };
+  function drawMine() {
+    $('mine').replaceChildren(...(mine.length ? mine.map((m, i) => { const go = el('button', { type: 'button', title: 'Open ' + m.name }, [el('i'), m.name]); go.firstChild.style.backgroundImage = css(open(m.code));
+      go.addEventListener('click', () => { g = open(m.code); on = 0; name = m.name; $('gname').value = name; draw(); });
+      const x = el('button', { type: 'button', textContent: '×', className: 'x', ariaLabel: 'Remove the preset ' + m.name }); x.addEventListener('click', () => { mine.splice(i, 1); keepMine(); drawMine(); });
+      return el('span', { className: 'mine' }, [go, x]); }) : [$('minenote')]));
+  }
+  $('save').addEventListener('click', () => { const n = ($('gname').value.trim() || 'My gradient ' + (mine.length + 1)).slice(0, 40), code = pack(g), at = mine.findIndex((m) => m.name === n);
+    if (at >= 0) mine[at].code = code; else mine.unshift({ name: n, code }); mine = mine.slice(0, 40); name = n; $('gname').value = n; keepMine(); drawMine(); draw(); toast($('save'), 'Saved'); });
+  $('gname').addEventListener('input', () => { name = $('gname').value.trim().slice(0, 40); draw(); });
+  // the eyedropper (the EyeDropper API: Chrome and Edge on a computer): a colour from anywhere on the screen into the chosen stop
+  if (!('EyeDropper' in window)) { $('drop').disabled = true; $('dropnote').textContent = 'This browser has no eyedropper (it is in Chrome and Edge on a computer); type the colour into a stop, or take the colours from a picture below.'; }
+  $('drop').addEventListener('click', async () => { if (!('EyeDropper' in window)) return; try { const r = await new window.EyeDropper().open(), v = r.sRGBHex; const i = Math.min(on, g.stops.length - 1);
+    const rgb = /^#?([0-9a-f]{6})$/i.test(v) ? v.replace('#', '') : null; if (rgb) { g.stops[i].color = { r: parseInt(rgb.slice(0, 2), 16), g: parseInt(rgb.slice(2, 4), 16), b: parseInt(rgb.slice(4, 6), 16), a: g.stops[i].color.a }; draw(); } } catch (_) {} });
+  drawMine();
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('out').textContent); toast($('copy'), 'Copied'); } catch (_) {} });
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); toast($('link'), 'Copied'); } catch (_) {} });
   $('import').addEventListener('click', () => { const r = read($('paste').value); $('note').textContent = r ? '' : 'That is not a CSS gradient I can read: try linear-gradient(to right, #ff5f6d, #ffc371).'; if (r) { g = r; on = 0; draw(); } });

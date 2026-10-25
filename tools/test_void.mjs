@@ -5866,6 +5866,18 @@ try {
     await Z.ctx.close();
   }
   // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  // the rest of ColorZilla's generator on /gradient/: a named gradient in the CSS, saved as your own preset that a reload keeps, and an eyedropper
+  if (want("gradient: /gradient/ names a gradient in its CSS, saves it as your own preset that a reload keeps, and offers an eyedropper")) {
+    const Z = await fresh(); await Z.p.goto(base + 'gradient/'); await Z.p.click('#presets button:has-text("Sunset")');
+    await Z.p.fill('#gname', 'Brand hero'); await Z.p.click('#save'); const css1 = await Z.p.$eval('#out', (e) => e.textContent);
+    await Z.p.click('#presets button:has-text("Ocean")'); await Z.p.reload(); await Z.p.waitForSelector('#mine .mine button');
+    const kept = await Z.p.$$eval('#mine .mine button:first-child', (b) => b.map((x) => x.textContent)); await Z.p.click('#mine .mine button:first-child'); const back = await Z.p.$eval('#out', (e) => e.textContent);
+    const drop = await Z.p.$eval('#drop', (b) => ({ text: b.textContent, works: 'EyeDropper' in window, disabled: b.disabled }));
+    check("gradient: /gradient/ names a gradient in its CSS, saves it as your own preset that a reload keeps, and offers an eyedropper",
+      /^\/\* Brand hero \*\/\n\.brand-hero \{/.test(css1) && /#ff5f6d/.test(css1) && kept.join() === 'Brand hero' && /#ff5f6d/.test(back) && /Brand hero/.test(back) && drop.disabled === !drop.works && !Z.errors.length,
+      JSON.stringify({ css1, kept, back, drop, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of random.org on /random/: decimal fractions from the link, a shuffled deck dealt round the table, random dates in a range
   if (want("random: /random/ draws decimal fractions from its link, deals a shuffled deck into hands, and picks dates inside a range")) {
     const Z = await fresh(); await Z.p.goto(base + 'random/?min=0&max=1&dec=4&n=20'); await Z.p.waitForTimeout(200);

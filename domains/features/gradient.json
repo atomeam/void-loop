@@ -86,15 +86,15 @@
           "name": "Save your own presets",
           "detail": "keep gradients you made in the preset list",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "presets are fixed (lib/gradient.js PRESETS); Copy link keeps one gradient"
+          "verse": "has",
+          "verse_evidence": "Your gradients: Save as preset keeps a named gradient on this device, each with a remove button, opened with one tap"
         },
         {
           "name": "Named gradients",
           "detail": "give a gradient a name used in the output",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Name: the name goes into the CSS as a comment and a class (.brand-hero) and into SCSS variable names"
         },
         {
           "name": "Old-browser output (IE filter, -webkit-, maximize compatibility)",
@@ -121,8 +121,8 @@
           "name": "Eyedropper and colour picker (ColorZilla extension)",
           "detail": "pick colours from any page with the browser add-on",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no extension; picture colours read on the page only"
+          "verse": "has",
+          "verse_evidence": "Pick a colour from the screen (the EyeDropper API, Chrome and Edge on a computer) into the chosen stop; no browser extension"
         },
         {
           "name": "Repeating gradients",
@@ -142,9 +142,6 @@
     "Fallback colour computed from the stops"
   ],
   "gaps": [
-    "Save your own presets",
-    "Named gradients",
-    "Eyedropper and colour picker (ColorZilla extension)",
     "Radial size / shape",
     "Live preview with adjustable size",
     "Adjustments: hue, saturation, lightness",
