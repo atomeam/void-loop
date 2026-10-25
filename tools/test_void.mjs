@@ -5605,6 +5605,19 @@ try {
       p1 === 'Get ready' && p2 === 'Work' && /Round 1 of 2/.test(info) && cc.w === '1:05' && cc.on && /1 move/.test(cc.m) && !Z.errors.length, JSON.stringify({ p1, p2, info, cc, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of unitconverters.net on /convert/: the engineering and electricity kinds (torque, capacitance), a table of common values for a pair,
+  // and a link of another kind that moves nothing as it redraws
+  if (want("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair")) {
+    const Z = await fresh(); await Z.ctx.addInitScript('window.__cls=0;try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)window.__cls+=e.value})}).observe({type:"layout-shift",buffered:true})}catch(e){}');
+    await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('1 Nm to lbf ft')); await Z.p.waitForSelector('#u-lbfft');
+    const torque = { answer: await Z.p.$eval('#answer', (e) => e.textContent), rows: await Z.p.$$eval('#pairrows tr', (r) => r.length), ten: await Z.p.$eval('#pairrows tr:nth-child(7)', (e) => e.textContent), kinds: await Z.p.$$eval('#kind option', (o) => o.length) };
+    await Z.p.waitForTimeout(300); const cls = await Z.p.evaluate(() => window.__cls);
+    await Z.p.fill('#ask', '100 uF to nF'); await Z.p.waitForTimeout(200); const cap = await Z.p.$eval('#answer', (e) => e.textContent);
+    check("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair",
+      torque.answer === '1 N·m = 0.737562149277 lbf·ft' && torque.rows === 15 && /10 N·m7\.37562149277 lbf·ft/.test(torque.ten) && torque.kinds === 52 && cls < 0.05 && cap === '100 µF = 100000 nF' && !Z.errors.length,
+      JSON.stringify({ torque, cls, cap, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the tower's unitconverters.net floor: /convert/ answers the gate's own question from its link, shows every unit of the kind at once, and a
   // box typed in either direction moves all the others; Copy link carries the conversion
   if (want("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it")) {

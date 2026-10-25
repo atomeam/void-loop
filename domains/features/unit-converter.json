@@ -29,29 +29,29 @@
           "name": "Many units per kind",
           "detail": "long unit lists per converter (e.g. length has dozens incl. historic units)",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "length has 15 units (convert/index.html select); fewer obscure units"
+          "verse": "has",
+          "verse_evidence": "495 units in 52 kinds: length adds dm, pm, angstrom, hand, US survey foot, fathom, link, rod, chain, league, cable, parsec, megametre; mass, volume, area, speed, time, pressure, energy and power each gain theirs (lib/units.js)"
         },
         {
           "name": "Engineering converters",
           "detail": "acceleration, angular velocity, density, specific volume, moment of inertia, torque",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none of these kinds in lib/units.js KINDS"
+          "verse": "has",
+          "verse_evidence": "Acceleration, Angular velocity, Density, Specific volume, Torque, Moment of inertia kinds (lib/units.js, group engineering)"
         },
         {
           "name": "Heat converters",
           "detail": "thermal conductivity plus fuel efficiency, thermal expansion, thermal resistance, specific heat, heat flux density, heat transfer coefficient",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "only \"Heat: thermal conductivity\""
+          "verse": "has",
+          "verse_evidence": "thermal conductivity plus specific heat capacity, heat flux density, heat transfer coefficient; fuel efficiency is the common Fuel kind"
         },
         {
           "name": "Fluids converters",
           "detail": "flow rate plus mass and mole flow, concentration, viscosity (dynamic and kinematic), surface tension, permeability",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "only \"Fluids: flow rate\""
+          "verse": "has",
+          "verse_evidence": "flow rate plus mass flow rate, dynamic and kinematic viscosity, molar concentration"
         },
         {
           "name": "Sound converter",
@@ -64,36 +64,36 @@
           "name": "Light converters",
           "detail": "illuminance plus luminance, luminous intensity, digital image resolution, frequency to wavelength",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "only \"Light: illuminance\" and Frequency"
+          "verse": "has",
+          "verse_evidence": "illuminance plus luminance; frequency on its own kind"
         },
         {
           "name": "Electricity converters",
           "detail": "charge plus current, voltage (electric potential), resistance, resistivity, conductance, capacitance, inductance, field strength, charge densities",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "only \"Electricity: charge\""
+          "verse": "has",
+          "verse_evidence": "charge plus current, voltage, resistance, resistivity, conductance, conductivity, capacitance, inductance, electric field strength"
         },
         {
           "name": "Magnetism converters",
           "detail": "flux density plus magnetomotive force, field strength, magnetic flux",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "only \"Magnetism: flux density\""
+          "verse": "has",
+          "verse_evidence": "flux density plus field strength, magnetic flux, magnetomotive force"
         },
         {
           "name": "Radiology converters",
           "detail": "absorbed dose, radioactivity, radiation exposure, equivalent dose",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "absorbed dose and radioactivity; no exposure"
+          "verse": "has",
+          "verse_evidence": "absorbed dose, radioactivity and radiation exposure (C/kg, roentgen)"
         },
         {
           "name": "Other converters",
           "detail": "metric prefixes, data transfer rate, typography, lumber volume, molar mass, number bases",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "number bases on /base-converter/; no prefixes, data rate, typography, lumber or molar mass"
+          "verse_evidence": "metric prefixes, data transfer rate and typography kinds on /convert/; number bases on /base-converter/; no lumber volume or molar mass"
         },
         {
           "name": "Periodic table",
@@ -106,8 +106,8 @@
           "name": "One page per unit pair with a conversion table",
           "detail": "e.g. inch to cm page with a table of common values",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "every unit of a kind at once; no value table (1, 2, 5, 10 ... 100) for a pair"
+          "verse": "has",
+          "verse_evidence": "a pair (?q=1 Nm to lbf ft) shows a table of 15 common values from 0.01 to 10000 below the converter"
         },
         {
           "name": "Formula for each pair",
@@ -128,17 +128,8 @@
     "Works offline; nothing sent"
   ],
   "gaps": [
-    "Electricity converters",
-    "Engineering converters",
-    "Many units per kind",
-    "Heat converters",
-    "Fluids converters",
     "Other converters",
-    "One page per unit pair with a conversion table",
     "Sound converter",
-    "Periodic table",
-    "Light converters",
-    "Magnetism converters",
-    "Radiology converters"
+    "Periodic table"
   ]
 }
