@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/calendar/': 'Calendar', '/generators/': 'Generators', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -36,6 +36,7 @@ export const RELATED = Object.freeze({
   '/translate/': ['/word-count/', '/time/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
+  '/generators/': ['/random/', '/flip/', '/wheel/'],
   '/base64/': ['/word-count/', '/base-converter/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
@@ -105,6 +106,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // calendar: 'add dentist tomorrow 3pm to my calendar', 'remind me to call mum tomorrow 6pm', 'my calendar', "what's on tomorrow", 'my week'
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
+  // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
+  [/^(?:random |a )?(fantasy name|town name|band name|pet name|username|writing prompt|story prompt|superpower|haiku|villain plot|book title|album title|business name|potion name|planet name|side quest|superhero name)s?(?: generator| ideas?)?$|^(?:random )?name generator$/i, (m) => '/generators/?g=' + ({ 'fantasy name': 'fantasy-names', 'town name': 'town-names', 'band name': 'band-names', 'pet name': 'pet-names', username: 'usernames', 'writing prompt': 'writing-prompts', 'story prompt': 'story-prompts', superpower: 'superpowers', haiku: 'haiku', 'villain plot': 'villain-plots', 'book title': 'book-titles', 'album title': 'album-titles', 'business name': 'business-names', 'potion name': 'potion-names', 'planet name': 'planet-names', 'side quest': 'side-quests', 'superhero name': 'superhero-names' }[(m[1] || 'fantasy name').toLowerCase()] || 'fantasy-names')],
   [/^(?:my |the |open (?:my |the )?)?calendar$|^(?:my )?(?:agenda|schedule|events)$/i, () => '/calendar/'],
   [/^what(?:'s| is| do i have) on (today|tomorrow|this week|next week)\??$|^(?:my )?(?:day|schedule|agenda|events|plans) (?:for )?(today|tomorrow|this week|next week)$|^(?:my|this) (week)$/i, (m) => '/calendar/?show=' + (m[1] || m[2] || m[3]).replace(/\s+/g, '-')],
   // recipes: 'pancake recipe', 'recipe for pancakes', 'how do I make pancakes', 'how to cook rice'; and by what is in the fridge, 'what can I make with eggs, spinach'

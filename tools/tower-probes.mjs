@@ -227,6 +227,16 @@ export const PROBES = Object.freeze({
       ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
       ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
   },
+  'random generators': {
+    site: 'https://perchance.org/', verse: '/generators/',
+    // the question: the fantasy-name generator at seed 7 (the link reproduces it). Any correct answer is a list of at least five names, each one
+    // capitalised word, with the seed named. Judged on Verse alone; the same probe measures every site in the random generators lane (lib/tower.js LANES)
+    ask: { verse: '/generators/?g=fantasy-names&seed=7' },
+    truth: [['a list of five or more capitalised names', (t) => String(t).split(/\n/).map((l) => l.trim()).filter((l) => /^[A-Z][a-z]{2,}(?: [A-Z][a-z]{2,})?$/.test(l) && !/^(?:Copy|Keep|Kept|Remove|Regenerate|Results|Generators?|Random|Share|Fantasy|Ask)(?: .*)?$/.test(l)).length >= 5], ['the seed, named', /\bseed 7\b/i]],
+    askParts: { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
+    // what the best generator sites show: a catalogue of generators, a count of results, regenerate, copy, a link that keeps the result, favourites
+    facts: [['many generators', /\b\d{2,} generators\b/i], ['a count of results', /\bresults\b/i], ['regenerate', /\bregenerate\b/i], ['copy', /\bcopy\b/i], ['a share link', /\bshare\b/i], ['keep favourites', /\bkeep\b|\bkept\b/i], ['a seed', /\bseed\b/i], ['make your own', /make your own/i], ['picture it', /picture it/i], ['works offline', /\boffline\b/i]],
+  },
   calendar: {
     site: 'https://calendar.google.com/', verse: '/calendar/',
     // the question: one line of plain words in the page's link, an event tomorrow at 3 pm with a reminder half an hour before, repeating monthly.
@@ -343,6 +353,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
+  'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
