@@ -581,53 +581,88 @@
   },
   "password": {
    "speed": {
-    "verdict": "worse",
-    "verse": 323,
+    "verdict": "better",
+    "verse": 141,
     "best": 200,
-    "evidence": "Verse 323 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 141 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T04:54:35.618Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T04:54:35.618Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T04:54:35.618Z"
    },
    "reliability": {
     "verdict": "unverified",
-    "verse": 3,
+    "verse": 0,
     "best": 0,
-    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser; Verse 3 of 3; the other aspects are judged against the best score there is",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "passwordsgenerator.net answered none of 3 loads from an ordinary phone browser; Verse 0 of 3; the other aspects are judged against the best score there is",
+    "at": "2026-10-25T04:54:35.618Z"
    },
    "offline": {
     "verdict": "worse",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T04:54:35.618Z"
    },
    "sharing": {
-    "verdict": "equal-and-better",
-    "verse": 4,
+    "verdict": "worse",
+    "verse": 0,
     "best": 4,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T04:54:35.618Z",
+    "was": "equal-and-better"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
-    "at": "2026-10-25T04:45:17.020Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
+    "at": "2026-10-25T04:54:35.618Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 of 2 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T04:54:35.618Z",
+    "of": 2
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 20,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 of 20 things a full answer shows vs the bar (passwordsgenerator.net unreachable) 20 of 20 things a full answer shows (Verse lacks: a length, uppercase, lowercase, numbers, symbols, exclude similar characters, exclude ambiguous characters, made on the device, a generate control, copy, a way to remember it, passphrases, several at once, no repeated characters, no sequential characters, strength, entropy in bits, time to crack, works offline, a link that keeps the setting)",
+    "at": "2026-10-25T04:54:35.618Z",
+    "of": 20
+   },
+   "length and character choice": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 11,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 of 11 shown vs the bar (passwordsgenerator.net unreachable) 11 of 11 shown (Verse lacks: a length choice, uppercase, lowercase, numbers, symbols, exclude similar, exclude ambiguous, no repeats, no sequential, one of each class, passphrases)",
+    "at": "2026-10-25T04:54:35.618Z",
+    "of": 11,
+    "part": true
+   },
+   "strength shown": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 of 3 shown vs the bar (passwordsgenerator.net unreachable) 3 of 3 shown (Verse lacks: a strength label, entropy in bits, time to crack)",
+    "at": "2026-10-25T04:54:35.618Z",
+    "of": 3,
+    "part": true
    }
   },
   "encoder": {
