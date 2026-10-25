@@ -34,7 +34,7 @@ export function towerHtml(t, esc, { mini = false } = {}) {
     + (f.state === 'current' ? '<ul class="tw-aspects">' + aspectRows(f).map((r) => '<li data-v="' + r.v + '">' + MARK[r.v] + ' ' + esc(r.a) + '</li>').join('') + '</ul>' : '') + '</button>';
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
-  const links = (f) => (f.url || f.page ? '<div class="tw-links" style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
+  const links = (f) => (f.url || f.page ? '<div class="tw-links" data-share-skip style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
     + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '')
     + (f.page ? '<a href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '')
     + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>' : '');
