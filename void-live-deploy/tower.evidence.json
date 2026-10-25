@@ -2166,52 +2166,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 218,
-    "best": 488,
-    "evidence": "Verse 218 ms to the load event (median of 3, phone width) vs ESPN 488 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:39:54.206Z"
+    "verse": 232,
+    "best": 418,
+    "evidence": "Verse 232 ms to the load event (median of 3, phone width) vs ESPN 418 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T11:39:54.206Z"
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:39:54.206Z"
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 57,
-    "evidence": "Verse 0 unnamed controls or images vs ESPN 57 unnamed controls or images",
-    "at": "2026-10-25T11:39:54.206Z"
+    "best": 43,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 43 unnamed controls or images",
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:39:54.206Z"
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:39:54.206Z"
+    "at": "2026-10-25T15:22:40.396Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 110,
-    "evidence": "Verse 0 design defects vs ESPN 110 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (97 low-contrast texts, 13 small tap targets, layout shift 0.01)",
-    "at": "2026-10-25T11:39:54.206Z"
+    "best": 102,
+    "evidence": "Verse 0 design defects vs ESPN 102 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (89 low-contrast texts, 13 small tap targets, layout shift 0.07)",
+    "at": "2026-10-25T15:22:40.396Z"
    }
   },
   "finance": {
@@ -3033,53 +3033,96 @@
   },
   "random generators": {
    "speed": {
-    "verdict": "better",
-    "verse": 294,
-    "best": 588,
-    "evidence": "Verse 294 ms to the load event (median of 3, phone width) vs perchance.org 588 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:45:53.485Z"
+    "verdict": "equal-and-better",
+    "verse": 95,
+    "best": 482,
+    "evidence": "Verse (/generators/) 95 ms to the load event (median of 3, phone width) vs perchance.org 482 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs perchance.org 3 of 3 loads answered",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 3 of 3 loads answered vs perchance.org 3 of 3 loads answered",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs perchance.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs perchance.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs perchance.org 0 unnamed controls or images",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs perchance.org 0 unnamed controls or images",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs perchance.org 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs perchance.org 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T15:23:17.247Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T11:45:53.485Z"
+    "evidence": "Verse (/generators/) 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
+    "at": "2026-10-25T15:23:17.247Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not perchance.org (the site is not asked)",
+    "at": "2026-10-25T15:23:17.247Z",
+    "of": 2
+   },
+   "generator catalogue": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
+    "at": "2026-10-25T15:23:17.247Z",
+    "of": 1,
+    "part": true
+   },
+   "make your own generator": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
+    "at": "2026-10-25T15:23:17.247Z",
+    "of": 1,
+    "part": true
+   },
+   "image generation": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
+    "at": "2026-10-25T15:23:17.247Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 0,
+    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs perchance.org 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
+    "at": "2026-10-25T15:23:17.247Z",
+    "of": 10
    }
   },
   "ai models": {
@@ -9050,7 +9093,7 @@
   "linkedin.com": "tower.icons/linkedin.com.ico",
   "mail.google.com": "tower.icons/mail.google.com.ico",
   "github.com": "tower.icons/github.com.svg",
-  "perchance.org": "tower.icons/perchance.org.ico",
+  "perchance.org": "tower.icons/perchance.org.png",
   "huggingface.co": "tower.icons/huggingface.co.png",
   "claude.ai": "tower.icons/claude.ai.svg",
   "codebasehq.com": "tower.icons/codebasehq.com.png",
