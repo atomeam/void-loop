@@ -2166,52 +2166,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 232,
-    "best": 418,
-    "evidence": "Verse 232 ms to the load event (median of 3, phone width) vs ESPN 418 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:22:40.396Z"
+    "verse": 236,
+    "best": 380,
+    "evidence": "Verse 236 ms to the load event (median of 3, phone width) vs ESPN 380 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T15:22:40.396Z"
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:22:40.396Z"
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 43,
-    "evidence": "Verse 0 unnamed controls or images vs ESPN 43 unnamed controls or images",
-    "at": "2026-10-25T15:22:40.396Z"
+    "best": 41,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 41 unnamed controls or images",
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:22:40.396Z"
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:22:40.396Z"
+    "at": "2026-10-25T16:02:18.299Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 102,
-    "evidence": "Verse 0 design defects vs ESPN 102 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (89 low-contrast texts, 13 small tap targets, layout shift 0.07)",
-    "at": "2026-10-25T15:22:40.396Z"
+    "best": 78,
+    "evidence": "Verse 0 design defects vs ESPN 78 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (65 low-contrast texts, 13 small tap targets, layout shift 0.07)",
+    "at": "2026-10-25T16:02:18.299Z"
    }
   },
   "finance": {
