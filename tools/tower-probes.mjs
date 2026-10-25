@@ -181,6 +181,20 @@ export const PROBES = Object.freeze({
     facts: [['encoding', /\bencod/i], ['decoding', /\bdecod/i], ['a character set choice', /\bchar(?:acter)?\s?sets?\b|\bcharset\b|\butf-?8\b/i], ['URL-safe Base64', /url[\s-]?safe|base64url/i],
       ['lines of 76 characters', /\b76\b/], ['the newline form', /\bnewline\b|\bline\s?breaks?\b|\bCRLF\b|\bLF\b/i], ['encoding as you type', /\blive\b|as you type/i], ['files', /\bfiles?\b/i], ['copy', /\bcopy\b/i], ['download', /\bdownload\b/i]],
   },
+  'password strength': {
+    site: 'https://www.howsecureismypassword.net/', verse: '/password-strength/',
+    // the page never carries a password in its address (its own rule: nothing typed goes in a link), so the gate types the question into its box
+    // (`verseType`). The question: qwerty123, at the head of every leaked list. The truth any correct checker agrees on: it is very weak, cracked
+    // at once from a stolen list (a rig trying 10 billion a second needs far fewer), the word qwerty and the run 123 are why, and longer is the fix
+    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password-strength/', verseType: 'qwerty123' },
+    truth: [['rated very weak', /\bvery weak\b/i], ['cracked instantly', /\binstantly\b/i], ['the common password qwerty named', /\bqwerty\b/i], ['the run 123 named', /\b123\b/i], ['the fix: make it longer', /\blonger\b/i]],
+    // the floor's own aspects, read off the same typed answer: a time at a login and a time from a stolen list; why it is weak and how to fix it
+    askParts: { 'crack time': [['a time from a stolen list, offline', /\boffline\b|stolen list/i], ['a time at a login, online', /\blogin\b|\bonline\b/i]],
+      'reasons and fixes': [['why it is weak', /\bcontains\b|looks like|follows the keys|first things|among the first/i], ['how to fix it', /make it longer|do not build|leave out|put more|unrelated words/i]] },
+    // what the best checkers show (howsecureismypassword.net's time to crack and its rating; the best add the reasons, the fixes, a leak check, and say nothing leaves the device)
+    facts: [['a strength rating', /\b(?:very weak|weak|fair|strong|very strong)\b|\bstrength\b/i], ['the time to crack', /\bcrack/i], ['why it is weak', /\bwhy\b|\breasons?\b/i], ['how to fix it', /\bfix\b|\btips?\b|\bimprove\b/i],
+      ['a leak check', /\bleak|\bbreach|\bpwned\b/i], ['nothing sent anywhere', /never sent|not sent|on (?:this|your) device|in your browser/i], ['show the password', /\bshow\b/i]],
+  },
   'base converter': {
     site: 'https://hextobinary.com/', verse: '/base-converter/?v=ff&b=16',
     // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
@@ -236,6 +250,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   'base converter': { 'signed reading': [['a signed reading', /\bsigned\b|two.?s complement/i]], 'all four bases': [['binary', /\bbinary\b/i], ['octal', /\boctal\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i]] },
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
+  'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,
   'random number': { 'true randomness': [['names where its randomness comes from', /atmospheric noise|\bdrand\b|randomness beacon|getRandomValues|\bhardware\b/i], ['a draw others can check', /\bcheckable\b|\bverifiab|\bre-deriv|\bsigned\b/i]], 'range choice': [['a range', /\bmin(?:imum)?\b[\s\S]{0,120}\bmax|\bfrom\b[\s\S]{0,60}\bto\b|\bbetween\b[\s\S]{0,40}\band\b/i], ['how many', /\bhow many\b|\bgenerate\s+\d+|\bnumber of\b/i], ['no repeats', /\bno repeats?\b|\bunique\b|\bwithout repe/i]] },
   stopwatch: { alarms: [['an alarm', /\balarm\b/i]], laps: [['laps', /\blaps?\b/i]] },

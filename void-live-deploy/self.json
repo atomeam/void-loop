@@ -483,7 +483,55 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T03:48:19Z",
+   "at": "2026-10-25T04:17:06Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:14:57Z",
+   "subject": "/base64/ does everything base64encode.org does, in the browser"
+  },
+  {
+   "at": "2026-10-25T04:13:29Z",
+   "subject": "The tower judges accuracy against the worked-out truth, not against the rival"
+  },
+  {
+   "at": "2026-10-25T04:13:22Z",
+   "subject": "Incident: the browser suite failed on 5751d72f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:11:53Z",
+   "subject": "Incident: the browser suite failed on 8fcb91e9 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:06:29Z",
+   "subject": "The tower gate presses a button the pointer cannot reach with Enter, the way a person on a keyboard does"
+  },
+  {
+   "at": "2026-10-25T04:05:08Z",
+   "subject": "A cartoon of a concept or a sentence is a real cartoon, not a grid or a stock boy"
+  },
+  {
+   "at": "2026-10-25T04:04:41Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:58:45Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:56:30Z",
+   "subject": "The atom galaxy is one natural formation, not an atom drawn over a galaxy"
+  },
+  {
+   "at": "2026-10-25T03:52:38Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T03:49:56Z",
+   "subject": "The Verse Book's cover is a tooled leather binding"
+  },
+  {
+   "at": "2026-10-25T03:48:25Z",
    "subject": "The tower gate gets a boxed answer out of a site the way a person does, and says what it saw when it cannot; the encoder floor gets its…"
   },
   {
@@ -513,54 +561,6 @@
   {
    "at": "2026-10-25T03:19:54Z",
    "subject": "Incident: the browser suite failed on 83686813 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T03:17:42Z",
-   "subject": "Incident: the browser suite failed on a39f97a4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T03:15:25Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:12:49Z",
-   "subject": "Incident: the browser suite failed on c9300773 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T03:12:39Z",
-   "subject": "/base64/ offers 44 character sets: ISO-8859, Windows, KOI8, Mac, DOS and EBCDIC both ways; Shift_JIS, GBK, Big5, EUC-KR decode only"
-  },
-  {
-   "at": "2026-10-25T03:07:58Z",
-   "subject": "\"make a cyberpunk poster\" paints a cyberpunk poster"
-  },
-  {
-   "at": "2026-10-25T03:03:21Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:59:49Z",
-   "subject": "Incident: the browser suite failed on a2c587ea (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T02:58:14Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:54:15Z",
-   "subject": "/base64/ detects the character set when decoding and decodes padding of the wrong length"
-  },
-  {
-   "at": "2026-10-25T02:53:54Z",
-   "subject": "Incident: the browser suite failed on 35e4f7f3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T02:52:57Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T02:47:04Z",
-   "subject": "A coin whose Commons photos never say obverse or reverse is found by its name alone: the Canadian Gold Maple Leaf showed a question mark"
   }
  ],
  "builders": {

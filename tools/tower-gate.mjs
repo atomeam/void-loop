@@ -249,7 +249,7 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
       // size), else its first visible text input (unitconverters.net's "From")
       const areas = p.locator('textarea:visible:not([readonly]):not([disabled])'), n = await areas.count(); let box = null, best = -1;
       for (let i = 0; i < n; i++) { const bb = await areas.nth(i).boundingBox().catch(() => null); const a = bb ? bb.width * bb.height : 0; if (a > best) { best = a; box = areas.nth(i); } }
-      if (!box) box = p.locator('input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number]').first();
+      if (!box) box = p.locator('input:visible:not([type]), input:visible[type=text], input:visible[type=search], input:visible[type=number], input:visible[type=password]').first();
       const before0 = await read(), before = before0.text;
       try { await box.fill(type, { timeout: 8000 }); } catch (e) { answer.lastSeen += '; no box took the typing (' + String(e && e.message || e).split('\n')[0].slice(0, 80) + ')'; return null; }
       if (best < 0) await box.press('Enter').catch(() => {}); // Enter in a text area would add a line to what is counted
@@ -286,7 +286,7 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
 
 export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
-  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.motion && p.motion[a]));
+  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.motion && p.motion[a]));
 }
 /** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
 export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
@@ -316,10 +316,12 @@ async function measureFloor(f, data) {
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
     // accuracy is Verse against the truth worked out in tower-probes.mjs, never a race with the site (owner, 2026-10-25: "we dont have to test rival";
     // "each site should only take minutes to surpass"): the site's own answer is not fetched, so a site the gate cannot drive never holds a floor open
-    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin, false, probe.ask.time, probe.ask.presses), st = null;
+    // `verseType`: a question Verse's page takes typed into its box, never in its address (a password: /password-strength/ keeps it out of every link)
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, probe.ask.verseType || null, probe.ask.spin, false, probe.ask.time, probe.ask.presses), st = null;
     v.truth = vt === null ? null : score(vt, probe.truth);
-    // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
-    for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
+    // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers', 'crack time') are read off the same answer and judged on
+    // Verse alone, like accuracy
+    for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; if (st !== null) s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
   await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed
   const ev = (data.floors[f.id] = data.floors[f.id] || {});
@@ -343,7 +345,9 @@ async function measureFloor(f, data) {
     if (v.design && s.design) put('design polish', defects(v.design), defects(s.design), ' design defects', { note: ': Verse' + dd(v.design) + ', ' + f.site + dd(s.design) });
     // a moving part the gate cannot see on the site is judged on Verse alone, like accuracy: every frame seen is the most a page can show
     for (const a of Object.keys((probe && probe.motion) || {})) if (want.has(a) && v.parts && v.parts[a] && !(s.parts && s.parts[a])) ev[a] = { ...record(ev[a], v.parts[a].n === v.parts[a].of ? 'equal-and-better' : 'worse', v.parts[a].n, v.parts[a].of, where + ' ' + v.parts[a].n + ' of ' + v.parts[a].of + ' seen; judged on Verse alone, the site is not driven', at), part: true };
-    for (const [a, sv] of Object.entries(v.parts || {})) { const ss = s.parts && s.parts[a]; if (ss) put(a, sv.n, ss.n, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + '; site lacks: ' + (ss.missing.join(', ') || 'none') + ')' }); }
+    for (const [a, sv] of Object.entries(v.parts || {})) { const ss = s.parts && s.parts[a]; if (ss) put(a, sv.n, ss.n, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + '; site lacks: ' + (ss.missing.join(', ') || 'none') + ')' });
+      // an aspect read off the typed answer (askParts) with the site not asked: judged on Verse alone, every item shown is the most a page can show
+      else if (want.has(a) && probe && probe.askParts && probe.askParts[a]) ev[a] = { ...record(ev[a], sv.n === sv.of ? 'equal-and-better' : 'worse', sv.n, sv.of, where + ' ' + sv.n + ' of ' + sv.of + ' shown for the question' + (sv.missing.length ? ' (Verse lacks: ' + sv.missing.join(', ') + ')' : '') + '; judged on Verse alone, the site is not asked', at), of: sv.of, part: true }; }
     if (v.facts && s.facts) put('completeness', v.facts.n, s.facts.n, ' of ' + v.facts.of + ' things a full answer shows', { of: v.facts.of, note: ' (Verse lacks: ' + (v.facts.missing.join(', ') || 'none') + '; site lacks: ' + (s.facts.missing.join(', ') || 'none') + ')' });
   }
   // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back.
