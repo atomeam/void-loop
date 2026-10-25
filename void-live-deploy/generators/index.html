@@ -32,10 +32,10 @@
   .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 10px 0 0; }
   .row label { font-size: 14px; color: var(--soft); display: inline-flex; align-items: center; gap: 6px; }
   .seed { font-size: 13px; color: var(--soft); margin-left: auto; font-variant-numeric: tabular-nums; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .chips { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin: 8px 0 0; height: 48px; padding-bottom: 6px; box-sizing: border-box; scrollbar-width: thin; } .chips a { flex: none; white-space: nowrap; }
   .chips a { font-size: 13px; padding: 6px 12px; min-height: 36px; box-sizing: border-box; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; background: var(--box); }
   .chips a[aria-current="true"] { background: var(--hi); border-color: var(--accent); font-weight: 600; }
-  ol.res, ul.res { list-style: none; margin: 10px 0 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  ol.res { min-height: 330px; } ul.res, ol.res { list-style: none; margin: 10px 0 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
   .res > li { padding: 10px 12px; border-top: 1px solid var(--line); }
   .res > li:first-child { border-top: 0; }
   .txt { font-size: 18px; overflow-wrap: anywhere; white-space: pre-line; }
@@ -64,7 +64,7 @@
   <p class="note" id="count" style="text-align:center">27 generators</p>
 
   <label class="vh" for="gsel" id="gselL">Generator</label>
-  <select id="gsel"></select>
+  <select id="gsel"><option>Fantasy names</option></select>
   <nav class="chips" id="chips" aria-label="Generators"></nav>
 
   <div class="row">
