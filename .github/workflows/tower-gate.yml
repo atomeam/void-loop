@@ -36,8 +36,10 @@ permissions:
   actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
 
 concurrency:
-  # fight runs queue behind each other (the newest pending one runs after the one in progress, never cancelling it); the sweep has its own group
-  group: ${{ (github.event_name == 'schedule' || inputs.floor == 'all') && 'tower-gate-sweep' || 'tower-gate' }}
+  # fight runs queue behind each other (the newest pending one runs after the one in progress, never cancelling it); the sweep has its own group.
+  # A run by hand gets a group of its own (2026-10-25: GitHub keeps one queued run per group, so a hand run waiting behind a deploy's fight run
+  # was cancelled by the next deploy; runs 124, 150 and 151 never measured their floors). It runs beside the fight run, on its own machine.
+  group: ${{ (github.event_name == 'schedule' || inputs.floor == 'all') && 'tower-gate-sweep' || (github.event_name == 'workflow_dispatch' && format('tower-gate-hand-{0}', github.run_id)) || 'tower-gate' }}
   cancel-in-progress: false
 
 jobs:
