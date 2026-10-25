@@ -255,67 +255,67 @@
   "random number": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 122,
-    "best": 207,
-    "evidence": "Verse (/random/?min=1&max=100) 122 ms to the load event (median of 3, phone width) vs random.org 207 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:35:42.337Z"
+    "verse": 120,
+    "best": 330,
+    "evidence": "Verse (/random/?min=1&max=100) 120 ms to the load event (median of 3, phone width) vs random.org 330 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-25T11:35:42.337Z"
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:35:42.337Z"
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-25T11:35:42.337Z"
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:35:42.337Z"
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:35:42.337Z"
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "completeness": {
     "verdict": "better",
-    "verse": 10,
+    "verse": 11,
     "best": 4,
-    "evidence": "Verse (/random/?min=1&max=100) 10 of 10 things a full answer shows vs random.org 4 of 10 things a full answer shows (Verse lacks: none; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base)",
-    "at": "2026-10-25T11:35:42.337Z",
-    "of": 10
+    "evidence": "Verse (/random/?min=1&max=100) 11 of 15 things a full answer shows vs random.org 4 of 15 things a full answer shows (Verse lacks: Integer generator: count, min, max, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base, Integer generator: count, min, max, Base 2 / 8 / 10 / 16, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions)",
+    "at": "2026-10-25T18:13:05.333Z",
+    "of": 15
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 29,
-    "evidence": "Verse (/random/?min=1&max=100) 0 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.06), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:35:42.337Z"
+    "evidence": "Verse (/random/?min=1&max=100) 0 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.04), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T18:13:05.333Z"
    },
    "range choice": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 shown vs random.org 1 of 3 shown (Verse lacks: none; site lacks: how many, no repeats)",
-    "at": "2026-10-25T11:35:42.337Z",
+    "at": "2026-10-25T18:13:05.333Z",
     "of": 3,
     "part": true
    },
@@ -324,7 +324,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 1 of 1 right against the worked-out answer; judged against the standard, not random.org (the site is not asked)",
-    "at": "2026-10-25T11:35:42.337Z",
+    "at": "2026-10-25T18:13:05.333Z",
     "of": 1
    },
    "true randomness": {
@@ -332,7 +332,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 2 of 2 shown vs random.org 1 of 2 shown (Verse lacks: none; site lacks: a draw others can check)",
-    "at": "2026-10-25T11:35:42.337Z",
+    "at": "2026-10-25T18:13:05.333Z",
     "of": 2,
     "part": true
    }
@@ -2168,52 +2168,52 @@
   "sports": {
    "speed": {
     "verdict": "better",
-    "verse": 342,
-    "best": 605,
-    "evidence": "Verse 342 ms to the load event (median of 3, phone width) vs ESPN 605 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T18:03:23.882Z"
+    "verse": 267,
+    "best": 449,
+    "evidence": "Verse 267 ms to the load event (median of 3, phone width) vs ESPN 449 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs ESPN 3 of 3 loads answered",
-    "at": "2026-10-25T18:03:23.882Z"
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs ESPN 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T18:03:23.882Z"
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 35,
-    "evidence": "Verse 0 unnamed controls or images vs ESPN 35 unnamed controls or images",
-    "at": "2026-10-25T18:03:23.882Z"
+    "best": 36,
+    "evidence": "Verse 0 unnamed controls or images vs ESPN 36 unnamed controls or images",
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs ESPN 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T18:03:23.882Z"
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ESPN 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T18:03:23.882Z"
+    "at": "2026-10-25T18:12:31.934Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 48,
-    "evidence": "Verse 0 design defects vs ESPN 48 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (37 low-contrast texts, 11 small tap targets, layout shift 0.02)",
-    "at": "2026-10-25T18:03:23.882Z"
+    "best": 50,
+    "evidence": "Verse 0 design defects vs ESPN 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), ESPN (39 low-contrast texts, 11 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T18:12:31.934Z"
    }
   },
   "finance": {
