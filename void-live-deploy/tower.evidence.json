@@ -1698,52 +1698,52 @@
   "weather": {
    "speed": {
     "verdict": "better",
-    "verse": 319,
-    "best": 386,
-    "evidence": "Verse 319 ms to the load event (median of 3, phone width) vs weather.gov 386 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:14:36.295Z"
+    "verse": 210,
+    "best": 348,
+    "evidence": "Verse 210 ms to the load event (median of 3, phone width) vs weather.gov 348 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs weather.gov 3 of 3 loads answered",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 600,
     "evidence": "Verse 0 px sideways overflow at 390 px vs weather.gov 600 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
     "evidence": "Verse 0 unnamed controls or images vs weather.gov 7 unnamed controls or images",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 68,
     "evidence": "Verse 1 design defects vs weather.gov 68 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), weather.gov (0 low-contrast texts, 68 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T05:14:36.295Z"
+    "at": "2026-10-25T05:18:54.925Z"
    }
   },
   "translate": {
@@ -2509,6 +2509,108 @@
     "best": 47,
     "evidence": "Verse 0 design defects vs LinkedIn Jobs 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), LinkedIn Jobs (0 low-contrast texts, 47 small tap targets, layout shift 0.01)",
     "at": "2026-10-25T05:15:40.987Z"
+   }
+  },
+  "shopping": {
+   "speed": {
+    "verdict": "better",
+    "verse": 251,
+    "best": 782,
+    "evidence": "Verse 251 ms to the load event (median of 3, phone width) vs Amazon 782 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 6,
+    "evidence": "Verse 0 unnamed controls or images vs Amazon 6 unnamed controls or images",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:19:20.969Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 46,
+    "evidence": "Verse 4 design defects vs Amazon 46 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (3 low-contrast texts, 43 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:19:20.969Z"
+   }
+  },
+  "chat": {
+   "speed": {
+    "verdict": "better",
+    "verse": 206,
+    "best": 268,
+    "evidence": "Verse 206 ms to the load event (median of 3, phone width) vs WhatsApp Web 268 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs WhatsApp Web 3 of 3 loads answered",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs WhatsApp Web 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs WhatsApp Web 0 unnamed controls or images",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs WhatsApp Web 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 0,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs WhatsApp Web 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:19:36.078Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 design defects vs WhatsApp Web 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), WhatsApp Web (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:19:36.078Z"
    }
   }
  }
