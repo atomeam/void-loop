@@ -1,6 +1,7 @@
 // /generators/make/'s code, kept out of the page so the page needs no inline-script CSP rule (tools/csp-hashes.mjs budget)
   import { mountRelated } from '/lib/toolkit.js';
   import * as L from '/lib/listgen.js';
+  import { mountComments } from '/lib/comments-ui.js';
   addEventListener('load', async () => {
     const $ = (id) => document.getElementById(id), q = new URLSearchParams(location.search), embed = q.get('embed') === '1';
     if (embed) document.documentElement.classList.add('embed');
@@ -71,7 +72,7 @@
       const texts = aiFill(x);
       for (const [k, part] of L.tidySpans(x.spans).entries()) {
         const shown = L.aiMarks(part.t, texts, '…');
-        if (part.src !== undefined && shown.trim() && !/\u0005/.test(part.t)) {
+        if (part.src !== undefined && shown.trim() && !/\u0005/.test(part.t) && !(part.kind === '{' && /^\s*[aAs]\s*$/.test(part.src))) { // {a}, {A} and {s} follow their words: nothing to roll
           const b = document.createElement('button'); b.type = 'button'; b.className = 'tap'; b.textContent = shown; b.title = 'Tap to roll just this part'; b.setAttribute('aria-label', 'Roll again: ' + shown);
           b.addEventListener('click', () => { const r = L.reroll(compiled, x.spans[k], (L.rng(Date.now() + k)() * 4294967296) >>> 0, { imports: imported, inputs: chosen, vars: x.vars }); if (!r.errors.length) { x.spans[k] = { ...x.spans[k], t: r.t }; const n = row(x, i); li.replaceWith(n); const nb = n.querySelectorAll('.tap')[[...li.querySelectorAll('.tap')].indexOf(b)]; if (nb) nb.focus(); } });
           t.append(b);
@@ -142,7 +143,7 @@
     if (pathId && !q.get('id')) q.set('id', pathId);
     if (/^[a-z2-7]{8}$/.test(q.get('id') || '')) {
       try { const j = await (await fetch('/api/generators?id=' + q.get('id'))).json();
-        if (j.ok) { load(j.text, j.title); state.pubId = j.id; opened = true; $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }
+        if (j.ok) { load(j.text, j.title); state.pubId = j.id; opened = true; $('comments').hidden = false; mountComments($('comments'), 'gen:' + j.id); $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }
         else { $('from').hidden = false; $('from').textContent = 'That generator is not in the hub (it may have been taken down).'; } } catch (_) { $('from').hidden = false; $('from').textContent = 'The hub needs the internet.'; }
     }
     const hash = new URLSearchParams(location.hash.slice(1)).get('g');

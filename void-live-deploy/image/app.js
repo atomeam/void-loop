@@ -1,6 +1,7 @@
 // /image/'s code, kept out of the page so the page needs no inline-script CSP rule (tools/csp-hashes.mjs budget)
   import { mountRelated } from '/lib/toolkit.js';
   import { STYLES, SHAPES, PER_GO, styleOf, shapeOf } from '/lib/image-gen.js';
+import { mountComments } from '/lib/comments-ui.js';
   addEventListener('load', () => {
     const $ = (id) => document.getElementById(id), de = /^de\b/i.test(navigator.language || '');
     const T = de ? { title: 'KI-Bildgenerator', sub: 'Schreib, was du sehen willst. Wähl Stil und Format, dann bis zu vier Bilder auf einmal. Kostenlos, ohne Anmeldung.', prompt: 'Beschreib das Bild', neg: 'Weglassen (optional)', style: 'Stil', shape: 'Format', many: 'Wie viele', seed: 'Seed (gleicher Seed und gleiche Worte ergeben dasselbe Bild)', newSeed: 'Jedes Mal ein neuer Seed', make: 'Bilder machen', painting: 'Wird gemalt', download: 'Herunterladen', again: 'Gleicher Seed', copy: 'Prompt kopieren', keep: 'Behalten', kept: 'Behalten ✓', hide: 'Ausblenden', gal: 'Auf diesem Gerät behalten', clear: 'Galerie leeren', left: 'Bilder heute übrig', copied: 'Kopiert', share: 'In die Galerie', shared: 'In der Galerie ✓', noShare: 'Teilen ging gerade nicht.', vote: 'Stimme', use: 'Diese Worte nehmen', report: 'Melden', reported: 'Gemeldet', reportQ: 'Dieses Bild melden?', pubOff: 'Die Galerie braucht Internet.', pubNone: 'Noch nichts. Teil das erste Bild!', pubH: 'Öffentliche Galerie', offline: 'Für Bilder brauche ich Internet.', squares: { square: 'Quadrat', portrait: 'Hochformat', landscape: 'Querformat', wide: 'Breit' } }
@@ -92,7 +93,7 @@
     }
     $('make').addEventListener('click', make);
     $('prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) make(); });
-    drawGal(); left(); pub('new');
+    drawGal(); left(); pub('new'); mountComments($('comments'), 'image', { de });
     mountRelated($('related'), '/image/');
     if (q.get('go') === '1' && $('prompt').value.trim()) make();
   });

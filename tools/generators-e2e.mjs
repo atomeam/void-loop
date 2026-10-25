@@ -11,6 +11,7 @@ import * as hubRoute from '../void-live-deploy/functions/api/generators.js';
 import * as galleryRoute from '../void-live-deploy/functions/api/gallery.js';
 import * as genRoute from '../void-live-deploy/functions/gen/[id].js';
 import * as answerRoute from '../void-live-deploy/functions/api/answer.js';
+import * as commentsRoute from '../void-live-deploy/functions/api/comments.js';
 import { pictureOf } from './tower-gate.mjs';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 
@@ -34,7 +35,7 @@ function png(seed) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw, { level: 0 })), chunk('IEND', Buffer.alloc(0))]).toString('base64');
 }
 let painterOn = true;
-const env = { DB: d1(), SALT: 'e2e-salt', READ_TOKEN: 'e2e-owner', AI: { run: async (_m, input) => { if (input.messages) return { response: 'Beep. A stub reply to: ' + input.messages.at(-1).content }; if (!painterOn) throw new Error('stub painter off'); const f = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData(); return { image: png(+f.get('seed') || 0) }; } } }; // secret-scan: ok (made-up values for a local test)
+const env = { DB: d1(), SALT: 'e2e-salt', READ_TOKEN: 'e2e-owner', AI: { run: async (_m, input) => { if (input.messages) { const sys = input.messages[0].content; return { response: /random generator/.test(sys) ? 'Stub words for: ' + input.messages.at(-1).content : /storyteller/.test(sys) ? 'The Stub Tale\nOnce upon a stub, a story began.' : 'Beep. A stub reply to: ' + input.messages.at(-1).content }; } if (!painterOn) throw new Error('stub painter off'); const f = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData(); return { image: png(+f.get('seed') || 0) }; } } }; // secret-scan: ok (made-up values for a local test)
 const freeDown = async () => new Response('stub: the free painter is not called in this test', { status: 503, headers: { 'content-type': 'text/plain' } });
 
 const server = http.createServer(async (req, res) => {
@@ -44,6 +45,12 @@ const server = http.createServer(async (req, res) => {
   if (u.pathname === '/api/answer') {
     const body = await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); });
     const r = await answerRoute.onRequestPost({ request: new Request('http://' + req.headers.host + req.url, { method: 'POST', headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.21' }, body }), env, waitUntil: () => {} });
+    res.writeHead(r.status, { 'content-type': 'application/json' }); res.end(Buffer.from(await r.arrayBuffer())); return;
+  }
+  if (u.pathname === '/api/comments') {
+    const body = req.method === 'POST' ? await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); }) : undefined;
+    const request = new Request('http://' + req.headers.host + req.url, { method: req.method, headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.22' }, body });
+    const r = req.method === 'POST' ? await commentsRoute.onRequestPost({ request, env }) : await commentsRoute.onRequestGet({ request, env });
     res.writeHead(r.status, { 'content-type': 'application/json' }); res.end(Buffer.from(await r.arrayBuffer())); return;
   }
   if (u.pathname === '/api/gallery') {
@@ -167,7 +174,29 @@ ok(/#c=/.test(clink) && (await p3.locator('#keepShared').isVisible()) && /Bolt/.
 ok(!/What is a pun/.test(await p3.locator('#log').innerText()), 'the link carries the character, never the chat'); await p3.close();
 await page.fill('#say', 'say something nsfw'); await page.keyboard.press('Enter'); await page.waitForTimeout(800);
 ok(/not something this character will talk about/.test(await page.locator('#note').innerText()), 'a refused message is said plainly');
+// 7. tap a word to reroll it, {ai: ...} filled, a story
+await page.goto(base + '/generators/make/'); await page.waitForSelector('#res li');
+await page.fill('#src', 'output\n  {A} [adj] owl. {ai: one line about a [adj] owl}\nadj\n  odd\n  eager\n  big\n  icy\n'); await page.waitForTimeout(400);
+const firstTap = page.locator('#res li').first().locator('.tap').nth(0); const was = await firstTap.innerText(); let changed = false;
+for (let k = 0; k < 8 && !changed; k++) { await page.locator('#res li').first().locator('.tap').nth(0).click(); await page.waitForTimeout(80); changed = (await page.locator('#res li').first().locator('.tap').nth(0).innerText()) !== was; }
+const firstLine = (await page.locator('#res .txt').first().innerText()).trim();
+ok(changed && /^(?:An odd|An eager|A big|An icy) owl\./.test(firstLine), 'tapping a word rolls just that word, and "a"/"an" follows it: ' + firstLine);
+await page.waitForFunction(() => /Stub words for: one line about an? (?:odd|eager|big|icy) owl/.test(document.getElementById('res').innerText), null, { timeout: 8000 }).catch(() => {});
+ok(/Stub words for: one line about/.test(await page.locator('#res').innerText()), '{ai: ...} is filled by the answer route (stub model)');
+await shot('9-tap-ai');
+await page.goto(base + '/generators/story/'); await page.fill('#idea', 'a fox opens a bakery'); await page.click('#write'); await page.waitForFunction(() => /Once upon a stub/.test(document.getElementById('story').innerText), null, { timeout: 8000 }).catch(() => {});
+ok(/The Stub Tale/.test(await page.locator('#story').innerText()), 'the story writer writes an opening');
+await page.click('#more'); await page.waitForTimeout(800); ok((await page.locator('#story p').count()) === 2, 'Continue adds a part');
+await page.reload(); await page.waitForSelector('#story p'); ok((await page.locator('#story p').count()) === 2, 'the story is kept on the device');
+await shot('10-story');
+// 8. comments under /image/
+await page.goto(base + '/image/'); await page.waitForSelector('#comments label', { timeout: 5000 }).catch(() => {}); await page.waitForTimeout(3300);
+const q = await page.locator('#comments label').nth(2).innerText(); const sm = q.match(/(\d) \+ (\d)/);
+await page.locator('#comments textarea').fill('Lovely foxes!'); await page.locator('#comments input').nth(1).fill(String(+sm[1] + +sm[2])); await page.locator('#comments button[type=submit]').click();
+await page.waitForFunction(() => /Lovely foxes!/.test(document.getElementById('comments').innerText), null, { timeout: 5000 }).catch(() => {});
+ok(/Anonymous[\s\S]*Lovely foxes!/.test(await page.locator('#comments').innerText()), 'a comment under /image/ after the sum, shown as text');
+await page.locator('#comments').scrollIntoViewIfNeeded(); await shot('11-comments');
 // sideways overflow at 390 px on the pages
-for (const u of ['/generators/', '/generators/make/', '/image/', '/generators/chat/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
+for (const u of ['/generators/', '/generators/make/', '/image/', '/generators/chat/', '/generators/story/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
 ok(errs.length === 0, 'no page errors ' + errs.join(' | '));
 await browser.close(); server.close(); process.exit(bad ? 1 : 0);

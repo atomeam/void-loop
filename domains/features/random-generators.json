@@ -81,8 +81,8 @@
           "name": "Text transforms",
           "detail": "titleCase, sentenceCase, upperCase, lowerCase, pluralForm, singularForm, pastTense/presentTense/futureTense, possessiveForm, negativeForm.",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "titleCase, sentenceCase, upperCase, lowerCase, pluralForm, singularForm, possessiveForm, pastTense; presentTense/futureTense/negativeForm not yet (2026-10-25)"
+          "verse": "has",
+          "verse_evidence": "titleCase, sentenceCase, upperCase, lowerCase, pluralForm, singularForm, possessiveForm, pastTense, presentTense, futureTense, negativeForm (2026-10-25)"
         },
         {
           "name": "Variables, assignment and logic",
@@ -194,7 +194,7 @@
           "detail": "Download a generator as a single offline HTML file.",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "Download .html: one offline file with the engine inside (2026-10-25)"
+          "verse_evidence": "Download .html: one offline file with the engine and every imported generator inside; {ai: ...} needs the site (2026-10-25)"
         },
         {
           "name": "Hub / discovery",
@@ -228,8 +228,8 @@
           "name": "comments-plugin",
           "detail": "Drop-in comment/chat box on any generator: channels, display names, avatars, owner moderation (delete/ban), rate limits.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "No comments on /generators/."
+          "verse": "has",
+          "verse_evidence": "comments under every published generator (/gen/<id>) and under /image/: a signed sum as bot check, rates, reports hide, owner delete (2026-10-25)"
         },
         {
           "name": "text-to-image-plugin",
@@ -242,8 +242,8 @@
           "name": "ai-text-plugin",
           "detail": "LLM text from an instruction with startWith, stopSequences, streaming onChunk; powers AI story/chat generators.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "No AI text on generators."
+          "verse": "has",
+          "verse_evidence": "{ai: prompt} in the list language, filled by /api/answer mode aitext under its caps, cached per prompt and seed (2026-10-25)"
         },
         {
           "name": "dice-plugin",
@@ -256,8 +256,8 @@
           "name": "tap-plugin / wheel-plugin",
           "detail": "Tap a phrase to re-roll it; a spinning prize wheel.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "partial",
+          "verse_evidence": "tap a dotted part of a result to roll just that part; the wheel is /wheel/ (not embeddable in a generator yet) (2026-10-25)"
         },
         {
           "name": "remember-plugin",
@@ -347,8 +347,8 @@
           "name": "Comments under the image generator",
           "detail": "comments-plugin chat under the generator.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "/image/ comments (functions/api/comments.js) (2026-10-25)"
         },
         {
           "name": "Content filtering",
@@ -375,8 +375,8 @@
           "name": "Other AI generators",
           "detail": "AI story writer, AI RPG/adventure, AI negative-prompt generator, AI name generators built on ai-text-plugin.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "Generators are word-list only."
+          "verse": "partial",
+          "verse_evidence": "/generators/story/ story writer and /generators/chat/ character chat; no AI name generators yet (2026-10-25)"
         },
         {
           "name": "Copy / share results",
