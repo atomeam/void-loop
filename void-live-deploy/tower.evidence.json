@@ -8266,76 +8266,76 @@
   "docs and notes: quillpad.in": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 91,
-    "best": 40,
-    "evidence": "Verse (/notes/) 91 ms to the load event (median of 3, phone width) vs quillpad.in 40 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-25T15:33:31.700Z"
+    "verse": 96,
+    "best": 677,
+    "evidence": "Verse (/notes/) 96 ms to the load event (median of 3, phone width) vs quillpad.in 677 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs quillpad.in 3 of 3 loads answered",
-    "at": "2026-10-25T15:33:31.700Z"
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
-    "best": 170,
-    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs quillpad.in 170 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:33:31.700Z"
+    "best": 580,
+    "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs quillpad.in 580 px sideways overflow at 390 px",
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 unnamed controls or images vs quillpad.in 0 unnamed controls or images",
-    "at": "2026-10-25T15:33:31.700Z"
+    "best": 42,
+    "evidence": "Verse (/notes/) 0 unnamed controls or images vs quillpad.in 42 unnamed controls or images",
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs quillpad.in 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:33:31.700Z"
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs quillpad.in 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:33:31.700Z"
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not quillpad.in (the site is not asked)",
-    "at": "2026-10-25T15:33:31.700Z",
+    "at": "2026-10-25T15:55:08.517Z",
     "of": 4
    },
    "design polish": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/notes/) 0 design defects vs quillpad.in 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), quillpad.in (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:33:31.700Z"
+    "best": 18,
+    "evidence": "Verse (/notes/) 0 design defects vs quillpad.in 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), quillpad.in (0 low-contrast texts, 17 small tap targets, layout shift 0.68)",
+    "at": "2026-10-25T15:55:08.517Z"
    },
    "rich formatting": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: bold, headings, lists)",
-    "at": "2026-10-25T15:33:31.700Z",
+    "at": "2026-10-25T15:55:08.517Z",
     "of": 1,
     "part": true
    },
    "search": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-25T15:33:31.700Z",
+    "best": 1,
+    "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T15:55:08.517Z",
     "of": 1,
     "part": true
    },
@@ -8344,16 +8344,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs quillpad.in 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-25T15:33:31.700Z",
+    "at": "2026-10-25T15:55:08.517Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 16,
-    "best": 0,
-    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs quillpad.in 0 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, works offline, on this device)",
-    "at": "2026-10-25T15:33:31.700Z",
+    "best": 3,
+    "evidence": "Verse (/notes/) 16 of 17 things a full answer shows vs quillpad.in 3 of 17 things a full answer shows (Verse lacks: checklists; site lacks: rich formatting, headings, lists, checklists, links, many documents, version history, export, import, markdown, print, a share link, works offline, on this device)",
+    "at": "2026-10-25T15:55:08.517Z",
     "of": 17
    }
   },
@@ -9026,15 +9026,15 @@
   "translate.google.com": "tower.icons/translate.google.com.ico",
   "allrecipes.com": "tower.icons/allrecipes.com.png",
   "minimalistbaker.com": "tower.icons/minimalistbaker.com.png",
-  "budgetbytes.com": "tower.icons/budgetbytes.com.png",
+  "budgetbytes.com": "tower.icons/budgetbytes.com.ico",
   "recipetineats.com": "tower.icons/recipetineats.com.png",
-  "skinnytaste.com": "tower.icons/skinnytaste.com.png",
+  "skinnytaste.com": "tower.icons/skinnytaste.com.ico",
   "seriouseats.com": "tower.icons/seriouseats.com.png",
   "food52.com": "tower.icons/food52.com.png",
   "simplyrecipes.com": "tower.icons/simplyrecipes.com.png",
-  "tasty.co": "tower.icons/tasty.co.ico",
+  "tasty.co": "tower.icons/tasty.co.png",
   "bbcgoodfood.com": "tower.icons/bbcgoodfood.com.png",
-  "epicurious.com": "tower.icons/epicurious.com.ico",
+  "epicurious.com": "tower.icons/epicurious.com.png",
   "calendar.google.com": "tower.icons/calendar.google.com.png",
   "cookpad.com": "tower.icons/cookpad.com.png",
   "yummly.com": "tower.icons/yummly.com.png",
@@ -9062,11 +9062,11 @@
   "howsecureismypassword.net": "tower.icons/howsecureismypassword.net.png",
   "randomtranslator.com": "tower.icons/randomtranslator.com.png",
   "onlinedoctranslator.com": "tower.icons/onlinedoctranslator.com.png",
-  "translate.com": "tower.icons/translate.com.svg",
+  "translate.com": "tower.icons/translate.com.png",
   "translator.eu": "tower.icons/translator.eu.ico",
   "freetranslations.org": "tower.icons/freetranslations.org.png",
   "systransoft.com": "tower.icons/systransoft.com.png",
-  "lingvanex.com": "tower.icons/lingvanex.com.png",
+  "lingvanex.com": "tower.icons/lingvanex.com.ico",
   "delish.com": "tower.icons/delish.com.png",
   "translatedict.com": "tower.icons/translatedict.com.webp",
   "itranslate.com": "tower.icons/itranslate.com.png",
@@ -9074,8 +9074,8 @@
   "any.do": "tower.icons/any.do.ico",
   "mymemory.translated.net": "tower.icons/mymemory.translated.net.png",
   "icloud.com": "tower.icons/icloud.com.png",
-  "outlook.live.com": "tower.icons/outlook.live.com.ico",
-  "calendar.zoho.com": "tower.icons/calendar.zoho.com.ico",
+  "outlook.live.com": "tower.icons/outlook.live.com.png",
+  "calendar.zoho.com": "tower.icons/calendar.zoho.com.png",
   "calendar.yahoo.com": "tower.icons/calendar.yahoo.com.png",
   "proton.me": "tower.icons/proton.me.png",
   "docs.google.com": "tower.icons/docs.google.com.ico",
