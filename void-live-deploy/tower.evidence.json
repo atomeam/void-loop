@@ -2072,52 +2072,52 @@
   "docs and notes": {
    "speed": {
     "verdict": "better",
-    "verse": 371,
-    "best": 672,
-    "evidence": "Verse 371 ms to the load event (median of 3, phone width) vs Google Docs 672 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:48:40.853Z"
+    "verse": 318,
+    "best": 564,
+    "evidence": "Verse 318 ms to the load event (median of 3, phone width) vs Google Docs 564 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Docs 3 of 3 loads answered",
-    "at": "2026-10-25T14:48:40.853Z"
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Docs 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:48:40.853Z"
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Docs 0 unnamed controls or images",
-    "at": "2026-10-25T14:48:40.853Z"
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Docs 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:48:40.853Z"
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Docs 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:48:40.853Z"
+    "at": "2026-10-25T14:53:26.933Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:48:40.853Z"
+    "evidence": "Verse 0 design defects vs Google Docs 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), Google Docs (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T14:53:26.933Z"
    }
   },
   "sports": {
