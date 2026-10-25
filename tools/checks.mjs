@@ -183,6 +183,7 @@ for (const [name, file] of [
   ['showcase', 'showcase.test.mjs'],
   ['fix-pages', 'fix-pages.test.mjs'],
   ['sitemap', 'sitemap.test.mjs'],
+  ['seo', 'seo.test.mjs'],
   ['review-bench', 'review-bench.test.mjs'],
   ['honest', 'honest.test.mjs'],
   ['cron-gate', 'cron-gate.test.mjs'],
