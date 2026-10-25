@@ -212,6 +212,21 @@ export const PROBES = Object.freeze({
     // what the best translators show: the language detected, 100 or more languages, listen and speak, a camera, copy, share, a history and saved phrases, offline
     facts: [['the language detected', /detect/i], ['100 languages', /\b100 languages\b/i], ['listen', /\blisten\b/i], ['speak', /\bspeak\b/i], ['camera', /\bcamera\b/i], ['copy', /\bcopy\b/i], ['share', /\bshare\b/i], ['a history', /\bhistory\b/i], ['saved phrases', /\bsaved\b|\bphrasebook\b/i], ['works offline', /\boffline\b/i]],
   },
+  recipes: {
+    site: 'https://www.allrecipes.com/', verse: '/recipes/?q=pancakes',
+    // the question: pancakes, in the page's link. The truth any correct pancake recipe agrees on (worked out by hand, lib/recipes.js BUILT_IN):
+    // flour, an egg and milk among the ingredients, how many it serves, and the steps numbered. Judged on Verse alone (the site is not asked);
+    // the same probe measures every site in the recipes lane (lib/tower.js LANES)
+    ask: { verse: '/recipes/?q=pancakes' },
+    truth: [['flour', /\bflour\b|\bMehl\b/i], ['an egg', /\begg\b|\beggs\b|\bEi\b|\bEier\b/i], ['milk', /\bmilk\b|\bMilch\b/i], ['how many it serves', /\bservings?\b|\bserves\b|\bPortionen\b/i], ['the steps numbered', /\bstep 1\b|\bschritt 1\b|(?:^|\n)\s*1\.\s/i]],
+    askParts: { 'search by ingredient': [['search by ingredient', /by ingredient|\bingredients?\b|nach Zutat/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b|\bPortionen\b/i]], 'step mode': [['one step at a time', /step mode|one step|Schritt-Modus/i]] },
+    // what the best recipe pages show (Allrecipes' ingredients, directions, servings, time and photo; the best add a servings scaler, a unit swap, a
+    // cook mode with its timers, a shopping list, search by what you have, a share link, a history, print, and open offline). TheMealDB and the
+    // built-in dozen carry no nutrition numbers, so none is claimed here
+    facts: [['ingredients', /\bingredients\b/i], ['the steps', /\bsteps?\b|\bdirections\b|\binstructions\b/i], ['servings', /\bservings?\b/i], ['the time it takes', /\bready in\b|\bminutes\b|\bprep time\b|\btotal time\b/i],
+      ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
+      ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
+  },
   weather: {
     site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
     // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
@@ -312,6 +327,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   'base converter': { 'signed reading': [['a signed reading', /\bsigned\b|two.?s complement/i]], 'all four bases': [['binary', /\bbinary\b/i], ['octal', /\boctal\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i]] },
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
+  recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,

@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -34,6 +34,7 @@ export const RELATED = Object.freeze({
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/'],
   '/translate/': ['/word-count/', '/time/'],
+  '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/base64/': ['/word-count/', '/base-converter/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
@@ -101,6 +102,9 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // recipes: 'pancake recipe', 'recipe for pancakes', 'how do I make pancakes', 'how to cook rice'; and by what is in the fridge, 'what can I make with eggs, spinach'
+  [/^what (?:can|could|should) (?:i|we) (?:make|cook|bake) (?:with|from|using) (.+)$|^recipes? (?:with|using|from) (.+)$/i, (m) => '/recipes/?i=' + encodeURIComponent(m[1] || m[2])],
+  [/^(?:(?:an? |the )?(?:easy |simple |quick |best |homemade )?recipes? for (.+)|(.+?) recipes?|how (?:do|would|can) (?:i|you|we) (?:make|cook|bake) (.+)|how to (?:make|cook|bake) (.+))$/i, (m) => '/recipes/?q=' + encodeURIComponent(m[1] || m[2] || m[3] || m[4])],
   // translate: 'translate hello to spanish', 'how do you say thank you in japanese', 'good morning in french' (the code from lib/translate-langs.js's names, a few common ones here)
   [/^(?:please\s+)?translate\s+(.+?)\s+(?:to|into|in)\s+([a-z]+(?:\s+[a-z]+)?)$|^how\s+(?:do|would)\s+(?:you|i|we)\s+say\s+(.+?)\s+in\s+([a-z]+(?:\s+[a-z]+)?)$/i, (m) => '/translate/?q=' + encodeURIComponent(m[1] || m[3]) + '&to=' + encodeURIComponent((m[2] || m[4]).toLowerCase())],
   [/^(?:what(?:'s| is) the )?weather(?: (?:in|for|at) (.+))?$|^forecast(?: (?:in|for) (.+))?$/i, (m) => '/weather/' + (m[1] || m[2] ? '?q=' + encodeURIComponent(m[1] || m[2]) : '')],

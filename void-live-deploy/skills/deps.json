@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 785,
+ "counted": 787,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -13,7 +13,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 4
   },
   {
@@ -48,28 +48,28 @@
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 20,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 5
   },
   {
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 2
   },
   {
@@ -97,49 +97,49 @@
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 4
   },
   {
    "file": "lib/reactions.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/corrections.js",
    "skills": 14,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 2
   },
   {
    "file": "lib/autopsy.js",
    "skills": 14,
    "direct": 5,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 5
   },
   {
@@ -153,7 +153,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 3
   },
   {
@@ -167,28 +167,28 @@
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -517,7 +517,7 @@
    "file": "lib/telemetry.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 1
   },
   {
@@ -678,7 +678,7 @@
    "file": "lib/automation-fix.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 8
   },
   {
@@ -825,22 +825,36 @@
    "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/pay-share.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/store-products.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 0
+  },
+  {
+   "file": "lib/proposal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 2
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 6
   },
   {
    "file": "lib/products.js",
@@ -850,18 +864,11 @@
    "tests": 3
   },
   {
-   "file": "lib/proposal.js",
+   "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 12,
-   "tests": 2
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 6
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/automations.js",
@@ -869,13 +876,6 @@
    "direct": 0,
    "dependants": 10,
    "tests": 3
-  },
-  {
-   "file": "lib/plan.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/noise.js",
@@ -1406,161 +1406,161 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 12
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 8
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 6
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 0
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 6
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 5
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 0
   },
   {
    "file": "lib/privacy.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 5
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
@@ -1716,6 +1716,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 3
+  },
+  {
+   "file": "lib/recipes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/scene-advance.js",
@@ -1932,7 +1939,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/speak.js",
@@ -1974,7 +1981,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/units.js",
@@ -2042,6 +2049,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -2333,6 +2341,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/recipes.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/recipes.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/reflect.js": {
    "imports": [
     "lib/guard.js",
@@ -2591,6 +2606,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -2704,6 +2720,7 @@
     "functions/api/bench.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -2870,6 +2887,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/review.js",
@@ -2945,6 +2963,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -3025,6 +3044,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -3119,6 +3139,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -3306,6 +3327,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -3365,6 +3387,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -3384,6 +3407,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -3409,6 +3433,7 @@
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/review.js",
     "functions/api/support.js",
@@ -3501,6 +3526,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -3607,6 +3633,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -3647,6 +3674,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/routes.js",
     "functions/api/translate.js",
@@ -4053,6 +4081,7 @@
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4078,6 +4107,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -4194,6 +4224,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -4250,6 +4281,7 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/mcp.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -4316,6 +4348,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -4476,6 +4509,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4505,6 +4539,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4523,6 +4558,7 @@
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/mcp.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -4626,6 +4662,7 @@
     "functions/api/films.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/review.js",
     "functions/api/routes.js",
@@ -4694,6 +4731,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4802,6 +4840,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/passkey.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/review.js",
     "functions/api/share/index.js",
@@ -4892,6 +4931,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4908,6 +4948,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4926,6 +4967,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -4957,6 +4999,7 @@
     "functions/api/merge.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -5022,6 +5065,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5050,6 +5094,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5082,6 +5127,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5110,6 +5156,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -5178,6 +5225,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/queue.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5288,6 +5336,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/tally.js",
@@ -5316,6 +5365,12 @@
     "skills/service-health.js",
     "skills/status.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/recipes.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/recipes.js"
    ]
   },
   "lib/reefwatch.js": {
@@ -5368,6 +5423,7 @@
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5400,6 +5456,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5455,6 +5512,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -5558,6 +5616,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js"
@@ -5626,6 +5685,7 @@
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -5663,6 +5723,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -5776,6 +5837,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -6043,6 +6105,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -6135,6 +6198,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/store/[[path]].js",
     "functions/api/translate.js",
@@ -6161,6 +6225,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -6273,6 +6338,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
     "functions/api/repo.js",
@@ -6484,6 +6550,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -6518,6 +6585,7 @@
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
@@ -6600,6 +6668,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/publish.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/review.js",
     "functions/api/share/index.js",
@@ -7764,6 +7833,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -7803,6 +7873,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
@@ -9747,6 +9818,7 @@
     "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
+    "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/translate.js",
     "functions/api/weather.js",

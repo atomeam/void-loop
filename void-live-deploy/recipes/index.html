@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipes: search by ingredient, scale servings, cook step by step · Verse</title>
+<meta name="description" content="Recipes by name or by what is in your fridge: every quantity scaled to your servings, cups to ml and °F to °C, one step at a time with timers to tap while you cook, a shopping list, a share link and a history on your device. A dozen classics work offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Recipes · Verse">
+<meta property="og:description" content="Search by name or ingredient, scale the servings, swap cups for ml, cook one step at a time with timers, keep a shopping list; a dozen classics offline.">
+<meta property="og:url" content="https://a-to-mind.com/recipes/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/recipes/ (Versus' Allrecipes floor): one file and two small modules; nothing stored but the history and the ticks */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  h2.name { font-size: 24px; color: var(--ink); margin: 0 0 4px; line-height: 1.2; }
+  input[type=search] { font: inherit; font-size: 17px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go, button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .seg { display: inline-flex; gap: 0; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  @media (max-width: 640px) { .panes { grid-template-columns: 1fr; } }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; min-height: 120px; }
+  .meta { font-size: 14px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 8px; }
+  .meta a { color: inherit; }
+  .serv { display: inline-flex; align-items: center; gap: 4px; } .serv button { min-height: 36px; min-width: 36px; padding: 2px 10px; font-size: 18px; line-height: 1; }
+  .serv input { font: inherit; font-size: 16px; width: 3.2em; text-align: center; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; min-height: 36px; box-sizing: border-box; }
+  ul.ings, ol.steps { margin: 0; padding: 0; list-style: none; }
+  ul.ings li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.4; }
+  ul.ings li:first-child, ol.steps li:first-child { border-top: 0; }
+  ul.ings input { width: 22px; height: 22px; margin: 3px 0 0; flex: none; accent-color: var(--accent); }
+  ul.ings label { flex: 1 1 auto; cursor: pointer; } ul.ings li.done label { color: var(--soft); text-decoration: line-through; }
+  ol.steps li { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.45; }
+  ol.steps .n { flex: none; min-width: 2.6em; font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .02em; padding-top: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+  .chips a, .list a.chip { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list li:first-child { border-top: 0; }
+  .list li a { color: inherit; text-decoration: none; flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; display: flex; gap: 10px; align-items: center; }
+  .list li a b { font-weight: 500; } .list li small { color: var(--soft); font-size: 12px; }
+  .list img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex: none; background: var(--line); }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  .empty { font-size: 13px; color: var(--soft); }
+  img.hero { width: 100%; max-height: 220px; object-fit: cover; border-radius: 10px; margin: 0 0 8px; display: block; }
+  [hidden] { display: none !important; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* step mode: one step, large, the whole screen, while the hands are busy */
+  #cook { position: fixed; inset: 0; background: var(--bg); color: var(--ink); z-index: 10; display: flex; flex-direction: column; padding: 16px; box-sizing: border-box; }
+  #cook .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--soft); }
+  #cook .text { flex: 1 1 auto; display: flex; align-items: center; font-size: clamp(22px, 4.5vw, 34px); line-height: 1.35; max-width: 760px; margin: 0 auto; width: 100%; }
+  #cook .timers { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; min-height: 44px; }
+  #cook .count { font-size: 40px; font-variant-numeric: tabular-nums; text-align: center; min-height: 1.2em; }
+  #cook .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } #cook .nav button { min-height: 56px; font-size: 18px; }
+  @media print { button, form, #cook, #related, #asks, #histH, #hist, .srcs, .chips, .note, h1, .sub { display: none !important; } .panes { display: block; } .pane { border: 0; padding: 0; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/recipes/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Recipes","url":"https://a-to-mind.com/recipes/","description":"Recipes by name or by what is in your fridge: every quantity scaled to your servings, cups to ml and °F to °C, one step at a time with timers to tap while you cook, a shopping list, a share link and a history on your device. A dozen classics work offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"pancake recipe, what can i make with eggs, recipe by ingredients, scale a recipe servings, cups to ml recipe, step by step cooking, easy dinner recipes","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/recipes/?q={dish}"},"dish-input":"required name=dish"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Recipes","item":"https://a-to-mind.com/recipes/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1 id="title">Recipes</h1>
+  <p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your servings, one step at a time while you cook, timers to tap, cups to ml. A dozen classics work offline.</p>
+
+  <form id="f" autocomplete="off" role="search">
+    <label class="vh" for="q" id="qL">A dish, or ingredients with commas</label>
+    <input type="search" id="q" placeholder="A dish, or ingredients with commas" maxlength="60" enterkeyhint="search">
+    <div class="row">
+      <div class="seg" role="group" aria-label="Search by">
+        <button type="button" id="byName" aria-pressed="true">By name</button>
+        <button type="button" id="byIng" aria-pressed="false" title="What can I make with eggs, spinach: the recipes that use what you have">By ingredient</button>
+      </div>
+      <button type="submit" class="go" id="go">Search</button>
+    </div>
+    <div class="note" id="note" role="status"></div>
+  </form>
+  <div class="chips" id="builtin" aria-label="Built in, works offline"></div>
+
+  <ul class="list" id="results" hidden></ul>
+
+  <div class="panes" id="panes" hidden>
+    <section class="pane" aria-labelledby="name">
+      <img class="hero" id="hero" alt="" hidden>
+      <h2 class="name" id="name"></h2>
+      <div class="meta">
+        <span class="serv"><span id="servL">Servings</span>
+          <button type="button" id="less" aria-label="One serving fewer">−</button>
+          <label class="vh" for="serv">Servings</label><input type="number" id="serv" min="1" max="200" step="1" value="4" inputmode="numeric">
+          <button type="button" id="more" aria-label="One serving more">+</button><span id="yield"></span></span>
+        <span id="time"></span>
+        <span id="from"></span>
+      </div>
+      <h2 id="ingH">Ingredients</h2>
+      <ul class="ings" id="ings"></ul>
+      <p class="note" id="shopNote">Tick what you already have; Copy list takes the rest.</p>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Units">
+          <button type="button" id="uUs" aria-pressed="true">US</button>
+          <button type="button" id="uMetric" aria-pressed="false">Metric</button>
+        </div>
+        <button type="button" id="copy" title="Copy the ingredients still to buy">Copy list</button>
+        <button type="button" id="share" title="A link that carries this recipe, its servings and units">Share link</button>
+        <button type="button" id="print">Print</button>
+      </div>
+    </section>
+    <section class="pane" aria-labelledby="stepsH">
+      <div class="row" style="margin:0 0 6px;justify-content:space-between">
+        <h2 id="stepsH" style="margin:0">Steps</h2>
+        <button type="button" class="go" id="cookBtn" title="One step at a time in large type, the screen kept on, timers to tap">Step mode</button>
+      </div>
+      <ol class="steps" id="steps"></ol>
+    </section>
+  </div>
+
+  <h2 id="histH">History</h2>
+  <ul class="list" id="hist"><li class="empty" id="histEmpty">The last 20 recipes you opened stay here, on this device, and open offline.</li></ul>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/recipes/?q=pancakes">Pancakes</a><a href="/recipes/?q=omelette">Omelette</a><a href="/recipes/?q=tomato%20pasta">Tomato pasta</a><a href="/recipes/?q=chicken%20soup">Chicken soup</a><a href="/recipes/?q=cookies">Chocolate chip cookies</a><a href="/recipes/?i=eggs%2Cspinach">What can I make with eggs and spinach</a><a href="/recipes/?q=pancakes&amp;servings=8">Pancakes for 8</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+
+  <p class="srcs" id="srcs">A dozen classics are built into the page and need no network. Every other recipe comes from <a href="https://www.themealdb.com/" rel="noopener">TheMealDB</a>, a free public recipe catalogue; its recipes carry no servings, so 4 is assumed and said. Only the words you search go to Verse; your history and ticks stay on this device.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<div id="cook" hidden role="dialog" aria-modal="true" aria-labelledby="cookName">
+  <div class="top"><span id="cookName"></span><span id="cookPos"></span><button type="button" id="cookClose">Close</button></div>
+  <div class="text" id="cookText"></div>
+  <div class="timers" id="cookTimers"></div>
+  <div class="count" id="cookCount" aria-live="polite"></div>
+  <div class="nav"><button type="button" id="cookPrev">Previous</button><button type="button" id="cookNext">Next</button></div>
+</div>
+
+<script type="module">
+  // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, R] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
+    const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
+    const histEmpty = $('histEmpty');
+    if (de) {
+      document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
+      $('title').textContent = W.title; $('sub').textContent = W.sub; $('q').placeholder = W.placeholder; $('qL').textContent = W.placeholder; $('go').textContent = W.search;
+      $('byName').textContent = W.byName; $('byIng').textContent = W.byIngredient; $('servL').textContent = W.servings; $('ingH').textContent = W.ingredients; $('stepsH').textContent = W.steps;
+      $('shopNote').textContent = W.shopping; $('uMetric').textContent = W.metric; $('copy').textContent = W.copyList; $('share').textContent = W.share; $('print').textContent = W.print; $('cookBtn').textContent = W.stepMode;
+      $('histH').textContent = W.history; histEmpty.textContent = W.histEmpty; $('cookClose').textContent = W.close; $('cookPrev').textContent = W.prev; $('cookNext').textContent = W.next;
+      $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nur die Suchwörter gehen an Verse; Verlauf und Häkchen bleiben auf diesem Gerät.';
+    }
+    const q = new URLSearchParams(location.search);
+    let store = { hist: [], ticks: {}, units: '' };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    // units: the link, then the last choice, then the browser's country (the US measures in cups; everyone else in grams)
+    const state = { mode: q.has('i') ? 'i' : 'q', q: q.get('q') || '', i: q.get('i') || '', id: q.get('id') || '', recipe: null, servings: 0, units: q.get('units') || store.units || (/-US$/i.test(navigator.language || '') ? 'us' : 'metric'), step: 0 };
+    const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
+    const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+    const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, W.copied); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
+    const linkTo = (r) => (r.id.startsWith('mealdb-') ? '/recipes/?id=' + r.id.slice(7) : '/recipes/?q=' + encodeURIComponent(r.id.replace(/-/g, ' ')));
+    const setMode = (m) => { state.mode = m; $('byName').setAttribute('aria-pressed', String(m === 'q')); $('byIng').setAttribute('aria-pressed', String(m === 'i')); };
+    const link = () => R.shareLink(location.origin, { q: state.q, i: state.i, id: state.recipe && state.recipe.id.startsWith('mealdb-') ? state.recipe.id.slice(7) : state.id, servings: state.servings, base: state.recipe ? state.recipe.servings : 0, units: state.units });
+    const factor = () => (state.recipe && state.servings ? state.servings / state.recipe.servings : 1);
+    const line = (s) => { const t = R.scale(s, factor()); return state.units === 'metric' ? R.swapUnits(t, 'metric') : R.swapUnits(t, 'us'); };
+    const stepText = (s) => (state.units === 'metric' ? R.swapUnits(s, 'metric') : R.swapUnits(s, 'us'));
+
+    // the dozen built in, as chips: each a link, so the page answers with no network
+    for (const r of R.BUILT_IN) { const a = el('a', '', r.name); a.href = linkTo(r); $('builtin').append(a); }
+
+    function render() {
+      const r = state.recipe; if (!r) { $('panes').hidden = true; return; }
+      $('panes').hidden = false; $('results').hidden = $('results').children.length === 0;
+      $('name').textContent = r.name; $('hero').hidden = !r.image; if (r.image) { $('hero').src = r.image; $('hero').alt = r.name; }
+      $('serv').value = state.servings; $('yield').textContent = r.yield ? ' ' + r.yield : (r.servingsGuessed ? ' (' + W.guessed + ')' : '');
+      $('time').textContent = r.time ? W.ready + ' ' + r.time + ' ' + W.minutes : '';
+      const from = $('from'); from.replaceChildren();
+      if (r.from) { from.append(r.from + (r.area ? ' · ' + r.area : '') + (r.category ? ' · ' + r.category : '')); if (r.source) { const a = el('a', '', W.source); a.href = r.source; a.rel = 'noopener'; from.append(' · ', a); } if (r.video) { const a = el('a', '', W.video); a.href = r.video; a.rel = 'noopener'; from.append(' · ', a); } }
+      else from.textContent = W.builtIn;
+      $('uUs').setAttribute('aria-pressed', String(state.units !== 'metric')); $('uMetric').setAttribute('aria-pressed', String(state.units === 'metric'));
+      const ticks = store.ticks[r.id] || [], ul = $('ings'); ul.replaceChildren();
+      r.ingredients.forEach((s, k) => {
+        const li = el('li', ticks.includes(k) ? 'done' : ''), cb = el('input'); cb.type = 'checkbox'; cb.id = 'ing' + k; cb.checked = ticks.includes(k);
+        const lb = el('label', '', line(s)); lb.htmlFor = cb.id;
+        cb.addEventListener('change', () => { const t = (store.ticks[r.id] || []).filter((x) => x !== k); if (cb.checked) t.push(k); store.ticks[r.id] = t; li.className = cb.checked ? 'done' : ''; keep(); });
+        li.append(cb, lb); ul.append(li);
+      });
+      const ol = $('steps'); ol.replaceChildren();
+      r.steps.forEach((s, k) => { const li = el('li'); li.append(el('span', 'n', W.step + ' ' + (k + 1)), el('span', '', stepText(s))); ol.append(li); });
+      if (!$('cook').hidden) cookShow();
+    }
+    function open(r, { note = '' } = {}) {
+      state.recipe = r; state.servings = +q.get('servings') > 0 && !state.opened ? Math.min(200, +q.get('servings')) : r.servings; state.opened = true;
+      render(); say(note);
+      const it = { id: r.id, name: r.name, at: Date.now(), recipe: r };
+      store.hist = [it].concat(store.hist.filter((h) => h.id !== r.id)).slice(0, MAX_HIST); keep(); lists();
+    }
+    function results(items, head) {
+      const ul = $('results'); ul.replaceChildren(); ul.hidden = !items.length; if (head) ul.append(el('li', 'empty', head));
+      for (const it of items) {
+        const li = el('li'), a = el('a'); a.href = it.href;
+        if (it.image) { const im = el('img'); im.src = it.image; im.alt = ''; im.loading = 'lazy'; a.append(im); }
+        a.append(el('b', '', it.name)); li.append(a); if (it.small) li.append(el('small', '', it.small));
+        if (it.recipe) a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', it.href); state.q = it.q || ''; state.i = ''; state.id = ''; open(it.recipe); window.scrollTo({ top: $('panes').offsetTop - 8, behavior: 'smooth' }); });
+        ul.append(li);
+      }
+    }
+    // Verse's own API first (cached on the edge an hour), TheMealDB itself when that does not answer; null when neither does
+    async function ask(params) {
+      try { const r = await fetch('/api/recipes?' + params); if (r.ok) { const j = await r.json(); if (j && j.ok) return j; } if (r.status === 400) return { ok: true, recipes: [], list: [] }; } catch (_) {}
+      try {
+        const p = new URLSearchParams(params); let j;
+        if (p.get('id')) { j = await (await fetch(MEALDB + 'lookup.php?i=' + encodeURIComponent(p.get('id')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean) }; }
+        if (p.get('q')) { j = await (await fetch(MEALDB + 'search.php?s=' + encodeURIComponent(p.get('q')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean).slice(0, 12) }; }
+        j = await (await fetch(MEALDB + 'filter.php?i=' + encodeURIComponent(R.ingredientsOf(p.get('i'))[0] || ''))).json(); return { ok: true, list: (j.meals || []).slice(0, 12).map((m) => ({ id: String(m.idMeal), name: m.strMeal, image: m.strMealThumb })), all: true };
+      } catch (_) { return null; }
+    }
+    const mealRows = (recipes, head) => results(recipes.map((r) => ({ name: r.name, href: linkTo(r), image: r.image, small: [r.from, r.area, r.category].filter(Boolean).join(' · '), recipe: r })), head);
+    async function go() {
+      const text = $('q').value.trim(); $('results').hidden = true; $('results').replaceChildren();
+      if (state.id) { // a TheMealDB recipe by id: from the history when it is there (offline too), else fetched
+        const had = store.hist.find((h) => h.id === 'mealdb-' + state.id); if (had) open(had.recipe);
+        const j = navigator.onLine ? await ask('id=' + encodeURIComponent(state.id)) : null;
+        if (j && j.recipes && j.recipes[0]) open(j.recipes[0]); else if (!had) say(navigator.onLine ? W.none : W.offline, true);
+        return;
+      }
+      if (!text) { state.recipe = null; render(); return; }
+      if (state.mode === 'i') {
+        state.i = text; state.q = '';
+        const mine = R.byIngredients(text), want = R.ingredientsOf(text);
+        const rows = mine.map((x) => ({ name: x.recipe.name, href: linkTo(x.recipe), small: W.have + ' ' + x.have.join(', ') + (x.missing.length ? ' · ' + W.missing + ': ' + x.missing.join(', ') : ''), recipe: x.recipe }));
+        results(rows, rows.length ? '' : (navigator.onLine ? '' : W.none)); if (mine.length) open(mine[0].recipe); else { state.recipe = null; render(); }
+        if (!navigator.onLine) return say(W.offline);
+        const j = await ask('i=' + encodeURIComponent(want.join(','))); if (!j || !j.list || !j.list.length) return;
+        const more = j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: 'TheMealDB' + (j.all ? '' : ' · ' + W.missing) }));
+        results(rows.concat(more)); if (!mine.length) say(W.more + ': ' + j.list.length);
+        return;
+      }
+      state.q = text; state.i = '';
+      const mine = R.find(text); if (mine.length) open(mine[0]); else { state.recipe = null; render(); }
+      if (mine.length > 1) mealRows(mine.slice(1));
+      if (!navigator.onLine) { if (!mine.length) say(W.offline, true); return; }
+      const j = await ask('q=' + encodeURIComponent(R.dishOf(text) || text));
+      if (!j) { if (!mine.length) say(W.none, true); return; }
+      const got = (j.recipes || []).filter((r) => !mine.some((m) => m.name.toLowerCase() === r.name.toLowerCase()));
+      if (!mine.length && got.length) { open(got[0]); if (got.length > 1) mealRows(got.slice(1), W.more); return; }
+      if (!mine.length && !got.length) return say(W.none, true);
+      if (got.length) mealRows(mine.slice(1).concat(got), W.more);
+    }
+    const row = (it) => { const li = el('li'), a = el('a'); a.href = linkTo(it.recipe); a.append(el('b', '', it.name)); const sm = el('small', '', new Date(it.at).toLocaleDateString()); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = it.id.startsWith('mealdb-') ? it.id.slice(7) : ''; state.q = state.id ? '' : it.recipe.id.replace(/-/g, ' '); state.i = ''; open(it.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, sm); return li; };
+    function lists() { const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
+
+    // servings: every quantity on the page follows the number
+    const setServ = (n) => { n = Math.max(1, Math.min(200, Math.round(+n || 1))); state.servings = n; render(); };
+    $('less').addEventListener('click', () => setServ(state.servings - 1)); $('more').addEventListener('click', () => setServ(state.servings + 1));
+    $('serv').addEventListener('change', () => setServ($('serv').value)); $('serv').addEventListener('input', () => { if (+$('serv').value > 0) setServ($('serv').value); });
+    const setUnits = (u) => { state.units = u; store.units = u; keep(); render(); };
+    $('uUs').addEventListener('click', () => setUnits('us')); $('uMetric').addEventListener('click', () => setUnits('metric'));
+    $('copy').addEventListener('click', () => { const r = state.recipe; if (!r) return; const ticks = store.ticks[r.id] || []; const left = r.ingredients.map((s, k) => [s, k]).filter(([, k]) => !ticks.includes(k)).map(([s]) => '☐ ' + line(s)); copy($('copy'), r.name + ' (' + state.servings + ' ' + (r.yield || W.servings.toLowerCase()) + ')\n' + (left.length ? left : r.ingredients.map(line)).join('\n')); });
+    $('share').addEventListener('click', async () => { const url = link(); if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + (state.recipe ? state.recipe.name : W.title), url }); return; } catch (_) {} } copy($('share'), url); toast($('share'), W.shared); });
+    $('print').addEventListener('click', () => window.print());
+    $('byName').addEventListener('click', () => { setMode('q'); if ($('q').value.trim()) go(); }); $('byIng').addEventListener('click', () => { setMode('i'); if ($('q').value.trim()) go(); });
+    $('f').addEventListener('submit', (e) => { e.preventDefault(); state.id = ''; const t = $('q').value.trim(); if (/,/.test(t) || /^what can i (?:make|cook)/i.test(t)) setMode('i'); history.replaceState(null, '', state.mode === 'i' ? '/recipes/?i=' + encodeURIComponent(t) : '/recipes/?q=' + encodeURIComponent(t)); go(); });
+
+    // step mode: one step in large type, Previous and Next (the arrow keys too), the screen kept awake, every "for 10 minutes" a countdown to tap
+    let lock = null, timer = null, tLeft = 0, tEnd = 0;
+    const wake = async () => { try { if ('wakeLock' in navigator && !lock) { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', () => { lock = null; }); } } catch (_) {} };
+    const unwake = () => { try { if (lock) lock.release(); } catch (_) {} lock = null; };
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && !$('cook').hidden) wake(); });
+    const beep = () => { try { const ac = new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < 3; i++) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.value = .2; o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + i * .4); o.stop(ac.currentTime + i * .4 + .25); } } catch (_) {} try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (_) {} };
+    const tick = () => { tLeft = Math.max(0, Math.round((tEnd - Date.now()) / 1000)); $('cookCount').textContent = R.clock(tLeft); document.title = (tLeft ? R.clock(tLeft) + ' · ' : '') + (state.recipe ? state.recipe.name : W.title); if (!tLeft) { clearInterval(timer); timer = null; $('cookCount').textContent = W.timeUp; beep(); cookShow(); } };
+    const startTimer = (secs) => { clearInterval(timer); tEnd = Date.now() + secs * 1000; timer = setInterval(tick, 250); tick(); cookShow(); };
+    const stopTimer = () => { clearInterval(timer); timer = null; tLeft = 0; $('cookCount').textContent = ''; document.title = (state.recipe ? state.recipe.name + ' · ' : '') + W.title; };
+    function cookShow() {
+      const r = state.recipe; if (!r) return; state.step = Math.max(0, Math.min(r.steps.length - 1, state.step));
+      $('cookName').textContent = r.name; $('cookPos').textContent = W.step + ' ' + (state.step + 1) + ' ' + W.of + ' ' + r.steps.length; $('cookText').textContent = stepText(r.steps[state.step]);
+      $('cookPrev').disabled = state.step === 0; $('cookNext').textContent = state.step === r.steps.length - 1 ? W.done : W.next;
+      const ts = $('cookTimers'); ts.replaceChildren();
+      if (timer) { const b = el('button', '', W.stop + ' (' + R.clock(tLeft) + ')'); b.type = 'button'; b.addEventListener('click', () => { stopTimer(); cookShow(); }); ts.append(b); }
+      else for (const t of R.timersIn(r.steps[state.step])) { const b = el('button', '', '⏱ ' + t.label); b.type = 'button'; b.title = W.start; b.addEventListener('click', () => startTimer(t.seconds)); ts.append(b); }
+    }
+    const cookOpen = () => { if (!state.recipe) return; state.step = 0; $('cook').hidden = false; document.body.style.overflow = 'hidden'; wake(); cookShow(); $('cookNext').focus(); };
+    const cookClose = () => { $('cook').hidden = true; document.body.style.overflow = ''; unwake(); $('cookBtn').focus(); };
+    $('cookBtn').addEventListener('click', cookOpen); $('cookClose').addEventListener('click', cookClose);
+    $('cookPrev').addEventListener('click', () => { state.step--; cookShow(); });
+    $('cookNext').addEventListener('click', () => { if (state.recipe && state.step >= state.recipe.steps.length - 1) return cookClose(); state.step++; cookShow(); });
+    addEventListener('keydown', (e) => { if ($('cook').hidden) return; if (e.key === 'ArrowRight' || e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); $('cookNext').click(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); $('cookPrev').click(); } else if (e.key === 'Escape') cookClose(); });
+    addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
+
+    lists(); setMode(state.mode); $('q').value = state.i || state.q;
+    if (state.id || state.q || state.i) go(); else if (!navigator.onLine) say(W.offline);
+    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }]);
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>
