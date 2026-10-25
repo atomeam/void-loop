@@ -484,6 +484,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T14:54:02Z",
+   "subject": "Generators page: 27 seeded text generators, picture it, perchance.org lane and probe"
+  },
+  {
+   "at": "2026-10-25T14:51:54Z",
+   "subject": "A card from a skill with a full page links to it"
+  },
+  {
+   "at": "2026-10-25T14:50:15Z",
+   "subject": "Incident: the browser suite failed on f72396f4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T14:49:55Z",
+   "subject": "A deploy re-measures every floor on the page it changed"
+  },
+  {
+   "at": "2026-10-25T14:49:22Z",
+   "subject": "Tower gate: docs and notes measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:49:03Z",
+   "subject": "Incident: the browser suite failed on 6ffc4ead (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T14:48:05Z",
+   "subject": "Tower gate: calendar: any.do,calendar: cozi.com,calendar: proton.me,calendar measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:48:00Z",
+   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
+  },
+  {
+   "at": "2026-10-25T14:47:10Z",
+   "subject": "Tower gate: colour codes measured against their live sites"
+  },
+  {
    "at": "2026-10-25T14:45:54Z",
    "subject": "Incident: the browser suite failed on ab307708 (void-live-deploy/incidents.json)"
   },
@@ -526,42 +562,6 @@
   {
    "at": "2026-10-25T14:25:02Z",
    "subject": "Verse's logo is its natural atom galaxy; /color/ reads offline"
-  },
-  {
-   "at": "2026-10-25T14:23:09Z",
-   "subject": "Site icons: fetch every Versus floor's own logo into tower.icons"
-  },
-  {
-   "at": "2026-10-25T14:19:54Z",
-   "subject": "Calendar: 'Next reminder:' without a stray space, '1 event' singular"
-  },
-  {
-   "at": "2026-10-25T14:19:38Z",
-   "subject": "Calendar page: Versus' Google Calendar floor, its probe and its lane"
-  },
-  {
-   "at": "2026-10-25T14:18:22Z",
-   "subject": "Tower gate: colour measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:15:17Z",
-   "subject": "Book cover: one galaxy shaped like an atom in the medallion"
-  },
-  {
-   "at": "2026-10-25T14:09:11Z",
-   "subject": "Tower gate: colour measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:08:36Z",
-   "subject": "Tower gate: colour measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:07:41Z",
-   "subject": "Tower gate: colour codes measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T14:05:49Z",
-   "subject": "Versus shows logos only: each site's own logo, Verse's own icon, no drawn faces"
   }
  ],
  "builders": {
