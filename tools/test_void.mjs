@@ -5605,6 +5605,27 @@ try {
       && file === 'data:image/png;base64,iVBORw==' && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
+  if (want("password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px")) {
+    const Z = await fresh({ phone: true }); await Z.p.goto(base + 'password/?len=16&upper=1&lower=1&digits=1&symbols=1');
+    const words = () => Z.p.$$eval('#list output.word', (l) => l.map((e) => e.textContent)), every = (w) => /[A-Z]/.test(w) && /[a-z]/.test(w) && /[0-9]/.test(w) && /[^A-Za-z0-9]/.test(w);
+    const first = await words(), strength = await Z.p.$eval('#strength', (e) => e.textContent), text = await Z.p.evaluate(() => document.body.innerText);
+    await Z.p.fill('#lenN', '24'); await Z.p.dispatchEvent('#lenN', 'change'); await Z.p.fill('#n', '3'); await Z.p.dispatchEvent('#n', 'change'); await Z.p.check('#similar'); await Z.p.check('#norepeat');
+    const many = await words(), copies = await Z.p.$$eval('#list button', (b) => b.map((x) => x.getAttribute('aria-label')));
+    await Z.p.click('#tab-ph'); await Z.p.check('#cap'); await Z.p.check('#digit'); const phrase = await words(), bits = await Z.p.$eval('#strength', (e) => e.textContent);
+    const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth), unnamed = await Z.p.$$eval('input, select, button', (es) => es.filter((e) => !(e.getAttribute('aria-label') || (e.labels && e.labels.length) || e.textContent.trim())).length);
+    if (process.env.VOID_SHOTS) await Z.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password.png'), fullPage: true }).catch(() => {});
+    // "Check it" hands the first password to /password-strength/ in the fragment, which reads it once and wipes it from the address
+    await Z.p.click('#tab-pw'); const handed = await words(); await Z.p.click('#list a'); await Z.p.waitForURL(/password-strength/);
+    const checker = { pw: await Z.p.$eval('#pw', (e) => e.value), url: Z.p.url(), label: await Z.p.$eval('#label', (e) => e.textContent) };
+    check("password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+      first.length === 1 && first[0].length === 16 && every(first[0]) && /Very strong · strength 104\.6 bits of entropy · \d+ trillion years to crack/.test(strength) && /Remember|remember/.test(text) && /offline/.test(text)
+      && many.length === 3 && many.every((w) => w.length === 24 && every(w) && !/[il1LoO0I]/.test(w) && new Set(w).size === 24) && copies.length === 3 && copies.every((c) => c === 'Copy this password')
+      && phrase.length === 3 && phrase.every((w) => /^(?:[A-Z][a-z]{2,6}-){3}[A-Z][a-z]{2,6}\d$/.test(w)) && /Fair · strength 45 bits/.test(bits)
+      && checker.pw === handed[0] && !/#/.test(checker.url) && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
+      JSON.stringify({ first, strength, many, copies, phrase, bits, checker, handed, wide, unnamed, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // base64encode.org offers dozens of character sets: /base64/ groups 44 of them, writes Windows-1252 and EBCDIC with the browser's own decoder
   // (or its tables), names a character a set cannot hold, and writes Shift_JIS too, from the browser's own decoder turned around
   if (want("base64 character sets: grouped, Windows-1252, EBCDIC and Shift_JIS both ways, an unencodable character named, fits 390 px")) {

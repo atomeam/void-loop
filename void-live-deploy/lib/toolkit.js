@@ -13,6 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
+  '/password/': 'Password generator',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -26,7 +27,8 @@ export const RELATED = Object.freeze({
   '/word-count/': ['/stopwatch/'],
   '/base-converter/': ['/convert/', '/color/', '/random/', '/calculator/'],
   '/convert/': ['/base-converter/', '/stopwatch/', '/calculator/'],
-  '/password-strength/': ['/random-user/'],
+  '/password-strength/': ['/password/', '/random-user/'],
+  '/password/': ['/password-strength/', '/random/', '/random-user/'],
   '/resize-image/': ['/color/'],
   '/calculator/': ['/base-converter/', '/convert/', '/random/'],
   '/time/': ['/stopwatch/'],

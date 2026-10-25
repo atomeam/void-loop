@@ -43,7 +43,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'random number', 'random user', 'stopwatch', 'time zones', 'unit converter', 'wheel', 'word count']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'password', 'random number', 'random user', 'stopwatch', 'time zones', 'unit converter', 'wheel', 'word count']);
   // the unit converter's own aspects: how many of unitconverters.net's kinds a page names, and whether it converts both ways
   const breadth = probeFor('unit converter').parts['unit breadth'], ways = probeFor('unit converter').parts['both directions']; assert.equal(breadth.length, 21); assert.equal(ways.length, 2);
   assert.equal(score('Length Temperature Area Volume Weight Time', breadth).n, 6, "unitconverters.net's common six"); assert.deepEqual(score('Swap the two units. From °C to °F, the formula', ways).has, ['swap', 'from and to']);

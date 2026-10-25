@@ -70,6 +70,8 @@
     fill($('why'), r.reasons); fill($('tips'), r.tips);
   };
   pw.addEventListener('input', draw);
+  // a password handed over from /password/ rides in the fragment (#p=, which a browser never sends to any server): read once, then wiped from the address
+  { const m = /[#&]p=([^&]*)/.exec(location.hash); if (m) { try { pw.value = decodeURIComponent(m[1]).slice(0, 128); } catch (_) {} history.replaceState(null, '', location.pathname + location.search); draw(); } }
   $('show').addEventListener('change', (e) => { pw.type = e.target.checked ? 'text' : 'password'; pw.focus(); });
   $('leak').addEventListener('click', async () => {
     const m = $('leakmsg'); if (!pw.value) { m.textContent = 'Type one first.'; return; } m.textContent = 'Asking…'; m.className = '';

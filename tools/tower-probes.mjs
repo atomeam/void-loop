@@ -210,6 +210,22 @@ export const PROBES = Object.freeze({
       ['memory', /\bM\+[\s\S]{0,60}\bMR\b|\bMR\b[\s\S]{0,60}\bM\+|\bmemory\b/i], ['last answer', /\bAns\b/], ['exponent entry', /\bEXP\b|×\s*10/], ['change sign', /±|\+\/[-−]/],
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
   },
+  password: {
+    // both pages make a password as they open (passwordsgenerator.net's default is 16 characters of every class; Verse's link asks for the same);
+    // a random password has no right answer, but a right SHAPE: a 16-character word with an uppercase, a lowercase, a digit and a symbol among the
+    // page's text (the gate reads a box's value too), and the exact entropy of 16 characters from all 94: log2(94^16) = 104.9 bits (104.6 with one of
+    // each class required), which only a page that counts its own space can show
+    site: 'https://passwordsgenerator.net/', verse: '/password/?len=16&upper=1&lower=1&digits=1&symbols=1',
+    truth: [['a 16-character password with an uppercase, a lowercase, a digit and a symbol', (t) => String(t).split(/\s+/).some((w) => w.length === 16 && /[A-Z]/.test(w) && /[a-z]/.test(w) && /[0-9]/.test(w) && /[^A-Za-z0-9]/.test(w))],
+      ['the entropy of 16 characters from all four classes, 104.6 to 104.9 bits', /\b104\.[6-9]\s*bits\b/i]],
+    // what passwordsgenerator.net's page shows (a length, the four classes, its two exclusions, made on the device, a generate and a copy control, a
+    // "remember" line that reads the password as words) and what the best generators add (passphrases, several at once, no repeats or sequences, a
+    // strength with its bits and crack time, offline, a link that keeps the setting)
+    facts: [['a length', /\blength\b/i], ['uppercase', /\buppercase\b|\bupper case\b/i], ['lowercase', /\blowercase\b|\blower case\b/i], ['numbers', /\bnumbers?\b|\bdigits?\b/i], ['symbols', /\bsymbols?\b|\bspecial characters?\b/i],
+      ['exclude similar characters', /\bsimilar\b/i], ['exclude ambiguous characters', /\bambiguous\b/i], ['made on the device', /on (?:your|this) device|never sent|nothing (?:is )?sent|not sent/i], ['a generate control', /\bgenerate\b/i], ['copy', /\bcopy\b/i],
+      ['a way to remember it', /\bremember\b|\bmnemonic\b/i], ['passphrases', /\bpassphrase\b/i], ['several at once', /\bhow many\b|\bat once\b|\bbulk\b|\bmultiple\b/i], ['no repeated characters', /\brepeat/i], ['no sequential characters', /\bsequential\b|\bin a row\b/i],
+      ['strength', /\bstrength\b|\bvery strong\b|\bweak\b/i], ['entropy in bits', /\bentropy\b|\bbits\b/i], ['time to crack', /\bcrack\b|\bguesses\b/i], ['works offline', /\boffline\b/i], ['a link that keeps the setting', /\bcopy link\b|\bpermalink\b|\bshare\b|\bsave my preference\b/i]],
+  },
   'time zones': {
     site: 'https://www.timeanddate.com/', verse: '/time/?c=Tokyo',
     // the same question to both: Tokyo's own page on each; the truth is worked out here, at the moment the answer is read, from the zone rules
@@ -247,6 +263,9 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   'random number': { 'true randomness': [['names where its randomness comes from', /atmospheric noise|\bdrand\b|randomness beacon|getRandomValues|\bhardware\b/i], ['a draw others can check', /\bcheckable\b|\bverifiab|\bre-deriv|\bsigned\b/i]], 'range choice': [['a range', /\bmin(?:imum)?\b[\s\S]{0,120}\bmax|\bfrom\b[\s\S]{0,60}\bto\b|\bbetween\b[\s\S]{0,40}\band\b/i], ['how many', /\bhow many\b|\bgenerate\s+\d+|\bnumber of\b/i], ['no repeats', /\bno repeats?\b|\bunique\b|\bwithout repe/i]] },
   stopwatch: { alarms: [['an alarm', /\balarm\b/i]], laps: [['laps', /\blaps?\b/i]] },
   calculator: { history: [['a history of results', /\bhistory\b/i]], 'unit and scientific modes': [['scientific functions', /\bsin\b[\s\S]{0,80}\bcos\b/i], ['degrees and radians', /\bdeg(?:rees?)?\b[\s\S]{0,80}\brad(?:ians?)?\b/i], ['unit conversion', /\bunit conver|\bconvert\b|\bmiles\b[\s\S]{0,40}\bkm\b/i]] },
+  password: { 'length and character choice': [['a length choice', /\blength\b/i], ['uppercase', /\buppercase\b|\bupper case\b/i], ['lowercase', /\blowercase\b|\blower case\b/i], ['numbers', /\bnumbers?\b|\bdigits?\b/i], ['symbols', /\bsymbols?\b|\bspecial characters?\b/i],
+    ['exclude similar', /\bsimilar\b/i], ['exclude ambiguous', /\bambiguous\b/i], ['no repeats', /\brepeat/i], ['no sequential', /\bsequential\b|\bin a row\b/i], ['one of each class', /\bone of each\b|\bat least one\b/i], ['passphrases', /\bpassphrase\b/i]],
+    'strength shown': [['a strength label', /\bstrength\b|\bvery strong\b|\bstrong\b|\bweak\b/i], ['entropy in bits', /\bentropy\b|\bbits\b/i], ['time to crack', /\bcrack\b|\bguesses\b/i]] },
   'time zones': { 'world time': [['several cities at once', /\bworld ?clock\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/]], 'meeting planner': [['a meeting planner', /\bmeeting planner\b/i], ['the hours that suit everyone', /\bbest time\b|\bworking hours\b/i]] },
   'unit converter': { 'unit breadth': [['length', /\blength\b/i], ['temperature', /\btemperature\b/i], ['area', /\barea\b/i], ['volume', /\bvolume\b/i], ['weight or mass', /\bweight\b|\bmass\b/i], ['time', /\btime\b/i], ['speed', /\bspeed\b|\bvelocity\b/i],
       ['pressure', /\bpressure\b/i], ['energy', /\benergy\b/i], ['power', /\bpower\b/i], ['force', /\bforce\b/i], ['data storage', /\bdata\b/i], ['angle', /\bangle\b/i], ['fuel consumption', /\bfuel\b/i], ['frequency', /\bfrequency\b/i],
