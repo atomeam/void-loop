@@ -102,7 +102,7 @@ test('decks, {s}, letters, dice, possessiveForm, pastTense', () => {
 const HERO = '$meta\n  title = Hero maker\n  description = Heroes by gender\n$inputs\n  gender = select female|male\n  level = number 1-20\n  nick = text Shadow\noutput\n  [n = names[gender]] the [cls], level [level]. [if (level > 10) {A veteran.} else if (level > 5) {Seasoned.} else {A rookie.}] [level >= 15 ? "Legendary!" : "-"] [level * 2] hp [nick]\nnames\n  female\n    Ada\n    Mira\n  male\n    Bo\n    Ivo\ncls\n  wizard ^[gender == "female"]\n  knight ^[gender == "male"]\n  bard\n';
 test('inputs, [names[gender]], ^[condition], if / else if / else, ternaries and arithmetic', () => {
   const g = L.compile(HERO); assert.deepEqual(g.errors, []);
-  assert.deepEqual(g.meta, { title: 'Hero maker', description: 'Heroes by gender' }); assert.equal(g.title, 'Hero maker');
+  assert.deepEqual(g.meta, { title: 'Hero maker', description: 'Heroes by gender', layout: 'lines' }); assert.equal(g.title, 'Hero maker');
   assert.deepEqual(g.inputs.map((x) => [x.name, x.kind, x.def]), [['gender', 'select', 'female'], ['level', 'number', '1'], ['nick', 'text', 'Shadow']]);
   const m = L.generate(g, 1, 30, { inputs: { gender: 'male', level: '16', nick: 'Rex' } }).results.map((r) => r.output);
   for (const o of m) assert.match(o, /^(?:Bo|Ivo) the (?:knight|bard), level 16\. A veteran\. Legendary! 32 hp Rex$/, o);
@@ -154,4 +154,17 @@ test('{ai: ...}: the prompt is worked out and marked for the page to fill; at mo
   const r = L.run('output\n  Hi. {ai: one line about a [x] knight} {ai: a} {ai: b} {ai: c}\nx\n  brave\n', 1);
   assert.deepEqual(r.ai, ['one line about a brave knight', 'a', 'b']);
   assert.equal(L.aiMarks(r.output, ['A knight.', 'A.']), 'Hi. A knight. A. … ');
+});
+test('{wheel: list}, $layout, shared data reads and {add:}/{set:} writes', async () => {
+  const g = L.compile('$layout = cards\noutput\n  Lunch: {wheel: food}<br>Visits: [shared.visits] {add: visits}{set: last = soup}\nfood\n  pizza ^3\n  soup\n  [adj] salad\nadj\n  green\n');
+  assert.deepEqual(g.errors, []); assert.equal(g.meta.layout, 'cards');
+  const seen = {};
+  for (let s = 1; s < 400; s++) { const r = L.run(g, s, { shared: { visits: 41 } }); const w = r.wheels[0]; assert.deepEqual(w.entries.map((e) => [e.label, e.weight]), [['pizza', 3], ['soup', 1], ['green salad', 1]]); assert.equal(r.output, 'Lunch: ' + w.entries[w.winner].label + '\nVisits: 41 '); seen[w.winner] = (seen[w.winner] || 0) + 1; assert.deepEqual(r.writes, [{ op: 'add', key: 'visits' }, { op: 'set', key: 'last', value: 'soup' }]); }
+  assert.ok(seen[0] / seen[1] > 2.2 && seen[0] / seen[1] < 4, 'the wheel picks by weight: ' + JSON.stringify(seen));
+  assert.match(L.run(g, 1).output, /Visits:  $/, 'no shared data: empty');
+  assert.match(L.compile('$layout = spiral\noutput\n  a\n').errors[0].message, /\$layout is one of/);
+  assert.match(L.run('output\n  {wheel: nope}\nnope2\n  a\n', 1).errors[0].message, /no list called nope/);
+  const { AI_GENERATORS } = await import('../void-live-deploy/lib/ai-generators.js');
+  assert.ok(AI_GENERATORS.length >= 5);
+  for (const a of AI_GENERATORS) { const c = L.compile(a.text); assert.deepEqual(c.errors, [], a.id); const r = L.run(c, 3); assert.equal(r.ai.length, 1, a.id); assert.match(r.ai[0], /^(?:invent|suggest) /, a.id); assert.doesNotMatch(r.ai[0], /[[\]{}]/, a.id); }
 });

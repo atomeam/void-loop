@@ -2,6 +2,8 @@
   import { mountRelated } from '/lib/toolkit.js';
   import * as L from '/lib/listgen.js';
   import { mountComments } from '/lib/comments-ui.js';
+  import { slices, plan, ease } from '/lib/wheel.js';
+  import { aiGeneratorOf } from '/lib/ai-generators.js';
   addEventListener('load', async () => {
     const $ = (id) => document.getElementById(id), q = new URLSearchParams(location.search), embed = q.get('embed') === '1';
     if (embed) document.documentElement.classList.add('embed');
@@ -47,6 +49,7 @@
       $('seed').textContent = 'seed ' + state.seed;
       if (compiled.title && !$('name').value) $('name').placeholder = compiled.title;
       if (r.errors.length && !current.length) { $('res').replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Fix the line marked on the left and the results come back.' })); return; }
+      $('res').className = 'res lay-' + ((compiled.meta && compiled.meta.layout) || 'lines');
       $('res').replaceChildren(...current.map((x, i) => row(x, i)));
       $('outH').textContent = (($('name').value || compiled.title || '').trim() || 'Results');
     }
@@ -54,8 +57,32 @@
     function results(g) {
       if (g.errors.length) return { results: [], errors: g.errors };
       const out = [];
-      for (let i = 0; i < state.n; i++) { const seed = L.seedFor(state.seed, i), r = L.run(g, seed, { imports: imported, inputs: chosen, spans: true }); if (r.errors.length) return { results: out, errors: r.errors }; out.push({ ...r, seed }); }
+      for (let i = 0; i < state.n; i++) { const seed = L.seedFor(state.seed, i), r = L.run(g, seed, { imports: imported, inputs: chosen, spans: true, shared: shared.data }); if (r.errors.length) return { results: out, errors: r.errors }; out.push({ ...r, seed }); }
+      sendWrites(out);
       return { results: out, errors: [] };
+    }
+    // a published generator's shared data (functions/api/gen-data.js): read when it opens; its {add:} and {set:} writes are sent once for each
+    // new set of results, only while the text is the published one (an edit is your own copy until you publish it)
+    const shared = { data: null, text: '', sentFor: '' };
+    function sendWrites(out) {
+      if (!state.pubId || $('src').value !== shared.text) return;
+      const key = state.seed + '|' + state.n; if (shared.sentFor === key) return; shared.sentFor = key;
+      const writes = out.flatMap((r) => r.writes || []).slice(0, 5); if (!writes.length) return;
+      fetch('/api/gen-data', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: state.pubId, writes }) }).then((r) => r.json()).then((j) => { if (j && j.ok) shared.data = j.data; }).catch(() => {});
+    }
+    // {wheel: list}: the winner is already in the result; the wheel spins to it when pressed (lib/wheel.js plans the landing)
+    const COLORS = ['#6d4aff', '#ff7a59', '#2bb673', '#f5b700', '#3aa0ff', '#e2557b', '#8a6cff', '#00a3a3'];
+    function wheelBox(w) {
+      const box = document.createElement('div'); box.className = 'wheel'; const c = document.createElement('canvas'); c.width = 320; c.height = 320; c.setAttribute('role', 'img'); c.setAttribute('aria-label', 'A wheel of ' + w.entries.length + ': ' + w.entries.map((e) => e.label).join(', ') + '. It lands on ' + w.entries[w.winner].label);
+      const sl = slices(w.entries); let rot = 0;
+      const paint = () => { const x = c.getContext('2d'); if (!x) return; x.clearRect(0, 0, 320, 320); x.save(); x.translate(160, 160); x.rotate((rot * Math.PI) / 180);
+        sl.forEach((s, i) => { x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, 150, ((s.start - 90) * Math.PI) / 180, ((s.end - 90) * Math.PI) / 180); x.closePath(); x.fillStyle = COLORS[i % COLORS.length]; x.fill();
+          x.save(); x.rotate((((s.start + s.end) / 2 - 90) * Math.PI) / 180); x.fillStyle = '#fff'; x.font = '600 13px system-ui'; x.textAlign = 'right'; x.fillText(s.label.slice(0, 18), 140, 4); x.restore(); });
+        x.restore(); x.fillStyle = getComputedStyle(document.body).color; x.beginPath(); x.moveTo(150, 2); x.lineTo(170, 2); x.lineTo(160, 22); x.closePath(); x.fill(); };
+      const spin = document.createElement('button'); spin.type = 'button'; spin.textContent = 'Spin the wheel';
+      spin.addEventListener('click', () => { const to = plan(w.entries, w.winner, rot, 5, 0.5), from = rot, t0 = performance.now(), ms = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 3200; spin.disabled = true;
+        const tick = (now) => { const k = Math.min(1, (now - t0) / ms); rot = from + (to - from) * ease(k); paint(); if (k < 1) requestAnimationFrame(tick); else { spin.disabled = false; spin.textContent = 'Landed on: ' + w.entries[w.winner].label; } }; requestAnimationFrame(tick); });
+      paint(); box.append(c, spin); return box;
     }
     const aiDone = new Map(), aiQueue = []; let aiBusy = false;
     const aiKey = (prompt, seed) => seed + '|' + prompt;
@@ -84,7 +111,8 @@
       mk('Re-roll this one', () => { const sd = (L.rng(Date.now() + i)() * 4294967296) >>> 0, r = L.run(compiled, sd, { imports: imported, inputs: chosen, spans: true }); r.seed = sd; if (!r.errors.length) { current[i] = r; li.replaceWith(row(current[i], i)); } });
       const pic = document.createElement('a'); pic.className = 'btn'; pic.textContent = 'Picture it →'; pic.href = '/image/?' + new URLSearchParams({ prompt: (x.image ? L.aiMarks(x.image, [], '') : plain(x)).slice(0, 400), go: '1' }); acts.append(pic);
       if ('speechSynthesis' in window) mk('Read aloud', () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(plain(x))); } catch (_) {} });
-      li.append(t); if (x.image) { const ip = document.createElement('div'); ip.className = 'imgp'; ip.textContent = 'Picture prompt: ' + x.image; li.append(ip); }
+      if (compiled.meta && compiled.meta.layout === 'table') { const cells = plain(x).split(' | '); t.replaceChildren(...cells.map((c) => Object.assign(document.createElement('span'), { textContent: c }))); t.style.cssText = 'display:grid;gap:4px 12px;grid-template-columns:repeat(' + Math.min(6, cells.length) + ',minmax(0,1fr))'; }
+      li.append(t); for (const w of x.wheels || []) li.append(wheelBox(w)); if (x.image) { const ip = document.createElement('div'); ip.className = 'imgp'; ip.textContent = 'Picture prompt: ' + x.image; li.append(ip); }
       li.append(acts); return li;
     }
     let timer = 0; $('src').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(draw, 200); });
@@ -143,11 +171,13 @@
     if (pathId && !q.get('id')) q.set('id', pathId);
     if (/^[a-z2-7]{8}$/.test(q.get('id') || '')) {
       try { const j = await (await fetch('/api/generators?id=' + q.get('id'))).json();
-        if (j.ok) { load(j.text, j.title); state.pubId = j.id; opened = true; $('comments').hidden = false; mountComments($('comments'), 'gen:' + j.id); $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }
+        if (j.ok) { shared.text = j.text; try { const d = await (await fetch('/api/gen-data?id=' + j.id)).json(); if (d && d.ok) shared.data = d.data; } catch (_) {} load(j.text, j.title); state.pubId = j.id; opened = true; $('comments').hidden = false; mountComments($('comments'), 'gen:' + j.id); $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }
         else { $('from').hidden = false; $('from').textContent = 'That generator is not in the hub (it may have been taken down).'; } } catch (_) { $('from').hidden = false; $('from').textContent = 'The hub needs the internet.'; }
     }
     const hash = new URLSearchParams(location.hash.slice(1)).get('g');
     if (!opened && hash) { const text = await L.unpackShare(hash); if (text != null) { const t = text.match(/^\$title = (.*)$/m); load(text, t ? t[1] : ''); opened = true; $('remix').hidden = false; $('from').hidden = false; $('from').textContent = 'A shared generator. Remix to keep your own copy.'; } }
+    const tpl = aiGeneratorOf(q.get('t') || ''); // a built-in AI generator (lib/ai-generators.js): opened as a copy to use or change
+    if (!opened && tpl) { load(tpl.text, tpl.title); opened = true; $('from').hidden = false; $('from').textContent = 'A built-in AI generator: its names are written by Verse\'s language model, a few a minute. Change anything; save to keep your own.'; }
     if (!opened && store.mine[0]) { load(store.mine[0].text, store.mine[0].title, store.mine[0].id); opened = true; }
     if (!opened) load(L.STARTER, '');
     drawMine();

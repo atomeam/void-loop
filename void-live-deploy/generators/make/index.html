@@ -39,8 +39,13 @@
   .res > li { padding: 10px 12px; border-top: 1px solid var(--line); }
   .res > li:first-child { border-top: 0; }
   .txt { font-size: 17px; overflow-wrap: anywhere; white-space: pre-line; }
-  .tap { font: inherit; font-size: inherit; color: inherit; background: none; border: 0; border-bottom: 1px dotted var(--soft); border-radius: 0; padding: 0 1px; min-height: 0; min-width: 0; cursor: pointer; display: inline; }
+  .tap { font: inherit; font-size: inherit; color: inherit; background: none; border: 0; border-bottom: 1px dotted var(--soft); border-radius: 0; padding: 0 2px; min-height: 24px; min-width: 24px; line-height: 24px; text-align: center; cursor: pointer; display: inline-block; vertical-align: baseline; } /* at least 24 by 24 px to tap (WCAG 2.5.8) */
   .tap:hover { background: var(--hi); }
+  .wheel { display: grid; justify-items: start; gap: 6px; margin-top: 6px; } .wheel canvas { width: 200px; height: 200px; }
+  ol.res.lay-cards { border: 0; background: none; display: grid; gap: 10px; } ol.res.lay-cards > li { border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  ol.res.lay-cards .txt::first-line { font-weight: 700; }
+  ol.res.lay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0; } ol.res.lay-grid > li { border-top: 0; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  ol.res.lay-table .txt { font-variant-numeric: tabular-nums; white-space: pre-wrap; }
   .imgp { font-size: 13px; color: var(--soft); margin-top: 4px; overflow-wrap: anywhere; }
   .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .acts button, .acts a { font-size: 13px; padding: 4px 12px; min-height: 36px; }
@@ -64,6 +69,8 @@
 <link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/listgen.js">
 <link rel="modulepreload" href="/lib/comments-ui.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/ai-generators.js">
 <link rel="modulepreload" href="/lib/comments.js">
 <link rel="modulepreload" href="/lib/art-rules.js">
 <link rel="modulepreload" href="/lib/merge-rules.js">
@@ -133,6 +140,9 @@
       <dt><code>$inputs</code> with <code>gender = select female|male</code>, <code>level = number 1-20</code>, <code>nick = text Shadow</code></dt><dd>Choices shown above the results; use them like kept values: <code>[gender]</code>.</dd>
       <dt><code>animals = {import:abcdefgh}</code></dt><dd>Use a published generator: <code>[animals]</code> is its result, <code>[animals.bird]</code> one of its lists. The id is the end of its hub link.</dd>
       <dt><code>$meta</code> with <code>title = ...</code>, <code>description = ...</code>, <code>image = &lt;gallery id&gt;</code></dt><dd>How its published link looks when shared; the image is a picture from the <a href="/image/#gallery">public gallery</a>.</dd>
+      <dt><code>{wheel: food}</code></dt><dd>A wheel of the list's entries (their odds are the slices' sizes) that spins to the one picked; the result says it too.</dd>
+      <dt><code>$layout = cards</code></dt><dd>How the results are laid out: <code>lines</code>, <code>cards</code> (the first line is the title), <code>grid</code> (small tiles) or <code>table</code> (columns split by <code> | </code>).</dd>
+      <dt><code>[shared.visits]</code>, <code>{add: visits}</code>, <code>{set: last = [food]}</code></dt><dd>A published generator's shared data: everyone using it reads and adds to the same small store (20 keys, short texts). Only the published text writes; your edits do not.</dd>
       <dt><code>{ai: a one-line motto for a [guild] guild}</code></dt><dd>A few words written by Verse's free language model from your prompt (lists work inside it); the same result keeps the same words. At most three in a result.</dd>
       <dt><code>.presentTense</code> <code>.futureTense</code> <code>.negativeForm</code></dt><dd>"walked home" becomes "walks home", "will walk home", "did not walk home".</dd>
       <dt>Tap a word</dt><dd>In a result, the dotted parts came from a list or a choice: tap one to roll just that part again.</dd>

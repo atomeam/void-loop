@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 825,
+ "counted": 827,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 20,
    "direct": 1,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 5
   },
   {
@@ -108,18 +108,18 @@
    "tests": 2
   },
   {
+   "file": "lib/reactions.js",
+   "skills": 15,
+   "direct": 1,
+   "dependants": 44,
+   "tests": 1
+  },
+  {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
    "dependants": 43,
    "tests": 2
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 15,
-   "direct": 1,
-   "dependants": 43,
-   "tests": 1
   },
   {
    "file": "lib/card-art.js",
@@ -524,7 +524,7 @@
    "file": "lib/telemetry.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 1
   },
   {
@@ -713,7 +713,7 @@
    "file": "lib/automation-fix.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 8
   },
   {
@@ -1490,8 +1490,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 53,
-   "tests": 17
+   "dependants": 54,
+   "tests": 18
   },
   {
    "file": "lib/models.js",
@@ -1683,6 +1683,13 @@
    "tests": 0
   },
   {
+   "file": "lib/comments.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/drive.js",
    "skills": 0,
    "direct": 0,
@@ -1695,6 +1702,13 @@
    "direct": 0,
    "dependants": 3,
    "tests": 1
+  },
+  {
+   "file": "lib/listgen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 3
   },
   {
    "file": "lib/mcp-skills.js",
@@ -1730,20 +1744,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/comments.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/listgen.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 3
   },
   {
    "file": "lib/mcp.js",
@@ -1886,6 +1886,13 @@
    "tests": 1
   },
   {
+   "file": "lib/ai-generators.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/anchor-density.js",
    "skills": 0,
    "direct": 0,
@@ -1946,7 +1953,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/correction-fix.js",
@@ -2346,6 +2353,17 @@
     "lib/keeper.js",
     "lib/image-gen.js",
     "functions/api/image.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/gen-data.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js",
+    "lib/automation-fix.js",
+    "lib/keeper.js",
+    "lib/comments.js",
+    "lib/listgen.js"
    ],
    "importedBy": []
   },
@@ -2796,6 +2814,10 @@
     "skills/miss-jobs.js"
    ]
   },
+  "lib/ai-generators.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/alt-pay.js": {
    "imports": [],
    "importedBy": [
@@ -2930,6 +2952,7 @@
     "functions/api/bench.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/recipes.js",
@@ -3071,6 +3094,7 @@
     "functions/api/comments.js",
     "functions/api/figurescript.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/handoff.js",
     "functions/api/image.js",
@@ -3800,6 +3824,7 @@
    ],
    "importedBy": [
     "functions/api/comments.js",
+    "functions/api/gen-data.js",
     "lib/comments-ui.js"
    ]
   },
@@ -4410,6 +4435,7 @@
     "functions/api/comments.js",
     "functions/api/earnings.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/gumroad.js",
     "functions/api/image.js",
@@ -4661,6 +4687,7 @@
     "functions/api/card-art.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/image.js",
     "functions/api/merge.js",
@@ -4833,6 +4860,7 @@
   "lib/listgen.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/gen/[id].js"
    ]
@@ -4965,6 +4993,7 @@
     "functions/api/card-art.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/image.js",
     "functions/api/mcp.js",
@@ -5790,6 +5819,7 @@
    "importedBy": [
     "functions/api/comments.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/image.js",
     "functions/api/react.js",
@@ -6845,6 +6875,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/gallery.js",
+    "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/handoff.js",
     "functions/api/image.js",

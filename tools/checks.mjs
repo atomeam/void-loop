@@ -99,6 +99,7 @@ for (const [name, file] of [
   ['character', 'character.test.mjs'],
   ['story', 'story.test.mjs'],
   ['comments', 'comments.test.mjs'],
+  ['gen-data', 'gen-data.test.mjs'],
   ['notes', 'notes.test.mjs'],
   ['chat-notes', 'chat-notes.test.mjs'],
   ['note-extras', 'note-extras.test.mjs'],

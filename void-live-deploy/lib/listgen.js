@@ -26,7 +26,8 @@
 // /image/. A text with no indented line at all is one plain list, one entry per line (the old "make your own" box keeps working).
 // Plain text out, never HTML: the pages put it in with textContent.
 
-export const AI_MAX = 3, AI_PROMPT_MAX = 400;
+export const AI_MAX = 3, AI_PROMPT_MAX = 400, WHEEL_MAX = 24, SHARED_KEYS = 20;
+export const LAYOUTS = Object.freeze(['lines', 'cards', 'grid', 'table']);
 export const MAX_TEXT = 20000, MAX_OUT = 8000, MAX_STEPS = 20000, MAX_DEPTH = 60, MAX_LINES = 2000;
 const NAME = /^[$A-Za-z_][\w$]*$/;
 export const METHODS = Object.freeze(['selectOne', 'selectMany', 'selectUnique', 'selectAll', 'joinItems', 'consumableList', 'titleCase', 'upperCase', 'lowerCase', 'sentenceCase', 'pluralForm', 'singularForm', 'possessiveForm', 'pastTense', 'presentTense', 'futureTense', 'negativeForm']);
@@ -121,17 +122,21 @@ export function compile(source) {
   const titleList = lists.$title || lists.title;
   const title = meta.title || (titleList && titleList.items.length === 1 && !titleList.items[0].items ? String(titleList.items[0].text).replace(/[[\]{}]/g, '').slice(0, 60) : '');
   const imports = order.filter((n) => lists[n].importId).map((n) => lists[n].importId);
+  // $layout: how the results are laid out (lines, cards, a grid of tiles, or a table whose columns are split by " | ")
+  const lay = lists.$layout && lists.$layout.items[0] ? String(lists.$layout.items[0].text).trim().toLowerCase() : 'lines';
+  if (!LAYOUTS.includes(lay)) err(lists.$layout.line, '$layout is one of ' + LAYOUTS.join(', '));
+  meta.layout = LAYOUTS.includes(lay) ? lay : 'lines';
   return finish({ lists, order, errors, plain: false, title, meta, inputs, imports });
 }
 // the checks that need the whole text: an output list, every [name] a list or a kept value, brackets that close
 function finish(g) {
   const out = outputName(g); if (!out) g.errors.push({ line: 1, message: 'there is no output list: write a list called output (or $output = ...), the line that makes each result' });
-  const assigned = new Set((g.inputs || []).map((x) => x.name));
+  const assigned = new Set((g.inputs || []).map((x) => x.name).concat(['shared'])); // shared: the published generator's shared data
   const own = (node) => { Object.defineProperty(node, 'owner', { value: g, enumerable: false, configurable: true }); for (const it of node.items || []) if (it.items) own(it); };
   for (const name of g.order) own(g.lists[name]);
   const walk = (node, fn) => { for (const it of node.items || []) { if (it.items) walk(it, fn); else fn(it); } };
   const all = [];
-  for (const name of g.order) if (name !== '$meta' && name !== '$inputs') walk(g.lists[name], (it) => all.push(it));
+  for (const name of g.order) if (name !== '$meta' && name !== '$inputs' && name !== '$layout') walk(g.lists[name], (it) => all.push(it));
   for (const it of all) for (const m of String(it.text).matchAll(/\[\s*(\$?[A-Za-z_][\w$]*)\s*=(?!=)/g)) assigned.add(m[1]);
   for (const it of all) {
     const b = balance(it.text); if (b) { g.errors.push({ line: it.line, message: b }); continue; }
@@ -271,17 +276,18 @@ export function inputValues(g, chosen = {}) {
 }
 /** one result: { output, image, errors }. `g` is compile()'s answer (or the text itself). `imports` maps a hub id to that generator compiled;
  *  `inputs` are the values chosen in the generator's inputs. The same g, seed, imports and inputs give the same result. Pure. */
-export function run(gen, seed = 1, { image = true, imports = {}, inputs = {}, spans = false } = {}) {
+export function run(gen, seed = 1, { image = true, imports = {}, inputs = {}, spans = false, shared = null } = {}) {
   const g = typeof gen === 'string' ? compile(gen) : gen;
   if (g.errors.length) return { output: '', image: '', errors: g.errors };
   const out = outputName(g); if (!out) return { output: '', image: '', errors: [{ line: 1, message: 'there is no output list' }] };
   const vars = Object.assign(Object.create(null), inputValues(g, inputs));
-  const ctx = { g, rand: rng(seed), vars, c: { steps: 0, depth: 0 }, line: g.lists[out].line, imports: imports || {}, others: new Map(), ai: [], armSpans: !!spans, spans: null };
+  vars.shared = {}; if (shared && typeof shared === 'object') vars.shared = Object.fromEntries(Object.entries(shared).slice(0, SHARED_KEYS).map(([k, v]) => [String(k).slice(0, 30), typeof v === 'number' ? v : String(v).slice(0, 200)]));
+  const ctx = { g, rand: rng(seed), vars, c: { steps: 0, depth: 0 }, line: g.lists[out].line, imports: imports || {}, others: new Map(), ai: [], armSpans: !!spans, spans: null, wheels: [], writes: [] };
   try {
     const output = finishText(pick(ctx, g.lists[out]));
     const sp = ctx.spans; ctx.armSpans = false;
     const im = image && imageName(g) ? finishText(pick(ctx, g.lists[imageName(g)])) : '';
-    const res = { output, image: im, errors: [], ai: ctx.ai };
+    const res = { output, image: im, errors: [], ai: ctx.ai, ...(ctx.wheels.length ? { wheels: ctx.wheels } : {}), ...(ctx.writes.length ? { writes: ctx.writes } : {}) };
     if (spans) { res.spans = sp || [{ t: output }]; res.vars = Object.fromEntries(Object.entries(ctx.vars).filter(([, v]) => typeof v === 'string' || typeof v === 'number')); }
     return res;
   } catch (e) {
@@ -370,6 +376,18 @@ function evalChoice(ctx, inner, line) {
   const t = inner.trim();
   if (t === 'a' || t === 'A') return '\u0001' + t;
   if (t === 's') return '\u0002';
+  const wh = inner.match(/^\s*wheel\s*:\s*(\$?[A-Za-z_][\w$]*(?:\.[A-Za-z_][\w$]*)*)\s*$/i); // {wheel: list}: the winner, picked fairly by weight, and the wheel the page spins to it
+  if (wh) {
+    let node = null; try { node = expr(ctx, wh[1], line); } catch (e) { throw e; }
+    if (!node || !node.items) throw new GenError('{wheel: ...} needs a list: ' + wh[1] + ' is not one', line);
+    const ls = leaves(ctx, node).slice(0, WHEEL_MAX); if (!ls.length) return '';
+    const entries = ls.map((it) => ({ label: within(ctx, it.owner, () => asText(evalText(ctx, it.text, it.line))).replace(/[\u0001-\u0006]/g, '').slice(0, 80) || '…', weight: Math.max(0.01, it.odds) }));
+    step(ctx, line); const total = entries.reduce((a, e) => a + e.weight, 0); let x = ctx.rand() * total, k = entries.length - 1;
+    for (let i = 0; i < entries.length; i++) { x -= entries[i].weight; if (x < 0) { k = i; break; } }
+    ctx.wheels.push({ entries, winner: k }); return entries[k].label;
+  }
+  const wr = inner.match(/^\s*(add|set)\s*:\s*([A-Za-z_]\w{0,29})\s*(?:=\s*([\s\S]*))?$/i); // {add: key} counts one up in the generator's shared data, {set: key = text} keeps a value
+  if (wr) { if (ctx.writes.length < 5) ctx.writes.push(wr[1].toLowerCase() === 'add' ? { op: 'add', key: wr[2] } : { op: 'set', key: wr[2], value: evalText(ctx, wr[3] || '', line).slice(0, 200) }); return ''; }
   const ai = inner.match(/^\s*ai\s*:([\s\S]+)$/i); // {ai: a prompt with [lists]}: the page asks the answer model and puts the text in (lib/listgen.js aiMarks)
   if (ai) { const prompt = evalText(ctx, ai[1].trim(), line).replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ').trim().slice(0, AI_PROMPT_MAX); if (!prompt || ctx.ai.length >= AI_MAX) return ''; ctx.ai.push(prompt); return '\u0005' + (ctx.ai.length - 1) + '\u0005'; }
   const lr = t.match(/^([a-zA-Z])\s*-\s*([a-zA-Z])$/);
@@ -525,6 +543,7 @@ function member(ctx, v, p, line) {
     if (p.dynamic && /^\d+$/.test(name)) return v[+name] == null ? '' : v[+name];
     throw new GenError('a list of picks has no way called ' + name + ' (try .joinItems)', line);
   }
+  if (v && typeof v === 'object' && !Array.isArray(v) && !v.items && !v.deck && !v.importId) return Object.prototype.hasOwnProperty.call(v, name) ? v[name] : ''; // shared data: [shared.key]
   if (STRING_METHODS[name]) return STRING_METHODS[name](asText(v));
   if (name === 'selectOne' || name === 'joinItems') return v;
   throw new GenError('"' + asText(v).slice(0, 20) + '" has no way called ' + name, line);
