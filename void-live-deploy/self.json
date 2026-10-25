@@ -475,13 +475,69 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T21:42:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-25T04:59:17Z",
+   "subject": "Tower gate: photo resizer,games,learning measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:59:14Z",
+   "subject": "Incident: the browser suite failed on b90872b0 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:56:20Z",
+   "subject": "Tower gate: password measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:55:28Z",
+   "subject": "Password strength surpassed, its learned line written; the photo resizer floor gets its probe: the gate puts a picture into Verse's page…"
+  },
+  {
+   "at": "2026-10-25T04:53:25Z",
+   "subject": "/password/: the password floor's own page, with its probe and the gate's truth"
+  },
+  {
+   "at": "2026-10-25T04:52:46Z",
+   "subject": "Tower gate: photo resizer,news,photos measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:51:04Z",
+   "subject": "Tower gate: unit converter measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:50:15Z",
+   "subject": "Tower gate: photo resizer,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:48:35Z",
+   "subject": "/convert/ does everything unitconverters.net does, exact, with the formula"
+  },
+  {
+   "at": "2026-10-25T04:47:29Z",
+   "subject": "Incident: the browser suite failed on 04d1e71c (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:44:47Z",
+   "subject": "Incident: the browser suite failed on 6398d8e1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:42:57Z",
+   "subject": "The slogan: \"A-to-Mind. Whatever comes to mind.\""
+  },
+  {
+   "at": "2026-10-25T04:42:00Z",
+   "subject": "The calculator's keys work by hand, its page reaches its load event sooner, and every tower floor links the site, Verse's page and a…"
+  },
+  {
+   "at": "2026-10-25T04:38:16Z",
+   "subject": "Incident: the browser suite failed on 39d3b6a7 (void-live-deploy/incidents.json)"
+  },
   {
    "at": "2026-10-25T04:37:07Z",
    "subject": "Tower gate: password strength,password,maps measured against their live sites"
@@ -505,66 +561,14 @@
   {
    "at": "2026-10-25T04:24:33Z",
    "subject": "Incident: the browser suite failed on c8805bc6 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:23:33Z",
-   "subject": "Incident: the browser suite failed on a99af1cb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:22:25Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:17:06Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:14:57Z",
-   "subject": "/base64/ does everything base64encode.org does, in the browser"
-  },
-  {
-   "at": "2026-10-25T04:13:29Z",
-   "subject": "The tower judges accuracy against the worked-out truth, not against the rival"
-  },
-  {
-   "at": "2026-10-25T04:13:22Z",
-   "subject": "Incident: the browser suite failed on 5751d72f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:11:53Z",
-   "subject": "Incident: the browser suite failed on 8fcb91e9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:06:29Z",
-   "subject": "The tower gate presses a button the pointer cannot reach with Enter, the way a person on a keyboard does"
-  },
-  {
-   "at": "2026-10-25T04:05:08Z",
-   "subject": "A cartoon of a concept or a sentence is a real cartoon, not a grid or a stock boy"
-  },
-  {
-   "at": "2026-10-25T04:04:41Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:58:45Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:56:30Z",
-   "subject": "The atom galaxy is one natural formation, not an atom drawn over a galaxy"
-  },
-  {
-   "at": "2026-10-25T03:52:38Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:49:56Z",
-   "subject": "The Verse Book's cover is a tooled leather binding"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (tower session, 2026-10-25, 05:00)",
+    "line": "the photo resizer floor (pancardresizer.com) surpassed in one gate run after its probe: the gate puts its own one-pixel PNG into /resize-image/ with the size in the link (verseFile, PIXEL in tower-gate.mjs), 3 of 3 against the arithmetic…"
+   },
    {
     "name": "Claude (tower session, 2026-10-25)",
     "line": "the password strength floor (howsecureismypassword.net) surpassed in one gate run after its probe: qwerty123 typed into /password-strength/ (never in the address), 5 of 5 against the worked-out truth, crack time and reasons read off the…"
@@ -584,10 +588,6 @@
    {
     "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
     "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
-   },
-   {
-    "name": "Lists caught up, run 3 (Grok Bot, 2026-10-21)",
-    "line": "two of Verse's asks that it had made 9 times each are built: 'preview my memory' (inside the memory card) and the Deciding family (3 of 3 proven now). template-list and list-templates are one routing place (skills/list-starters.js…"
    }
   ],
   "ladders": [
