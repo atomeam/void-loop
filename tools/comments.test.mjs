@@ -55,3 +55,20 @@ test('the widget (lib/comments-ui.js): nothing to mount on is a no-op; the full 
   const { mountComments } = await import('../void-live-deploy/lib/comments-ui.js');
   assert.equal(mountComments(null, 'image'), undefined);
 });
+test('the forum: a topic with its first post, replies keep it on top, three reports hide it, the owner deletes it with its posts', async () => {
+  const env = world();
+  const t = await post(env, { act: 'topic', title: 'Share your tavern generators', name: 'Ann', text: 'Post your best ones below.', ...(await oldCheck()) }); assert.equal(t.ok, true); assert.match(t.id, /^[a-z2-7]{10}$/);
+  const t2 = await post(env, { act: 'topic', title: 'Odds help', text: 'How do ^0.5 odds work?', ...(await oldCheck()) }, '203.0.113.62');
+  const list = async () => (await (await route.onRequestGet({ env, request: new Request('https://x/api/comments?topics=1') })).json()).items;
+  assert.deepEqual((await list()).map((x) => x.title), ['Odds help', 'Share your tavern generators']);
+  assert.equal((await post(env, { act: 'post', thread: 'forum:' + t.id, text: 'Mine is the Rusty Dragon.', ...(await oldCheck()) }, '203.0.113.63')).ok, true);
+  const l2 = await list(); assert.equal(l2[0].title, 'Share your tavern generators'); assert.equal(l2[0].replies, 1);
+  const th = await get(env, 'forum:' + t.id); assert.equal(th.topic.title, 'Share your tavern generators'); assert.deepEqual(th.items.map((c) => c.text), ['Post your best ones below.', 'Mine is the Rusty Dragon.'], 'oldest first in a topic');
+  assert.match((await post(env, { act: 'topic', title: '', text: 'x', ...(await oldCheck()) }, '203.0.113.64')).error, /title/);
+  assert.match((await post(env, { act: 'topic', title: 'buy at cheap.shop', text: 'hi', ...(await oldCheck()) }, '203.0.113.65')).error, /links/);
+  for (const ip of ['10.4.0.1', '10.4.0.2', '10.4.0.3']) await post(env, { act: 'report-topic', id: t2.id }, ip);
+  assert.deepEqual((await list()).map((x) => x.title), ['Share your tavern generators']); assert.equal((await get(env, 'forum:' + t2.id)).ok, false);
+  const del = (k) => route.onRequestDelete({ env, request: new Request('https://x/api/comments?topic=' + t.id, { method: 'DELETE', headers: k ? { authorization: 'Bearer ' + k } : {} }) });
+  assert.equal((await del('x')).status, 401); assert.equal((await del(KEY)).status, 200); assert.equal((await list()).length, 0);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM void_comments WHERE thread = ?").get('forum:' + t.id).n, 0);
+});
