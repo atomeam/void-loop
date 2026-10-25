@@ -11,6 +11,9 @@ const isTool = (p) => TOOLS.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
+// a tool page and the modules it preloads: kept for the pages open when the worker takes over, so the page that installed it works offline
+// on its very next load (2026-10-25: /color/ reloaded offline showed its shell with no colour, its modules never kept)
+const keepWhole = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
 const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vendor path (below), so it is dropped on activate
@@ -20,7 +23,8 @@ self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(TOOLS.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D).map((k) => caches.delete(k)))).then(() => self.clients.claim())
+    .then(() => self.clients.matchAll({ type: 'window' })).then((cs) => caches.open(CACHE).then((c) => Promise.all(cs.map((x) => new URL(x.url).pathname).filter(isTool).map((t) => keepWhole(c, t))))).catch(() => {}));
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request, url = new URL(req.url);

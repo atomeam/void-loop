@@ -484,6 +484,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T14:19:54Z",
+   "subject": "Calendar: 'Next reminder:' without a stray space, '1 event' singular"
+  },
+  {
+   "at": "2026-10-25T14:19:38Z",
+   "subject": "Calendar page: Versus' Google Calendar floor, its probe and its lane"
+  },
+  {
+   "at": "2026-10-25T14:18:22Z",
+   "subject": "Tower gate: colour measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:15:17Z",
+   "subject": "Book cover: one galaxy shaped like an atom in the medallion"
+  },
+  {
+   "at": "2026-10-25T14:09:11Z",
+   "subject": "Tower gate: colour measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:08:36Z",
+   "subject": "Tower gate: colour measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T14:07:41Z",
+   "subject": "Tower gate: colour codes measured against their live sites"
+  },
+  {
    "at": "2026-10-25T14:05:49Z",
    "subject": "Versus shows logos only: each site's own logo, Verse's own icon, no drawn faces"
   },
@@ -534,34 +562,6 @@
   {
    "at": "2026-10-25T08:58:17Z",
    "subject": "Tower gate: recipes,recipes: budgetbytes.com,recipes: cookpad.com,recipes: yummly.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T08:56:31Z",
-   "subject": "Tower gate: recipes: budgetbytes.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T08:54:40Z",
-   "subject": "Tower gate: recipes: minimalistbaker.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T08:52:33Z",
-   "subject": "The worker installs fast and the gate waits 10 s for it: Verse's own pages read offline again"
-  },
-  {
-   "at": "2026-10-25T08:52:16Z",
-   "subject": "Incident: the browser suite failed on e8293663 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T08:52:10Z",
-   "subject": "/recipes/ keeps its title, its line and its search box readable while a linked recipe is drawn"
-  },
-  {
-   "at": "2026-10-25T08:46:21Z",
-   "subject": "Tower gate: recipes,recipes: minimalistbaker.com,recipes: budgetbytes.com,recipes: cookpad.com,recipes: yummly.com measured against their…"
-  },
-  {
-   "at": "2026-10-25T08:42:48Z",
-   "subject": "Incident: the browser suite failed on 7f846c43 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-51';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-52';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
@@ -76,7 +76,7 @@ export function vsHtml(f, esc, { enter = true } = {}) {
   const m = Math.max(1, f.m || 0), n = Math.max(0, f.n || 0), lost = (f.lost || []).length;
   const bar = (k, lit) => '<span class="tw-bar" aria-hidden="true">' + Array.from({ length: m }, (_, i) => '<i' + (i < lit ? ' data-k="' + k + '"' : '') + '></i>').join('') + '</span>';
   return '<div class="tw-vs' + (enter ? ' tw-in' : '') + '" role="group" aria-label="' + esc('Verse versus ' + f.site + ': Verse ahead on ' + n + ' of ' + m + ' aspects, ' + f.site + ' on ' + lost) + '">'
-    + '<div class="tw-side tw-v">' + '<img class="tw-logo" src="/icon.svg" alt="" width="56" height="56" style="width:56px;height:56px">' + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
+    + '<div class="tw-side tw-v">' + '<img class="tw-logo" src="/verse-logo.webp" alt="" width="56" height="56" style="width:56px;height:56px;border-radius:50%">' + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
     + '<div class="tw-vsmark" aria-hidden="true">VS</div>'
     + '<div class="tw-side tw-s">' + siteFace(f, 56) + '<span class="tw-who">' + esc(f.site) + '</span>' + bar('s', lost) + '<span class="tw-bar-n">' + lost + ' of ' + m + '</span></div></div>';
 }
