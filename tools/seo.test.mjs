@@ -80,6 +80,9 @@ test('every tool page file carries exactly the block the table gives it (node to
     assert.equal((html.match(/rel="canonical"/g) || []).length, 1, path); assert.equal((html.match(/application\/ld\+json/g) || []).length, 1, path);
     const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html)[1].replace(/<\\\//g, '</'));
     assert.equal(ld['@graph'][0].url, SITE + path);
+    const rows = (html.match(/<nav id="asks"/g) || []).length;
+    assert.equal(rows, pageOf(path).links ? 1 : 0, path + ' common asks row'); // the row sits above "Use with", so people see the asks before the hand-offs
+    if (rows) assert.ok(html.indexOf('<nav id="asks"') < html.indexOf('<nav id="related"'), path);
   }
   for (const [p, why] of Object.entries(SKIP)) { assert.ok(pageOf(p), p + ' still has a row'); assert.ok(why.length > 10); }
 });
