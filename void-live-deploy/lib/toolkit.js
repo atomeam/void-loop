@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator',
+  '/password/': 'Password generator', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -33,6 +33,7 @@ export const RELATED = Object.freeze({
   '/calculator/': ['/base-converter/', '/convert/', '/random/'],
   '/time/': ['/stopwatch/'],
   '/base64/': ['/word-count/', '/base-converter/'],
+  '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */
 export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p]).map((href) => ({ href, label: TOOLS[href] }));
@@ -104,6 +105,7 @@ export function mountRelated(el, path, handoffs = []) {
     const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);
   }
   for (const r of relatedOf(path)) row.append(a(r.href, r.label));
+  if (path !== '/tools/') row.append(a('/tools/', 'All tools')); // the kit's own page (owner, 2026-10-25: "link them all so they are all usable together")
   const h = accent(); const sw = a('/color/' + (h ? '?c=' + h.slice(1) : ''), h ? 'Accent ' + h : 'Pick an accent colour', 'tk-accent');
   sw.title = 'The colour every Verse tool wears on this device: pick it on the colour page'; row.append(sw);
   const label = d.createElement('span'); label.className = 'tk-label'; label.textContent = 'Use with';
