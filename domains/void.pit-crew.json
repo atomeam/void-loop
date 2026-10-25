@@ -1,18 +1,7 @@
 {
-  "at": "2026-10-24T11:40:14.392Z",
+  "at": "2026-10-25T12:04:35.541Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [
-    {
-      "id": "ask-20261023-2119-1",
-      "ask": "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit",
-      "target": "voice:ask-20261023-2119-1"
-    },
-    {
-      "id": "ask-20261023-2119-2",
-      "ask": "Move non-V01D workers off the shared namespace to reduce KV writes",
-      "target": "voice:ask-20261023-2119-2"
-    }
-  ],
+  "selected": [],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
