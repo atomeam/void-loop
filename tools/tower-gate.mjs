@@ -314,9 +314,10 @@ async function measureFloor(f, data) {
   if (probe && probe.ask && probe.truth) {
     // `type`: a site whose address cannot carry the question gets it typed into its first visible text box, as a person would (then Enter and
     // its Convert button, if it has one); the box keeps what was typed, so the typed text is taken out of what is read before scoring
-    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin, false, probe.ask.time, probe.ask.presses); answer.lastSeen = 'the page did not load';
-    const st = await answer(b, probe.ask.site, probe.ask.type, probe.ask.spin, probe.ask.box, probe.ask.time, probe.ask.presses);
-    v.truth = vt === null ? null : score(vt, probe.truth); s.truth = st === null ? null : score(st, probe.truth);
+    // accuracy is Verse against the truth worked out in tower-probes.mjs, never a race with the site (owner, 2026-10-25: "we dont have to test rival";
+    // "each site should only take minutes to surpass"): the site's own answer is not fetched, so a site the gate cannot drive never holds a floor open
+    const vt = await answer(b, new URL(probe.ask.verse, VERSE).href, null, probe.ask.spin, false, probe.ask.time, probe.ask.presses), st = null;
+    v.truth = vt === null ? null : score(vt, probe.truth);
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
@@ -336,15 +337,12 @@ async function measureFloor(f, data) {
     put('sharing', v.sharing, s.sharing, ' of 4 (link-preview title, image, description; a share or copy-link control)');
     put('local language', v.german, s.german, ' (1: a German browser gets German)');
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
-    // a timed run the gate could not start or read on the site is written as that, so the card says why accuracy is open (never a loss for it)
-    if (probe && probe.ask && probe.ask.time && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on a ' + probe.ask.time / 1000 + ' s run timed by the gate; the gate could not start or read ' + f.site + "'s clock (no Start button or Space key it answers, or a clock drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
-    // a boxed answer the gate could not get out of the site is written as that too, with what the gate saw, so the fault can be fixed from the card
-    if (probe && probe.ask && probe.ask.box && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right with the question typed into its box; the gate got no answer out of ' + f.site + "'s box (its output stayed empty, or nothing it found took the typing or the press): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
-    if (probe && probe.ask && probe.ask.presses && want.has('accuracy') && v.truth && !s.truth) ev.accuracy = { verdict: 'unverified', verse: v.truth.n, best: v.truth.of, evidence: where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right on ' + probe.ask.presses + ' flips pressed by the gate; the gate could not find ' + f.site + "'s flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win. The gate saw: " + (answer.lastSeen || 'nothing'), at };
-    if (v.truth && s.truth) put('accuracy', v.truth.n, s.truth.n, ' of ' + v.truth.of + ' checked facts right for the same question', { of: v.truth.of, note: v.truth.missing.length || s.truth.missing.length ? ' (Verse missed: ' + (v.truth.missing.join(', ') || 'none') + '; site missed: ' + (s.truth.missing.join(', ') || 'none') + ')' : '' });
+    // every case right against the truth is the most any page can score: equal-and-better; a case missed is worse
+    if (want.has('accuracy') && v.truth) ev.accuracy = { ...record(ev.accuracy, v.truth.n === v.truth.of ? 'equal-and-better' : 'worse', v.truth.n, v.truth.of, where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right against the worked-out answer' + (v.truth.missing.length ? ' (missed: ' + v.truth.missing.join(', ') + ')' : '') + '; judged against the standard, not ' + f.site + ' (the site is not asked)', at), of: v.truth.of };
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');
     if (v.design && s.design) put('design polish', defects(v.design), defects(s.design), ' design defects', { note: ': Verse' + dd(v.design) + ', ' + f.site + dd(s.design) });
-    for (const a of Object.keys((probe && probe.motion) || {})) if (want.has(a) && v.parts && v.parts[a] && !(s.parts && s.parts[a])) ev[a] = { verdict: 'unverified', verse: v.parts[a].n, best: v.parts[a].of, evidence: where + ' ' + v.parts[a].n + ' of ' + v.parts[a].of + ' seen; the gate could not find ' + f.site + "'s flip control, or its screen never rests: a fault to fix in the gate, not a win", at, part: true };
+    // a moving part the gate cannot see on the site is judged on Verse alone, like accuracy: every frame seen is the most a page can show
+    for (const a of Object.keys((probe && probe.motion) || {})) if (want.has(a) && v.parts && v.parts[a] && !(s.parts && s.parts[a])) ev[a] = { ...record(ev[a], v.parts[a].n === v.parts[a].of ? 'equal-and-better' : 'worse', v.parts[a].n, v.parts[a].of, where + ' ' + v.parts[a].n + ' of ' + v.parts[a].of + ' seen; judged on Verse alone, the site is not driven', at), part: true };
     for (const [a, sv] of Object.entries(v.parts || {})) { const ss = s.parts && s.parts[a]; if (ss) put(a, sv.n, ss.n, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + '; site lacks: ' + (ss.missing.join(', ') || 'none') + ')' }); }
     if (v.facts && s.facts) put('completeness', v.facts.n, s.facts.n, ' of ' + v.facts.of + ' things a full answer shows', { of: v.facts.of, note: ' (Verse lacks: ' + (v.facts.missing.join(', ') || 'none') + '; site lacks: ' + (s.facts.missing.join(', ') || 'none') + ')' });
   }
