@@ -24,6 +24,9 @@
   label { font-size: 14px; color: var(--soft); }
   input[type=number], input[type=text], select { font: 15px system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-width: 0; }
   input[type=number] { width: 6em; } #seed { width: 10em; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  details { margin: 10px 0; } summary { cursor: pointer; font-weight: 600; font-size: 15px; min-height: 28px; }
+  #cards { min-height: 100vh; } #phonenote { min-height: 7.5em; } /* room kept for what the script fills, so nothing below jumps as the page loads */
+  #nats .chip { font-size: 13px; padding: 2px 8px 2px 4px; }
   .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 14px; cursor: pointer; color: var(--ink); }
   .chip input { margin: 0; width: 24px; height: 24px; accent-color: var(--accent); } /* a tap target of 24 px at least (WCAG 2.2 2.5.8) */
   button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
@@ -37,7 +40,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/random-user/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Made-up people for testing","url":"https://a-to-mind.com/random-user/","description":"Made-up people by count, gender and country, with names, addresses, dates of birth and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat. None of them is real.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random user generator, fake name generator, fake user data for testing, random person generator, test data generator json, random address generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Made-up people for testing","item":"https://a-to-mind.com/random-user/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Made-up people for testing","url":"https://a-to-mind.com/random-user/","description":"Made-up people by count, gender and 22 countries, with titles, names, addresses, two phones, dates of birth, passwords to your rules and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat page by page. None of them is real.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random user generator, fake name generator, fake user data for testing, random person generator, test data generator json, random address generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Made-up people for testing","item":"https://a-to-mind.com/random-user/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
@@ -55,10 +58,14 @@
     <label for="seed">Seed</label><input id="seed" type="text" spellcheck="false" autocomplete="off"><button type="button" id="newseed">New seed</button>
   </div>
   <h2>Countries</h2>
-  <div class="row" id="nats"></div>
-  <h2>Fields</h2>
-  <div class="row" id="fields"></div>
-  <div class="row"><button type="button" class="main" id="go">Make them</button></div>
+  <div class="row" id="nats"><label class="chip"><input type="checkbox" value="us" checked>United States</label><label class="chip"><input type="checkbox" value="gb">United Kingdom</label><label class="chip"><input type="checkbox" value="fr">France</label><label class="chip"><input type="checkbox" value="de">Germany</label><label class="chip"><input type="checkbox" value="es">Spain</label><label class="chip"><input type="checkbox" value="br">Brazil</label><label class="chip"><input type="checkbox" value="in">India</label><label class="chip"><input type="checkbox" value="jp">Japan</label><label class="chip"><input type="checkbox" value="au">Australia</label><label class="chip"><input type="checkbox" value="ca">Canada</label><label class="chip"><input type="checkbox" value="ch">Switzerland</label><label class="chip"><input type="checkbox" value="dk">Denmark</label><label class="chip"><input type="checkbox" value="fi">Finland</label><label class="chip"><input type="checkbox" value="ie">Ireland</label><label class="chip"><input type="checkbox" value="ir">Iran</label><label class="chip"><input type="checkbox" value="mx">Mexico</label><label class="chip"><input type="checkbox" value="nl">Netherlands</label><label class="chip"><input type="checkbox" value="no">Norway</label><label class="chip"><input type="checkbox" value="nz">New Zealand</label><label class="chip"><input type="checkbox" value="rs">Serbia</label><label class="chip"><input type="checkbox" value="tr">Turkey</label><label class="chip"><input type="checkbox" value="ua">Ukraine</label></div>
+  <details><summary>Fields</summary>
+  <div class="row" id="fields"><label class="chip"><input type="checkbox" value="gender" checked>gender</label><label class="chip"><input type="checkbox" value="title" checked>title</label><label class="chip"><input type="checkbox" value="name" checked>name</label><label class="chip"><input type="checkbox" value="email" checked>email</label><label class="chip"><input type="checkbox" value="username" checked>username</label><label class="chip"><input type="checkbox" value="password" checked>password</label><label class="chip"><input type="checkbox" value="phone" checked>phone</label><label class="chip"><input type="checkbox" value="cell">second phone</label><label class="chip"><input type="checkbox" value="safePhone">phone is reserved for fiction</label><label class="chip"><input type="checkbox" value="dob" checked>birthday</label><label class="chip"><input type="checkbox" value="age" checked>age</label><label class="chip"><input type="checkbox" value="registered">registered on</label><label class="chip"><input type="checkbox" value="registeredAge">years registered</label><label class="chip"><input type="checkbox" value="street" checked>street</label><label class="chip"><input type="checkbox" value="city" checked>city</label><label class="chip"><input type="checkbox" value="state" checked>state</label><label class="chip"><input type="checkbox" value="postcode" checked>postcode</label><label class="chip"><input type="checkbox" value="country" checked>country</label><label class="chip"><input type="checkbox" value="latitude">latitude</label><label class="chip"><input type="checkbox" value="longitude">longitude</label><label class="chip"><input type="checkbox" value="timezone">timezone</label><label class="chip"><input type="checkbox" value="nat">nat</label><label class="chip"><input type="checkbox" value="id">id (UUID)</label><label class="chip"><input type="checkbox" value="picture" checked>picture</label></div></details>
+  <details><summary>Passwords</summary>
+  <div class="row" id="pw"><label class="chip"><input type="checkbox" id="pwon"> Choose the characters</label>
+    <label class="chip"><input type="checkbox" value="upper" checked disabled> A–Z</label><label class="chip"><input type="checkbox" value="lower" checked disabled> a–z</label><label class="chip"><input type="checkbox" value="number" checked disabled> 0–9</label><label class="chip"><input type="checkbox" value="special" checked disabled> !@#</label>
+    <label for="pwmin">Length</label><input id="pwmin" type="number" min="1" max="64" value="8" disabled style="width:4.5em"><label for="pwmax">to</label><input id="pwmax" type="number" min="1" max="64" value="16" disabled style="width:4.5em"></div></details>
+  <div class="row"><button type="button" class="main" id="go">Make them</button><button type="button" id="prev" aria-label="Previous page of people">‹ Previous</button><label for="page">Page</label><input id="page" type="number" min="1" max="9999" value="1" style="width:4em"><button type="button" id="next" aria-label="Next page of people">Next ›</button></div>
   <p class="note" id="phonenote"></p>
   <div class="cards" id="cards" aria-live="polite"></div>
   <h2>As data</h2>
@@ -71,29 +78,40 @@
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
-  import { people, only, format, NATS, FIELDS } from '/lib/fakeuser.js';
+  import { people, only, format, NATS, FIELDS, PW_SETS } from '/lib/fakeuser.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
-  const q = new URLSearchParams(location.search), DEFAULT_FIELDS = ['gender', 'name', 'email', 'phone', 'dob', 'age', 'street', 'city', 'state', 'postcode', 'country', 'username', 'password', 'picture'];
+  const q = new URLSearchParams(location.search), DEFAULT_FIELDS = ['gender', 'title', 'name', 'email', 'phone', 'dob', 'age', 'street', 'city', 'state', 'postcode', 'country', 'username', 'password', 'picture'];
   const newSeed = () => Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 8);
   $('n').value = Math.min(5000, Math.max(1, +q.get('n') || 12)); $('gender').value = ['female', 'male'].includes(q.get('g')) ? q.get('g') : ''; $('seed').value = (q.get('seed') || newSeed()).slice(0, 40);
   if (['json', 'csv', 'yaml', 'xml', 'sql'].includes(q.get('fmt'))) $('fmt').value = q.get('fmt');
+  $('page').value = Math.min(9999, Math.max(1, Math.floor(+q.get('page')) || 1));
+  // randomuser.me's password=special,upper,lower,number,8-16
+  const pwBoxes = [...$('pw').querySelectorAll('input[value]')];
+  if (q.get('password')) { const parts = q.get('password').split(','), len = /^(\d+)(?:-(\d+))?$/.exec(parts.find((x) => /^\d/.test(x)) || ''); $('pwon').checked = true;
+    if (parts.some((x) => PW_SETS[x])) for (const b of pwBoxes) b.checked = parts.includes(b.value); if (len) { $('pwmin').value = len[1]; $('pwmax').value = len[2] || len[1]; } }
+  const pwSync = () => { for (const e of [...pwBoxes, $('pwmin'), $('pwmax')]) e.disabled = !$('pwon').checked; };
+  const pwOpt = () => ($('pwon').checked ? { sets: pwBoxes.filter((b) => b.checked).map((b) => b.value), min: +$('pwmin').value, max: +$('pwmax').value } : null);
+  pwSync();
   const natsOn = new Set((q.get('nat') || 'us').split(',').filter((x) => NATS[x])), fieldsOn = new Set((q.get('f') || DEFAULT_FIELDS.join(',')).split(',').filter((x) => FIELDS.includes(x)));
   if (!natsOn.size) natsOn.add('us');
-  const chips = (box, list, on, label) => box.replaceChildren(...list.map((k) => { const c = el('input', { type: 'checkbox', checked: on.has(k) }); c.addEventListener('change', () => { c.checked ? on.add(k) : on.delete(k); make(); }); return el('label', { className: 'chip' }, [c, label(k)]); }));
-  chips($('nats'), Object.keys(NATS), natsOn, (k) => NATS[k].country);
-  chips($('fields'), FIELDS, fieldsOn, (k) => ({ dob: 'birthday', safePhone: 'phone is reserved for fiction', id: 'id (UUID)' })[k] || k);
+  // the chips are in the page's HTML (drawn by script they moved everything below them as the page loaded); here they are set from the link and wired
+  const chips = (box, list, on) => { for (const c of box.querySelectorAll('input[type=checkbox]')) { if (!list.includes(c.value)) continue; c.checked = on.has(c.value); c.addEventListener('change', () => { c.checked ? on.add(c.value) : on.delete(c.value); make(); }); } };
+  chips($('nats'), Object.keys(NATS), natsOn);
+  chips($('fields'), FIELDS, fieldsOn);
   let rows = [], names = [];
   function make() {
-    const nats = [...natsOn].length ? [...natsOn] : ['us'], all = people({ seed: $('seed').value || 'verse', n: +$('n').value, nats, gender: $('gender').value });
+    const nats = [...natsOn].length ? [...natsOn] : ['us'], pw = pwOpt(), all = people({ seed: $('seed').value || 'verse', n: +$('n').value, nats, gender: $('gender').value, page: +$('page').value, pw });
     rows = only(all, [...fieldsOn]); names = all.slice(0, 60).map((p) => p.name);
-    $('cards').replaceChildren(...all.slice(0, 30).map((p) => el('div', { className: 'card' }, [el('img', { src: p.picture, alt: '' }), el('div', {}, [el('b', { textContent: p.name }), el('span', { textContent: p.email }), el('span', { textContent: p.phone + (p.safePhone ? '' : ' (made up; could exist)') }), el('span', { textContent: p.city + ', ' + p.country + ' · ' + p.age })])])));
+    $('cards').replaceChildren(...all.slice(0, 30).map((p) => el('div', { className: 'card' }, [el('img', { src: p.picture, alt: '' }), el('div', {}, [el('b', { textContent: p.name, title: p.title + ' ' + p.name }), el('span', { textContent: p.email }), el('span', { textContent: p.phone + (p.safePhone ? '' : ' (made up; could exist)') }), el('span', { textContent: p.city + ', ' + p.country + ' · ' + p.age })])])));
     const unsafe = nats.filter((k) => !NATS[k].safePhone).map((k) => NATS[k].country);
-    $('phonenote').textContent = (all.length > 30 ? 'Showing 30 of ' + all.length + '; all of them are in the data below. ' : '') + 'Phones: United States, United Kingdom and France numbers are in ranges reserved for fiction and reach no one.' + (unsafe.length ? ' ' + unsafe.join(', ') + ' have no such range: those numbers are made up and could belong to someone, so never call or text them.' : '');
+    $('phonenote').textContent = (all.length > 30 ? 'Showing 30 of ' + all.length + '; all of them are in the data below. ' : '') + 'Phones: United States, Canada, United Kingdom, France and Australia numbers are in ranges reserved for fiction and reach no one.' + (unsafe.length ? ' ' + unsafe.join(', ') + ' have no such range: those numbers are made up and could belong to someone, so never call or text them.' : '');
     $('out').textContent = format(rows.map((r) => ('picture' in r ? { ...r, picture: '(initials, ' + r.picture.length + ' chars)' } : r)).slice(0, 200), $('fmt').value) + (rows.length > 200 ? '… ' + (rows.length - 200) + ' more in the download\n' : '');
-    try { history.replaceState(null, '', '?' + new URLSearchParams({ n: $('n').value, nat: nats.join(','), ...($('gender').value ? { g: $('gender').value } : {}), seed: $('seed').value, f: [...fieldsOn].join(','), fmt: $('fmt').value })); } catch (_) {}
+    try { history.replaceState(null, '', '?' + new URLSearchParams({ n: $('n').value, nat: nats.join(','), ...($('gender').value ? { g: $('gender').value } : {}), seed: $('seed').value, ...(+$('page').value > 1 ? { page: $('page').value } : {}), ...(pw ? { password: [...pw.sets, pw.min + '-' + pw.max].join(',') } : {}), f: [...fieldsOn].join(','), fmt: $('fmt').value })); } catch (_) {}
   }
   const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
-  $('go').addEventListener('click', make); for (const id of ['n', 'gender', 'seed', 'fmt']) $(id).addEventListener('change', make);
+  $('go').addEventListener('click', make); for (const id of ['n', 'gender', 'seed', 'fmt', 'page', 'pwmin', 'pwmax']) $(id).addEventListener('change', make);
+  for (const b of pwBoxes) b.addEventListener('change', make); $('pwon').addEventListener('change', () => { pwSync(); make(); });
+  const turn = (d) => { $('page').value = Math.min(9999, Math.max(1, (+$('page').value || 1) + d)); make(); }; $('prev').addEventListener('click', () => turn(-1)); $('next').addEventListener('click', () => turn(1));
   $('newseed').addEventListener('click', () => { $('seed').value = newSeed(); make(); });
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(format(rows, $('fmt').value)); toast($('copy'), 'Copied'); } catch (_) {} });
   $('dl').addEventListener('click', () => { const f = $('fmt').value, a = el('a', { href: URL.createObjectURL(new Blob([format(rows, f)], { type: 'text/plain' })), download: 'people.' + f }); document.body.append(a); a.click(); a.remove(); });

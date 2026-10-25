@@ -213,8 +213,8 @@
           "name": "Community forum",
           "detail": "Lemmy community (lemmy.world/c/perchance) and Discord for help and showcases.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "/generators/forum/: topics and replies on the comments engine, the signed sum, rate limits, reports hide, owner delete (2026-10-25)"
         },
         {
           "name": "Report generator",
@@ -262,8 +262,8 @@
           "name": "tap-plugin / wheel-plugin",
           "detail": "Tap a phrase to re-roll it; a spinning prize wheel.",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "tap a dotted part of a result to roll just that part; the wheel is /wheel/ (not embeddable in a generator yet) (2026-10-25)"
+          "verse": "has",
+          "verse_evidence": "tap a dotted part to reroll it; {wheel: list} spins a wheel to the picked entry (lib/wheel.js) (2026-10-25)"
         },
         {
           "name": "remember-plugin",
@@ -276,15 +276,15 @@
           "name": "upload-plugin / key-value storage",
           "detail": "Let visitors upload files and store small shared data.",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "partial",
+          "verse_evidence": "shared data per published generator ([shared.key], {add:}, {set:}; 20 keys, 4 KB, rate-limited, owner clears); no file uploads (pictures come only from the painter) (2026-10-25)"
         },
         {
           "name": "layout-maker / select-range / image-layer-combiner plugins",
           "detail": "Templates for layouts, sliders, and stacking images into composite pictures (e.g. character makers).",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "$layout = lines|cards|grid|table, $inputs number ranges, and the layer maker on /image/ (stack pictures already on the page, no uploads) (2026-10-25)"
         },
         {
           "name": "text-to-speech plugin",
@@ -381,8 +381,8 @@
           "name": "Other AI generators",
           "detail": "AI story writer, AI RPG/adventure, AI negative-prompt generator, AI name generators built on ai-text-plugin.",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "/generators/story/ story writer and /generators/chat/ character chat; no AI name generators yet (2026-10-25)"
+          "verse": "has",
+          "verse_evidence": "/generators/story/, /generators/chat/, and five AI name generators (lib/ai-generators.js) on {ai: ...} (2026-10-25)"
         },
         {
           "name": "Copy / share results",

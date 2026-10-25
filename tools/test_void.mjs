@@ -1131,7 +1131,7 @@ try {
     const ahead = new Date(Date.now() + 9 * 864e5), dentistDay = ahead.toLocaleDateString('en-US', { month: 'short' }) + ' ' + ahead.getDate();
     await C.ask('add dentist to my calendar ' + dentistDay + ' at 3pm', 900);
     await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
-    const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
+    const agenda = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []));
     const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     const netAdds = net.slice(), pageAfterAdds = await C.page(); // read now: "calender" and "agenda" below open the 3D calendar
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
@@ -1141,11 +1141,11 @@ try {
     await C.p.reload(); const afterReload = await until(async () => { const t = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''); return /Call Sam/.test(t) ? t : ''; }, 6000)
       || await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
-    const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const kept = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     await C.ask('agenda', 700);
     await C.p.click('.calendar-card .cal-event button'); await C.p.waitForTimeout(200);
-    const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
-    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const afterX = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
+    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar <nine days ahead> at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
@@ -1165,8 +1165,8 @@ try {
       // the row of the event just added: the day may already hold one of the visitor's adds above
       const w = [...pg.querySelectorAll('.c3d-edit .row:not(.add) .w')].find((x) => x.value === 'Launch party'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
       await new Promise((r) => setTimeout(r, 50));
-      const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
-      return [ev && ev.title, ev && new Date(ev.at).getDate() === pick.day && new Date(ev.at).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+      const ev = (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).find((e) => /Launch/.test(e.title)); // the one store the stage and /calendar/ share (lib/agenda.js)
+      return [ev && ev.title, ev && new Date(ev.start).getDate() === pick.day && new Date(ev.start).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
     }, pick);
     const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
@@ -1371,7 +1371,7 @@ try {
     const kinds = st.map((x) => x.kind).sort();
     const groups = new Set(st.map((x) => x.group));
     const list = st.find((x) => x.kind === 'list'), draft = st.find((x) => x.kind === 'sticky');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     const cd = st.find((x) => x.kind === 'countdown');
     const box = await I.p.$eval('[data-id="' + cd.id + '"]', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 12, y: b.top + 12 }; });
     await I.p.mouse.move(box.x, box.y); await I.p.mouse.down(); await I.p.mouse.move(box.x + 50, box.y + 30, { steps: 6 }); await I.p.mouse.up(); await I.p.waitForTimeout(200);
@@ -1389,7 +1389,7 @@ try {
   if (want("intent as a noun: \"the product page launch on Friday\" plans like \"I need to launch the product page by Friday\"")) { const I = await fresh();
     await I.ask('the product page launch on Friday', 2500);
     const said = await I.whisper(), st = await I.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     check('intent as a noun: "the product page launch on Friday" plans "launch the product page": a countdown, a launch\'s own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)',
       /planned "launch the product page"/.test(said) && !st.some((x) => x.kind === 'sticky') && st.some((x) => x.kind === 'countdown') && list && list.items.length === 5
         && list.items[0].text.startsWith('outline it') && /^launch the product page \(fri \d+\)$/.test(list.items[4].text) && agenda.some((t) => /launch the product page/i.test(t))
@@ -1400,7 +1400,7 @@ try {
   if (want("intent without a day: \"plan my move\" brings an undated checklist")) { const U = await fresh();
     await U.ask('plan my move', 2500);
     const said = await U.whisper(), st = await U.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await U.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const agenda = await U.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('intent without a day: "plan my move" brings the move\'s steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day',
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
@@ -1822,7 +1822,7 @@ try {
     await D.ask('how many days until friday', 700); const fri = await D.page();
     await D.ask('what day is it in Tokyo', 1200); const day = await D.page();
     await D.ask('time difference between London and Tokyo', 1500); const gap = await D.page();
-    const cal = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const cal = await D.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     const want = ['friday'].map(() => { const t = new Date(); const a = (5 - t.getDay() + 7) % 7 || 7; return a; })[0];
     check('list: "how do I get to Kyoto" is the map with OpenStreetMap and Google directions; "define serendipity" and "what does X mean" read Wiktionary (text, no markup)',
       /openstreetmap\.org\/directions\?to=35\.01/.test(dir) && /google\.com\/maps\/dir/.test(dir) && /Kyoto/.test(dir)
@@ -5656,6 +5656,19 @@ try {
       && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of wordcounter.net on /word-count/: a goal with its progress, two- and three-word phrases, the limits a text fits, earlier versions
+  if (want("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version")) {
+    const Z = await fresh(); const t = 'The blue whale is huge. The blue whale eats krill. A blue whale sings.';
+    await Z.p.goto(base + 'word-count/?goal=50&t=' + encodeURIComponent(t)); await Z.p.waitForTimeout(300);
+    const got = { goal: await Z.p.$eval('#goalnote', (e) => e.textContent), bar: await Z.p.$eval('#goalbar', (e) => e.value), two: await Z.p.$eval('#kw2 li', (e) => e.textContent), three: await Z.p.$eval('#kw3 li', (e) => e.textContent),
+      x: await Z.p.$eval('#fits li', (e) => e.textContent), speak: await Z.p.$eval('#speak', (e) => !e.disabled) };
+    await Z.p.click('#vsum'); await Z.p.click('#keepnow'); await Z.p.fill('#text', 'Something else entirely.'); await Z.p.click('#vlist li button'); await Z.p.waitForTimeout(200);
+    const restored = await Z.p.$eval('#text', (e) => e.value), kept = await Z.p.$$eval('#vlist li', (l) => l.length);
+    check("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version",
+      /^14 of 50 words · 36 to go/.test(got.goal) && Math.abs(got.bar - 0.28) < 0.01 && /^blue whale · 3/.test(got.two) && /^the blue whale · 2/.test(got.three) && /X \(Twitter\) post: 210 left of 280/.test(got.x) && got.speak
+      && restored === t && kept >= 2 && !Z.errors.length, JSON.stringify({ got, restored, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of online-stopwatch.com: an interval timer that walks get ready, work, rest from a link, and a chess clock with an increment
   if (want("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move")) {
     const Z = await fresh(); await Z.p.goto(base + 'stopwatch/?iv=2,1,2,1,0,1'); await Z.p.click('#ivgo'); await Z.p.waitForTimeout(300);
@@ -5664,6 +5677,19 @@ try {
     const cc = { w: await Z.p.$eval('#cc0t', (e) => e.textContent), b: await Z.p.$eval('#cc1t', (e) => e.textContent), on: await Z.p.$eval('#cc1', (e) => e.classList.contains('on')), m: await Z.p.$eval('#cc0m', (e) => e.textContent) };
     check("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move",
       p1 === 'Get ready' && p2 === 'Work' && /Round 1 of 2/.test(info) && cc.w === '1:05' && cc.on && /1 move/.test(cc.m) && !Z.errors.length, JSON.stringify({ p1, p2, info, cc, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of unitconverters.net on /convert/: the engineering and electricity kinds (torque, capacitance), a table of common values for a pair,
+  // and a link of another kind that moves nothing as it redraws
+  if (want("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair")) {
+    const Z = await fresh(); await Z.ctx.addInitScript('window.__cls=0;try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)window.__cls+=e.value})}).observe({type:"layout-shift",buffered:true})}catch(e){}');
+    await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('1 Nm to lbf ft')); await Z.p.waitForSelector('#u-lbfft');
+    const torque = { answer: await Z.p.$eval('#answer', (e) => e.textContent), rows: await Z.p.$$eval('#pairrows tr', (r) => r.length), ten: await Z.p.$eval('#pairrows tr:nth-child(7)', (e) => e.textContent), kinds: await Z.p.$$eval('#kind option', (o) => o.length) };
+    await Z.p.waitForTimeout(300); const cls = await Z.p.evaluate(() => window.__cls);
+    await Z.p.fill('#ask', '100 uF to nF'); await Z.p.waitForTimeout(200); const cap = await Z.p.$eval('#answer', (e) => e.textContent);
+    check("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair",
+      torque.answer === '1 N·m = 0.737562149277 lbf·ft' && torque.rows === 15 && /10 N·m7\.37562149277 lbf·ft/.test(torque.ten) && torque.kinds === 52 && cls < 0.05 && cap === '100 µF = 100000 nF' && !Z.errors.length,
+      JSON.stringify({ torque, cls, cap, errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's unitconverters.net floor: /convert/ answers the gate's own question from its link, shows every unit of the kind at once, and a
@@ -5806,6 +5832,16 @@ try {
       focused === 'b64' && lines === 'Zg==\nZm8=\nZm9v' && dlName === 'base64.b64.txt' && dlText === 'Zg==\r\nZm8=\r\nZm9v' && shown && fileName === 'decoded.png' && fileBytes.join() === '137,80,78,71'
       && preview < 10000 && /Only the start is shown/.test(note) && bigName === 'big.bin.b64.txt' && bigOut === big.toString('base64') && took < 20000 && !Z.errors.length,
       JSON.stringify({ focused, lines, dlName, dlText, shown, fileName, fileBytes, preview, note, bigName, bigLen: bigOut.length, took, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
+    const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
+    const p1 = await read(); await Z.p.click('#next'); const p2 = await read(), url = Z.p.url();
+    check("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
+      p1.length === 5 && p1.every((p) => ['TR', 'NL'].includes(p.nat) && /^[A-Z0-9]{10,12}$/.test(p.password)) && p2[0].name !== p1[0].name && /page=2/.test(url) && /password=upper%2Cnumber%2C10-12/.test(url) && !Z.errors.length,
+      JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
     await Z.ctx.close();
   }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {

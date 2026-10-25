@@ -72,3 +72,17 @@ test('asks in words: either order of separator, one unit alone, how many in, and
   assert.equal(unitsNamed('c')[0].kind, 'temperature'); assert.equal(say('1 c to m/s'), '299792458 m/s', 'c beside a speed is the speed of light');
   for (const no of ['hello', '5 km to kg', '']) assert.equal(parseAsk(no), null, no);
 });
+test('the rest of unitconverters.net: mechanics, electricity, more heat, fluids, light, magnetism and radiology, the other converters, and more units per kind', () => {
+  for (const k of ['acceleration', 'angvel', 'density', 'specvol', 'torque', 'inertia', 'current', 'voltage', 'resistance', 'resistivity', 'conductance', 'conductivity', 'capacitance', 'inductance', 'efield',
+    'specheat', 'heatflux', 'htc', 'massflow', 'dynvisc', 'kinvisc', 'molar', 'luminance', 'magfield', 'magflux', 'mmf', 'exposure', 'prefix', 'datarate', 'typography']) assert.ok(KINDS[k] && KINDS[k].units.length >= 5, k);
+  assert.equal(say('1 g-force to m/s2'), '9.80665 m/s²'); assert.equal(say('1 Nm to lbf ft'), '0.737562149277 lbf·ft'); assert.equal(say('1 g/cm3 to lb/ft3'), '62.4279605761 lb/ft³');
+  assert.equal(say('10 A to mA'), '10000 mA'); assert.equal(say('4.7 kohm to ohm'), '4700 Ω'); assert.equal(say('100 uF to nF'), '100000 nF'); assert.equal(say('1 statV to V'), '299.792458 V');
+  assert.equal(say('1 Oe to A/m'), '79.5774715459 A/m'); assert.equal(say('1 Wb to Mx'), '100000000 Mx'); assert.equal(say('1 R to C/kg'), '0.000258 C/kg');
+  assert.equal(say('1 BTU/lb/f to J/kg/k'), '4186.8 J/(kg·K)'); assert.equal(say('1 cP to Pa s'), '0.001 Pa·s'); assert.equal(say('1 St to cSt'), '100 cSt'); assert.equal(say('1 kg/s to kg/h'), '3600 kg/h');
+  assert.equal(say('12 pt to px'), '16 px'); assert.equal(say('100 mbps to MB/s'), '12.5 MB/s'); assert.equal(say('1 kilo to milli'), '1000000 ×10⁻³');
+  assert.equal(say('1 acre-foot to m3'), '1233.48183755 m³'); assert.equal(say('1 fortnight to d'), '14 d'); assert.equal(say('1 ksi to MPa'), '6.89475729317 MPa'); assert.equal(say('1 parsec to ly'), '3.26156377717 ly');
+  assert.equal(say('1 ton of refrigeration to BTU/h'), '12000 BTU/h'); assert.equal(say('1 angstrom to nm'), '0.1 nm'); assert.equal(say('1 slug to lb'), '32.1740485564 lb');
+  // the words that mean something else stay theirs: 1 c to f is a temperature, Gb a gigabit, R the Rankine degree, b the bit
+  assert.equal(say('1 c to f'), '33.8 °F'); assert.equal(unitsNamed('Gb')[0].unit.name, 'gigabit'); assert.equal(unitsNamed('R')[0].kind, 'temperature'); assert.equal(unitsNamed('b')[0].unit.name, 'bit');
+  const order = kindsInOrder().map(([, k]) => k.group); assert.ok(order.lastIndexOf('engineering') < order.indexOf('other'), 'other converters last');
+});

@@ -29,7 +29,7 @@
  "calc": "One calculator on the stage: \"open a calculator\", \"calculator 2+5\" (worked out on the card), \"remove the…",
  "calc-more": "Two small converters the page's answers did not have: \"pixels to cm at 96 dpi\" / \"300 px in cm at 150 dpi\" /…",
  "calendar": "A quiet timeline on the stage, from the same input as everything else",
- "calendar-file": "\"export my calendar\", \"download my calendar as ics\": the events on this browser's agenda as one standard .ics…",
+ "calendar-file": "\"export my calendar\", \"download my calendar as ics\": the events kept in this browser as one standard .ics…",
  "calendar-fill": "A sentence puts an event in the calendar",
  "card-play": "Four small things to do with cards, each by words and each opt-in: \"flip this card\" turns the picked card…",
  "cartoon": "A 2D cartoon drawing of what you name",

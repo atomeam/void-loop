@@ -196,7 +196,30 @@ await page.locator('#comments textarea').fill('Lovely foxes!'); await page.locat
 await page.waitForFunction(() => /Lovely foxes!/.test(document.getElementById('comments').innerText), null, { timeout: 5000 }).catch(() => {});
 ok(/Anonymous[\s\S]*Lovely foxes!/.test(await page.locator('#comments').innerText()), 'a comment under /image/ after the sum, shown as text');
 await page.locator('#comments').scrollIntoViewIfNeeded(); await shot('11-comments');
+// 9. a wheel in a generator, the layer maker, the forum
+await page.goto(base + '/generators/make/'); await page.waitForSelector('#res li');
+await page.fill('#src', '$layout = cards\noutput\n  Lunch: {wheel: food}\nfood\n  pizza ^3\n  soup\n  salad\n'); await page.waitForTimeout(400);
+const won = (await page.locator('#res .txt').first().innerText()).replace('Lunch: ', '').trim();
+await page.locator('#res li').first().getByRole('button', { name: 'Spin the wheel' }).click(); await page.waitForTimeout(3600);
+ok((await page.locator('#res li').first().locator('.wheel button').innerText()) === 'Landed on: ' + won, 'the wheel spins and lands on the result it says: ' + won);
+ok(await page.locator('#res').evaluate((e) => e.classList.contains('lay-cards')), '$layout = cards lays the results out as cards');
+await shot('12-wheel');
+await page.goto(base + '/image/'); await page.fill('#prompt', 'a moon over hills'); await page.selectOption('#many', '2'); await page.click('#make'); await page.waitForFunction(() => document.querySelectorAll('#pics img').length === 2, null, { timeout: 10000 }).catch(() => {});
+await page.click('#layersH'); await page.waitForSelector('.lm-picks button', { timeout: 5000 }).catch(() => {});
+await page.locator('.lm-picks button').nth(0).click(); await page.locator('.lm-picks button').nth(1).click(); await page.waitForTimeout(400);
+const painted = await page.locator('.lm-canvas').evaluate((c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4000) if (d[i] > 0) n++; return n; });
+ok((await page.locator('.lm-list li').count()) === 2 && painted > 50, 'two pictures stacked as layers on the canvas');
+const lmBefore = await page.locator('.lm-canvas').evaluate((c) => c.toDataURL().length); await page.locator('.lm-list li').nth(1).getByLabel('Size').fill('30'); await page.waitForTimeout(200);
+ok((await page.locator('.lm-canvas').evaluate((c) => c.toDataURL().length)) !== lmBefore, 'a layer\'s size changes the stack');
+await page.locator('#layersBox').scrollIntoViewIfNeeded(); await shot('13-layers');
+await page.goto(base + '/generators/forum/'); await page.waitForTimeout(3300); await page.click('#newH');
+const fq = (await page.locator('#tSumL').innerText()).match(/(\d) \+ (\d)/);
+await page.fill('#tTitle', 'Share your tavern generators'); await page.fill('#tText', 'Post your best ones below.'); await page.fill('#tSum', String(+fq[1] + +fq[2])); await page.click('#tGo');
+await page.waitForURL(/\/generators\/forum\/\?t=/, { timeout: 5000 }).catch(() => {}); await page.waitForSelector('#posts .cm-text', { timeout: 5000 }).catch(() => {});
+ok(/Share your tavern generators/.test(await page.locator('#topicTitle').innerText()) && /Post your best ones below/.test(await page.locator('#posts').innerText()), 'a forum topic is started and opens with its first post');
+await page.goto(base + '/generators/forum/'); await page.waitForSelector('#topics a'); ok(/Share your tavern generators/.test(await page.locator('#topics').innerText()), 'the forum lists it');
+await shot('14-forum');
 // sideways overflow at 390 px on the pages
-for (const u of ['/generators/', '/generators/make/', '/image/', '/generators/chat/', '/generators/story/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
+for (const u of ['/generators/', '/generators/make/', '/image/', '/generators/chat/', '/generators/story/', '/generators/forum/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
 ok(errs.length === 0, 'no page errors ' + errs.join(' | '));
 await browser.close(); server.close(); process.exit(bad ? 1 : 0);

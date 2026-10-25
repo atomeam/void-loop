@@ -22,29 +22,31 @@
      "name": "Year, schedule (agenda) and custom N-day views",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a Schedule view, the next 60 days day by day (#vList, key L); no year or custom N-day view"
     },
     {
      "name": "Multiple calendars shown together, each with a colour",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: calendar/index.html Calendars pane (#calsBtn, #calList): My calendar, Birthdays, Holidays and your own, each with a colour input and an on/off switch; lib/calendar.js calendarsOf, shownEvents; tools/calendar.test.mjs, played through at 390 px",
+     "shows": "Several calendars, each with its own colour"
     },
     {
      "name": "Event colours",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: an event takes its calendar's colour (a bar on the month chip, a dot in lists; calendar/index.html dotOf); no colour per single event"
     },
     {
      "name": "Recurring events incl. custom rules",
      "detail": "",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190)"
+     "verse_evidence": "void-live-deploy/calendar/index.html:185 Repeat daily/weekly/monthly/yearly, every N, chosen weekdays (:188), until/times (:190)",
+     "shows": "events that repeat"
     },
     {
      "name": "Notifications and email reminders",
@@ -57,8 +59,9 @@
      "name": "Guests with RSVP (yes/no/maybe) and guest list",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: the invite link carries a reply key after # (lib/calendar.js inviteLink); guests answer yes, maybe or no with a name and see who is coming (#rsvpBox); the organizer sees the replies on the event (functions/api/rsvp.js, lib/rsvp.js, tools/rsvp.test.mjs)",
+     "shows": "yes, maybe or no \\(RSVP\\)"
     },
     {
      "name": "Find a time / see guests' availability",
@@ -85,8 +88,9 @@
      "name": "Location with map link",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: a Location on every event (editor #eLoc), shown with a Map link to OpenStreetMap; written to and read from .ics as LOCATION (lib/calendar.js)",
+     "shows": "location with a map link"
     },
     {
      "name": "Video meeting link (Meet)",
@@ -120,15 +124,17 @@
      "name": "Holidays and birthdays calendars",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Birthdays calendar (\"Mum's birthday 14 December\" goes there, yearly; lib/calendar.js quickAdd) and Holidays by country from Nager.Date, kept for offline (calendar/index.html holidays())",
+     "shows": "birthdays, public holidays"
     },
     {
      "name": "Subscribe to a calendar by URL (iCal feed)",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:158-159 Import .ics / Export all as .ics (files only, no feed URL)"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Subscribe by address in the Calendars pane (#feedAdd): https or webcal .ics read by functions/api/icsfeed.js (public names only, redirects checked, 2 MB, 8 s), shown read only, kept offline; tools/icsfeed.test.mjs",
+     "shows": "subscribe to any calendar by its address"
     },
     {
      "name": "Import / export .ics",
@@ -149,14 +155,16 @@
      "detail": "",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "void-live-deploy/calendar/index.html:162 arrows, T, M/W/D, N, /"
+     "verse_evidence": "void-live-deploy/calendar/index.html:162 arrows, T, M/W/D, N, /",
+     "shows": "Arrow keys move"
     },
     {
      "name": "Natural-language quick add",
      "detail": "",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "void-live-deploy/calendar/index.html:106 Quick add in plain words"
+     "verse_evidence": "void-live-deploy/calendar/index.html:106 Quick add in plain words",
+     "shows": "Quick add"
     },
     {
      "name": "Drag to move and resize events",
@@ -169,8 +177,8 @@
      "name": "Share a calendar with people (see / edit permissions), public link, embed",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a calendar you add can be shared by a view link or an edit link, no account (functions/api/calshare.js, tools/calshare.test.mjs); New links and Stop sharing; no embed on another site"
     },
     {
      "name": "Print",
@@ -204,8 +212,8 @@
      "name": "Duplicate event, undo, trash",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Duplicate on an event opens the editor on a copy (#detDup); no trash"
     }
    ]
   },
@@ -220,8 +228,9 @@
      "name": "Share a calendar by email or link (view / edit)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: view link and edit link per shared calendar (calendar/index.html Calendars pane: Copy view link, Copy edit link; functions/api/calshare.js)",
+     "shows": "a view link or an edit link"
     },
     {
      "name": "Family calendar",
@@ -241,15 +250,16 @@
      "name": "Categories with colours",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: calendars with their own colours stand in for categories; no category apart from the calendar"
     },
     {
      "name": "Birthdays calendar",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: the Birthdays calendar; an untimed \"…'s birthday\" goes there, every year (lib/calendar.js quickAdd)",
+     "shows": "birthdays"
     },
     {
      "name": "Weather forecast on the calendar",
@@ -262,8 +272,9 @@
      "name": "Holiday calendars by region",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Holidays calendar for any of 25 countries (the browser's own first), from Nager.Date",
+     "shows": "public holidays by country"
     },
     {
      "name": "Interesting calendars (sports, TV)",
@@ -297,8 +308,9 @@
      "name": "Invites with RSVP",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: yes, maybe or no replies on an invite link, seen by the organizer (functions/api/rsvp.js)",
+     "shows": "yes, maybe or no \\(RSVP\\)"
     },
     {
      "name": "Reminders and recurring events",
@@ -327,8 +339,9 @@
      "name": "Colour-coded family calendar, one colour per person",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: a calendar per person, each with its own colour and switch, shared with the family by an edit link (Calendars pane)",
+     "shows": "Several calendars, each with its own colour"
     },
     {
      "name": "Plain-language event entry",
@@ -385,8 +398,9 @@
      "name": "Shared calendars with a group",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: share a calendar by an edit link: everyone with it sees and changes the same calendar, no account (functions/api/calshare.js)",
+     "shows": "Share a calendar by a view link or an edit link"
     },
     {
      "name": "Chat on each event",
@@ -413,8 +427,9 @@
      "name": "Several calendars for different groups",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: as many calendars as you add, each shared by its own links",
+     "shows": "Several calendars"
     },
     {
      "name": "Widgets and web version",
@@ -450,22 +465,24 @@
      "name": "Access links with roles, no accounts",
      "detail": "view-only, add-only, modify",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:146 event share link only; no calendar access link"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: a view link and an edit link per calendar, no account; the owner makes new links (the old ones stop) or stops sharing",
+     "shows": "a view link or an edit link, no account"
     },
     {
      "name": "Sub-calendars toggled on and off",
      "detail": "free 8, Plus 12, Premium 50",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: an on/off switch per calendar in the Calendars pane",
+     "shows": "on/off switch"
     },
     {
      "name": "Table, list, timeline, scheduler, year and multi-day views",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a Schedule list view beside month, week and day"
     },
     {
      "name": "Event sign-up",
@@ -573,22 +590,25 @@
      "name": "Share with people (view / edit), revoke",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: view and edit links; New links revokes the old ones, Stop sharing ends it (functions/api/calshare.js op=reset, DELETE)",
+     "shows": "a view link or an edit link"
     },
     {
      "name": "Public link",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:146 per-event link"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: the view link opens the calendar for anyone who has it",
+     "shows": "view link"
     },
     {
      "name": "Invitations with RSVP, works with other calendars",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: yes, maybe or no replies on the invite link; the invite also comes as an .ics other calendars open",
+     "shows": "yes, maybe or no \\(RSVP\\)"
     },
     {
      "name": "Import .ics",
@@ -601,15 +621,17 @@
      "name": "Subscribe to a calendar by URL",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Subscribe by address (.ics or webcal), functions/api/icsfeed.js",
+     "shows": "subscribe to any calendar by its address"
     },
     {
      "name": "Several calendars (3 free, 25 paid)",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: up to 30 calendars, free",
+     "shows": "Several calendars"
     },
     {
      "name": "Time zones",
@@ -666,8 +688,9 @@
      "name": "Invitations with RSVP",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:195 invitees; :146 share link carrying the event; :147 invite by email with .ics; no RSVP tracking"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: yes, maybe or no replies on the invite link (functions/api/rsvp.js)",
+     "shows": "yes, maybe or no \\(RSVP\\)"
     }
    ]
   },
@@ -682,8 +705,9 @@
      "name": "Share a calendar privately (view / edit) or publicly",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: a view link (public to whoever has it) and an edit link per calendar",
+     "shows": "a view link or an edit link"
     },
     {
      "name": "Invitations from the iCloud address",
@@ -703,22 +727,24 @@
      "name": "Holidays calendar",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Holidays calendar by country (Nager.Date)",
+     "shows": "public holidays"
     },
     {
      "name": "Location and travel time",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: location with a map link; no travel time"
     },
     {
      "name": "Several calendars with colours",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Calendars pane, a colour and a switch each",
+     "shows": "Several calendars, each with its own colour"
     },
     {
      "name": "Alerts",
@@ -748,14 +774,15 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons"
+     "verse_evidence": "2026-10-25: day, week, month and a Schedule list (#vList); no year view"
     },
     {
      "name": "Share by invitation or view-only link, reset links",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: view link, edit link, New links (the old ones stop)",
+     "shows": "a view link or an edit link"
     },
     {
      "name": "Tasks with priority and due date",
@@ -768,15 +795,17 @@
      "name": "Follow holiday and sports calendars",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Holidays by country built in; a sports fixture list followed by its .ics address (Subscribe)",
+     "shows": "public holidays"
     },
     {
      "name": "Subscribe to any iCal URL",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Subscribe by address (.ics or webcal), functions/api/icsfeed.js",
+     "shows": "subscribe to any calendar by its address"
     },
     {
      "name": "Reminders and repeats",
@@ -797,8 +826,9 @@
      "name": "No-login access links, each with read / write per sub-calendar",
      "detail": "free: 3 links, 6 sub-calendars",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: each calendar has its own view (read) and edit (write) link, no login",
+     "shows": "a view link or an edit link, no account"
     },
     {
      "name": "Password on an access link",
@@ -846,13 +876,8 @@
   }
  },
  "union_gaps": [
-  "Several calendars / sub-calendars with colours, toggled on and off: calendar.google.com, outlook.live.com, cozi.com, timetreeapp.com, teamup.com, proton.me, icloud.com, calendar.online",
-  "Share a whole calendar with people or by a no-login link with view/edit roles: calendar.google.com, outlook.live.com, teamup.com, calendar.online, proton.me, icloud.com, calendar.yahoo.com, calendar.zoho.com, timetreeapp.com",
-  "Holidays and birthdays calendars: calendar.google.com, outlook.live.com, icloud.com, calendar.yahoo.com, cozi.com (Gold)",
-  "Subscribe to a calendar by URL (iCal feed), sports/TV feeds: calendar.google.com, outlook.live.com, calendar.yahoo.com, proton.me",
-  "RSVP tracking on invites: calendar.google.com, outlook.live.com, proton.me, calendar.zoho.com, icloud.com",
   "Tasks / to-dos on the calendar: calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
-  "Location and travel time, map link: calendar.google.com, icloud.com",
+  "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
   "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
   "Drag to move and resize events: calendar.google.com, outlook.live.com",
   "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",

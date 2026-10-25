@@ -48,6 +48,7 @@
   @media (prefers-reduced-motion: reduce) { .busy { animation: none; } }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   @media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+  #layersBox { margin-top: 18px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); } #layersBox summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; }
   [hidden] { display: none !important; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -94,6 +95,8 @@
     <div class="row"><button type="button" id="galClear">Clear the gallery</button></div>
     <div class="pics" id="gal"></div>
   </section>
+
+  <details id="layersBox"><summary id="layersH">Layer maker: stack pictures</summary><div id="layers"></div></details>
 
   <section id="gallery" aria-labelledby="pubH">
     <h2 id="pubH">Public gallery</h2>

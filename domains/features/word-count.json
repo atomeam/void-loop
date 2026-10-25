@@ -35,15 +35,15 @@
           "name": "Reading and speaking time with set words-per-minute",
           "detail": "reading and speaking time, with the words-per-minute adjustable in settings",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "Reading time at 238 wpm, speaking time at 183 wpm, fixed (lib/wordcount.js READ_WPM/SPEAK_WPM)"
+          "verse": "has",
+          "verse_evidence": "Settings: reading and speaking speed in words a minute, kept on the device"
         },
         {
           "name": "Keyword density panel (1, 2 and 3 word phrases)",
           "detail": "top keywords and phrases with counts and percentages; option to include common words",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "single-word keyword density only (lib/wordcount.js keywords()); no 2/3-word phrases or \"include common words\" toggle"
+          "verse": "has",
+          "verse_evidence": "Words, Two-word phrases and Three-word phrases lists with counts and shares (lib/wordcount.js phrases)"
         },
         {
           "name": "Auto-save",
@@ -56,15 +56,15 @@
           "name": "Activity / earlier versions",
           "detail": "go back to earlier saved versions of the document",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "one saved text only"
+          "verse": "has",
+          "verse_evidence": "Earlier versions: one kept each minute of writing and before a big change or Clear, the last 30, on this device, each with Restore (lib/wordcount.js keepVersion)"
         },
         {
           "name": "Word / character goals",
           "detail": "set a target (e.g. 500 words) and be told when you reach it; goals shareable or embeddable",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no goal control"
+          "verse": "has",
+          "verse_evidence": "Goal: a number of words or characters, a progress bar, how many to go and Goal reached; kept on the device and carried as ?goal=500 or ?goal=2000c"
         },
         {
           "name": "Grammar and spelling check",
@@ -77,8 +77,8 @@
           "name": "Read aloud (proofread)",
           "detail": "text-to-speech reads the document back",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none on /word-count/"
+          "verse": "has",
+          "verse_evidence": "Read aloud / Stop with a speed choice, the selection or all of it, in the browser voice (speechSynthesis)"
         },
         {
           "name": "Case changes",
@@ -91,22 +91,22 @@
           "name": "Settings: font size, display options",
           "detail": "adjust editor appearance and which panels show",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "fixed layout"
+          "verse": "has",
+          "verse_evidence": "Settings: text size Small to Larger"
         },
         {
           "name": "Pages estimate",
           "detail": "how many pages the text fills (not confirmed by search)",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Pages (single-spaced, 500 words) and Pages (double-spaced, 250 words)"
         },
         {
           "name": "Social media character limits",
           "detail": "how the text fits X, Facebook, etc. (seen on look-alike sites; unconfirmed on wordcounter.net)",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Fits in: X post, SMS, search title, meta description, Instagram, LinkedIn, YouTube title, TikTok, Facebook, with how many left or over"
         },
         {
           "name": "Browser extension",
@@ -126,15 +126,7 @@
     "\"Rehearse it\": a countdown of its speaking time on /stopwatch/"
   ],
   "gaps": [
-    "Word / character goals",
-    "Activity / earlier versions",
-    "Read aloud (proofread)",
-    "Reading and speaking time with set words-per-minute",
-    "Keyword density panel (1, 2 and 3 word phrases)",
     "Grammar and spelling check",
-    "Settings: font size, display options",
-    "Pages estimate",
-    "Social media character limits",
     "Browser extension"
   ]
 }

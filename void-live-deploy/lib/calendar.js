@@ -46,8 +46,10 @@ export function normalize(e) {
   const rrule = e.rrule && typeof e.rrule === 'object' && FREQS.includes(String(e.rrule.freq || '').toUpperCase()) ? normalizeRule(e.rrule) : null;
   const reminders = [...new Set((Array.isArray(e.reminders) ? e.reminders : []).map((m) => Math.round(+m)).filter((m) => Number.isFinite(m) && m >= 0 && m <= 4 * 7 * 1440))].sort((a, b) => a - b).slice(0, 5);
   const invitees = [...new Set((Array.isArray(e.invitees) ? e.invitees : String(e.invitees || '').split(/[,;\s]+/)).map((s) => String(s || '').trim()).filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))].slice(0, 50);
-  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] };
+  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(String(e.location || '').trim() ? { location: String(e.location).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 300) } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
 }
+// an invite's replies (lib/rsvp.js, /api/rsvp): the organizer keeps the owner key; the link carries only the reply key
+const rsvpOk = (r) => !!r && /^[A-Za-z0-9_-]{11}$/.test(String(r.id || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.owner || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.reply || ''));
 const normalizeRule = (r) => { const out = { freq: String(r.freq).toUpperCase(), interval: Math.max(1, Math.min(999, Math.round(+r.interval) || 1)) };
   if (+r.count > 0) out.count = Math.min(10000, Math.round(+r.count)); if (r.until && parseLocal(r.until)) out.until = String(r.until).slice(0, 10);
   const byday = (Array.isArray(r.byday) ? r.byday : String(r.byday || '').split(',')).map((s) => String(s).toUpperCase().trim()).filter((s) => /^(?:-?[1-5])?(?:SU|MO|TU|WE|TH|FR|SA)$/.test(s)); if (byday.length) out.byday = byday; return out; };
@@ -138,7 +140,7 @@ export function icsOf(events, now = new Date()) {
   for (const raw of events || []) { const e = normalize(raw); if (!e) continue; const st = parseLocal(e.start), en = parseLocal(e.end);
     L.push('BEGIN:VEVENT', 'UID:' + e.id + '@a-to-mind.com', 'DTSTAMP:' + now.toISOString().replace(/[-:]|\.\d{3}/g, ''));
     if (e.allDay) L.push('DTSTART;VALUE=DATE:' + e.start.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + dayKey(addDays(en, 1)).replace(/-/g, '')); else L.push('DTSTART:' + stamp(st), 'DTEND:' + stamp(en));
-    L.push('SUMMARY:' + esc(e.title)); if (e.notes) L.push('DESCRIPTION:' + esc(e.notes)); if (e.rrule) L.push('RRULE:' + rruleText(e.rrule));
+    L.push('SUMMARY:' + esc(e.title)); if (e.notes) L.push('DESCRIPTION:' + esc(e.notes)); if (e.location) L.push('LOCATION:' + esc(e.location)); if (e.rrule) L.push('RRULE:' + rruleText(e.rrule));
     for (const x of e.exdates) L.push('EXDATE' + (e.allDay ? ';VALUE=DATE:' + x.replace(/-/g, '') : ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00'));
     for (const a of e.invitees) L.push('ATTENDEE;CN=' + esc(a.split('@')[0]) + ';RSVP=TRUE:mailto:' + a);
     for (const m of e.reminders) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(e.title), 'TRIGGER:' + trigger(m), 'END:VALARM');
@@ -163,7 +165,7 @@ export function parseIcs(text) {
     const i = line.indexOf(':'); if (i < 0) continue; const head = line.slice(0, i), val = line.slice(i + 1), name = head.split(';')[0].toUpperCase(), params = head.slice(name.length);
     if (alarm) { if (name === 'TRIGGER' && !/RELATED=END/i.test(params)) { const m = minutesOf(val); if (m != null) alarm.minutes = m; } continue; }
     if (name === 'UID') e.id = val.replace(/@.*$/, '').replace(/[^\w.-]/g, '').slice(0, 40) || undefined;
-    else if (name === 'SUMMARY') e.title = unesc(val); else if (name === 'DESCRIPTION') e.notes = unesc(val);
+    else if (name === 'SUMMARY') e.title = unesc(val); else if (name === 'DESCRIPTION') e.notes = unesc(val); else if (name === 'LOCATION') e.location = unesc(val);
     else if (name === 'DTSTART') { const d = icsDate(val, params); if (d instanceof Date) { e.start = fmtLocal(d); e.allDay = false; } else if (d) { e.start = d.allDay ? dayKey(d.d) : fmtLocal(d.d); e.allDay = d.allDay; } }
     else if (name === 'DTEND') { const d = icsDate(val, params); if (d instanceof Date) e.end = fmtLocal(d); else if (d) e.end = d.allDay ? dayKey(addDays(d.d, -1)) : fmtLocal(d.d); }
     else if (name === 'DURATION' && !e.end) { const m = minutesOf(val); if (m != null && e.start) { const s = parseLocal(e.start); e.end = fmtLocal(new Date(s.getTime() + m * 60000)); } }
@@ -181,7 +183,9 @@ const unb64url = (s) => { const bin = atob(String(s || '').replace(/-/g, '+').re
  *  invitees with the .ics text as the body, ics: that text }. Pure. */
 export function inviteLink(ev, origin = '') {
   const e = normalize(ev); if (!e) return null;
-  const { exdates, ...carried } = e; const url = String(origin || '').replace(/\/$/, '') + '/calendar/?e=' + b64url(JSON.stringify(carried));
+  const { exdates, rsvp, cal, ro, ...carried } = e; void exdates; void cal; void ro;
+  // the replies ride after # (never sent to a server): who opens the link can say yes, maybe or no and see who is coming, never the organizer's key
+  const url = String(origin || '').replace(/\/$/, '') + '/calendar/?e=' + b64url(JSON.stringify(carried)) + (rsvp ? '#rsvp=' + rsvp.id + '.' + rsvp.reply : '');
   const ics = icsOf([e]), st = parseLocal(e.start), when = e.allDay ? e.start : e.start.replace('T', ' ');
   const body = e.title + '\n' + when + (e.notes ? '\n' + e.notes : '') + '\n\n' + url + '\n\n' + ics;
   return { url, mailto: 'mailto:' + e.invitees.join(',') + '?subject=' + encodeURIComponent('Invitation: ' + e.title + ' (' + when + ')') + '&body=' + encodeURIComponent(body), ics, when: st };
@@ -239,6 +243,8 @@ export function quickAdd(text, now = new Date()) {
   if (!time || allDay) { ev.allDay = true; ev.start = dayKey(date); ev.end = ev.start; }
   else { const st = new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.h, time.m); let en = endTime ? new Date(date.getFullYear(), date.getMonth(), date.getDate(), endTime.h, endTime.m) : new Date(st.getTime() + (minutes || 60) * 60000); if (en <= st) en = addDays(en, 1); ev.allDay = false; ev.start = fmtLocal(st); ev.end = fmtLocal(en); }
   if (rrule) ev.rrule = rrule;
+  // "Sam's birthday 3 March": the Birthdays calendar, every year, all day (a party at a time stays an event)
+  if (/\b(?:birthday|bday|b-day|geburtstag)\b/i.test(ev.title) && ev.allDay) { ev.cal = 'birthdays'; if (!ev.rrule) ev.rrule = { freq: 'YEARLY', interval: 1 }; }
   return normalize(ev);
 }
 const nextWeekday = (now, wd) => { const t = startOfDay(now); return addDays(t, (wd - t.getDay() + 7) % 7); };
@@ -288,8 +294,13 @@ export function wordsFor(lang) {
     invite: 'Einladen', share: 'Link teilen', copied: 'Kopiert', mail: 'Per E-Mail einladen', ics: '.ics herunterladen', importIcs: '.ics importieren', exportIcs: 'Alles als .ics', exportDone: 'exportiert', imported: 'importiert',
     nextRem: 'Nächste Erinnerung', noRem: 'Keine Erinnerung geplant', allow: 'Benachrichtigungen erlauben', allowed: 'Benachrichtigungen an', denied: 'Erinnerungen erscheinen hier auf der Seite', inPage: 'Erinnerung',
     added: 'Eingetragen', addToMine: 'In meinen Kalender', invitedTo: 'Du bist eingeladen', alreadyIn: 'Schon im Kalender', empty: 'Keine Termine', events: 'Termine', more: 'mehr', offline: 'Offline: alles bleibt auf diesem Gerät',
-    deleteOne: 'Nur diesen Termin löschen', deleteAll: 'Alle Wiederholungen löschen', results: 'Treffer', nothing: 'Nichts gefunden', keyHelp: 'Pfeiltasten blättern, T ist heute, M W D wechseln die Ansicht, N ein neuer Termin, / sucht',
-    note: 'Termine, Erinnerungen und Einladungen bleiben in diesem Browser; nichts geht an einen Server. Eine Einladung ist ein Link, der den Termin selbst trägt, oder eine E-Mail mit der .ics-Datei.',
+    deleteOne: 'Nur diesen Termin löschen', deleteAll: 'Alle Wiederholungen löschen', results: 'Treffer', nothing: 'Nichts gefunden', keyHelp: 'Pfeiltasten blättern, T ist heute, M W D L wechseln die Ansicht, N ein neuer Termin, / sucht',
+    note: 'Termine, Erinnerungen und Einladungen bleiben in diesem Browser; ein Termin kann einen Ort mit Kartenlink tragen. Eine Einladung ist ein Link, der den Termin selbst trägt, oder eine E-Mail mit der .ics-Datei; Gäste antworten mit Ja, Vielleicht oder Nein und sehen, wer kommt. Mehrere Kalender, jeder mit eigener Farbe und Schalter: deiner, Geburtstage, Feiertage nach Land. Einen Kalender per Link zum Ansehen oder Bearbeiten teilen, ohne Konto; jeden Kalender über seine Adresse abonnieren (.ics oder webcal). Nur ein geteilter Kalender, ein Abo und Antworten auf Einladungen gehen an Verses Server.',
+    calendars: 'Kalender', calendar: 'Kalender', addCal: 'Kalender hinzufügen', calName: 'Name des neuen Kalenders', removeCal: 'Entfernen', colour: 'Farbe', country: 'Land', show: 'Zeigen', fromNet: 'Feiertage von Nager.Date', readOnly: 'Nur lesen',
+    shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
+    subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
+    replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
+    location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -299,7 +310,55 @@ export function wordsFor(lang) {
     invite: 'Invite', share: 'Share link', copied: 'Copied', mail: 'Invite by email', ics: 'Download .ics', importIcs: 'Import .ics', exportIcs: 'Export all as .ics', exportDone: 'exported', imported: 'imported',
     nextRem: 'Next reminder', noRem: 'No reminder scheduled', allow: 'Allow notifications', allowed: 'Notifications on', denied: 'Reminders will show here on the page', inPage: 'Reminder',
     added: 'Added', addToMine: 'Add to my calendar', invitedTo: 'You are invited', alreadyIn: 'Already in your calendar', empty: 'No events', events: 'events', more: 'more', offline: 'Offline: everything stays on this device',
-    deleteOne: 'Delete only this one', deleteAll: 'Delete all repeats', results: 'results', nothing: 'Nothing found', keyHelp: 'Arrow keys move, T is today, M W D switch the view, N is a new event, / searches',
-    note: 'Events, reminders and invites stay in this browser; nothing goes to a server. An invite is a link that carries the event itself, or an email with the .ics file.',
+    deleteOne: 'Delete only this one', deleteAll: 'Delete all repeats', results: 'results', nothing: 'Nothing found', keyHelp: 'Arrow keys move, T is today, M W D L switch the view, N is a new event, / searches',
+    note: 'Events, reminders and invites stay in this browser; an event can carry a location with a map link. An invite is a link that carries the event itself, or an email with the .ics file; guests answer yes, maybe or no (RSVP) and see who is coming. Several calendars, each with its own colour and an on/off switch: yours, birthdays, public holidays by country. Share a calendar by a view link or an edit link, no account; subscribe to any calendar by its address (.ics or webcal). Only a shared calendar, a subscription and invite replies go to Verse\'s server.',
+    calendars: 'Calendars', calendar: 'Calendar', addCal: 'Add calendar', calName: 'Name of the new calendar', removeCal: 'Remove', colour: 'Colour', country: 'Country', show: 'Show', fromNet: 'Holidays from Nager.Date', readOnly: 'Read only',
+    shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
+    subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
+    replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
+    location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
   };
 }
+
+// several calendars (owner, 2026-10-25: "we have to have everything all the sites have"): each with a name, a colour and an on/off switch, kept in
+// the store as { calendars: [...] } beside the events (an event's `cal`, none for My calendar). Birthdays is a plain calendar whose events repeat
+// every year; Holidays is drawn from Nager.Date's public holidays for a country (fetched after load, kept in the store, works offline after).
+export const PALETTE = ['#6d4aff', '#d6336c', '#2f9e44', '#e8590c', '#1c7ed6', '#ae3ec9', '#0c8599', '#c92a2a', '#5c940d', '#495057'];
+const BASE_CALS = (lang = 'en', cc = 'US') => { const de = /^de\b/i.test(lang); return [
+  { id: 'main', name: de ? 'Mein Kalender' : 'My calendar', color: PALETTE[0], on: true },
+  { id: 'birthdays', name: de ? 'Geburtstage' : 'Birthdays', color: PALETTE[1], on: true, kind: 'birthdays' },
+  { id: 'holidays', name: (de ? 'Feiertage' : 'Holidays') + ' (' + cc + ')', color: PALETTE[2], on: true, kind: 'holidays', cc }]; };
+const HEX = /^#[0-9a-f]{6}$/i;
+/** the calendars a store has, the three built in first (each kept as the person left it), never two with one id. Pure. */
+export function calendarsOf(store, lang = 'en', cc = 'US') {
+  const kept = Array.isArray(store && store.calendars) ? store.calendars : [], out = [], seen = new Set();
+  // the three built in keep their own names (in the page's language); Holidays is named for its country
+  for (const b of BASE_CALS(lang, cc)) { const k = kept.find((c) => c && c.id === b.id) || {}, { name, ...rest } = pickCal(k, b); void name; const c = { ...b, ...rest }; if (c.kind === 'holidays') c.name = BASE_CALS(lang, c.cc)[2].name; out.push(c); seen.add(b.id); }
+  for (const c of kept) { if (!c || seen.has(c.id)) continue; const n = pickCal(c, { color: PALETTE[out.length % PALETTE.length] }); if (!c.id || !n.name) continue; out.push({ id: String(c.id).replace(/[^\w-]/g, '').slice(0, 40), on: true, ...n, ...(c.kind ? { kind: String(c.kind) } : {}), ...(c.url ? { url: String(c.url).slice(0, 500) } : {}), ...shareOf(c) }); seen.add(c.id); }
+  return out.slice(0, 30);
+}
+// a shared calendar's link (lib/calshare.js): its id, the key this browser holds and what it may do; the owner also keeps the two links it gave out
+const shareOf = (c) => { const h = c && c.share, ok = (k) => /^[A-Za-z0-9_-]{22}$/.test(String(k || '')); if (!h || !/^[A-Za-z0-9_-]{11}$/.test(String(h.id || '')) || !ok(h.key) || !['view', 'edit', 'owner'].includes(h.role)) return {};
+  return { share: { id: h.id, key: h.key, role: h.role, ...(h.role === 'owner' && ok(h.edit) && ok(h.view) ? { edit: h.edit, view: h.view } : {}) }, ...(c.gone ? { gone: true } : {}) }; };
+const pickCal = (c, base) => { const o = {}; if (c.name) o.name = String(c.name).trim().slice(0, 60); if (HEX.test(c.color || '')) o.color = c.color; else if (base.color) o.color = base.color; if (typeof c.on === 'boolean') o.on = c.on; if (/^[A-Z]{2}$/.test(c.cc || '')) o.cc = c.cc; return o; };
+/** a new calendar's entry: a short id from its name, the next colour. Pure. */
+export function newCalendar(cals, name, color) {
+  const base = String(name || '').trim().slice(0, 60); if (!base) return null;
+  let id = 'c-' + base.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'c-' + newId(); while ((cals || []).some((c) => c.id === id)) id += '-2';
+  return { id, name: base, color: HEX.test(color || '') ? color : PALETTE[(cals || []).length % PALETTE.length], on: true };
+}
+/** public holidays (Nager.Date rows { date, localName, name }) as read-only all-day events on the Holidays calendar. Pure. */
+export function holidayEvents(rows, cc, lang = 'en') {
+  const de = /^de\b/i.test(lang), seen = new Set();
+  return (Array.isArray(rows) ? rows : []).filter((r) => r && /^\d{4}-\d{2}-\d{2}$/.test(r.date) && (r.name || r.localName)).map((r) => ({ id: 'hol-' + cc + '-' + r.date + '-' + String(r.name || '').replace(/[^a-z0-9]/gi, '').slice(0, 12), title: String((de ? r.localName : r.name) || r.name || r.localName).slice(0, 120), start: r.date, end: r.date, allDay: true, cal: 'holidays', ro: true }))
+    .filter((e) => (seen.has(e.id) ? false : seen.add(e.id)));
+}
+/** the events to draw: the store's own and the read-only ones (holidays, subscribed calendars) given, of the calendars that are on. Pure. */
+export function shownEvents(events, cals, extra = []) {
+  const on = new Set((cals || []).filter((c) => c.on).map((c) => c.id));
+  return [...(events || []), ...(extra || [])].filter((e) => e && on.has(e.cal || 'main'));
+}
+/** an event's calendar (My calendar when its own is gone). Pure. */
+export const calendarOf = (cals, e) => (cals || []).find((c) => c.id === ((e && e.cal) || 'main')) || (cals || [])[0] || { id: 'main', name: 'My calendar', color: PALETTE[0], on: true };
+/** this browser's country for the holidays (en-GB -> GB), else US. Pure. */
+export const countryOf = (lang) => { const m = /[-_]([A-Za-z]{2})\b/.exec(String(lang || '')); return m ? m[1].toUpperCase() : /^de\b/i.test(String(lang || '')) ? 'DE' : 'US'; };

@@ -171,6 +171,9 @@ export function fromMeal(m) {
   if (steps.length === 1 && steps[0].length > 220) steps = steps[0].split(/(?<=[.!?])\s+(?=[A-Z])/).reduce((acc, s) => { const last = acc[acc.length - 1]; if (last && (last + ' ' + s).length < 200) acc[acc.length - 1] = last + ' ' + s; else acc.push(s); return acc; }, []);
   return { id: 'mealdb-' + m.idMeal, name: clean(m.strMeal), servings: 4, servingsGuessed: true, time: 0, ingredients, steps, image: m.strMealThumb || '', source: /^https?:\/\//.test(m.strSource || '') ? m.strSource : '', video: /^https?:\/\//.test(m.strYoutube || '') ? m.strYoutube : '', area: clean(m.strArea), category: clean(m.strCategory), from: 'TheMealDB' };
 }
+// TheMealDB's own categories and cuisines (its list.php?c=list and ?a=list): browsing asks only for one of these, a closed list
+export const CATEGORIES = Object.freeze(['Beef', 'Breakfast', 'Chicken', 'Dessert', 'Goat', 'Lamb', 'Miscellaneous', 'Pasta', 'Pork', 'Seafood', 'Side', 'Starter', 'Vegan', 'Vegetarian']);
+export const AREAS = Object.freeze(['American', 'British', 'Canadian', 'Chinese', 'Croatian', 'Dutch', 'Egyptian', 'Filipino', 'French', 'Greek', 'Indian', 'Irish', 'Italian', 'Jamaican', 'Japanese', 'Kenyan', 'Malaysian', 'Mexican', 'Moroccan', 'Polish', 'Portuguese', 'Russian', 'Spanish', 'Thai', 'Tunisian', 'Turkish', 'Ukrainian', 'Vietnamese']);
 /** the link that carries a recipe and its setting: ?q= or ?i= or ?id=, &servings= when changed, &units= when swapped. Pure. */
 export function shareLink(origin, { q = '', i = '', id = '', servings = 0, base = 0, units = '' } = {}) {
   const p = new URLSearchParams();

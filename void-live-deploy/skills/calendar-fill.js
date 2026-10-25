@@ -8,8 +8,10 @@ import * as L from '../lib/chat-calendar.js';
 import { drawFill } from '../lib/fill-card.js';
 import { parseCalendar } from './calendar.js'; // an add the stage's calendar card takes stays with it (it also puts the event in the page, lib/chat-calendar.js mirror)
 
-const KEY = 'a2m.void.calendar.v1', LOG = 'a2m.void.chatfill.cal.v1';
-const read = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (_) { return {}; } };
+import * as A from '../lib/agenda.js';
+
+const KEY = A.KEY, LOG = 'a2m.void.chatfill.cal.v1';
+const read = () => A.read(); // the one store (lib/agenda.js): the stage card's events are in it, so "move the dentist to Tuesday" finds one added there
 const write = (s) => { try { localStorage.setItem(KEY, JSON.stringify(s)); return true; } catch (_) { return false; } };
 
 function match(lower, text) {
@@ -19,7 +21,7 @@ function match(lower, text) {
 }
 function run(text, api) {
   const el = api.showPage(() => {}); const it = L.parseIntent(text);
-  drawFill(el, { intent: it, plan: (s, i, n) => L.plan(s, i, new Date(n), navigator.language || 'en'), undo: L.undoOf, read, write, logKey: LOG, openHref: (id) => '/calendar/', openLabel: 'Open the Calendar', hint: L.HINT, heading: 'Calendar' });
+  drawFill(el, { intent: it, plan: (s, i, n) => L.plan(s, i, new Date(n), navigator.language || 'en'), undo: L.undoOf, read, write: (st) => { const ok = write(st); if (api.refreshThings) api.refreshThings(); return ok; } /* the stage's calendar card reads the same store: drawn again so it shows the change */, logKey: LOG, openHref: (id) => '/calendar/', openLabel: 'Open the Calendar', hint: L.HINT, heading: 'Calendar' });
   return 'calendar-fill';
 }
 export default {

@@ -21,14 +21,15 @@ for (const s of [checkers, mediaPick, notebook, sleep]) {
   });
 }
 
-test('calendar3d: reads the agenda the calendar keeps, and an empty or broken one is an empty list', () => {
-  const store = {};
+test('calendar3d: reads the events the Calendar page keeps (the stage\'s older list moved in), and an empty or broken one is an empty list', () => {
+  const store = {}, soon = new Date(Date.now() + 864e5).toISOString();
   globalThis.localStorage = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } };
   assert.deepEqual(loadEvents(), []);
-  store['a2m.void.agenda.v1'] = '{not json';
+  store['a2m.void.calendar.v1'] = '{not json';
   assert.deepEqual(loadEvents(), []);
-  store['a2m.void.agenda.v1'] = JSON.stringify([{ id: 'a', title: 'dentist' }]);
+  delete store['a2m.void.calendar.v1']; store['a2m.void.agenda.v1'] = JSON.stringify([{ id: 'a', title: 'dentist', at: soon }]);
   assert.equal(loadEvents()[0].title, 'dentist');
+  assert.equal(JSON.parse(store['a2m.void.calendar.v1']).events[0].title, 'dentist', 'moved into the page\'s store');
   delete globalThis.localStorage;
 });
 

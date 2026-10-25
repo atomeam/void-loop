@@ -2251,7 +2251,7 @@
    "chapter": "time",
    "name": "calendar-file",
    "title": "Calendar file",
-   "line": "\"export my calendar\", \"download my calendar as ics\": the events on this browser's agenda as one standard .ics file that Google Calendar, Apple Calendar and Outlook import",
+   "line": "\"export my calendar\", \"download my calendar as ics\": the events kept in this browser as one standard .ics file, repeats, reminders and invitees included, that Google Calendar, Apple Calendar and Outlook import",
    "examples": [
     "export my calendar",
     "download my calendar as ics",
@@ -2654,7 +2654,7 @@
     "open a converter"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 5 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 5 real askings stand behind this page. The void remembers each asking.",
    "glow": 100,
    "n": 135
@@ -3706,7 +3706,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 10 live findings, 2026-10-24",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 11 live findings, 2026-10-25",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 196

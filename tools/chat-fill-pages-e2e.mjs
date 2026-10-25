@@ -17,9 +17,12 @@ await page.goto(base + '/'); await ready();
 // calendar
 await ask('meeting with Sam tomorrow 10am for an hour'); let c = await get('a2m.void.calendar.v1'); const ev = (c.events || [])[0];
 ok(ev && ev.title === 'Meeting with Sam' && /T10:00$/.test(ev.start) && /T11:00$/.test(ev.end), 'calendar: event saved with the parsed time');
-const said = await page.locator('#whisper').innerText().catch(() => ''); ok(/also in the Calendar page: .*10:00 AM to 11:00 AM \(1 hour\)/.test(said), 'calendar: the stage says the parsed time in words: ' + said.slice(0, 120));
+const said = await page.locator('#whisper').innerText().catch(() => ''); ok(/in the Calendar page: .*10:00 AM to 11:00 AM \(1 hour\)/.test(said), 'calendar: the stage says the parsed time in words: ' + said.slice(0, 120));
 await ask('change the meeting with sam to 4pm'); c = await get('a2m.void.calendar.v1'); ok(/T16:00$/.test(c.events[0].start), 'calendar: moved to 4pm');
 await page.getByRole('button', { name: 'Undo' }).last().click(); await page.waitForTimeout(300); c = await get('a2m.void.calendar.v1'); ok(/T10:00$/.test(c.events[0].start), 'calendar: Undo put it back to 10am');
+// one store (lib/agenda.js): the stage's calendar card shows what chat moved, and the stage's older list is moved in once
+await ask('agenda'); await ask('move the meeting with sam to 4pm'); ok(/Meeting with Sam/.test(await page.locator('.calendar-card').innerText().catch(() => '')) && /4:00/.test(await page.locator('.calendar-card').innerText().catch(() => '')), 'calendar: the stage card shows the chat move (4:00)');
+await page.getByRole('button', { name: 'Undo' }).last().click(); await page.waitForTimeout(300);
 await page.goto(base + '/calendar/?d=' + ev.start.slice(0, 10) + '&view=day'); await page.waitForTimeout(900); ok(/Meeting with Sam/.test(await page.locator('body').innerText()), 'calendar page shows the event'); await page.goto(base + '/'); await ready();
 // recipes
 await ask('save this recipe: Lemon cake, serves 8, ingredients: 200 g flour, 3 eggs, 100 g sugar; steps: mix everything. bake 40 minutes'); let r = await get('a2m.void.recipes.v1');

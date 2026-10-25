@@ -491,88 +491,92 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T16:36:26Z",
-   "subject": "Translate: documents with their layout, a dictionary, other words for any word, tone, websites"
+   "at": "2026-10-25T17:34:48Z",
+   "subject": "Translate a website: a bare address like news.site.org is accepted (the server checks it, not the form)"
   },
   {
-   "at": "2026-10-25T16:33:01Z",
-   "subject": "Tower gate: sports,image boards: bbs.progrider.org,image boards: textboard.org measured against their live sites"
+   "at": "2026-10-25T17:33:24Z",
+   "subject": "Live gate fixes: /image/ keeps its own Workers AI share (the forge had used the shared 30), retries without the seed field, shorter…"
   },
   {
-   "at": "2026-10-25T16:27:03Z",
-   "subject": "Verse researches every Versus site's features by itself"
+   "at": "2026-10-25T17:30:32Z",
+   "subject": "Incident: the browser suite failed on fe4daf2c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T16:21:59Z",
-   "subject": "Wheel figure: a long name shrinks to fit its slice instead of being cut with an ellipsis"
+   "at": "2026-10-25T17:27:47Z",
+   "subject": "Boards: the page is static words and forms before load; its module moved to /boards/app.js, imported after load"
   },
   {
-   "at": "2026-10-25T16:17:26Z",
-   "subject": "Boards: anonymous image and text boards anyone can make, and Versus' image boards floor"
+   "at": "2026-10-25T17:26:43Z",
+   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com,random…"
   },
   {
-   "at": "2026-10-25T16:13:52Z",
-   "subject": "Calendar and recipes stop shifting while they load"
+   "at": "2026-10-25T17:25:11Z",
+   "subject": "Generators: {wheel: list} spun on the page, $layout cards/grid/table, a published generator's shared data, five AI name generators; tap…"
   },
   {
-   "at": "2026-10-25T16:08:26Z",
-   "subject": "Notes test: the lane is eight real notes apps now (a parked domain and a typing tool dropped)"
+   "at": "2026-10-25T17:20:11Z",
+   "subject": "Tower gate: random generators: reedsy.com,random generators: writingexercises.com,random generators: behindthename.com,random generators…"
   },
   {
-   "at": "2026-10-25T16:07:44Z",
-   "subject": "Notes: a 30-day trash, find and replace, an outline; chat can restore, replace and outline"
+   "at": "2026-10-25T17:19:33Z",
+   "subject": "comments: the widget named by a test"
   },
   {
-   "at": "2026-10-25T16:06:25Z",
-   "subject": "Feature maps: encoder, weather, codebase, tildegit"
+   "at": "2026-10-25T17:17:58Z",
+   "subject": "Tower gate: image boards: bbs.progrider.org,image boards: textboard.org,image boards: uboachan.net,image boards: desuchan.net,image…"
   },
   {
-   "at": "2026-10-25T16:05:07Z",
-   "subject": "Feature maps: gradient, wheel, random user, time zones, colour, colour codes"
+   "at": "2026-10-25T17:17:45Z",
+   "subject": "Tower gate: random generators measured against their live sites"
   },
   {
-   "at": "2026-10-25T16:04:24Z",
-   "subject": "Chat fills Calendar, Recipes and Generators from a sentence, with Undo"
+   "at": "2026-10-25T17:15:33Z",
+   "subject": "Verse fixes its figure skill: learn to handle \"low poly fox\""
   },
   {
-   "at": "2026-10-25T16:04:01Z",
-   "subject": "Notes lane: drop quillpad.in (an Indian-language typing tool, not a notes app)"
+   "at": "2026-10-25T17:15:17Z",
+   "subject": "Comments under published generators and /image/ (signed sum, rates, reports, owner delete); tap-to-reroll skips a/an and s; features list"
   },
   {
-   "at": "2026-10-25T16:03:19Z",
-   "subject": "Feature map: image boards floor (4chan, other image boards and textboards, text only) vs Verse /boards/ (missing)"
+   "at": "2026-10-25T17:10:47Z",
+   "subject": "Tower gate: random generators: tools.dungeonmastersvault.com,random generators: chaoticshiny.com,random generators: springhole.net,random…"
   },
   {
-   "at": "2026-10-25T16:03:11Z",
-   "subject": "Feature research: email, search, code hosting, ai models, assistant floors"
+   "at": "2026-10-25T17:09:50Z",
+   "subject": "Generators: tap a word to reroll it, present/future/negative tenses, {ai: ...} text and a story writer on the answer route's caps, imports…"
   },
   {
-   "at": "2026-10-25T16:02:59Z",
-   "subject": "Feature maps: stopwatch, unit converter, password, password strength, base converter, photo resizer"
+   "at": "2026-10-25T16:59:57Z",
+   "subject": "Character chat: made-up characters with a persona, memory and chats on the device, shared by link, replies from the answer route's free…"
   },
   {
-   "at": "2026-10-25T16:02:52Z",
-   "subject": "Tower gate: sports measured against their live sites"
+   "at": "2026-10-25T16:55:01Z",
+   "subject": "List language: expressions, if/else, conditional odds, [names[gender]], $inputs, $meta and imports; /gen/<id> share cards; a public image…"
   },
   {
-   "at": "2026-10-25T16:02:49Z",
-   "subject": "Incident: the browser suite failed on 9bc36d37 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T16:50:09Z",
+   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com…"
   },
   {
-   "at": "2026-10-25T16:01:43Z",
-   "subject": "features: calendar floor research (leader and lane sites against Verse's page)"
+   "at": "2026-10-25T16:49:50Z",
+   "subject": "Stopwatch: interval timer, chess clock, more countdown presets, saved timers and alarm choice"
   },
   {
-   "at": "2026-10-25T16:01:43Z",
-   "subject": "features: recipes floor research (leader and lane sites against Verse's page)"
+   "at": "2026-10-25T16:48:44Z",
+   "subject": "Tower gate: calendar: calendar.zoho.com,recipes: budgetbytes.com,recipes: food52.com,calendar,recipes measured against their live sites"
   },
   {
-   "at": "2026-10-25T16:01:42Z",
-   "subject": "features: translate floor research (leader and lane sites against Verse's page)"
+   "at": "2026-10-25T16:48:17Z",
+   "subject": "Feature scan: image-boards,random-generators researched by Verse"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (perchance session)",
+    "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
+   },
    {
     "name": "Claude (feature scan, 2026-10-25)",
     "line": "Verse researches every Versus site's features by itself: tools/feature-scan.mjs reads each floor's sites at their own address, writes domains/features/<floor>.json (under…"
@@ -592,10 +596,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 06:55)",
     "line": "the translate floor: built a /translate/ page (gtx and MyMemory, 99 languages, speech in and out, a vendored on-device reader for photos) in the same hour the main session shipped its own (7c04317: Workers AI, /api/translate, the lane and…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 06:05)",
-    "line": "the weather floor (weather.gov) got Verse's own /weather/ page (dadffdb: lib/weather.js, Open-Meteo for any place, °F and °C side by side, the next 24 hours, 7 days with today first, sunrise and sunset, the weather service's alerts and…"
    }
   ],
   "ladders": [

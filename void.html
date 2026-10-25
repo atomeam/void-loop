@@ -1590,7 +1590,7 @@ Object.values(things).forEach((th) => {
     }
 
     // the agenda's key (skills/calendar.js keeps the events and draws the card): undo snapshots it with the stage
-    const AGENDA_KEY = 'a2m.void.agenda.v1';
+    const AGENDA_KEY = 'a2m.void.calendar.v1'; // the calendar's one store (lib/agenda.js): the stage card and /calendar/ share it, so undo snapshots it
     // skills put things on the stage through this: a kind may bring its own summon (skills/calendar.js: one card, { hide: true } takes it off)
     
     // 3D figures (board Next #17 / #18): stage items of kind 'figure' live in skills/figures3d.js's WebGL layer, not in #stage.

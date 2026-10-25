@@ -93,6 +93,8 @@ import { mountComments } from '/lib/comments-ui.js';
     }
     $('make').addEventListener('click', make);
     $('prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) make(); });
+    // the layer maker loads when it is opened (image/layers.js): stacks pictures already on this page, never uploads
+    let lm = null; $('layersBox').addEventListener('toggle', async () => { if (!$('layersBox').open) return; try { if (!lm) lm = (await import('/image/layers.js')).mountLayers($('layers')); else lm.refreshPicks(); } catch (_) { $('layers').textContent = navigator.onLine ? 'The layer maker did not load.' : 'The layer maker needs this page opened once online.'; } });
     drawGal(); left(); pub('new'); mountComments($('comments'), 'image', { de });
     mountRelated($('related'), '/image/');
     if (q.get('go') === '1' && $('prompt').value.trim()) make();

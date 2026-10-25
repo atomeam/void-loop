@@ -2,7 +2,7 @@
 // (functions/api/comments.js) and the widget (lib/comments-ui.js). Pure but for the HMAC helpers, which use WebCrypto. Tests: tools/comments.test.mjs.
 import { SEXUAL, HATE } from './art-rules.js';
 
-export const NAME_MAX = 30, TEXT_MAX = 500, THREAD_RE = /^(?:gen:[a-z2-7]{8}|image)$/, ID_RE = /^[a-z2-7]{10}$/, CHECK_MIN_MS = 3000, CHECK_MAX_MS = 864e5;
+export const NAME_MAX = 30, TEXT_MAX = 500, THREAD_RE = /^(?:gen:[a-z2-7]{8}|image|forum:[a-z2-7]{10})$/, TITLE_MAX = 80, ID_RE = /^[a-z2-7]{10}$/, CHECK_MIN_MS = 3000, CHECK_MAX_MS = 864e5;
 const line = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, ' ').replace(/[ \t]+/g, ' ').trim().slice(0, max);
 export const cleanName = (v) => line(v, NAME_MAX).replace(/[<>]/g, '') || 'Anonymous';
 export const cleanText = (v) => String(v == null ? '' : v).replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, ' ').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, TEXT_MAX);
