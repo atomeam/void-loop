@@ -23,7 +23,7 @@ function run(text, api) {
 
 export default {
   name: 'fakeuser',
-  examples: ['random user generator', 'fake name generator', 'generate 5 fake german women', '20 random users from japan and brazil', 'fake identity'],
+  examples: ['random user generator', 'fake name generator', 'generate 5 fake german women', '20 random users from japan and brazil', 'fake identity', 'can u make a fake user profile'],
   nearMisses: ['pick a random name from alice, bob', 'fake news', 'my users', 'random number', 'spin the wheel', 'name a random country'],
   match(lower, text) { return !!askFake(text || lower); },
   run
