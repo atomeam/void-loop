@@ -227,6 +227,21 @@ export const PROBES = Object.freeze({
       ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
       ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
   },
+  'image boards': {
+    site: 'https://www.4chan.org/', verse: '/boards/',
+    // the boards start blank (owner, 2026-10-25: "leave the categories blank but user creatable"), so nothing here depends on a board or posts
+    // anything: the question is a post's formatting, put in the page's link and drawn by its preview on the device (/boards/?preview=...). The truth any
+    // correct board agrees on: the poster is Anonymous, the post has its number, a line starting with > stays as written (greentext), >>2 is a quote,
+    // and [spoiler] tags are not shown as text. Judged on Verse alone (a rival's board is never loaded for it, nor pictured: noShot in lib/tower.js);
+    // the same probe measures every site in the image boards lane
+    ask: { verse: '/boards/?preview=' + encodeURIComponent('>be me\n>>2 quoted\nhello [spoiler]hidden words[/spoiler]') },
+    truth: [['the name Anonymous', /\bAnonymous\b/], ['the post number', /\bNo\. 1\b/], ['the greentext line kept', /(?:^|\n)\s*>be me\b/], ['the quote of post 2', />>2 quoted/], ['the spoiler drawn, not its tags', /hello hidden words/]],
+    askParts: { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
+    // what the best boards offer (4chan's board list, catalog, archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread
+    // watcher, rules and reports, picture posts, work-safe and adult boards)
+    facts: [['a board list', /\bboards?\b/i], ['a catalog', /\bcatalog\b/i], ['an archive', /\barchive\b/i], ['replies and quotes', /\brepl(?:y|ies)\b|>>\d/i], ['greentext', /\bgreentext\b/i], ['tripcodes', /\btripcodes?\b/i],
+      ['sage', /\bsage\b/i], ['spoilers', /\bspoilers?\b/i], ['search', /\bsearch\b/i], ['a thread watcher', /\bwatch(?:er|ing)?\b/i], ['rules', /\brules\b/i], ['picture posts', /\bpictures?\b|\bimages?\b/i], ['work-safe and 18+ boards', /\b18\+|\bNSFW\b|\bwork[\s-]?safe\b|safe for work/i], ['make your own board', /\bmake (?:a|the first|your) board\b/i]],
+  },
   'random generators': {
     site: 'https://perchance.org/', verse: '/generators/',
     // the question: the fantasy-name generator at seed 7 (the link reproduces it). Any correct answer is a list of at least five names, each one
@@ -366,6 +381,7 @@ export const PARTS = Object.freeze({ 'docs and notes': { 'rich formatting': [['b
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
+  'image boards': { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
   'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 810,
+ "counted": 814,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1456,7 +1456,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/web4.js",
@@ -1490,8 +1490,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 48,
-   "tests": 12
+   "dependants": 49,
+   "tests": 13
   },
   {
    "file": "lib/models.js",
@@ -1688,6 +1688,13 @@
    "direct": 0,
    "dependants": 2,
    "tests": 9
+  },
+  {
+   "file": "lib/boards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/churn.js",
@@ -2016,7 +2023,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/speak.js",
@@ -2178,6 +2185,13 @@
     "functions/api/answer.js",
     "lib/router.js",
     "lib/clef.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/boards/[[path]].js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/boards.js"
    ],
    "importedBy": []
   },
@@ -2594,6 +2608,12 @@
     "lib/tower.js",
     "lib/lap.js",
     "lib/will-guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/boards/t/[[path]].js": {
+   "imports": [
+    "lib/boards.js"
    ],
    "importedBy": []
   },
@@ -3135,6 +3155,13 @@
     "skills/own-parts.js",
     "skills/showcase.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/boards.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/boards/[[path]].js",
+    "functions/boards/t/[[path]].js"
    ]
   },
   "lib/book-face.js": {
@@ -4195,6 +4222,7 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
+    "functions/api/boards/[[path]].js",
     "functions/api/catalog.js",
     "functions/api/earnings.js",
     "functions/api/gumroad.js",
@@ -7111,6 +7139,10 @@
    ]
   },
   "skills/bench.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/boards.js": {
    "imports": [],
    "importedBy": []
   },

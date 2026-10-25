@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T16:08:26Z",
+   "subject": "Notes test: the lane is eight real notes apps now (a parked domain and a typing tool dropped)"
+  },
+  {
+   "at": "2026-10-25T16:07:44Z",
+   "subject": "Notes: a 30-day trash, find and replace, an outline; chat can restore, replace and outline"
+  },
+  {
+   "at": "2026-10-25T16:06:25Z",
+   "subject": "Feature maps: encoder, weather, codebase, tildegit"
+  },
+  {
+   "at": "2026-10-25T16:05:07Z",
+   "subject": "Feature maps: gradient, wheel, random user, time zones, colour, colour codes"
+  },
+  {
    "at": "2026-10-25T16:04:24Z",
    "subject": "Chat fills Calendar, Recipes and Generators from a sentence, with Undo"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-25T15:58:46Z",
    "subject": "Feature map: random generators floor (perchance.org and its lane) vs Verse /generators/"
-  },
-  {
-   "at": "2026-10-25T15:57:53Z",
-   "subject": "Seven tool cards get a 3D figure: dice, padlock, paint chips, wheel, speech bubbles, pot, page"
-  },
-  {
-   "at": "2026-10-25T15:57:51Z",
-   "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com,translate: reverso.net,translate…"
-  },
-  {
-   "at": "2026-10-25T15:57:46Z",
-   "subject": "Incident: the browser suite failed on 45001d78 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T15:55:49Z",
-   "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net,translate: translator.eu,translate…"
   }
  ],
  "builders": {

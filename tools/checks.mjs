@@ -89,6 +89,7 @@ for (const [name, file] of [
   ['translate', 'translate.test.mjs'],
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
+  ['boards', 'boards.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
   ['generators', 'generators.test.mjs'],
   ['notes', 'notes.test.mjs'],

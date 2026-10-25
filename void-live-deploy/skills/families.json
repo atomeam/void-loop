@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 4,
   "tested": 28,
-  "checked": 16,
+  "checked": 17,
   "proven": 294
  },
  "families": [
@@ -1993,7 +1993,7 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 0,
+    "checked": 1,
     "proven": 4
    },
    "skills": [
@@ -2014,6 +2014,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 8
+    },
+    {
+     "name": "boards",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "dating",
