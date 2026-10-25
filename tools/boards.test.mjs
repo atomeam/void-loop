@@ -233,7 +233,7 @@ test('the page: registered as a tool, every chan part named on it, the rules and
   assert.equal(routeAsk('image boards'), '/boards/'); assert.equal(routeAsk('/tech/'), '/boards/?b=tech'); assert.equal(routeAsk('make a board'), '/boards/?new=1');
   const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8'); assert.match(sw, /'\/boards\/'/);
   const page = fs.readFileSync(path.join(root, 'boards', 'index.html'), 'utf8');
-  for (const w of ['Catalog', 'Archive', 'Watch', 'Report', 'sage', 'Spoiler', 'tripcode', '18+', 'Make the first board', 'Search', '/boards/rules/', B.CONTACT]) assert.ok(page.includes(w), w);
+  for (const w of ['Catalog', 'Archive', 'Watch', 'Report', 'sage', 'Spoiler', 'tripcode', '18+', 'Make the first board', 'Search', '/boards/rules/', 'Share this page', 'Work-safe', 'index pages in bump order', B.CONTACT]) assert.ok(page.includes(w), w);
   const rules = fs.readFileSync(path.join(root, 'boards', 'rules', 'index.html'), 'utf8'); for (const r of B.RULES) assert.ok(rules.includes(r.slice(0, 40)), r.slice(0, 40)); assert.ok(rules.includes(B.CONTACT));
 });
 
