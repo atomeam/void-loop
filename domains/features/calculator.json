@@ -82,21 +82,21 @@
           "detail": "mortgage, loan, auto loan, interest, compound interest, payment, retirement, amortization, investment, inflation, income tax, salary, sales tax",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "loan/mortgage and tip answered on the stage (skills/loan.js, skills/tip.js); none linked from /calculator/"
+          "verse_evidence": "loan with an amortization schedule and chart, mortgage with tax, insurance and HOA, compound interest and percentage panels on /calculator/ (lib/fincalc.js); no retirement, salary, tax or inflation calculators"
         },
         {
           "name": "Fitness and health calculators",
           "detail": "BMI, calorie, body fat, BMR, ideal weight, pace, pregnancy, due date",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no health calculators found in skills/"
+          "verse": "partial",
+          "verse_evidence": "BMI with the WHO bands and a healthy weight range, calories a day (Mifflin-St Jeor with five activity levels) on /calculator/#bmi; no body fat, pace or pregnancy calculators"
         },
         {
           "name": "Math calculators",
           "detail": "fraction, percentage, random number, triangle, standard deviation, statistics",
           "paid": false,
           "verse": "partial",
-          "verse_evidence": "percent works in the sum (\"17% of 240\"); random on /random/; no fraction, triangle or statistics calculators"
+          "verse_evidence": "percent in the sum and the Percentage panel (x % of y, what %, % change); random on /random/; no fraction, triangle or statistics calculators"
         },
         {
           "name": "Other calculators",
@@ -123,8 +123,8 @@
           "name": "Amortization tables and charts",
           "detail": "loan schedules with charts",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none on /calculator/"
+          "verse": "has",
+          "verse_evidence": "/calculator/#loan: yearly schedule, Show every month, an SVG chart of principal, interest and balance each year"
         }
       ]
     }
@@ -141,7 +141,6 @@
   "gaps": [
     "Financial calculators",
     "Fitness and health calculators",
-    "Amortization tables and charts",
     "Math calculators",
     "Other calculators",
     "Search across 200+ calculators",

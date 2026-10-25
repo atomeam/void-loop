@@ -5731,6 +5731,20 @@ try {
       && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !thirdParty.length && !Z.errors.length, JSON.stringify({ first, back, formula, swapped, four, kinds, fuel, km, link, kept, thirdParty, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of calculator.net on /calculator/ (lib/calc-panels.js): a loan with its schedule and chart, compound interest, percentages and BMI with calories, from links
+  if (want("calculator: /calculator/#loan answers the monthly payment with a yearly schedule and a chart, and the compound, percent and BMI panels answer")) {
+    const Z = await fresh(); await Z.p.goto(base + 'calculator/#loan'); await Z.p.waitForSelector('#ltable tr');
+    const open = await Z.p.$eval('#c-loan', (d) => d.open), loan = await Z.p.$eval('#lout', (e) => e.textContent), rows = await Z.p.$$eval('#ltable tbody tr', (r) => r.length), bars = await Z.p.$$eval('#lchart rect', (r) => r.length);
+    await Z.p.click('#lmonths'); const months = await Z.p.$$eval('#ltable tbody tr', (r) => r.length);
+    await Z.p.click('#c-compound summary'); await Z.p.fill('#cp', '10000'); await Z.p.fill('#cm', '0'); await Z.p.fill('#cr', '5'); await Z.p.fill('#cy', '10'); const comp = await Z.p.$eval('#cout', (e) => e.textContent);
+    await Z.p.click('#c-percent summary'); const pct = [await Z.p.$eval('#pa', (e) => e.textContent), await Z.p.$eval('#pb', (e) => e.textContent), await Z.p.$eval('#pc', (e) => e.textContent)];
+    await Z.p.click('#c-bmi summary'); const body = await Z.p.$eval('#bout', (e) => e.textContent), kcal = await Z.p.$eval('#kout', (e) => e.textContent);
+    check("calculator: /calculator/#loan answers the monthly payment with a yearly schedule and a chart, and the compound, percent and BMI panels answer",
+      open && /Monthly payment 396\.02/.test(loan) && /Total interest 3,761\.44/.test(loan) && rows === 5 && bars === 10 && months === 60 && /Final balance 16,470\.09/.test(comp)
+      && pct[0] === '= 40.8' && pct[1] === '= 25 %' && /^= \+25 %/.test(pct[2]) && /BMI 22\.9/.test(body) && /a healthy weight/.test(body) && /Keep your weight 2,298 kcal a day/.test(kcal) && !Z.errors.length,
+      JSON.stringify({ open, loan, rows, bars, months, comp, pct, body, kcal, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the tower's calculator.net floor: /calculator/ works out an ask in its link, typing and its keys, with no floating noise, in degrees or
   // radians, and keeps its history and memory on the device across a reload
   if (want('calculator page: an ask in the link, typing and the keys work it out exactly (0.1 + 0.2 = 0.3), radians switch, history and memory survive a reload')) {

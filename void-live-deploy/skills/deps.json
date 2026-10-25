@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 838,
+ "counted": 840,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1823,6 +1823,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fincalc.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
@@ -1982,6 +1989,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/calc-panels.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/calculator.js",
@@ -3465,6 +3479,12 @@
     "skills/calc-more.js"
    ]
   },
+  "lib/calc-panels.js": {
+   "imports": [
+    "lib/fincalc.js"
+   ],
+   "importedBy": []
+  },
   "lib/calculator.js": {
    "imports": [
     "skills/calc.js"
@@ -4436,6 +4456,12 @@
   "lib/film-share.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/fincalc.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/calc-panels.js"
+   ]
   },
   "lib/fix-audit.js": {
    "imports": [

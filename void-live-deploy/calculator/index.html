@@ -38,11 +38,19 @@
   .units { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } input.box { border-radius: 10px; width: 7em; cursor: text; } select { border-radius: 10px; }
   .note { font-size: 13px; color: var(--soft); }
   [hidden] { display: none !important; }
+  #more details { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; } #more summary { cursor: pointer; font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+  #more .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px; margin: 8px 0; } #more .form label { display: grid; gap: 3px; font-size: 13px; color: var(--soft); } #more .form .wide { grid-column: 1 / -1; }
+  #more .form input.box, #more .form select { width: 100%; box-sizing: border-box; border-radius: 10px; } #more .pct input.box { width: 6em; } #more .pct p { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  #more .out p { margin: 2px 0; display: flex; justify-content: space-between; gap: 10px; font-variant-numeric: tabular-nums; } #more .out p.big b { font-size: 22px; } #more .out span { color: var(--soft); }
+  #more .chart svg { width: 100%; height: auto; color: var(--soft); } #more .key { display: flex; gap: 14px; font-size: 12px; color: var(--soft); margin: 0; } #more .key span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--c); margin-right: 5px; }
+  #more .tbl { max-height: 320px; overflow: auto; } #more table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; } #more th, #more td { text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--line); } #more th { position: sticky; top: 0; background: var(--bg); }
+  #uout { min-height: 1.5em; } #more .chart:not(:empty) { min-height: 0; } #more details[open] .chart { aspect-ratio: 600 / 250; } #more details[open] #lout { min-height: 7em; } #more details[open] #mout, #more details[open] #kout { min-height: 12em; } #more details[open] #cout, #more details[open] #bout { min-height: 5.5em; } #more .pct b { flex-basis: 100%; min-height: 1.5em; } #more details[open] .tbl { height: 320px; }
+  #more h3 { font-size: 14px; color: var(--soft); margin: 10px 0 4px; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/calculator/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Scientific calculator","url":"https://a-to-mind.com/calculator/","description":"Brackets, powers, roots, sin, cos and tan in degrees or radians, logs, factorial, percent, memory keys, a history kept on your device, unit conversion and keyboard input; exact display (0.1 + 0.2 = 0.3). Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"scientific calculator online, online calculator, calculator with history, percentage calculator, square root calculator, sin cos tan calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/calculator/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Scientific calculator","item":"https://a-to-mind.com/calculator/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Scientific calculator","url":"https://a-to-mind.com/calculator/","description":"Brackets, powers, roots, sin, cos and tan in degrees or radians, logs, factorial, percent, memory keys, a history kept on your device, unit conversion and keyboard input; exact display (0.1 + 0.2 = 0.3); plus loan with an amortization schedule and chart, mortgage, compound interest, percentage, BMI and calorie calculators. Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"scientific calculator online, online calculator, calculator with history, percentage calculator, square root calculator, sin cos tan calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/calculator/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Scientific calculator","item":"https://a-to-mind.com/calculator/"}]}]}</script>
 <!-- /seo -->
 </head>
 <body>
@@ -54,7 +62,7 @@
     <div id="out" aria-live="polite">0</div>
   </div>
   <div class="row"><button type="button" id="deg" aria-pressed="true">Deg</button><button type="button" id="rad" aria-pressed="false">Rad</button><button type="button" id="sci" aria-pressed="true">Scientific</button><button type="button" id="copy">Copy result</button><button type="button" id="link">Copy link</button></div>
-  <div class="keys" id="keys" data-sci="true"></div>
+  <div class="keys" id="keys" data-sci="true"><button type="button" class="fn sci">sin</button><button type="button" class="fn sci">cos</button><button type="button" class="fn sci">tan</button><button type="button" class="fn sci" aria-label="pi">π</button><button type="button" class="fn sci" aria-label="e, 2.718">e</button><button type="button" class="fn sci" aria-label="inverse sine">sin⁻¹</button><button type="button" class="fn sci" aria-label="inverse cosine">cos⁻¹</button><button type="button" class="fn sci" aria-label="inverse tangent">tan⁻¹</button><button type="button" class="fn sci" aria-label="natural log">ln</button><button type="button" class="fn sci" aria-label="log base 10">log</button><button type="button" class="fn sci" aria-label="square">x²</button><button type="button" class="fn sci" aria-label="power">xʸ</button><button type="button" class="fn sci" aria-label="square root">√</button><button type="button" class="fn sci" aria-label="cube root">∛</button><button type="button" class="fn sci" aria-label="factorial">n!</button><button type="button" class="fn sci" aria-label="one over">1/x</button><button type="button" class="fn sci" aria-label="change sign">±</button><button type="button" class="fn sci" aria-label="times ten to the power">×10ˣ</button><button type="button" class="fn">(</button><button type="button" class="fn">)</button><button type="button" class="fn" aria-label="memory clear">MC</button><button type="button" class="fn" aria-label="memory recall">MR</button><button type="button" class="fn" aria-label="memory add">M+</button><button type="button" class="fn" aria-label="memory subtract">M−</button><button type="button" class="fn" aria-label="percent">%</button><button type="button">7</button><button type="button">8</button><button type="button">9</button><button type="button" class="fn" aria-label="divide">÷</button><button type="button" class="fn" aria-label="clear">C</button><button type="button">4</button><button type="button">5</button><button type="button">6</button><button type="button" class="fn" aria-label="times">×</button><button type="button" class="fn" aria-label="delete">⌫</button><button type="button">1</button><button type="button">2</button><button type="button">3</button><button type="button" class="fn" aria-label="minus">−</button><button type="button" class="fn" aria-label="last answer">Ans</button><button type="button">0</button><button type="button" aria-label="point">.</button><button type="button" class="sci fn" aria-label="e for an exponent, 2e5">EXP</button><button type="button" class="fn" aria-label="plus">+</button><button type="button" class="eq" aria-label="equals">=</button></div>
   <p class="note">Type on your keyboard: digits, + − * / ^ ( ) % !, Enter for =, Esc clears, Backspace deletes. Percent works as calculators mean it: 200 + 10% is 220, 17% of 240 is 40.8. Results are exact to 15 digits, so 0.1 + 0.2 = 0.3.</p>
 
   <section aria-labelledby="hh"><h2 id="hh">History</h2>
@@ -69,9 +77,32 @@
     <p class="note">Length, weight and temperature. Or type it in the sum: 5 miles to km, 100 c to f.</p>
   </section>
 
-  <nav id="related" aria-label="Related tools"></nav>
+  <section id="more" aria-labelledby="mh"><h2 id="mh">Money and health calculators</h2>
+    <details id="c-loan"><summary>Loan, with an amortization schedule and chart</summary><div class="form"><label>Amount <input class="box" id="la" type="text" inputmode="decimal" value="20000"></label><label>Interest rate (% a year) <input class="box" id="lr" type="text" inputmode="decimal" value="7"></label><label>Years <input class="box" id="ly" type="text" inputmode="decimal" value="5"></label><label>Extra each month <input class="box" id="lx" type="text" inputmode="decimal" value="0"></label></div>
+      <div class="out" id="lout"></div><div class="chart" id="lchart"></div><div class="row"><button type="button" id="lmonths">Show every month</button></div><div class="tbl" id="ltable"></div></details>
+    <details id="c-mortgage"><summary>Mortgage, with taxes, insurance and fees</summary><div class="form"><label>Home price <input class="box" id="mp" type="text" inputmode="decimal" value="400000"></label><label>Down payment (%) <input class="box" id="md" type="text" inputmode="decimal" value="20"></label><label>Interest rate (% a year) <input class="box" id="mr" type="text" inputmode="decimal" value="6.5"></label><label>Years <input class="box" id="my" type="text" inputmode="decimal" value="30"></label><label>Property tax a year <input class="box" id="mt" type="text" inputmode="decimal" value="4800"></label><label>Insurance a year <input class="box" id="mi" type="text" inputmode="decimal" value="1200"></label><label>HOA a month <input class="box" id="mh" type="text" inputmode="decimal" value="0"></label></div>
+      <div class="out" id="mout"></div><div class="chart" id="mchart"></div></details>
+    <details id="c-compound"><summary>Compound interest and savings</summary><div class="form"><label>Starting amount <input class="box" id="cp" type="text" inputmode="decimal" value="10000"></label><label>Added each month <input class="box" id="cm" type="text" inputmode="decimal" value="100"></label><label>Interest rate (% a year) <input class="box" id="cr" type="text" inputmode="decimal" value="5"></label><label>Years <input class="box" id="cy" type="text" inputmode="decimal" value="10"></label><label>Compounded <select id="ck"><option value="1">yearly</option><option value="4">quarterly</option><option value="12" selected>monthly</option><option value="365">daily</option></select></label></div>
+      <div class="out" id="cout"></div><div class="chart" id="cchart"></div><div class="tbl" id="ctable"></div></details>
+    <details id="c-percent"><summary>Percentage</summary><div class="pct">
+      <p><input class="box" id="p1" type="text" inputmode="decimal" value="17" aria-label="Percent"> % of <input class="box" id="p2" type="text" inputmode="decimal" value="240" aria-label="Of what"> <b id="pa"></b></p>
+      <p><input class="box" id="p3" type="text" inputmode="decimal" value="30" aria-label="Part"> is what % of <input class="box" id="p4" type="text" inputmode="decimal" value="120" aria-label="Whole"> <b id="pb"></b></p>
+      <p>From <input class="box" id="p5" type="text" inputmode="decimal" value="80" aria-label="From"> to <input class="box" id="p6" type="text" inputmode="decimal" value="100" aria-label="To"> <b id="pc"></b></p></div></details>
+    <details id="c-bmi"><summary>BMI and calories a day</summary><div class="form">
+      <label>Units <select id="bu"><option value="metric">metric (cm, kg)</option><option value="us">US (ft, in, lb)</option></select></label>
+      <label class="metric">Height (cm) <input class="box" id="bh" type="text" inputmode="decimal" value="175"></label>
+      <label class="imperial" hidden>Height (ft) <input class="box" id="bft" type="text" inputmode="decimal" value="5"></label><label class="imperial" hidden>and (in) <input class="box" id="bin" type="text" inputmode="decimal" value="9"></label>
+      <label id="bwl">Weight (kg) <input class="box" id="bw" type="text" inputmode="decimal" value="70"></label>
+      <label>Age <input class="box" id="ba" type="text" inputmode="numeric" value="30"></label><label>Sex <select id="bs"><option value="female">female</option><option value="male">male</option></select></label>
+      <label class="wide">Activity <select id="bact"></select></label></div>
+      <div class="out" id="bout"></div><h3>Calories a day</h3><div class="out" id="kout"></div>
+      <p class="note">BMI bands are the WHO's for adults; calories are the Mifflin-St Jeor resting rate times your activity, an estimate, not advice.</p></details>
+  </section>
+
+  <nav id="related" aria-label="Related tools" style="min-height:106px"></nav>
   <footer>Worked out on this device, with no third party; it opens offline after one visit. <a href="/">Ask Verse anything</a></footer>
 </main>
+<script>{ const d = document.getElementById('c-' + location.hash.slice(1)); if (d && d.tagName === 'DETAILS') d.open = true; } // a link to a panel shows it open from the first paint</script>
 <script type="module">
   // the keypad is in the HTML and paints at once; the calculator's code comes in after the load event (calculator.net reaches its load event in
   // 83 ms and the tower gate times that), so nothing but this page's own bytes stands before it. A sum in the link is still worked out on arrival.
@@ -97,7 +128,9 @@
     ['1', '1'], ['2', '2'], ['3', '3'], ['−', '−', 'fn', 'minus'], ['Ans', 'Ans', 'fn', 'last answer'],
     ['0', '0'], ['.', '.', '', 'point'], ['EXP', 'e', 'sci fn', 'e for an exponent, 2e5'], ['+', '+', 'fn', 'plus'], ['=', ':eq', 'eq', 'equals'],
   ];
-  for (const [label, act, cls, name] of K) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; if (name) b.setAttribute('aria-label', name); b.addEventListener('click', () => press(act)); $('keys').append(b); }
+  // the keys are drawn in the HTML (so the page does not move as it loads); here each is wired to what it types, made only if missing
+  const drawn = [...$('keys').children];
+  K.forEach(([label, act, cls, name], i) => { let b = drawn[i]; if (!b || b.textContent !== label) { b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; if (name) b.setAttribute('aria-label', name); $('keys').append(b); } b.addEventListener('click', () => press(act)); });
 
   const ex = $('expr'), out = $('out');
   // where the next key goes: the caret the person last put in the box, else the end (an unfocused box forgets its caret in some browsers)
@@ -176,6 +209,8 @@
   const asked = q.get('e') || (q.get('q') ? expressionOf(q.get('q')) || q.get('q') : '');
   drawAngle(); drawSci(); drawMem(); drawHist(); units();
   if (asked) { setExpr(asked); equals(); try { history.replaceState(null, '', location.pathname + (deg ? '' : '?a=rad')); } catch (_) {} } else preview(); // worked out once: a reload does not add it to the history again
+  // the money and health calculators (lib/calc-panels.js), wired to their panels once the keypad works
+  import('/lib/calc-panels.js').then((m) => m.mount()).catch(() => {});
   // the "Use with" row last of all
   import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/')).catch(() => {});
   });
