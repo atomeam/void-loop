@@ -320,7 +320,14 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
   // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
   const dir = (u) => { const m = String(u || '').match(/^\/([\w-]+)\//); return m ? m[1] : ''; };
-  for (const f of FLOORS) { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); if (d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/'))) add(f.id); }
+  // every floor that stands on a changed page, not only the current fight (2026-10-25: a /color/ offline fix re-measured one colour floor and left
+  // hexcolor16.com, on the same page, with a reading from before it), the unbeaten first, at most 10; and when the service worker changed, every
+  // unbeaten floor whose last offline reading is not a win
+  const OKV = new Set(['better', 'equal-and-better']), room = Math.max(max, 10), addMore = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < room) out.push(id); };
+  const onPage = FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
+  const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
+  for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
+  if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);
   for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
   return out;
 }

@@ -308,3 +308,11 @@ test('a site icon is kept only when it is a small raster image', async () => {
   assert.equal(iconExt('image/png'), 'png'); assert.equal(iconExt('image/x-icon; charset=binary'), 'ico'); assert.equal(iconExt('image/vnd.microsoft.icon'), 'ico'); assert.equal(iconExt('image/svg+xml'), 'svg');
   assert.equal(iconExt('text/html'), ''); assert.equal(iconExt(''), ''); assert.equal(iconExt(null), '');
 });
+
+test('a deploy re-measures every unbeaten floor on a changed page, and every floor whose offline reading is not a win when the worker changed', async () => {
+  const { pick } = await import('./tower-gate.mjs');
+  const got = pick({}, null, ['void-live-deploy/colour/index.html', 'void-live-deploy/color/index.html']);
+  assert.ok(got.includes('colour') && got.includes('colour codes'), 'both floors on /color/: ' + got.join(','));
+  const sw = pick({}, null, ['void-live-deploy/sw.js']);
+  assert.ok(sw.length >= 2 && sw.length <= 10, 'the worker change: ' + sw.length);
+});
