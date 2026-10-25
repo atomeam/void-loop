@@ -3,47 +3,79 @@
  "floors": {
   "calculator": {
    "speed": {
-    "verdict": "worse",
-    "verse": 233,
-    "best": 110,
-    "evidence": "Verse 233 ms to the load event (median of 3, phone width) vs calculator.net 110 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T15:39:07.660Z",
-    "was": "better"
+    "verdict": "better",
+    "verse": 120,
+    "best": 140,
+    "evidence": "Verse (/calculator/) 120 ms to the load event (median of 3, phone width) vs calculator.net 140 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:44:28.871Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-24T15:39:07.660Z"
+    "evidence": "Verse (/calculator/) 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
+    "at": "2026-10-25T00:44:28.871Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T15:39:07.660Z"
+    "evidence": "Verse (/calculator/) 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T00:44:28.871Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
-    "evidence": "Verse 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
-    "at": "2026-10-24T15:39:07.660Z"
+    "evidence": "Verse (/calculator/) 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
+    "at": "2026-10-25T00:44:28.871Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T15:39:07.660Z"
+    "evidence": "Verse (/calculator/) 1 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T00:44:28.871Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T15:39:07.660Z"
+    "evidence": "Verse (/calculator/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T00:44:28.871Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 46,
+    "evidence": "Verse (/calculator/) 1 design defects vs calculator.net 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.37), calculator.net (0 low-contrast texts, 46 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T00:44:28.871Z"
+   },
+   "history": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calculator/) 1 of 1 shown vs calculator.net 0 of 1 shown (Verse lacks: none; site lacks: a history of results)",
+    "at": "2026-10-25T00:44:28.871Z",
+    "of": 1,
+    "part": true
+   },
+   "unit and scientific modes": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse (/calculator/) 3 of 3 shown vs calculator.net 1 of 3 shown (Verse lacks: none; site lacks: scientific functions, unit conversion)",
+    "at": "2026-10-25T00:44:28.871Z",
+    "of": 3,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 17,
+    "best": 6,
+    "evidence": "Verse (/calculator/) 17 of 17 things a full answer shows vs calculator.net 6 of 17 things a full answer shows (Verse lacks: none; site lacks: brackets, powers, roots, sin, cos and tan, inverse trig, logarithms, pi, factorial, percent, history of results, keyboard input)",
+    "at": "2026-10-25T00:44:28.871Z",
+    "of": 17
    }
   },
   "is it": {
@@ -123,52 +155,52 @@
   "coin flip": {
    "speed": {
     "verdict": "better",
-    "verse": 155,
-    "best": 262,
-    "evidence": "Verse (/flip/) 155 ms to the load event (median of 3, phone width) vs justflipacoin.com 262 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T00:36:11.776Z"
+    "verse": 173,
+    "best": 268,
+    "evidence": "Verse (/flip/) 173 ms to the load event (median of 3, phone width) vs justflipacoin.com 268 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/flip/) 3 of 3 things a full answer shows vs justflipacoin.com 2 of 3 things a full answer shows (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-25T00:36:11.776Z",
+    "at": "2026-10-25T00:43:58.386Z",
     "of": 3
    },
    "design polish": {
@@ -176,14 +208,14 @@
     "verse": 3,
     "best": 12,
     "evidence": "Verse (/flip/) 3 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.05), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-25T00:36:11.776Z",
+    "at": "2026-10-25T00:43:58.386Z",
     "of": 1,
     "part": true
    },
@@ -192,14 +224,14 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 right on 10 flips pressed by the gate; the gate could not find justflipacoin.com's flip control or read a side it showed (a result drawn where text cannot be read): a fault to fix in the gate, not a win",
-    "at": "2026-10-25T00:36:11.776Z"
+    "at": "2026-10-25T00:43:58.386Z"
    },
    "flip animation": {
     "verdict": "unverified",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flip/) 1 of 1 seen; the gate could not find justflipacoin.com's flip control, or its screen never rests: a fault to fix in the gate, not a win",
-    "at": "2026-10-25T00:36:11.776Z",
+    "at": "2026-10-25T00:43:58.386Z",
     "part": true
    }
   },
@@ -698,7 +730,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "timeanddate.com answered none of 3 loads from an ordinary phone browser: the gate could not measure it (a fault to fix in the gate, not a win)",
-    "at": "2026-10-24T19:02:58.045Z"
+    "at": "2026-10-25T00:44:40.001Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
