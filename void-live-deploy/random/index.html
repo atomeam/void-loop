@@ -33,13 +33,16 @@
   button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
   details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
   summary { cursor: pointer; color: var(--soft); }
+  #dealt { display: grid; gap: 6px; margin-top: 6px; } .hand { font-size: 13px; color: var(--soft); } .cards { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+  .card { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 54px; padding: 0 4px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: #15131c; font: 700 17px/1 system-ui, sans-serif; }
+  .card.red { color: #c0192d; } #dates { font-variant-numeric: tabular-nums; } #dates li { margin: 2px 0; }
   #hist { color: var(--soft); font-size: 13px; text-align: center; margin-top: 10px; }
   footer { text-align: center; font-size: 12px; color: var(--soft); margin-top: 22px; }
   footer a { color: inherit; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/random/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Random number","url":"https://a-to-mind.com/random/","description":"A random number between two bounds, several at once, without repeats or sorted, in decimal, binary, octal or hex; the number is on screen at once.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random number generator, random number between 1 and 100, random number picker, random numbers no repeats, lottery number generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Random number","item":"https://a-to-mind.com/random/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Random number","url":"https://a-to-mind.com/random/","description":"A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random number generator, random number between 1 and 100, random number picker, random numbers no repeats, lottery number generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Random number","item":"https://a-to-mind.com/random/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
@@ -53,13 +56,14 @@
   <div id="out" aria-live="polite"></div>
   <div id="note"></div>
   <form id="f" autocomplete="off">
-    <label>From <input id="min" type="number" inputmode="numeric" value="1"></label>
-    <label>To <input id="max" type="number" inputmode="numeric" value="100"></label>
+    <label>From <input id="min" type="number" inputmode="decimal" step="any" value="1"></label>
+    <label>To <input id="max" type="number" inputmode="decimal" step="any" value="100"></label>
     <label>How many <input id="n" type="number" inputmode="numeric" value="1" min="1" max="10000"></label>
   </form>
   <div class="row">
     <label><input id="uniq" type="checkbox"> no repeats</label>
     <label><input id="sort" type="checkbox"> sorted</label>
+    <label>Decimals <select id="dec"><option value="0">whole numbers</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
     <label>Base <select id="base"><option value="10">decimal</option><option value="2">binary</option><option value="8">octal</option><option value="16">hex</option></select></label>
     <label title="Numbers from drand, a public randomness beacon: anyone with the link re-derives the same numbers from the same public round"><input id="beacon" type="checkbox"> public, checkable draw</label>
     <label>Columns <select id="cols"><option value="0">in a line</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
@@ -69,8 +73,20 @@
   <div id="proof" style="font-size:13px;color:var(--soft);text-align:center;margin-top:6px;overflow-wrap:anywhere"></div>
   <details id="listbox"><summary>Pick from a list or shuffle it</summary>
     <p style="font-size:13px;color:var(--soft)">One item a line. Pick one, or shuffle them all.</p>
-    <textarea id="list" rows="5" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
+    <textarea id="list" rows="5" aria-label="Your list, one item a line" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
     <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
+  </details>
+  <details id="cardbox"><summary>Shuffle and deal playing cards</summary>
+    <div class="row"><label>Decks <select id="decks"><option>1</option><option>2</option><option>4</option><option>6</option><option>8</option></select></label><label><input id="jokers" type="checkbox"> jokers</label>
+      <label>Hands <select id="hands"><option>1</option><option>2</option><option selected>4</option><option>6</option><option>8</option></select></label><label>Cards each <select id="each"><option>1</option><option>2</option><option>3</option><option selected>5</option><option>7</option><option>13</option></select></label></div>
+    <div class="row"><button id="newdeck" type="button">Shuffle a new deck</button><button id="deal" class="quiet" type="button">Deal</button><button id="turn" class="quiet" type="button">Turn over one</button></div>
+    <p id="decknote" style="font-size:13px;color:var(--soft);text-align:center"></p><div id="dealt"></div>
+  </details>
+  <details id="datebox"><summary>Random dates and times</summary>
+    <div class="row"><label>From <input id="d0" type="date" value="2026-01-01" style="width:auto"></label><label>To <input id="d1" type="date" value="2026-12-31" style="width:auto"></label><label>How many <input id="dn" type="number" min="1" max="1000" value="5" style="width:5em"></label></div>
+    <div class="row"><label>With <select id="dkind"><option value="date">dates</option><option value="datetime">dates and times</option><option value="time">times of day</option></select></label><label><input id="dsort" type="checkbox"> sorted</label><label><input id="dwork" type="checkbox"> weekdays only</label></div>
+    <div class="row"><button id="dgo" type="button">Random dates</button><button id="dcopy" class="quiet" type="button">Copy</button></div>
+    <ol id="dates"></ol>
   </details>
   <nav id="related" aria-label="Related tools"></nav>
   <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no ads, nothing sent. A public, checkable draw instead fetches one round from the drand beacon (the only network use). <a href="/">Ask Verse anything</a></footer>
@@ -91,8 +107,13 @@
       const vals = await B.numbers(r.randomness, a, b, n, uniq); busy = false; return { vals, r, url: B.roundUrl(r.round) };
     } catch (e) { busy = false; $('proof').textContent = 'The public beacon did not answer, so nothing was drawn. Untick "public, checkable draw" for this device\'s own random numbers.'; return null; }
   }
+  // decimal fractions (random.org's decimal fraction generator): the draw is of whole steps of 10^-places, each equally likely, written exactly
+  const places = () => +$('dec').value || 0;
+  const fixed = (k, d) => { const neg = k < 0, m = Math.abs(k), sc = 10 ** d, w = Math.floor(m / sc), f = String(m - w * sc).padStart(d, '0'); return (neg ? '-' : '') + w.toLocaleString('en') + '.' + f; };
   async function draw() {
-    let a = num('min', 1), b = num('max', 100); if (a > b) [a, b] = [b, a];
+    const d = places(), sc = 10 ** d; let a, b;
+    if (d) { let fa = Number($('min').value), fb = Number($('max').value); if (!Number.isFinite(fa)) fa = 0; if (!Number.isFinite(fb)) fb = 1; if (fa > fb) [fa, fb] = [fb, fa]; a = Math.ceil(fa * sc - 1e-9); b = Math.floor(fb * sc + 1e-9); if (a > b) b = a; }
+    else { a = num('min', 1); b = num('max', 100); if (a > b) [a, b] = [b, a]; }
     const span = b - a + 1, uniq = $('uniq').checked; let n = Math.min(10000, Math.max(1, num('n', 1)));
     if (uniq && n > span) { n = span; note.textContent = 'Only ' + span.toLocaleString() + ' different numbers fit between ' + a + ' and ' + b + '.'; } else note.textContent = '';
     let vals, pub = null;
@@ -102,13 +123,14 @@
     $('proof').innerHTML = ''; if (pub) { const l = document.createElement('a'); l.href = pub.url; l.textContent = 'drand round ' + pub.r.round; l.target = '_blank'; l.rel = 'noopener'; $('proof').append('From the public beacon, ', l, ': anyone opening this link gets these same numbers, re-derived from that round (SHA-256 of "randomness:index:try").'); }
     if ($('sort').checked) vals.sort((x, y) => x - y);
     // the base the numbers are written in (random.org's integer tool offers binary, octal, decimal and hex) and, for many, how many a row
-    const base = +$('base').value || 10, cols = +$('cols').value || 0, word = (v) => (base === 10 ? v.toLocaleString('en') : (v < 0 ? '-' : '') + Math.abs(v).toString(base).toUpperCase());
+    const base = d ? 10 : +$('base').value || 10, cols = +$('cols').value || 0, word = (v) => (d ? fixed(v, d) : base === 10 ? v.toLocaleString('en') : (v < 0 ? '-' : '') + Math.abs(v).toString(base).toUpperCase());
+    $('base').disabled = !!d; const A = d ? fixed(a, d) : a, Bv = d ? fixed(b, d) : b;
     out.className = n > 1 ? 'many' : ''; out.style.whiteSpace = cols && n > 1 ? 'pre' : '';
     out.textContent = cols && n > 1 ? vals.map(word).reduce((rows, w, i) => { if (i % cols === 0) rows.push([]); rows[rows.length - 1].push(w); return rows; }, []).map((r) => r.join('\t')).join('\n') : vals.map(word).join(n > 1 ? ', ' : '');
     $('go').textContent = n > 1 ? 'New numbers' : 'New number';
-    $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + a + ' to ' + b + (uniq ? ', no repeats' : '') : 'Random number, ' + a + ' to ' + b;
-    if (n === 1) { hist.unshift(vals[0]); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
-    const q = new URLSearchParams({ min: a, max: b }); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols); if (pub) q.set('round', pub.r.round);
+    $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + A + ' to ' + Bv + (uniq ? ', no repeats' : '') : 'Random number, ' + A + ' to ' + Bv;
+    if (n === 1) { hist.unshift(word(vals[0])); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
+    const q = new URLSearchParams({ min: d ? A.replace(/,/g, '') : a, max: d ? Bv.replace(/,/g, '') : b }); if (d) q.set('dec', d); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols); if (pub) q.set('round', pub.r.round);
     history.replaceState(null, '', '?' + q);
   }
   function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
@@ -118,7 +140,7 @@
   $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
   $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
   $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
-  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw; $('beacon').onchange = draw;
+  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw; $('beacon').onchange = draw; $('dec').onchange = draw;
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
   // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
   const p = new URLSearchParams(location.search);
@@ -126,8 +148,38 @@
   for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
   $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
   if (/^\d{1,12}$/.test(p.get('round') || '')) { $('beacon').checked = true; wantRound = +p.get('round'); } // a shared public draw: the same round, the same numbers
+  if ([...$('dec').options].some((o) => o.value === p.get('dec'))) $('dec').value = p.get('dec');
   if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
   draw();
+  // playing cards (random.org's card shuffler): whole decks shuffled with the same unbiased secure draws, dealt round the table or turned one by one
+  const SUITS = [['♠', 0], ['♥', 1], ['♦', 1], ['♣', 0]], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  let deck = [];
+  const cardEl = (c) => { const e = document.createElement('span'); e.className = 'card' + (c.red ? ' red' : ''); e.textContent = c.t; e.setAttribute('aria-label', c.name); return e; };
+  function newDeck() {
+    deck = []; const decks = +$('decks').value || 1; for (let k = 0; k < decks; k++) { for (const [s, red] of SUITS) for (const r of RANKS) deck.push({ t: r + s, red: !!red, name: ({ A: 'ace', J: 'jack', Q: 'queen', K: 'king' }[r] || r) + ' of ' + ({ '♠': 'spades', '♥': 'hearts', '♦': 'diamonds', '♣': 'clubs' }[s]) });
+      if ($('jokers').checked) deck.push({ t: '🃏', red: false, name: 'joker' }, { t: '🃏', red: true, name: 'joker' }); }
+    for (let i = deck.length - 1; i > 0; i--) { const j = below(i + 1); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    $('dealt').replaceChildren(); $('decknote').textContent = 'Shuffled: ' + deck.length + ' cards in the deck.';
+  }
+  $('newdeck').onclick = newDeck; $('decks').onchange = newDeck; $('jokers').onchange = newDeck;
+  $('deal').onclick = () => { if (!deck.length) newDeck(); const hands = +$('hands').value, each = +$('each').value, rows = Array.from({ length: hands }, () => []);
+    for (let k = 0; k < each; k++) for (let h = 0; h < hands && deck.length; h++) rows[h].push(deck.pop());
+    $('dealt').replaceChildren(...rows.map((cs, h) => { const d = document.createElement('div'), l = document.createElement('div'), r = document.createElement('div'); d.className = 'hand'; l.textContent = 'Hand ' + (h + 1); r.className = 'cards'; r.append(...cs.map(cardEl)); d.append(l, r); return d; }));
+    $('decknote').textContent = deck.length + ' cards left in the deck' + (deck.length ? '.' : ': shuffle a new deck to go on.'); };
+  $('turn').onclick = () => { if (!deck.length) newDeck(); const c = deck.pop(), row = document.createElement('div'); row.className = 'cards'; row.append(cardEl(c)); if (!$('dealt').querySelector('.turned')) $('dealt').replaceChildren(); row.classList.add('turned'); $('dealt').prepend(row); $('decknote').textContent = 'Turned over the ' + c.name + '; ' + deck.length + ' left.'; };
+  // random dates and times (random.org's calendar dates and clock times): every day (or second) between the two equally likely
+  function dates() {
+    const kind = $('dkind').value, n = Math.min(1000, Math.max(1, Math.trunc(+$('dn').value) || 1)), day = 864e5;
+    let t0 = Date.parse($('d0').value + 'T00:00:00Z'), t1 = Date.parse($('d1').value + 'T00:00:00Z'); if (!Number.isFinite(t0) || !Number.isFinite(t1)) { $('dates').replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Choose two dates.' })); return; } if (t0 > t1) [t0, t1] = [t1, t0];
+    const days = Math.round((t1 - t0) / day) + 1, pool = $('dwork').checked ? Array.from({ length: Math.min(days, 200000) }, (_, i) => i).filter((i) => ![0, 6].includes(new Date(t0 + i * day).getUTCDay())) : null;
+    const pickDay = () => (pool ? (pool.length ? pool[below(pool.length)] : 0) : below(days)), secs = () => below(86400), two = (x) => String(x).padStart(2, '0');
+    const time = (s) => two(Math.floor(s / 3600)) + ':' + two(Math.floor((s % 3600) / 60)) + ':' + two(s % 60), dateOf = (i) => new Date(t0 + i * day);
+    let rows = Array.from({ length: n }, () => (kind === 'time' ? { k: secs() } : { k: pickDay() * 86400 + (kind === 'datetime' ? secs() : 0) }));
+    if ($('dsort').checked) rows.sort((x, y) => x.k - y.k);
+    $('dates').replaceChildren(...rows.map(({ k }) => { const li = document.createElement('li'), dd = dateOf(Math.floor(k / 86400));
+      li.textContent = kind === 'time' ? time(k) : dd.toISOString().slice(0, 10) + ' (' + dd.toLocaleDateString('en', { weekday: 'short', timeZone: 'UTC' }) + ')' + (kind === 'datetime' ? ' ' + time(k % 86400) : ''); return li; }));
+  }
+  $('dgo').onclick = dates; $('dcopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText([...$('dates').children].map((l) => l.textContent).join('\n')).catch(() => {}); };
 </script>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';

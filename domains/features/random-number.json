@@ -90,8 +90,8 @@
           "name": "Decimal fractions",
           "detail": "random decimals with chosen decimal places",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "integers only on /random/"
+          "verse": "has",
+          "verse_evidence": "Decimals: 1 to 10 places, each step of the range equally likely, written exactly (?dec=4)"
         },
         {
           "name": "Raw bytes download",
@@ -132,8 +132,8 @@
           "name": "Playing card shuffler",
           "detail": "shuffle decks and turn cards over one at a time",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no card deck view on /random/"
+          "verse": "has",
+          "verse_evidence": "Shuffle and deal playing cards: 1 to 8 decks, jokers, dealt round 1 to 8 hands or turned over one at a time, with the cards left"
         },
         {
           "name": "Lotto quick pick",
@@ -153,8 +153,8 @@
           "name": "Calendar dates and clock times",
           "detail": "random dates in a range, random times of day",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "Random dates and times: a date range, dates, dates and times or times of day, weekdays only, sorted, copy"
         },
         {
           "name": "Geographic coordinates",
@@ -224,9 +224,6 @@
     "No ads or trackers"
   ],
   "gaps": [
-    "Decimal fractions",
-    "Playing card shuffler",
-    "Calendar dates and clock times",
     "True randomness from atmospheric noise",
     "Sequence generator / randomizer",
     "Integer sets",

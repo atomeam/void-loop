@@ -21,7 +21,7 @@ export const PAGES = Object.freeze([
     asks: ['wheel of names', 'random name picker', 'spin the wheel', 'picker wheel', 'decision wheel', 'random picker wheel'] },
   { path: '/random-user/', name: 'Made-up people for testing', does: 'Made-up people by count, gender and 22 countries, with titles, names, addresses, two phones, dates of birth, passwords to your rules and pictures, as JSON, CSV, YAML, XML or SQL, from a seed you can repeat page by page. None of them is real.',
     asks: ['random user generator', 'fake name generator', 'fake user data for testing', 'random person generator', 'test data generator json', 'random address generator'] },
-  { path: '/random/', name: 'Random number', does: 'A random number between two bounds, several at once, without repeats or sorted, in decimal, binary, octal or hex; the number is on screen at once.',
+  { path: '/random/', name: 'Random number', does: 'A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.',
     asks: ['random number generator', 'random number between 1 and 100', 'random number picker', 'random numbers no repeats', 'lottery number generator'] },
   { path: '/flip/', name: 'Flip a coin', does: 'Heads or tails from a coin that lands in under a second, with no ads and nothing to accept.',
     asks: ['flip a coin', 'coin flip online', 'heads or tails', 'coin toss', 'virtual coin flip'] },

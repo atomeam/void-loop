@@ -5852,6 +5852,20 @@ try {
     await Z.ctx.close();
   }
   // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  // the rest of random.org on /random/: decimal fractions from the link, a shuffled deck dealt round the table, random dates in a range
+  if (want("random: /random/ draws decimal fractions from its link, deals a shuffled deck into hands, and picks dates inside a range")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random/?min=0&max=1&dec=4&n=20'); await Z.p.waitForTimeout(200);
+    const nums = (await Z.p.$eval('#out', (e) => e.textContent)).split(', ');
+    await Z.p.click('#cardbox summary'); await Z.p.click('#newdeck'); await Z.p.click('#deal');
+    const hands = await Z.p.$$eval('#dealt .hand', (h) => h.map((x) => [...x.querySelectorAll('.card')].map((c) => c.textContent))), left = await Z.p.$eval('#decknote', (e) => e.textContent);
+    await Z.p.click('#datebox summary'); await Z.p.fill('#d0', '2026-03-01'); await Z.p.fill('#d1', '2026-03-31'); await Z.p.fill('#dn', '30'); await Z.p.check('#dwork'); await Z.p.click('#dgo');
+    const days = await Z.p.$$eval('#dates li', (l) => l.map((x) => x.textContent));
+    const all = hands.flat();
+    check("random: /random/ draws decimal fractions from its link, deals a shuffled deck into hands, and picks dates inside a range",
+      nums.length === 20 && nums.every((x) => /^0\.\d{4}$|^1\.0000$/.test(x)) && new Set(nums).size > 5 && hands.length === 4 && hands.every((h) => h.length === 5) && new Set(all).size === 20 && /^32 cards left/.test(left)
+      && days.length === 30 && days.every((d) => /^2026-03-\d\d \((Mon|Tue|Wed|Thu|Fri)\)$/.test(d)) && !Z.errors.length, JSON.stringify({ nums: nums.slice(0, 5), hands, left, days: days.slice(0, 5), errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
     const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
