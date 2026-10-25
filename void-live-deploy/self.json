@@ -476,13 +476,65 @@
   }
  ],
  "building": {
-  "at": "2026-10-24T21:42:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-25T05:20:59Z",
+   "subject": "The 3D calculator comes in five Verse models that take turns on new cards: SL-200 SOLAR pocket, FX-900 SCIENTIFIC, DT-12 DESK printing…"
+  },
+  {
+   "at": "2026-10-25T05:20:08Z",
+   "subject": "Tower gate: weather,shopping,chat measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T05:18:24Z",
+   "subject": "The sitemap is generated: every tool page, the home page, the tower, the fix pages and every is-it day, lastmod from git…"
+  },
+  {
+   "at": "2026-10-25T05:16:46Z",
+   "subject": "/tools/: every tool on one page, and a bench that opens any number of them at once"
+  },
+  {
+   "at": "2026-10-25T05:16:17Z",
+   "subject": "Tower gate: weather,travel,jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T05:14:40Z",
+   "subject": "Incident: the browser suite failed on a2633ad4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T05:14:29Z",
+   "subject": "/convert/ paints finished and reaches its load event before its code"
+  },
+  {
+   "at": "2026-10-25T05:11:34Z",
+   "subject": "Tower gate: is it measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T05:11:01Z",
+   "subject": "Incident: the browser suite failed on 5c78fb78 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T05:10:55Z",
+   "subject": "Tower gate: calculator,password measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T05:03:25Z",
+   "subject": "The photo resizer floor surpassed: its learned line, the tower lib at ladder-45, the handoff closed for this run"
+  },
+  {
+   "at": "2026-10-25T05:01:38Z",
+   "subject": "Tower gate: weather,music,podcasts measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T05:01:00Z",
+   "subject": "The password strength floor gets its probe, the gate types into a password box and into Verse's own page, and base64encode.org's lesson is…"
+  },
   {
    "at": "2026-10-25T04:59:17Z",
    "subject": "Tower gate: photo resizer,games,learning measured against their live sites"
@@ -510,58 +562,6 @@
   {
    "at": "2026-10-25T04:51:04Z",
    "subject": "Tower gate: unit converter measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:50:15Z",
-   "subject": "Tower gate: photo resizer,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:48:35Z",
-   "subject": "/convert/ does everything unitconverters.net does, exact, with the formula"
-  },
-  {
-   "at": "2026-10-25T04:47:29Z",
-   "subject": "Incident: the browser suite failed on 04d1e71c (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:44:47Z",
-   "subject": "Incident: the browser suite failed on 6398d8e1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:42:57Z",
-   "subject": "The slogan: \"A-to-Mind. Whatever comes to mind.\""
-  },
-  {
-   "at": "2026-10-25T04:42:00Z",
-   "subject": "The calculator's keys work by hand, its page reaches its load event sooner, and every tower floor links the site, Verse's page and a…"
-  },
-  {
-   "at": "2026-10-25T04:38:16Z",
-   "subject": "Incident: the browser suite failed on 39d3b6a7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:37:07Z",
-   "subject": "Tower gate: password strength,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:31:36Z",
-   "subject": "Incident: the browser suite failed on 2dc0e36b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:30:20Z",
-   "subject": "Tower gate: password strength,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T04:28:16Z",
-   "subject": "The password strength floor gets its probe: qwerty123 typed into Verse's own box, judged against the worked-out truth, its crack time and…"
-  },
-  {
-   "at": "2026-10-25T04:27:04Z",
-   "subject": "Incident: the browser suite failed on a2027279 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T04:24:33Z",
-   "subject": "Incident: the browser suite failed on c8805bc6 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

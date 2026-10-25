@@ -536,6 +536,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const hand = await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const cm = await m.mountMiniature(document.getElementById('mc'), 'calculator', {}, { key: 'tcalc2' }); const P = (...ks) => { for (const k of ks) cm.inst.press(k); return cm.inst.state().display; };
       return [P('7', '+', '5', '='), P('×', '3', '='), P('C'), P('9', '%'), P('C', '5', '±'), P('C', '.', '5'), P('C', '8', '÷', '0', '=')]; }).catch((e) => String(e));
     check('miniatures: tapped keys work the calculator by hand (7 + 5 = 12, × 3 = 36, C 0, 9 % 0.09, 5 ± -5, . 5 0.5, 8 ÷ 0 Error)', Array.isArray(hand) && hand.join(' ') === '12 36 0 0.09 -5 0.5 Error', JSON.stringify(hand));
+    // the five models (owner, 2026-10-25: "a cycle of all the existing calculators too for 3d"): each mounts from data.model, reports it, and 7 + 5 = is 12 on every one
+    const models = await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const out = [];
+      for (const id of ['SL-200', 'FX-900', 'DT-12', 'RP-11', 'GX-84']) { const h = await m.mountMiniature(document.getElementById('mc'), 'calculator', { model: id }, { key: 'tcalc:' + id }); for (const k of ['7', '+', '5', '=']) h.inst.press(k); const s = h.inst.state(); out.push(s.model + ':' + s.display + (s.keysInside ? '' : ':hangs')); m.unmountMiniature('tcalc:' + id); }
+      return out; }).catch((e) => String(e));
+    check('miniatures: the five Verse calculator models each mount from data.model, report it in state(), keep every key on the case, and work 7 + 5 = 12', Array.isArray(models) && models.join(' ') === 'SL-200:12 FX-900:12 DT-12:12 RP-11:12 GX-84:12', JSON.stringify(models));
     await F.ask('make a calculator', 600);
     const card = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:calc')); return l && l.draws > 0 && !!document.querySelector('.calc-card .void-mini canvas') ? window.__voidMini.state(l.key) : false; }), 60000);
     await F.ask('calculate 12*7', 600);

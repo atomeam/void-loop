@@ -6547,7 +6547,7 @@
    "chapter": "minis",
    "name": "calculator",
    "title": "Calculator",
-   "line": "A solar pocket calculator on the desk (charcoal case, solar strip, seven-segment LCD with ghost segments, sculpted keys)",
+   "line": "A calculator on the desk, in five Verse models that take turns: the SL-200 SOLAR pocket one (solar strip, 8-digit LCD), the FX-900 SCIENTIFIC (dark case, two-line display, six columns of small keys, an amber SHIFT), the DT-12 DESK (a wide wedge, big soft keys, a 12-digit tilted display, 00 and tax keys, a paper roll that prints the sum), the RP-11 FINANCIAL (landscape, gold on brown, rows of ten, an ENTER bar, n i PV PMT FV) and the GX-84 GRAPHING (tall, a pixel screen drawing a sine wave, an arrow cluster, F1–F5)",
    "card": "Calc",
    "examples": [
     "open a calculator",

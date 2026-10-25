@@ -460,6 +460,7 @@ for (const [name, file] of [
   ['stopwatch', 'stopwatch.test.mjs'],
   ['units', 'units.test.mjs'],
   ['calculator', 'calculator.test.mjs'],
+  ['calculator-models', 'calculator-models.test.mjs'],
   ['zones', 'zones.test.mjs'],
   ['base64', 'base64.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
