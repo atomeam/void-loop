@@ -22,8 +22,8 @@
      "name": "Year, schedule (agenda) and custom N-day views",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a Schedule view, the next 60 days day by day (#vList, key L); no year or custom N-day view"
     },
     {
      "name": "Multiple calendars shown together, each with a colour",
@@ -88,8 +88,8 @@
      "name": "Location with map link",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: a Location on every event (editor #eLoc), shown with a Map link to OpenStreetMap; written to and read from .ics as LOCATION (lib/calendar.js)"
     },
     {
      "name": "Video meeting link (Meet)",
@@ -211,8 +211,8 @@
      "name": "Duplicate event, undo, trash",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Duplicate on an event opens the editor on a copy (#detDup); no trash"
     }
    ]
   },
@@ -480,8 +480,8 @@
      "name": "Table, list, timeline, scheduler, year and multi-day views",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons only"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a Schedule list view beside month, week and day"
     },
     {
      "name": "Event sign-up",
@@ -734,8 +734,8 @@
      "name": "Location and travel time",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: location with a map link; no travel time"
     },
     {
      "name": "Several calendars with colours",
@@ -773,7 +773,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:135-137 Month / Week / Day buttons"
+     "verse_evidence": "2026-10-25: day, week, month and a Schedule list (#vList); no year view"
     },
     {
      "name": "Share by invitation or view-only link, reset links",
@@ -876,7 +876,7 @@
  },
  "union_gaps": [
   "Tasks / to-dos on the calendar: calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
-  "Location and travel time, map link: calendar.google.com, icloud.com",
+  "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
   "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
   "Drag to move and resize events: calendar.google.com, outlook.live.com",
   "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",

@@ -154,6 +154,7 @@
       <button type="button" id="vMonth" aria-pressed="true">Month</button>
       <button type="button" id="vWeek" aria-pressed="false">Week</button>
       <button type="button" id="vDay" aria-pressed="false">Day</button>
+      <button type="button" id="vList" aria-pressed="false">Schedule</button>
     </div>
   </div>
 
@@ -162,6 +163,7 @@
     <dl id="detList"></dl>
     <div class="row">
       <button type="button" id="detEdit">Edit</button>
+      <button type="button" id="detDup">Duplicate</button>
       <button type="button" id="detShare" title="A link that carries this event">Share link</button>
       <button type="button" id="detMail" title="An email to the invitees with the .ics">Invite by email</button>
       <button type="button" id="detIcs">Download .ics</button>
@@ -179,7 +181,7 @@
     <button type="button" id="exportBtn">Export all as .ics</button>
     <span class="note" id="count" style="margin:0"></span>
   </div>
-  <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D switch the view, N is a new event, / searches</p>
+  <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D L switch the view, N is a new event, / searches</p>
 
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calendar/?q=dentist%20tomorrow%203pm%2C%20remind%20me%2030%20minutes%20before">Dentist tomorrow at 3pm, remind me 30 minutes before</a><a href="/calendar/?q=lunch%20with%20Sam%20tomorrow%201pm">Lunch with Sam tomorrow 1pm</a><a href="/calendar/?q=team%20call%20every%20monday%2010%3A00">Team call every Monday 10:00</a><a href="/calendar/?q=rent%20on%20the%201st%20every%20month">Rent on the 1st, every month</a><a href="/calendar/?show=today">Today</a><a href="/calendar/?show=this-week">This week</a></nav>
@@ -194,6 +196,7 @@
   <form id="edF" method="dialog">
     <h2 id="edH">New event</h2>
     <label class="f"><span id="lTitle">Title</span><input id="eTitle" maxlength="200" required autocomplete="off"></label>
+    <label class="f"><span id="lLoc">Location</span><input id="eLoc" maxlength="300" autocomplete="off"></label>
     <label class="f"><span id="lCal">Calendar</span><select id="eCal"></select></label>
     <div class="checks" style="margin:0 0 10px"><label><input type="checkbox" id="eAll"><span id="lAll">All day</span></label></div>
     <div class="two">
@@ -231,7 +234,7 @@
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
       $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
@@ -283,7 +286,7 @@
     }
     const dotOf = (o) => { const d = el('span', 'dot'); d.style.setProperty('--c', C.calendarOf(cals(), o).color); d.setAttribute('aria-hidden', 'true'); return d; };
     const q = new URLSearchParams(location.search), now = () => new Date();
-    const state = { view: ['month', 'week', 'day'].includes(q.get('view')) ? q.get('view') : store.view || 'month', cursor: C.startOfDay(now()), sel: null, editing: null };
+    const state = { view: ['month', 'week', 'day', 'list'].includes(q.get('view')) ? q.get('view') : store.view || 'month', cursor: C.startOfDay(now()), sel: null, editing: null };
     if (q.get('d') && C.parseLocal(q.get('d'))) state.cursor = C.startOfDay(C.parseLocal(q.get('d')));
     if (q.get('show')) { const s = q.get('show'); if (s === 'tomorrow') { state.cursor = C.addDays(state.cursor, 1); state.view = 'day'; } else if (s === 'today') state.view = 'day'; else if (/week/.test(s)) { state.view = 'week'; if (/next/.test(s)) state.cursor = C.addDays(state.cursor, 7); } }
     const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
@@ -299,7 +302,7 @@
     function render() {
       document.documentElement.classList.remove('pre');
       const v = $('view'); v.replaceChildren(); const c = state.cursor, td = C.startOfDay(now());
-      for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day']]) $(id).setAttribute('aria-pressed', String(state.view === name));
+      for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list']]) $(id).setAttribute('aria-pressed', String(state.view === name));
       if (state.view === 'month') {
         $('period').textContent = C.fmtMonth(c, lang);
         const dow = el('div', 'dow'); for (const n of C.dayNames(lang)) dow.append(el('span', '', n)); v.append(dow);
@@ -318,6 +321,11 @@
         const g = el('div', 'week');
         for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang)[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); g.append(sec); }
         v.append(g);
+      } else if (state.view === 'list') { // the schedule: the next 60 days from the day shown, day by day, only the days with something on them
+        const z = C.addDays(c, 59); $('period').textContent = C.fmtDay(c, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
+        const occs = C.agenda(shown(), C.dayKey(c), C.dayKey(z)), byDay = new Map(); for (const o of occs) { const k = o.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(o); }
+        if (!byDay.size) v.append(el('p', 'empty', W.noneAhead));
+        for (const [k, list] of byDay) { const d = C.parseLocal(k), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.style.marginTop = '8px'; h.append(el('span', 'd', C.fmtDay(d, lang, { year: d.getFullYear() !== td.getFullYear() }))); v.append(h, listOf(list)); }
       } else {
         $('period').textContent = C.fmtDay(c, lang); const occs = C.onDay(shown(), C.dayKey(c)); v.append(listOf(occs));
         const b = el('button', '', '+ ' + W.newEvent); b.type = 'button'; b.style.marginTop = '8px'; b.addEventListener('click', () => openEditor(null, c)); v.append(b);
@@ -327,9 +335,11 @@
     function showDetail(o) {
       state.sel = o; $('detail').hidden = false; $('detTitle').textContent = o.title; const dl = $('detList'); dl.replaceChildren();
       const add = (k, v) => { if (!v) return; dl.append(el('dt', '', k), el('dd', '', v)); };
-      add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes); add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
+      add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes);
+      if (o.location) { const dd = el('dd', '', o.location + ' · '), a = el('a', '', W.map); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(o.location); a.target = '_blank'; a.rel = 'noopener'; dd.append(a); dl.append(el('dt', '', W.location), dd); }
+      add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
       const b0 = baseOf(o); if (b0.rsvp) { const dt = el('dt', '', W.replies), dd = el('dd', '', '…'); dl.append(dt, dd); rsvpCall('GET', { id: b0.rsvp.id, key: b0.rsvp.owner }).then((r) => { dd.textContent = r.j.ok ? (r.j.replies.length ? R.tally(r.j.replies, RW) + ': ' + r.j.replies.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies) : '—'; }); }
-      $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
+      $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDup').hidden = !!o.ro; $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
     }
     const baseOf = (o) => store.events.find((e) => e.id === o.id) || (sharedOf(o.cal) && SH.eventsOf(o.cal, sharedOf(o.cal).share.role, copyOf(sharedOf(o.cal)).events).find((e) => e.id === o.id)) || o;
     function remBar() {
@@ -348,7 +358,7 @@
       const days = $('eDays'); days.replaceChildren(); C.dayNames(lang).forEach((n, i) => { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = C.DAYS[(i + 1) % 7]; cb.checked = !!(e.rrule && e.rrule.byday && e.rrule.byday.includes(cb.value)); lb.append(cb, el('span', '', n)); days.append(lb); });
       const rem = $('eRem'); rem.replaceChildren(); for (const [m, label] of REM_CHOICES) { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = String(m); cb.checked = e.reminders.includes(m); lb.append(cb, el('span', '', label)); rem.append(lb); }
       const cs = $('eCal'); cs.replaceChildren(...cals().filter((c) => c.kind !== 'holidays' && !c.url && !c.gone && !(c.share && c.share.role === 'view')).map((c) => { const o = el('option', '', c.name); o.value = c.id; return o; })); cs.value = e.cal || 'main'; if (!cs.value) cs.value = 'main';
-      $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
+      $('eLoc').value = e.location || ''; $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
     }
     const syncEditor = () => { const all = $('eAll').checked, f = $('eFreq').value; $('eSt').disabled = all; $('eEt').disabled = all; $('eDays').hidden = f !== 'WEEKLY'; $('eEnds').hidden = !f; $('eInt').disabled = !f; };
     $('eAll').addEventListener('change', syncEditor); $('eFreq').addEventListener('change', syncEditor);
@@ -357,7 +367,7 @@
       e.preventDefault(); const all = $('eAll').checked, freq = $('eFreq').value;
       const ev = { id: state.editing ? state.editing.id : undefined, title: $('eTitle').value, allDay: all, start: all ? $('eSd').value : $('eSd').value + 'T' + ($('eSt').value || '09:00'), end: all ? $('eEd').value : $('eEd').value + 'T' + ($('eEt').value || '10:00'),
         rrule: freq ? { freq, interval: +$('eInt').value || 1, until: $('eUntil').value || undefined, count: +$('eCount').value || undefined, byday: freq === 'WEEKLY' ? [...$('eDays').querySelectorAll('input:checked')].map((c) => c.value) : undefined } : null,
-        reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [], cal: $('eCal').value };
+        reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, location: $('eLoc').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [], cal: $('eCal').value };
       const n = C.normalize(ev); if (!n) return say(W.titleL + '?', true);
       // into its calendar, out of the one it was in: this browser's, or a shared one through the server
       const was = state.editing ? state.editing.cal || 'main' : null, from = was && sharedOf(was), to = sharedOf(n.cal || 'main');
@@ -369,6 +379,7 @@
     $('eCancel').addEventListener('click', () => $('ed').close());
     $('newBtn').addEventListener('click', () => openEditor(null));
     $('detEdit').addEventListener('click', () => state.sel && openEditor(baseOf(state.sel)));
+    $('detDup').addEventListener('click', () => { if (!state.sel) return; const o = state.sel, b = baseOf(o); const copy = { ...b, id: undefined, rsvp: undefined, exdates: [], title: b.title + ' (' + W.copyOf.toLowerCase() + ')', start: o.start, end: o.end }; openEditor(copy); state.editing = null; $('edH').textContent = W.duplicate; });
     $('detClose').addEventListener('click', () => { $('detail').hidden = true; state.sel = null; });
     $('detDel').addEventListener('click', async () => {
       const o = state.sel; if (!o) return; const base = baseOf(o), sh = sharedOf(base.cal);
@@ -422,7 +433,7 @@
     const doSearch = () => { const t = $('sq').value.trim(), ul = $('results'); ul.replaceChildren(); if (!t) { ul.hidden = true; return; } const hits = C.search(shown(), t); ul.hidden = false; if (!hits.length) ul.append(el('li', 'empty', W.nothing)); for (const e of hits.slice(0, 30)) { const li = el('li'), o = C.occurrences(e, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 400)))[0] || e; li.append(occBtn(o, true)); ul.append(li); } };
     $('sq').addEventListener('input', doSearch); $('sf').addEventListener('submit', (e) => { e.preventDefault(); doSearch(); });
     // moving about
-    const move = (n) => { const c = state.cursor; state.cursor = state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : n); render(); holidays(); };
+    const move = (n) => { const c = state.cursor; state.cursor = state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : state.view === 'list' ? 60 * n : n); render(); holidays(); };
     // the calendars: a switch, a colour and (holidays) a country each; a calendar of your own can be added and removed
     function drawCals() {
       const ul = $('calList'); ul.replaceChildren();
@@ -471,9 +482,9 @@
       if (got) { keep(); render(); }
     }
     $('prev').addEventListener('click', () => move(-1)); $('next').addEventListener('click', () => move(1)); $('today').addEventListener('click', () => { state.cursor = C.startOfDay(now()); render(); });
-    for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day']]) $(id).addEventListener('click', () => { state.view = name; render(); });
+    for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list']]) $(id).addEventListener('click', () => { state.view = name; render(); });
     addEventListener('keydown', (e) => { if ($('ed').open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { if (e.key === 'Escape' && !$('ed').open) e.target.blur(); return; }
-      if (e.key === 'ArrowLeft') move(-1); else if (e.key === 'ArrowRight') move(1); else if (e.key === 't' || e.key === 'T') $('today').click(); else if (e.key === 'm' || e.key === 'M') $('vMonth').click(); else if (e.key === 'w' || e.key === 'W') $('vWeek').click(); else if (e.key === 'd' || e.key === 'D') $('vDay').click();
+      if (e.key === 'ArrowLeft') move(-1); else if (e.key === 'ArrowRight') move(1); else if (e.key === 't' || e.key === 'T') $('today').click(); else if (e.key === 'm' || e.key === 'M') $('vMonth').click(); else if (e.key === 'w' || e.key === 'W') $('vWeek').click(); else if (e.key === 'd' || e.key === 'D') $('vDay').click(); else if (e.key === 'l' || e.key === 'L') $('vList').click();
       else if (e.key === 'n' || e.key === 'N') openEditor(null); else if (e.key === '/') { e.preventDefault(); if ($('sf').hidden) $('searchBtn').click(); else $('sq').focus(); } else if (e.key === 'Escape') { if (!$('detail').hidden) $('detClose').click(); } });
     // reminders: a timer while the page is open; the system's notification when allowed, the banner on the page always
     const beep = () => { try { const ac = new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < 2; i++) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + i * .35); o.stop(ac.currentTime + i * .35 + .2); } } catch (_) {} try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (_) {} };
