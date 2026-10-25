@@ -21,8 +21,8 @@
           "name": "Crop step",
           "detail": "drag and zoom a crop box (Croppie) before resizing",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "Fit: \"Crop to fill the size\" crops centrally; no drag or zoom crop"
+          "verse": "has",
+          "verse_evidence": "with Crop to fill: drag the picture to move the crop, a Zoom slider (and the mouse wheel) to crop tighter, Reset crop (lib/imgfit.js cropBox)"
         },
         {
           "name": "Resize to PAN sizes",
@@ -49,8 +49,8 @@
           "name": "One-tap presets for NSDL / UTI PAN photo and signature",
           "detail": "portal sizes filled in for you",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "asks like \"resize my signature to 4.5 by 2 cm\" fill it; \"Share this size\" link; no preset buttons on the page"
+          "verse": "has",
+          "verse_evidence": "preset buttons: PAN photo and signature for NSDL / Protean and UTIITSL, US, UK, Schengen, India, Canada and China passport or visa sizes (lib/imgfit.js PRESETS)"
         },
         {
           "name": "Download JPEG",
@@ -70,8 +70,8 @@
           "name": "Rotate",
           "detail": "turn a sideways photo",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no rotate control"
+          "verse": "has",
+          "verse_evidence": "Rotate left / Rotate right, a quarter turn at a time"
         },
         {
           "name": "White background / brightness",
@@ -106,9 +106,6 @@
     "No ads"
   ],
   "gaps": [
-    "Crop step",
-    "Rotate",
-    "One-tap presets for NSDL / UTI PAN photo and signature",
     "White background / brightness",
     "Photo and signature on one sheet",
     "Guidance on PAN rules"

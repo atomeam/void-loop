@@ -79,3 +79,21 @@ export function sizeIn(text) {
   const k = /(?:under|below|less than|max(?:imum)?|within|to|at most|upto|up to|<=?)?\s*(\d+(?:\.\d+)?)\s*(kb|k|mb)\b/.exec(t); if (k) out.kb = Math.round(Number(k[1]) * (k[2] === 'mb' ? 1024 : 1));
   return out;
 }
+
+/** the crop window for "fill" moved and zoomed by a person: the largest window of the output's shape, made `zoom` times smaller (1 or
+ *  more) and centred on (cx, cy), fractions of the picture, then kept inside it. The same shape as fitBox, plus the centre it settled on. Pure. */
+export function cropBox(srcW, srcH, outW, outH, { zoom = 1, cx = 0.5, cy = 0.5 } = {}) {
+  const base = fitBox(srcW, srcH, outW, outH, 'fill'); if (!base) return null;
+  const z = Math.max(1, Math.min(10, Number(zoom) || 1)), sw = base.sw / z, sh = base.sh / z;
+  const sx = Math.min(srcW - sw, Math.max(0, cx * srcW - sw / 2)), sy = Math.min(srcH - sh, Math.max(0, cy * srcH - sh / 2));
+  return { ...base, sx, sy, sw, sh, cx: (sx + sw / 2) / srcW, cy: (sy + sh / 2) / srcH, zoom: z };
+}
+
+/** the sizes forms ask for, as the portals and passport offices list them (check the form you are filling: they change): label, w, h,
+ *  unit, dpi, largest KB (0 for none). */
+export const PRESETS = Object.freeze([
+  ['PAN photo (NSDL / Protean)', 2.5, 3.5, 'cm', 200, 50], ['PAN signature (NSDL / Protean)', 4.5, 2, 'cm', 200, 50],
+  ['PAN photo (UTIITSL)', 213, 213, 'px', 300, 30], ['PAN signature (UTIITSL)', 400, 200, 'px', 600, 60],
+  ['US passport / visa 2 × 2 in', 2, 2, 'in', 300, 240], ['UK passport 35 × 45 mm', 35, 45, 'mm', 300, 0], ['Schengen / EU visa 35 × 45 mm', 35, 45, 'mm', 300, 0],
+  ['India passport 2 × 2 in', 51, 51, 'mm', 300, 0], ['Canada passport 50 × 70 mm', 50, 70, 'mm', 300, 0], ['China visa 33 × 48 mm', 33, 48, 'mm', 300, 0],
+]);

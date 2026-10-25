@@ -798,6 +798,23 @@ try {
     check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', href === '/resize-image/?w=3.5&h=2.5&u=cm&kb=50' && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
     await R.ctx.close(); await K.ctx.close();
   }
+  // the rest of pancardresizer.com: a preset fills a portal's size, a quarter turn swaps the picture's sides, and a dragged, zoomed crop moves
+  if (want("photo resizer: a PAN photo preset fills the size, rotate turns the picture, and dragging the zoomed crop moves what is kept")) {
+    const R = await fresh(); const origin = new URL(R.p.url()).origin, pg = await R.ctx.newPage(); await pg.goto(origin + '/resize-image/'); await pg.waitForSelector('#file');
+    const png = await pg.evaluate(async () => { const c = document.createElement('canvas'); c.width = 800; c.height = 400; const x = c.getContext('2d'); x.fillStyle = '#ff0000'; x.fillRect(0, 0, 500, 400); x.fillStyle = '#0000ff'; x.fillRect(500, 0, 300, 400); const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); });
+    await pg.setInputFiles('#file', { name: 'me.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') }); await pg.click('#presets button[data-p^="2.5,3.5,cm"]');
+    await until(async () => (await pg.$eval('#line', (e) => e.textContent).catch(() => '')).includes('limit'), 8000);
+    const pix = () => pg.evaluate(() => { const c = document.getElementById('pv'), d = c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data; return d[0] > 200 && d[2] < 80 ? 'red' : d[2] > 200 && d[0] < 80 ? 'blue' : d.join(','); });
+    const form = await pg.evaluate(() => [w.value, h.value, u.value, dpi.value, kb.value].join('|')), size = await pg.evaluate(() => [pv.width, pv.height].join('x')), before = await pix();
+    await pg.$eval('#pv', (e) => e.scrollIntoView({ block: 'center' })); const r = await (await pg.$('#pv')).boundingBox();
+    await pg.mouse.move(r.x + r.width * 0.7, r.y + r.height / 2); await pg.mouse.down(); await pg.mouse.move(r.x + r.width * 0.3, r.y + r.height / 2, { steps: 6 }); await pg.mouse.up(); await pg.waitForTimeout(500);
+    const dragged = await pix(); await pg.fill('#zoom', '2'); await pg.dispatchEvent('#zoom', 'input'); await pg.waitForTimeout(500); const zoomed = await pix();
+    await pg.click('#recrop'); await pg.click('#rotr'); await pg.waitForTimeout(500); const turned = await pix(), turnedSize = await pg.evaluate(() => [pv.width, pv.height].join('x'));
+    check("photo resizer: a PAN photo preset fills the size, rotate turns the picture, and dragging the zoomed crop moves what is kept",
+      form === '2.5|3.5|cm|200|50' && size === '197x276' && before === 'red' && dragged === 'blue' && zoomed === 'blue' && turned === 'red' && turnedSize === '197x276' && !R.errors.length,
+      JSON.stringify({ form, size, before, dragged, zoomed, turned, turnedSize, errors: R.errors }));
+    await R.ctx.close();
+  }
   // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
   if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];

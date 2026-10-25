@@ -1,7 +1,7 @@
 // lib/imgfit.js: a photo made the size a form asks for. Run: node --test tools/imgfit.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { toPx, fitBox, fitSize, jpegSize, pdfOfJpeg, isAsk, sizeIn, MAX_SIDE } from '../void-live-deploy/lib/imgfit.js';
+import { toPx, fitBox, fitSize, jpegSize, pdfOfJpeg, isAsk, sizeIn, MAX_SIDE, cropBox, PRESETS } from '../void-live-deploy/lib/imgfit.js';
 
 test('sizes in cm, mm and inches become pixels through the dpi; nonsense is 0', () => {
   assert.equal(toPx(3.5, 'cm', 200), 276); assert.equal(toPx(2.5, 'cm', 200), 197); assert.equal(toPx(1, 'in', 300), 300); assert.equal(toPx(25.4, 'mm', 300), 300); assert.equal(toPx(413, 'px'), 413);
@@ -38,4 +38,11 @@ test('"make the image red" is the stage picture\'s colour edge, not the resizer;
   const { isAsk: ask } = await import('../void-live-deploy/lib/imgfit.js');
   assert.equal(ask('make the image red'), false); assert.equal(ask('make the image blue'), false);
   assert.equal(ask('make this picture 600 by 800 px'), true);
+});
+test('a crop moved and zoomed by hand: the output shape kept, zoom makes the window smaller, the window never leaves the picture', () => {
+  const c = cropBox(1000, 500, 100, 100); assert.deepEqual([c.sx, c.sy, c.sw, c.sh], [250, 0, 500, 500], 'zoom 1, centred: the plain fill crop');
+  const z = cropBox(1000, 500, 100, 100, { zoom: 2, cx: 0.25, cy: 0.5 }); assert.deepEqual([z.sx, z.sy, z.sw, z.sh], [125, 125, 250, 250]);
+  const edge = cropBox(1000, 500, 100, 100, { cx: 0, cy: 1 }); assert.deepEqual([edge.sx, edge.sy], [0, 0], 'pushed past the edge, it stops at it'); assert.equal(edge.cx, 0.25);
+  assert.equal(cropBox(1000, 500, 100, 100, { zoom: 0.2 }).zoom, 1, 'never zoomed out past the whole crop');
+  for (const [label, w, h, u, dpi, kb] of PRESETS) assert.ok(label && w > 0 && h > 0 && ['cm', 'mm', 'in', 'px'].includes(u) && dpi >= 72 && kb >= 0, label);
 });
