@@ -1793,52 +1793,52 @@
   "translate": {
    "speed": {
     "verdict": "better",
-    "verse": 168,
-    "best": 450,
-    "evidence": "Verse 168 ms to the load event (median of 3, phone width) vs Google Translate 450 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-24T18:19:41.935Z"
+    "verse": 251,
+    "best": 641,
+    "evidence": "Verse 251 ms to the load event (median of 3, phone width) vs Google Translate 641 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Translate 3 of 3 loads answered",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Translate 0 px sideways overflow at 390 px",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Translate 0 unnamed controls or images",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Translate 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Translate 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs Google Translate 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Translate (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-24T18:19:41.935Z"
+    "at": "2026-10-25T05:35:51.159Z"
    }
   },
   "recipes": {
@@ -2757,6 +2757,108 @@
     "best": 0,
     "evidence": "Verse 0 design defects vs the bar (Reddit unreachable) 0 design defects",
     "at": "2026-10-25T05:33:59.198Z"
+   }
+  },
+  "email": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 193,
+    "best": 1930,
+    "evidence": "Verse 193 ms to the load event (median of 3, phone width) vs Gmail 1930 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Gmail 3 of 3 loads answered",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Gmail 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs Gmail 0 unnamed controls or images",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Gmail 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Gmail 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:36:13.796Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 design defects vs Gmail 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Gmail (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:36:13.796Z"
+   }
+  },
+  "search": {
+   "speed": {
+    "verdict": "better",
+    "verse": 255,
+    "best": 294,
+    "evidence": "Verse 255 ms to the load event (median of 3, phone width) vs Google Search 294 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Google Search 3 of 3 loads answered",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Search 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 8,
+    "evidence": "Verse 0 unnamed controls or images vs Google Search 8 unnamed controls or images",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Search 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 0,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Search 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:36:46.464Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 design defects vs Google Search 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Search (0 low-contrast texts, 1 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T05:36:46.464Z"
    }
   }
  }
