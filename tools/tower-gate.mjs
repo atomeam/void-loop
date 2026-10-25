@@ -346,6 +346,9 @@ async function iconOf(p) {
   const bytes = await r.body().catch(() => null); if (!bytes || bytes.length < 60 || bytes.length > 80000) return null;
   return { ext, bytes };
 }
+/** the live page a floor is measured against: a lane site is measured at its own address (its lane's probe carries the LEADER's site, so a lane
+ *  site read through probe.site was every rival measured as the leader's page: notes lane, 2026-10-25, eleven identical screenshots); any other floor takes its probe's site. Pure. */
+export const siteOf = (f, probe) => (f.lane ? f.url : probe && probe.site ? probe.site : f.url);
 /** one floor measured against its live site in its own browser, its rows written into data.floors[f.id] (the stored rows are read for `was`) */
 const FLOOR_MS = Number(process.env.TOWER_FLOOR_MS) || 6 * 60000;
 async function measureFloor(f, data) {
@@ -353,7 +356,7 @@ async function measureFloor(f, data) {
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString(), probe = probeFor(f.id), want = new Set(aspectsOf(f));
   // a floor with Verse's own page for the job (/is-it/christmas, /flip/) is measured there, as a person would open it; others through the ask
-  const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = probe && probe.site ? probe.site : f.url;
+  const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = siteOf(f, probe);
   const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe);
   // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
   if (s && s.icon) { try { const host = hostOf(f.url) || hostOf(f.site), dir = path.join(root, 'void-live-deploy', 'tower.icons'), name = host + '.' + s.icon.ext; fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, name), s.icon.bytes); data.icons = { ...(data.icons || {}), [host]: 'tower.icons/' + name }; } catch (_) {} }

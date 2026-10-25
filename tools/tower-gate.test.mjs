@@ -316,3 +316,10 @@ test('a deploy re-measures every unbeaten floor on a changed page, and every flo
   const sw = pick({}, null, ['void-live-deploy/sw.js']);
   assert.ok(sw.length >= 2 && sw.length <= 10, 'the worker change: ' + sw.length);
 });
+
+test('a lane site is measured at its own address, never at its leader\'s (the lane probe carries the leader\'s site)', async () => {
+  const { siteOf } = await import('./tower-gate.mjs');
+  assert.equal(siteOf({ id: 'docs and notes: quillpad.in', lane: 'docs and notes', url: 'https://quillpad.in/' }, { site: 'https://docs.google.com/' }), 'https://quillpad.in/');
+  assert.equal(siteOf({ id: 'docs and notes', url: 'https://docs.google.com/' }, { site: 'https://docs.google.com/document/' }), 'https://docs.google.com/document/');
+  assert.equal(siteOf({ id: 'x', url: 'https://x.example/' }, null), 'https://x.example/');
+});
