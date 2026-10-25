@@ -88,7 +88,7 @@ const HAND_FLOORS = [
 // The climb goes up the lane from its bottom (owner, 2026-10-25: "let go to the bottom of the translate list and work up"): each lane is listed
 // least visited first, and its sites stand in front of the leader, so the leader is the lane's last fight.
 export const LANES = Object.freeze({
-  translate: ['https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
+  translate: ['https://tradukka.com/', 'https://www.freetranslations.org/', 'https://imtranslator.net/', 'https://www.translator.eu/', 'https://www.onlinedoctranslator.com/', 'https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.translate.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
