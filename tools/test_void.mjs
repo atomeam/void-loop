@@ -1131,7 +1131,7 @@ try {
     const ahead = new Date(Date.now() + 9 * 864e5), dentistDay = ahead.toLocaleDateString('en-US', { month: 'short' }) + ' ' + ahead.getDate();
     await C.ask('add dentist to my calendar ' + dentistDay + ' at 3pm', 900);
     await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
-    const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
+    const agenda = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []));
     const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     const netAdds = net.slice(), pageAfterAdds = await C.page(); // read now: "calender" and "agenda" below open the 3D calendar
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
@@ -1141,11 +1141,11 @@ try {
     await C.p.reload(); const afterReload = await until(async () => { const t = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''); return /Call Sam/.test(t) ? t : ''; }, 6000)
       || await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
-    const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const kept = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     await C.ask('agenda', 700);
     await C.p.click('.calendar-card .cal-event button'); await C.p.waitForTimeout(200);
-    const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
-    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const afterX = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
+    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar <nine days ahead> at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
@@ -1165,8 +1165,8 @@ try {
       // the row of the event just added: the day may already hold one of the visitor's adds above
       const w = [...pg.querySelectorAll('.c3d-edit .row:not(.add) .w')].find((x) => x.value === 'Launch party'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
       await new Promise((r) => setTimeout(r, 50));
-      const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
-      return [ev && ev.title, ev && new Date(ev.at).getDate() === pick.day && new Date(ev.at).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+      const ev = (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).find((e) => /Launch/.test(e.title)); // the one store the stage and /calendar/ share (lib/agenda.js)
+      return [ev && ev.title, ev && new Date(ev.start).getDate() === pick.day && new Date(ev.start).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
     }, pick);
     const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
@@ -1371,7 +1371,7 @@ try {
     const kinds = st.map((x) => x.kind).sort();
     const groups = new Set(st.map((x) => x.group));
     const list = st.find((x) => x.kind === 'list'), draft = st.find((x) => x.kind === 'sticky');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     const cd = st.find((x) => x.kind === 'countdown');
     const box = await I.p.$eval('[data-id="' + cd.id + '"]', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 12, y: b.top + 12 }; });
     await I.p.mouse.move(box.x, box.y); await I.p.mouse.down(); await I.p.mouse.move(box.x + 50, box.y + 30, { steps: 6 }); await I.p.mouse.up(); await I.p.waitForTimeout(200);
@@ -1389,7 +1389,7 @@ try {
   if (want("intent as a noun: \"the product page launch on Friday\" plans like \"I need to launch the product page by Friday\"")) { const I = await fresh();
     await I.ask('the product page launch on Friday', 2500);
     const said = await I.whisper(), st = await I.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     check('intent as a noun: "the product page launch on Friday" plans "launch the product page": a countdown, a launch\'s own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)',
       /planned "launch the product page"/.test(said) && !st.some((x) => x.kind === 'sticky') && st.some((x) => x.kind === 'countdown') && list && list.items.length === 5
         && list.items[0].text.startsWith('outline it') && /^launch the product page \(fri \d+\)$/.test(list.items[4].text) && agenda.some((t) => /launch the product page/i.test(t))
@@ -1400,7 +1400,7 @@ try {
   if (want("intent without a day: \"plan my move\" brings an undated checklist")) { const U = await fresh();
     await U.ask('plan my move', 2500);
     const said = await U.whisper(), st = await U.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await U.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const agenda = await U.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('intent without a day: "plan my move" brings the move\'s steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day',
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
@@ -1822,7 +1822,7 @@ try {
     await D.ask('how many days until friday', 700); const fri = await D.page();
     await D.ask('what day is it in Tokyo', 1200); const day = await D.page();
     await D.ask('time difference between London and Tokyo', 1500); const gap = await D.page();
-    const cal = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const cal = await D.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     const want = ['friday'].map(() => { const t = new Date(); const a = (5 - t.getDay() + 7) % 7 || 7; return a; })[0];
     check('list: "how do I get to Kyoto" is the map with OpenStreetMap and Google directions; "define serendipity" and "what does X mean" read Wiktionary (text, no markup)',
       /openstreetmap\.org\/directions\?to=35\.01/.test(dir) && /google\.com\/maps\/dir/.test(dir) && /Kyoto/.test(dir)
