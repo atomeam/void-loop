@@ -1,0 +1,256 @@
+{
+ "floor": "maps",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "google.com/maps": {
+   "sources": [
+    "https://support.google.com/maps/answer/144349?hl=en",
+    "https://support.google.com/maps?hl=en",
+    "https://support.google.com/gmm",
+    "https://www.google.com/maps"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Pan-and-zoom map",
+     "detail": "Vector map of the whole world, zoom from planet to building",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/place.js: street map of any place (Open-Meteo geocoding + OpenStreetMap embed); embedded OSM view of one place"
+    },
+    {
+     "group": "core",
+     "name": "Place search",
+     "detail": "Search addresses, businesses and categories (\"coffee near me\")",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "place.js geocodes a place name; no business or category search"
+    },
+    {
+     "group": "core",
+     "name": "Directions",
+     "detail": "Routes for driving, transit, walking, cycling, flights; several alternatives with times and distance",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skills/distance.js gives straight-line distance only"
+    },
+    {
+     "group": "core",
+     "name": "Live traffic",
+     "detail": "Traffic layer and traffic-aware ETAs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Turn-by-turn navigation",
+     "detail": "Voice-guided navigation with rerouting",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Place pages",
+     "detail": "Hours, phone, website, photos, reviews, popular times, menu",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Reviews and ratings",
+     "detail": "Read and write reviews with stars and photos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Map layers",
+     "detail": "Satellite, terrain, transit, biking, traffic, wildfires, air quality",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Street View",
+     "detail": "Panoramic street imagery from a place panel",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Explore nearby",
+     "detail": "Categories nearby: restaurants, hotels, gas, groceries",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Saved places and lists",
+     "detail": "Starred, Want to go, custom lists, notes on places, shareable lists",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Measure distance",
+     "detail": "Right-click measure along a path",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "distance.js answers city-to-city crow-flies distance"
+    },
+    {
+     "group": "power",
+     "name": "Multi-stop routes",
+     "detail": "Add several stops, reorder, avoid tolls/highways/ferries",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Depart at / arrive by",
+     "detail": "Plan a route for a future time with predicted traffic",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Transit details",
+     "detail": "Schedules, live departures, line choice, crowdedness",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Timeline",
+     "detail": "Day-by-day record of routes and visited places (now on device)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "My Maps",
+     "detail": "Custom maps with pins, lines, layers, import KML/CSV",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Coordinates and plus codes",
+     "detail": "Drop a pin, read lat/long, search by coordinates",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "place.js resolves names to coordinates for the embed"
+    },
+    {
+     "group": "power",
+     "name": "Immersive view / 3D",
+     "detail": "3D buildings, globe view, immersive route preview",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Business profile",
+     "detail": "Owners claim and edit their listing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share location and places",
+     "detail": "Share a place, route or list link; embed a map",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Live location sharing",
+     "detail": "Share real-time location with contacts for a time",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Contribute",
+     "detail": "Add photos, edit places, report road issues, answer questions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Offline maps",
+     "detail": "Download an area for offline search and driving directions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app, CarPlay, Android Auto, Wear OS",
+     "detail": "Navigation in car and on watch",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Wheelchair-accessible routes and places",
+     "detail": "Accessible transit routes, place accessibility attributes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Voice guidance and screen reader",
+     "detail": "Detailed voice guidance for low-vision walkers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Maps Platform API",
+     "detail": "Embeds and APIs billed per use for developers",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "directions between two places (drive/walk/cycle) with time and distance",
+  "pan-and-zoom full map, not a fixed embed",
+  "search nearby by category",
+  "saved places and lists kept on the device",
+  "shareable link holding the view and route",
+  "layers (satellite, transit)",
+  "offline area",
+  "place details (hours, website)"
+ ],
+ "verse_extra": [
+  "the same ask also answers distance and country facts",
+  "no tracking, no account, nothing sent beyond the map tiles"
+ ],
+ "first_page": "Maps page /map/ for anyone who wants a map and a route without being tracked. First: \"map of lisbon\" opens a full pan-zoom OpenStreetMap map at the place; \"from lisbon to porto\" draws a route (car, foot, bike) with time and distance from a keyless open router, pins saved on the device, and a link holding view, pins and route. Will not build: live traffic, turn-by-turn voice, Street View, reviews or business listings."
+}

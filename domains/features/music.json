@@ -1,0 +1,239 @@
+{
+ "floor": "music",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "open.spotify.com": {
+   "sources": [
+    "https://open.spotify.com/",
+    "https://support.spotify.com/ie/article/your-premium-benefits/",
+    "https://support.spotify.com/uk/article/shuffle-play",
+    "https://support.spotify.com/us/article/jam/",
+    "https://support.spotify.com/us/article/view-lyrics/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search catalogue",
+     "detail": "100M+ tracks, albums, artists, playlists, podcasts, audiobooks",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "media-pick.js looks up real songs via /api/media (iTunes Search)"
+    },
+    {
+     "group": "core",
+     "name": "Full-track playback",
+     "detail": "Stream full songs with play/pause/seek/volume",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/music.js composes an original piece in the browser (Web Audio, piano roll, WAV save); skills/media-pick.js plays 30 s official iTunes previews; skills/video.js plays music videos from YouTube and others"
+    },
+    {
+     "group": "core",
+     "name": "Queue, shuffle and repeat",
+     "detail": "Add to queue, reorder, shuffle, repeat one/all",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "video.js has a watch queue (\"queue <x>\", \"next\")"
+    },
+    {
+     "group": "core",
+     "name": "Playlists",
+     "detail": "Create, edit, reorder, folders, cover image, description",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Your Library",
+     "detail": "Liked Songs, saved albums, followed artists, filters and sort",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Artist and album pages",
+     "detail": "Discography, popular tracks, bio, tour dates, merch",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Home recommendations",
+     "detail": "Made For You mixes, Daily Mix, Discover Weekly, Release Radar",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "media-pick.js picks songs for a mood or day"
+    },
+    {
+     "group": "core",
+     "name": "Lyrics",
+     "detail": "Synced lyrics in the player",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Radio",
+     "detail": "Song/artist radio of similar tracks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Connect",
+     "detail": "Control playback on other devices (speakers, TV, phone)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Smart Shuffle and AI DJ",
+     "detail": "Shuffle with recommendations; AI host that talks between songs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "AI playlist",
+     "detail": "Make a playlist from a prompt",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Crossfade, gapless, normalisation, equaliser",
+     "detail": "Playback settings",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Keyboard shortcuts and mini player",
+     "detail": "Desktop/web shortcuts, now-playing view",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Wrapped and listening stats",
+     "detail": "Yearly recap, top artists",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Original music creation",
+     "detail": "Spotify does not make music",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "music.js composes an original piece from a mood, saves WAV"
+    },
+    {
+     "group": "sharing",
+     "name": "Collaborative playlists and Blend",
+     "detail": "Shared playlists, taste-merging Blend",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Jam",
+     "detail": "Group listening session controlled by several people",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share links, cards and codes",
+     "detail": "Share to socials with card art, Spotify Codes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Friend activity",
+     "detail": "What friends are listening to (desktop)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Downloads",
+     "detail": "Offline listening (Premium)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Apps everywhere",
+     "detail": "Mobile, desktop, car, TV, consoles, smart speakers, watch",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Screen reader and keyboard",
+     "detail": "Accessible web player, captions on video podcasts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Premium",
+     "detail": "Ad-free, any order, unlimited skips, downloads, high quality, Jam host",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Audiobooks in Premium",
+     "detail": "15 hours/month of audiobooks",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Lossless audio",
+     "detail": "Lossless streaming tier",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a player with a queue for songs Verse finds",
+  "playlists kept on the device and shared by link",
+  "search across songs, artists and albums",
+  "artist page",
+  "lyrics",
+  "radio of similar songs"
+ ],
+ "verse_extra": [
+  "Verse composes original songs, no licence needed",
+  "one ask plays a song preview, its video or a new piece"
+ ],
+ "first_page": "Music page /music/ for listeners who want to find and play songs without an account. First: search songs/artists (iTunes Search, keyless), play the 30 s preview or the full official video embed, a queue with shuffle/repeat, playlists kept on the device and shared as a link, and \"make me a song\" beside it. Will not build: full-track licensed streaming, downloads, Connect, social feeds or AI DJ."
+}

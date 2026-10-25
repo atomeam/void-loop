@@ -1,0 +1,181 @@
+{
+ "floor": "travel",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "google.com/travel/flights": {
+   "sources": [
+    "https://www.google.com/travel/flights",
+    "https://support.google.com/travel/",
+    "https://www.slashgear.com/1583729/google-flights-search-features/",
+    "https://tomsguide.com/how-to/google-flights-has-a-new-tool-to-find-you-the-cheapest-airfare-every-time"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Flight search",
+     "detail": "One-way, round trip, multi-city; passengers, cabin class; airports or cities",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Results across airlines and agencies",
+     "detail": "Best and cheapest flights, price, duration, stops, emissions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Stops, airlines, bags, price, times, connecting airports, duration",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Sort",
+     "detail": "By price, departure, arrival, duration, emissions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Booking options",
+     "detail": "List of airlines/agencies to book with; links out",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Fare details",
+     "detail": "Fare class, baggage, legroom, wifi, aircraft",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Date grid",
+     "detail": "Cheapest fare for each departure/return date pair",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Price graph",
+     "detail": "Fares across months",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Price insights",
+     "detail": "Low/typical/high vs history, cheapest time to book",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Track prices",
+     "detail": "Email alerts for a route or exact itinerary (any dates or set dates)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Explore map",
+     "detail": "Cheapest destinations from an airport on a map, flexible trips (\"a weekend in November\")",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Price guarantee (select US)",
+     "detail": "Refund the difference if price drops after booking",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Emissions estimates",
+     "detail": "CO2 per flight vs typical",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Nearby airports",
+     "detail": "Include airports within a radius",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Hotels and vacation rentals",
+     "detail": "Google Hotels in the same travel product",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Trip context",
+     "detail": "Destination time, weather, currency",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/time.js, weather.js, country.js answer time, forecast and country facts for the destination"
+    },
+    {
+     "group": "sharing",
+     "name": "Share itinerary",
+     "detail": "Share a flight result link",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile web",
+     "detail": "Responsive web; no separate app",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Keyboard and screen reader",
+     "detail": "Accessible results list",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "flight search with prices",
+  "date grid of cheapest days",
+  "price tracking",
+  "explore cheapest destinations",
+  "trip page that gathers time, weather, currency and a packing list"
+ ],
+ "verse_extra": [
+  "the destination's local time, forecast, currency and country facts by asking",
+  "ride and food deep links once you land (skills/rides.js)"
+ ],
+ "first_page": "Trip page /trip/ for someone planning a journey. First: \"flights to paris\" opens a page with the search handed to Google Flights, Kayak and Skyscanner as prefilled links (no scraping), beside what Verse already knows: local time, a 10-day forecast, currency at a typed rate, distance, and a packing checklist kept on the device, all in one link. Will not build: fare search, price tracking or booking (no keyless fare source, and money stays out)."
+}

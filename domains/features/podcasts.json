@@ -1,0 +1,216 @@
+{
+ "floor": "podcasts",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "podcasts.apple.com": {
+   "sources": [
+    "https://podcasts.apple.com/",
+    "https://support.apple.com/118668",
+    "https://support.apple.com/en-gb/HT204207",
+    "https://support.apple.com/en-us/HT201859",
+    "https://apps.apple.com/hk/app/apple-podcasts/id525463029?l=en-GB"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search and browse directory",
+     "detail": "Millions of shows by name, topic, person; categories and charts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse plays only its own show"
+    },
+    {
+     "group": "core",
+     "name": "Show pages",
+     "detail": "Description, episodes, ratings and reviews, related shows",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+    },
+    {
+     "group": "core",
+     "name": "Play episodes",
+     "detail": "Stream with seek, skip back 15 / forward 30",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+    },
+    {
+     "group": "core",
+     "name": "Follow shows",
+     "detail": "Follow; new episodes appear and can auto-download",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Up Next queue",
+     "detail": "Queue, reorder, continue where you left off",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Playback speed",
+     "detail": "0.5x to 2x",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Resume position",
+     "detail": "Remembers where you stopped across devices",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Transcripts",
+     "detail": "Read-along transcripts, search in transcript, tap a line to jump",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+    },
+    {
+     "group": "core",
+     "name": "Charts",
+     "detail": "Top shows and episodes by country and category",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Chapters",
+     "detail": "Chapter markers with art",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Sleep timer",
+     "detail": "Stop after time or end of episode",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Played/unplayed and filters",
+     "detail": "Mark played, hide played, sort",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Downloads management",
+     "detail": "Auto-download, storage limits, remove after play",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Enhance dialogue",
+     "detail": "Voice boost",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Add by RSS URL",
+     "detail": "Follow any show by feed URL (desktop/app)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Verse publishes its own RSS (/podcast/rss.xml) but cannot read others"
+    },
+    {
+     "group": "power",
+     "name": "Ratings and reviews",
+     "detail": "Rate shows, write reviews",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Video podcasts",
+     "detail": "Play video episodes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share episode at timestamp",
+     "detail": "Share an episode or a moment",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "podcast.js Share (this moment too)"
+    },
+    {
+     "group": "sharing",
+     "name": "Share transcript quote",
+     "detail": "Share a quote with link to the moment",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Offline downloads",
+     "detail": "Listen offline",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "podcast.js Download saves the episode file"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "CarPlay, Watch, HomePod, Siri",
+     "detail": "Play anywhere by voice",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Transcripts and VoiceOver",
+     "detail": "Transcripts for hearing access, screen-reader player",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "whole transcript on the card, wrapping at any width"
+    },
+    {
+     "group": "paid",
+     "name": "Apple Podcasts Subscriptions",
+     "detail": "Paid shows and channels: ad-free, bonus, early access",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "search any podcast (public directory, keyless)",
+  "play any RSS feed",
+  "follow shows kept on the device",
+  "resume position and speed",
+  "queue",
+  "chapters",
+  "sleep timer"
+ ],
+ "verse_extra": [
+  "Verse makes its own podcast with a full transcript",
+  "jump to a moment from a line of the transcript"
+ ],
+ "first_page": "Podcast player page /podcasts/ for listeners who want any show without an account. First: search shows (iTunes Search, keyless) or paste an RSS link, episode list read from the feed through a small edge proxy, a player with speed, skip 15/30, resume position and a follow list kept on the device; Verse Out Loud pinned first. Will not build: paid subscriptions, recommendations, ratings or cross-device sync."
+}

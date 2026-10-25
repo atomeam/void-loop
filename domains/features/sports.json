@@ -1,0 +1,265 @@
+{
+ "floor": "sports",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "espn.com": {
+   "sources": [
+    "https://www.espn.com/",
+    "https://support.espn.com/hc/en-us/articles/15414854326676-Adjusting-Fantasy-Alert-Preferences",
+    "https://support.espn.com/hc/en-us/articles/115003858572-Fantasy-Football-On-Mobile",
+    "https://espnpressroom.com/?p=71038",
+    "https://www.espnfrontrow.com/2025/08/dtc-launch-week-a-sports-fans-guide-to-the-enhanced-espn-app/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Live scoreboard",
+     "detail": "Scores for every game of a day per league (NFL, NBA, MLB, NHL, soccer, college, F1, tennis, golf), live-updating, with date picker",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Gamecast",
+     "detail": "Live play-by-play for one game: field/court drawing, win probability, box score, team stats, drive/shot charts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Box scores",
+     "detail": "Per-player stat lines for a finished or live game",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Schedules",
+     "detail": "Team and league schedules with times in your zone, TV channel, results for past dates",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Standings",
+     "detail": "League, conference and division tables, playoff picture and clinch markers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Team pages",
+     "detail": "Roster, schedule, stats, news, injuries, depth chart, transactions",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/sport.js: a team card from TheSportsDB with Wikipedia fallback (\"nba team celtics\"); no roster, schedule or stats"
+    },
+    {
+     "group": "core",
+     "name": "Player pages",
+     "detail": "Bio, season and career stats, game log, splits, news",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "League stat leaders",
+     "detail": "Leaders by category, sortable stat tables",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Headlines and stories",
+     "detail": "News articles, columns and video highlights per league and team",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Injury reports",
+     "detail": "Current injuries per team with status",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Favourites",
+     "detail": "Pick favourite teams and leagues; home, scores and alerts reorder around them",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Score and game alerts",
+     "detail": "Push alerts for game start, scoring plays, close games, final; per team",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy games",
+     "detail": "Fantasy football, basketball, baseball, hockey leagues: draft, lineups, trades, waivers, live scoring",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no fantasy anything"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy alerts",
+     "detail": "Per-league alerts for trades, add/drops, lineup warnings (support.espn.com)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Bracket and pick'em games",
+     "detail": "Tournament Challenge brackets, NFL pick'em, groups with friends",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Betting odds and lines",
+     "detail": "Spreads, totals, moneylines beside each game (ESPN BET)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Power rankings and predictions",
+     "detail": "Team rankings, Football Power Index, matchup predictor",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Historical results",
+     "detail": "Past seasons, champions, records",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Multiview",
+     "detail": "Watch up to four games at once on connected TV",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "StreamCenter two-screen",
+     "detail": "TV stream synced with live stats and alerts on the phone, spoiler-free",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share a game or story",
+     "detail": "Share links to games, clips and articles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Fantasy league chat and trash talk",
+     "detail": "League message board",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile apps and widgets",
+     "detail": "iOS/Android apps, home-screen score widgets, Live Activities on lock screen",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Watch on TV apps",
+     "detail": "Roku, Apple TV, Fire TV, smart TV apps",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Captions on video",
+     "detail": "Closed captions on clips and streams",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Spoiler controls",
+     "detail": "Hide scores to watch later",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "ESPN streaming (ESPN+/ESPN Unlimited)",
+     "detail": "Live games, replays, originals, 30 for 30 library; pay-per-view UFC",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "ESPN+ Insider articles",
+     "detail": "Paywalled analysis, rankings and fantasy advice",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Fantasy premium tools",
+     "detail": "Projections and advanced fantasy tools behind subscription",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "live scoreboard for a league and date",
+  "standings tables",
+  "schedules with your time zone",
+  "one-game Gamecast (play-by-play + box score)",
+  "favourite teams that reorder the page",
+  "team page beyond the Wikipedia summary",
+  "player stats",
+  "alerts"
+ ],
+ "verse_extra": [
+  "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",
+  "no ads, no betting promotion, no account needed"
+ ],
+ "first_page": "Scores page /scores/ for sports fans who want today's results without ads or betting. First: \"nba scores\" opens every game of the day for a league (live score, clock, final), date arrows, tap a game for its box score, standings tab, favourite teams kept on the device that float to the top, a link that holds league+date. Built on a keyless public scoreboard feed cached at the edge. Will not build: fantasy, odds, video streaming, articles or alerts."
+}

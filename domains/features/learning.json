@@ -1,0 +1,199 @@
+{
+ "floor": "learning",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "khanacademy.org": {
+   "sources": [
+    "https://www.khanacademy.org/",
+    "https://support.khanacademy.org/hc/en-us/articles/115002552631",
+    "https://support.khanacademy.org/hc/en-us",
+    "https://www.khanmigo.ai/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Course catalogue",
+     "detail": "Math K-12 through calculus, science, computing, economics, humanities, test prep, by grade",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Video lessons",
+     "detail": "Short explainer videos per skill",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Articles",
+     "detail": "Written explanations and worked examples",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "explainer cards (gears, Moon) and the answer engine; no curriculum"
+    },
+    {
+     "group": "core",
+     "name": "Practice exercises",
+     "detail": "Auto-graded problems with hints and step-by-step solutions",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/study-cards.js: flashcards with Leitner spaced repeat, quiz from a list, language drill, glossary, formula cards (device only); skills/quiz.js: quiz from an explainer card"
+    },
+    {
+     "group": "core",
+     "name": "Quizzes and unit tests",
+     "detail": "Quizzes mid-unit, unit tests at the end",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/quiz.js asks one question at a time from a card's own observations"
+    },
+    {
+     "group": "core",
+     "name": "Mastery system",
+     "detail": "Skills move Familiar, Proficient, Mastered; mastery points; course %",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Course challenge",
+     "detail": "Test across the whole course to level up skills",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Progress dashboard",
+     "detail": "Activity, time, skills progress per course",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Spaced review",
+     "detail": "Mastery challenges resurface old skills",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "study-cards.js Leitner boxes by local day"
+    },
+    {
+     "group": "power",
+     "name": "Hints and worked solutions",
+     "detail": "Hint ladder per problem, \"watch a video\" link",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Course mastery goals and streaks",
+     "detail": "Weekly goals, streaks, energy points, badges, avatars",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Computer programming sandbox",
+     "detail": "In-browser JS/HTML/SQL editor with live output and spin-offs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "SAT/LSAT/MCAT prep",
+     "detail": "Official practice and personalised plans",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Teacher tools",
+     "detail": "Classes, assignments, reports, roster sync (Google Classroom, Clever)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Parent tools",
+     "detail": "Child accounts, progress emails",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Language support",
+     "detail": "Site in many languages",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/translate.js and skills/spanish.js"
+    },
+    {
+     "group": "power",
+     "name": "Khanmigo tutor (free for teachers)",
+     "detail": "AI tutor that asks guiding questions instead of answering",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the answer engine (functions/api/answer.js) answers directly; no Socratic tutor mode"
+    },
+    {
+     "group": "sharing",
+     "name": "Share and spin-off programs",
+     "detail": "Share computing projects; discussion Q&A under videos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile apps and Khan Academy Kids",
+     "detail": "Apps; Kids app with offline books",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Captions, transcripts, screen-reader math",
+     "detail": "Captions on videos, accessible math (MathML), keyboard input",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Khanmigo for learners/parents",
+     "detail": "AI tutor subscription for learners (monthly)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a course path with mastery levels per skill",
+  "practice problems generated with hints and checked answers",
+  "progress kept on the device",
+  "short explainer per skill",
+  "unit test that levels skills up",
+  "tutor mode that asks before it tells"
+ ],
+ "verse_extra": [
+  "flashcards with spaced repeat from one line of typed words",
+  "quiz on any explainer on the stage",
+  "nothing to sign up for"
+ ],
+ "first_page": "Practice page /learn/ for a learner who wants to practise one skill until it sticks. First: arithmetic to algebra skills with generated problems, checked answers, a hint ladder and a worked solution, mastery levels (Familiar to Mastered) and spaced review kept on the device, plus \"quiz me\" decks from study-cards. Will not build: video library, teacher/class accounts, test-prep content or an AI tutor."
+}

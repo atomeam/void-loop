@@ -1,0 +1,184 @@
+{
+ "floor": "news",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "bbc.com/news": {
+   "sources": [
+    "https://www.bbc.com/news",
+    "https://webarchive.archive.unhcr.org/20170623102942mp_/http://www.bbc.co.uk/news/help-30119608",
+    "https://apptopia.com/ios/app/377382255/about",
+    "https://www.bbc.co.uk/usingthebbc/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Front page of top stories",
+     "detail": "Ranked top stories with images, updated through the day",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/news.js: Wikipedia \"In the news\" headlines and the Hacker News front page, refreshed every 30/10 min while on stage"
+    },
+    {
+     "group": "core",
+     "name": "Sections",
+     "detail": "World, UK, Business, Tech, Science, Health, Entertainment, regions (Africa, Asia, US & Canada...)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "news.js: world headlines and tech only; other topics not claimed"
+    },
+    {
+     "group": "core",
+     "name": "Full articles",
+     "detail": "Original reporting with images, maps, embedded video and related links",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse links out to sources"
+    },
+    {
+     "group": "core",
+     "name": "Live pages",
+     "detail": "Rolling timestamped live coverage of breaking events",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Video and audio",
+     "detail": "Clips, BBC News channel live stream (UK), podcasts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Most read / most watched",
+     "detail": "Popular list",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Search BBC News archive",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Local news and weather",
+     "detail": "Local stories by postcode (UK)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/weather.js gives local weather; no local news"
+    },
+    {
+     "group": "power",
+     "name": "Follow topics (My News)",
+     "detail": "Follow up to 25 topics; personalised feed",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Breaking news alerts",
+     "detail": "Push notifications for top stories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Verify and fact checks",
+     "detail": "BBC Verify explainers and fact-checks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "In-depth and explainers",
+     "detail": "Long-form analysis, Q&As, data visualisations",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "World Service languages",
+     "detail": "News in 40+ languages",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/translate.js can translate a headline on request"
+    },
+    {
+     "group": "power",
+     "name": "Live freshness timestamps",
+     "detail": "Every story shows when it was published/updated",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "news cards re-fetch on a timer"
+    },
+    {
+     "group": "sharing",
+     "name": "Share stories",
+     "detail": "Share links to articles and live posts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Have your say / comments",
+     "detail": "Comments on some stories, reader questions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Apps and widgets",
+     "detail": "iOS/Android app, home-screen widgets, offline reading of loaded stories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible pages",
+     "detail": "Screen-reader friendly markup, captions on video, text-only \"lite\" pages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "BBC.com subscription (outside UK)",
+     "detail": "Paywall for some long-form and video outside the UK",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "many sources ranked into one front page",
+  "sections beyond world and tech",
+  "follow topics kept on the device",
+  "live page for a developing story",
+  "reader view of an article",
+  "search across sources",
+  "freshness time on every item"
+ ],
+ "verse_extra": [
+  "headlines refresh themselves on the stage",
+  "no ads, no account",
+  "tech front page in the same card"
+ ],
+ "first_page": "News page /news/ for readers who want a calm, ad-free front page. First: \"news\" opens top stories gathered from several open sources (Wikipedia In the news, public RSS from major outlets, Hacker News) with source and age on each, section tabs, topics followed on the device, and a link holding the chosen sections. Will not build: original reporting, comments, video streaming or push alerts."
+}

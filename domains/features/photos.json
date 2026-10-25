@@ -1,0 +1,247 @@
+{
+ "floor": "photos",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "photos.google.com": {
+   "sources": [
+    "https://www.google.com/photos/about",
+    "https://support.google.com/photos",
+    "https://photos.google.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Upload and back up",
+     "detail": "Upload from computer/phone, automatic backup from devices",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/photos.js: Verse Photos, a device-only library in IndexedDB grouped by EXIF day, found by year/month/album/caption, lightbox with prev/next; added from the device, kept only in this browser, no backup"
+    },
+    {
+     "group": "core",
+     "name": "Timeline by date",
+     "detail": "All photos grouped by day/month/year with scrubber",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/photos.js: Verse Photos, a device-only library in IndexedDB grouped by EXIF day, found by year/month/album/caption, lightbox with prev/next"
+    },
+    {
+     "group": "core",
+     "name": "Viewer",
+     "detail": "Full-size view, swipe/arrows, zoom, info panel with EXIF and map",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js lightbox with arrows, swipe and Esc; no zoom/info map shown"
+    },
+    {
+     "group": "core",
+     "name": "Albums",
+     "detail": "Create albums, add/remove, cover photo, sort",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js groups by album name"
+    },
+    {
+     "group": "core",
+     "name": "Search by content",
+     "detail": "Find \"dog\", \"beach\", text in photos, places, dates",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js finds by year, month, album or caption; not by what is in the picture"
+    },
+    {
+     "group": "core",
+     "name": "Favourites",
+     "detail": "Star photos and see them in one place",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Trash and archive",
+     "detail": "Trash kept 60 days, archive hides from timeline",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Download",
+     "detail": "Download originals or a zip",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js saves a copy without location (stripMeta)"
+    },
+    {
+     "group": "core",
+     "name": "Basic editor",
+     "detail": "Crop, rotate, filters, light/colour/pop adjustments",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/resize-image/ resizes to exact size; no crop/filters on photos"
+    },
+    {
+     "group": "core",
+     "name": "Video playback",
+     "detail": "Play uploaded videos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Face grouping",
+     "detail": "Group people and pets, name them",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Memories",
+     "detail": "Resurfaced past moments, highlight videos, collages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Places map",
+     "detail": "Photos on a map by location",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Duplicate handling",
+     "detail": "Same photo kept once",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "photos.js: the same picture added twice is kept once"
+    },
+    {
+     "group": "power",
+     "name": "Location privacy on share",
+     "detail": "Remove location when sharing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "photos.js and skills/photo-scrub.js strip EXIF location without recompressing"
+    },
+    {
+     "group": "power",
+     "name": "Magic Eraser / Unblur / Magic Editor",
+     "detail": "AI object removal, deblur, generative edits",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Ask Photos",
+     "detail": "Natural-language questions about your library",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Locked folder",
+     "detail": "Hidden, passcode-protected photos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Animations and collages",
+     "detail": "Make GIF-like animations, collages, movies",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Document scanning and text copy",
+     "detail": "Copy text from photos (Lens)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Shared albums",
+     "detail": "Albums others can add to and comment on",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share link",
+     "detail": "Share photos with a link to people without accounts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Partner sharing",
+     "detail": "Auto-share chosen photos with a partner",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "Auto backup, on-device editing, offline view of device photos",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "library lives in the browser so it works offline on that device"
+    },
+    {
+     "group": "accessibility",
+     "name": "Alt text and screen reader",
+     "detail": "Descriptions and keyboard navigation",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "keyboard arrows and Esc in the lightbox"
+    },
+    {
+     "group": "paid",
+     "name": "Google One storage",
+     "detail": "More than the free 15 GB, plus premium editing effects",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Photo books and prints",
+     "detail": "Order prints and books",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "sync across devices / backup",
+  "search by what is in the picture",
+  "shared album by link",
+  "basic editor (crop, rotate, light)",
+  "favourites and trash",
+  "places map",
+  "faces"
+ ],
+ "verse_extra": [
+  "nothing ever leaves the device",
+  "location stripped from any copy you share",
+  "exact-size resizer with KB limit (/resize-image/)"
+ ],
+ "first_page": "Photos page /photos/ for people who want their pictures private. First: the existing device library as a full page: timeline by day, albums, favourites, trash with undo, crop/rotate/light editor that saves a new copy, a places map from EXIF, and export without location. Will not build: cloud backup, face recognition, AI edits or prints."
+}

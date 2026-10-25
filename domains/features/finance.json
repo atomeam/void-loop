@@ -1,0 +1,250 @@
+{
+ "floor": "finance",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "finance.yahoo.com": {
+   "sources": [
+    "https://finance.yahoo.com/",
+    "https://help.yahoo.com/kb/market-data-research-tools-yahoo-finance-sln24381.html",
+    "https://help.yahoo.com/kb/SLN36623.html",
+    "https://help.yahoo.com/kb/SLN29117.html",
+    "https://help.yahoo.com/kb/yahoo-finance-plus"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Quote page",
+     "detail": "Price, change, day range, 52-week range, volume, market cap, P/E, EPS, dividend, for stocks, ETFs, funds, indices, FX, futures, crypto",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/markets.js: crypto board with live prices and 7-day sparklines (CoinGecko via /api/markets); skills/crypto.js: one coin price; crypto only, no stocks"
+    },
+    {
+     "group": "core",
+     "name": "Interactive chart",
+     "detail": "Price chart with ranges 1D to max, line/candle, comparisons",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "markets.js draws 7-day sparklines only"
+    },
+    {
+     "group": "core",
+     "name": "Market overview",
+     "detail": "Indices, top gainers/losers, most active, trending tickers, sectors",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "markets.js top coins board; no equities"
+    },
+    {
+     "group": "core",
+     "name": "Watchlists",
+     "detail": "Lists of symbols with live prices, multiple lists, columns",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Portfolios",
+     "detail": "Holdings with lots, cost basis, day and total gain, import/link brokerage",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Financial news",
+     "detail": "News per ticker and market, Yahoo Finance originals and partner feeds",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Financial statements",
+     "detail": "Income statement, balance sheet, cash flow, annual/quarterly",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Statistics and profile",
+     "detail": "Valuation measures, margins, ownership, company profile and executives",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Historical data",
+     "detail": "Daily/weekly/monthly OHLC history table with download (CSV)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search by name or ticker",
+     "detail": "Autocompleting symbol search",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Currency converter",
+     "detail": "FX rates and conversion",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "lib/calc-more.js converts currency at a rate the person types; no live FX rates; crypto in fiat via crypto.js"
+    },
+    {
+     "group": "power",
+     "name": "Stock screener",
+     "detail": "Prebuilt screeners and custom saved screeners by filters",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Price alerts",
+     "detail": "Alerts when a symbol crosses a price or moves by percent",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Analyst estimates and ratings",
+     "detail": "EPS/revenue estimates, recommendation trends, price targets",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Earnings calendar",
+     "detail": "Earnings, IPO, splits and economic events calendars",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Options chain",
+     "detail": "Calls and puts by expiry with greeks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Holders",
+     "detail": "Major, institutional and insider holders, insider transactions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Compare symbols",
+     "detail": "Overlay several tickers on one chart",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Technical indicators",
+     "detail": "Moving averages, RSI, MACD, Bollinger on chart",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Conversations",
+     "detail": "Per-ticker community message board",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share quote or article",
+     "detail": "Share links to quotes, charts and stories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app and widgets",
+     "detail": "App with watchlist widget, notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Data tables",
+     "detail": "Statements and history as readable tables",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Premium portfolio analytics",
+     "detail": "Performance trends, returns and risk analysis (Bronze)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Fair value and research reports",
+     "detail": "Morningstar ratings, analyst research, model portfolios (Silver)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Advanced charts and smart screeners",
+     "detail": "25+ chart types, Smart Money and Top Holdings screeners, 40+ years downloadable history (Gold)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Ad-free",
+     "detail": "Ads removed on paid tiers",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "stock/ETF/index quote with a real chart",
+  "watchlist on the device",
+  "market overview (indices, movers)",
+  "historical data with CSV download",
+  "portfolio with cost basis and gain",
+  "per-ticker news",
+  "screener",
+  "price alerts"
+ ],
+ "verse_extra": [
+  "read-only Bitcoin address lookup (mempool.space)",
+  "refuses seed phrases and never holds keys",
+  "no ads"
+ ],
+ "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades."
+}
