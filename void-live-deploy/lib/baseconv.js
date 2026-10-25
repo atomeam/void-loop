@@ -74,3 +74,39 @@ export function parseAsk(text) {
   for (const [re, pick] of PATTERNS) { const m = re.exec(t); if (!m) continue; const [value, fromWord, toWord] = pick(m), to = baseOf(toWord), from = fromWord ? baseOf(fromWord) : 0; if (to && (from || !fromWord)) return { value, from: from || 0, to }; }
   return null;
 }
+
+/**
+ * Fractions, exactly (hextobinary.com's fraction and floating-point box): a number with a point is a fraction num / den, den a power of
+ * its base, and is written in another base digit by digit, the remainders remembered so a fraction that repeats is caught (0.1 decimal is
+ * 0.0(0011) in binary, the bracket repeating for ever), never rounded. Pure.
+ */
+export function parseReal(text, base) {
+  const t = String(text == null ? '' : text).trim().toLowerCase().replace(/[\s_,]/g, ''); if (!t) return null;
+  const neg = t.startsWith('-'), body = t.replace(/^[-+]/, ''), m = /^([0-9a-z]*)\.([0-9a-z]*)$/.exec(body); if (!m || (!m[1] && !m[2])) return null;
+  const i = m[1] ? parse(m[1], base) : 0n, f = m[2] ? parse(m[2], base) : 0n; if (i === null || f === null) return null;
+  const den = BigInt(base) ** BigInt(m[2].length), num = i * den + f; return { neg, num, den };
+}
+/** a fraction written in a base: { int, digits (after the point, as a string), repeat (where the repeating part starts, or -1), cut (true when
+ *  `max` digits were reached first) }; text() gives "0.0(0011)". Pure. */
+export function formatReal({ neg, num, den }, base, max = 48) {
+  const b = BigInt(base), int = num / den; let r = num % den, digits = ''; const seen = new Map();
+  while (r !== 0n && digits.length < max) { if (seen.has(r)) break; seen.set(r, digits.length); r *= b; digits += DIGITS[Number(r / den)]; r %= den; }
+  const repeat = r !== 0n && seen.has(r) ? seen.get(r) : -1, cut = r !== 0n && repeat < 0;
+  const head = (neg && (int !== 0n || digits) ? '-' : '') + format(int, base);
+  return { int: head, digits, repeat, cut, text: head + (digits ? '.' + (repeat >= 0 ? digits.slice(0, repeat) + '(' + digits.slice(repeat) + ')' : digits) : '') };
+}
+/** the working for one number into decimal: each digit times its place value, and the sum. [{ digit, value, power, term }]. Pure. */
+export function stepsToDecimal(digits, base) {
+  const d = String(digits).toLowerCase(), n = d.length;
+  return [...d].map((c, i) => { const v = DIGITS.indexOf(c), p = n - 1 - i; return { digit: c, value: v, power: p, term: BigInt(v) * BigInt(base) ** BigInt(p) }; });
+}
+/** the working out of decimal into a base: divide by the base, keep the remainder, until nothing is left; read the remainders bottom up. Pure. */
+export function stepsFromDecimal(n, base) {
+  const out = [], b = BigInt(base); let x = n < 0n ? -n : n; if (x === 0n) return [{ n: 0n, q: 0n, r: 0 }];
+  while (x > 0n) { out.push({ n: x, q: x / b, r: Number(x % b) }); x /= b; } return out;
+}
+/** the working for a fraction's part after the point: multiply by the base, the whole part is the next digit. Up to `max` steps. Pure. */
+export function stepsFraction({ num, den }, base, max = 8) {
+  const out = [], b = BigInt(base); let r = num % den;
+  for (let i = 0; i < max && r !== 0n; i++) { const x = r * b; out.push({ num: r, den, times: x, digit: DIGITS[Number(x / den)] }); r = x % den; } return out;
+}

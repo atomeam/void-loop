@@ -741,6 +741,17 @@ try {
     await W.ctx.close(); await K.ctx.close();
   }
   // the base converter (lib/baseconv.js, /base-converter/, skills/baseconv.js; owner, 2026-10-24: back to the easy sites): worked out on the device
+  // the rest of hextobinary.com on /base-converter/: any base 3 to 36, fractions exactly (a repeating part in brackets), and the working shown
+  if (want("base converter: a fraction is written exactly in every base with its repeating part, base 36 joins in, and the working is shown step by step")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base-converter/?v=ff&b=16'); await Z.p.waitForTimeout(200);
+    const work = await Z.p.$eval('#steps', (e) => e.textContent), b36 = await Z.p.$eval('#bn', (e) => e.value);
+    await Z.p.fill('#b10', '0.1'); const frac = { bin: await Z.p.$eval('#b2', (e) => e.value), hex: await Z.p.$eval('#b16', (e) => e.value), note: await Z.p.$eval('#note', (e) => e.textContent) };
+    await Z.p.fill('#b10', ''); await Z.p.selectOption('#anyb', '7'); await Z.p.fill('#bn', '10'); const seven = await Z.p.$eval('#b10', (e) => e.value);
+    check("base converter: a fraction is written exactly in every base with its repeating part, base 36 joins in, and the working is shown step by step",
+      /FF₁₆ = 15×16¹ \+ 15×16⁰/.test(work) && /= 240 \+ 15 = 255/.test(work) && /F→1111/.test(work) && b36 === '73' && frac.bin === '0.0(0011)' && frac.hex === '0.1(9)' && /repeat for ever/.test(frac.note) && seven === '7' && !Z.errors.length,
+      JSON.stringify({ work, b36, frac, seven, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("base converter: the page fills all four bases from any one, exact for huge numbers, with no third party, and the ask opens a card")) {
     const B = await fresh(); const origin = new URL(B.p.url()).origin, pg = await B.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
     await pg.goto(origin + '/base-converter/'); await pg.waitForSelector('#b10', { timeout: 10000 }); const loaded = reqs.length;

@@ -33,3 +33,14 @@ test('the asks people make: either order, a prefix, a bare number, base N', () =
   for (const a of ['what time is it in tokyo', '100 c to f', 'how many cups in 3 liters', 'hello world to binary', 'translate hello to spanish']) assert.equal(parseAsk(a), null, a);
   assert.equal(baseOf('Hexadecimal'), 16); assert.equal(baseOf('base 7'), 7); assert.equal(baseOf('base 40'), 0);
 });
+
+test('fractions exactly: a repeating part is caught, a terminating one ends, the working is shown', async () => {
+  const { parseReal, formatReal, stepsToDecimal, stepsFromDecimal, stepsFraction } = await import('../void-live-deploy/lib/baseconv.js');
+  assert.equal(formatReal(parseReal('0.1', 10), 2).text, '0.0(0011)'); assert.equal(formatReal(parseReal('0.5', 10), 2).text, '0.1');
+  assert.equal(formatReal(parseReal('10.101', 2), 10).text, '2.625'); assert.equal(formatReal(parseReal('ff.8', 16), 10).text, '255.5');
+  assert.equal(formatReal(parseReal('0.1', 3), 10).text, '0.(3)'); assert.equal(formatReal(parseReal('-3.25', 10), 16).text, '-3.4');
+  assert.equal(parseReal('1.2', 2), null); assert.equal(parseReal('12', 10), null, 'no point: not a fraction');
+  const s = stepsToDecimal('ff', 16); assert.deepEqual(s.map((x) => [x.value, x.power, x.term]), [[15, 1, 240n], [15, 0, 15n]]);
+  assert.deepEqual(stepsFromDecimal(10n, 2).map((x) => x.r), [0, 1, 0, 1]);
+  assert.deepEqual(stepsFraction(parseReal('0.625', 10), 2).map((x) => x.digit).join(''), '101');
+});
