@@ -1,0 +1,1150 @@
+{
+ "floor": "docs-and-notes",
+ "verse_page": "void-live-deploy/notes/index.html",
+ "researched": "2026-10-25",
+ "method": "Most hosts were unreachable by the fetch tool from this container (DNS), so features come from web search results, vendor pages in search snippets and prior knowledge of the products; '(paid)' tiers change often, confirm before pricing claims.",
+ "sites": {
+  "docs.google.com": {
+   "leader": true,
+   "sources": [
+    "https://workspace.google.com/products/docs/",
+    "https://support.google.com/docs",
+    "https://techcrunch.com/2026/03/10/google-rolls-out-new-gemini-capabilities-to-docs-sheets-slides-and-drive/",
+    "https://letsdatascience.com/news/google-adds-gemini-audio-summaries-to-docs-ff5ba79f",
+    "https://wondertools.substack.com/p/google-docs-gets-smarter"
+   ],
+   "features": [
+    {
+     "name": "Rich text formatting",
+     "detail": "Fonts, sizes, bold/italic/underline/strikethrough, text and highlight colour, superscript/subscript, paragraph styles (Title, Subtitle, H1-H6, Normal), line spacing, alignment, indents, clear formatting.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "B, I, U, H1, H2, lists, code, link, clear (#bar); no fonts, sizes, colours, alignment, strikethrough, H3+ in toolbar."
+    },
+    {
+     "name": "Lists and checklists",
+     "detail": "Bulleted, numbered (custom styles, restart numbering), checklists that strike through when checked, nested levels.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "ul/ol/todo checklist buttons and slash menu."
+    },
+    {
+     "name": "Tables",
+     "detail": "Insert table, add/delete rows/columns, merge cells, cell colour, borders, column widths, pin header rows, sort table rows.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Slash 'Table' with Row +/Column +/sort up/down/delete (note-extras.js); no merge, colours, widths."
+    },
+    {
+     "name": "Images and drawings",
+     "detail": "Insert images (upload, Drive, web search, camera, URL), crop, wrap text, alt text; Google Drawings inline.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "clean() drops <img>; no image insert."
+    },
+    {
+     "name": "Links and smart chips",
+     "detail": "Links with previews; @-chips for people, files, dates, places, calendar events, dropdowns, stopwatch, variables.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Links and [[wiki links]] between notes with backlinks; no chips, dates or people."
+    },
+    {
+     "name": "Headers, footers, page numbers, footnotes",
+     "detail": "Page setup elements, footnotes, table of contents (auto from headings), bookmarks.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Pages vs pageless, page setup",
+     "detail": "Paper size, margins, orientation, page colour, pageless mode with wide tables.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Single pageless body; print uses page CSS."
+    },
+    {
+     "name": "Tabs in a document",
+     "detail": "A document holds multiple tabs and sub-tabs in a side panel, each its own page; links to tabs.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Separate notes instead; no tabs inside one note."
+    },
+    {
+     "name": "Document outline",
+     "detail": "Left sidebar outline from headings, summary field, jump to section.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Building blocks",
+     "detail": "Insert pre-made blocks: meeting notes (with Calendar), email draft, product roadmap, review tracker, decision log, project assets, dropdown chips.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Templates: meeting, trip, shopping, weekly (note-extras TEMPLATES); slash blocks."
+    },
+    {
+     "name": "Template gallery",
+     "detail": "Dozens of templates (resumes, letters, reports, project proposals, newsletters); org custom templates.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "4 templates."
+    },
+    {
+     "name": "Real-time co-editing",
+     "detail": "Many people edit at once with coloured cursors and presence avatars.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Device-only notes; no sync."
+    },
+    {
+     "name": "Comments",
+     "detail": "Comment on a selection, threads, replies, resolve/reopen, emoji reactions, comment history, notifications by email.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "@-mention and assign",
+     "detail": "@mention someone in a comment to notify them; assign a comment as an action item.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Suggesting mode",
+     "detail": "Edits become tracked suggestions others accept or reject; viewing mode.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Sharing and permissions",
+     "detail": "Share with people or groups as Viewer/Commenter/Editor; general access (restricted, org, anyone with link); expiration, disable download/print/copy for viewers, transfer ownership.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "'Copy share link' encodes the note in the URL; recipient can 'Save a copy'; no permission levels, no live shared doc."
+    },
+    {
+     "name": "Publish to the web",
+     "detail": "Publish a doc as a public web page or embed code; auto-republish on change.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link shows a read-only 'Shared note' card; no embed."
+    },
+    {
+     "name": "Version history",
+     "detail": "Every change saved; named versions; see who changed what; restore; show changes; copy an old version.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Snapshot every 30 s of change + 'Save a version', preview, restore that keeps what it replaced (notes.js snapshot/restore); no names on versions, no diff view."
+    },
+    {
+     "name": "Offline",
+     "detail": "Work offline in Chrome/Edge with the Docs Offline extension or the apps; syncs back.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "All local + service worker; 'works offline'."
+    },
+    {
+     "name": "Autosave to the cloud",
+     "detail": "Every keystroke saved to Drive, open on any device.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Autosave to this browser only ('Saved on this device'); no cross-device sync."
+    },
+    {
+     "name": "Export formats",
+     "detail": "Download as .docx, .odt, .rtf, .pdf, .txt, .html (zipped), .epub, Markdown (.md); email as attachment.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Export .md, .html, .txt and Print (to PDF via browser); no .docx/.odt/.rtf/.epub/.pdf file."
+    },
+    {
+     "name": "Import formats",
+     "detail": "Open .docx, .odt, .rtf, .txt, .html, PDF (OCR), and paste from Markdown.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Import .md and .txt; paste is cleaned."
+    },
+    {
+     "name": "Markdown auto-detect",
+     "detail": "Typing # , * , **bold**, - [ ] converts automatically; copy/paste as Markdown.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Markdown converts on import (mdToHtml); unknown whether typed shortcuts convert inline (keyboard shortcuts exist)."
+    },
+    {
+     "name": "Search and replace",
+     "detail": "Find and replace in a doc, match case, regex; Drive-wide search across docs.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Search across all notes with <mark> highlights; no find-and-replace inside a note."
+    },
+    {
+     "name": "Spelling and grammar",
+     "detail": "Spell check, grammar suggestions, personal dictionary.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Browser spellcheck=true only."
+    },
+    {
+     "name": "Word count",
+     "detail": "Words, characters, pages; show while typing.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Live word count (#words)."
+    },
+    {
+     "name": "Voice typing",
+     "detail": "Dictate text in many languages with voice commands.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Explore / research",
+     "detail": "Search the web and Drive from a side panel; insert citations.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Citations",
+     "detail": "Citation sidebar with MLA/APA/Chicago and bibliography.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Equations and special characters",
+     "detail": "Equation editor, special characters by drawing/search, emoji.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Translate document / language",
+     "detail": "Translate a whole doc into another language; RTL support; UI in 100+ languages.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "UI English and German."
+    },
+    {
+     "name": "Gemini in Docs",
+     "detail": "Help me write/refine, summarise, audio summary (2026), draft from Drive/Gmail sources, generate images, side-panel chat; on paid Workspace and Google AI plans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "No AI on /notes/ (chat-fill planned via lib/chat-notes.js)."
+    },
+    {
+     "name": "eSignature",
+     "detail": "Request signatures on a doc (Workspace Individual/business plans).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Approvals",
+     "detail": "Send a doc for approval; lock while reviewing (Workspace business plans).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Accessibility",
+     "detail": "Screen reader support, braille, keyboard shortcuts (Ctrl+/ list), dictation.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "ARIA labels on toolbar and editor, keyboard shortcuts listed (#keys)."
+    },
+    {
+     "name": "Keyboard shortcuts",
+     "detail": "Full shortcut set, Ctrl+/ shows them.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Ctrl+B/I/U/K, headings, lists, Ctrl+/ search, new note (#keys)."
+    },
+    {
+     "name": "Mobile apps",
+     "detail": "Android/iOS apps with offline and editing.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Responsive web page; no app."
+    },
+    {
+     "name": "Linked objects",
+     "detail": "Embed Sheets charts/tables and Slides that update from the source.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Watermark, columns, page colour",
+     "detail": "Text/image watermark, multi-column layout.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Dropdown chips and variables",
+     "detail": "Status dropdowns and reusable variables in a doc.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Notifications and activity dashboard",
+     "detail": "Who viewed the doc, edit notifications by email.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    }
+   ]
+  },
+  "notion.so": {
+   "sources": [
+    "https://www.notion.com/product",
+    "https://www.notion.com/pricing",
+    "https://www.notion.com/help",
+    "https://eesel.ai/blog/notion-ai-review",
+    "https://slite.com/learn/how-to-use-notion-ai"
+   ],
+   "features": [
+    {
+     "name": "Block editor",
+     "detail": "Everything is a block: text, H1-H3, to-do, bullet, numbered, toggle list, toggle headings, quote, callout, divider, code (syntax-highlighted, many languages), equation (KaTeX), columns; drag handle to move/turn blocks into other types.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Slash menu has heading, to-do, bullet, number, table, divider, quote, code; no toggles, callouts, columns, equations, drag handles or block conversion."
+    },
+    {
+     "name": "Slash commands",
+     "detail": "Type / to insert any block, embed, database or AI action, with search.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "#slash listbox with search (slashFor)."
+    },
+    {
+     "name": "Markdown shortcuts",
+     "detail": "#, -, [], >, ``` and **, `, ~ convert as you type.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Markdown import; inline shortcuts not confirmed."
+    },
+    {
+     "name": "Nested pages and sidebar tree",
+     "detail": "Pages inside pages; sidebar with Private, Teamspaces, Favourites, Shared; breadcrumbs.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Flat list with pins and tags; no nesting."
+    },
+    {
+     "name": "Linked pages, @mentions, backlinks",
+     "detail": "@ a page/person/date; [[ to link pages; backlinks section on each page.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "[[wiki links]] with backlinks under the note (note-extras linksOf/backlinks); no @people or @dates."
+    },
+    {
+     "name": "Synced blocks",
+     "detail": "One block appears in many pages and edits everywhere.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Databases",
+     "detail": "Tables of pages with typed properties: text, number, select, multi-select, status, date, person, files, checkbox, URL, email, phone, formula, relation, rollup, created/edited time/by, button, ID, place.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Plain tables in a note with add row/column and sort; no typed properties or pages-as-rows."
+    },
+    {
+     "name": "Database views",
+     "detail": "Table, board (kanban), timeline (Gantt), calendar, list, gallery, chart, feed, map, form views; filters, sorts, groups, sub-groups, linked views of the same data.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Formulas, relations and rollups",
+     "detail": "Formula language 2.0, relations between databases, rollups for sums/counts.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Forms",
+     "detail": "Build a form whose answers become database rows; share publicly.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Automations and buttons",
+     "detail": "Database automations (on property change, page added) and button blocks that insert blocks, edit pages, send Slack/mail.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Templates",
+     "detail": "Page templates, database templates (repeating), template gallery with thousands of community templates (free and paid marketplace).",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "4 templates; no gallery."
+    },
+    {
+     "name": "Embeds and media",
+     "detail": "Images, video, audio, files, PDFs, bookmarks with previews, 50+ embed types (Figma, Google Drive, GitHub, Maps, YouTube, Loom, tweets, Miro...).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "clean() drops media; links only."
+    },
+    {
+     "name": "Real-time collaboration",
+     "detail": "Live cursors, presence, page lock.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Comments and discussions",
+     "detail": "Inline and page comments, threads, resolve, reactions, @mention to notify, Inbox.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Suggested edits",
+     "detail": "Suggest mode: tracked insertions/deletions to accept or reject.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Sharing and permissions",
+     "detail": "Invite members/guests with Full access, Can edit, Can edit content, Can comment, Can view; teamspaces; share to web; link expiry and disable search indexing (paid).",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Note-in-URL share link only."
+    },
+    {
+     "name": "Publish to web / Notion Sites",
+     "detail": "Publish pages as websites with custom domain, SEO, analytics (custom domain paid).",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "Shared note card from link; no site."
+    },
+    {
+     "name": "Page history",
+     "detail": "Version history 7 days free, 30/90 days or unlimited on paid; restore.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "100 snapshots per note kept locally, restore and preview; free."
+    },
+    {
+     "name": "Trash and restore",
+     "detail": "Deleted pages kept in trash for 30 days.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Delete is immediate (delBtn)."
+    },
+    {
+     "name": "Search",
+     "detail": "Full workspace search with filters (creator, teamspace, date), quick find Ctrl+P; AI search across connected apps (paid).",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Search all notes, Ctrl+/; no filters beyond tags/pinned."
+    },
+    {
+     "name": "Tags / properties on pages",
+     "detail": "Via database properties.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Tags input + tag chips filter (parseTags, tagCounts)."
+    },
+    {
+     "name": "Favourites / pin",
+     "detail": "Favourite pages in sidebar.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pin and Pinned filter."
+    },
+    {
+     "name": "Import",
+     "detail": "Import from Evernote, Google Docs, Confluence, Word, Markdown, CSV, HTML, Trello, Asana, Quip, Dropbox Paper, PDF.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Import .md/.txt."
+    },
+    {
+     "name": "Export",
+     "detail": "Export page or workspace as Markdown+CSV, HTML, PDF (with subpages).",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Export .md/.html/.txt per note; no whole-workspace or CSV export."
+    },
+    {
+     "name": "Offline mode",
+     "detail": "Download pages for offline use in desktop/mobile apps (2025).",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "All notes local and offline."
+    },
+    {
+     "name": "Notion AI",
+     "detail": "Write, edit, summarise, translate, autofill database properties, Q&A over workspace and connected apps, meeting notes transcription, research mode; personal agent doing multi-step work; Custom Agents on schedules/triggers (GA May 2026). Business/Enterprise plans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "No AI on /notes/; chat-fill (lib/chat-notes.js) writes notes from plain sentences by rules."
+    },
+    {
+     "name": "AI meeting notes",
+     "detail": "Records and transcribes meetings, writes summary and action items.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Notion Calendar and Mail",
+     "detail": "Companion calendar linked to databases; Notion Mail AI inbox.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Integrations and API",
+     "detail": "Public API, Slack/GitHub/Jira syncs, webhooks.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Table of contents, breadcrumbs, link to block",
+     "detail": "Auto TOC block, link directly to a block.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Page customisation",
+     "detail": "Icon/emoji, cover image, full width, small text, font choice (Default/Serif/Mono), lock page.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Text colours and highlights",
+     "detail": "Colour/background colour per text and block.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Workspace analytics",
+     "detail": "Page views and editors (paid plans).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "SAML SSO, audit log, permission groups",
+     "detail": "Enterprise admin features.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "n/a"
+    },
+    {
+     "name": "Mobile and desktop apps",
+     "detail": "Mac, Windows, iOS, Android, web clipper.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Responsive web, offline PWA-like."
+    }
+   ]
+  },
+  "anotepad.com": {
+   "sources": [
+    "https://anotepad.com/",
+    "https://alternativeto.net/software/anotepad-com/about",
+    "https://apps.apple.com/app/id1494609935"
+   ],
+   "features": [
+    {
+     "name": "No-signup online notepad",
+     "detail": "Start writing at once; note autosaves.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Opens and saves on the device."
+    },
+    {
+     "name": "Plain and rich text notes",
+     "detail": "Choose plain text or rich text editor.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rich editor; .txt export."
+    },
+    {
+     "name": "Link per note",
+     "detail": "Every note has its own URL to send.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link carries the note."
+    },
+    {
+     "name": "Private / public / password-protected notes",
+     "detail": "Per-note access with password; guest editing by password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No passwords."
+    },
+    {
+     "name": "Free account with folders and sync",
+     "detail": "Organise notes in folders across devices.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Tags instead of folders; no sync."
+    },
+    {
+     "name": "Sort notes",
+     "detail": "By date or title.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Sorted by pinned then updated; no title sort."
+    },
+    {
+     "name": "Export to PDF / Word",
+     "detail": "Download note as PDF or .docx.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Print to PDF; no .docx."
+    },
+    {
+     "name": "Premium",
+     "detail": "Extra features, ad removal.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "n/a"
+    }
+   ]
+  },
+  "quillpad.in": {
+   "sources": [
+    "https://www.quillpad.in/",
+    "https://www.quillpad.in/hindi/",
+    "https://www.vikaspedia.in/education/digital-litercy/tools-for-indian-languages/typing-in-indian-regional-languages"
+   ],
+   "note": "www.quillpad.in is an Indian-language transliteration editor (not the Android Quillpad notes app on F-Droid).",
+   "features": [
+    {
+     "name": "Phonetic transliteration editor",
+     "detail": "Type Indian languages in English letters; converts to Hindi, Bengali, Gujarati, Kannada, Malayalam, Marathi, Nepali, Punjabi, Tamil, Telugu (and Urdu).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Notes have no input-method help; UI English/German."
+    },
+    {
+     "name": "Word alternatives",
+     "detail": "Click a word to choose among predicted spellings.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Mixed English inside native text",
+     "detail": "English words transliterated in-line.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Copy / email the text",
+     "detail": "Copy result; email page.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link and export."
+    },
+    {
+     "name": "Quillpad Roaming / Switchit",
+     "detail": "Type Indian scripts on other sites; convert text between scripts.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    }
+   ]
+  },
+  "standardnotes.com": {
+   "sources": [
+    "https://standardnotes.com/",
+    "https://standardnotes.com/compare/simplenote-alternative"
+   ],
+   "features": [
+    {
+     "name": "End-to-end encryption",
+     "detail": "Notes encrypted on device; zero-knowledge sync (Proton-owned since 2024).",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Notes never leave the device, but they are not encrypted at rest in localStorage."
+    },
+    {
+     "name": "Super notes editor",
+     "detail": "Rich block editor with markdown, checklists, tables, code, collapsible headings.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Rich editor with similar blocks, no collapsing."
+    },
+    {
+     "name": "Multiple editors",
+     "detail": "Markdown, code, spreadsheet, task, plain (some paid).",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "One editor."
+    },
+    {
+     "name": "Tags and nested tags, smart views",
+     "detail": "Hierarchical tags and saved filtered views.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Flat tags with filter chips."
+    },
+    {
+     "name": "Note history",
+     "detail": "Revisions: limited free, longer on paid.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Local version history."
+    },
+    {
+     "name": "Note protection, app passcode, biometrics",
+     "detail": "Lock notes; passcode for the app.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Files and attachments",
+     "detail": "Encrypted file storage (paid).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Listed publishing",
+     "detail": "Publish notes as a blog via Listed.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Cross-platform apps and sync",
+     "detail": "Web, desktop, mobile, offline.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Web only, offline, no sync."
+    },
+    {
+     "name": "Export/backups",
+     "detail": "Encrypted and decrypted backups, email backups (paid).",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "Per-note export; no full backup."
+    }
+   ]
+  },
+  "notepad.pw": {
+   "sources": [
+    "https://notepad.pw/",
+    "https://alternativeto.net/software/notepad-pw/about"
+   ],
+   "features": [
+    {
+     "name": "Instant notepad at a custom URL",
+     "detail": "Pick any path; the note lives there.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Notes live in /notes/ on the device."
+    },
+    {
+     "name": "Password protection",
+     "detail": "Lock a note with a password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Markdown and dark mode",
+     "detail": "Markdown preview, dark theme.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Markdown import/export; dark mode via prefers-color-scheme."
+    },
+    {
+     "name": "Share by URL",
+     "detail": "Anyone with the URL reads it.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link carries the note."
+    }
+   ]
+  },
+  "simplenote.com": {
+   "sources": [
+    "https://simplenote.com/",
+    "https://www.g2.com/compare/simplenote-vs-standard-notes"
+   ],
+   "features": [
+    {
+     "name": "Plain text + Markdown preview",
+     "detail": "Fast plain-text notes with optional Markdown preview.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Markdown import/export; rich editor."
+    },
+    {
+     "name": "Tags and search",
+     "detail": "Tag notes; instant search.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Tags and search."
+    },
+    {
+     "name": "Pin and sort",
+     "detail": "Pin notes; sort by date/alpha.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Pin; sort by updated only."
+    },
+    {
+     "name": "History slider",
+     "detail": "Slide back through every version.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Version history list with preview."
+    },
+    {
+     "name": "Collaborate by email",
+     "detail": "Add a collaborator's email as a tag to share editing.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Publish to web",
+     "detail": "Public link to a read-only note.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link."
+    },
+    {
+     "name": "Sync across devices, free",
+     "detail": "Apps for all platforms, sync free.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "No sync."
+    },
+    {
+     "name": "Trash",
+     "detail": "Deleted notes go to trash.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Delete is immediate."
+    },
+    {
+     "name": "Checklists and focus mode",
+     "detail": "Checkboxes; distraction-free mode.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Checklists; no focus mode."
+    },
+    {
+     "name": "Export all notes",
+     "detail": "Download all notes as zip.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Per-note export only."
+    }
+   ]
+  },
+  "docs.zoho.com": {
+   "sources": [
+    "https://www.zoho.com/writer/",
+    "https://www.zoho.com/workdrive/"
+   ],
+   "features": [
+    {
+     "name": "Zoho Writer rich editor",
+     "detail": "Full word processor: styles, fonts, tables, images, page setup, headers/footers, TOC.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "See Google Docs rows."
+    },
+    {
+     "name": "Real-time co-authoring, comments, track changes",
+     "detail": "Collaborate, comment, review mode.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Zia AI writing assistant",
+     "detail": "Grammar, readability, style, AI generation.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Mail merge and fillable forms",
+     "detail": "Merge data into documents; fillable document forms.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Sign and automate",
+     "detail": "Built-in eSignatures, document automation.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Export formats",
+     "detail": "DOCX, PDF, ODT, RTF, HTML, EPUB, Markdown.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "md/html/txt."
+    },
+    {
+     "name": "Offline and apps",
+     "detail": "Offline editing, mobile apps.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Offline."
+    },
+    {
+     "name": "Version history",
+     "detail": "Versions with names and compare.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Versions without names or compare."
+    }
+   ]
+  },
+  "onenote.com": {
+   "sources": [
+    "https://www.onenote.com/",
+    "https://support.microsoft.com/onenote"
+   ],
+   "features": [
+    {
+     "name": "Notebooks, sections, pages, subpages",
+     "detail": "Three-level organisation.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Flat notes with tags."
+    },
+    {
+     "name": "Free-form canvas",
+     "detail": "Type anywhere on the page; drag containers.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Ink and drawing",
+     "detail": "Pen, highlighter, shapes, ink-to-text, ink-to-math.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Audio/video recording and transcription",
+     "detail": "Record in a note; dictation.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Web clipper and screen clipping",
+     "detail": "Save web pages and screenshots.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Tags (To Do, Important, Question...) and tag summary",
+     "detail": "Built-in note tags with a summary page.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Free tags + to-do checklists."
+    },
+    {
+     "name": "Search including OCR in images",
+     "detail": "Find text inside pictures.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Text search only."
+    },
+    {
+     "name": "Sharing and co-editing",
+     "detail": "Share notebooks, co-edit live.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Copilot in OneNote",
+     "detail": "AI summaries and drafting (Microsoft 365 paid).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Password-protected sections",
+     "detail": "Lock sections.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Page version history and recycle bin",
+     "detail": "Restore older pages and deleted items.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Versions yes, recycle bin no."
+    }
+   ]
+  },
+  "evernote.com": {
+   "sources": [
+    "https://evernote.com/",
+    "https://evernote.com/compare-plans"
+   ],
+   "features": [
+    {
+     "name": "Notebooks, stacks, tags",
+     "detail": "Organise notes in notebooks/stacks with tags.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Tags only."
+    },
+    {
+     "name": "Web clipper",
+     "detail": "Clip articles, pages, screenshots.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Search in images and PDFs",
+     "detail": "OCR search in attachments (paid).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Tasks with due dates and reminders",
+     "detail": "Tasks inside notes with reminders.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Checklists without dates/reminders."
+    },
+    {
+     "name": "Calendar integration",
+     "detail": "Link Google/Outlook events to notes.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Home dashboard widgets",
+     "detail": "Customisable home with pinned notes, scratch pad, tasks.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Pinned notes list."
+    },
+    {
+     "name": "Templates gallery",
+     "detail": "Many templates.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "4 templates."
+    },
+    {
+     "name": "Document scanning",
+     "detail": "Scan documents with the phone camera.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "AI features",
+     "detail": "AI edit, AI search, transcription (paid).",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Sharing and spaces",
+     "detail": "Share notes/notebooks; team Spaces.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Offline notebooks",
+     "detail": "Offline access (paid).",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "Verse offline free."
+    },
+    {
+     "name": "Note history",
+     "detail": "Version history (paid).",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "Local versions free."
+    },
+    {
+     "name": "Device limit on free plan",
+     "detail": "Free plan limited to one device and notebook count.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "No limits."
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  "Comments on a selection with threads, replies, resolve, reactions and @mention (Google Docs, Notion, Zoho Writer; OneNote/Evernote via sharing)",
+  "Real-time co-editing of a shared document with presence and permission levels viewer/commenter/editor (Google Docs, Notion, Zoho, OneNote, Simplenote collaborators, aNotepad guest editing)",
+  "Suggesting mode / track changes with accept-reject (Google Docs, Notion, Zoho Writer)",
+  "Images, files and embeds inside notes (Google Docs, Notion 50+ embeds, OneNote, Evernote, Standard Notes files)",
+  "Databases with typed properties and views: board, calendar, timeline, gallery, list, chart, form (Notion)",
+  "AI writing help: summarise, rewrite, draft, Q&A over all notes (Gemini in Docs, Notion AI, Zoho Zia, Copilot in OneNote, Evernote AI) - Verse's rules-based chat-fill is the free start",
+  "Nested pages / notebooks and sections, sidebar tree, breadcrumbs (Notion, OneNote, Evernote) and tabs inside one document (Google Docs)",
+  "More export/import formats: .docx, .pdf, .odt, .rtf, .epub, whole-workspace zip/CSV; import .docx/.html/Evernote (Google Docs, Notion, Zoho, aNotepad, Simplenote)",
+  "Richer formatting: fonts, sizes, text/highlight colours, alignment, strikethrough, callouts, toggles, columns, equations (Google Docs, Notion)",
+  "Password-protected notes and custom URLs (notepad.pw, aNotepad, Standard Notes note protection, OneNote sections)",
+  "Trash with restore (Notion, Simplenote, OneNote, Evernote)",
+  "Cross-device sync with an account (all of them except notepad.pw no-account mode)",
+  "Document outline / table of contents, headers/footers, page numbers, footnotes, page setup (Google Docs, Zoho, Notion TOC block)",
+  "Find and replace inside a note; named versions and diff view (Google Docs, Zoho)",
+  "Synced blocks, linked database views, @dates and @people chips (Notion, Google Docs smart chips)",
+  "Reminders and due dates on tasks (Evernote, Notion dates, OneNote Outlook tasks)",
+  "Voice typing / dictation, audio recording with transcription (Google Docs, OneNote, Notion AI meeting notes)",
+  "Web clipper (Evernote, OneNote, Notion)",
+  "Phonetic Indian-language typing in the editor (quillpad.in)",
+  "End-to-end encrypted storage and app passcode (Standard Notes)"
+ ],
+ "verse_extra": [
+  "Everything stays on the device with no account and no device limit (Evernote free limits devices)",
+  "Version history free and automatic (100 per note) where Notion/Evernote/Standard Notes limit it on free plans",
+  "A share link carries the whole note, no server needed",
+  "[[wiki links]] with backlinks, tags, pins and slash menu without signing up",
+  "Chat-fill: a plain sentence on the stage writes or edits a note, with undo (lib/chat-notes.js)",
+  "German interface"
+ ]
+}
