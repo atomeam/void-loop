@@ -44,7 +44,9 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
 
 // The look is the setting, never the subject (round 2, owner 2026-10-18: "continue to improve the card art its not perfect"): the old line asked for an all-seeing eye and
 // a sacred-geometry halo in every picture, so every subject got an eye. Now the subject comes first in the prompt and this line only dresses the dark around it.
-export const ART_STYLE = 'dark arcane tarot-card illustration, deep indigo and black void behind it, faint gold filigree and glowing sigils only in the background, mystical light';
+// the atom galaxy (owner, 2026-10-25: "make all card art bigger and better with the updated atom galaxy theme"): the subject stands in deep space before a
+// glowing spiral galaxy, with an atom's orbits of violet, electric blue and gold light sweeping round behind it, the look of Verse's own mark
+export const ART_STYLE = 'set in deep starry space, behind it a glowing golden spiral galaxy and luminous atom-orbit rings of violet, electric blue and gold light sweeping round, star dust, cosmic light';
 // one camera and one light, so the model has a single lighting instruction instead of five
 export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and fully inside the frame, a single strong rim light from above left';
 // The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if Verse just passes a

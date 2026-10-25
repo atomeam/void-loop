@@ -7,7 +7,7 @@
 
 import { motifsFor, motifPaths, motifHue, GROUNDED } from './card-subject.js';
 
-export const VERSION = 2;
+export const VERSION = 3; // 3: the atom galaxy (2026-10-25)
 /** FNV-1a 32-bit of a string. Pure. */
 export function seedOf(s) { let h = 0x811c9dc5; for (const ch of String(s == null ? '' : s)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
 /** a seeded generator (mulberry32). Pure. */
@@ -45,6 +45,10 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
     // neon vector arcs sweeping round the core and crackling energy at it (owner's example card, 2026-10-18: "purple crackling energy and neon cyan vector lines")
     arcs: Array.from({ length: 2 + Math.floor(r() * 2) }, () => ({ rx: 0.4 + r() * 0.45, ry: 0.42 + r() * 0.35, rot: r() * Math.PI, a0: r() * Math.PI * 2, len: 1.4 + r() * 1.8, w: 0.7 + r() * 0.9, strands: 3 + Math.floor(r() * 4), gap: 0.025 + r() * 0.03 })),
     bolts: { mythic: 7, rare: 5, uncommon: 3, common: 2 }[rarityKey(rarity)],
+    // the atom galaxy (owner, 2026-10-25: "make all card art bigger and better with the updated atom galaxy theme"): a spiral galaxy at the centre,
+    // seen at a slant, and three orbits of an atom round it in violet, electric blue and gold, each with its electron; the seed tilts and turns them
+    galaxy: { arms: 2 + Math.floor(r() * 3), twist: 1.6 + r() * 1.4, tilt: 0.42 + r() * 0.3, rot: r() * Math.PI * 2, spin: r() < 0.5 ? 1 : -1 },
+    orbits: [275, 205, 44].map((hue, k) => ({ hue, rot: [0.08, 0.62, -0.62][k] * (r() < 0.5 ? 1 : -1) + (r() - 0.5) * 0.25, ratio: 0.26 + r() * 0.12, size: 0.86 + r() * 0.2, phase: r() * Math.PI * 2, e: r() * Math.PI * 2 })),
   };
 }
 
@@ -59,94 +63,66 @@ const hsl = (h, s, l, a) => 'hsla(' + Math.round(h) + ',' + s + '%,' + l + '%,' 
 
 /** draw the plan on a 2D context of w x h. The only impure part: it paints. */
 export function drawSeal(ctx, w, h, p) {
-  const r = rng(p.seed ^ 0x9e3779b9), N = noise2(p.seed), L = p.light, cx = p.core.x * w, m = Math.min(w, h), M = Math.max(w, h);
-  // the subject's motif is drawn whole: at most 64% of the 16:9 window's height, and its centre kept so it clears the top and the bottom edge (it was cut by the window before)
+  const r = rng(p.seed ^ 0x9e3779b9), L = p.light, m = Math.min(w, h), M = Math.max(w, h), cx = w / 2;
+  // the subject's motif is drawn whole: at most 64% of the window's height, its centre kept clear of the top and the bottom edge
   const msz = p.motif ? Math.min(p.core.size * m * 2.1, h * 0.64) : 0;
-  const cy = msz ? Math.max(msz / 2 + h * 0.06, Math.min(h - msz / 2 - h * 0.06, p.core.y * h)) : p.core.y * h;
+  const cy = msz ? Math.max(msz / 2 + h * 0.06, Math.min(h - msz / 2 - h * 0.06, p.core.y * h)) : h / 2;
+  const G = p.galaxy || { arms: 2, twist: 2, tilt: 0.55, rot: 0, spin: 1 }, form = p.form || 'vortex';
+  // the galaxy's size: it fills the short side, wider on a wide window; an edge-on galaxy ('currents') is flatter, a barred one ('rift') straighter
+  const Rg = Math.min(m * 0.62, M * 0.34) * (form === 'burst' ? 0.9 : 1), tilt = form === 'currents' ? G.tilt * 0.55 : G.tilt, twist = form === 'rift' ? G.twist * 0.7 : G.twist;
+  const plane = (x, y) => { const c = Math.cos(G.rot * 0.25), s = Math.sin(G.rot * 0.25); y *= tilt; return [cx + x * c - y * s, cy + x * s + y * c]; };
   ctx.save();
-  // the void
-  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, M * 0.75); bg.addColorStop(0, hsl(p.hue, 45, 7, 1)); bg.addColorStop(0.5, '#05050a'); bg.addColorStop(1, '#010103');
+  // deep space, a breath of the family's hue at the centre
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, M * 0.75); bg.addColorStop(0, hsl(p.hue, 40, 8, 1)); bg.addColorStop(0.45, '#04040a'); bg.addColorStop(1, '#010103');
   ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'lighter';
-  // nebula
-  for (const n of p.nebula) { const g = ctx.createRadialGradient(n.x * w, n.y * h, 0, n.x * w, n.y * h, n.r * M); g.addColorStop(0, hsl(p.palette[n.c], 80, 45, n.a)); g.addColorStop(1, hsl(p.palette[n.c], 80, 30, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
-  // a place for the subject to stand in: a far ridge against the glow and a floor of mist under it (houses, trees, mountains, the sea, a city, a sword, a dragon)
-  if (p.grounded && msz) {
-    const gy = Math.min(h * 0.9, cy + msz * 0.34); ctx.globalCompositeOperation = 'source-over';
-    const sky = ctx.createLinearGradient(0, 0, 0, gy); sky.addColorStop(0, hsl(p.palette[1], 60, 12, 0)); sky.addColorStop(1, hsl(p.palette[0], 70, 30, 0.28)); ctx.fillStyle = sky; ctx.fillRect(0, 0, w, gy);
-    ctx.beginPath(); ctx.moveTo(0, h); for (let i = 0; i <= 40; i++) { const x = i / 40 * w; ctx.lineTo(x, gy - h * 0.03 - Math.max(0, 0.55 + N(i / 40 * 4.2 + 3, 0.7, 3) * 1.6) * h * 0.2); } ctx.lineTo(w, h); ctx.closePath();
-    const ridge = ctx.createLinearGradient(0, gy - h * 0.25, 0, h); ridge.addColorStop(0, hsl(p.palette[1], 45, 9, 0.95)); ridge.addColorStop(1, hsl(p.palette[0], 40, 3, 1)); ctx.fillStyle = ridge; ctx.fill();
-    ctx.strokeStyle = hsl(p.palette[0], 90, 60, 0.45); ctx.lineWidth = 1; ctx.stroke(); ctx.globalCompositeOperation = 'lighter';
-    const mist = ctx.createLinearGradient(0, gy, 0, h); mist.addColorStop(0, hsl(p.palette[0], 80, 50, 0.22)); mist.addColorStop(1, hsl(p.palette[0], 80, 40, 0)); ctx.fillStyle = mist; ctx.fillRect(0, gy, w, h - gy);
-  }
-  // the flow field: particles traced through the curl of the noise, swirling round the core, in additive light
-  const F = p.field, steps = 46, sl = M / 260;
+  // nebula clouds in the palette, faint, off-centre
+  for (const n of p.nebula) { const g = ctx.createRadialGradient(n.x * w, n.y * h, 0, n.x * w, n.y * h, n.r * M); g.addColorStop(0, hsl(p.palette[n.c], 70, 42, n.a * 0.8)); g.addColorStop(1, hsl(p.palette[n.c], 70, 28, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
+  // far stars, fine and many, a few big ones with a cross flare
+  for (let i = 0; i < p.stars * 2; i++) { const x = r() * w, y = r() * h, b = r(); ctx.fillStyle = b < 0.85 ? hsl(220, 30, 88, 0.2 + b * 0.5) : hsl([44, 275, 205][i % 3], 80, 82, 0.6 + b * 0.35); const z = b > 0.97 ? 1.7 : b > 0.85 ? 1.1 : 0.7; ctx.fillRect(x, y, z, z); }
+  for (let k = 0; k < (p.bolts || 2) + 2; k++) { const x = r() * w, y = r() * h, l = m * (0.02 + r() * 0.03); ctx.strokeStyle = 'hsla(45,90%,88%,0.55)'; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(x - l, y); ctx.lineTo(x + l, y); ctx.moveTo(x, y - l); ctx.lineTo(x, y + l); ctx.stroke(); }
+  // the galaxy: stars streaked along its spiral arms, gold-white at the heart, violet and blue in the arms, pink knots of new stars
   ctx.lineCap = 'round';
-  const form = p.form || 'vortex', axis = p.core.spin;
-  for (let i = 0; i < L.n; i++) {
-    // where a thread starts: anywhere, but more of them near the core (burst and orbit gather light there)
-    let x = r() * w, y = r() * h;
-    if ((form === 'burst' || form === 'orbit') && r() < 0.6) { const t = r() * Math.PI * 2, d = (form === 'orbit' ? 0.5 + r() * 0.9 : r() * 0.5) * m * p.core.size * 1.6; x = cx + Math.cos(t) * d; y = cy + Math.sin(t) * d; }
-    if (form === 'rift' && r() < 0.5) { const t = (r() - 0.5) * M * 1.2; x = cx + Math.cos(axis) * t; y = cy + Math.sin(axis) * t * 0.6; } const c = r(), col = c < 0.55 ? 0 : c < 0.85 ? 1 : 2, lite = 48 + r() * 22, wd = r() < 0.9 ? 0.35 + r() * 0.5 : 0.9 + r() * 0.8;
-    const hot = r() < 0.035; // a few bright filaments give the eye somewhere to land
-    ctx.strokeStyle = hot ? hsl(p.palette[col], 100, 80, Math.min(0.42, L.a * 4)) : hsl(p.palette[col] + (r() - 0.5) * 30, 90, lite, L.a * (0.4 + r() * 1.2));
-    ctx.lineWidth = wd; ctx.beginPath(); ctx.moveTo(x, y);
-    for (let s = 0; s < steps; s++) {
-      const nx = x / M * F.scale, ny = y / M * F.scale, e = 0.01;
-      // curl of the noise (divergence-free: filaments, not blobs) plus a swirl round the core
-      const dx = (N(nx, ny + e, F.octaves) - N(nx, ny - e, F.octaves)) / (2 * e), dy = -(N(nx + e, ny, F.octaves) - N(nx - e, ny, F.octaves)) / (2 * e);
-      const ox = x - cx, oy = y - cy, d = Math.hypot(ox, oy) + 1;
-      let vx = dx, vy = dy;
-      if (form === 'vortex') { const sw = F.twist * F.swirl * Math.exp(-d / (m * 0.9)) * 3; vx += (-oy / d) * sw - (ox / d) * sw * 0.25; vy += (ox / d) * sw - (oy / d) * sw * 0.25; }
-      else if (form === 'currents') { vx += Math.cos(axis * 0.3) * 1.6; vy += Math.sin(axis * 0.3) * 0.5; }
-      else if (form === 'burst') { const out = 2.2 * Math.exp(-d / (m * 1.2)); vx += (ox / d) * out; vy += (oy / d) * out; }
-      else if (form === 'rift') { const nx2 = -Math.sin(axis), ny2 = Math.cos(axis), side = ox * nx2 + oy * ny2, pull = 1.6 * Math.exp(-Math.abs(side) / (m * 0.5)); vx += Math.cos(axis) * pull * F.swirl - nx2 * Math.sign(side) * 0.5; vy += Math.sin(axis) * pull * F.swirl - ny2 * Math.sign(side) * 0.5; }
-      else { const ring = m * p.core.size * 1.1, dr = (d - ring) / ring; vx += (-oy / d) * 2 * F.swirl - (ox / d) * dr; vy += (ox / d) * 2 * F.swirl - (oy / d) * dr; }
-      const vl = Math.hypot(vx, vy) || 1; vx /= vl; vy /= vl;
-      x += vx * sl * 2.2; y += vy * sl * 2.2;
-      if (x < -4 || y < -4 || x > w + 4 || y > h + 4) break;
-      ctx.lineTo(x, y);
+  for (let i = 0; i < L.n * 3; i++) {
+    const arm = i % G.arms, t = Math.pow(r(), 0.7), spread = (r() - 0.5) * (0.5 + t * 0.9) * (form === 'rift' && t < 0.3 ? 0.2 : 1);
+    const a = G.rot + arm * Math.PI * 2 / G.arms + G.spin * t * twist * Math.PI + spread, rad = Rg * (0.04 + t), len = 0.05 + r() * 0.12;
+    const [x0, y0] = plane(Math.cos(a) * rad, Math.sin(a) * rad), [x1, y1] = plane(Math.cos(a + G.spin * len) * rad, Math.sin(a + G.spin * len) * rad);
+    const knot = r() < 0.04, hue = t < 0.22 ? 44 : knot ? 320 : r() < 0.55 ? 270 + r() * 20 : 205 + r() * 20, lite = t < 0.22 ? 82 : 62 + r() * 18;
+    ctx.strokeStyle = hsl(hue, t < 0.22 ? 80 : 85, lite, L.a * (knot ? 7 : 3.4) * (1.15 - t * 0.55)); ctx.lineWidth = knot ? 1.6 : 0.6 + r() * 0.9;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  }
+  // its bright heart
+  const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, Rg * 0.5); core.addColorStop(0, 'hsla(48,100%,97%,1)'); core.addColorStop(0.2, 'hsla(44,100%,75%,0.7)'); core.addColorStop(0.6, 'hsla(30,90%,55%,0.14)'); core.addColorStop(1, 'hsla(275,90%,50%,0)');
+  ctx.fillStyle = core; ctx.beginPath(); ctx.ellipse(cx, cy, Rg * 0.5, Rg * 0.5 * Math.max(0.55, tilt), G.rot * 0.25, 0, Math.PI * 2); ctx.fill();
+  // the atom's orbits: long tilted ellipses of light, brighter along their front, dusted with sparks, each carrying a glowing electron
+  const Ro = Math.min(M * 0.47, m * 1.05) * (form === 'orbit' ? 1.04 : 0.96);
+  for (const O of p.orbits || []) {
+    const c = Math.cos(O.rot), s = Math.sin(O.rot);
+    // the whole orbit stays inside the window: the tilted ellipse's half-width and half-height are worked out and the orbit shrunk to fit
+    let rx = Ro * O.size; const fit = Math.min(1, (w * 0.47) / Math.hypot(rx * c, rx * O.ratio * s), (h * 0.46) / Math.hypot(rx * s, rx * O.ratio * c)); rx *= fit;
+    const ry = rx * O.ratio, at = (t, f = 1) => { const x = Math.cos(t) * rx * f, y = Math.sin(t) * ry * f; return [cx + x * c - y * s, cy + x * s + y * c]; };
+    const seg = 24, sub = 5, strands = 3 + L.rings;
+    // a bundle of strands, like light smeared along the path: two wide faint passes for the glow (no shadow blur: it cost seconds a card), then fine
+    // bright threads a little apart; each pass is stroked in 24 pieces whose brightness rises toward one side of the orbit
+    for (let q = 0; q < strands; q++) {
+      const f = 1 + (q - (strands - 1) / 2) * 0.012, first = q === 0;
+      for (const [lw, li, al] of first ? [[14, 55, 0.05], [6, 60, 0.12], [2.4, 72, 0.5], [0.9, 94, 0.95]] : [[0.7, 80, 0.35]]) {
+        ctx.lineWidth = lw;
+        for (let k = 0; k < seg; k++) { const t0 = k / seg * Math.PI * 2, glow = 0.25 + 0.75 * Math.pow(0.5 + 0.5 * Math.sin(t0 + Math.PI / seg + O.phase), 1.4);
+          ctx.strokeStyle = hsl(O.hue, 100, li, al * glow); ctx.beginPath();
+          for (let j = 0; j <= sub; j++) { const [x, y] = at(t0 + (j / sub) * (1.04 / seg) * Math.PI * 2, f); if (j) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+          ctx.stroke(); }
+      }
     }
-    ctx.stroke();
+    for (let k = 0; k < 90 + L.rings * 30; k++) { const t = r() * Math.PI * 2, [x, y] = at(t), d = (r() - 0.5) * ry * 0.22; ctx.fillStyle = hsl(O.hue, 90, 85, 0.25 + r() * 0.5); const z = r() < 0.1 ? 1.6 : 0.8; ctx.fillRect(x + d, y + d, z, z); }
+    const [ex, ey] = at(O.e), eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, m * 0.05); eg.addColorStop(0, 'hsla(0,0%,100%,1)'); eg.addColorStop(0.25, hsl(O.hue, 100, 72, 0.85)); eg.addColorStop(1, hsl(O.hue, 100, 55, 0));
+    ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, m * 0.05, 0, Math.PI * 2); ctx.fill();
   }
-  // the lattice: rings and the kind's polygon, thin and glowing
-  const R = p.core.size * m;
-  ctx.shadowBlur = 8; ctx.shadowColor = hsl(p.palette[0], 100, 60, 0.9);
-  for (let k = 0; k < L.rings; k++) { ctx.strokeStyle = hsl(p.palette[k % 2 ? 1 : 0], 90, 70, 0.22 + 0.1 * (L.rings - k) / L.rings); ctx.lineWidth = 0.7; ctx.beginPath(); ctx.arc(cx, cy, R * (0.45 + k * 0.22), 0, Math.PI * 2); ctx.stroke(); }
-  if (p.core.sides) {
-    for (const [f, a] of [[1.05, 0.45], [0.62, 0.3]]) { ctx.strokeStyle = hsl(L.gold ? 45 : p.palette[1], 90, 72, a); ctx.lineWidth = 0.9; ctx.beginPath();
-      for (let k = 0; k <= p.core.sides; k++) { const t = p.core.spin + k * Math.PI * 2 / p.core.sides; const px = cx + Math.cos(t) * R * f, py = cy + Math.sin(t) * R * f; if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py); } ctx.stroke(); }
-  }
-  if (p.core.rays) for (let k = 0; k < 24; k++) { const t = p.core.spin + k * Math.PI / 12, l0 = R * 0.5, l1 = R * (1.3 + (k % 3) * 0.35); ctx.strokeStyle = hsl(p.palette[0], 100, 75, 0.12); ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(cx + Math.cos(t) * l0, cy + Math.sin(t) * l0); ctx.lineTo(cx + Math.cos(t) * l1, cy + Math.sin(t) * l1); ctx.stroke(); }
-  // neon arcs: cyan vector lines in long ellipses round the core, with a hot thin centre
-  for (const A of p.arcs || []) for (let k = 0; k < A.strands; k++) { // a bundle of parallel strands, the outer ones fainter
-    const f = 1 + k * A.gap, fade = 1 - k / (A.strands + 1);
-    for (const [lw, al, li] of [[A.w * 3, 0.14, 55], [A.w, 0.65, 70], [A.w * 0.4, 0.9, 90]]) {
-      ctx.shadowBlur = lw > 2 ? 12 : 0; ctx.shadowColor = 'hsla(186,100%,60%,0.9)'; ctx.strokeStyle = hsl(186, 100, li, al * fade); ctx.lineWidth = lw;
-      ctx.beginPath(); ctx.ellipse(cx, cy, A.rx * M * 0.5 * f, A.ry * m * f, A.rot, A.a0 + k * 0.05, A.a0 + A.len - k * 0.08); ctx.stroke();
-    }
-  }
-  ctx.shadowBlur = 0;
-  // crackling energy: jagged violet bolts leaping from the core, each branching once
-  // each bolt is a list of polylines (the trunk and one branch), made once and stroked twice: a wide violet glow, then a hot core on the same path
-  const boltPaths = (x, y, ang, len, depth, out) => {
-    const pts = [[x, y]]; let px = x, py = y;
-    for (let k = 1; k <= 7; k++) { const t = ang + (r() - 0.5) * 1.1; px += Math.cos(t) * len / 7; py += Math.sin(t) * len / 7; pts.push([px, py]); if (depth && k === 3 && r() < 0.8) boltPaths(px, py, ang + (r() - 0.5) * 1.6, len * 0.5, depth - 1, out); }
-    out.push(pts); return out;
-  };
-  for (let k = 0; k < (p.bolts || 0); k++) {
-    const ang = r() * Math.PI * 2, paths = boltPaths(cx + Math.cos(ang) * R * 0.35, cy + Math.sin(ang) * R * 0.35, ang, R * (0.7 + r() * 0.8), 1, []);
-    for (const [lw, li, al] of [[3.4, 62, 0.28], [0.9, 88, 0.9]]) {
-      ctx.shadowBlur = lw > 2 ? 10 : 0; ctx.shadowColor = 'hsla(275,100%,65%,1)'; ctx.strokeStyle = hsl(275, 100, li, al); ctx.lineWidth = lw;
-      for (const pts of paths) { ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke(); }
-    }
-  }
-  ctx.shadowBlur = 0;
-  // the subject: its motif in light, a glowing silhouette with a hot neon edge, over a halo
+  // the subject: its motif in light at the heart, a glowing silhouette with a hot edge, over a halo
   const paths = p.motif && typeof Path2D === 'function' ? motifPaths(p.motif) : null;
   if (paths) {
     const sz = msz, halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 0.75);
-    halo.addColorStop(0, hsl(p.palette[0], 100, 60, 0.45)); halo.addColorStop(0.5, hsl(p.palette[1], 100, 45, 0.12)); halo.addColorStop(1, hsl(p.palette[1], 100, 40, 0));
+    halo.addColorStop(0, hsl(p.palette[0], 100, 60, 0.4)); halo.addColorStop(0.5, hsl(p.palette[1], 100, 45, 0.1)); halo.addColorStop(1, hsl(p.palette[1], 100, 40, 0));
     ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, sz * 0.75, 0, Math.PI * 2); ctx.fill();
     ctx.save(); ctx.translate(cx - sz / 2, cy - sz / 2); ctx.scale(sz / 100, sz / 100);
     const shapes = paths.map(([d, f]) => [new Path2D(d), f]);
@@ -158,29 +134,14 @@ export function drawSeal(ctx, w, h, p) {
       for (const [P] of shapes) ctx.stroke(P);
     }
     ctx.shadowBlur = 0; ctx.restore();
-  } else {
-  // the core: a burning iris with a black pupil (the void looks back)
-  const ir = R * (form === 'currents' || form === 'rift' ? 0.18 : 0.26), g1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, ir * 3.2);
-  g1.addColorStop(0, hsl(p.palette[0], 100, 82, 0.85)); g1.addColorStop(0.22, hsl(p.palette[0], 100, 58, 0.4)); g1.addColorStop(0.6, hsl(p.palette[1], 100, 45, 0.08)); g1.addColorStop(1, hsl(p.palette[1], 100, 40, 0));
-  ctx.fillStyle = g1; ctx.beginPath(); ctx.arc(cx, cy, ir * 3.2, 0, Math.PI * 2); ctx.fill();
-  if (L.gold) { const g2 = ctx.createRadialGradient(cx, cy, ir * 0.8, cx, cy, ir * 1.5); g2.addColorStop(0, 'hsla(44,100%,70%,0)'); g2.addColorStop(0.5, 'hsla(44,100%,70%,' + (0.5 * L.gold) + ')'); g2.addColorStop(1, 'hsla(44,100%,60%,0)'); ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(cx, cy, ir * 1.5, 0, Math.PI * 2); ctx.fill(); }
-  ctx.globalCompositeOperation = 'source-over';
-  const pr = ir * 0.42, g3 = ctx.createRadialGradient(cx, cy, 0, cx, cy, pr * 1.6); g3.addColorStop(0, 'rgba(0,0,0,1)'); g3.addColorStop(0.6, 'rgba(0,0,0,0.92)'); g3.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = g3; ctx.beginPath(); ctx.arc(cx, cy, pr * 1.6, 0, Math.PI * 2); ctx.fill();
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.beginPath(); ctx.arc(cx - pr * 0.35, cy - pr * 0.4, Math.max(1, pr * 0.16), 0, Math.PI * 2); ctx.fill();
   }
-  // star dust
-  for (let i = 0; i < p.stars; i++) { const x = r() * w, y = r() * h, b = r(); ctx.fillStyle = hsl(p.palette[b < 0.8 ? 1 : 0], 60, 85, 0.25 + b * 0.6); ctx.fillRect(x, y, b > 0.93 ? 1.6 : 0.9, b > 0.93 ? 1.6 : 0.9); }
   ctx.globalCompositeOperation = 'source-over';
   // bloom: the picture, blurred, laid over itself in light
   if (typeof ctx.filter === 'string' && ctx.canvas) {
     ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = L.bloom; ctx.filter = 'blur(' + Math.round(m / 22) + 'px)'; ctx.drawImage(ctx.canvas, 0, 0, w, h); ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
   }
-  // a glitch tear: one strip of the picture slips sideways, with a cold edge
-  if (p.tear && ctx.canvas) { const ty = p.tear.y * h, th = Math.max(2, p.tear.h * h); try { ctx.drawImage(ctx.canvas, 0, ty, w, th, p.tear.dx * w, ty, w, th); } catch (_) {} ctx.fillStyle = hsl(p.palette[1], 100, 75, 0.25); ctx.fillRect(0, ty, w, 1); }
   // vignette
-  const v = ctx.createRadialGradient(w / 2, h / 2, m * 0.3, w / 2, h / 2, M * 0.72); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.78)'); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+  const v = ctx.createRadialGradient(w / 2, h / 2, m * 0.35, w / 2, h / 2, M * 0.75); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
   ctx.restore();
 }
 

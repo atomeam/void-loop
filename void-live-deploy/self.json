@@ -483,6 +483,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T03:12:37Z",
+   "subject": "/base64/ offers 44 character sets: ISO-8859, Windows, KOI8, Mac, DOS and EBCDIC both ways; Shift_JIS, GBK, Big5, EUC-KR decode only"
+  },
+  {
+   "at": "2026-10-25T03:07:58Z",
+   "subject": "\"make a cyberpunk poster\" paints a cyberpunk poster"
+  },
+  {
+   "at": "2026-10-25T03:03:21Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T02:59:49Z",
+   "subject": "Incident: the browser suite failed on a2c587ea (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T02:58:14Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
    "at": "2026-10-25T02:54:15Z",
    "subject": "/base64/ detects the character set when decoding and decodes padding of the wrong length"
   },
@@ -541,26 +561,6 @@
   {
    "at": "2026-10-25T02:23:15Z",
    "subject": "Verse fixes its draw skill: learn to handle \"make a 2d sketch of a tree\""
-  },
-  {
-   "at": "2026-10-25T02:13:45Z",
-   "subject": "checks.mjs: glitch-titles runs only when a file with a glitch title, the films page or void.html changed"
-  },
-  {
-   "at": "2026-10-25T02:00:58Z",
-   "subject": "checks.mjs --changed: a builder's pre-push check runs only what covers the changed files"
-  },
-  {
-   "at": "2026-10-25T02:00:11Z",
-   "subject": "The tower gate's full sweep runs as six runner slices and a merge job; fight runs queue instead of cancelling each other"
-  },
-  {
-   "at": "2026-10-25T01:56:24Z",
-   "subject": "Incident: the browser suite failed on 967fde67 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:46:00Z",
-   "subject": "Incident: the browser suite failed on 630e666f (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
