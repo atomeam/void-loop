@@ -601,6 +601,49 @@ try {
       dime === 'Cartoon Dimebag Darrell' && !!kept && kept.name === 'Cartoon Dimebag Darrell' && !P.errors.length, JSON.stringify({ dime, kept: kept && kept.name, errors: P.errors }));
     await P.ctx.close();
   }
+  // the walker (owner, 2026-10-25, on the cartoon they drew: "drop him onto a solid floor so he actually walks across a stage instead of drifting through
+  // space ... bottom: 24px ... a subtle CSS drop shadow cast downward onto a rendered stage baseline"; a tap "reacts with a speech bubble"): the cartoon
+  // card's "Let it walk" puts its painting on the stage floor, pacing; a tap says a true counted line; it is back after a reload; "stop walking" clears it
+  if (want("walker: a cartoon's Let it walk paces the painting along the stage floor at bottom 24px with a shadow, a tap brings a true speech bubble, it is back after a reload and stop walking sits it down")) {
+    const P = await fresh({ phone: true });
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(r.request().method() === 'POST' ? { state: 'art', key: 'cartoon cat', img: PNG } : { state: 'none' }) }));
+    await P.ask('draw a cartoon cat', 1500);
+    await until(() => P.p.$('.cartoon-card[data-subject="cat"] .cartoon-pic img'), 8000);
+    await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click());
+    // the visible floor is the ask bar's top edge (on a phone the dock stands taller than the 72 px the stage leaves it): the figure stands 24 px above it, never behind it
+    const read = () => P.p.evaluate(() => { const st = document.getElementById('stage'), w = document.querySelector('#stage .walker'); if (!w) return null; const r = w.getBoundingClientRect(), s = st.getBoundingClientRect(), d = document.getElementById('dock').getBoundingClientRect(), floorY = Math.min(s.bottom, d.top);
+      const sh = document.querySelector('#stage .walker-shadow'), fl = document.querySelector('#stage .walker-floor'), img = w.querySelector('img');
+      return { x: r.left, w: r.width, h: r.height, above: Math.round(floorY - r.bottom), dockOver: Math.round(s.bottom - d.top), bob: +w.dataset.bob, dir: w.dataset.dir, src: img ? img.getAttribute('src') : '', shadow: !!sh && getComputedStyle(sh).opacity !== '0', shadowX: sh ? sh.getBoundingClientRect().left : null, floor: !!fl && Math.round(floorY - fl.getBoundingClientRect().bottom), under: w.closest('.walker-root') === st.firstElementChild, kept: (() => { try { return JSON.parse(localStorage.getItem('a2m.void.walker.v1')); } catch (_) { return null; } })() }; });
+    const w0 = await until(read, 4000);
+    await P.p.waitForTimeout(2000);
+    const w1 = await read();
+    const moved = !!w0 && !!w1 && Math.abs(w1.x - w0.x) > 40 && Math.abs(w1.x - w0.x) < 200; // about 60 px/s for 2 s, a pause or a turn allowed
+    check('walker: "Let it walk" on the cat card puts a 96 px figure of its painting on the stage floor 24 px above the ask bar (plus its 3 px step; on this phone the bar overlaps the stage, so never behind it) with a shadow and a baseline under it, under the cards, and it has walked on 2 s later; the record is kept in a2m.void.walker.v1 with the picture and the subject',
+      !!w0 && w0.w === 96 && w0.h === 96 && w0.src === PNG && w0.shadow && w1.floor === 24 && w0.under && w1.dockOver > 0 && w1.above >= 24 && w1.above <= 27 && moved && Math.abs(w1.shadowX - w1.x) < 40 && w0.kept && w0.kept.src === PNG && w0.kept.subject === 'cat' && !P.errors.length,
+      JSON.stringify({ w0: w0 && { ...w0, src: w0.src.slice(0, 20), kept: w0.kept && { ...w0.kept, src: w0.kept.src.slice(0, 20) } }, w1: w1 && { x: w1.x, above: w1.above, floor: w1.floor, dockOver: w1.dockOver, shadowX: w1.shadowX }, errors: P.errors }));
+    // a tap: a speech bubble with a line the page counted itself (its skill count, the sites surpassed, what it learned last, its own words about itself); gone after 4 s
+    await until(() => P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.ok)), 3000);
+    await P.p.waitForTimeout(600); // the counts land
+    await P.p.$eval('#stage .walker', (b) => b.click());
+    const skillsN = (await P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.json()))).length;
+    const bubble = await until(() => P.p.$eval('#stage .walker-bubble', (b) => (b.hidden ? '' : b.textContent)).catch(() => ''), 3000);
+    const inside = await P.p.evaluate(() => { const b = document.querySelector('#stage .walker-bubble').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(), w = document.querySelector('#stage .walker').getBoundingClientRect(); return b.left >= s.left && b.right <= s.right && b.bottom <= w.top && b.width > 40; });
+    const m = /^I have ([\d,]+) skills? right now/.exec(bubble || '');
+    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I(?:'ve| haven't) surpassed|^The last thing I learned: .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
+    if (process.env.VOID_SHOTS) await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'walker.png') }).catch(() => {});
+    await P.p.waitForTimeout(4300);
+    const gone = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
+    check('walker: a tap on the figure shows a speech bubble over its head, whole and inside the stage, with a true line the page counted (the skill count is the index\'s length), and it is gone after 4 s', trueLine && inside && gone && !P.errors.length, JSON.stringify({ bubble, inside, skillsN, gone, errors: P.errors }));
+    // the next visit: the figure is back from the record, with its picture; "stop walking" takes it away and forgets it
+    await P.p.reload(); await skillsUp(P.p);
+    const back = await until(read, 8000);
+    await P.ask('stop walking', 800);
+    const after = await read(), kept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    check('walker: after a reload the figure is back on the floor with the same picture (no ask needed); "stop walking" removes it and clears the record',
+      !!back && back.src === PNG && back.above >= 24 && back.above <= 27 && after === null && kept === null && !P.errors.length, JSON.stringify({ back: back && { above: back.above, src: back.src.slice(0, 20) }, after, kept, errors: P.errors }));
+    await P.ctx.close();
+  }
   // a poster OF something (2026-10-25: "make a cyberpunk poster" said "Open or summon a card first"): the Art Forge paints the subject tall (kind 'poster'),
   // the title is set over it in a real font, the finished poster is the card's art, and the print files wait for the painting
   if (want("poster of a theme: make a cyberpunk poster paints a cyberpunk poster, titles it, makes it the card art and offers the print files")) {

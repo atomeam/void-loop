@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 780,
+ "counted": 782,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -10,18 +10,18 @@
    "tests": 6
   },
   {
+   "file": "lib/state.js",
+   "skills": 32,
+   "direct": 4,
+   "dependants": 55,
+   "tests": 4
+  },
+  {
    "file": "lib/ask-text.js",
    "skills": 32,
    "direct": 23,
    "dependants": 34,
    "tests": 2
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 30,
-   "direct": 4,
-   "dependants": 53,
-   "tests": 4
   },
   {
    "file": "lib/field-kit.js",
@@ -45,39 +45,39 @@
    "tests": 1
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 20,
+   "direct": 0,
+   "dependants": 46,
+   "tests": 1
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 20,
+   "direct": 1,
+   "dependants": 46,
+   "tests": 1
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 20,
+   "direct": 0,
+   "dependants": 45,
+   "tests": 4
+  },
+  {
+   "file": "lib/ladder.js",
+   "skills": 20,
+   "direct": 10,
+   "dependants": 37,
+   "tests": 2
+  },
+  {
    "file": "lib/motion-throttle.js",
    "skills": 19,
    "direct": 1,
    "dependants": 20,
    "tests": 1
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 18,
-   "direct": 0,
-   "dependants": 44,
-   "tests": 1
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 18,
-   "direct": 1,
-   "dependants": 44,
-   "tests": 1
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 18,
-   "direct": 0,
-   "dependants": 43,
-   "tests": 4
-  },
-  {
-   "file": "lib/ladder.js",
-   "skills": 18,
-   "direct": 10,
-   "dependants": 35,
-   "tests": 2
   },
   {
    "file": "lib/mind-field-modes.js",
@@ -95,38 +95,52 @@
   },
   {
    "file": "lib/rule-registry.js",
-   "skills": 13,
+   "skills": 15,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
-   "skills": 13,
+   "skills": 15,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 40,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
-   "skills": 13,
+   "skills": 15,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
-   "skills": 13,
+   "skills": 15,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 4
   },
   {
    "file": "lib/reactions.js",
-   "skills": 13,
+   "skills": 15,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 1
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 14,
+   "direct": 0,
+   "dependants": 34,
+   "tests": 2
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 14,
+   "direct": 5,
+   "dependants": 31,
+   "tests": 5
   },
   {
    "file": "lib/sky-math.js",
@@ -136,18 +150,11 @@
    "tests": 1
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 32,
-   "tests": 2
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 12,
-   "direct": 5,
-   "dependants": 29,
-   "tests": 5
+   "file": "lib/better.js",
+   "skills": 10,
+   "direct": 2,
+   "dependants": 27,
+   "tests": 3
   },
   {
    "file": "lib/astro.js",
@@ -155,6 +162,34 @@
    "direct": 9,
    "dependants": 12,
    "tests": 2
+  },
+  {
+   "file": "lib/probe-log.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/spark.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/inbox-health.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 25,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-confidence.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 25,
+   "tests": 1
   },
   {
    "file": "lib/game-kit.js",
@@ -199,13 +234,6 @@
    "tests": 1
   },
   {
-   "file": "lib/better.js",
-   "skills": 8,
-   "direct": 2,
-   "dependants": 25,
-   "tests": 3
-  },
-  {
    "file": "lib/bridges.js",
    "skills": 8,
    "direct": 4,
@@ -245,34 +273,6 @@
    "skills": 8,
    "direct": 7,
    "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/probe-log.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 24,
-   "tests": 1
-  },
-  {
-   "file": "lib/spark.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 24,
-   "tests": 1
-  },
-  {
-   "file": "lib/inbox-health.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-confidence.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 23,
    "tests": 1
   },
   {
@@ -591,6 +591,13 @@
    "tests": 2
   },
   {
+   "file": "lib/tower.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 7
+  },
+  {
    "file": "lib/field-attention.js",
    "skills": 3,
    "direct": 1,
@@ -787,6 +794,13 @@
    "tests": 1
   },
   {
+   "file": "lib/walker.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
@@ -932,13 +946,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/tower.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 7
   },
   {
    "file": "lib/v01d-fixes.js",
@@ -2696,6 +2703,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -2713,7 +2721,8 @@
     "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
-    "skills/status.js"
+    "skills/status.js",
+    "skills/walker.js"
    ]
   },
   "lib/art-source.js": {
@@ -2929,13 +2938,15 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/avatar.js": {
@@ -3000,12 +3011,14 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/book-face.js": {
@@ -3093,6 +3106,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -3104,7 +3118,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/card-deck.js": {
@@ -3280,6 +3295,7 @@
     "lib/tome.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -3292,7 +3308,8 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/chess-replay.js": {
@@ -3465,6 +3482,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
@@ -3476,7 +3494,8 @@
     "skills/own-parts.js",
     "skills/service-health.js",
     "skills/showcase.js",
-    "skills/status.js"
+    "skills/status.js",
+    "skills/walker.js"
    ]
   },
   "lib/council-law.js": {
@@ -4039,6 +4058,7 @@
     "lib/skill-confidence.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -4050,7 +4070,8 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/gumroad.js": {
@@ -4148,12 +4169,14 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/job-draft.js": {
@@ -4210,6 +4233,7 @@
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -4227,7 +4251,8 @@
     "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
-    "skills/status.js"
+    "skills/status.js",
+    "skills/walker.js"
    ]
   },
   "lib/ladder.js": {
@@ -4264,6 +4289,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/games.js",
     "skills/growth-tree.js",
     "skills/guide.js",
@@ -4271,7 +4297,8 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/rebuild-map.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/lap.js": {
@@ -4475,6 +4502,7 @@
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -4491,7 +4519,8 @@
     "skills/rally.js",
     "skills/service-health.js",
     "skills/showcase.js",
-    "skills/status.js"
+    "skills/status.js",
+    "skills/walker.js"
    ]
   },
   "lib/mind-field-modes.js": {
@@ -5040,12 +5069,14 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/product-gap.js": {
@@ -5216,6 +5247,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/coin.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
@@ -5227,7 +5259,8 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/service-health.js",
-    "skills/status.js"
+    "skills/status.js",
+    "skills/walker.js"
    ]
   },
   "lib/reefwatch.js": {
@@ -5383,6 +5416,7 @@
     "lib/skill-confidence.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -5396,7 +5430,8 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/rules-engine.js": {
@@ -5579,12 +5614,14 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/skill-family.js": {
@@ -5689,12 +5726,14 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/speak.js": {
@@ -5956,6 +5995,7 @@
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/arcade.js",
+    "skills/cartoon.js",
     "skills/checkers.js",
     "skills/chess.js",
     "skills/codex.js",
@@ -5980,6 +6020,7 @@
     "skills/snake.js",
     "skills/time-capsule.js",
     "skills/void-breaker.js",
+    "skills/walker.js",
     "skills/whisper-network.js"
    ]
   },
@@ -6319,7 +6360,11 @@
    "imports": [],
    "importedBy": [
     "functions/api/will.js",
-    "skills/tower.js"
+    "skills/tower.js",
+    "skills/walker.js"
+   ],
+   "reachedBy": [
+    "skills/cartoon.js"
    ]
   },
   "lib/translate-langs.js": {
@@ -6425,6 +6470,15 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js"
+   ]
+  },
+  "lib/walker.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/walker.js"
+   ],
+   "reachedBy": [
+    "skills/cartoon.js"
    ]
   },
   "lib/watch.js": {
@@ -6810,7 +6864,8 @@
   },
   "skills/cartoon.js": {
    "imports": [
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "skills/walker.js"
    ],
    "importedBy": []
   },
@@ -7623,7 +7678,8 @@
     "lib/voice.js",
     "skills/growth.js",
     "skills/mini/growthtree.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -7641,6 +7697,7 @@
     "lib/built-detail.js",
     "lib/self-context.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/merges.js",
@@ -7679,11 +7736,13 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/cartoon.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "skills/guard3d.js": {
@@ -9894,6 +9953,16 @@
    ],
    "reachedBy": [
     "skills/technical-context.js"
+   ]
+  },
+  "skills/walker.js": {
+   "imports": [
+    "lib/walker.js",
+    "lib/tower.js",
+    "skills/growth-tree.js"
+   ],
+   "importedBy": [
+    "skills/cartoon.js"
    ]
   },
   "skills/walls.js": {

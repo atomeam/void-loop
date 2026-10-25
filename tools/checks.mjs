@@ -74,6 +74,7 @@ const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slic
 const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)], false, file) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser, file);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
+  ['walker', 'walker.test.mjs'],
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],

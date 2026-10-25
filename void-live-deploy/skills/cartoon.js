@@ -8,6 +8,7 @@
  * Plain shapes ("draw a red square") stay the shape skill's; the drawing canvas ("let me draw") stays the draw skill's.
  */
 import { cleanLower } from '../lib/ask-text.js';
+import { letWalk } from './walker.js'; // "Let it walk": the painting steps off the card and paces the stage floor (skills/walker.js)
 const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 // slapstick lines for the hard subjects the skill began with (a grim subject stays a joke, never gore)
@@ -102,7 +103,15 @@ function mount(th, stageApi) {
   const again = document.createElement('button');
   again.type = 'button'; again.textContent = 'Paint it'; again.hidden = true;
   again.style.cssText = 'margin-top:6px;font:inherit;font-size:12px;border:2px solid #1d1d1d;border-radius:999px;background:#fff;color:#1d1d1d;-webkit-text-fill-color:#1d1d1d;opacity:1;padding:3px 12px;cursor:pointer;font-weight:700';
-  el.append(head, pic, line, status, again);
+  // "Let it walk" (owner, 2026-10-25: "drop him onto a solid floor so he actually walks across a stage"): the picture as painted (or the quick emoji) walks the stage floor
+  const walk = document.createElement('button');
+  walk.type = 'button'; walk.textContent = 'Let it walk'; walk.className = 'cartoon-walk'; walk.title = 'the cartoon steps off the card and walks the stage';
+  walk.style.cssText = again.style.cssText + ';margin-left:6px';
+  walk.addEventListener('pointerdown', (e) => e.stopPropagation()); // a tap on the button is not a drag of the card
+  walk.addEventListener('click', (e) => { e.stopPropagation(); const img = pic.querySelector('img'); letWalk({ src: img ? img.getAttribute('src') || '' : '', emoji: th.emoji || '', subject: th.subject || '', ask: 'let it walk' }, { say: stageApi.say }); });
+  const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center';
+  row.append(again, walk);
+  el.append(head, pic, line, status, row);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   const show = (r) => {

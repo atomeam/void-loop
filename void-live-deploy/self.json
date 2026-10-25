@@ -484,88 +484,96 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T07:03:44Z",
+   "subject": "Handoff: the weather floor at 11 of 12, why its accuracy row still says Looking, and what the next run tries first"
+  },
+  {
+   "at": "2026-10-25T07:02:35Z",
+   "subject": "Tower gate: weather measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:59:11Z",
+   "subject": "Incident: the browser suite failed on 056b4a32 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T06:58:54Z",
+   "subject": "Tower gate: translate: randomtranslator.com,translate: translate.com,translate: systransoft.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:54:50Z",
+   "subject": "Tower gate: translate: translator.eu,translate: onlinedoctranslator.com,translate: translatedict.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:53:15Z",
+   "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:52:22Z",
+   "subject": "Tower gate: translate: tradukka.com,weather,translate: freetranslations.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:51:37Z",
+   "subject": "Verse fixes its magnetize skill: learn to handle \"how do magnets work in motors\""
+  },
+  {
+   "at": "2026-10-25T06:51:00Z",
+   "subject": "The battle has faces: a VS splash and the matchup rows on the tower card and /compare/ (asked by the owner, 2026-10-25)"
+  },
+  {
+   "at": "2026-10-25T06:49:46Z",
+   "subject": "A page that marks itself busy is read by the gate once it is done; /weather/ says so while it fetches"
+  },
+  {
+   "at": "2026-10-25T06:48:12Z",
+   "subject": "The translate lane starts at its smallest sites: six more small translators, tradukka.com first, Google Translate last"
+  },
+  {
+   "at": "2026-10-25T06:43:52Z",
+   "subject": "Incident: the browser suite failed on f5814061 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T06:43:45Z",
+   "subject": "The gate reads an answer once it has settled; three floors get their learned lines"
+  },
+  {
+   "at": "2026-10-25T06:43:31Z",
+   "subject": "Tower gate: weather measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T06:38:26Z",
+   "subject": "The tower gate says what Verse's page showed when an accuracy case is missed"
+  },
+  {
+   "at": "2026-10-25T06:32:20Z",
+   "subject": "The translate page, the translate lane, and the floor kit"
+  },
+  {
+   "at": "2026-10-25T06:31:09Z",
+   "subject": "Spotter: 10 check(s) healed with no revert after ec74e1145b621e108c6c3217f37e37ccba412b72 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-25T06:26:23Z",
+   "subject": "Verse fixes its print-file skill: learn to handle \"how to print a bolt\""
+  },
+  {
    "at": "2026-10-25T06:12:16Z",
    "subject": "Tower gate: translate measured against their live sites"
   },
   {
    "at": "2026-10-25T06:09:09Z",
    "subject": "Incident: the browser suite failed on 747b0851 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T06:05:28Z",
-   "subject": "BASE.md: the estate, reverse-engineered (bindings, limits, cliffs, live inventory)"
-  },
-  {
-   "at": "2026-10-25T06:02:47Z",
-   "subject": "Handoff: the weather floor stands at 9 of 12 after its page and probe; what the next tower run reads first"
-  },
-  {
-   "at": "2026-10-25T06:01:47Z",
-   "subject": "Tower gate: translate measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:01:07Z",
-   "subject": "Tower gate: weather measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:58:03Z",
-   "subject": "Tower gate: translate measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:51:28Z",
-   "subject": "llms.txt lists every tool page, one honest line each, written from the same table (lib/seo.js) by tools/seo-pages.mjs between \"Tool pages\"…"
-  },
-  {
-   "at": "2026-10-25T05:50:07Z",
-   "subject": "Tower gate: calculator,unit converter,password measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:50:00Z",
-   "subject": "Tower gate: translate,assistant,code hosting measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:48:30Z",
-   "subject": "Link previews: the tower pages get their og tags (/conquered/ had none, /compare/ lacked twitter:card and og:url); a test holds every tool…"
-  },
-  {
-   "at": "2026-10-25T05:47:47Z",
-   "subject": "The tower card's link rows stay off a copied card"
-  },
-  {
-   "at": "2026-10-25T05:46:32Z",
-   "subject": "Verse fixes its figure skill: learn to handle \"low poly wolf\""
-  },
-  {
-   "at": "2026-10-25T05:45:52Z",
-   "subject": "The tower gate: a run by hand gets its own concurrency group, so a deploy's run never cancels it"
-  },
-  {
-   "at": "2026-10-25T05:43:27Z",
-   "subject": "Deep links for exact asks: a visible \"Common asks\" row on every tool page whose link takes a setting, the same links the JSON-LD's…"
-  },
-  {
-   "at": "2026-10-25T05:39:20Z",
-   "subject": "Tower gate: translate,random generators,ai models measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:38:14Z",
-   "subject": "Incident: the browser suite failed on c5e4cded (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T05:37:20Z",
-   "subject": "Tower gate: translate,email,search measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:34:30Z",
-   "subject": "Tower gate: weather,video,social measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T05:34:26Z",
-   "subject": "/tools/: the Is it…? page joins the kit"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (tower session, 2026-10-25, 07:05)",
+    "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
+   },
+   {
+    "name": "Claude (tower session, 2026-10-25, 06:55)",
+    "line": "the translate floor: built a /translate/ page (gtx and MyMemory, 99 languages, speech in and out, a vendored on-device reader for photos) in the same hour the main session shipped its own (7c04317: Workers AI, /api/translate, the lane and…"
+   },
    {
     "name": "Claude (tower session, 2026-10-25, 06:05)",
     "line": "the weather floor (weather.gov) got Verse's own /weather/ page (dadffdb: lib/weather.js, Open-Meteo for any place, °F and °C side by side, the next 24 hours, 7 days with today first, sunrise and sunset, the weather service's alerts and…"
@@ -581,14 +589,6 @@
    {
     "name": "Claude (tower session, 2026-10-25)",
     "line": "the password strength floor (howsecureismypassword.net) surpassed in one gate run after its probe: qwerty123 typed into /password-strength/ (never in the address), 5 of 5 against the worked-out truth, crack time and reasons read off the…"
-   },
-   {
-    "name": "Claude (changed-checks helper, 2026-10-25)",
-    "line": "VOID_SKIP_BENCH=1 node tools/checks.mjs --changed is the builder's pre-push check: tools/checks-changed.mjs keeps the 54 structural checks on and runs a test only when its file, an import of it (two levels, or through skills/deps.json) or…"
-   },
-   {
-    "name": "grok-bot (podcast)",
-    "line": "Verse Out Loud, Verse's own weekly podcast: tools/podcast.mjs reads the week from the record, Piper voices it in CI (free: no Workers AI neurons, no key, lib/models.js untouched), /podcast/rss.xml is Apple/Spotify-ready, \"play the…"
    }
   ],
   "ladders": [
