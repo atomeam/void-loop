@@ -5,7 +5,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf } from '../lib/tower.js?v=ladder-47';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-48';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 
 const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^(?:which|what)\s+sites\s+have\s+you\s+(?:beaten|surpassed|passed)$|^(?:the\s+)?surpassed(?:\s+sites)?$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
@@ -19,7 +19,7 @@ const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' })
 // slanted split, an energy bar under each (the aspects it is winning), and under the splash the matchup rows, one per aspect, with the measured
 // numbers, when they were measured and what comes next (owner: "shows the matchup and how aware we are of what is happening").
 const TW_CSS = '<style>.vpage:has(.tw) .vc-art{display:none}.tw{max-width:520px;margin:0 auto}.tw-head{text-align:center;font-weight:700;font-size:17px;margin:2px 0}'
-  + '.tw-score{text-align:center;font-size:13px;opacity:.75;margin-bottom:8px}.tw-stack{max-height:min(48vh,360px);overflow-y:auto;padding:2px}'
+  + '.tw-score{text-align:center;font-size:13px;opacity:.75;margin-bottom:8px}.tw-stack{overflow-y:auto;padding:2px}'
   + '.tw-stack .tower-floor{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 10px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer;overflow-wrap:anywhere}'
   + '.tw-name{font-weight:700}.tw-count{font-size:12px;opacity:.7;margin-left:6px}.tower-floor[data-state=current]{border-color:#c9b6ff;padding:10px 12px}.tower-floor[data-state=current] .tw-name{font-size:16px}'
   + '.tw-aspects{list-style:none;margin:6px 0 0;padding:0;font-size:13px}.tw-aspects li{display:flex;justify-content:space-between;gap:8px;padding:1px 0;border-bottom:1px solid #221e30}.tw-aspects li[data-v=won]{color:#8fe3a8}.tw-aspects li[data-v=lost]{color:#ff8a8a}.tw-aspects li[data-v=open]{opacity:.6}'
@@ -61,7 +61,7 @@ export const metaLine = (f, now = Date.now()) => { const at = lastAt(f);
   return (at ? 'last measured ' + ago(at, now) : f.measured ? 'last measured: time not recorded' : 'not measured yet') + ' · next: ' + (f.lost && f.lost.length ? f.lost[0] + ' (Verse loses on it, so it comes first)' : 'the gate re-measures on the next deploy'); };
 const siteSeed = (f) => hostOf(f.url) || hostOf(f.site) || String(f.site || f.id || '');
 /** the site's fighter at a size, facing Verse. Pure. */
-export const siteFace = (f, size = 56) => faceSvg(siteSeed(f), { size, facing: 'left' });
+export const siteFace = (f, size = 56) => (f && f.icon && /^tower\.icons\/[\w.-]+$/.test(f.icon) ? '<img class="tw-logo" src="/' + f.icon + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:contain;background:#fff;padding:' + Math.round(size / 10) + 'px;box-sizing:border-box">' : faceSvg(siteSeed(f), { size, facing: 'left' }));
 /** the VS splash for the current fight: Verse's mark left, the site's fighter right, names in plain text under them, an energy bar each (Verse's
  *  lit by the aspects it has won or is equal-and-better on, the site's by the aspects Verse still loses, the unmeasured grey). Pure. */
 export function vsHtml(f, esc, { enter = true } = {}) {
@@ -84,13 +84,14 @@ export const miniFloors = (t) => t.floors.map((f) => ({ id: f.id, site: f.site, 
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now() } = {}) {
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
   // the current site's row is the matchup: one line per aspect with the verdict in a word and the measured numbers, then when and what is next
-  const row = (f) => '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">'
+  // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
+  const row = (f) => (f.state === 'beaten' ? '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten">' : '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">')
     + (f.state === 'beaten' ? '<span class="tw-face">' + siteFace(f, 24) + '</span>' : '')
     + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>'
-    + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + '</button>';
+    + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + (f.state === 'beaten' ? '</div>' : '</button>');
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
-  const links = (f) => (f.url || f.page ? '<div class="tw-links" data-share-skip style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
+  const links = (f) => (f.url || f.page ? '<div class="tw-links"' + (f.state === 'beaten' ? '' : ' data-share-skip') + ' style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
     + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '')
     + (f.page ? '<a href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '')
     + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>' : '');
@@ -101,7 +102,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + won.map((f) => row(f) + links(f)).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>'
+    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + (won.length ? '<p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' : '') + won.map((f) => row(f) + links(f)).join('') + '</div>'
     // the 3D tower's host (owner, 2026-10-25: "some things are missing, like a 3d tower"): the card mounts skills/mini/tower.js into it after each draw
  + takeHtml(t, esc)
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
@@ -110,7 +111,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
  *  take on what its learned and absorbed from all the fights so far"): the fight now (its page, what it leads on, what is left, the killshot)
  *  and one line per conquered site from the floor's `learned`. { now, learned: [{ site, text }] }. Pure. */
 export function verseTake(t) {
-  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten' && (f.learned || fatalityOf(f))).reverse(); // a conquest with no lesson written yet still shows, by its killshot
+  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten' && (learnedOf(f) || fatalityOf(f))).reverse(); // every conquest: its written lesson, else the gate's own numbers (learnedOf), else its killshot
   let now = '';
   if (cur) {
     const lead = cur.aspects.filter((a) => !cur.left.includes(a)), open = cur.left.filter((a) => !cur.lost.includes(a));
@@ -119,7 +120,7 @@ export function verseTake(t) {
       + (cur.lost.length ? 'I lose on ' + cur.lost.join(', ') + ', so that comes first. ' : '') + (open.length ? 'Still to prove: ' + open.join(', ') + '.' : '')
       + (fatalityOf(cur) ? ' The edge I am building: ' + fatalityOf(cur) + '.' : '');
   }
-  return { now, learned: won.map((f) => ({ site: f.site, text: f.learned || 'Verse\'s edge: ' + fatalityOf(f) })) };
+  return { now, learned: won.map((f) => ({ site: f.site, text: learnedOf(f) || 'Verse\'s edge: ' + fatalityOf(f) })) };
 }
 const takeHtml = (t, esc) => { const k = verseTake(t); if (!k.now && !k.learned.length) return '';
   return '<div class="tw-take" style="margin-top:8px;font-size:13px;line-height:1.45"><b>Verse\'s take</b>' + (k.now ? '<p style="margin:4px 0">' + esc(k.now) + '</p>' : '')
@@ -146,7 +147,7 @@ export function changes(prev, next) {
   return out;
 }
 const POLL_MS = () => (typeof window !== 'undefined' && window.__towerPollMs) || 30000;
-const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr); };
+const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null); };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -171,6 +172,7 @@ async function run(text, api) {
         .catch(() => { mini = false; host.remove(); });
       (flash || []).forEach((id) => { const b = root.querySelector('[data-id="' + id + '"]'); if (b && b.animate) b.animate([{ background: '#6a3d9a' }, { background: '' }], 1800); });
     };
+    el.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.tower-floor[role=button]')) { e.preventDefault(); e.target.closest('.tower-floor').click(); } });
     el.addEventListener('click', (e) => { const b = e.target.closest('.tower-floor'); if (!b) return; picked = +b.dataset.floor; const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); });
     draw();
     const stop = () => { if (timer) clearInterval(timer); timer = null; if (onVis) document.removeEventListener('visibilitychange', onVis); };

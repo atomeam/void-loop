@@ -302,3 +302,9 @@ test('the time zones probe: Tokyo now worked out from its zone rules, read in 12
   // the calculator's truth is Verse's own answer to "17% of 240" through its page link (2026-10-25: accuracy is judged against the worked-out answer, never the rival)
   assert.equal(probeFor('calculator').ask.verse, '/calculator/?q=17%25%20of%20240'); assert.equal(score('17% of 240 = 40.8', probeFor('calculator').truth).n, 1); assert.equal(score('40.80 or 408', probeFor('calculator').truth).n, 0); assert.ok(probeFor('calculator').facts.length >= 15);
 });
+
+test('a site icon is kept only when it is a small raster image', async () => {
+  const { iconExt } = await import('./tower-gate.mjs');
+  assert.equal(iconExt('image/png'), 'png'); assert.equal(iconExt('image/x-icon; charset=binary'), 'ico'); assert.equal(iconExt('image/vnd.microsoft.icon'), 'ico'); assert.equal(iconExt('image/svg+xml'), 'svg');
+  assert.equal(iconExt('text/html'), ''); assert.equal(iconExt(''), ''); assert.equal(iconExt(null), '');
+});

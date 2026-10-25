@@ -484,6 +484,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T07:22:18Z",
+   "subject": "Incident: the browser suite failed on 022256dd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T07:22:05Z",
+   "subject": "Painted backdrops behind the stage: one pre-rendered scene per ask, the cards' shadows on it, the walker on its floor"
+  },
+  {
    "at": "2026-10-25T07:21:35Z",
    "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com measured against their live sites"
   },
@@ -554,14 +562,6 @@
   {
    "at": "2026-10-25T06:43:52Z",
    "subject": "Incident: the browser suite failed on f5814061 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T06:43:45Z",
-   "subject": "The gate reads an answer once it has settled; three floors get their learned lines"
-  },
-  {
-   "at": "2026-10-25T06:43:31Z",
-   "subject": "Tower gate: weather measured against their live sites"
   }
  ],
  "builders": {

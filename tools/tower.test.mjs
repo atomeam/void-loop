@@ -120,3 +120,30 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
   const m = matchupHtml(cur, esc, { now }); assert.ok(m.startsWith('<style>') && m.includes('class="tw-vs') && m.includes('3 of 3 vs 2 of 3') && m.includes('last measured 3 hours ago'));
   assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
 });
+
+test('every surpassed site is on the card, visible and copyable, with a taught-me line from the gate\'s numbers when none was written', async () => {
+  const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
+  const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
+  const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
+  const lane = FLOORS.find((f) => f.lane === 'translate'), aspects = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'].concat(lane.extra);
+  ev[lane.id] = Object.fromEntries(aspects.map((a) => [a, good(a)]));
+  ev[lane.id].speed = { verdict: 'equal-and-better', verse: 101, best: 712, evidence: 'Verse 101 ms vs 712 ms' };
+  ev[lane.id].completeness = { verdict: 'better', verse: 10, best: 3, of: 10, evidence: 'Verse 10 of 10 things a full answer shows vs 3 of 10 (Verse lacks: none; site lacks: listen, speak, camera)' };
+  ev[lane.id]['camera text'] = { verdict: 'better', verse: 2, best: 0, evidence: 'Verse 2 of 2 shown vs 0 of 2 (Verse lacks: none; site lacks: camera)' };
+  const t = tower([], ev), won = t.floors.find((f) => f.id === lane.id);
+  assert.equal(won.state, 'beaten');
+  const line = learnedOf(won);
+  assert.match(line, /^beaten on \d+ of \d+ aspects: 101 ms to load against 712 ms; 10 of 10 things a full answer shows against 3 \(the site lacked listen, speak, camera\); the site had no camera text$/);
+  assert.equal(learnedOf({ learned: 'written by hand', ev: won.ev }), 'written by hand'); assert.equal(learnedOf({ ev: {} }), '');
+  assert.ok(verseTake(t).learned.some((x) => x.site === won.site && x.text === line));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const html = towerHtml(t, esc);
+  const rowAt = html.indexOf('<div class="tower-floor" role="button"'), rowEnd = html.indexOf('</div>', rowAt), link = html.indexOf('<div class="tw-links"', rowEnd);
+  assert.ok(rowAt > 0 && html.slice(rowAt, rowEnd).includes(esc(won.site)), 'a surpassed site is a copyable row, not a button');
+  const linkTag = html.slice(link, html.indexOf('>', link)); assert.ok(!/data-share-skip/.test(linkTag), 'its links copy with the card'); assert.ok(html.slice(link).includes('/compare/?floor='));
+  assert.ok(html.includes('<b>Surpassed (1)</b>')); assert.ok(!/max-height:min\(48vh/.test(html), 'no scroll cap hides the list');
+  // the site's own icon when the gate kept one; the drawn fighter otherwise
+  const { siteFace } = await import('../void-live-deploy/skills/tower.js');
+  assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /^<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /^<svg/);
+  assert.equal(tower([], ev, null, { [won.site]: 'tower.icons/x.png' }).floors.find((f) => f.id === lane.id).icon, 'tower.icons/x.png');
+});

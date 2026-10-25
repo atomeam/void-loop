@@ -17,7 +17,7 @@
 //                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, aspectsOf, tower } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, aspectsOf, tower , hostOf } from '../void-live-deploy/lib/tower.js';
 import { probeFor, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -150,7 +150,8 @@ export async function measure(browser, url, tag, ask, probe) {
         // the site as the gate saw it, published beside Verse's page on /compare/ (owner, 2026-10-25: every site refuses to be framed): one small
         // JPEG a floor at phone width, written at most once a day so the history stays light; Verse's own page is live there and needs none
         if (/-site$/.test(tag)) { try { const dir = path.join(root, 'void-live-deploy', 'tower.shots'), file = path.join(dir, tag.replace(/-site$/, '') + '.jpg');
-          const fresh = fs.existsSync(file) && Date.now() - fs.statSync(file).mtimeMs < 86400000; if (!fresh) { fs.mkdirSync(dir, { recursive: true }); await p.screenshot({ path: file, type: 'jpeg', quality: 55 }); } } catch (_) {} }
+          const fresh = fs.existsSync(file) && Date.now() - fs.statSync(file).mtimeMs < 86400000; if (!fresh) { fs.mkdirSync(dir, { recursive: true }); await p.screenshot({ path: file, type: 'jpeg', quality: 55 }); } } catch (_) {}
+          out.icon = await iconOf(p).catch(() => null); }
         if (probe && probe.motion && Object.keys(probe.motion).length) out.motion = await motionOf(p).catch(() => null);
         // offline: the same page reloaded with the network cut; it counts when it still shows itself (some words, not the browser's error page)
         // as for a returning visitor: a page that installs a service worker gets up to 5 s for it to be ready (the same wait for both sites)
@@ -323,6 +324,20 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   return out;
 }
 
+/** the file extension for an icon's content type, '' for anything that is not a small web image. Pure. */
+export const iconExt = (type) => { const t = String(type || '').toLowerCase().split(';')[0].trim(); return ({ 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico', 'image/avif': 'avif' })[t] || ''; };
+/** the site's own icon (owner, 2026-10-25: "should be the sites logos not whatever this is"): the largest icon the page links, else /favicon.ico,
+ *  fetched once by the gate from the page's own origin; { ext, bytes } or null when the site has none or it is not a small image (under 80 KB). */
+async function iconOf(p) {
+  const href = await p.evaluate(() => { const n = (l) => { const m = String(l.getAttribute('sizes') || '').match(/(\d+)x/); return m ? +m[1] : (/apple-touch/.test(l.rel) ? 180 : 16); };
+    const ls = [...document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"]')].filter((l) => l.href && !/\.svg(?:$|\?)/i.test(l.href)).sort((a, b) => n(b) - n(a));
+    return (ls[0] && ls[0].href) || new URL('/favicon.ico', location.href).href; }).catch(() => null);
+  if (!href) return null;
+  const r = await p.request.get(href, { timeout: 8000, maxRedirects: 3 }).catch(() => null); if (!r || !r.ok()) return null;
+  const ext = iconExt(r.headers()['content-type']); if (!ext || ext === 'svg') return null;
+  const bytes = await r.body().catch(() => null); if (!bytes || bytes.length < 60 || bytes.length > 80000) return null;
+  return { ext, bytes };
+}
 /** one floor measured against its live site in its own browser, its rows written into data.floors[f.id] (the stored rows are read for `was`) */
 const FLOOR_MS = Number(process.env.TOWER_FLOOR_MS) || 6 * 60000;
 async function measureFloor(f, data) {
@@ -332,6 +347,8 @@ async function measureFloor(f, data) {
   // a floor with Verse's own page for the job (/is-it/christmas, /flip/) is measured there, as a person would open it; others through the ask
   const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = probe && probe.site ? probe.site : f.url;
   const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe);
+  // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
+  if (s && s.icon) { try { const host = hostOf(f.url) || hostOf(f.site), dir = path.join(root, 'void-live-deploy', 'tower.icons'), name = host + '.' + s.icon.ext; fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, name), s.icon.bytes); data.icons = { ...(data.icons || {}), [host]: 'tower.icons/' + name }; } catch (_) {} }
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is
   // scored on those answers instead of the pages above; an answer written into a box (a converter's output field) counts as shown
   let shown = ''; // what Verse's page showed for the question, for the evidence when a case is missed

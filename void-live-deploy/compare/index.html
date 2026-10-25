@@ -48,7 +48,7 @@
     $('vo').href = vp; $('vf').src = vp; $('sn').textContent = f.site; $('so').href = site;
     // the two avatars over the panes (owner, 2026-10-25: "each site and verse should have an avatar face for the battle"): Verse's mark and the site's
     // drawn fighter (lib/avatar.js, never its logo); the site's host is the seed, so it is the same face as on the tower card
-    $('vn').innerHTML = verseFace({ size: 26 }) + 'Verse'; $('sn').innerHTML = faceSvg(f.site, { size: 26, facing: 'left' }) + esc(f.site);
+    $('vn').innerHTML = verseFace({ size: 26 }) + 'Verse'; $('sn').innerHTML = (fl.icon ? '<img src="/' + fl.icon + '" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle">' : faceSvg(f.site, { size: 26, facing: 'left' })) + esc(f.site);
     // sites refuse to be framed (X-Frame-Options, every one measured so far), so the site is shown as the tower gate saw it: its screenshot at phone
     // width from the last measurement (tower.shots/<id>.jpg, written by tools/tower-gate.mjs), dated; the site itself opens in a window beside this one
     const slug = f.id.replace(/\W+/g, '-'), img = $('si'); img.src = '/tower.shots/' + slug + '.jpg'; img.alt = f.site + ' as the tower gate saw it';
@@ -57,7 +57,7 @@
     const beside = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };
     $('beside').onclick = beside;
     // where each aspect stands, from the gate's last verdicts
-    fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
+    fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e, null, e.icons || null); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
       $('st').innerHTML = (fl.beaten ? '<b>surpassed</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : '');
       // the matchup (skills/tower.js matchupHtml, the same as the tower card): the VS splash, one row per aspect with the gate's numbers, when it was measured, what is next
       $('vsum').textContent = 'The matchup: Verse vs ' + f.site + ' · ' + fl.n + ' of ' + fl.m + ' aspects ahead'; $('vsin').innerHTML = matchupHtml(fl, esc); $('vs').hidden = false; }).catch(() => {});

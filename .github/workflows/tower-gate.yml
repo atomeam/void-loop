@@ -76,7 +76,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add void-live-deploy/tower.evidence.json
-          git add void-live-deploy/tower.shots 2>/dev/null || true # each site as the gate saw it, for /compare/
+          git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
           # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
@@ -143,7 +143,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add void-live-deploy/tower.evidence.json
-          git add void-live-deploy/tower.shots 2>/dev/null || true # each site as the gate saw it, for /compare/
+          git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Tower gate: every floor measured against its live site ($(ls slices/*.json | wc -l) slices)"
           # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again

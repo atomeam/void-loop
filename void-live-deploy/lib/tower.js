@@ -1,5 +1,7 @@
 // Real sites (owner, 2026-10-22: "let's tackle real sites"): each floor is one named, real site, named in plain text only as a comparison
-// (no logos, brand art or styling, nothing implying affiliation; Verse's own skills keep their own names). The order here is provisional;
+// (nothing implying affiliation; Verse's own skills keep their own names). A site's own icon stands beside its name on the card (owner,
+// 2026-10-25: "should be the sites logos not whatever this is"): the gate keeps each site's favicon beside its screenshot (tower.icons/), so
+// a visitor's browser asks no third party for it; a site with none keeps its drawn fighter (lib/avatar.js). The order here is provisional;
 // once head-to-head checks exist, floors sort easiest to hardest by the measured gap (aspects still lost). Never a claimed win without
 // verified evidence.
 // The tower (owner, 2026-10-22): "a-to-mind should be the only website you need", shown as a fighting-game ladder. Each floor is a site
@@ -102,6 +104,20 @@ export const FLOORS = withLanes(HAND_FLOORS);
 // answer, so the site becomes obsolete rather than equal. Only a thing that is built and live is written here; the card shows it as a plain line.
 /** a floor's fatality, which is also called its killshot (owner, 2026-10-24: "killshot= fatality", then "killshot can be kept too"): either field names it. Pure. */
 export const fatalityOf = (f) => String((f && (f.fatality || f.killshot)) || '');
+/** what a beaten site taught Verse, in one line: the hand-written `learned` when a builder wrote one, else the gate's own numbers for the
+ *  fight (owner, 2026-10-25: every surpassed site on "What each site taught me"): the load time against the site's, the things a full answer
+ *  shows against the site's and what the site lacked, and the site's own aspects it had none of. '' when nothing is measured. Pure. */
+export function learnedOf(f) {
+  if (f && f.learned) return String(f.learned);
+  const ev = (f && f.ev) || {}, bits = [];
+  const sp = ev.speed; if (sp && Number.isFinite(+sp.verse) && Number.isFinite(+sp.best) && +sp.best > 0) bits.push(sp.verse + ' ms to load against ' + sp.best + ' ms');
+  const cp = ev.completeness; if (cp && Number.isFinite(+cp.verse) && cp.of) { const lack = String(cp.evidence || '').match(/site lacks: ([^)]+)\)/); bits.push(cp.verse + ' of ' + cp.of + ' things a full answer shows' + (Number.isFinite(+cp.best) && +cp.best !== +cp.verse ? ' against ' + cp.best : '') + (lack && lack[1] !== 'none' ? ' (the site lacked ' + lack[1] + ')' : '')); }
+  const none = (f.extra || []).filter((a) => ev[a] && ev[a].verdict === 'better' && /site lacks: (?!none)/.test(String(ev[a].evidence || '')) && +ev[a].best === 0);
+  if (none.length) bits.push('the site had no ' + none.join(', '));
+  if (!bits.length) return '';
+  const won = f.m ? 'beaten on ' + f.n + ' of ' + f.m + ' aspects: ' : '';
+  return won + bits.join('; ');
+}
 export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || []);
 // a floor's checklist plus anything its evidence names beyond it: a site that gains a feature Verse lacks (tools/tower-verdict.mjs --lost)
 // adds that aspect, and the floor is not beaten until Verse has it too
@@ -143,14 +159,14 @@ export function frontierOf(frontier, floors = FLOORS) {
 // floors\" from \"frontier floors\"—treat all unbeaten sites as one queue sorted easiest-first"): FLOORS and every frontier site are one queue,
 // sorted by how many aspects Verse still has to beat, then by the order they came (FLOORS, then the scan's hardness). `total` is the sites found
 // so far, never a ceiling: it grows as the scan grows.
-export function tower(onlySite = [], evidence = {}, frontier = null) {
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; return { ...f, order: i, ...g, ev, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); return { ...f, order: i, ...g, ev, icon, coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
