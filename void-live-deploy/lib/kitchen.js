@@ -161,10 +161,23 @@ export function wordsFor(lang) {
     perServing: 'Pro Portion (geschätzt)', kcal: 'kcal', protein: 'Eiweiß', fat: 'Fett', carbs: 'Kohlenhydrate', fromN: (n, m) => 'aus ' + n + ' von ' + m + ' Zutaten', save: 'Speichern', savedOn: 'Gespeichert', noColl: 'Keine Sammlung', newColl: 'Neue Sammlung …', collName: 'Name der Sammlung',
     toList: 'Auf die Einkaufsliste', added: 'Auf der Einkaufsliste', copyAll: 'Liste kopieren', clearDone: 'Abgehakte entfernen', clearAll: 'Alles leeren', listEmpty: 'Die Liste ist leer: „Auf die Einkaufsliste“ bei einem Rezept füllt sie.', items: 'Dinge',
     savedEmpty: 'Noch nichts gespeichert: „Speichern“ bei einem Rezept legt es hier ab.', all: 'Alle', rating: 'Deine Bewertung', stars: (n) => n + (n === 1 ? ' Stern' : ' Sterne'), notes: 'Deine Notizen', notesPh: 'Was du nächstes Mal anders machst', fitNone: 'Keines passt zu', showing: 'Nur Rezepte', remove: 'Entfernen', unchecked: 'nicht geprüft',
+    plan: 'Essensplan', planFor: 'Für einen Tag planen …', today: 'Heute', tomorrow: 'Morgen', planned: 'Geplant', weekToList: 'Die Woche auf die Einkaufsliste', weekToCal: 'Die Woche in meinen Kalender', planEmpty: 'Nichts geplant: „Für einen Tag planen“ bei einem Rezept legt es hier ab.', onCal: 'Im Kalender', meal: 'Essen',
   } : {
     saved: 'Saved', list: 'Shopping list', diets: 'Diets', dietsH: 'Diet and allergies', withoutL: 'Without (e.g. onion, nuts)', vegetarian: 'Vegetarian', vegan: 'Vegan', 'gluten-free': 'Gluten-free', 'dairy-free': 'Dairy-free', 'egg-free': 'Egg-free', 'nut-free': 'Nut-free',
     perServing: 'Per serving (estimate)', kcal: 'kcal', protein: 'protein', fat: 'fat', carbs: 'carbs', fromN: (n, m) => 'from ' + n + ' of ' + m + ' ingredients', save: 'Save', savedOn: 'Saved', noColl: 'No collection', newColl: 'New collection…', collName: 'Collection name',
     toList: 'Add to shopping list', added: 'On the shopping list', copyAll: 'Copy list', clearDone: 'Clear ticked', clearAll: 'Clear all', listEmpty: 'The list is empty: "Add to shopping list" on a recipe fills it.', items: 'items',
     savedEmpty: 'Nothing saved yet: "Save" on a recipe keeps it here.', all: 'All', rating: 'Your rating', stars: (n) => n + (n === 1 ? ' star' : ' stars'), notes: 'Your notes', notesPh: 'What you would change next time', fitNone: 'None fits', showing: 'Only recipes', remove: 'Remove', unchecked: 'not checked',
+    plan: 'Meal plan', planFor: 'Plan for a day…', today: 'Today', tomorrow: 'Tomorrow', planned: 'Planned', weekToList: 'Add the week to the shopping list', weekToCal: 'Put the week on my calendar', planEmpty: 'Nothing planned: "Plan for a day" on a recipe puts it here.', onCal: 'On your calendar', meal: 'Meal',
   };
+}
+
+/** the next `n` days from `now` as { key: 'YYYY-MM-DD', date }. Pure. */
+export function nextDays(now = new Date(), n = 7) {
+  const p = (x) => String(x).padStart(2, '0');
+  return Array.from({ length: n }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i); return { key: d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()), date: d }; });
+}
+/** the plan with a recipe put on a day (one recipe once a day), days before `today` dropped. Pure. */
+export function withPlanned(plan, day, recipe, servings, today = '') {
+  const keep = (Array.isArray(plan) ? plan : []).filter((x) => x && (!today || x.day >= today) && !(x.day === day && x.id === recipe.id));
+  return [...keep, { day, id: recipe.id, name: recipe.name, recipe, servings: Math.max(1, +servings || recipe.servings || 1) }].sort((a, b) => a.day.localeCompare(b.day)).slice(0, 200);
 }

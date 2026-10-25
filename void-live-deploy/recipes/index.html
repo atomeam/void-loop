@@ -115,7 +115,13 @@
     <button type="button" id="savedBtn" aria-expanded="false" aria-controls="savedPane">Saved</button>
     <button type="button" id="listBtn" aria-expanded="false" aria-controls="listPane">Shopping list</button>
     <button type="button" id="filtBtn" aria-expanded="false" aria-controls="filt">Diets</button>
+    <button type="button" id="planBtn" aria-expanded="false" aria-controls="planPane">Meal plan</button>
   </div>
+  <section class="pane" id="planPane" hidden aria-labelledby="planH" style="margin-top:8px;min-height:0">
+    <h2 id="planH" style="margin:0 0 4px">Meal plan</h2>
+    <ul class="list" id="planList"></ul>
+    <div class="row"><button type="button" id="weekList">Add the week to the shopping list</button><button type="button" id="weekCal">Put the week on my calendar</button></div>
+  </section>
   <section class="pane" id="filt" hidden aria-labelledby="filtH" style="margin-top:8px;min-height:0">
     <h2 id="filtH" style="margin:0 0 4px">Diet and allergies</h2>
     <div class="checks" id="dietBox"></div>
@@ -163,6 +169,7 @@
         <button type="button" id="saveBtn" aria-pressed="false">Save</button>
         <label class="vh" for="coll" id="collL">Collection</label><select class="box" id="coll" hidden></select>
         <button type="button" id="toList">Add to shopping list</button>
+        <label class="vh" for="planDay" id="planDayL">Plan for a day</label><select class="box" id="planDay"></select>
       </div>
       <div class="row" style="margin-top:10px"><span id="rateL" style="font-size:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" aria-labelledby="rateL"></span></div>
       <label class="vh" for="myNote" id="myNoteL">Your notes</label><textarea class="box" id="myNote" maxlength="2000" placeholder="Your notes" style="margin-top:6px"></textarea>
@@ -209,7 +216,7 @@
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, toList: KW.toList, rateL: KW.rating, myNoteL: KW.notes };
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
       if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
@@ -224,7 +231,7 @@
     try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
     if (!Array.isArray(store.mine)) store.mine = [];
     // saved recipes in collections, the shopping list, your stars and notes, the diet filters: all on this device (lib/kitchen.js)
-    if (!Array.isArray(store.saved)) store.saved = []; if (!Array.isArray(store.shop)) store.shop = []; if (!store.notes || typeof store.notes !== 'object') store.notes = {};
+    if (!Array.isArray(store.saved)) store.saved = []; if (!Array.isArray(store.plan)) store.plan = []; if (!Array.isArray(store.shop)) store.shop = []; if (!store.notes || typeof store.notes !== 'object') store.notes = {};
     if (!store.filt || typeof store.filt !== 'object') store.filt = { diets: [], without: '' }; if (!Array.isArray(store.filt.diets)) store.filt.diets = []; // recipes saved by chat on the stage (skills/recipes-fill.js): found by name beside the built-in ones
     const pool = () => store.mine.filter((x) => x && x.recipe).map((x) => x.recipe).concat(R.BUILT_IN);
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
@@ -364,7 +371,25 @@
       const n = store.notes[r.id] || {}, st = $('stars'); st.replaceChildren();
       for (let i = 1; i <= 5; i++) { const b = el('button', n.stars >= i ? 'on' : '', n.stars >= i ? '★' : '☆'); b.type = 'button'; b.setAttribute('aria-label', KW.stars(i)); b.setAttribute('aria-pressed', String(n.stars === i)); b.addEventListener('click', () => { const cur = store.notes[r.id] || {}; store.notes[r.id] = { ...cur, stars: cur.stars === i ? 0 : i, at: Date.now() }; keep(); drawMine(r); }); st.append(b); }
       $('myNote').value = n.text || '';
+      // plan it for one of the next 7 days
+      const pd = $('planDay'); pd.replaceChildren(el('option', '', KW.planFor)); pd.firstChild.value = '';
+      for (const [i, d] of K.nextDays(new Date(), 7).entries()) { const o = el('option', '', (i === 0 ? KW.today : i === 1 ? KW.tomorrow : d.date.toLocaleDateString(navigator.language || 'en', { weekday: 'long' })) + (store.plan.some((x) => x.day === d.key && x.id === r.id) ? ' ✓' : '')); o.value = d.key; pd.append(o); }
     }
+    $('planDay').addEventListener('change', () => { const r = state.recipe, day = $('planDay').value; if (!r || !day) return; store.plan = K.withPlanned(store.plan, day, r, state.servings, K.nextDays()[0].key); keep(); drawMine(r); say(KW.planned + ': ' + r.name); if (!$('planPane').hidden) drawPlan(); });
+    function drawPlan() {
+      const ul = $('planList'); ul.replaceChildren(); const days = K.nextDays(new Date(), 7); store.plan = store.plan.filter((x) => x.day >= days[0].key);
+      if (!store.plan.length) ul.append(el('li', 'empty', KW.planEmpty));
+      for (const [i, d] of days.entries()) { const on = store.plan.filter((x) => x.day === d.key); if (!on.length) continue; ul.append(el('li', 'from', (i === 0 ? KW.today : i === 1 ? KW.tomorrow : d.date.toLocaleDateString(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'short' }))));
+        for (const x of on) { const li = el('li'), a = el('a'), del = el('button', '', '×'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = x.id.startsWith('mealdb-') ? x.id.slice(7) : ''; state.q = state.id ? '' : x.name; state.i = ''; open(x.recipe); $('panes').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+          del.type = 'button'; del.setAttribute('aria-label', KW.remove + ': ' + x.name); del.addEventListener('click', () => { store.plan = store.plan.filter((y) => y !== x); keep(); drawPlan(); }); li.append(a, el('small', '', x.servings + ' ' + W.servings.toLowerCase()), del); ul.append(li); } }
+      $('weekList').disabled = $('weekCal').disabled = !store.plan.length;
+    }
+    // the week's recipes into the shopping list, each at its planned servings and in your units
+    $('weekList').addEventListener('click', () => { for (const x of store.plan) { const f = x.servings / (x.recipe.servings || 1), lines = x.recipe.ingredients.map((s2) => { const t = R.scale(s2, f); return state.units === 'metric' ? R.swapUnits(t, 'metric') : R.swapUnits(t, 'us'); }); store.shop = K.withLines(store.shop, x.name + ' (' + x.servings + ')', lines); } keep(); toast($('weekList'), KW.added); if (!$('listPane').hidden) drawShop(); });
+    // and onto the Calendar page's own calendar (lib/agenda.js: the one store the calendar keeps), an all-day "Meal: <recipe>" a day, once
+    $('weekCal').addEventListener('click', async () => { const [A, CL] = await Promise.all([import('/lib/agenda.js'), import('/lib/calendar.js')]); let evs = A.events();
+      for (const x of store.plan) { const title = KW.meal + ': ' + x.name; if (evs.some((e) => e.title === title && e.start === x.day)) continue; evs = CL.withEvent(evs, { title, start: x.day, end: x.day, allDay: true, notes: location.origin + linkTo(x.recipe) }); }
+      A.write(evs); toast($('weekCal'), KW.onCal); });
     $('saveBtn').addEventListener('click', () => { const r = state.recipe; if (!r) return; store.saved = savedOf(r) ? store.saved.filter((x) => x.id !== r.id) : [{ id: r.id, name: r.name, recipe: r, coll: '', at: Date.now() }, ...store.saved].slice(0, 500); keep(); drawMine(r); if (!$('savedPane').hidden) drawSaved(); });
     $('coll').addEventListener('change', () => { const r = state.recipe, sv = r && savedOf(r); if (!sv) return; let c = $('coll').value; if (c === '__new') { c = (prompt(KW.collName) || '').trim().slice(0, 40); } sv.coll = c; keep(); drawMine(r); if (!$('savedPane').hidden) drawSaved(); });
     $('myNote').addEventListener('input', () => { const r = state.recipe; if (!r) return; store.notes[r.id] = { ...(store.notes[r.id] || {}), text: $('myNote').value.slice(0, 2000), at: Date.now() }; keep(); });
@@ -393,7 +418,7 @@
     $('shopCopy').addEventListener('click', () => copy($('shopCopy'), K.listText(store.shop)));
     $('shopDone').addEventListener('click', () => { store.shop = store.shop.filter((x) => !x.done); keep(); drawShop(); });
     $('shopAll').addEventListener('click', () => { if (store.shop.length && !confirm(KW.clearAll + '?')) return; store.shop = []; keep(); drawShop(); });
-    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets);
+    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan);
 
     // step mode: one step in large type, Previous and Next (the arrow keys too), the screen kept awake, every "for 10 minutes" a countdown to tap
     let lock = null, timer = null, tLeft = 0, tEnd = 0;

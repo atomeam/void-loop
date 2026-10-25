@@ -129,8 +129,9 @@
      "name": "Meal planning",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Plan for a day on a recipe (#planDay), a Meal plan pane for the next 7 days (#planPane); the week goes on the shopping list at its servings and onto the Calendar page as all-day meals (lib/kitchen.js nextDays, withPlanned)",
+     "shows": "Meal plan"
     }
    ]
   },
@@ -176,8 +177,8 @@
      "name": "Meal planner with calendar and cooking reminders",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a 7-day meal plan that goes onto the Calendar page; no cooking reminders"
     },
     {
      "name": "Guided recipes with video and timers",
@@ -493,8 +494,8 @@
      "name": "Meal plans",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own 7-day meal plan; no ready-made plans"
     },
     {
      "name": "Shopping list tool",
@@ -713,8 +714,8 @@
      "name": "Free weekly meal plan with shopping list",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own week planned and sent to the shopping list in one tap; no ready-made plan"
     },
     {
      "name": "Diet and appliance tags (air fryer, keto, gluten-free)",
@@ -814,8 +815,8 @@
      "name": "Weekly meal plans (Budget Bytes+)",
      "detail": "",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own weekly plan, free; no ready-made plans"
     },
     {
      "name": "Step photos",
@@ -889,7 +890,6 @@
  "union_gaps": [
   "Send the shopping list to a grocery cart (the kept list across recipes is built, 2026-10-25): yummly.com, allrecipes.com, tasty.co, bbcgoodfood.com, epicurious.com, skinnytaste.com",
   "Public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
-  "Meal planner: yummly.com (paid), allrecipes.com, bbcgoodfood.com, skinnytaste.com, budgetbytes.com (paid)",
   "Browse by category, cuisine, time, occasion: allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
   "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
   "Cost per serving: budgetbytes.com",

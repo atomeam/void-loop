@@ -34,3 +34,9 @@ test('the shopping list: lines from two recipes, one line once per recipe, the t
   assert.equal(l.length, 3); l[1].done = true;
   assert.equal(K.listText(l), 'Pancakes\n☐ 2 eggs\n\nOmelette\n☐ 3 eggs');
 });
+test('the meal plan: the next 7 days; a recipe once a day, past days dropped, kept in day order', () => {
+  const days = K.nextDays(new Date(2026, 9, 30), 7); assert.equal(days.length, 7); assert.equal(days[0].key, '2026-10-30'); assert.equal(days[2].key, '2026-11-01');
+  let plan = K.withPlanned([{ day: '2026-10-20', id: 'old', name: 'Old', recipe: by('rice') }], '2026-10-31', by('omelette'), 2, '2026-10-30');
+  plan = K.withPlanned(plan, '2026-10-30', by('pancakes'), 4, '2026-10-30'); plan = K.withPlanned(plan, '2026-10-30', by('pancakes'), 8, '2026-10-30');
+  assert.deepEqual(plan.map((x) => x.day + ':' + x.id + ':' + x.servings), ['2026-10-30:pancakes:8', '2026-10-31:omelette:2']);
+});
