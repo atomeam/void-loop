@@ -43,7 +43,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'password', 'random number', 'random user', 'stopwatch', 'time zones', 'unit converter', 'wheel', 'word count']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'encoder', 'gradient', 'password', 'password strength', 'random number', 'random user', 'stopwatch', 'time zones', 'unit converter', 'wheel', 'word count']);
   // the unit converter's own aspects: how many of unitconverters.net's kinds a page names, and whether it converts both ways
   const breadth = probeFor('unit converter').parts['unit breadth'], ways = probeFor('unit converter').parts['both directions']; assert.equal(breadth.length, 21); assert.equal(ways.length, 2);
   assert.equal(score('Length Temperature Area Volume Weight Time', breadth).n, 6, "unitconverters.net's common six"); assert.deepEqual(score('Swap the two units. From °C to °F, the formula', ways).has, ['swap', 'from and to']);
@@ -165,6 +165,55 @@ test('an answer that belongs in a box: a box that never fills is not measured, a
   } finally { await b.close(); server.close(); }
 });
 
+test('Verse\'s own /password-strength/ answers the password strength floor: qwerty123 typed into its box (never its address) scores the whole truth and its asked parts, and the page shows every fact and the leak check at load', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const root = new URL('../void-live-deploy/', import.meta.url);
+  const server = http.createServer((q, r) => {
+    const u = q.url.split('?')[0], file = new URL('.' + (u.endsWith('/') ? u + 'index.html' : u), root);
+    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
+  }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, p = probeFor('password strength');
+  try {
+    assert.equal(p.ask.verseType, 'qwerty123'); assert.ok(!p.ask.verse.includes('qwerty'), 'the password is never in the address');
+    const typed = await answer(b, at(p.ask.verse), p.ask.verseType, false, false);
+    assert.ok(typed && !typed.includes('qwerty123'), 'what was typed is taken out of the answer');
+    const truth = score(typed, p.truth); assert.equal(truth.n, 5, 'the truth: ' + truth.missing.join(', '));
+    for (const [a, items] of Object.entries(p.askParts)) { const s = score(typed, items); assert.equal(s.n, s.of, a + ': ' + s.missing.join(', ')); }
+    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/password-strength/'), { waitUntil: 'load' });
+    const text = await pg.evaluate(() => document.body.innerText); await ctx.close();
+    const facts = score(text, p.facts); assert.equal(facts.n, facts.of, 'facts at load: ' + facts.missing.join(', '));
+    assert.equal(score(text, p.parts['leak check']).n, 1, 'a leak check offered at load');
+  } finally { await b.close(); server.close(); }
+});
+test('Verse\'s own /resize-image/ answers the photo resizer floor: the gate puts in its one-pixel PNG with the size in the link and reads 276 by 197 px under 50 KB, a quality, a PDF; the page shows every fact at load', async (t) => {
+  const http = await import('node:http'), fsm = await import('node:fs');
+  const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
+  if (!exe) return t.skip('no browser here');
+  const { chromium } = await import('playwright-core'), { answer, PIXEL } = await import('./tower-gate.mjs'), { probeFor, score } = await import('./tower-probes.mjs');
+  const root = new URL('../void-live-deploy/', import.meta.url);
+  const server = http.createServer((q, r) => {
+    const u = q.url.split('?')[0], file = new URL('.' + (u.endsWith('/') ? u + 'index.html' : u), root);
+    if (!fsm.existsSync(file)) { r.writeHead(404); return r.end(); }
+    r.writeHead(200, { 'content-type': /\.js$/.test(file.pathname) ? 'text/javascript' : 'text/html' }); r.end(fsm.readFileSync(file));
+  }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const b = await chromium.launch({ executablePath: exe }), at = (u) => 'http://127.0.0.1:' + server.address().port + u, p = probeFor('photo resizer');
+  try {
+    assert.ok(p.ask.verseFile);
+    const got = await answer(b, at(p.ask.verse), null, false, false, 0, 0, PIXEL);
+    const truth = score(got, p.truth); assert.equal(truth.n, 3, 'the truth: ' + truth.missing.join(', ') + ' in ' + JSON.stringify(got));
+    for (const [a, items] of Object.entries(p.askParts)) { const s = score(got, items); assert.equal(s.n, s.of, a + ': ' + s.missing.join(', ')); }
+    assert.equal(await answer(b, at('/password-strength/'), null, false, false, 0, 0, PIXEL), null, 'a page with no file box is not measured');
+    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/resize-image/'), { waitUntil: 'load' });
+    const text = await pg.evaluate(() => document.body.innerText); await ctx.close();
+    const facts = score(text, p.facts); assert.equal(facts.n, facts.of, 'facts at load: ' + facts.missing.join(', '));
+  } finally { await b.close(); server.close(); }
+});
 test('Verse\'s own /base64/ answers the encoder floor both ways the gate asks: the text in its link, and the text typed into its box', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);

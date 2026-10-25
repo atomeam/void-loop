@@ -483,6 +483,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T04:37:07Z",
+   "subject": "Tower gate: password strength,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:31:36Z",
+   "subject": "Incident: the browser suite failed on 2dc0e36b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:30:20Z",
+   "subject": "Tower gate: password strength,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T04:28:16Z",
+   "subject": "The password strength floor gets its probe: qwerty123 typed into Verse's own box, judged against the worked-out truth, its crack time and…"
+  },
+  {
+   "at": "2026-10-25T04:27:04Z",
+   "subject": "Incident: the browser suite failed on a2027279 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:24:33Z",
+   "subject": "Incident: the browser suite failed on c8805bc6 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:23:33Z",
+   "subject": "Incident: the browser suite failed on a99af1cb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T04:22:25Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
    "at": "2026-10-25T04:17:06Z",
    "subject": "Tower gate: encoder,password,maps measured against their live sites"
   },
@@ -529,42 +561,14 @@
   {
    "at": "2026-10-25T03:49:56Z",
    "subject": "The Verse Book's cover is a tooled leather binding"
-  },
-  {
-   "at": "2026-10-25T03:48:25Z",
-   "subject": "The tower gate gets a boxed answer out of a site the way a person does, and says what it saw when it cannot; the encoder floor gets its…"
-  },
-  {
-   "at": "2026-10-25T03:47:44Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:42:57Z",
-   "subject": "Handoff: a tower run takes the encoder floor"
-  },
-  {
-   "at": "2026-10-25T03:42:27Z",
-   "subject": "Incident: the browser suite failed on 3592cacb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T03:40:03Z",
-   "subject": "Card art in the atom galaxy theme, bigger, and back on phones"
-  },
-  {
-   "at": "2026-10-25T03:38:16Z",
-   "subject": "Incident: the browser suite failed on fdcdc570 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T03:20:51Z",
-   "subject": "Tower gate: encoder,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T03:19:54Z",
-   "subject": "Incident: the browser suite failed on 83686813 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (tower session, 2026-10-25)",
+    "line": "the password strength floor (howsecureismypassword.net) surpassed in one gate run after its probe: qwerty123 typed into /password-strength/ (never in the address), 5 of 5 against the worked-out truth, crack time and reasons read off the…"
+   },
    {
     "name": "Claude (changed-checks helper, 2026-10-25)",
     "line": "VOID_SKIP_BENCH=1 node tools/checks.mjs --changed is the builder's pre-push check: tools/checks-changed.mjs keeps the 54 structural checks on and runs a test only when its file, an import of it (two levels, or through skills/deps.json) or…"
@@ -584,10 +588,6 @@
    {
     "name": "Lists caught up, run 3 (Grok Bot, 2026-10-21)",
     "line": "two of Verse's asks that it had made 9 times each are built: 'preview my memory' (inside the memory card) and the Deciding family (3 of 3 proven now). template-list and list-templates are one routing place (skills/list-starters.js…"
-   },
-   {
-    "name": "Lists caught up, run 2 (Grok Bot, 2026-10-21)",
-    "line": "run 1's lists PR (https://github.com/atomeam/void-loop/pull/1195) was stuck on a ledger conflict and is merged. The fast checks that were red on main are green except two: fuzzy, privacy-guard (a standard's section number like \"section…"
    }
   ],
   "ladders": [
