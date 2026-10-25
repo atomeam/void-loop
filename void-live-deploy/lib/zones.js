@@ -137,3 +137,23 @@ export function dateSpan(a, b) {
 /** a day n business days (Monday to Friday) after a day, or before it when n is negative: the date and its name. Pure. */
 export function businessDay(iso, n) { const d = addBusinessDays(iso, n); return { iso: d, text: formatDay(d) }; }
 export { isWeekend, formatDay };
+
+/** the next time the clocks change in a zone after `at` (within 400 days): { at (the instant, a Date), from, to (offsets in minutes),
+ *  forward (true when the clocks go forward), before and after (the wall clock either side, [h, m]) }, or null for a zone that keeps one
+ *  offset. Found a fortnight at a time, then to the minute. Pure. */
+const FMT = new Map(); // one formatter per zone: making one is the slow part of asking an offset, and the search asks ~45 times
+function offsetFast(tz, t) {
+  let f = FMT.get(tz); if (!f) { f = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }); FMT.set(tz, f); }
+  const p = {}; for (const x of f.formatToParts(new Date(t))) p[x.type] = +x.value;
+  return Math.round((Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute) - Math.floor(t / 60000) * 60000) / 60000);
+}
+export function nextChange(tz, at = new Date()) {
+  const offsetMin = (z, d) => offsetFast(z, +d);
+  const t0 = +new Date(at), base = offsetMin(tz, new Date(t0)), DAY = 864e5; let lo = t0, hi = null;
+  // a fortnight at a time (no zone changes its clocks twice in two weeks), then halved down to the minute: about 45 lookups, not 400
+  for (let d = 14; d <= 406; d += 14) { const t = t0 + d * DAY; if (offsetMin(tz, new Date(t)) !== base) { hi = t; lo = t - 14 * DAY; break; } }
+  if (hi === null) return null;
+  while (hi - lo > 60000) { const mid = lo + Math.floor((hi - lo) / 120000) * 60000 || lo + 60000; if (offsetMin(tz, new Date(mid)) === base) lo = mid; else hi = mid; }
+  const to = offsetMin(tz, new Date(hi)), wb = wall(tz, new Date(hi - 60000)), wa = wall(tz, new Date(hi));
+  return { at: new Date(hi), from: base, to, forward: to > base, before: [(wb.h + (wb.m === 59 ? 1 : 0)) % 24, (wb.m + 1) % 60], after: [wa.h, wa.m] };
+}

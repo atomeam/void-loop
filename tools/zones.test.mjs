@@ -64,3 +64,13 @@ test('date to date: the start day counted, the end not, weekdays and weekends; b
   assert.equal(dateSpan('2026-10-24', '2026-10-26').weekdays, 0, 'a weekend'); assert.equal(dateSpan('2026-11-09', '2026-10-26').days, -14); assert.equal(dateSpan('2026-10-26', '2026-10-26').days, 0);
   assert.deepEqual(businessDay('2026-10-23', 1), { iso: '2026-10-26', text: 'Monday, October 26, 2026' }); assert.equal(businessDay('2026-10-26', -1).iso, '2026-10-23'); assert.equal(businessDay('2026-10-26', 10).iso, '2026-11-09');
 });
+
+test('the next clock change: forward in spring, back in autumn, to the minute; none where the clock never changes', async () => {
+  const { nextChange } = await import('../void-live-deploy/lib/zones.js');
+  const ny = nextChange('America/New_York', new Date(Date.UTC(2026, 0, 15)));
+  assert.equal(ny.at.toISOString(), '2026-03-08T07:00:00.000Z'); assert.ok(ny.forward); assert.deepEqual([ny.from, ny.to], [-300, -240]); assert.deepEqual([ny.before, ny.after], [[2, 0], [3, 0]]);
+  const lon = nextChange('Europe/London', new Date(Date.UTC(2026, 5, 1)));
+  assert.equal(lon.at.toISOString(), '2026-10-25T01:00:00.000Z'); assert.equal(lon.forward, false); assert.deepEqual([lon.before, lon.after], [[2, 0], [1, 0]]);
+  assert.equal(nextChange('Asia/Tokyo', new Date(Date.UTC(2026, 0, 1))), null);
+  const syd = nextChange('Australia/Sydney', new Date(Date.UTC(2026, 0, 1))); assert.equal(syd.at.toISOString(), '2026-04-04T16:00:00.000Z'); assert.equal(syd.forward, false);
+});

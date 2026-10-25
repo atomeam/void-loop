@@ -38,6 +38,9 @@
   dl.sm { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; font-size: 15px; } dl.sm dt { color: var(--soft); } dl.sm dd { margin: 0; font-variant-numeric: tabular-nums; }
   .dates { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .dates input[type=number] { width: 5em; } #event[hidden] { display: none; }
   [hidden] { display: none !important; }
+  /* the lines under the clock are written by the script: their room is kept from the first paint so nothing below moves (it shifted 0.8) */
+  #clocks:empty { min-height: 340px; } #sunmoon:empty { min-height: 3.3em; }
+  .hero-lines { min-height: 9.5em; } @media (min-width: 600px) { .hero-lines { min-height: 6.4em; } }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
@@ -60,9 +63,10 @@
   </section>
   <p class="place" id="place">Your time</p>
   <div class="big" id="big" aria-live="off">--:--</div>
-  <p class="sub" id="date"></p>
+  <div class="hero-lines"><p class="sub" id="date"></p>
   <p class="sub" id="zone"></p>
-  <p class="sub" id="sun"></p>
+  <p class="sub" id="dstnext"></p>
+  <p class="sub" id="sun"></p></div>
   <div class="row"><button type="button" id="h24" aria-pressed="false">24-hour</button><button type="button" id="link">Copy link</button></div>
 
   <section aria-labelledby="sh"><h2 id="sh">Sun and moon today</h2>
@@ -112,7 +116,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt } from '/lib/zones.js';
+  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange } from '/lib/zones.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -181,15 +185,25 @@
     $('big').textContent = clockText(w.h, w.m, { h24, s: w.s });
     $('date').textContent = fmtDate(p.tz, now);
     $('zone').textContent = p.tz.replace(/_/g, ' ') + ' · ' + abbr(p.tz, now) + ' · ' + gmt(off) + ' · ' + (d.observes ? (d.now ? 'daylight saving time now' : 'standard time now (it keeps daylight saving)') : 'no daylight saving') + (main && p.tz !== you ? ' · ' + gapText(off - offsetMin(you, now)) + ' of you' : '');
+    $('dstnext').textContent = changeText(p.tz, now);
     document.title = (main ? clockText(w.h, w.m, { h24 }) + ' in ' + p.name : 'Time zones') + ' · Verse';
     drawSun(p, w.ymd);
+  }
+  // the next clock change (timeanddate.com shows it on every city): worked out once an hour per zone, said in the zone's own wall time
+  const changes = new Map();
+  function changeOf(tz, now) { const k = tz + '|' + Math.floor(+now / 36e5), c = changes.get(k); if (c !== undefined) return c; const v = nextChange(tz, now); changes.set(k, v); return v; }
+  function changeText(tz, now) {
+    const c = changeOf(tz, now); if (!c) return 'The clocks do not change here: no daylight saving.';
+    const day = new Intl.DateTimeFormat('en', { timeZone: tz, weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(c.at), hm = ([h, m]) => clockText(h, m, { h24 }), mins = Math.abs(c.to - c.from), size = mins % 60 ? mins + ' minutes' : mins / 60 + (mins === 60 ? ' hour' : ' hours');
+    return 'Next clock change: ' + day + ', clocks go ' + (c.forward ? 'forward' : 'back') + ' ' + size + ' (' + hm(c.before) + ' becomes ' + hm(c.after) + ')';
   }
   function drawClocks() {
     const now = at(), yo = offsetMin(you, now), yd = Date.UTC(...wall(you, now).ymd);
     $('clocks').replaceChildren(...all().map((p, i) => {
       const w = wall(p.tz, now), off = offsetMin(p.tz, now), li = document.createElement('li'), who = document.createElement('div'), t = document.createElement('div');
       who.className = 'who'; const b = document.createElement('b'); b.textContent = p.name; const s = document.createElement('small');
-      s.textContent = w.day + dayWord(Math.round((Date.UTC(...w.ymd) - yd) / 86400000)) + ' · ' + gmt(off) + (p.you ? '' : ' · ' + gapText(off - yo)); who.append(b, s);
+      const ch = changeOf(p.tz, now), chd = ch ? new Intl.DateTimeFormat('en', { timeZone: p.tz, day: 'numeric', month: 'short' }).format(ch.at) : '';
+      s.textContent = w.day + dayWord(Math.round((Date.UTC(...w.ymd) - yd) / 86400000)) + ' · ' + gmt(off) + (p.you ? '' : ' · ' + gapText(off - yo)) + (ch ? ' · clocks go ' + (ch.forward ? 'forward ' : 'back ') + chd : ''); who.append(b, s);
       t.className = 't'; t.textContent = clockText(w.h, w.m, { h24 }); li.append(who, t);
       if (!p.you) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + p.name); x.addEventListener('click', () => { places = places.filter((o) => o !== p); if (main === p) main = null; save(); drawAll(); }); li.append(x); }
       return li; }));

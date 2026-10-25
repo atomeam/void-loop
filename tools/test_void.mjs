@@ -5760,6 +5760,16 @@ try {
       linked === '40.8' && typed === '0.3' && keyed === '1,024' && rad === '-1' && kept.hist === 4 && kept.mem === 'M = 1,024' && kept.angle === 'Radians' && !Z.errors.length, JSON.stringify({ linked, typed, keyed, rad, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
+  if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);
+    const london = await Z.p.$eval('#dstnext', (e) => e.textContent), subs = await Z.p.$$eval('#clocks small', (s) => s.map((x) => x.textContent));
+    await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(300); const tokyo = await Z.p.$eval('#dstnext', (e) => e.textContent);
+    check("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change",
+      /^Next clock change: \w{3}, \w{3} \d{1,2}, 20\d\d, clocks go (forward|back) 1 hour \(/.test(london) && subs.some((x) => /clocks go (forward|back) \w{3} \d{1,2}/.test(x)) && /do not change here/.test(tokyo) && !Z.errors.length,
+      JSON.stringify({ london, subs, tokyo, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the tower's timeanddate.com floor: /time/ shows a linked city's time from the browser's own zone data, adds a city, converts a time and
   // plans a meeting across the cities, and keeps them across a reload
   if (want('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept')) {

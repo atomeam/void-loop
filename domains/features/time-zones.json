@@ -26,8 +26,8 @@
           "name": "DST change dates",
           "detail": "next clock change for the city",
           "paid": false,
-          "verse": "partial",
-          "verse_evidence": "browser zone data includes DST in times; next change date not shown"
+          "verse": "has",
+          "verse_evidence": "Next clock change under the clock (date, forward or back, how far, the wall times either side) and on each world clock; a zone that keeps one offset says so (lib/zones.js nextChange)"
         },
         {
           "name": "World clock",
@@ -215,7 +215,6 @@
     "Copy link of the whole setting"
   ],
   "gaps": [
-    "DST change dates",
     "Weather and 14-day forecast",
     "Calendars (printable, by country, with holidays)",
     "Public holidays database",
