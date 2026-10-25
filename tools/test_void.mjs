@@ -854,14 +854,14 @@ try {
       return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
         struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
-    check('tower: ' + FLOORS[3].site + ' on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, and the head says "3 conquered"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === FLOORS[3].site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && /^3 conquered · now: /.test(v.head || '')
+    check('tower: ' + FLOORS[3].site + ' on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, and the head says "3 surpassed"',
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === FLOORS[3].site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && /^3 surpassed · working on: /.test(v.head || '')
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
     check('tower: a saved or copied tower card says the fight (' + FLOORS[3].site + ': 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp(FLOORS[3].site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects beaten\\. Still to beat: ').test(saved.b || '') && /Conquered: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+      new RegExp(FLOORS[3].site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
@@ -873,8 +873,8 @@ try {
     await P.ask('the tower', 600);
     const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
     const before = await line(); beaten = true;
-    const after = await until(async () => { const r = await line(); return r && /calculator\.net is beaten/.test(r.live) ? r : null; }, 6000);
-    check('tower: the open card picked up a conquered site on its own and said so ("calculator.net is beaten"), with a fresh "updated" time', !!before && !!after && /calculator\.net\s*conquered/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    const after = await until(async () => { const r = await line(); return r && /calculator\.net is surpassed/.test(r.live) ? r : null; }, 6000);
+    check('tower: the open card picked up a conquered site on its own and said so ("calculator.net is surpassed"), with a fresh "updated" time', !!before && !!after && /calculator\.net\s*surpassed/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
     await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
     check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
     await P.ctx.close();

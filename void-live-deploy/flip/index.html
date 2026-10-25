@@ -27,7 +27,6 @@
   footer { text-align: center; font-size: 12px; opacity: .6; margin-top: 18px; }
 </style>
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/skills/coin.js">
 <link rel="modulepreload" href="/lib/tally.js">
 <link rel="modulepreload" href="/lib/reactions.js">
@@ -39,7 +38,6 @@
   <nav id="related" aria-label="Related tools"></nav>
 <footer><a href="/flip/?q=flip+a+famous+coin">Flip a real coin from history</a> · <a href="/flip/?q=create+a+coin">Make your own coin</a> · <a href="/">Ask Verse anything</a></footer>
 <script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
   import coin from '/skills/coin.js';
   const card = document.getElementById('card');
   const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -59,7 +57,8 @@
   const share = () => { const url = location.href, title = document.title;
     if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }
     try { navigator.clipboard.writeText(url); return 'Link copied'; } catch (_) { return 'Copy the address bar'; } };
-  mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }]);
+  // the "Use with" row comes after the load event, which the tower times: nothing a person is not waiting for loads before it
+  addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }])).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

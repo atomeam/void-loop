@@ -483,6 +483,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T02:39:08Z",
+   "subject": "Tower gate: encoder,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T02:31:52Z",
+   "subject": "Tower gate: time zones,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T02:31:47Z",
+   "subject": "Incident: the browser suite failed on e1aa7f19 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T02:30:13Z",
+   "subject": "Incident: the browser suite failed on f042453f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-25T02:29:15Z",
+   "subject": "The tower gate never hangs a run: each floor gets 6 minutes at most and the OCR worker is closed after every floor"
+  },
+  {
+   "at": "2026-10-25T02:25:29Z",
+   "subject": "Tower gate: coin flip,password,maps measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T02:24:00Z",
+   "subject": "A famous coin shows one face at a time: a Commons photo that holds both faces side by side is cut in half, obverse for heads and reverse…"
+  },
+  {
+   "at": "2026-10-25T02:23:15Z",
+   "subject": "Verse fixes its draw skill: learn to handle \"make a 2d sketch of a tree\""
+  },
+  {
    "at": "2026-10-25T02:13:45Z",
    "subject": "checks.mjs: glitch-titles runs only when a file with a glitch title, the films page or void.html changed"
   },
@@ -529,38 +561,6 @@
   {
    "at": "2026-10-25T01:16:00Z",
    "subject": "Incident: the browser suite failed on 9e16dc83 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:10:30Z",
-   "subject": "Tower gate: time zones,password,maps measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T01:08:28Z",
-   "subject": "Incident: the browser suite failed on e3809274 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:03:30Z",
-   "subject": "Incident: the browser suite failed on 70fd471e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T01:02:00Z",
-   "subject": "A playbook for the tower loop: one floor driven to conquered per run, the gap read from the gate's own evidence, the page or the gate…"
-  },
-  {
-   "at": "2026-10-25T01:01:10Z",
-   "subject": "The tower gate finds a coin however a site flips it: a flip button in any frame, anything named coin, the largest picture, or Space…"
-  },
-  {
-   "at": "2026-10-25T00:54:31Z",
-   "subject": "Incident: the browser suite failed on 1e481fba (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:52:53Z",
-   "subject": "Incident: the browser suite failed on 885a16cd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T00:52:10Z",
-   "subject": "Incident: the browser suite failed on a77e2a49 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

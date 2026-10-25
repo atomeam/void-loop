@@ -5,9 +5,9 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-42';
+import { tower, towerLine, fatalityOf } from '../lib/tower.js?v=ladder-43';
 
-const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^which\s+sites\s+have\s+you\s+beaten$|^what\s+sites\s+have\s+you\s+beaten$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
+const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s)?\s+)?tower$|^(?:which|what)\s+sites\s+have\s+you\s+(?:beaten|surpassed|passed)$|^(?:the\s+)?surpassed(?:\s+sites)?$|^(?:the\s+)?conquered(?:\s+sites)?$|^who\s+(?:have\s+we|has\s+verse|did\s+(?:we|verse))\s+(?:beaten|beat|conquered|run\s+through)$/;
 export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
 
@@ -28,12 +28,12 @@ export function centerOnYou(root) { const stack = root && root.querySelector('.t
 export function towerHtml(t, esc) {
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
   const row = (f) => '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">'
-    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'conquered' : f.n + ' of ' + f.m + ' aspects beaten') + '</span>'
+    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>'
     + (f.state === 'current' ? '<ul class="tw-aspects">' + aspectRows(f).map((r) => '<li data-v="' + r.v + '">' + MARK[r.v] + ' ' + esc(r.a) + '</li>').join('') + '</ul>' : '') + '</button>';
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
-  const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects beaten.' + (cur.left.length ? ' Still to beat: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Conquered: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
-  return TW_CSS + '<div class="tw"><div class="tw-head">The tower</div><div class="tw-score tower-line">' + esc(t.beaten + ' conquered' + (cur ? ' · now: ' + cur.site : '')) + '</div>'
+  const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
+  return TW_CSS + '<div class="tw"><div class="tw-head">The tower</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
     + '<div class="tw-stack tower-stack">' + (cur ? row(cur) : '') + won.map(row).join('') + '</div><div class="tower-detail" aria-live="polite" style="margin-top:6px;overflow-wrap:anywhere;font-size:13px"></div>' + takeHtml(t, esc)
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
@@ -42,25 +42,25 @@ export function towerHtml(t, esc) {
  *  take on what its learned and absorbed from all the fights so far"): the fight now (its page, what it leads on, what is left, the killshot)
  *  and one line per conquered site from the floor's `learned`. { now, learned: [{ site, text }] }. Pure. */
 export function verseTake(t) {
-  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten' && f.learned).reverse();
+  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten' && (f.learned || fatalityOf(f))).reverse(); // a conquest with no lesson written yet still shows, by its killshot
   let now = '';
   if (cur) {
     const lead = cur.aspects.filter((a) => !cur.left.includes(a)), open = cur.left.filter((a) => !cur.lost.includes(a));
     now = (cur.page ? 'My page for ' + cur.site + ' is a-to-mind.com' + cur.page.replace(/\?.*$/, '') + '. ' : 'I answer ' + cur.site + '\'s job on the stage; it has no page of mine yet. ')
       + (lead.length ? 'I lead on ' + lead.join(', ') + '. ' : 'Nothing is measured in my favour yet. ')
       + (cur.lost.length ? 'I lose on ' + cur.lost.join(', ') + ', so that comes first. ' : '') + (open.length ? 'Still to prove: ' + open.join(', ') + '.' : '')
-      + (fatalityOf(cur) ? ' The killshot I am aiming for: ' + fatalityOf(cur) + '.' : '');
+      + (fatalityOf(cur) ? ' The edge I am building: ' + fatalityOf(cur) + '.' : '');
   }
-  return { now, learned: won.map((f) => ({ site: f.site, text: f.learned })) };
+  return { now, learned: won.map((f) => ({ site: f.site, text: f.learned || 'Verse\'s edge: ' + fatalityOf(f) })) };
 }
 const takeHtml = (t, esc) => { const k = verseTake(t); if (!k.now && !k.learned.length) return '';
   return '<div class="tw-take" style="margin-top:8px;font-size:13px;line-height:1.45"><b>Verse\'s take</b>' + (k.now ? '<p style="margin:4px 0">' + esc(k.now) + '</p>' : '')
-    + (k.learned.length ? '<p style="margin:6px 0 2px"><b>What the fights taught me</b></p><ul style="margin:0;padding-left:18px">' + k.learned.map((x) => '<li><i>' + esc(x.site) + '</i>: ' + esc(x.text) + '</li>').join('') + '</ul>' : '') + '</div>'; };
+    + (k.learned.length ? '<p style="margin:6px 0 2px"><b>What each site taught me</b></p><ul style="margin:0;padding-left:18px">' + k.learned.map((x) => '<li><i>' + esc(x.site) + '</i>: ' + esc(x.text) + '</li>').join('') + '</ul>' : '') + '</div>'; };
 export function detailText(f) {
   // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
   const open = f.left.filter((a) => !f.lost.includes(a));
-  return f.n + ' of ' + f.m + ' aspects beaten on ' + f.site + '. ' + (f.page ? 'Verse\'s page for it: a-to-mind.com' + f.page.replace(/\?.*$/, '') + '. ' : '')
-    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '. ' : 'Nothing left to beat. ') + (fatalityOf(f) ? 'FATALITY (the killshot): ' + fatalityOf(f) + '.' : '');
+  return f.n + ' of ' + f.m + ' aspects ahead of ' + f.site + '. ' + (f.page ? 'Verse\'s page for it: a-to-mind.com' + f.page.replace(/\?.*$/, '') + '. ' : '')
+    + (f.lost.length ? 'Loses on: ' + f.lost.join(', ') + '. ' : '') + (open.length ? 'Not measured yet: ' + open.join(', ') + '. ' : 'Ahead on every aspect. ') + (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) + '.' : '');
 }
 
 /** what moved between two towers, in words: the marker, a beaten floor, an aspect count. Pure. */
@@ -71,7 +71,7 @@ export function changes(prev, next) {
   if (now(next) !== now(prev) && now(next)) out.push('Now: ' + now(next) + '.');
   for (const f of next.floors) {
     const was = prev.floors.find((x) => x.id === f.id); if (!was) continue;
-    if (f.beaten && !was.beaten) out.push(f.site + ' is beaten.');
+    if (f.beaten && !was.beaten) out.push(f.site + ' is surpassed.');
     else if (was.beaten && !f.beaten) out.push(f.site + ' slipped.');
     else if (f.n !== was.n) out.push(f.site + ': ' + f.n + ' of ' + f.m + ' aspects.');
   }
@@ -119,7 +119,7 @@ async function run(text, api) {
 export default {
   name: 'tower',
   about: 'The tower: real sites as floors, and how many aspects of each Verse has verified it beats.',
-  examples: ['the tower', 'verse tower', 'which sites have you beaten', 'show the tower', 'open your tower'],
+  examples: ['the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me'],
   match(lower, text) { return towerOf(text || lower); },
   run, towerOf, towerHtml, detailText, changes, verseTake,
