@@ -4192,52 +4192,52 @@
   "translate: papago.naver.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 118,
-    "best": 723,
-    "evidence": "Verse (/translate/?q=hello&to=es) 118 ms to the load event (median of 3, phone width) vs papago.naver.com 723 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T07:20:32.370Z"
+    "verse": 77,
+    "best": 435,
+    "evidence": "Verse (/translate/?q=hello&to=es) 77 ms to the load event (median of 3, phone width) vs papago.naver.com 435 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs papago.naver.com 3 of 3 loads answered",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs papago.naver.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs papago.naver.com 0 unnamed controls or images",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs papago.naver.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs papago.naver.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not papago.naver.com (the site is not asked)",
-    "at": "2026-10-25T07:20:32.370Z",
+    "at": "2026-10-25T07:34:17.682Z",
     "of": 2
    },
    "design polish": {
@@ -4245,23 +4245,23 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs papago.naver.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), papago.naver.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T07:20:32.370Z"
+    "at": "2026-10-25T07:34:17.682Z"
    },
    "language count": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs papago.naver.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
-    "at": "2026-10-25T07:20:32.370Z",
+    "at": "2026-10-25T07:34:17.682Z",
     "of": 1,
     "part": true
    },
    "speech in and out": {
     "verdict": "better",
     "verse": 2,
-    "best": 1,
-    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs papago.naver.com 1 of 2 shown (Verse lacks: none; site lacks: listen)",
-    "at": "2026-10-25T07:20:32.370Z",
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs papago.naver.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T07:34:17.682Z",
     "of": 2,
     "part": true
    },
@@ -4270,68 +4270,68 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs papago.naver.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
-    "at": "2026-10-25T07:20:32.370Z",
+    "at": "2026-10-25T07:34:17.682Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 4,
-    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs papago.naver.com 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
-    "at": "2026-10-25T07:20:32.370Z",
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs papago.naver.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T07:34:17.682Z",
     "of": 10
    }
   },
   "translate: linguee.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 89,
-    "best": 710,
-    "evidence": "Verse (/translate/?q=hello&to=es) 89 ms to the load event (median of 3, phone width) vs linguee.com 710 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T07:20:58.289Z"
+    "verse": 69,
+    "best": 445,
+    "evidence": "Verse (/translate/?q=hello&to=es) 69 ms to the load event (median of 3, phone width) vs linguee.com 445 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs linguee.com 3 of 3 loads answered",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs linguee.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs linguee.com 0 unnamed controls or images",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs linguee.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs linguee.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not linguee.com (the site is not asked)",
-    "at": "2026-10-25T07:20:58.289Z",
+    "at": "2026-10-25T07:34:37.141Z",
     "of": 2
    },
    "design polish": {
@@ -4339,14 +4339,14 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs linguee.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), linguee.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T07:20:58.289Z"
+    "at": "2026-10-25T07:34:37.141Z"
    },
    "language count": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs linguee.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
-    "at": "2026-10-25T07:20:58.289Z",
+    "at": "2026-10-25T07:34:37.141Z",
     "of": 1,
     "part": true
    },
@@ -4355,7 +4355,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs linguee.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
-    "at": "2026-10-25T07:20:58.289Z",
+    "at": "2026-10-25T07:34:37.141Z",
     "of": 2,
     "part": true
    },
@@ -4364,7 +4364,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs linguee.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
-    "at": "2026-10-25T07:20:58.289Z",
+    "at": "2026-10-25T07:34:37.141Z",
     "of": 2,
     "part": true
    },
@@ -4373,59 +4373,59 @@
     "verse": 10,
     "best": 3,
     "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs linguee.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
-    "at": "2026-10-25T07:20:58.289Z",
+    "at": "2026-10-25T07:34:37.141Z",
     "of": 10
    }
   },
   "translate: translate.yandex.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 760,
-    "evidence": "Verse (/translate/?q=hello&to=es) 108 ms to the load event (median of 3, phone width) vs translate.yandex.com 760 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T07:21:16.673Z"
+    "verse": 84,
+    "best": 439,
+    "evidence": "Verse (/translate/?q=hello&to=es) 84 ms to the load event (median of 3, phone width) vs translate.yandex.com 439 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs translate.yandex.com 3 of 3 loads answered",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs translate.yandex.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs translate.yandex.com 0 unnamed controls or images",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs translate.yandex.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs translate.yandex.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not translate.yandex.com (the site is not asked)",
-    "at": "2026-10-25T07:21:16.673Z",
+    "at": "2026-10-25T07:34:54.089Z",
     "of": 2
    },
    "design polish": {
@@ -4433,23 +4433,23 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs translate.yandex.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), translate.yandex.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T07:21:16.673Z"
+    "at": "2026-10-25T07:34:54.089Z"
    },
    "language count": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs translate.yandex.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
-    "at": "2026-10-25T07:21:16.673Z",
+    "at": "2026-10-25T07:34:54.089Z",
     "of": 1,
     "part": true
    },
    "speech in and out": {
     "verdict": "better",
     "verse": 2,
-    "best": 1,
-    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translate.yandex.com 1 of 2 shown (Verse lacks: none; site lacks: listen)",
-    "at": "2026-10-25T07:21:16.673Z",
+    "best": 0,
+    "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translate.yandex.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+    "at": "2026-10-25T07:34:54.089Z",
     "of": 2,
     "part": true
    },
@@ -4458,16 +4458,16 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs translate.yandex.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
-    "at": "2026-10-25T07:21:16.673Z",
+    "at": "2026-10-25T07:34:54.089Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 4,
-    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs translate.yandex.com 4 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, camera, copy, share, works offline)",
-    "at": "2026-10-25T07:21:16.673Z",
+    "best": 3,
+    "evidence": "Verse (/translate/?q=hello&to=es) 10 of 10 things a full answer shows vs translate.yandex.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: 100 languages, listen, speak, camera, copy, share, works offline)",
+    "at": "2026-10-25T07:34:54.089Z",
     "of": 10
    }
   },
@@ -4757,6 +4757,9 @@
  "icons": {
   "reverso.net": "tower.icons/reverso.net.ico",
   "bing.com": "tower.icons/bing.com.ico",
-  "deepl.com": "tower.icons/deepl.com.ico"
+  "deepl.com": "tower.icons/deepl.com.ico",
+  "papago.naver.com": "tower.icons/papago.naver.com.ico",
+  "linguee.com": "tower.icons/linguee.com.ico",
+  "translate.yandex.com": "tower.icons/translate.yandex.com.ico"
  }
 }
