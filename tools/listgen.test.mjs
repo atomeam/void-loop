@@ -99,3 +99,31 @@ test('decks, {s}, letters, dice, possessiveForm, pastTense', () => {
   assert.equal(L.run('output\n  [v.pastTense]\nv\n  stop it\n', 1).output, 'stopped it');
   assert.equal(L.run('output\n  [v.pastTense]\nv\n  carry on\n', 1).output, 'carried on');
 });
+const HERO = '$meta\n  title = Hero maker\n  description = Heroes by gender\n$inputs\n  gender = select female|male\n  level = number 1-20\n  nick = text Shadow\noutput\n  [n = names[gender]] the [cls], level [level]. [if (level > 10) {A veteran.} else if (level > 5) {Seasoned.} else {A rookie.}] [level >= 15 ? "Legendary!" : "-"] [level * 2] hp [nick]\nnames\n  female\n    Ada\n    Mira\n  male\n    Bo\n    Ivo\ncls\n  wizard ^[gender == "female"]\n  knight ^[gender == "male"]\n  bard\n';
+test('inputs, [names[gender]], ^[condition], if / else if / else, ternaries and arithmetic', () => {
+  const g = L.compile(HERO); assert.deepEqual(g.errors, []);
+  assert.deepEqual(g.meta, { title: 'Hero maker', description: 'Heroes by gender' }); assert.equal(g.title, 'Hero maker');
+  assert.deepEqual(g.inputs.map((x) => [x.name, x.kind, x.def]), [['gender', 'select', 'female'], ['level', 'number', '1'], ['nick', 'text', 'Shadow']]);
+  const m = L.generate(g, 1, 30, { inputs: { gender: 'male', level: '16', nick: 'Rex' } }).results.map((r) => r.output);
+  for (const o of m) assert.match(o, /^(?:Bo|Ivo) the (?:knight|bard), level 16\. A veteran\. Legendary! 32 hp Rex$/, o);
+  const f = L.generate(g, 1, 30, { inputs: { gender: 'female', level: '7' } }).results.map((r) => r.output);
+  for (const o of f) assert.match(o, /^(?:Ada|Mira) the (?:wizard|bard), level 7\. Seasoned\. - 14 hp Shadow$/, o);
+  assert.match(L.run(g, 1, { inputs: { gender: 'robot', level: '99' } }).output, /^(?:Ada|Mira) .* level 20\./, 'a value not offered falls back; a number is kept in range');
+  assert.match(L.run('output\n  [x[k]]\nx\n  a\n    one\nk\n  b\n', 1).errors[0].message, /no nested list called b/);
+  assert.equal(L.run('output\n  [1 + 2 * 3] [(1 + 2) * 3] [7 % 4] [10 / 4] [!true] ["a" + "b"] [3 > 2 && 2 > 1] ["b" < "a" || "yes"]\n', 1).output, '7 9 3 2.5 false ab true yes');
+  // only the branch a condition takes is picked from
+  const ifOnly = L.run('output\n  [if (1 > 2) {[o]} else {fine}]\no\n  [o]\n', 1); assert.deepEqual([ifOnly.output, ifOnly.errors], ['fine', []]);
+  assert.match(L.run('output\n  [if (x {a}]\nx\n  a\n', 1).errors[0].message, /cannot read/);
+});
+test('imports: a published generator\'s output and lists, by its 8-letter id; a missing one is said plainly', () => {
+  const lib = L.compile('output\n  [a] from afar\na\n  owl\n  crow\n');
+  const g = L.compile('animals = {import:abcdefgh}\noutput\n  I saw [animals] and [animals.a.upperCase]\n'); assert.deepEqual(g.errors, []); assert.deepEqual(g.imports, ['abcdefgh']);
+  for (let s = 1; s < 10; s++) assert.match(L.run(g, s, { imports: { abcdefgh: lib } }).output, /^I saw (?:owl|crow) from afar and (?:OWL|CROW)$/);
+  assert.match(L.run(g, 1).errors[0].message, /abcdefgh is not loaded/);
+  assert.match(L.compile('x = {import:Some Name}\noutput\n  [x]\n').errors[0].message, /8-letter id/);
+});
+test('$meta and $inputs say plainly what is wrong', () => {
+  assert.match(L.compile('$meta\n  colour = red\noutput\n  a\n').errors[0].message, /\$meta line/);
+  assert.match(L.compile('$meta\n  image = https://evil.example/x.png\noutput\n  a\n').errors[0].message, /gallery/);
+  assert.match(L.compile('$inputs\n  g = dropdown a\noutput\n  a\n').errors[0].message, /an input is/);
+});

@@ -13,9 +13,35 @@
     const copy = async (text) => { try { await navigator.clipboard.writeText(text); return true; } catch (_) { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (__) {} t.remove(); return true; } };
     let current = [], compiled = null;
     function lineOf(n) { const ta = $('src'), lines = ta.value.split('\n'); let at = 0; for (let i = 0; i < n - 1 && i < lines.length; i++) at += lines[i].length + 1; ta.focus(); ta.setSelectionRange(at, at + (lines[n - 1] || '').length); }
+    // imports: published generators by id, fetched once and kept for this visit (three levels deep at most)
+    const imported = {}, loading = new Set();
+    async function loadImports(g, depth = 0) {
+      if (depth > 2) return;
+      await Promise.all((g.imports || []).filter((id) => !imported[id] && !loading.has(id)).map(async (id) => {
+        loading.add(id);
+        try { const j = await (await fetch('/api/generators?id=' + id)).json(); if (j && j.ok) { imported[id] = L.compile(j.text); await loadImports(imported[id], depth + 1); } } catch (_) {}
+      }));
+    }
+    // inputs: what the generator asks before generating ($inputs), drawn as controls; a change makes new results at the same seed
+    const chosen = {};
+    function drawInputs(g) {
+      const box = $('inputs'); box.hidden = !(g.inputs && g.inputs.length); if (box.hidden) { box.replaceChildren(); return; }
+      const sig = JSON.stringify(g.inputs); if (box.dataset.sig === sig) return; box.dataset.sig = sig;
+      box.replaceChildren(...g.inputs.map((inp) => {
+        const lab = document.createElement('label'); lab.className = 'inp'; lab.append(document.createTextNode(inp.name + ' '));
+        let el;
+        if (inp.kind === 'select') { el = document.createElement('select'); for (const o of inp.options) el.append(new Option(o, o)); }
+        else { el = document.createElement('input'); el.type = inp.kind === 'number' ? 'number' : 'text'; if (inp.kind === 'number') { el.min = inp.min; el.max = inp.max; el.inputMode = 'numeric'; } else el.maxLength = 60; }
+        el.value = chosen[inp.name] != null ? chosen[inp.name] : inp.def;
+        el.addEventListener(inp.kind === 'select' ? 'change' : 'input', () => { chosen[inp.name] = el.value; draw(); });
+        lab.append(el); return lab;
+      }));
+    }
     function draw() {
       compiled = L.compile($('src').value);
-      const r = L.generate(compiled, state.seed, state.n); current = r.results;
+      if ((compiled.imports || []).some((id) => !imported[id] && !loading.has(id))) loadImports(compiled).then(() => draw());
+      drawInputs(compiled);
+      const r = L.generate(compiled, state.seed, state.n, { imports: imported, inputs: chosen }); current = r.results;
       $('errs').replaceChildren(...r.errors.slice(0, 8).map((e) => { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.textContent = 'line ' + e.line; b.addEventListener('click', () => lineOf(e.line)); li.append(b, document.createTextNode(' ' + e.message)); return li; }));
       $('seed').textContent = 'seed ' + state.seed;
       if (compiled.title && !$('name').value) $('name').placeholder = compiled.title;
@@ -28,7 +54,7 @@
       const acts = document.createElement('div'); acts.className = 'acts';
       const mk = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => fn(b)); acts.append(b); return b; };
       mk('Copy', async (b) => { await copy(li.querySelector('.txt').textContent); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); });
-      mk('Re-roll this one', () => { const r = L.run(compiled, (L.rng(Date.now() + i)() * 4294967296) >>> 0); if (!r.errors.length) { current[i] = { output: r.output, image: r.image }; li.replaceWith(row(current[i], i)); } });
+      mk('Re-roll this one', () => { const r = L.run(compiled, (L.rng(Date.now() + i)() * 4294967296) >>> 0, { imports: imported, inputs: chosen }); if (!r.errors.length) { current[i] = { output: r.output, image: r.image }; li.replaceWith(row(current[i], i)); } });
       const pic = document.createElement('a'); pic.className = 'btn'; pic.textContent = 'Picture it →'; pic.href = '/image/?' + new URLSearchParams({ prompt: (x.image || x.output).slice(0, 400), go: '1' }); acts.append(pic);
       if ('speechSynthesis' in window) mk('Read aloud', () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(li.querySelector('.txt').textContent)); } catch (_) {} });
       li.append(t); if (x.image) { const ip = document.createElement('div'); ip.className = 'imgp'; ip.textContent = 'Picture prompt: ' + x.image; li.append(ip); }
@@ -63,13 +89,13 @@
     // share: the whole generator in the link (#g=), nothing stored anywhere
     async function shareLink() { const code = await L.packShare(($('name').value ? '$title = ' + $('name').value.replace(/\n/g, ' ') + '\n' : '') + $('src').value.replace(/^\$title = .*\n?/m, '')); return location.origin + '/generators/make/#g=' + code; }
     $('share').addEventListener('click', async () => { const url = await shareLink(); if (navigator.share) { try { await navigator.share({ title: 'A random generator', url }); return; } catch (_) {} } await copy(url); say('Link copied. It carries the whole generator: ' + url.length + ' characters.'); });
-    $('embed').addEventListener('click', async () => { const src = state.pubId ? location.origin + '/generators/make/?id=' + state.pubId + '&embed=1' : (await shareLink()).replace('/#g=', '/?embed=1#g='); const code = '<iframe src="' + src + '" title="Random generator" width="100%" height="480" style="border:0"></iframe>'; await copy(code); say('Embed code copied: ' + code); });
+    $('embed').addEventListener('click', async () => { const src = state.pubId ? location.origin + '/gen/' + state.pubId + '?embed=1' : (await shareLink()).replace('/#g=', '/?embed=1#g='); const code = '<iframe src="' + src + '" title="Random generator" width="100%" height="480" style="border:0"></iframe>'; await copy(code); say('Embed code copied: ' + code); });
     $('publish').addEventListener('click', async () => {
       if (compiled && compiled.errors.length) { say('Fix the marked lines first.'); return; }
       if (!confirm('Publish "' + (($('name').value || (compiled && compiled.title) || 'Untitled').trim()) + '" to the hub? Anyone can then see it, play it and remix it.')) return;
       say('Publishing…');
       try { const r = await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: $('name').value || (compiled && compiled.title) || '', text: $('src').value }) }); const j = await r.json();
-        if (j.ok) { state.pubId = j.id; const url = location.origin + '/generators/make/?id=' + j.id; save(true); await copy(url); say('Published. Its link (copied): ' + url); try { history.replaceState(null, '', '/generators/make/?id=' + j.id); } catch (_) {} }
+        if (j.ok) { state.pubId = j.id; const url = location.origin + '/gen/' + j.id; save(true); await copy(url); say('Published. Its link (copied): ' + url); try { history.replaceState(null, '', '/gen/' + j.id); } catch (_) {} }
         else say(j.error || 'It could not be published just now.'); } catch (_) { say(navigator.onLine ? 'It could not be published just now.' : 'Publishing needs the internet.'); }
     });
     $('remix').addEventListener('click', () => { const t = $('name').value; state.pubId = null; state.localId = null; $('name').value = ('Remix of ' + (t || 'a generator')).slice(0, 60); document.documentElement.classList.remove('embed'); save(true); $('remix').hidden = true; $('report').hidden = true; $('from').textContent = 'A copy of your own: change anything, it is saved in this browser.'; try { history.replaceState(null, '', '/generators/make/'); } catch (_) {} draw(); $('src').focus(); });
@@ -86,6 +112,8 @@
     });
     // what opens: a published one (?id=), a shared one (#g=), the last one kept here, or the starter
     let opened = false;
+    const pathId = (location.pathname.match(/^\/gen\/([a-z2-7]{8})\/?$/) || [])[1]; // a published generator's own link (/gen/<id>, functions/gen/[id].js sets its share card)
+    if (pathId && !q.get('id')) q.set('id', pathId);
     if (/^[a-z2-7]{8}$/.test(q.get('id') || '')) {
       try { const j = await (await fetch('/api/generators?id=' + q.get('id'))).json();
         if (j.ok) { load(j.text, j.title); state.pubId = j.id; opened = true; $('remix').hidden = false; $('report').hidden = false; $('from').hidden = false; $('from').textContent = 'From the hub: "' + j.title + '", played ' + j.plays + ' times. Remix to change it.'; fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: j.id, act: 'play' }) }).catch(() => {}); }

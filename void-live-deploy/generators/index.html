@@ -180,7 +180,7 @@
     async function hub(sort) {
       $('hubNew').setAttribute('aria-pressed', String(sort === 'new')); $('hubPop').setAttribute('aria-pressed', String(sort === 'popular'));
       try { const j = await (await fetch('/api/generators?sort=' + sort)).json(); const items = (j && j.items) || [];
-        $('hubList').replaceChildren(...(items.length ? items.map((g) => { const li = document.createElement('li'), a = document.createElement('a'); a.href = '/generators/make/?id=' + encodeURIComponent(g.id); a.textContent = g.title; a.className = 'txt'; a.style.color = 'inherit';
+        $('hubList').replaceChildren(...(items.length ? items.map((g) => { const li = document.createElement('li'), a = document.createElement('a'); a.href = '/gen/' + encodeURIComponent(g.id); a.textContent = g.title; a.className = 'txt'; a.style.color = 'inherit';
           const m = document.createElement('div'); m.className = 'pic'; m.textContent = (de ? g.plays + '× gespielt · ' : 'played ' + g.plays + ' times · ') + g.day;
           const acts = document.createElement('div'); acts.className = 'acts'; const rb = document.createElement('button'); rb.type = 'button'; rb.textContent = de ? 'Melden' : 'Report'; rb.setAttribute('aria-label', (de ? 'Melden: ' : 'Report ') + g.title);
           rb.addEventListener('click', async () => { if (!confirm(de ? 'Diesen Generator melden?' : 'Report this generator as harmful or rude?')) return; try { await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: g.id, act: 'report' }) }); } catch (_) {} rb.textContent = de ? 'Gemeldet' : 'Reported'; rb.disabled = true; });

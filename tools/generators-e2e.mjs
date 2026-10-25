@@ -8,6 +8,8 @@ import http from 'node:http'; import fs from 'node:fs'; import path from 'node:p
 import { chromium } from 'playwright-core';
 import * as imageRoute from '../void-live-deploy/functions/api/image.js';
 import * as hubRoute from '../void-live-deploy/functions/api/generators.js';
+import * as galleryRoute from '../void-live-deploy/functions/api/gallery.js';
+import * as genRoute from '../void-live-deploy/functions/gen/[id].js';
 import { pictureOf } from './tower-gate.mjs';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 
@@ -36,6 +38,14 @@ const freeDown = async () => new Response('stub: the free painter is not called 
 
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
+  const gm = u.pathname.match(/^\/gen\/([a-z2-7]{8})$/);
+  if (gm) { const r = await genRoute.onRequestGet({ env: { ...env, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'generators/make/index.html'))) } }, params: { id: gm[1] }, request: new Request('http://' + req.headers.host + req.url) }); res.writeHead(r.status, { 'content-type': 'text/html' }); res.end(await r.text()); return; }
+  if (u.pathname === '/api/gallery') {
+    const body = req.method === 'POST' ? await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); }) : undefined;
+    const request = new Request('http://' + req.headers.host + req.url, { method: req.method, headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.20' }, body });
+    const r = req.method === 'POST' ? await galleryRoute.onRequestPost({ request, env }) : await galleryRoute.onRequestGet({ request, env });
+    res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'application/json' }); res.end(Buffer.from(await r.arrayBuffer())); return;
+  }
   if (u.pathname === '/api/image' || u.pathname === '/api/generators') {
     const body = req.method === 'GET' || req.method === 'HEAD' ? undefined : await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); });
     const request = new Request('http://' + req.headers.host + req.url, { method: req.method, headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.20' }, body });
@@ -88,13 +98,20 @@ ok(/^Remix of Pet shop/.test(await other.inputValue('#name')) && (await other.ev
 await other.close();
 // 3. publish, open it from the hub, play counted
 await page.click('#publish'); await page.waitForFunction(() => /Published/.test(document.getElementById('note').textContent), null, { timeout: 5000 }).catch(() => {});
-const note = await page.locator('#note').innerText(); const id = (note.match(/\?id=([a-z2-7]{8})/) || [])[1];
+const note = await page.locator('#note').innerText(); const id = (note.match(/\/gen\/([a-z2-7]{8})/) || [])[1];
 ok(!!id, 'Publish puts it in the hub with a short link: ' + note);
 await page.goto(base + '/generators/'); await page.waitForSelector('#hubList a', { timeout: 5000 }).catch(() => {});
 ok(/Pet shop/.test(await page.locator('#hubList').innerText()), 'the hub on /generators/ lists it (newest)');
 await page.locator('#hub').scrollIntoViewIfNeeded(); await shot('3-hub');
 await page.click('#hubList a'); await page.waitForSelector('#res li');
-ok(/From the hub: "Pet shop"/.test(await page.locator('#from').innerText()) && (await page.locator('#report').isVisible()), 'opening it from the hub shows where it came from, Remix and Report');
+ok(/From the hub: "Pet shop"/.test(await page.locator('#from').innerText()) && (await page.locator('#report').isVisible()) && /\/gen\//.test(page.url()), 'opening it from the hub (its /gen/ link) shows where it came from, Remix and Report');
+// inputs, conditional odds, [names[gender]] and if/else, live in the editor
+await page.goto(base + '/generators/make/'); await page.waitForSelector('#res li');
+await page.fill('#src', '$inputs\n  gender = select female|male\noutput\n  [names[gender]] the [cls]. [if (gender == "male") {He} else {She}] waves.\nnames\n  female\n    Ada\n  male\n    Bo\ncls\n  wizard ^[gender == "female"]\n  knight ^[gender == "male"]\n'); await page.waitForTimeout(400);
+ok((await lines()).every((l) => l === 'Ada the wizard. She waves.'), 'inputs: female by default, the conditional odds and if/else follow it');
+await page.selectOption('#inputs select', 'male'); await page.waitForTimeout(200);
+ok((await lines()).every((l) => l === 'Bo the knight. He waves.'), 'choosing male changes every result');
+await shot('6-editor-inputs');
 // 4. the image page: a prompt, two pictures
 await page.goto(base + '/image/'); await page.fill('#prompt', 'a red fox curled up in the snow'); await page.click('#styles button[data-k="watercolor"]'); await page.selectOption('#many', '2');
 await page.click('#make'); await page.waitForFunction(() => document.querySelectorAll('#pics img').length === 2, null, { timeout: 10000 }).catch(() => {});
@@ -109,6 +126,13 @@ const dl = await page.locator('#pics figure a[download]').first().getAttribute('
 const first = await page.locator('#pics img').first().getAttribute('src');
 await page.locator('#pics figure').first().getByRole('button', { name: 'Same seed again' }).click(); await page.waitForFunction(() => document.querySelectorAll('#pics img').length === 1, null, { timeout: 8000 }).catch(() => {});
 ok((await page.locator('#pics img').first().getAttribute('src')) === first, 'Same seed again makes the same picture');
+// share to the public gallery, then vote
+await page.locator('#pics figure').first().getByRole('button', { name: 'Share to the gallery' }).click(); await page.waitForTimeout(500);
+await page.waitForSelector('#pub img', { timeout: 5000 }).catch(() => {});
+ok((await page.locator('#pub figure').count()) === 1 && /a red fox/.test(await page.locator('#pub').innerText()), 'the shared picture is in the public gallery with its words');
+const vb = page.locator('#pub figure button').first(); await vb.click(); await page.waitForTimeout(300); ok(/▲ 1/.test(await vb.innerText()), 'a vote counts');
+ok(await page.locator('#pub img').first().evaluate((i) => i.complete && i.naturalWidth > 0), 'the gallery picture loads from its own address');
+await page.locator('#gallery').scrollIntoViewIfNeeded(); await shot('7-gallery');
 // a refusal and the painter resting
 await page.fill('#prompt', 'photo of Taylor Swift'); await page.click('#make'); await page.waitForTimeout(600);
 ok(/real people/.test(await page.locator('#note').innerText()), 'a photo of a named real person is refused in plain words');
@@ -117,10 +141,10 @@ ok(/painter is resting/i.test(await page.locator('#pics').innerText()), 'with no
 await shot('5-image-resting');
 // 5. the gate's own check on this page
 painterOn = true;
-const g = await pictureOf(browser, base + '/image/?' + new URLSearchParams({ prompt: 'a red fox curled up in the snow', style: 'watercolor', seed: '7', n: '1', go: '1' }), 15000);
+const g = await pictureOf(browser, base + '/image/?' + new URLSearchParams({ prompt: 'a red fox curled up in the snow', style: 'watercolor', seed: '7', n: '1', go: '1' }), 15000, '#pics img');
 ok(g.n === 1, 'the gate\'s picture check (tower-gate.mjs pictureOf) sees a generated picture on /image/');
 painterOn = false; store.clear(); resetGuard(); // a new minute for the per-connection limit
-const g0 = await pictureOf(browser, base + '/image/?' + new URLSearchParams({ prompt: 'a castle on a hill', seed: '8', n: '1', go: '1' }), 5000);
+const g0 = await pictureOf(browser, base + '/image/?' + new URLSearchParams({ prompt: 'a castle on a hill', seed: '8', n: '1', go: '1' }), 5000, '#pics img');
 ok(g0.n === 0 && /resting/.test(g0.missing[0]), 'and does not count the page when the painter rests: ' + g0.missing[0]);
 // sideways overflow at 390 px on the three pages
 for (const u of ['/generators/', '/generators/make/', '/image/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }

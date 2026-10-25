@@ -3,11 +3,11 @@
   import { STYLES, SHAPES, PER_GO, styleOf, shapeOf } from '/lib/image-gen.js';
   addEventListener('load', () => {
     const $ = (id) => document.getElementById(id), de = /^de\b/i.test(navigator.language || '');
-    const T = de ? { title: 'KI-Bildgenerator', sub: 'Schreib, was du sehen willst. Wähl Stil und Format, dann bis zu vier Bilder auf einmal. Kostenlos, ohne Anmeldung.', prompt: 'Beschreib das Bild', neg: 'Weglassen (optional)', style: 'Stil', shape: 'Format', many: 'Wie viele', seed: 'Seed (gleicher Seed und gleiche Worte ergeben dasselbe Bild)', newSeed: 'Jedes Mal ein neuer Seed', make: 'Bilder machen', painting: 'Wird gemalt', download: 'Herunterladen', again: 'Gleicher Seed', copy: 'Prompt kopieren', keep: 'Behalten', kept: 'Behalten ✓', hide: 'Ausblenden', gal: 'Auf diesem Gerät behalten', clear: 'Galerie leeren', left: 'Bilder heute übrig', copied: 'Kopiert', offline: 'Für Bilder brauche ich Internet.', squares: { square: 'Quadrat', portrait: 'Hochformat', landscape: 'Querformat', wide: 'Breit' } }
-      : { title: 'AI image generator', sub: 'Type what you want to see. Pick a style and a shape, then make up to four at a go. Free, no sign-up.', prompt: 'Describe the picture', neg: 'Leave out (optional)', style: 'Style', shape: 'Shape', many: 'How many', seed: 'Seed (the same seed and words make the same picture)', newSeed: 'A new seed each time', make: 'Make pictures', painting: 'Painting', download: 'Download', again: 'Same seed again', copy: 'Copy prompt', keep: 'Keep', kept: 'Kept ✓', hide: 'Hide', gal: 'Kept on this device', clear: 'Clear the gallery', left: 'pictures left today for everyone', copied: 'Copied', offline: 'A picture needs the internet.', squares: { square: 'Square', portrait: 'Portrait', landscape: 'Landscape', wide: 'Wide' } };
+    const T = de ? { title: 'KI-Bildgenerator', sub: 'Schreib, was du sehen willst. Wähl Stil und Format, dann bis zu vier Bilder auf einmal. Kostenlos, ohne Anmeldung.', prompt: 'Beschreib das Bild', neg: 'Weglassen (optional)', style: 'Stil', shape: 'Format', many: 'Wie viele', seed: 'Seed (gleicher Seed und gleiche Worte ergeben dasselbe Bild)', newSeed: 'Jedes Mal ein neuer Seed', make: 'Bilder machen', painting: 'Wird gemalt', download: 'Herunterladen', again: 'Gleicher Seed', copy: 'Prompt kopieren', keep: 'Behalten', kept: 'Behalten ✓', hide: 'Ausblenden', gal: 'Auf diesem Gerät behalten', clear: 'Galerie leeren', left: 'Bilder heute übrig', copied: 'Kopiert', share: 'In die Galerie', shared: 'In der Galerie ✓', noShare: 'Teilen ging gerade nicht.', vote: 'Stimme', use: 'Diese Worte nehmen', report: 'Melden', reported: 'Gemeldet', reportQ: 'Dieses Bild melden?', pubOff: 'Die Galerie braucht Internet.', pubNone: 'Noch nichts. Teil das erste Bild!', pubH: 'Öffentliche Galerie', offline: 'Für Bilder brauche ich Internet.', squares: { square: 'Quadrat', portrait: 'Hochformat', landscape: 'Querformat', wide: 'Breit' } }
+      : { title: 'AI image generator', sub: 'Type what you want to see. Pick a style and a shape, then make up to four at a go. Free, no sign-up.', prompt: 'Describe the picture', neg: 'Leave out (optional)', style: 'Style', shape: 'Shape', many: 'How many', seed: 'Seed (the same seed and words make the same picture)', newSeed: 'A new seed each time', make: 'Make pictures', painting: 'Painting', download: 'Download', again: 'Same seed again', copy: 'Copy prompt', keep: 'Keep', kept: 'Kept ✓', hide: 'Hide', gal: 'Kept on this device', clear: 'Clear the gallery', left: 'pictures left today for everyone', copied: 'Copied', share: 'Share to the gallery', shared: 'In the gallery ✓', noShare: 'It could not be shared just now.', vote: 'Vote', use: 'Use these words', report: 'Report', reported: 'Reported', reportQ: 'Report this picture as unsafe or rude? Three reports take it down until it is looked at.', pubOff: 'The gallery needs the internet.', pubNone: 'Nothing yet. Share the first picture!', pubH: 'Public gallery', offline: 'A picture needs the internet.', squares: { square: 'Square', portrait: 'Portrait', landscape: 'Landscape', wide: 'Wide' } };
     if (de) { document.documentElement.lang = 'de'; document.title = 'KI-Bildgenerator: Text zu Bild, kostenlos · Verse'; }
     $('title').textContent = T.title; $('sub').textContent = T.sub; $('promptL').textContent = T.prompt; $('negL').textContent = T.neg; $('styleH').textContent = T.style; $('shapeH').textContent = T.shape;
-    $('manyL').textContent = T.many; $('seedL').textContent = T.seed; $('newSeedL').textContent = T.newSeed; $('make').textContent = T.make; $('galH').textContent = T.gal; $('galClear').textContent = T.clear;
+    $('manyL').textContent = T.many; $('seedL').textContent = T.seed; $('newSeedL').textContent = T.newSeed; $('make').textContent = T.make; $('galH').textContent = T.gal; $('galClear').textContent = T.clear; $('pubH').textContent = T.pubH; if (de) { $('pubSub').textContent = 'Bilder, die Leute hier gemacht und geteilt haben. Nur jugendfrei; melde alles andere.'; $('pubNew').textContent = 'Neueste'; $('pubTop').textContent = 'Meiste Stimmen'; }
     const q = new URLSearchParams(location.search);
     const state = { style: styleOf(q.get('style') || 'none'), shape: shapeOf(q.get('shape') || 'square') };
     if (q.get('prompt')) $('prompt').value = q.get('prompt').slice(0, 400);
@@ -42,8 +42,29 @@
       mk(T.copy, () => copy(p.prompt));
       if (kept) mk(T.hide, async () => { await tx('readwrite', (st) => st.delete(p.id)); drawGal(); });
       else { const k = mk(T.keep, async () => { await tx('readwrite', (st) => st.put({ ...p, at: Date.now() })); k.textContent = T.kept; k.setAttribute('aria-pressed', 'true'); drawGal(); }); mk(T.hide, () => f.remove()); }
+      if (!kept && p.painter) { const sh = mk(T.share, async () => { sh.disabled = true; try { const j = await (await fetch('/api/gallery', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ act: 'share', prompt: p.prompt, negative: p.negative || '', style: p.style, shape: p.shape, seed: p.seed }) })).json(); if (j.ok) { sh.textContent = T.shared; pub(state.pubSort); } else { sh.disabled = false; say(j.error || T.noShare); } } catch (_) { sh.disabled = false; say(T.noShare); } }); }
       cap.append(pp, meta, acts); f.append(fr, cap); return f;
     }
+    // the public gallery (functions/api/gallery.js): pictures by their own address, the words shown as text; votes and reports
+    state.pubSort = 'new';
+    async function pub(sort) {
+      state.pubSort = sort; $('pubNew').setAttribute('aria-pressed', String(sort === 'new')); $('pubTop').setAttribute('aria-pressed', String(sort === 'top'));
+      let items = []; try { const j = await (await fetch('/api/gallery?sort=' + sort)).json(); items = (j && j.items) || []; } catch (_) { $('pub').replaceChildren(Object.assign(document.createElement('p'), { className: 'note', textContent: T.pubOff })); return; }
+      if (!items.length) { $('pub').replaceChildren(Object.assign(document.createElement('p'), { className: 'note', textContent: T.pubNone })); return; }
+      $('pub').replaceChildren(...items.map((g) => {
+        const f = document.createElement('figure'), fr = document.createElement('div'), cap = document.createElement('figcaption'), [w, h] = SHAPES[g.shape] || SHAPES.square;
+        fr.className = 'frame'; fr.style.aspectRatio = w + ' / ' + h; const im = document.createElement('img'); im.loading = 'lazy'; im.src = '/api/gallery?img=' + encodeURIComponent(g.id); im.alt = g.prompt; im.width = w; im.height = h; fr.append(im);
+        const pp = document.createElement('div'); pp.className = 'p'; pp.textContent = g.prompt;
+        const acts = document.createElement('div'); acts.className = 'acts';
+        const vote = document.createElement('button'); vote.type = 'button'; vote.textContent = '▲ ' + g.votes; vote.setAttribute('aria-label', T.vote + ': ' + g.prompt + ' (' + g.votes + ')');
+        vote.addEventListener('click', async () => { vote.disabled = true; try { const j = await (await fetch('/api/gallery', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: g.id, act: 'vote' }) })).json(); if (j.ok) vote.textContent = '▲ ' + j.votes; } catch (_) {} });
+        const use = document.createElement('button'); use.type = 'button'; use.textContent = T.use; use.addEventListener('click', () => { $('prompt').value = g.prompt; state.style = g.style; state.shape = g.shape; pressed($('styles'), g.style); pressed($('shapes'), g.shape); scrollTo({ top: 0, behavior: 'smooth' }); $('prompt').focus(); });
+        const rep = document.createElement('button'); rep.type = 'button'; rep.textContent = T.report; rep.setAttribute('aria-label', T.report + ': ' + g.prompt);
+        rep.addEventListener('click', async () => { if (!confirm(T.reportQ)) return; try { await fetch('/api/gallery', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: g.id, act: 'report' }) }); } catch (_) {} rep.textContent = T.reported; rep.disabled = true; });
+        acts.append(vote, use, rep); cap.append(pp, acts); f.append(fr, cap); return f;
+      }));
+    }
+    $('pubNew').addEventListener('click', () => pub('new')); $('pubTop').addEventListener('click', () => pub('top'));
     async function left() { try { const j = await (await fetch('/api/image')).json(); $('left').textContent = j.off ? '' : j.left + ' ' + T.left; } catch (_) { $('left').textContent = ''; } }
     let going = false;
     async function make() {
@@ -71,7 +92,7 @@
     }
     $('make').addEventListener('click', make);
     $('prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) make(); });
-    drawGal(); left();
+    drawGal(); left(); pub('new');
     mountRelated($('related'), '/image/');
     if (q.get('go') === '1' && $('prompt').value.trim()) make();
   });

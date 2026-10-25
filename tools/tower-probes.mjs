@@ -259,7 +259,7 @@ export const PROBES = Object.freeze({
     // language: the editor opened with a generator in its link (nested lists, ^0 odds, an inline choice, a method and a kept value) has to show
     // results that only a working engine gives; publish and remix: the same page offers sharing, publishing, remixing and embedding
     pageParts: {
-      'image generation': { verse: '/image/?' + new URLSearchParams({ prompt: 'a red fox curled up in the snow', style: 'watercolor', shape: 'square', seed: '7', n: '1', go: '1' }), img: true, within: 60000 },
+      'image generation': { verse: '/image/?' + new URLSearchParams({ prompt: 'a red fox curled up in the snow', style: 'watercolor', shape: 'square', seed: '7', n: '1', go: '1' }), img: true, within: 60000, sel: '#pics img' }, // the results, never the public gallery below them
       'list language': { verse: '/generators/make/#g=' + LIST_PROBE, items: [['nested lists, odds, {a|b}, titleCase and a kept value worked out', (t) => (String(t).match(/^(?:Owl|Crow) (?:x|y) #7$/gm) || []).length >= 5], ['an item at odds ^0 never picked', (t) => !/^Cat (?:x|y) #7$/m.test(String(t))]] },
       'publish and remix': { verse: '/generators/make/#g=' + LIST_PROBE, items: [['a share link', /\bshare link\b/i], ['publish', /\bpublish\b/i], ['remix', /\bremix\b/i], ['embed', /\bembed\b/i]] },
     },

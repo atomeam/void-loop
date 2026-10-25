@@ -319,11 +319,11 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
  *  /api/ or /r2/ path) and that has really loaded (naturalWidth > 0). A picture button, a placeholder or a "resting" message is not one.
  *  Returns a score ({ n, of: 1, has, missing }) whose missing label says what the page showed instead. Exported for tools/tower-gate.test.mjs. */
 export const MADE_SRC = /^(?:data:image\/|blob:|https:\/\/[^/]*r2\.(?:dev|cloudflarestorage\.com)\/|\/(?:api|r2)\/)/;
-export async function pictureOf(b, url, within = 60000) {
+export async function pictureOf(b, url, within = 60000, sel = 'img') { // sel: where the made picture must appear (a page's results, never its gallery)
   const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US' });
   try {
     const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 });
-    const ok = await p.waitForFunction((src) => [...document.images].some((im) => new RegExp(src).test(im.getAttribute('src') || '') && im.complete && im.naturalWidth > 0), MADE_SRC.source, { timeout: within, polling: 500 }).then(() => true).catch(() => false);
+    const ok = await p.waitForFunction(([src, q]) => [...document.querySelectorAll(q)].some((im) => im.tagName === 'IMG' && new RegExp(src).test(im.getAttribute('src') || '') && im.complete && im.naturalWidth > 0), [MADE_SRC.source, sel], { timeout: within, polling: 500 }).then(() => true).catch(() => false);
     if (ok) return { n: 1, of: 1, has: ['a generated picture within ' + Math.round(within / 1000) + ' s'], missing: [] };
     const said = await p.evaluate(() => { const live = [...document.querySelectorAll('[role=status], [role=alert], [aria-live]')].map((e) => e.innerText.trim()).filter(Boolean).join(' · '); return (live || (document.querySelector('main') || document.body).innerText).replace(/\s+/g, ' ').slice(0, 160); }).catch(() => ''); // what the page says about it (its status lines first)
     return { n: 0, of: 1, has: [], missing: ['a generated picture within ' + Math.round(within / 1000) + ' s (the page showed: "' + said + '")'] };
@@ -402,7 +402,7 @@ async function measureFloor(f, data) {
   for (const [a, pp] of Object.entries((probe && probe.pageParts) || {})) {
     if (!want.has(a)) continue;
     const url = new URL(pp.verse, VERSE).href;
-    if (pp.img) v.parts = { ...(v.parts || {}), [a]: await pictureOf(b, url, pp.within || 60000) };
+    if (pp.img) v.parts = { ...(v.parts || {}), [a]: await pictureOf(b, url, pp.within || 60000, pp.sel || 'img') };
     else { const got = await answer(b, url, null); if (got !== null) v.parts = { ...(v.parts || {}), [a]: score(got, pp.items) }; }
   }
   await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed

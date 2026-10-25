@@ -51,6 +51,7 @@ export const LIMITS = {
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
   image: { rpm: 30, body: 2000 }, // the text-to-image page (functions/api/image.js): a prompt of 400 characters in, one picture out; 6 a minute and 24 a day per hashed connection and the day's shared cap in the route itself
+  gallery: { rpm: 60, body: 2000 }, // the public image gallery (functions/api/gallery.js): a share names a picture /api/image made today (no bytes in), votes and reports; limits per hashed connection in the route itself
   generators: { rpm: 60, body: 64000 }, // the generators hub (functions/api/generators.js): a published generator of up to 20,000 characters; 3 publishes a minute, 10 a day per hashed connection in the route itself
   tally: { rpm: 60, body: 200 }, // everyone's tally (functions/api/tally.js): a closed list (coin: heads, tails) and a count up to 20 in; integers out; 30 a minute and 600 a day per hashed connection in the route itself, no model
   react: { rpm: 60, body: 300 }, // spectator reactions (functions/api/react.js): a closed list of 6 ids and a ledger slug in; integer counts out; 20 a minute and 200 a day per hashed connection in the route itself, no model

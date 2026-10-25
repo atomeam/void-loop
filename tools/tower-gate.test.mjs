@@ -352,6 +352,7 @@ test('image generation needs a picture the page really made: a button, a placeho
     '/made': '<main><p>Painting…</p></main><script>setTimeout(()=>{const i=new Image();i.alt="a fox";i.src="' + PNG + '";document.querySelector("main").replaceChildren(i)},1200)</script>',
     '/button': '<main><button>Picture it</button><img src="/logo.png" alt="logo"></main>',
     '/resting': '<main><p>The painter is resting right now.</p></main>',
+    '/gallery-only': '<main><section id="pics"><p>The painter is resting.</p></section><section><img alt="shared" src="' + PNG + '"></section></main>',
   };
   const server = http.createServer((q, r) => { r.writeHead(200, { 'content-type': 'text/html' }); r.end('<!doctype html><body>' + (PAGES[q.url] || '')); }).listen(0);
   await new Promise((r) => server.once('listening', r));
@@ -359,6 +360,7 @@ test('image generation needs a picture the page really made: a button, a placeho
   try {
     assert.equal((await pictureOf(b, at('/made'), 6000)).n, 1, 'a data: picture that loaded');
     const btn = await pictureOf(b, at('/button'), 2000); assert.equal(btn.n, 0); assert.match(btn.missing[0], /Picture it/);
+    assert.equal((await pictureOf(b, at('/gallery-only'), 2000, '#pics img')).n, 0, 'a gallery picture below the results does not count');
     const rest = await pictureOf(b, at('/resting'), 2000); assert.equal(rest.n, 0); assert.match(rest.missing[0], /resting/);
     assert.ok(MADE_SRC.test('blob:https://a-to-mind.com/x') && MADE_SRC.test('/api/image/x') && !MADE_SRC.test('/og.png'));
   } finally { await b.close(); server.close(); }

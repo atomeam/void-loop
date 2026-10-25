@@ -45,7 +45,8 @@ async function forgeToday(env, day) {
   try { const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(day).first(); return Number(r && r.n) || 0; } catch (_) { return 0; } // no table yet: the forge has painted nothing
 }
 const hex = (buf) => [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, '0')).join('');
-async function cacheReq(origin, parts) { return new Request(origin + '/__void-image/' + hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(parts.join('\u0001'))))); }
+/** the edge-cache key of one picture: the day, the words, the style, the shape and the seed, hashed (functions/api/gallery.js reads it too) */
+export async function cacheReq(origin, parts) { return new Request(origin + '/__void-image/' + hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(parts.join('\u0001'))))); }
 
 // one picture from Workers AI's image model (klein takes multipart form data with the size and the seed)
 export async function paintAi(env, prompt, [w, h], seed) {

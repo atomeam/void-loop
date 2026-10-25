@@ -50,6 +50,7 @@
   .help dt { margin-top: 6px; } .help dd { margin: 0 0 4px 0; color: var(--soft); font-size: 14px; }
   .mine li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; }
   .mine { list-style: none; padding: 0; margin: 0; }
+  #inputs { margin: 0 0 8px; } .inp { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--soft); } .inp select, .inp input { min-width: 120px; }
   [hidden] { display: none !important; }
   html.embed .noembed { display: none !important; }
   html.embed main { padding: 8px; } html.embed .panes { grid-template-columns: 1fr; }
@@ -93,6 +94,7 @@
         <button type="button" id="report" hidden>Report</button>
         <span class="seed" id="seed">seed 0</span>
       </div>
+      <div class="row" id="inputs" hidden aria-label="Choices"></div>
       <ol class="res" id="res" aria-live="polite"></ol>
     </section>
   </div>
@@ -116,6 +118,12 @@
       <dt><code>[animal.selectUnique(3).joinItems(", ")]</code></dt><dd>Several at once: <code>selectMany(n)</code> may repeat, <code>selectUnique(n)</code> never does, <code>selectAll</code> takes every entry.</dd>
       <dt><code>[hero = name, ""]</code> then <code>[hero]</code></dt><dd>Keep a pick and say it again later; the <code>""</code> keeps it quiet the first time.</dd>
       <dt><code>[deck = card.consumableList, ""]</code> then <code>[deck] [deck]</code></dt><dd>Deal without repeats until the list is used up.</dd>
+      <dt><code>wizard ^[gender == "female"]</code></dt><dd>Odds worked out at each pick: true counts as 1, false as 0, a number as itself.</dd>
+      <dt><code>[names[gender]]</code></dt><dd>The nested list whose name is the value of gender.</dd>
+      <dt><code>[if (level &gt; 10) {A veteran.} else {A rookie.}]</code> and <code>[level &gt;= 15 ? "Legendary" : ""]</code></dt><dd>Choose by a condition: <code>== != &lt; &gt; &lt;= &gt;= &amp;&amp; || !</code>, and sums with <code>+ - * / %</code>. Only the branch taken is picked from.</dd>
+      <dt><code>$inputs</code> with <code>gender = select female|male</code>, <code>level = number 1-20</code>, <code>nick = text Shadow</code></dt><dd>Choices shown above the results; use them like kept values: <code>[gender]</code>.</dd>
+      <dt><code>animals = {import:abcdefgh}</code></dt><dd>Use a published generator: <code>[animals]</code> is its result, <code>[animals.bird]</code> one of its lists. The id is the end of its hub link.</dd>
+      <dt><code>$meta</code> with <code>title = ...</code>, <code>description = ...</code>, <code>image = &lt;gallery id&gt;</code></dt><dd>How its published link looks when shared; the image is a picture from the <a href="/image/#gallery">public gallery</a>.</dd>
       <dt><code>image</code></dt><dd>A list called image is a picture prompt: "Picture it" sends it to the image generator.</dd>
       <dt><code>$title = My generator</code>, <code>// a comment</code>, <code>&lt;br&gt;</code>, <code>\[</code> <code>\{</code> <code>\|</code> <code>\s</code></dt><dd>A name, a note to yourself, a new line, and the characters themselves.</dd>
     </dl>
