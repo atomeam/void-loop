@@ -206,6 +206,26 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     check('reference miniature (countdown): draws real pixels, its state follows the data (12 -> 11), a remount by key moves the live one (nothing rebuilt), the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands with no flip, and unmounting frees it',
       ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.flipping === true && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the tool cards' figures (owner, 2026-10-25: "should be a card for all too and 3d figure if possible"): the random number's die, the
+  // password's padlock, the colour's paint-chip fan, the wheel, translate's speech bubbles, the recipe's pot and the word count's page, each through the behaviour contract with two data values that look different
+  if (want("3d: the tool cards' figures")) {
+    const E = [{ label: 'ann' }, { label: 'bob' }, { label: 'cat' }];
+    const kinds = [
+      ['dice', { value: '12', lo: 1, hi: 100 }, { value: '77', lo: 1, hi: 100 }, 'rolling', (s) => s.value === '77'],
+      ['padlock', { score: 4 }, { score: 1 }, 'moving', (s, a) => s.score === 1 && s.open === true && a.open === false],
+      ['swatch', { hex: '#ff5733' }, { hex: '#2a9d8f' }, 'opening', (s) => s.hex === '#2a9d8f'],
+      ['wheel', { entries: E, win: 'bob' }, { entries: E, win: 'cat' }, 'spinning', (s, a) => s.win === 'cat' && a.win === 'bob'],
+      ['bubbles', { from: 'hello', to: 'hola', lang: 'Spanish' }, { from: 'thank you', to: 'gracias', lang: 'Spanish' }, 'turning', (s) => s.to === 'gracias' && s.from === 'thank you'],
+      ['pot', { dish: 'Pancakes', n: 6 }, { dish: 'Lasagne', n: 12 }, 'lifting', (s) => s.dish === 'Lasagne' && s.n === 12],
+      ['page', { words: 9 }, { words: 180 }, 'sliding', (s) => s.words === 180],
+    ];
+    for (const [kind, a, b, settledWhen, right] of kinds) {
+      const c = await miniContract(fresh, { kind, a, b, settledWhen });
+      const ok = (r, still) => r.drawn && r.colours > 20 && r.same && r.stateA && r.stateB && right(r.stateB, r.stateA) && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight[settledWhen] === false : true);
+      check('3D ' + kind + ' (a tool card\'s figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it',
+        ok(c.moving, false) && ok(c.still, true) && !c.errors.length, JSON.stringify(c).slice(0, 900));
+    }
+  }
   // ---- the gear explainer (explainer.gear-pair) through the same contract: a 16-32 pair, then the driver changed to 24 teeth
   if (want("3d: the gear explainer")) {
     const G = await import(pathToFileURL(path.join(root, 'skills', 'gear-pair-rules.js')).href);

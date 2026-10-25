@@ -8,6 +8,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { check, leakCount, MAX_LEN } from '../lib/pwcheck.js';
+import { bandMini } from '../lib/card-mini.js';
 
 // "how secure is my password", "is hunter2 a good password" (answered with a warning, never read), "is my password strong?", "check my password strength", "test the strength of my password", "how long would it take to crack my password"
 const ASKS = /^(?:please\s+)?(?:(?:how|is)\s+(?:secure|strong|safe|good)\b.*\bpassword\b|how\s+\w+\s+is\s+my\s+password|is\s+(?:my|this|the|our)\s+(?:\w+\s+)?(?:password|passcode)\s+(?:strong|secure|safe|good|ok|okay|any\s+good)(?:\s+enough)?|is\s+\S+(?:\s+\S+){0,3}\s+(?:a\s+)?(?:good|strong|secure|safe|decent)\s+(?:password|passcode)|(?:check|test|rate|grade)\s+(?:the\s+)?(?:strength\s+of\s+)?(?:my|a|the)?\s*password(?:\s+strength)?|(?:password|passcode)\s+(?:strength|checker|check|tester)|how\s+long\s+(?:to|would\s+it\s+take\s+to)\s+crack\b.*\bpassword\b|can\s+you\s+check\s+my\s+password)\s*[?.!]*$/i;
@@ -20,7 +21,8 @@ export const carries = (text) => String(text || '').trim().split(/\s+/).length >
 
 function run(text, api) {
   const { showPage } = api, warn = carries(text);
-  showPage((el) => {
+  let lock = null; // the 3D padlock follows the rating as you type: open while weak, shut once strong (skills/mini/padlock.js)
+  const card = showPage((el) => {
     el.dataset.cardKind = 'Password check';
     el.innerHTML = '<h2>How secure is my password?</h2>' // void-review: ok (constant markup: nothing from the ask is put in)
       + (warn ? '<p class="pw-warn" role="alert"><b>Do not type a real password into the ask box:</b> asks are kept in this browser’s history. Use the box below instead; it stays on this device.</p>' : '')
@@ -34,7 +36,7 @@ function run(text, api) {
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('input,button,a')) b.addEventListener(ev, (e) => e.stopPropagation());
     q('.pw-show').addEventListener('change', (e) => { inp.type = e.target.checked ? 'text' : 'password'; });
     const draw = () => {
-      const r = check(inp.value); msg.textContent = ''; out.textContent = ''; if (!r.length) return;
+      const r = check(inp.value); msg.textContent = ''; out.textContent = ''; if (lock) lock.update({ score: r.length ? r.score : 0 }); if (!r.length) return;
       const line = (t, b) => { const p = document.createElement('p'); p.style.margin = '6px 0'; if (b) { const s = document.createElement('b'); s.textContent = b; p.append(s, ' '); } p.append(t); out.appendChild(p); };
       line('A login that allows 100 tries a second: ' + r.online + '.', r.label + '.'); line('A stolen list cracked offline at 10 billion tries a second: ' + r.offline + '.');
       for (const t of r.reasons) line(t); for (const t of r.tips) line(t);
@@ -47,6 +49,7 @@ function run(text, api) {
     });
     setTimeout(() => { try { inp.focus(); } catch (_) { /* a card with no focus */ } }, 50);
   });
+  bandMini(api, card, 'padlock', { score: 0 }, '3D padlock: open until the password is strong').then((h) => { lock = h; });
   return 'pwcheck';
 }
 

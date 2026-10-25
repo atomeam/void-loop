@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 795,
+ "counted": 803,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -290,6 +290,13 @@
    "tests": 2
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 7,
+   "direct": 5,
+   "dependants": 9,
+   "tests": 0
+  },
+  {
    "file": "lib/card-share.js",
    "skills": 7,
    "direct": 3,
@@ -539,6 +546,13 @@
    "skills": 3,
    "direct": 1,
    "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
    "tests": 1
   },
   {
@@ -1250,13 +1264,6 @@
   },
   {
    "file": "lib/photo-library.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/pwcheck.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3321,6 +3328,22 @@
     "skills/merge.js"
    ]
   },
+  "lib/card-mini.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pwcheck.js",
+    "skills/recipe.js",
+    "skills/translate.js",
+    "skills/util.js",
+    "skills/wheel.js"
+   ],
+   "reachedBy": [
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/languages.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/card-sections.js": {
    "imports": [],
    "importedBy": [
@@ -5329,7 +5352,13 @@
   "lib/pwcheck.js": {
    "imports": [],
    "importedBy": [
-    "skills/pwcheck.js"
+    "skills/pwcheck.js",
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/qr.js": {
@@ -8520,6 +8549,10 @@
    ],
    "importedBy": []
   },
+  "skills/mini/bubbles.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/mini/calculator.js": {
    "imports": [],
    "importedBy": []
@@ -8555,6 +8588,10 @@
    "importedBy": []
   },
   "skills/mini/counter.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/dice.js": {
    "imports": [],
    "importedBy": []
   },
@@ -8634,6 +8671,14 @@
    ],
    "importedBy": []
   },
+  "skills/mini/padlock.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/page.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/mini/paper.js": {
    "imports": [],
    "importedBy": [
@@ -8654,6 +8699,10 @@
    "imports": [
     "skills/mini/tabletop.js"
    ],
+   "importedBy": []
+  },
+  "skills/mini/pot.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/mini/rack.js": {
@@ -8682,6 +8731,10 @@
    "importedBy": []
   },
   "skills/mini/swarm.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/swatch.js": {
    "imports": [],
    "importedBy": []
   },
@@ -8726,6 +8779,10 @@
     "skills/mini/tabletop.js",
     "skills/sky3d.js"
    ],
+   "importedBy": []
+  },
+  "skills/mini/wheel.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/minimap.js": {
@@ -9149,7 +9206,8 @@
   },
   "skills/pwcheck.js": {
    "imports": [
-    "lib/pwcheck.js"
+    "lib/pwcheck.js",
+    "lib/card-mini.js"
    ],
    "importedBy": []
   },
@@ -9237,6 +9295,7 @@
   },
   "skills/recipe.js": {
    "imports": [
+    "lib/card-mini.js",
     "skills/swaps.js"
    ],
    "importedBy": []
@@ -10096,6 +10155,7 @@
   },
   "skills/translate.js": {
    "imports": [
+    "lib/card-mini.js",
     "skills/is-it.js"
    ],
    "importedBy": [
@@ -10125,7 +10185,9 @@
   },
   "skills/util.js": {
    "imports": [
-    "lib/colour.js"
+    "lib/colour.js",
+    "lib/card-mini.js",
+    "lib/pwcheck.js"
    ],
    "importedBy": [
     "lib/wordcount.js",
@@ -10247,7 +10309,8 @@
   },
   "skills/wheel.js": {
    "imports": [
-    "lib/wheel.js"
+    "lib/wheel.js",
+    "lib/card-mini.js"
    ],
    "importedBy": []
   },

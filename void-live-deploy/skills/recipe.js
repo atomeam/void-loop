@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "recipe for pancakes", "pancake recipe", "recipes with chicken".
  */
+import { bandMini } from '../lib/card-mini.js';
 import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
 export function dishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -40,6 +41,7 @@ async function run(text, api) {
       + (m.strMealThumb ? '<img alt="" src="' + esc(m.strMealThumb) + '/preview">' : '')
       + '<div class="sub" style="margin-top:8px">Ingredients</div><ul>' + ing.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
       + '<div class="sub">Steps</div><ol>' + steps.map((x) => '<li style="margin:3px 0">' + esc(x) + '</li>').join('') + '</ol>' + src(m.idMeal);
+    bandMini(api, el, 'pot', { dish: m.strMeal, n: ing.length }, '3D pot on a cutting board with the recipe card for ' + m.strMeal); // owner, 2026-10-25: "3d figure if possible"
     return 'recipe';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';

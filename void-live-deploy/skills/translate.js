@@ -2,6 +2,7 @@
  * translate skill — Google gtx, MyMemory fallback, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
+import { bandMini } from '../lib/card-mini.js';
 import { isIt } from './is-it.js';
 const LANGS = {
   english:'en', spanish:'es', french:'fr', german:'de', italian:'it', portuguese:'pt', dutch:'nl',
@@ -59,6 +60,7 @@ async function run(text, api) {
       + '<div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
       + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button> <a class="tr-full" href="/translate/?q=' + encodeURIComponent(p.q) + '&to=' + encodeURIComponent(to) + '" style="margin-left:8px">open the translator (100 languages, listen, speak, camera)</a>'
       + '<div class="src">Source: ' + (via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
+    bandMini(api, el, 'bubbles', { from: p.q, to: out, lang: p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase() }, '3D speech bubbles: ' + p.q + ' and ' + out); // owner, 2026-10-25: "3d figure if possible"
     const btn = el.querySelector('.tr-copy');
     if (btn) btn.addEventListener('click', async () => {
       let ok = false;

@@ -11,6 +11,7 @@ const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUppe
   reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
 const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
 // syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
+import { bandMini } from '../lib/card-mini.js';
 export function syllables(w) {
   w = String(w).toLowerCase().replace(/[^a-z]/g, ''); if (!w) return 0; if (w.length <= 3) return 1;
   let s = w.replace(/(?:[^laeiouy]es|[^laeiouy]ed|[^laeiouy]e)$/, '').replace(/^y/, '');
@@ -160,6 +161,10 @@ async function run(text, api) {
   // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
   const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
   if (el && el.dataset && page) el.dataset.page = page;
+  // and a 3D figure of the thing (owner, 2026-10-25: "3d figure if possible"): a paint-chip fan in the colour, a padlock rated by lib/pwcheck.js
+  if (el && q.kind === 'color') { const hx = (el.querySelector('ul li') || {}).textContent || ''; const m = /#[0-9a-f]{6}/i.exec(hx); if (m) bandMini(api, el, 'swatch', { hex: m[0] }, '3D paint-chip fan in ' + m[0]); }
+  if (el && q.kind === 'count' && !q.chars) bandMini(api, el, 'page', { words: (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length }, '3D page of writing, ' + (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length + ' words');
+  if (el && q.kind === 'password') { const pw = (el.querySelector('.util-out') || el.querySelector('.big') || {}).textContent || ''; import('../lib/pwcheck.js').then((P) => bandMini(api, el, 'padlock', { score: P.check(pw).score }, '3D padlock: ' + P.check(pw).label.toLowerCase())).catch(() => {}); }
   const b = el && el.querySelector && el.querySelector('.util-copy');
   if (b) b.addEventListener('click', async () => { const s = (el.querySelector('.util-out') || el.querySelector('p')).textContent; let ok = false; try { await navigator.clipboard.writeText(s); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'select it to copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600); });
   return 'util';

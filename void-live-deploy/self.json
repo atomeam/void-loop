@@ -329,6 +329,7 @@
   "arcade",
   "battleship",
   "book",
+  "bubbles",
   "calculator",
   "camp",
   "checkers",
@@ -337,6 +338,7 @@
   "connect4",
   "countdown",
   "counter",
+  "dice",
   "eightball",
   "fireworks",
   "forge",
@@ -351,22 +353,27 @@
   "moon",
   "notepad",
   "othello",
+  "padlock",
+  "page",
   "paper",
   "pentamote",
   "piggybank",
   "poker",
+  "pot",
   "rack",
   "ringer",
   "savings",
   "stopwatch",
   "swarm",
+  "swatch",
   "tabletop",
   "tictactoe",
   "timer",
   "tip",
   "tower",
   "void",
-  "weather"
+  "weather",
+  "wheel"
  ],
  "canon": {
   "version": 7,
@@ -484,84 +491,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T15:17:29Z",
-   "subject": "Notes and generators get their stage cards and links both ways"
+   "at": "2026-10-25T15:55:49Z",
+   "subject": "Tower gate: translate: tradukka.com,translate: freetranslations.org,translate: imtranslator.net,translate: translator.eu,translate…"
   },
   {
-   "at": "2026-10-25T15:17:29Z",
-   "subject": "Every tool page links to its card on the stage, and every tool page has a card that links back"
+   "at": "2026-10-25T15:55:45Z",
+   "subject": "Tower gate: docs and notes: quillpad.in measured against their live sites"
   },
   {
-   "at": "2026-10-25T15:15:43Z",
-   "subject": "Generators open offline: static imports (cached with the page) and a hold-paint timeout"
+   "at": "2026-10-25T15:55:18Z",
+   "subject": "Tower gate: calendar: calendar.zoho.com measured against their live sites"
   },
   {
-   "at": "2026-10-25T15:14:51Z",
-   "subject": "Deploys run side by side: one group per run, a run stops itself when a newer head's deploy is on its way"
+   "at": "2026-10-25T15:54:43Z",
+   "subject": "Tower gate: translate: randomtranslator.com,translate: translate.com,translate: systransoft.com,translate: lingvanex.com,translate…"
   },
   {
-   "at": "2026-10-25T15:14:29Z",
-   "subject": "Tower gate: docs and notes: anotepad.com,random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators…"
+   "at": "2026-10-25T15:54:20Z",
+   "subject": "Incident: the browser suite failed on bb561834 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T15:11:33Z",
-   "subject": "Incident: the browser suite failed on 5c1954f4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T15:54:07Z",
+   "subject": "Tower gate: recipes: simplyrecipes.com,recipes: tasty.co,recipes: bbcgoodfood.com,recipes: epicurious.com,recipes: delish.com,recipes…"
   },
   {
-   "at": "2026-10-25T15:04:22Z",
-   "subject": "Generators: reserve space for the chips and results, chips in one swipe row (layout shift 0.39 to 0.02)"
+   "at": "2026-10-25T15:49:15Z",
+   "subject": "Tower gate: recipes: minimalistbaker.com,recipes: budgetbytes.com,recipes: recipetineats.com,recipes: skinnytaste.com,recipes…"
   },
   {
-   "at": "2026-10-25T15:03:49Z",
-   "subject": "Notes page: rich text, search, version history (Versus floor docs and notes, lane of ten)"
+   "at": "2026-10-25T15:47:36Z",
+   "subject": "Tower gate: calendar: calendar.zoho.com,calendar: icloud.com,calendar: calendar.yahoo.com,calendar: outlook.live.com measured against…"
   },
   {
-   "at": "2026-10-25T15:03:15Z",
-   "subject": "Tower gate: docs and notes,random generators: reedsy.com,random generators: writingexercises.com measured against their live sites"
+   "at": "2026-10-25T15:44:55Z",
+   "subject": "Tower gate: calendar: calendar.online,calendar: teamup.com,calendar: timetreeapp.com,calendar: any.do,calendar: cozi.com,calendar…"
   },
   {
-   "at": "2026-10-25T15:02:41Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-25T15:01:33Z",
-   "subject": "Tower gate: random generators: reedsy.com,random generators: writingexercises.com,random generators: behindthename.com,random generators…"
-  },
-  {
-   "at": "2026-10-25T15:01:25Z",
-   "subject": "Incident: the browser suite failed on 52540791 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T15:01:11Z",
+   "at": "2026-10-25T15:41:51Z",
    "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com,random…"
   },
   {
-   "at": "2026-10-25T14:58:52Z",
-   "subject": "Tower gate: docs and notes,random generators: seventhsanctum.com,random generators: rangen.co.uk measured against their live sites"
+   "at": "2026-10-25T15:41:18Z",
+   "subject": "Tower gate: random generators: writingexercises.com,random generators: behindthename.com,random generators: namegenerator.com,random…"
   },
   {
-   "at": "2026-10-25T14:54:21Z",
-   "subject": "Refresh self card after merge"
+   "at": "2026-10-25T15:39:17Z",
+   "subject": "Tower gate: docs and notes: onenote.com,docs and notes: evernote.com,docs and notes: notion.so measured against their live sites"
   },
   {
-   "at": "2026-10-25T14:54:21Z",
-   "subject": "Generators page: 27 seeded text generators, picture it, perchance.org lane and probe"
+   "at": "2026-10-25T15:38:44Z",
+   "subject": "Notes lane: quillpad at www (the bare domain is a redirect stub the gate measured)"
   },
   {
-   "at": "2026-10-25T14:54:09Z",
-   "subject": "Tower gate: docs and notes measured against their live sites"
+   "at": "2026-10-25T15:35:30Z",
+   "subject": "Incident: the browser suite failed on ca16573c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T14:51:54Z",
-   "subject": "A card from a skill with a full page links to it"
+   "at": "2026-10-25T15:35:12Z",
+   "subject": "Tower gate: docs and notes: anotepad.com,docs and notes: quillpad.in,docs and notes: standardnotes.com,docs and notes: notepad.pw,docs and…"
   },
   {
-   "at": "2026-10-25T14:50:15Z",
-   "subject": "Incident: the browser suite failed on f72396f4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T15:33:42Z",
+   "subject": "Tower gate: random generators: fantasynamegenerators.com,random generators: seventhsanctum.com,random generators: rangen.co.uk,random…"
   },
   {
-   "at": "2026-10-25T14:49:55Z",
-   "subject": "A deploy re-measures every floor on the page it changed"
+   "at": "2026-10-25T15:33:37Z",
+   "subject": "Tower gate: random generators: springhole.net,random generators: reedsy.com,random generators: writingexercises.com,random generators…"
+  },
+  {
+   "at": "2026-10-25T15:33:03Z",
+   "subject": "Notes borrows Notion's core: wiki links and backlinks, slash menu, tables, templates, pins and tags; chat drives them"
+  },
+  {
+   "at": "2026-10-25T15:29:01Z",
+   "subject": "Gate: a lane site is measured at its own address, not its leader's"
+  },
+  {
+   "at": "2026-10-25T15:27:02Z",
+   "subject": "Tower gate: random generators: seventhsanctum.com measured against their live sites"
   }
  ],
  "builders": {

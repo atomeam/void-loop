@@ -5,11 +5,12 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { askWheel, pickIndex, fairRandom, pack } from '../lib/wheel.js';
+import { bandMini } from '../lib/card-mini.js';
 
 function run(text, api) {
   const { showPage, esc } = api, q = askWheel(text); if (!q) return null;
   const e = q.entries, href = '/wheel/' + (e.length ? '#' + pack(e) : ''), win = e.length >= 2 ? e[pickIndex(e, fairRandom())].label : '';
-  showPage((el) => {
+  const card = showPage((el) => {
     el.dataset.cardKind = 'Wheel';
     el.innerHTML = '<h2>' + (win ? 'The wheel says' : 'Spin the wheel') + '</h2>' // void-review: ok (escaped)
       + (win ? '<p class="wh-win" style="font-size:40px;font-weight:700;line-height:1.15;margin-top:6px;margin-bottom:6px;overflow-wrap:anywhere">' + esc(win) + '</p><p style="color:#8a8a8a">Out of ' + esc(e.map((x) => x.label + (x.weight > 1 ? ' (×' + x.weight + ')' : '')).join(', ')) + ', picked fairly.</p>'
@@ -17,6 +18,8 @@ function run(text, api) {
       + '<p><a class="wh-open" href="' + esc(href) + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">' + (win ? 'Spin it on the wheel' : 'Open the wheel') + '</a></p>'
       + '<div class="src">The winner is drawn with this browser\'s cryptographic random numbers; "Pizza*3" is three times as likely. Nothing is sent anywhere.</div>';
   });
+  // the wheel in 3D, spinning to the winner the card drew (skills/mini/wheel.js; owner, 2026-10-25: "3d figure if possible")
+  if (win) bandMini(api, card, 'wheel', { entries: e.map((x) => ({ label: x.label, weight: x.weight })), win }, '3D prize wheel stopping on ' + win);
   return 'wheel';
 }
 
