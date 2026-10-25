@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-49';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-50';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every

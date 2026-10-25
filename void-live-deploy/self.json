@@ -476,13 +476,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T21:42:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-25T07:41:11Z",
+   "subject": "Versus: the ladder where Verse fights real sites is named Versus everywhere a person reads it"
+  },
+  {
+   "at": "2026-10-25T07:40:41Z",
+   "subject": "Tower gate: weather measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T07:40:30Z",
+   "subject": "Tower gate: translate measured against their live sites"
+  },
   {
    "at": "2026-10-25T07:36:53Z",
    "subject": "Incident: the browser suite failed on 9ca44e4a (void-live-deploy/incidents.json)"
@@ -550,22 +562,14 @@
   {
    "at": "2026-10-25T07:03:44Z",
    "subject": "Handoff: the weather floor at 11 of 12, why its accuracy row still says Looking, and what the next run tries first"
-  },
-  {
-   "at": "2026-10-25T07:02:35Z",
-   "subject": "Tower gate: weather measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T06:59:11Z",
-   "subject": "Incident: the browser suite failed on 056b4a32 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T06:58:54Z",
-   "subject": "Tower gate: translate: randomtranslator.com,translate: translate.com,translate: systransoft.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (tower session, 2026-10-25, 07:45)",
+    "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
+   },
    {
     "name": "Claude (Versus rename, 2026-10-25, 08:00)",
     "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
@@ -585,10 +589,6 @@
    {
     "name": "Claude (seo run, 2026-10-25)",
     "line": "honest search presence for the tool pages, five commits on main: the sitemap is generated (tools/sitemap.mjs, a volatile refresh step: every tool page, the tower, the /fix/ and /is-it/…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 05:00)",
-    "line": "the photo resizer floor (pancardresizer.com) surpassed in one gate run after its probe: the gate puts its own one-pixel PNG into /resize-image/ with the size in the link (verseFile, PIXEL in tower-gate.mjs), 3 of 3 against the arithmetic…"
    }
   ],
   "ladders": [
