@@ -248,12 +248,68 @@ export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Home</
 // The cover is a tooled leather binding (owner, 2026-10-25: "this should be an awesomely detailed realistic engraved leather book cover"), drawn as one
 // inline SVG so it needs no image file and works offline: pebbled leather grain lit for relief, worn darker edges and scuffs, the hinge groove by the spine,
 // two blind-tooled fillets pressed into the leather, a gilt frame with a dotted roll, gilt fleurons in the four corners, and a gilt medallion in the middle
-// stamped with Verse's mark (an atom's three orbits round a spiral galaxy). The words are real text over it, stamped in gold (TOME_CSS .gilt).
+// stamped with Verse's mark (one galaxy shaped like an atom, atomGalaxy below). The words are real text over it, stamped in gold (TOME_CSS .gilt).
 const GOLD = '<linearGradient id="tg-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b8"/><stop offset=".22" stop-color="#e2b65a"/><stop offset=".48" stop-color="#9c6a22"/><stop offset=".7" stop-color="#f0cf78"/><stop offset="1" stop-color="#7c4d16"/></linearGradient>';
 // a corner fleuron: scrolls running along both edges and a leaf pointing in, drawn for the top-left corner (the other three are its mirror images)
 const FLEURON = 'M0 0 C40 2 70 10 92 30 C104 42 102 60 88 62 C76 63 72 50 80 44 C86 40 92 46 88 50 M0 0 C2 40 10 70 30 92 C42 104 60 102 62 88 C63 76 50 72 44 80 C40 86 46 92 50 88 '
   + 'M0 0 C26 22 46 36 72 72 M72 72 C58 70 48 62 46 50 C58 52 66 60 72 72 C70 58 62 48 50 46 M72 72 C82 86 96 92 110 92 C100 100 86 100 78 92 '
   + 'M18 6 C34 16 44 18 58 16 M6 18 C16 34 18 44 16 58 M30 30 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0';
+// The medallion's mark is ONE galaxy shaped like an atom (owner, 2026-10-25: "the verse book should have an atom shaped galaxy on cover not a galaxy with an
+// atom around it"), the canvas seal's atom galaxy (lib/void-seal.js drawSeal) pressed in gilt: three tilted streams of gas, dust and stars ARE the galaxy's
+// arms and the atom's orbits at once, crossing round a blazing bulge (the nucleus); each "electron" is a star cluster riding in its stream. No rails, no
+// separate spiral. Each stream's width and light swell and pinch round it (seeded harmonics); depth as in the seal: the back halves, the bulge, then the
+// front halves, whose dust lanes pass dark over the light. Seeded (mulberry32), so the cover is the same for everyone.
+const seeded = (seed) => { let a = seed >>> 0 || 1; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+/** the atom galaxy as SVG for a medallion of radius R at (cx, cy): needs the tg-gas, tg-puff, tg-bulge, tg-haze and tg-glow defs of leatherSvg. Pure. */
+export function atomGalaxy(cx, cy, R) {
+  const r = seeded(0x5e4b00c), gauss = () => { let u = 0; for (let k = 0; k < 4; k++) u += r(); return (u - 2) / 0.58; };
+  const n = (v) => (Math.round(v * 10) / 10).toString(), TAU = Math.PI * 2;
+  const streams = [-4, 56, 116].map((deg, k) => {
+    const rot = deg * Math.PI / 180, c = Math.cos(rot), s = Math.sin(rot), rx = R * (0.9 + r() * 0.04), ratio = 0.3 + r() * 0.04, ry = rx * ratio;
+    const harm = [1, 2, 3, 5].map((f) => ({ f, a: (0.5 / f) * (0.6 + r() * 0.8), ph: r() * TAU })), lane = r() * TAU;
+    const swell = (t) => { let v = 0; for (const q of harm) v += q.a * Math.sin(q.f * t + q.ph); return v; };
+    const at = (t, off = 0) => { const x = Math.cos(t) * (rx + off), y = Math.sin(t) * (ry + off * ratio); return [cx + x * c - y * s, cy + x * s + y * c]; };
+    return { k, at, swell, lane, e: [0.45, 3.55, 2.55][k], wid: (t) => R * 0.15 * Math.max(0.25, 1 + 0.85 * swell(t)), lum: (t) => Math.max(0.25, 0.75 + 0.45 * swell(t + 1.3)) };
+  });
+  // a ribbon of the stream from t0 to t1 whose width follows the stream's (k: a fraction of it), as one closed path
+  const ribbon = (S, t0, t1, k) => { const out = [], inn = []; for (let i = 0; i <= 18; i++) { const t = t0 + (t1 - t0) * i / 18, wd = S.wid(t) * k; out.push(S.at(t, wd / 2)); inn.push(S.at(t, -wd / 2)); }
+    return 'M' + out.concat(inn.reverse()).map(([x, y]) => n(x) + ' ' + n(y)).join('L') + 'Z'; };
+  const half = (S, near) => {
+    const t0 = near ? 0 : Math.PI, t1 = t0 + Math.PI, pick = () => t0 + r() * Math.PI;
+    const wake = (t) => { const d = ((S.e - t) % TAU + TAU) % TAU; return d < 0.7 ? 1 - d / 0.7 : 0; }; // the gas trailing the cluster
+    let g = '<path d="' + ribbon(S, t0, t1, 1.25) + '" fill="url(#tg-gas)" opacity="' + (near ? 0.5 : 0.36) + '" filter="url(#tg-haze)"/>'
+      + '<path d="' + ribbon(S, t0, t1, 0.42) + '" fill="#f4d48a" opacity="' + (near ? 0.42 : 0.3) + '" filter="url(#tg-haze)"/>';
+    // knots of gas: soft gilt puffs scattered across the stream, brighter in the cluster's wake
+    for (let i = 0; i < 12; i++) { const t = pick(), wd = S.wid(t), [x, y] = S.at(t, gauss() * wd * 0.3), rad = wd * (0.35 + r() * 0.5);
+      g += '<circle cx="' + n(x) + '" cy="' + n(y) + '" r="' + n(rad) + '" fill="url(#tg-puff)" opacity="' + n(Math.min(1, (0.25 + 0.35 * S.lum(t)) * (1 + wake(t))) * (near ? 1 : 0.75)) + '"/>'; }
+    // stars: tiny gilt dots, most tight to the spine, a few flung out; zero-length round-capped strokes, one path per size
+    const dots = ['', '', ''];
+    for (let i = 0; i < 86; i++) { const t = pick(), stray = r() < 0.08, wd = S.wid(t), [x, y] = S.at(t, gauss() * wd * (stray ? 1.3 : 0.32)), b = r() * S.lum(t);
+      dots[b > 0.72 ? 2 : b > 0.4 ? 1 : 0] += 'M' + n(x) + ' ' + n(y) + 'h0'; }
+    g += dots.map((d, z) => d ? '<path d="' + d + '" stroke="' + ['#c9954a', '#f2cf7c', '#fff4cf'][z] + '" stroke-width="' + [1.3, 1.9, 2.7][z] + '" stroke-linecap="round" opacity="' + [0.7, 0.85, 1][z] + '"/>' : '').join('');
+    // dust: a dark lane braided inside the stream, pressed soft into the gilt where the stream swells, broken where it thins (one path per weight)
+    const dust = ['', '', ''];
+    for (let i = 0; i < 30; i++) { const a = t0 + Math.PI * i / 30, b = a + Math.PI / 30 * 1.1, sw = S.swell(a * 2.3 + S.lane); if (sw < 0.2) continue;
+      const off = (t) => (0.04 + Math.sin(t * 3 + S.lane) * 0.12) * S.wid(t), [x0, y0] = S.at(a, off(a)), [x1, y1] = S.at(b, off(b));
+      dust[sw > 0.75 ? 2 : sw > 0.45 ? 1 : 0] += 'M' + n(x0) + ' ' + n(y0) + 'L' + n(x1) + ' ' + n(y1); }
+    g += '<g stroke="#1c0e05" stroke-linecap="round" fill="none" filter="url(#tg-soft)" opacity="' + (near ? 0.55 : 0.4) + '">' + dust.map((d, z) => d ? '<path d="' + d + '" stroke-width="' + n(R * [0.025, 0.04, 0.055][z]) + '"/>' : '').join('') + '</g>';
+    // the cluster ("electron"): a white-gold core in a knot of tiny stars, on whichever half it rides
+    if ((Math.sin(S.e) > 0) === near) { const [ex, ey] = S.at(S.e), kr = R * 0.05; let knot = '';
+      for (let i = 0; i < 12; i++) { const d = Math.abs(gauss()) * kr, a = r() * TAU; knot += 'M' + n(ex + Math.cos(a) * d) + ' ' + n(ey + Math.sin(a) * d) + 'h0'; }
+      g += '<circle cx="' + n(ex) + '" cy="' + n(ey) + '" r="' + n(kr * 2.8) + '" fill="url(#tg-puff)"/><circle cx="' + n(ex) + '" cy="' + n(ey) + '" r="' + n(kr * 0.75) + '" fill="#fff6d6" filter="url(#tg-glow)"/>'
+        + '<path d="' + knot + '" stroke="#fff4cf" stroke-width="1.6" stroke-linecap="round"/>'; }
+    return g;
+  };
+  // the bulge: the nucleus, a slightly flattened blaze of gold with a warm halo and a crowd of stars in it
+  const Rn = R * 0.24; let crowd = '';
+  for (let i = 0; i < 44; i++) { const d = Math.abs(gauss()) * Rn * 0.55, a = r() * TAU; crowd += 'M' + n(cx + Math.cos(a) * d) + ' ' + n(cy + Math.sin(a) * d * 0.8) + 'h0'; }
+  const bulge = '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + n(Rn * 2.1) + '" ry="' + n(Rn * 1.8) + '" fill="url(#tg-bulge)" opacity=".45"/>'
+    + '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + n(Rn) + '" ry="' + n(Rn * 0.84) + '" fill="url(#tg-bulge)" filter="url(#tg-glow)"/>'
+    + '<path d="' + crowd + '" stroke="#fffbe8" stroke-width="1.5" stroke-linecap="round" opacity=".9"/>';
+  // the galaxy's own halo: one faint glow of old stars that the three streams share, so they read as one body
+  const halo = '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + n(R * 0.95) + '" ry="' + n(R * 0.9) + '" fill="url(#tg-bulge)" opacity=".16"/>';
+  return '<g class="atom-galaxy">' + halo + streams.map((S) => half(S, false)).join('') + bulge + streams.map((S) => half(S, true)).join('') + '</g>';
+}
 /** the leather board as one SVG, w x h in its own units (the cover is about 0.73 wide for 1 high). Pure. */
 export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
   const fr = (i, cls) => '<rect class="' + cls + '" x="' + i + '" y="' + i + '" width="' + (w - 2 * i) + '" height="' + (h - 2 * i) + '" rx="' + Math.max(2, 14 - i / 8) + '"/>';
@@ -261,16 +317,11 @@ export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
     + '<rect x="' + (i + 1.6) + '" y="' + (i + 1.6) + '" width="' + (w - 2 * i - 3.2) + '" height="' + (h - 2 * i - 3.2) + '" stroke="#8a5a34" stroke-width="1" opacity=".55"/></g>';
   const corner = (x, y, sx, sy) => '<g transform="translate(' + x + ' ' + y + ') scale(' + sx + ' ' + sy + ')"><path d="' + FLEURON + '" class="gold-line"/></g>';
   const cx = w / 2, cy = h * 0.5, R = Math.min(w, h) * 0.22;
-  const orbit = (deg) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + (R * 0.86) + '" ry="' + (R * 0.3) + '" transform="rotate(' + deg + ' ' + cx + ' ' + cy + ')" class="gold-line"/>';
-  // the galaxy: a two-armed logarithmic spiral round a gold boss
-  const arm = (rot) => { let d = ''; for (let k = 0; k <= 40; k++) { const t = k / 40, a = rot + t * Math.PI * 2.1, r = R * (0.05 + t * 0.4); d += (k ? 'L' : 'M') + (cx + Math.cos(a) * r).toFixed(1) + ' ' + (cy + Math.sin(a) * r * 0.82).toFixed(1); } return '<path d="' + d + '" class="gold-line" stroke-width="2.4"/>'; };
-  const electron = (deg, at) => { const a = at * Math.PI / 180, x = Math.cos(a) * R * 0.86, y = Math.sin(a) * R * 0.3, c = Math.cos(deg * Math.PI / 180), s = Math.sin(deg * Math.PI / 180); return '<circle cx="' + (cx + x * c - y * s).toFixed(1) + '" cy="' + (cy + x * s + y * c).toFixed(1) + '" r="6" fill="url(#tg-gold)" filter="url(#tg-emboss)"/>'; };
   const med = medallion ? '<g>'
     + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.12) + '" fill="#2a170b" opacity=".55"/>' // the medallion is pressed: a shade darker than the board
     + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.12) + '" fill="none" stroke="#120904" stroke-width="3"/>'
-    + '<g filter="url(#tg-emboss)"><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.06) + '" class="gold-line" stroke-width="3"/><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.98) + '" class="gold-dots"/>'
-    + orbit(0) + orbit(60) + orbit(120) + arm(0) + arm(Math.PI) + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.07) + '" fill="url(#tg-gold)"/>'
-    + electron(0, 200) + electron(60, 330) + electron(120, 95) + '</g></g>' : '';
+    + '<g filter="url(#tg-emboss)"><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 1.06) + '" class="gold-line" stroke-width="3"/><circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.98) + '" class="gold-dots"/></g>'
+    + atomGalaxy(cx, cy, R) + '</g>' : '';
   // scuffs: a few pale strokes where the board has rubbed, fixed so the book is the same for everyone
   const scuffs = [[120, 180, 60, -8], [560, 830, 80, 12], [610, 240, 40, 30], [180, 760, 50, -20], [400, 120, 70, 4], [90, 520, 36, 70]].map(([x, y, l, a]) => '<line x1="' + x + '" y1="' + y + '" x2="' + (x + l * Math.cos(a * Math.PI / 180)).toFixed(0) + '" y2="' + (y + l * Math.sin(a * Math.PI / 180)).toFixed(0) + '" stroke="#c09468" stroke-width="2" stroke-linecap="round" opacity=".12" filter="url(#tg-soft)"/>').join('');
   return '<svg class="tome-leather" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs>' + GOLD
@@ -282,6 +333,12 @@ export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
     + '<feOffset in="SourceAlpha" dx="-1" dy="-1.2" result="up"/><feFlood flood-color="#0b0502" flood-opacity=".9"/><feComposite in2="up" operator="in" result="dark"/><feOffset in="SourceAlpha" dx="1" dy="1.4" result="dn"/><feFlood flood-color="#b98552" flood-opacity=".35"/><feComposite in2="dn" operator="in" result="lite"/>'
     + '<feMerge><feMergeNode in="dark"/><feMergeNode in="lite"/><feMergeNode in="SourceGraphic"/><feMergeNode in="sp"/></feMerge></filter>'
     + '<filter id="tg-soft"><feGaussianBlur stdDeviation="1.4"/></filter>'
+    // the atom galaxy's light: gas blurred soft, a faint glow round the hot parts, and the gilt of the gas, the knots and the bulge
+    + '<filter id="tg-haze" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.2"/></filter>'
+    + '<filter id="tg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    + '<linearGradient id="tg-gas" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc96"/><stop offset=".5" stop-color="#c58d3c"/><stop offset="1" stop-color="#e8bf68"/></linearGradient>'
+    + '<radialGradient id="tg-puff"><stop offset="0" stop-color="#ffeab0" stop-opacity=".75"/><stop offset=".45" stop-color="#d9a24c" stop-opacity=".3"/><stop offset="1" stop-color="#9c6a22" stop-opacity="0"/></radialGradient>'
+    + '<radialGradient id="tg-bulge"><stop offset="0" stop-color="#fffdf0"/><stop offset=".25" stop-color="#ffe6a0"/><stop offset=".55" stop-color="#e2b65a" stop-opacity=".75"/><stop offset="1" stop-color="#9c6a22" stop-opacity="0"/></radialGradient>'
     + '<radialGradient id="tg-wear" cx="50%" cy="46%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset=".88" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>'
     + '<linearGradient id="tg-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient>'
     + '<style>.gold-line{fill:none;stroke:url(#tg-gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.gold-dots{fill:none;stroke:url(#tg-gold);stroke-width:3.2;stroke-linecap:round;stroke-dasharray:0 9}</style></defs>'
