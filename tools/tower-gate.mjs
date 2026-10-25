@@ -146,6 +146,10 @@ export async function measure(browser, url, tag, ask, probe) {
         // which of Verse's own skills answered the ask (the page logs 'skill:<name>'; nothing logged, or the model, is not a skill)
         if (ask) for (let w = 0; w < 20 && !out.skill; w++) { out.skill = await p.evaluate((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); const e = l.reverse().find((x) => x && String(x.ask).trim().toLowerCase() === q && /^(skill:|calc$|chance$)/.test(x.note || '')); return e ? e.note.replace(/^skill:/, '') : null; } catch (_) { return null; } }, ask.trim().toLowerCase()); if (!out.skill) await p.waitForTimeout(500); }
         fs.mkdirSync(PRIV, { recursive: true }); await p.screenshot({ path: path.join(PRIV, tag + '.png') });
+        // the site as the gate saw it, published beside Verse's page on /compare/ (owner, 2026-10-25: every site refuses to be framed): one small
+        // JPEG a floor at phone width, written at most once a day so the history stays light; Verse's own page is live there and needs none
+        if (/-site$/.test(tag)) { try { const dir = path.join(root, 'void-live-deploy', 'tower.shots'), file = path.join(dir, tag.replace(/-site$/, '') + '.jpg');
+          const fresh = fs.existsSync(file) && Date.now() - fs.statSync(file).mtimeMs < 86400000; if (!fresh) { fs.mkdirSync(dir, { recursive: true }); await p.screenshot({ path: file, type: 'jpeg', quality: 55 }); } } catch (_) {} }
         if (probe && probe.motion && Object.keys(probe.motion).length) out.motion = await motionOf(p).catch(() => null);
         // offline: the same page reloaded with the network cut; it counts when it still shows itself (some words, not the browser's error page)
         // as for a returning visitor: a page that installs a service worker gets up to 5 s for it to be ready (the same wait for both sites)
