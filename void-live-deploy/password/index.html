@@ -25,10 +25,14 @@
   .row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 8px 0; }
   .opts { font-size: 14px; }
   .opts label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; max-width: 100%; }
-  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }
+  /* a 40 px tap target drawn as a 22 px box (the tower gate counts a control under 40 px as a design defect; a bare 20 px checkbox was one, eleven times) */
+  input[type=checkbox] { appearance: none; -webkit-appearance: none; width: 40px; height: 40px; margin: -9px 0 -9px -9px; padding: 0; border: 0; background: none; display: inline-grid; place-content: center; cursor: pointer; vertical-align: middle; }
+  input[type=checkbox]::before { content: ""; width: 22px; height: 22px; box-sizing: border-box; border: 1.5px solid var(--soft); border-radius: 6px; background: var(--bg); }
+  input[type=checkbox]:checked::before { background: var(--accent); border-color: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4 10.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 16px; background-position: center; background-repeat: no-repeat; }
+  input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: -6px; border-radius: 10px; }
   input[type=number], input[type=text], select { font: inherit; font-size: 15px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 40px; box-sizing: border-box; }
   input[type=number] { width: 5.5em; } input[type=text].sep { width: 4em; }
-  input[type=range] { flex: 1 1 160px; min-width: 120px; accent-color: var(--accent); }
+  input[type=range] { flex: 1 1 160px; min-width: 120px; height: 40px; margin: 0; accent-color: var(--accent); }
   select option { background: var(--bg); color: var(--ink); }
   button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
   button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
