@@ -2,6 +2,39 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-25T00:52:10.609Z",
+   "sha": "a77e2a497e8b934c0587bc4683dbbe9f54ede4b7",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40146491548",
+   "suite": "browser suite on main",
+   "checks": [
+    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
+    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
+    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
+    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute",
+    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "worldtime: takes no other skill's examples (collision)",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
+    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
+    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
+   ],
+   "touched": [
+    "tools/test_void.mjs",
+    "tools/tower-gate.mjs",
+    "tools/tower-gate.test.mjs",
+    "tools/tower-probes.mjs",
+    "void-live-deploy/flip/index.html",
+    "void-live-deploy/skills/coin.js"
+   ]
+  },
+  {
    "at": "2026-10-25T00:39:45.155Z",
    "sha": "f4fa1e5a159a66325d84a4d4c335dd46569eee1b",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40145668358",
@@ -883,41 +916,6 @@
     "void-live-deploy/skills/what.json",
     "void-live-deploy/void.growth.json",
     "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-24T17:02:55.572Z",
-   "sha": "1515ffdb41f78df6ab4f916f0d1748ae16af8fa9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40112044831",
-   "suite": "browser suite on main",
-   "checks": [
-    "built-in image: \"show this image <url>\" puts the picture up, a bare image url replaces it (one card), \"make the image red\" edges it red, it comes back after a reload, a picture that will not load says so on the card, and \"remove the image\" takes it away (twice is harmless)",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "image instant photo look: the picture sits in an off-white instant-photo frame with a deep bottom strip (at least 3x the side), the caption you write sits under the picture in the felt-tip hand in dark ink and is kept, each photo has its own slight tilt that survives a reload, and \"make the image blue\" edges it blue",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "tools/beacon.test.mjs",
-    "tools/checks.mjs",
-    "tools/tower-gate.mjs",
-    "tools/tower-gate.test.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/lib/beacon.js",
-    "void-live-deploy/random/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json"
    ]
   }
  ]
