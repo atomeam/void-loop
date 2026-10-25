@@ -147,3 +147,12 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /^<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /^<svg/);
   assert.equal(tower([], ev, null, { [won.site]: 'tower.icons/x.png' }).floors.find((f) => f.id === lane.id).icon, 'tower.icons/x.png');
 });
+
+test('a page older than the evidence file knows it: the sites the file names that its floors do not', async () => {
+  const { tower } = await import('../void-live-deploy/lib/tower.js');
+  const { staleOf } = await import('../void-live-deploy/skills/tower.js');
+  const t = tower([], {});
+  assert.equal(staleOf({ floors: { 'translate: deepl.com': {}, 'calculator': {} } }, t), 0);
+  assert.equal(staleOf({ floors: { 'translate: nope.example': {}, 'another: x.example': {}, 'calculator': {} } }, t), 2);
+  assert.equal(staleOf(null, t), 0); assert.equal(staleOf({}, null), 0);
+});

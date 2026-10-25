@@ -147,7 +147,11 @@ export function changes(prev, next) {
   return out;
 }
 const POLL_MS = () => (typeof window !== 'undefined' && window.__towerPollMs) || 30000;
-const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null); };
+/** the sites the evidence file names that this (older) copy of the page does not know: a newer Verse is live (owner, 2026-10-25: a tab opened
+ *  before the lanes landed kept saying 18 surpassed while the file said 30). Pure. */
+export const staleOf = (evidence, t) => { const ids = new Set((t && t.floors || []).map((f) => f.id)); return Object.keys((evidence && evidence.floors) || {}).filter((k) => !ids.has(k)).length; };
+let stale = 0;
+const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null); stale = staleOf(ev, t); return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -183,6 +187,10 @@ async function run(text, api) {
       t = next;
       draw(next.floors.filter((f) => moved.some((m) => m.startsWith(f.site))).map((f) => f.id));
       if (moved.length) live.textContent = moved.join(' ');
+      // this copy of the page is older than the file it reads: say so, with a reload, instead of a count that stays behind
+      if (stale) { let n = root.querySelector('.tw-stale'); if (!n) { n = document.createElement('div'); n.className = 'tw-stale'; n.setAttribute('data-share-skip', ''); n.style.cssText = 'margin:6px 0;padding:6px 10px;border:1px solid #c9b6ff;border-radius:10px;font-size:13px'; root.prepend(n); }
+        n.innerHTML = 'A newer Verse is live: ' + stale + ' more site' + (stale === 1 ? '' : 's') + ' measured than this page knows. <button type="button" class="tw-reload" style="font:inherit;font-size:13px;padding:2px 10px;border-radius:999px">Reload</button>';
+        n.querySelector('.tw-reload').addEventListener('click', () => location.reload()); }
     };
     timer = setInterval(refresh, POLL_MS());
     onVis = () => { if (document.visibilityState === 'visible') refresh(); };
