@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 814,
+ "counted": 817,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -616,7 +616,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 11
+   "tests": 12
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1718,6 +1718,13 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-langs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/used.js",
    "skills": 0,
    "direct": 0,
@@ -1816,7 +1823,14 @@
    "tests": 2
   },
   {
-   "file": "lib/translate-langs.js",
+   "file": "lib/translate-web.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-words.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2055,6 +2069,13 @@
   },
   {
    "file": "lib/sun-day.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-docs.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2543,6 +2564,8 @@
    "imports": [
     "lib/models.js",
     "lib/translate-langs.js",
+    "lib/translate-words.js",
+    "lib/translate-web.js",
     "functions/api/appraise.js",
     "functions/api/answer.js"
    ],
@@ -6710,8 +6733,27 @@
     "skills/cartoon.js"
    ]
   },
+  "lib/translate-docs.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/translate-langs.js": {
    "imports": [],
+   "importedBy": [
+    "functions/api/translate.js",
+    "lib/translate-words.js"
+   ]
+  },
+  "lib/translate-web.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/translate.js"
+   ]
+  },
+  "lib/translate-words.js": {
+   "imports": [
+    "lib/translate-langs.js"
+   ],
    "importedBy": [
     "functions/api/translate.js"
    ]

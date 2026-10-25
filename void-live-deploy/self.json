@@ -491,6 +491,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-25T16:36:26Z",
+   "subject": "Translate: documents with their layout, a dictionary, other words for any word, tone, websites"
+  },
+  {
+   "at": "2026-10-25T16:33:01Z",
+   "subject": "Tower gate: sports,image boards: bbs.progrider.org,image boards: textboard.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-25T16:27:03Z",
+   "subject": "Verse researches every Versus site's features by itself"
+  },
+  {
+   "at": "2026-10-25T16:21:59Z",
+   "subject": "Wheel figure: a long name shrinks to fit its slice instead of being cut with an ellipsis"
+  },
+  {
+   "at": "2026-10-25T16:17:26Z",
+   "subject": "Boards: anonymous image and text boards anyone can make, and Versus' image boards floor"
+  },
+  {
+   "at": "2026-10-25T16:13:52Z",
+   "subject": "Calendar and recipes stop shifting while they load"
+  },
+  {
    "at": "2026-10-25T16:08:26Z",
    "subject": "Notes test: the lane is eight real notes apps now (a parked domain and a typing tool dropped)"
   },
@@ -545,34 +569,14 @@
   {
    "at": "2026-10-25T16:01:42Z",
    "subject": "features: translate floor research (leader and lane sites against Verse's page)"
-  },
-  {
-   "at": "2026-10-25T16:01:28Z",
-   "subject": "Feature research: jobs, shopping, chat, video, social floors"
-  },
-  {
-   "at": "2026-10-25T16:01:18Z",
-   "subject": "Feature map: docs and notes floor (Google Docs, Notion and the lane) vs Verse /notes/"
-  },
-  {
-   "at": "2026-10-25T16:01:08Z",
-   "subject": "Feature maps: is it, coin flip, random number, word count, calculator"
-  },
-  {
-   "at": "2026-10-25T15:59:46Z",
-   "subject": "Feature research: sports, finance, maps, news, photos, games, learning, music, podcasts, travel floors"
-  },
-  {
-   "at": "2026-10-25T15:58:56Z",
-   "subject": "Incident: the browser suite failed on 0a4a1e60 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T15:58:46Z",
-   "subject": "Feature map: random generators floor (perchance.org and its lane) vs Verse /generators/"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (feature scan, 2026-10-25)",
+    "line": "Verse researches every Versus site's features by itself: tools/feature-scan.mjs reads each floor's sites at their own address, writes domains/features/<floor>.json (under…"
+   },
    {
     "name": "Claude (tower session, 2026-10-25, 07:45)",
     "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
@@ -592,10 +596,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 06:05)",
     "line": "the weather floor (weather.gov) got Verse's own /weather/ page (dadffdb: lib/weather.js, Open-Meteo for any place, °F and °C side by side, the next 24 hours, 7 days with today first, sunrise and sunset, the weather service's alerts and…"
-   },
-   {
-    "name": "Claude (seo run, 2026-10-25)",
-    "line": "honest search presence for the tool pages, five commits on main: the sitemap is generated (tools/sitemap.mjs, a volatile refresh step: every tool page, the tower, the /fix/ and /is-it/…"
    }
   ],
   "ladders": [
