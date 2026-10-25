@@ -462,6 +462,7 @@ for (const [name, file] of [
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],
   ['tower-merge', 'tower-merge.test.mjs'],
+  ['site-icons', 'site-icons.test.mjs'],
   ['gradient', 'gradient.test.mjs'],
   ['wheel', 'wheel.test.mjs'],
   ['fakeuser', 'fakeuser.test.mjs'],

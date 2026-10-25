@@ -1,0 +1,48 @@
+# Every Versus floor's own logo kept in the repo (owner, 2026-10-25: "no faces logo only", "recreate the logos"): tools/site-icons.mjs fetches
+# each floor host's icon with plain fetch (the session container cannot reach the sites; this runner can), writes void-live-deploy/tower.icons/
+# and the icons map in tower.evidence.json, commits "Site icons: N kept" to main and starts the deploy, as tower-gate.yml does after its verdicts.
+# By hand only: `all` refetches hosts that already have a kept icon.
+name: Site icons
+
+on:
+  workflow_dispatch:
+    inputs:
+      all:
+        description: refetch every host, also those that already have a kept icon
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # commit the icons
+  actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
+
+concurrency:
+  group: site-icons
+  cancel-in-progress: false
+
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch each floor's logo
+        id: fetch
+        run: node tools/site-icons.mjs ${{ inputs.all && '--all' || '' }}
+      - name: Commit the icons and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEPT: ${{ steps.fetch.outputs.kept }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.icons void-live-deploy/tower.evidence.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Site icons: ${KEPT:-0} kept"
+          # main moves while this runs (other pushes): take the newest main under the icons commit and try again
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true
