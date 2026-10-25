@@ -43,29 +43,29 @@
           "name": "Interval timer",
           "detail": "work/rest rounds that repeat, full screen; custom timers can be saved",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "only single countdowns and presets (stopwatch/index.html line 112)"
+          "verse": "has",
+          "verse_evidence": "stopwatch/index.html #iv: work, rest, rounds, sets, rest between sets, get ready; Tabata/HIIT/EMOM/circuit presets; tones at each change and 3-2-1 ticks; ?iv= link (lib/stopwatch.js intervalSteps)"
         },
         {
           "name": "Saved custom timers",
           "detail": "premium members save their own timers",
           "paid": true,
-          "verse": "partial",
-          "verse_evidence": "Copy link holds a countdown; presets 1 min to 1 hour incl. \"25 min (focus)\"; no named saved timers"
+          "verse": "has",
+          "verse_evidence": "Save as preset keeps your own countdowns on this device (free), each with a remove button"
         },
         {
           "name": "Choice of alarm sounds",
           "detail": "pick the alarm sound",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "one made-in-browser beep, on/off and test only"
+          "verse": "has",
+          "verse_evidence": "Alarm: Beeps, Bell, Chime, Digital watch, Gong, all made on the device"
         },
         {
           "name": "Chess clock",
           "detail": "two-player clock (and a counting-down chess timer)",
           "paid": false,
-          "verse": "missing",
-          "verse_evidence": "none"
+          "verse": "has",
+          "verse_evidence": "stopwatch/index.html #cc: two tap clocks, Fischer increment, move counts, pause, flag on time out, bullet to classical presets, ?cc=3+2 link (lib/stopwatch.js chessTap)"
         },
         {
           "name": "Race timers",
@@ -143,11 +143,7 @@
     "Stopwatch and timer on one page"
   ],
   "gaps": [
-    "Interval timer",
-    "Chess clock",
     "Classroom / fun themed timers",
-    "Saved custom timers",
-    "Choice of alarm sounds",
     "Egg timer (sand)",
     "Downloadable stay-on-top stopwatch app",
     "Exam timers",

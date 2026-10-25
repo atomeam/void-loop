@@ -1884,59 +1884,59 @@
   "recipes": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 88,
-    "best": 340,
-    "evidence": "Verse (/recipes/?q=pancakes) 88 ms to the load event (median of 3, phone width) vs Allrecipes 340 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "verse": 126,
+    "best": 375,
+    "evidence": "Verse (/recipes/?q=pancakes) 126 ms to the load event (median of 3, phone width) vs Allrecipes 375 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs Allrecipes 3 of 3 loads answered",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs Allrecipes 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs Allrecipes 0 unnamed controls or images",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs Allrecipes 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Allrecipes 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
-    "best": 26,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs Allrecipes 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.20), Allrecipes (1 low-contrast texts, 25 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:40:23.037Z"
+    "verse": 0,
+    "best": 27,
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs Allrecipes 27 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Allrecipes (1 low-contrast texts, 26 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T16:48:04.865Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not Allrecipes (the site is not asked)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 5
    },
    "search by ingredient": {
@@ -1944,7 +1944,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
@@ -1953,7 +1953,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
@@ -1962,75 +1962,75 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs Allrecipes 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-    "at": "2026-10-25T11:40:23.037Z",
+    "at": "2026-10-25T16:48:04.865Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 14,
-    "best": 1,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs Allrecipes 1 of 14 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline)",
-    "at": "2026-10-25T11:40:23.037Z",
-    "of": 14
+    "verse": 20,
+    "best": 3,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs Allrecipes 3 of 20 things a full answer shows (Verse lacks: none; site lacks: the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline, US / metric, Cook mode (screen stays on), Jump to recipe and print, Step-by-step mode)",
+    "at": "2026-10-25T16:48:04.865Z",
+    "of": 20
    }
   },
   "calendar": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 115,
-    "best": 1513,
-    "evidence": "Verse (/calendar/) 115 ms to the load event (median of 3, phone width) vs Google Calendar 1513 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "verse": 147,
+    "best": 1932,
+    "evidence": "Verse (/calendar/) 147 ms to the load event (median of 3, phone width) vs Google Calendar 1932 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs Google Calendar 3 of 3 loads answered",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs Google Calendar 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs Google Calendar 0 unnamed controls or images",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs Google Calendar 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Calendar 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 136,
-    "evidence": "Verse (/calendar/) 1 design defects vs Google Calendar 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T14:47:37.456Z"
+    "evidence": "Verse (/calendar/) 0 design defects vs Google Calendar 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T16:47:35.861Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not Google Calendar (the site is not asked)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 5
    },
    "reminders": {
@@ -2038,7 +2038,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 2,
     "part": true
    },
@@ -2047,7 +2047,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs Google Calendar 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 3,
     "part": true
    },
@@ -2056,17 +2056,17 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T14:47:37.456Z",
+    "at": "2026-10-25T16:47:35.861Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
-    "best": 4,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs Google Calendar 4 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T14:47:37.456Z",
-    "of": 15
+    "verse": 16,
+    "best": 5,
+    "evidence": "Verse (/calendar/) 16 of 20 things a full answer shows vs Google Calendar 5 of 20 things a full answer shows (Verse lacks: a share link, notifications, Recurring events incl. custom rules, Natural-language quick add; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Day / week / month views, Import / export .ics, Search events, Natural-language quick add)",
+    "at": "2026-10-25T16:47:35.861Z",
+    "of": 20
    }
   },
   "docs and notes": {
@@ -3034,59 +3034,59 @@
   "random generators": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 95,
-    "best": 482,
-    "evidence": "Verse (/generators/) 95 ms to the load event (median of 3, phone width) vs perchance.org 482 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:23:17.247Z"
+    "verse": 141,
+    "best": 612,
+    "evidence": "Verse (/generators/) 141 ms to the load event (median of 3, phone width) vs perchance.org 612 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs perchance.org 3 of 3 loads answered",
-    "at": "2026-10-25T15:23:17.247Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs perchance.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:23:17.247Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs perchance.org 0 unnamed controls or images",
-    "at": "2026-10-25T15:23:17.247Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "offline": {
-    "verdict": "better",
-    "verse": 1,
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:23:17.247Z"
+    "evidence": "Verse (/generators/) 0 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs perchance.org 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:23:17.247Z"
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/generators/) 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-25T15:23:17.247Z"
+    "evidence": "Verse (/generators/) 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
+    "at": "2026-10-25T17:16:17.224Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not perchance.org (the site is not asked)",
-    "at": "2026-10-25T15:23:17.247Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 2
    },
    "generator catalogue": {
@@ -3094,7 +3094,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:23:17.247Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 1,
     "part": true
    },
@@ -3103,16 +3103,17 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:23:17.247Z",
+    "at": "2026-10-25T17:16:17.224Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs perchance.org 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:23:17.247Z",
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/generators/) 0 of 1 shown for the question (Verse lacks: a generated picture within 60 s (the page showed: \"150 pictures left today for everyone · The painter is resting right now. Try again in a minute.\")); judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.224Z",
+    "was": "equal-and-better",
     "of": 1,
     "part": true
    },
@@ -3120,9 +3121,27 @@
     "verdict": "better",
     "verse": 10,
     "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs perchance.org 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:23:17.247Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs perchance.org 0 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:16:17.224Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.224Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.224Z",
+    "of": 4,
+    "part": true
    }
   },
   "ai models": {
@@ -5067,68 +5086,67 @@
   "recipes: budgetbytes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 134,
+    "verse": 104,
     "best": 200,
-    "evidence": "Verse (/recipes/?q=pancakes) 134 ms to the load event (median of 3, phone width) vs the bar (budgetbytes.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 104 ms to the load event (median of 3, phone width) vs the bar (budgetbytes.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs budgetbytes.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs the bar (budgetbytes.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs the bar (budgetbytes.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs the bar (budgetbytes.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (budgetbytes.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:46:54.545Z"
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs the bar (budgetbytes.com unreachable) 0 design defects",
-    "at": "2026-10-25T15:46:54.545Z",
-    "was": "better"
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs the bar (budgetbytes.com unreachable) 0 design defects",
+    "at": "2026-10-25T16:46:41.486Z"
    },
    "search by ingredient": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
@@ -5137,7 +5155,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
@@ -5146,17 +5164,17 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (budgetbytes.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
+    "at": "2026-10-25T16:46:41.486Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 14,
-    "best": 14,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs the bar (budgetbytes.com unreachable) 14 of 14 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T15:46:54.545Z",
-    "of": 14
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs the bar (budgetbytes.com unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T16:46:41.486Z",
+    "of": 20
    }
   },
   "recipes: recipetineats.com": {
@@ -5444,68 +5462,67 @@
   "recipes: food52.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 98,
+    "verse": 114,
     "best": 200,
-    "evidence": "Verse (/recipes/?q=pancakes) 98 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 114 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs food52.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs the bar (food52.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs the bar (food52.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs the bar (food52.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (food52.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:48:54.091Z"
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 5
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/recipes/?q=pancakes) 1 design defects vs the bar (food52.com unreachable) 0 design defects",
-    "at": "2026-10-25T15:48:54.091Z",
-    "was": "better"
+    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs the bar (food52.com unreachable) 0 design defects",
+    "at": "2026-10-25T16:47:14.555Z"
    },
    "search by ingredient": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
@@ -5514,7 +5531,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
@@ -5523,17 +5540,17 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
+    "at": "2026-10-25T16:47:14.555Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 14,
-    "best": 14,
-    "evidence": "Verse (/recipes/?q=pancakes) 14 of 14 things a full answer shows vs the bar (food52.com unreachable) 14 of 14 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T15:48:54.091Z",
-    "of": 14
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs the bar (food52.com unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T16:47:14.555Z",
+    "of": 20
    }
   },
   "recipes: simplyrecipes.com": {
@@ -6666,69 +6683,68 @@
   },
   "calendar: calendar.zoho.com": {
    "speed": {
-    "verdict": "worse",
-    "verse": 485,
-    "best": 93,
-    "evidence": "Verse (/calendar/) 485 ms to the load event (median of 3, phone width) vs calendar.zoho.com 93 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:54:39.238Z",
-    "was": "equal-and-better"
+    "verdict": "equal-and-better",
+    "verse": 123,
+    "best": 99,
+    "evidence": "Verse (/calendar/) 123 ms to the load event (median of 3, phone width) vs calendar.zoho.com 99 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.zoho.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.zoho.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.zoho.com 1 unnamed controls or images",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.zoho.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.zoho.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.zoho.com (the site is not asked)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
-    "best": 8,
-    "evidence": "Verse (/calendar/) 1 design defects vs calendar.zoho.com 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.33), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.28)",
-    "at": "2026-10-25T15:54:39.238Z"
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse (/calendar/) 0 design defects vs calendar.zoho.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T16:46:08.865Z"
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 2,
     "part": true
    },
@@ -6737,7 +6753,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.zoho.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 3,
     "part": true
    },
@@ -6746,17 +6762,17 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-25T15:54:39.238Z",
+    "at": "2026-10-25T16:46:08.865Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 13,
-    "best": 5,
-    "evidence": "Verse (/calendar/) 13 of 15 things a full answer shows vs calendar.zoho.com 5 of 15 things a full answer shows (Verse lacks: a share link, notifications; site lacks: today, repeating events, invites, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline)",
-    "at": "2026-10-25T15:54:39.238Z",
-    "of": 15
+    "verse": 16,
+    "best": 7,
+    "evidence": "Verse (/calendar/) 16 of 20 things a full answer shows vs calendar.zoho.com 7 of 20 things a full answer shows (Verse lacks: a share link, notifications, Recurring events incl. custom rules, Natural-language quick add; site lacks: today, repeating events, invites, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Recurring events incl. custom rules, Import / export .ics, Search events)",
+    "at": "2026-10-25T16:46:08.865Z",
+    "of": 20
    }
   },
   "calendar: icloud.com": {
@@ -7138,67 +7154,67 @@
   "random generators: seventhsanctum.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 139,
-    "best": 528,
-    "evidence": "Verse (/generators/) 139 ms to the load event (median of 3, phone width) vs seventhsanctum.com 528 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:38:59.955Z"
+    "verse": 167,
+    "best": 499,
+    "evidence": "Verse (/generators/) 167 ms to the load event (median of 3, phone width) vs seventhsanctum.com 499 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs seventhsanctum.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:38:59.955Z"
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 15,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs seventhsanctum.com 15 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:38:59.955Z"
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs seventhsanctum.com 5 unnamed controls or images",
-    "at": "2026-10-25T15:38:59.955Z"
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs seventhsanctum.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:38:59.955Z"
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs seventhsanctum.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:38:59.955Z"
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not seventhsanctum.com (the site is not asked)",
-    "at": "2026-10-25T15:38:59.955Z",
+    "at": "2026-10-25T17:23:31.877Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
-    "evidence": "Verse (/generators/) 0 design defects vs seventhsanctum.com 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), seventhsanctum.com (0 low-contrast texts, 4 small tap targets, layout shift 0.01)",
-    "at": "2026-10-25T15:38:59.955Z"
+    "evidence": "Verse (/generators/) 0 design defects vs seventhsanctum.com 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), seventhsanctum.com (0 low-contrast texts, 4 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T17:23:31.877Z"
    },
    "generator catalogue": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T15:38:59.955Z",
+    "at": "2026-10-25T17:23:31.877Z",
     "of": 1,
     "part": true
    },
@@ -7207,16 +7223,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:38:59.955Z",
+    "at": "2026-10-25T17:23:31.877Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs seventhsanctum.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:38:59.955Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:23:31.877Z",
     "of": 1,
     "part": true
    },
@@ -7224,75 +7240,93 @@
     "verdict": "better",
     "verse": 10,
     "best": 1,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs seventhsanctum.com 1 of 10 things a full answer shows (Verse lacks: none; site lacks: a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:38:59.955Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs seventhsanctum.com 1 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:23:31.877Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:23:31.877Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:23:31.877Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: rangen.co.uk": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 130,
-    "best": 5064,
-    "evidence": "Verse (/generators/) 130 ms to the load event (median of 3, phone width) vs rangen.co.uk 5064 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:39:25.129Z"
+    "verse": 124,
+    "best": 4066,
+    "evidence": "Verse (/generators/) 124 ms to the load event (median of 3, phone width) vs rangen.co.uk 4066 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/generators/) 3 of 3 loads answered vs rangen.co.uk 3 of 3 loads answered",
-    "at": "2026-10-25T15:39:25.129Z"
+    "best": 2,
+    "evidence": "Verse (/generators/) 3 of 3 loads answered vs rangen.co.uk 2 of 3 loads answered",
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs rangen.co.uk 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:39:25.129Z"
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 10,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs rangen.co.uk 10 unnamed controls or images",
-    "at": "2026-10-25T15:39:25.129Z"
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs rangen.co.uk 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:39:25.129Z"
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs rangen.co.uk 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:39:25.129Z"
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not rangen.co.uk (the site is not asked)",
-    "at": "2026-10-25T15:39:25.129Z",
+    "at": "2026-10-25T17:24:06.492Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 52,
-    "evidence": "Verse (/generators/) 0 design defects vs rangen.co.uk 52 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), rangen.co.uk (13 low-contrast texts, 39 small tap targets, layout shift 0.06)",
-    "at": "2026-10-25T15:39:25.129Z"
+    "evidence": "Verse (/generators/) 0 design defects vs rangen.co.uk 52 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), rangen.co.uk (13 low-contrast texts, 39 small tap targets, layout shift 0.06)",
+    "at": "2026-10-25T17:24:06.492Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:39:25.129Z",
+    "at": "2026-10-25T17:24:06.492Z",
     "of": 1,
     "part": true
    },
@@ -7301,77 +7335,95 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:39:25.129Z",
+    "at": "2026-10-25T17:24:06.492Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs rangen.co.uk 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:39:25.129Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:24:06.492Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 3,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs rangen.co.uk 3 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a seed, make your own, picture it)",
-    "at": "2026-10-25T15:39:25.129Z",
-    "of": 10
+    "best": 4,
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs rangen.co.uk 4 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a seed, make your own, picture it, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:24:06.492Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:24:06.492Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:24:06.492Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: tools.dungeonmastersvault.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 137,
+    "verse": 122,
     "best": 200,
-    "evidence": "Verse (/generators/) 137 ms to the load event (median of 3, phone width) vs the bar (tools.dungeonmastersvault.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:40:37.086Z"
+    "evidence": "Verse (/generators/) 122 ms to the load event (median of 3, phone width) vs the bar (tools.dungeonmastersvault.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs tools.dungeonmastersvault.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs the bar (tools.dungeonmastersvault.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs the bar (tools.dungeonmastersvault.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs the bar (tools.dungeonmastersvault.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (tools.dungeonmastersvault.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T15:40:37.086Z",
+    "at": "2026-10-25T17:25:41.496Z",
     "of": 2
    },
    "design polish": {
@@ -7379,14 +7431,14 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 design defects vs the bar (tools.dungeonmastersvault.com unreachable) 0 design defects",
-    "at": "2026-10-25T15:40:37.086Z"
+    "at": "2026-10-25T17:25:41.496Z"
    },
    "generator catalogue": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:40:37.086Z",
+    "at": "2026-10-25T17:25:41.496Z",
     "of": 1,
     "part": true
    },
@@ -7395,7 +7447,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:40:37.086Z",
+    "at": "2026-10-25T17:25:41.496Z",
     "of": 1,
     "part": true
    },
@@ -7404,83 +7456,102 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs the bar (tools.dungeonmastersvault.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T15:40:37.086Z",
+    "at": "2026-10-25T17:25:41.496Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "equal-and-better",
+    "verdict": "worse",
     "verse": 10,
-    "best": 10,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs the bar (tools.dungeonmastersvault.com unreachable) 10 of 10 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T15:40:37.086Z",
-    "of": 10
+    "best": 16,
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs the bar (tools.dungeonmastersvault.com unreachable) 16 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:25:41.496Z",
+    "was": "equal-and-better",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown vs the bar (tools.dungeonmastersvault.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:25:41.496Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown vs the bar (tools.dungeonmastersvault.com unreachable) 4 of 4 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:25:41.496Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: chaoticshiny.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 110,
-    "best": 692,
-    "evidence": "Verse (/generators/) 110 ms to the load event (median of 3, phone width) vs chaoticshiny.com 692 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:40:43.764Z"
+    "verse": 158,
+    "best": 589,
+    "evidence": "Verse (/generators/) 158 ms to the load event (median of 3, phone width) vs chaoticshiny.com 589 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs chaoticshiny.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:40:43.764Z"
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs chaoticshiny.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:40:43.764Z"
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs chaoticshiny.com 2 unnamed controls or images",
-    "at": "2026-10-25T15:40:43.764Z"
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs chaoticshiny.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:40:43.764Z"
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chaoticshiny.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:40:43.764Z"
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not chaoticshiny.com (the site is not asked)",
-    "at": "2026-10-25T15:40:43.764Z",
+    "at": "2026-10-25T17:25:53.166Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 89,
-    "evidence": "Verse (/generators/) 0 design defects vs chaoticshiny.com 89 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), chaoticshiny.com (0 low-contrast texts, 89 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T15:40:43.764Z"
+    "evidence": "Verse (/generators/) 0 design defects vs chaoticshiny.com 89 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), chaoticshiny.com (0 low-contrast texts, 89 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:25:53.166Z"
    },
    "generator catalogue": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T15:40:43.764Z",
+    "at": "2026-10-25T17:25:53.166Z",
     "of": 1,
     "part": true
    },
@@ -7489,92 +7560,110 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T15:40:43.764Z",
+    "at": "2026-10-25T17:25:53.166Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:40:43.764Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:25:53.166Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 3,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs chaoticshiny.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: a count of results, regenerate, copy, a share link, a seed, picture it, works offline)",
-    "at": "2026-10-25T15:40:43.764Z",
-    "of": 10
+    "best": 4,
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs chaoticshiny.com 4 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: a count of results, regenerate, copy, a share link, a seed, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:25:53.166Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:25:53.166Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:25:53.166Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: springhole.net": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 184,
-    "best": 430,
-    "evidence": "Verse (/generators/) 184 ms to the load event (median of 3, phone width) vs springhole.net 430 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:41:05.095Z"
+    "verse": 128,
+    "best": 361,
+    "evidence": "Verse (/generators/) 128 ms to the load event (median of 3, phone width) vs springhole.net 361 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs springhole.net 3 of 3 loads answered",
-    "at": "2026-10-25T15:41:05.095Z"
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 382,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs springhole.net 382 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:41:05.095Z"
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs springhole.net 2 unnamed controls or images",
-    "at": "2026-10-25T15:41:05.095Z"
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs springhole.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:41:05.095Z"
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs springhole.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:41:05.095Z"
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not springhole.net (the site is not asked)",
-    "at": "2026-10-25T15:41:05.095Z",
+    "at": "2026-10-25T17:26:18.926Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 62,
-    "evidence": "Verse (/generators/) 0 design defects vs springhole.net 62 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), springhole.net (59 low-contrast texts, 2 small tap targets, layout shift 0.12)",
-    "at": "2026-10-25T15:41:05.095Z"
+    "evidence": "Verse (/generators/) 0 design defects vs springhole.net 62 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), springhole.net (59 low-contrast texts, 2 small tap targets, layout shift 0.12)",
+    "at": "2026-10-25T17:26:18.926Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs springhole.net 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:41:05.095Z",
+    "at": "2026-10-25T17:26:18.926Z",
     "of": 1,
     "part": true
    },
@@ -7583,16 +7672,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs springhole.net 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:41:05.095Z",
+    "at": "2026-10-25T17:26:18.926Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs springhole.net 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:41:05.095Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:26:18.926Z",
     "of": 1,
     "part": true
    },
@@ -7600,75 +7689,93 @@
     "verdict": "better",
     "verse": 10,
     "best": 1,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs springhole.net 1 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:41:05.095Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs springhole.net 1 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:26:18.926Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:26:18.926Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:26:18.926Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: reedsy.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 118,
-    "best": 1204,
-    "evidence": "Verse (/generators/) 118 ms to the load event (median of 3, phone width) vs reedsy.com 1204 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:41:24.635Z"
+    "verdict": "better",
+    "verse": 253,
+    "best": 1206,
+    "evidence": "Verse (/generators/) 253 ms to the load event (median of 3, phone width) vs reedsy.com 1206 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs reedsy.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:41:24.635Z"
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs reedsy.com 5 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:41:24.635Z"
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 45,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs reedsy.com 45 unnamed controls or images",
-    "at": "2026-10-25T15:41:24.635Z"
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs reedsy.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:41:24.635Z"
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs reedsy.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:41:24.635Z"
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not reedsy.com (the site is not asked)",
-    "at": "2026-10-25T15:41:24.635Z",
+    "at": "2026-10-25T17:16:17.110Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 18,
-    "evidence": "Verse (/generators/) 0 design defects vs reedsy.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), reedsy.com (15 low-contrast texts, 3 small tap targets, layout shift 0.01)",
-    "at": "2026-10-25T15:41:24.635Z"
+    "evidence": "Verse (/generators/) 0 design defects vs reedsy.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), reedsy.com (15 low-contrast texts, 3 small tap targets, layout shift 0.02)",
+    "at": "2026-10-25T17:16:17.110Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs reedsy.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:41:24.635Z",
+    "at": "2026-10-25T17:16:17.110Z",
     "of": 1,
     "part": true
    },
@@ -7677,92 +7784,111 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs reedsy.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:41:24.635Z",
+    "at": "2026-10-25T17:16:17.110Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs reedsy.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:41:24.635Z",
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/generators/) 0 of 1 shown for the question (Verse lacks: a generated picture within 60 s (the page showed: \"150 pictures left today for everyone · The painter is resting right now. Try again in a minute.\")); judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.110Z",
+    "was": "equal-and-better",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 3,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs reedsy.com 3 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, regenerate, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:41:24.635Z",
-    "of": 10
+    "best": 4,
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs reedsy.com 4 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, regenerate, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:16:17.110Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.110Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:16:17.110Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: writingexercises.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 184,
-    "best": 1237,
-    "evidence": "Verse (/generators/) 184 ms to the load event (median of 3, phone width) vs writingexercises.com 1237 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:39:34.109Z"
+    "verse": 156,
+    "best": 1329,
+    "evidence": "Verse (/generators/) 156 ms to the load event (median of 3, phone width) vs writingexercises.com 1329 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs writingexercises.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:39:34.109Z"
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs writingexercises.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:39:34.109Z"
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 20,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs writingexercises.com 20 unnamed controls or images",
-    "at": "2026-10-25T15:39:34.109Z"
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs writingexercises.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:39:34.109Z"
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs writingexercises.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:39:34.109Z"
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not writingexercises.com (the site is not asked)",
-    "at": "2026-10-25T15:39:34.109Z",
+    "at": "2026-10-25T17:17:49.989Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
-    "evidence": "Verse (/generators/) 0 design defects vs writingexercises.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), writingexercises.com (2 low-contrast texts, 0 small tap targets, layout shift 0.01)",
-    "at": "2026-10-25T15:39:34.109Z"
+    "evidence": "Verse (/generators/) 0 design defects vs writingexercises.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), writingexercises.com (2 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:17:49.989Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs writingexercises.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:39:34.109Z",
+    "at": "2026-10-25T17:17:49.989Z",
     "of": 1,
     "part": true
    },
@@ -7771,16 +7897,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs writingexercises.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:39:34.109Z",
+    "at": "2026-10-25T17:17:49.989Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs writingexercises.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:39:34.109Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:17:49.989Z",
     "of": 1,
     "part": true
    },
@@ -7788,75 +7914,93 @@
     "verdict": "better",
     "verse": 10,
     "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs writingexercises.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:39:34.109Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs writingexercises.com 0 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:17:49.989Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:17:49.989Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:17:49.989Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: behindthename.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 133,
-    "best": 724,
-    "evidence": "Verse (/generators/) 133 ms to the load event (median of 3, phone width) vs behindthename.com 724 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:39:57.868Z"
+    "verse": 113,
+    "best": 685,
+    "evidence": "Verse (/generators/) 113 ms to the load event (median of 3, phone width) vs behindthename.com 685 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs behindthename.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:39:57.868Z"
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 80,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs behindthename.com 80 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:39:57.868Z"
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 4,
-    "evidence": "Verse (/generators/) 0 unnamed controls or images vs behindthename.com 4 unnamed controls or images",
-    "at": "2026-10-25T15:39:57.868Z"
+    "best": 3,
+    "evidence": "Verse (/generators/) 0 unnamed controls or images vs behindthename.com 3 unnamed controls or images",
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs behindthename.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:39:57.868Z"
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs behindthename.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:39:57.868Z"
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not behindthename.com (the site is not asked)",
-    "at": "2026-10-25T15:39:57.868Z",
+    "at": "2026-10-25T17:18:27.142Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 44,
-    "evidence": "Verse (/generators/) 0 design defects vs behindthename.com 44 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), behindthename.com (3 low-contrast texts, 41 small tap targets, layout shift 0.07)",
-    "at": "2026-10-25T15:39:57.868Z"
+    "best": 42,
+    "evidence": "Verse (/generators/) 0 design defects vs behindthename.com 42 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), behindthename.com (1 low-contrast texts, 41 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:18:27.142Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs behindthename.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:39:57.868Z",
+    "at": "2026-10-25T17:18:27.142Z",
     "of": 1,
     "part": true
    },
@@ -7865,92 +8009,110 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs behindthename.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:39:57.868Z",
+    "at": "2026-10-25T17:18:27.142Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs behindthename.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:39:57.868Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:18:27.142Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 10,
-    "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs behindthename.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:39:57.868Z",
-    "of": 10
+    "best": 1,
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs behindthename.com 1 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:18:27.142Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:18:27.142Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:18:27.142Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: namegenerator.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 118,
-    "best": 1558,
-    "evidence": "Verse (/generators/) 118 ms to the load event (median of 3, phone width) vs namegenerator.com 1558 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:40:25.245Z"
+    "verse": 192,
+    "best": 1118,
+    "evidence": "Verse (/generators/) 192 ms to the load event (median of 3, phone width) vs namegenerator.com 1118 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs namegenerator.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:40:25.245Z"
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs namegenerator.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:40:25.245Z"
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs namegenerator.com 0 unnamed controls or images",
-    "at": "2026-10-25T15:40:25.245Z"
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs namegenerator.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:40:25.245Z"
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs namegenerator.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:40:25.245Z"
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not namegenerator.com (the site is not asked)",
-    "at": "2026-10-25T15:40:25.245Z",
+    "at": "2026-10-25T17:19:09.848Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse (/generators/) 0 design defects vs namegenerator.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), namegenerator.com (6 low-contrast texts, 1 small tap targets, layout shift 0.10)",
-    "at": "2026-10-25T15:40:25.245Z"
+    "evidence": "Verse (/generators/) 0 design defects vs namegenerator.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), namegenerator.com (6 low-contrast texts, 1 small tap targets, layout shift 0.10)",
+    "at": "2026-10-25T17:19:09.848Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs namegenerator.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:40:25.245Z",
+    "at": "2026-10-25T17:19:09.848Z",
     "of": 1,
     "part": true
    },
@@ -7959,16 +8121,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs namegenerator.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:40:25.245Z",
+    "at": "2026-10-25T17:19:09.848Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs namegenerator.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:40:25.245Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:09.848Z",
     "of": 1,
     "part": true
    },
@@ -7976,75 +8138,93 @@
     "verdict": "better",
     "verse": 10,
     "best": 1,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs namegenerator.com 1 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:40:25.245Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs namegenerator.com 1 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:19:09.848Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:09.848Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:09.848Z",
+    "of": 4,
+    "part": true
    }
   },
   "random generators: fantasynamegenerators.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 120,
-    "best": 2051,
-    "evidence": "Verse (/generators/) 120 ms to the load event (median of 3, phone width) vs fantasynamegenerators.com 2051 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T15:40:45.598Z"
+    "verdict": "better",
+    "verse": 257,
+    "best": 1731,
+    "evidence": "Verse (/generators/) 257 ms to the load event (median of 3, phone width) vs fantasynamegenerators.com 1731 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/generators/) 3 of 3 loads answered vs fantasynamegenerators.com 3 of 3 loads answered",
-    "at": "2026-10-25T15:40:45.598Z"
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs fantasynamegenerators.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T15:40:45.598Z"
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/generators/) 0 unnamed controls or images vs fantasynamegenerators.com 8 unnamed controls or images",
-    "at": "2026-10-25T15:40:45.598Z"
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs fantasynamegenerators.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T15:40:45.598Z"
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs fantasynamegenerators.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T15:40:45.598Z"
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not fantasynamegenerators.com (the site is not asked)",
-    "at": "2026-10-25T15:40:45.598Z",
+    "at": "2026-10-25T17:19:34.175Z",
     "of": 2
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 18,
-    "evidence": "Verse (/generators/) 0 design defects vs fantasynamegenerators.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), fantasynamegenerators.com (1 low-contrast texts, 17 small tap targets, layout shift 0.04)",
-    "at": "2026-10-25T15:40:45.598Z"
+    "evidence": "Verse (/generators/) 0 design defects vs fantasynamegenerators.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), fantasynamegenerators.com (1 low-contrast texts, 17 small tap targets, layout shift 0.04)",
+    "at": "2026-10-25T17:19:34.175Z"
    },
    "generator catalogue": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: a count of generators)",
-    "at": "2026-10-25T15:40:45.598Z",
+    "at": "2026-10-25T17:19:34.175Z",
     "of": 1,
     "part": true
    },
@@ -8053,16 +8233,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: make your own)",
-    "at": "2026-10-25T15:40:45.598Z",
+    "at": "2026-10-25T17:19:34.175Z",
     "of": 1,
     "part": true
    },
    "image generation": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/generators/) 1 of 1 shown vs fantasynamegenerators.com 0 of 1 shown (Verse lacks: none; site lacks: a picture button)",
-    "at": "2026-10-25T15:40:45.598Z",
+    "best": 1,
+    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:34.175Z",
     "of": 1,
     "part": true
    },
@@ -8070,9 +8250,27 @@
     "verdict": "better",
     "verse": 10,
     "best": 0,
-    "evidence": "Verse (/generators/) 10 of 10 things a full answer shows vs fantasynamegenerators.com 0 of 10 things a full answer shows (Verse lacks: none; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline)",
-    "at": "2026-10-25T15:40:45.598Z",
-    "of": 10
+    "evidence": "Verse (/generators/) 10 of 16 things a full answer shows vs fantasynamegenerators.com 0 of 16 things a full answer shows (Verse lacks: Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists; site lacks: many generators, a count of results, regenerate, copy, a share link, keep favourites, a seed, make your own, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
+    "at": "2026-10-25T17:19:34.175Z",
+    "of": 16
+   },
+   "list language": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:34.175Z",
+    "of": 2,
+    "part": true
+   },
+   "publish and remix": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-25T17:19:34.175Z",
+    "of": 4,
+    "part": true
    }
   },
   "docs and notes: anotepad.com": {
@@ -9021,72 +9219,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs bbs.progrider.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 109,
+    "verse": 143,
     "best": 200,
-    "evidence": "Verse (/boards/) 109 ms to the load event (median of 3, phone width) vs the bar (bbs.progrider.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 143 ms to the load event (median of 3, phone width) vs the bar (bbs.progrider.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (bbs.progrider.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (bbs.progrider.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (bbs.progrider.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (bbs.progrider.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (bbs.progrider.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs the bar (bbs.progrider.org unreachable) 0 design defects",
-    "at": "2026-10-25T16:32:33.073Z"
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (bbs.progrider.org unreachable) 0 design defects",
+    "at": "2026-10-25T17:12:23.855Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
-    "best": 14,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (bbs.progrider.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
-    "at": "2026-10-25T16:32:33.073Z",
-    "of": 14
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (bbs.progrider.org unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:12:23.855Z",
+    "of": 20
    },
    "catalog": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    },
@@ -9095,7 +9293,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (bbs.progrider.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 2,
     "part": true
    },
@@ -9104,7 +9302,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    },
@@ -9113,7 +9311,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (bbs.progrider.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:33.073Z",
+    "at": "2026-10-25T17:12:23.855Z",
     "of": 1,
     "part": true
    }
@@ -9124,72 +9322,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/boards/) 3 of 3 loads answered vs textboard.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 103,
+    "verse": 127,
     "best": 200,
-    "evidence": "Verse (/boards/) 103 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 127 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (textboard.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (textboard.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (textboard.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 7,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/boards/) 7 design defects vs the bar (textboard.org unreachable) 0 design defects",
-    "at": "2026-10-25T16:32:53.422Z"
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (textboard.org unreachable) 0 design defects",
+    "at": "2026-10-25T17:12:57.407Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
-    "best": 14,
-    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs the bar (textboard.org unreachable) 14 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards)",
-    "at": "2026-10-25T16:32:53.422Z",
-    "of": 14
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (textboard.org unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:12:57.407Z",
+    "of": 20
    },
    "catalog": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
    },
@@ -9198,7 +9396,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (textboard.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 2,
     "part": true
    },
@@ -9207,7 +9405,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
    },
@@ -9216,9 +9414,937 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T16:32:53.422Z",
+    "at": "2026-10-25T17:12:57.407Z",
     "of": 1,
     "part": true
+   }
+  },
+  "image boards: lainchan.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 105,
+    "best": 141,
+    "evidence": "Verse (/boards/) 105 ms to the load event (median of 3, phone width) vs lainchan.org 141 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs lainchan.org 3 of 3 loads answered",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs lainchan.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs lainchan.org 3 unnamed controls or images",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs lainchan.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs lainchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not lainchan.org (the site is not asked)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 60,
+    "evidence": "Verse (/boards/) 7 design defects vs lainchan.org 60 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), lainchan.org (55 low-contrast texts, 4 small tap targets, layout shift 0.47)",
+    "at": "2026-10-25T16:43:52.859Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs lainchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 3,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs lainchan.org 3 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, search, a thread watcher, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:43:52.859Z",
+    "of": 14
+   }
+  },
+  "image boards: 7chan.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 176,
+    "best": 579,
+    "evidence": "Verse (/boards/) 176 ms to the load event (median of 3, phone width) vs 7chan.org 579 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 7chan.org 3 of 3 loads answered",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 580,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 7chan.org 580 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 11,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 7chan.org 11 unnamed controls or images",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 7chan.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 7chan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 7chan.org (the site is not asked)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 48,
+    "evidence": "Verse (/boards/) 7 design defects vs 7chan.org 48 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 7chan.org (0 low-contrast texts, 48 small tap targets, layout shift 0.01)",
+    "at": "2026-10-25T16:44:17.854Z"
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 7chan.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 7chan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 6,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 7chan.org 6 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: an archive, greentext, tripcodes, sage, spoilers, search, a thread watcher, make your own board)",
+    "at": "2026-10-25T16:44:17.854Z",
+    "of": 14
+   }
+  },
+  "image boards: 2chan.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 198,
+    "best": 1073,
+    "evidence": "Verse (/boards/) 198 ms to the load event (median of 3, phone width) vs 2chan.net 1073 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 2chan.net 3 of 3 loads answered",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 298,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 2chan.net 298 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 2chan.net 0 unnamed controls or images",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 2chan.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 2chan.net 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 2chan.net (the site is not asked)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 77,
+    "evidence": "Verse (/boards/) 7 design defects vs 2chan.net 77 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 2chan.net (0 low-contrast texts, 76 small tap targets, layout shift 0.24)",
+    "at": "2026-10-25T16:44:38.677Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 2chan.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 2chan.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 0,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 2chan.net 0 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:44:38.677Z",
+    "of": 14
+   }
+  },
+  "image boards: 5ch.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 123,
+    "best": 357,
+    "evidence": "Verse (/boards/) 123 ms to the load event (median of 3, phone width) vs 5ch.net 357 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs 5ch.net 3 of 3 loads answered",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs 5ch.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs 5ch.net 2 unnamed controls or images",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs 5ch.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 2,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 5ch.net 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not 5ch.net (the site is not asked)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 32,
+    "evidence": "Verse (/boards/) 7 design defects vs 5ch.net 32 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), 5ch.net (12 low-contrast texts, 20 small tap targets, layout shift 0.03)",
+    "at": "2026-10-25T16:45:07.728Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs 5ch.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs 5ch.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 0,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs 5ch.net 0 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board)",
+    "at": "2026-10-25T16:45:07.728Z",
+    "of": 14
+   }
+  },
+  "image boards: sushigirl.us": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 140,
+    "best": 456,
+    "evidence": "Verse (/boards/) 140 ms to the load event (median of 3, phone width) vs sushigirl.us 456 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs sushigirl.us 3 of 3 loads answered",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 308,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs sushigirl.us 308 px sideways overflow at 390 px",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 15,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs sushigirl.us 15 unnamed controls or images",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs sushigirl.us 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs sushigirl.us 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not sushigirl.us (the site is not asked)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 15,
+    "evidence": "Verse (/boards/) 7 design defects vs sushigirl.us 15 design defects: Verse (1 low-contrast texts, 6 small tap targets, layout shift 0.06), sushigirl.us (0 low-contrast texts, 14 small tap targets, layout shift 0.30)",
+    "at": "2026-10-25T16:40:31.208Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs sushigirl.us 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs sushigirl.us 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs sushigirl.us 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs sushigirl.us 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 4,
+    "evidence": "Verse (/boards/) 13 of 14 things a full answer shows vs sushigirl.us 4 of 14 things a full answer shows (Verse lacks: work-safe and 18+ boards; site lacks: a catalog, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, make your own board)",
+    "at": "2026-10-25T16:40:31.208Z",
+    "of": 14
+   }
+  },
+  "image boards: uboachan.net": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 112,
+    "best": 275,
+    "evidence": "Verse (/boards/) 112 ms to the load event (median of 3, phone width) vs uboachan.net 275 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs uboachan.net 3 of 3 loads answered",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs uboachan.net 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs uboachan.net 0 unnamed controls or images",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs uboachan.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs uboachan.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not uboachan.net (the site is not asked)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 design defects vs uboachan.net 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), uboachan.net (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:13:06.553Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs uboachan.net 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs uboachan.net 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 20,
+    "best": 0,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs uboachan.net 0 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, search, a thread watcher, rules, picture posts, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:13:06.553Z",
+    "of": 20
+   }
+  },
+  "image boards: desuchan.net": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs desuchan.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 117,
+    "best": 200,
+    "evidence": "Verse (/boards/) 117 ms to the load event (median of 3, phone width) vs the bar (desuchan.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (desuchan.net unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (desuchan.net unreachable) 0 unnamed controls or images",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (desuchan.net unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (desuchan.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/boards/) 0 design defects vs the bar (desuchan.net unreachable) 0 design defects",
+    "at": "2026-10-25T17:13:26.289Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 20,
+    "best": 20,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (desuchan.net unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 20
+   },
+   "catalog": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (desuchan.net unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (desuchan.net unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-25T17:13:26.289Z",
+    "of": 1,
+    "part": true
+   }
+  },
+  "image boards: kissu.moe": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 130,
+    "best": 401,
+    "evidence": "Verse (/boards/) 130 ms to the load event (median of 3, phone width) vs kissu.moe 401 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs kissu.moe 3 of 3 loads answered",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs kissu.moe 2 px sideways overflow at 390 px",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 23,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs kissu.moe 23 unnamed controls or images",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs kissu.moe 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs kissu.moe 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not kissu.moe (the site is not asked)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 46,
+    "evidence": "Verse (/boards/) 0 design defects vs kissu.moe 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kissu.moe (2 low-contrast texts, 44 small tap targets, layout shift 0.07)",
+    "at": "2026-10-25T17:17:17.955Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs kissu.moe 0 of 2 shown (Verse lacks: none; site lacks: replies, quotes)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: pictures)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs kissu.moe 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 20,
+    "best": 5,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs kissu.moe 5 of 20 things a full answer shows (Verse lacks: none; site lacks: a catalog, an archive, replies and quotes, greentext, tripcodes, sage, spoilers, a thread watcher, picture posts, work-safe and 18+ boards, make your own board, Front page, Board index pages, Catalog, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:17:17.955Z",
+    "of": 20
+   }
+  },
+  "image boards: wizchan.org": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 271,
+    "best": 161,
+    "evidence": "Verse (/boards/) 271 ms to the load event (median of 3, phone width) vs wizchan.org 161 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "was": "equal-and-better"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/boards/) 3 of 3 loads answered vs wizchan.org 3 of 3 loads answered",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 284,
+    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs wizchan.org 284 px sideways overflow at 390 px",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/boards/) 0 unnamed controls or images vs wizchan.org 4 unnamed controls or images",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs wizchan.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 0,
+    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wizchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not wizchan.org (the site is not asked)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/boards/) 0 design defects vs wizchan.org 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wizchan.org (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T17:17:39.034Z"
+   },
+   "catalog": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 1,
+    "part": true
+   },
+   "replies and quoting": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/boards/) 2 of 2 shown vs wizchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 2,
+    "part": true
+   },
+   "image posts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 1,
+    "part": true
+   },
+   "archive": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 20,
+    "best": 4,
+    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs wizchan.org 4 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, a thread watcher, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
+    "at": "2026-10-25T17:17:39.034Z",
+    "of": 20
    }
   }
  },
@@ -9316,7 +10442,7 @@
   "writingexercises.com": "tower.icons/writingexercises.com.png",
   "behindthename.com": "tower.icons/behindthename.com.png",
   "namegenerator.com": "tower.icons/namegenerator.com.png",
-  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.png",
+  "fantasynamegenerators.com": "tower.icons/fantasynamegenerators.com.ico",
   "anotepad.com": "tower.icons/anotepad.com.png",
   "notepadonline.org": "tower.icons/notepadonline.org.ico",
   "quillpad.in": "tower.icons/quillpad.in.ico",
@@ -9326,6 +10452,14 @@
   "docs.zoho.com": "tower.icons/docs.zoho.com.ico",
   "onenote.com": "tower.icons/onenote.com.ico",
   "evernote.com": "tower.icons/evernote.com.ico",
-  "notion.so": "tower.icons/notion.so.ico"
+  "notion.so": "tower.icons/notion.so.ico",
+  "lainchan.org": "tower.icons/lainchan.org.png",
+  "7chan.org": "tower.icons/7chan.org.ico",
+  "2chan.net": "tower.icons/2chan.net.ico",
+  "5ch.net": "tower.icons/5ch.net.png",
+  "sushigirl.us": "tower.icons/sushigirl.us.ico",
+  "uboachan.net": "tower.icons/uboachan.net.ico",
+  "kissu.moe": "tower.icons/kissu.moe.png",
+  "wizchan.org": "tower.icons/wizchan.org.ico"
  }
 }

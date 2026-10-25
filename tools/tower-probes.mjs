@@ -69,6 +69,10 @@ export function timesIn(text) {
 /** Tokyo's wall clock now, from the zone rules (UTC+9, no daylight saving since 1951): { min (after midnight), day, month (its English name) }. Pure. */
 export function tokyoNow(now = new Date()) { const t = new Date(now.getTime() + 9 * 3600000); return { min: t.getUTCHours() * 60 + t.getUTCMinutes(), day: t.getUTCDate(), month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][t.getUTCMonth()] }; }
 
+// the list language probe's generator (lib/listgen.js), carried in the editor's link as a share code ('p.' + base64url): every result is "Owl x #7"
+// or "Crow x #7" (or y) when nested lists, ^0 odds, an inline choice, titleCase and a kept value all work; "Cat" never shows (its odds are 0)
+export const LIST_PROBE_TEXT = 'output\n  [n = num, ""][animal.titleCase] {x|y} #[n]\nanimal\n  cat ^0\n  bird\n    owl\n    crow\nnum\n  7\n';
+export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('base64url');
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -249,7 +253,16 @@ export const PROBES = Object.freeze({
     // capitalised word, with the seed named. Judged on Verse alone; the same probe measures every site in the random generators lane (lib/tower.js LANES)
     ask: { verse: '/generators/?g=fantasy-names&seed=7' },
     truth: [['a list of five or more capitalised names', (t) => String(t).split(/\n/).map((l) => l.trim()).filter((l) => /^[A-Z][a-z]{2,}(?: [A-Z][a-z]{2,})?$/.test(l) && !/^(?:Copy|Keep|Kept|Remove|Regenerate|Results|Generators?|Random|Share|Fantasy|Ask)(?: .*)?$/.test(l)).length >= 5], ['the seed, named', /\bseed 7\b/i]],
-    askParts: { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
+    askParts: { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]] },
+    // aspects asked at addresses of their own (owner, 2026-10-25: "how do we beat perchance if we dont have images?"): a picture button is not
+    // image generation; the image page, asked for a fixed prompt and seed in its link, has to show a picture it really made within 60 s. The list
+    // language: the editor opened with a generator in its link (nested lists, ^0 odds, an inline choice, a method and a kept value) has to show
+    // results that only a working engine gives; publish and remix: the same page offers sharing, publishing, remixing and embedding
+    pageParts: {
+      'image generation': { verse: '/image/?' + new URLSearchParams({ prompt: 'a red fox curled up in the snow', style: 'watercolor', shape: 'square', seed: '7', n: '1', go: '1' }), img: true, within: 60000, sel: '#pics img' }, // the results, never the public gallery below them
+      'list language': { verse: '/generators/make/#g=' + LIST_PROBE, items: [['nested lists, odds, {a|b}, titleCase and a kept value worked out', (t) => (String(t).match(/^(?:Owl|Crow) (?:x|y) #7$/gm) || []).length >= 5], ['an item at odds ^0 never picked', (t) => !/^Cat (?:x|y) #7$/m.test(String(t))]] },
+      'publish and remix': { verse: '/generators/make/#g=' + LIST_PROBE, items: [['a share link', /\bshare link\b/i], ['publish', /\bpublish\b/i], ['remix', /\bremix\b/i], ['embed', /\bembed\b/i]] },
+    },
     // what the best generator sites show: a catalogue of generators, a count of results, regenerate, copy, a link that keeps the result, favourites
     facts: [['many generators', /\b\d{2,} generators\b/i], ['a count of results', /\bresults\b/i], ['regenerate', /\bregenerate\b/i], ['copy', /\bcopy\b/i], ['a share link', /\bshare\b/i], ['keep favourites', /\bkeep\b|\bkept\b/i], ['a seed', /\bseed\b/i], ['make your own', /make your own/i], ['picture it', /picture it/i], ['works offline', /\boffline\b/i]],
   },
@@ -383,7 +396,7 @@ export const PARTS = Object.freeze({ 'docs and notes': { 'rich formatting': [['b
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
   'image boards': { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
-  'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]], 'image generation': [['a picture button', /picture it/i]] },
+  'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]] }, // 'image generation', 'list language' and 'publish and remix' are pageParts: a real picture, a working engine
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
@@ -408,7 +421,7 @@ export function probeFor(id) {
   const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i);
   const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
   if (lane) id = lane[1];
-  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {

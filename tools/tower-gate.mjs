@@ -314,9 +314,25 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
       const changed = r.text.split('\n').filter((l) => l.trim() && !had.has(l.trim())).join('\n');
       return (changed + '\n' + r.boxes).split(type).join(' '); } catch (e) { answer.lastSeen = (answer.lastSeen || 'the page did not load') + '; then: ' + String(e && e.message || e).split('\n')[0].slice(0, 80); return null; } finally { await ctx.close(); } }
 
+/** a generated picture on a page (tower-probes.mjs pageParts with img: the floor's 'image generation'): the gate opens the address as a phone
+ *  does and waits up to `within` ms for a real picture the page made, an <img> whose source is a data:, blob: or r2 address (or this site's own
+ *  /api/ or /r2/ path) and that has really loaded (naturalWidth > 0). A picture button, a placeholder or a "resting" message is not one.
+ *  Returns a score ({ n, of: 1, has, missing }) whose missing label says what the page showed instead. Exported for tools/tower-gate.test.mjs. */
+export const MADE_SRC = /^(?:data:image\/|blob:|https:\/\/[^/]*r2\.(?:dev|cloudflarestorage\.com)\/|\/(?:api|r2)\/)/;
+export async function pictureOf(b, url, within = 60000, sel = 'img') { // sel: where the made picture must appear (a page's results, never its gallery)
+  const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US' });
+  try {
+    const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 });
+    const ok = await p.waitForFunction(([src, q]) => [...document.querySelectorAll(q)].some((im) => im.tagName === 'IMG' && new RegExp(src).test(im.getAttribute('src') || '') && im.complete && im.naturalWidth > 0), [MADE_SRC.source, sel], { timeout: within, polling: 500 }).then(() => true).catch(() => false);
+    if (ok) return { n: 1, of: 1, has: ['a generated picture within ' + Math.round(within / 1000) + ' s'], missing: [] };
+    const said = await p.evaluate(() => { const live = [...document.querySelectorAll('[role=status], [role=alert], [aria-live]')].map((e) => e.innerText.trim()).filter(Boolean).join(' · '); return (live || (document.querySelector('main') || document.body).innerText).replace(/\s+/g, ' ').slice(0, 160); }).catch(() => ''); // what the page says about it (its status lines first)
+    return { n: 0, of: 1, has: [], missing: ['a generated picture within ' + Math.round(within / 1000) + ' s (the page showed: "' + said + '")'] };
+  } catch (e) { return { n: 0, of: 1, has: [], missing: ['a generated picture (the page did not load: ' + String(e && e.message || e).split('\n')[0].slice(0, 60) + ')'] }; } finally { await ctx.close(); }
+}
+
 export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
-  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.motion && p.motion[a]));
+  return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.pageParts && p.pageParts[a]) || (p && p.motion && p.motion[a]));
 }
 /** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
 export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
@@ -381,6 +397,14 @@ async function measureFloor(f, data) {
     // Verse alone, like accuracy
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; if (st !== null) s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
+  // a floor's aspects asked at addresses of their own (tower-probes.mjs pageParts: the list language at the editor with a generator in its link,
+  // a generated picture on the image page): judged on Verse alone, like askParts
+  for (const [a, pp] of Object.entries((probe && probe.pageParts) || {})) {
+    if (!want.has(a)) continue;
+    const url = new URL(pp.verse, VERSE).href;
+    if (pp.img) v.parts = { ...(v.parts || {}), [a]: await pictureOf(b, url, pp.within || 60000, pp.sel || 'img') };
+    else { const got = await answer(b, url, null); if (got !== null) v.parts = { ...(v.parts || {}), [a]: score(got, pp.items) }; }
+  }
   await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed
   const ev = (data.floors[f.id] = data.floors[f.id] || {});
   const where = 'Verse' + (versePage ? ' (' + versePage + ')' : '');
@@ -424,7 +448,7 @@ async function measureFloor(f, data) {
     for (const a of Object.keys((probe && probe.motion) || {})) if (want.has(a) && v.parts && v.parts[a] && !(s.parts && s.parts[a])) ev[a] = { ...record(ev[a], v.parts[a].n === v.parts[a].of ? 'equal-and-better' : 'worse', v.parts[a].n, v.parts[a].of, where + ' ' + v.parts[a].n + ' of ' + v.parts[a].of + ' seen; judged on Verse alone, the site is not driven', at), part: true };
     for (const [a, sv] of Object.entries(v.parts || {})) { const ss = s.parts && s.parts[a]; if (ss) put(a, sv.n, ss.n, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + '; site lacks: ' + (ss.missing.join(', ') || 'none') + ')' });
       // an aspect read off the typed answer (askParts) with the site not asked: judged on Verse alone, every item shown is the most a page can show
-      else if (want.has(a) && probe && probe.askParts && probe.askParts[a]) ev[a] = { ...record(ev[a], sv.n === sv.of ? 'equal-and-better' : 'worse', sv.n, sv.of, where + ' ' + sv.n + ' of ' + sv.of + ' shown for the question' + (sv.missing.length ? ' (Verse lacks: ' + sv.missing.join(', ') + ')' : '') + '; judged on Verse alone, the site is not asked', at), of: sv.of, part: true }; }
+      else if (want.has(a) && probe && ((probe.askParts && probe.askParts[a]) || (probe.pageParts && probe.pageParts[a]))) ev[a] = { ...record(ev[a], sv.n === sv.of ? 'equal-and-better' : 'worse', sv.n, sv.of, where + ' ' + sv.n + ' of ' + sv.of + ' shown for the question' + (sv.missing.length ? ' (Verse lacks: ' + sv.missing.join(', ') + ')' : '') + '; judged on Verse alone, the site is not asked', at), of: sv.of, part: true }; }
     if (v.facts && s.facts) put('completeness', v.facts.n, s.facts.n, ' of ' + v.facts.of + ' things a full answer shows', { of: v.facts.of, note: ' (Verse lacks: ' + (v.facts.missing.join(', ') || 'none') + '; site lacks: ' + (s.facts.missing.join(', ') || 'none') + ')' });
   }
   // no automatic calls (owner, 2026-10-24): a floor falls only when a person judges Verse really better than the site, never because an answer came back.

@@ -34,3 +34,4 @@ Each playbook is one kind of work a builder did by hand, written so Verse's own 
 | [approve-card.md](approve-card.md) | a card that waits on the stage for a yes through the confirm line and then runs on the server clock after you leave (the approve card over D1 automations) | not yet |
 | [device-memory.md](device-memory.md) | something Verse keeps about a person on the device only: a key in `lib/state.js`, a pure lib with caps, a one-line hook where a skill answers, a card with tap-to-ask chips, "forget" and "stop" asks (the personal memory graph) | not yet |
 | [open-endpoint-closed-list.md](open-endpoint-closed-list.md) | an open POST endpoint strangers can use safely: closed list of ids, salted per-day client key, layered limits, fail closed (spectator reactions) | not yet |
+| [page-part-probe.md](page-part-probe.md) | a tower floor's aspect the gate must see on a page of its own: a real generated picture, a working engine (pageParts, pictureOf) | not yet |

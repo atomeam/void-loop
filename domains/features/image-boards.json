@@ -21,239 +21,261 @@
      "name": "Boards by topic",
      "detail": "~70 boards in groups (Japanese Culture, Video Games, Interests, Creative, Other, Misc, Adult), each /x/ with a title, banner and its own rules; worksafe (blue) vs not-worksafe (red) split, board list on the front page.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): anyone makes a board with a code, title, line and a work-safe or 18+ mark; none are made ahead",
+     "shows": "\\bboards?\\b"
     },
     {
      "name": "Front page",
      "detail": "Board directory, popular threads, site stats (posts, users, content), news, rules/FAQ links.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): the board list, most active first, with search across every board and the overboard link",
+     "shows": "\\bthe boards\\b"
     },
     {
      "name": "Board index pages",
      "detail": "Threads in bump order, 10 pages x ~15 threads, each OP with its last 5 replies and an 'omitted' count with Reply link.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): Index tab: 10 pages of 15 threads, each with its last 3 replies and an omitted count",
+     "shows": "\\bindex pages?\\b"
     },
     {
      "name": "Catalog",
      "detail": "Grid of every live thread: OP thumbnail, subject, teaser, reply (R) and image (I) counts; sort by bump order, last reply, creation date, reply count; small/large thumbnails; teaser on/off; search/filter box.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): grid with R/I counts and page, sort by bump, newest or replies, search in it; no sort by last reply yet",
+     "shows": "\\bcatalog\\b"
     },
     {
      "name": "Threads with bump and image limits",
      "detail": "A reply bumps the thread to the top; after the bump limit (e.g. 300-500 replies) it stops bumping; image limit per thread; oldest threads prune off the last page.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): bump limit 300, 150 pictures, locked at 500 (text boards 1,000), past the last page to the archive",
+     "shows": "\\bbump"
     },
     {
      "name": "Sticky and closed threads",
      "detail": "Pinned rules/general threads; locked threads.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): owner locks threads and boards; no sticky yet"
     },
     {
      "name": "Anonymous posting, no accounts",
      "detail": "Name defaults to Anonymous; nothing to sign up for.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): name defaults to Anonymous, no account",
+     "shows": "\\banonymous\\b"
     },
     {
      "name": "Post form",
      "detail": "Name, Options (email field: 'sage'), Subject (OP), Comment (2,000 characters), File, Spoiler checkbox where enabled, captcha; new threads need an image on most boards.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): name, options (sage), subject, comment, picture, spoiler, bot check; a new thread on a picture board needs a picture",
+     "shows": "\\bsage\\b"
     },
     {
      "name": "Reply quotes >>12345",
      "detail": "Clickable post links with hover preview, backlinks under the quoted post, (OP) and (You) markers; cross-thread and cross-board links >>>/g/12345 and >>>/g/.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): hover/tap previews, backlinks, (OP) and (You), >>>/board/ and >>>/board/123",
+     "shows": ">>\\s?quotes|\\bquotes?\\b"
     },
     {
      "name": "Greentext",
      "detail": "Lines starting with > render green as quotes.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): lines starting with > in green",
+     "shows": "\\bgreentext\\b"
     },
     {
      "name": "Spoilers",
      "detail": "[spoiler] text on some boards; spoiler image checkbox hides the thumbnail.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): [spoiler] text and a spoiler picture checkbox",
+     "shows": "\\bspoilers?\\b"
     },
     {
      "name": "Board-specific markup",
      "detail": "[code] with syntax highlight on /g/, [math]/[eqn] TeX on /sci/, [sjis] art on /jp/, oekaki/tegaki drawing on some boards.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): [code] everywhere; no [math] or oekaki"
     },
     {
      "name": "Sage",
      "detail": "'sage' in Options replies without bumping the thread.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): sage in Options does not bump",
+     "shows": "\\bsage\\b"
     },
     {
      "name": "Tripcodes and secure tripcodes",
      "detail": "name#password -> !hash identity; ##password secure tripcode (server salt).",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): name#password, keyed by the server secret (always secure)",
+     "shows": "\\btripcodes?\\b"
     },
     {
      "name": "Capcodes",
      "detail": "Staff posts marked Mod, Admin, Manager, Developer, Founder, Verified with colours/icons.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no staff marks"
     },
     {
      "name": "Poster IDs",
      "detail": "Per-thread ID per poster on some boards (/pol/, /biz/, /b/...) with post count on hover.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): a board option: per thread per day, from a keyed hash",
+     "shows": "\\bposter IDs?\\b"
     },
     {
      "name": "Country and board flags",
      "detail": "GeoIP country flag on /int/, /pol/, /sp/, /bant/...; selectable meme/board flags.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no flags (no GeoIP kept)"
     },
     {
      "name": "File uploads",
      "detail": "JPG, PNG, GIF, WEBM (no PDF since the April 2025 hack; Flash board /f/ removed); ~4 MB max (6 MB on /wsg/), 10,000 x 10,000 px; WEBM audio only on /gif/ and /wsg/; thumbnails generated; filename and size/dimensions shown, link to original.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): JPEG, PNG, GIF, WebP up to 4 MB and 10,000 px; no WebM",
+     "shows": "\\bpictures?\\b"
     },
     {
      "name": "Image expansion and hover",
      "detail": "Click thumbnail to expand inline, hover to preview; WEBM plays inline.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): tap to expand inline; no hover preview of the picture"
     },
     {
      "name": "Delete your own post",
      "detail": "A password (stored in a cookie) lets the poster delete the post or only its file.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): Delete mine with a delete password kept on the device; whole post only, not the file alone"
     },
     {
      "name": "Report",
      "detail": "Report a post with a category (rule broken / illegal content) to janitors and moderators; captcha unless Pass.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): Report on every post with a reason; three different people hide it",
+     "shows": "\\breport\\b"
     },
     {
      "name": "Moderation",
      "detail": "Volunteer janitors per board, paid/unpaid mods, warnings, bans (board or global, temporary or permanent) with public ban message '(USER WAS BANNED FOR THIS POST)', ban appeal page, banned-check page.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): owner review list, restore, delete, ban by hashed address, lock; no volunteer janitors or public ban message"
     },
     {
      "name": "Global and board rules",
      "detail": "Site-wide rules (US law, no personal info, no spam, no ban evasion, worksafe boards stay worksafe, age 18+) plus each board's own rules; FAQ.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): /boards/rules/: anything legal, no doxxing, 18+ only on 18+ boards; no per-board rules",
+     "shows": "\\brules\\b"
     },
     {
      "name": "Spam controls",
      "detail": "Own captcha (slider/text), post cooldowns per IP, flood and duplicate-image checks, range bans for VPN/proxy abuse.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): Turnstile or proof of work on every post, per-address cooldowns; no duplicate-image check",
+     "shows": "\\bbot check\\b|\\bspam\\b"
     },
     {
      "name": "4chan Pass",
      "detail": "~$20/yr: skip captcha when posting and reporting, reported shorter cooldowns and posting from some blocked ranges; 'since4pass' badge year optional.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): money: the owner decides"
     },
     {
      "name": "Archive",
      "detail": "Per-board archive of threads that fell off, kept a few days (archive.html, archive.json) on most boards; third-party long-term archives (4plebs, desuarchive, archived.moe, warosu) with search and image hashes.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): read-only archive of threads past the last page, searchable",
+     "shows": "\\barchive\\b"
     },
     {
      "name": "Thread watcher",
      "detail": "Native extension lists watched threads with new-reply counts.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): watched threads on the device with new-reply counts",
+     "shows": "\\bwatch(?:er|ing)?\\b"
     },
     {
      "name": "Native extension (in-page settings)",
      "detail": "Quick Reply floating box, inline quote expansion, thread auto-updater, hide/filter posts and threads, image hover, (You) highlight, custom CSS, keyboard nav.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): quick reply, inline quotes, auto-update, word filters and hide, (You); no custom CSS"
     },
     {
      "name": "Themes",
      "detail": "Yotsuba, Yotsuba B, Futaba, Burichan, Tomorrow, Photon; per-board default worksafe theme.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): light and dark follow the device; no theme picker"
     },
     {
      "name": "Mobile site",
      "detail": "Responsive mobile layout with catalog/index/thread switches and bottom post button.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): phone first: catalog/index/archive tabs and a bottom Reply button",
+     "shows": "\\bcatalog\\b"
     },
     {
      "name": "Read-only JSON API",
      "detail": "a.4cdn.org: boards.json, threads.json, catalog.json, archive.json, thread/<no>.json; no auth; 1 request/second; If-Modified-Since; images on i.4cdn.org.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): /api/boards answers JSON (boards, catalog, thread, archive, search) but is not documented as public"
     },
     {
      "name": "Search",
      "detail": "Catalog search per board (no full-text site search natively).",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): search in a board and across every board, archive included",
+     "shows": "\\bsearch\\b"
     },
     {
      "name": "Post time and post number",
      "detail": "Local time, unique incremental post number per board; 'get' culture for repeating digits.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): incrementing number per board and local time",
+     "shows": "\\bNo\\.\\s?\\d|\\bpost numbers?\\b"
     },
     {
      "name": "Ads and advertising",
      "detail": "Banner ads; self-serve ad purchase.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no ads"
     },
     {
      "name": "Third-party mobile apps (Android: KurobaEx, Blue Clover, Chanu; iOS: Chan, Swipechan)",
@@ -276,43 +298,45 @@
      "name": "User-created boards",
      "detail": "Anyone can create and own a board with its own volunteers, rules, CSS and flags.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): anyone makes a board; the owner can rename, lock or delete it",
+     "shows": "\\bmake (?:a|the first|your) board\\b"
     },
     {
      "name": "Multiple files per post",
      "detail": "Several attachments per post (images, video, audio), spoiler per file, strip EXIF.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): one picture per post"
     },
     {
      "name": "Board owner moderation tools",
      "detail": "Per-board bans, filters, word filters, custom flags, archives toggle, logs.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): site owner only; board makers have no tools; word filters are per device"
     },
     {
      "name": "Overboard",
      "detail": "A combined feed of new threads from all boards.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): ?all=1: every board's newest bumped threads, 18+ pictures blurred",
+     "shows": "\\bevery board.s new threads\\b"
     },
     {
      "name": "Tor/onion access",
      "detail": "Onion mirror.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no onion mirror"
     },
     {
      "name": "JSON API",
      "detail": "LynxChan JSON for boards, threads, catalog.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): JSON at /api/boards, not documented as public"
     }
    ]
   },
@@ -328,22 +352,23 @@
      "name": "User-created boards",
      "detail": "Board owners run their own boards (vichan/OpenIB lineage).",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): anyone makes a board; the owner can rename, lock or delete it",
+     "shows": "\\bmake (?:a|the first|your) board\\b"
     },
     {
      "name": "Multiple files per post, catalog, overboard",
      "detail": "Standard vichan features.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): catalog and overboard yes; one file per post"
     },
     {
      "name": "Public mod logs",
      "detail": "Board logs visible.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no public log"
     }
    ]
   },
@@ -358,29 +383,31 @@
      "name": "Boards by topic with fast-expiring threads",
      "detail": "Threads fall off quickly; no long archive.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): threads fall to the archive after 10 pages",
+     "shows": "\\barchive\\b"
     },
     {
      "name": "Anonymous posts with 'soudane' (+1) button",
      "detail": "Readers press そうだね to agree with a post.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no reactions"
     },
     {
      "name": "Deletion requests by readers",
      "detail": "del button: enough reader votes hide a post.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): three reports from different people hide a post",
+     "shows": "\\breport\\b"
     },
     {
      "name": "Japanese-only",
      "detail": "Restricted posting from outside Japan on many boards.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no country limits"
     }
    ]
   },
@@ -396,22 +423,23 @@
      "name": "User-created boards",
      "detail": "Anyone makes a board.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): anyone makes a board; the owner can rename, lock or delete it",
+     "shows": "\\bmake (?:a|the first|your) board\\b"
     },
     {
      "name": "Tor-friendly, minimal logs",
      "detail": "Onion access, privacy focus.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): no raw IPs kept; no onion"
     },
     {
      "name": "Multiple files per post",
      "detail": "LynxChan attachments.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): one picture per post"
     }
    ]
   },
@@ -427,22 +455,23 @@
      "name": "Topic boards (tech, programming, art, music)",
      "detail": "Small curated board set.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): made by people, any topic",
+     "shows": "\\bboards?\\b"
     },
     {
      "name": "Code tags and themes",
      "detail": "[code] blocks; many CSS themes.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): [code] yes; no themes"
     },
     {
      "name": "Radio and IRC companions",
      "detail": "lainchan radio streams, IRC/Matrix.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): none"
     }
    ]
   },
@@ -457,15 +486,17 @@
      "name": "Classic Kusaba boards",
      "detail": "Stricter content rules than 4chan.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): rules page; anything legal",
+     "shows": "\\brules\\b"
     },
     {
      "name": "Bump limits, catalog",
      "detail": "Standard features.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): both",
+     "shows": "\\bcatalog\\b"
     }
    ]
   },
@@ -480,15 +511,15 @@
      "name": "Community-focused boards",
      "detail": "Rules on who may post; moderated topics.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): board makers set a line, not posting rules"
     },
     {
      "name": "Catalog, multiple files",
      "detail": "vichan standard.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): catalog yes; one file"
     }
    ]
   },
@@ -504,14 +535,14 @@
      "detail": "Krautchan-style flags, /int/.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no flags"
     },
     {
      "name": "Multiple files, overboard",
      "detail": "LynxChan features.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): overboard yes; one file"
     }
    ]
   },
@@ -527,21 +558,21 @@
      "detail": "Reactions and ratings.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no votes"
     },
     {
      "name": "Optional accounts and gold account",
      "detail": "Paid Gold adds features (follow threads, hide ads).",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): no accounts; money is the owner's call"
     },
     {
      "name": "Notifications for replies",
      "detail": "Reply notifications.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): the watcher counts new replies; no push notifications"
     }
    ]
   },
@@ -558,29 +589,31 @@
      "name": "Text-only threads, 1000-post cap",
      "detail": "Thread closes at 1000 posts; a new 'part N' thread continues.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): text boards run threads to 1,000 posts; no automatic part N",
+     "shows": "\\btext only\\b|\\btext boards?\\b"
     },
     {
      "name": "Daily IDs per poster",
      "detail": "ID per day per board.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): per thread per day on boards that choose them",
+     "shows": "\\bposter IDs?\\b"
     },
     {
      "name": "Dedicated reader apps (JaneStyle, ChMate)",
      "detail": "Browsers with NG filters, threading, image previews of linked pictures.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): word filters on the device; no app"
     },
     {
      "name": "Paid Ronin/premium",
      "detail": "Faster posting, past-log access.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse_evidence": "/boards/ (2026-10-25): money: the owner decides"
     }
    ]
   },
@@ -596,15 +629,17 @@
      "name": "2channel-style textboard",
      "detail": "Threads, IDs, sage.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): text-only boards with IDs and sage",
+     "shows": "\\btext boards?\\b"
     },
     {
      "name": "Image upload and real-time updates",
      "detail": "Modern extras on a textboard.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): threads update by themselves; pictures on picture boards",
+     "shows": "\\bupdate"
     }
    ]
   },
@@ -620,8 +655,9 @@
      "name": "Shiichan-style textboard",
      "detail": "Threads listed on one page, posts numbered, tripcodes, sage.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "has",
+     "verse_evidence": "/boards/ (2026-10-25): numbered posts, tripcodes, sage",
+     "shows": "\\btext boards?\\b"
     }
    ]
   },
@@ -637,8 +673,8 @@
      "name": "SchemeBBS textboard",
      "detail": "Minimal text threads, range links >>1-5, markup for code and spoilers.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "No /boards/ page on main at 2026-10-25 (another agent is building it); nothing in void-live-deploy/boards or lib/*board*."
+     "verse": "partial",
+     "verse_evidence": "/boards/ (2026-10-25): [code] and spoilers; no >>1-5 range links"
     }
    ]
   }
@@ -662,5 +698,586 @@
   "Themes (Yotsuba, Tomorrow...) and worksafe/not-worksafe split (4chan)",
   "Paid pass to skip captcha (4chan Pass, 5ch Ronin, ylilauta Gold) - money: owner decides"
  ],
- "verse_extra": []
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-25",
+  "sites": {
+   "bbs.progrider.org": {
+    "url": "https://bbs.progrider.org/",
+    "scanned": "2026-10-25",
+    "pages": [],
+    "problem": "answered 525",
+    "features": []
+   },
+   "sushigirl.us": {
+    "url": "https://sushigirl.us/",
+    "scanned": "2026-10-25",
+    "went_to": "sushigirl.cafe",
+    "pages": [
+     "https://sushigirl.cafe/",
+     "https://sushigirl.cafe/faq/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Boards À La Carte",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"board\"; not \"carte\""
+     },
+     {
+      "name": "/lounge/ is for general comfy talk and random comfy things",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"lounge\", \"general\", \"comfy\", \"talk\""
+     },
+     {
+      "name": "Smoke weed it's good for you",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"smoke\", \"weed\", \"good\""
+     },
+     {
+      "name": "It never gets weird enough",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"never\"; not \"get\", \"weird\", \"enough\""
+     },
+     {
+      "name": "Bunny girls are always relevant",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"bunny\", \"girl\", \"alway\", \"relevant\""
+     },
+     {
+      "name": "Please don't post just to advertise something",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"post\"; not \"please\", \"don\", \"just\""
+     },
+     {
+      "name": "''italics'' (single quotes)",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"quote\"; not \"italic\", \"single\""
+     },
+     {
+      "name": "'''bold''' (single quotes)",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"quote\"; not \"bold\", \"single\""
+     },
+     {
+      "name": "spoiler**",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/boards/ shows \"spoiler\""
+     },
+     {
+      "name": "==heading==",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"head\""
+     },
+     {
+      "name": "Seagal",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"seagal\""
+     },
+     {
+      "name": "Seisatsu",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"seisatsu\""
+     }
+    ]
+   },
+   "uboachan.net": {
+    "url": "https://uboachan.net/",
+    "scanned": "2026-10-25",
+    "pages": [],
+    "problem": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "features": []
+   },
+   "desuchan.net": {
+    "url": "https://desuchan.net/",
+    "scanned": "2026-10-25",
+    "pages": [],
+    "problem": "did not load (page.goto: Timeout 20000ms exceeded.)",
+    "features": []
+   },
+   "kissu.moe": {
+    "url": "https://kissu.moe/",
+    "scanned": "2026-10-25",
+    "pages": [
+     "https://kissu.moe/",
+     "https://kissu.moe/qa",
+     "https://kissu.moe/faq",
+     "https://kissu.moe/aut/thread/5213",
+     "https://kissu.moe/jp/thread/126058"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Otaku Romance - Kissu.moe",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"otaku\", \"romance\", \"kissu\", \"moe\""
+     },
+     {
+      "name": "Active Threads",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/boards/ shows \"active\", \"thread\""
+     },
+     {
+      "name": "Featured Threads",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"featur\""
+     },
+     {
+      "name": "Board Groups",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"board\"; not \"group\""
+     },
+     {
+      "name": "Meta",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"meta\""
+     },
+     {
+      "name": "Otaku Culture",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"otaku\", \"culture\""
+     },
+     {
+      "name": "Hobby",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"hobby\""
+     },
+     {
+      "name": "Filesharing",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"fileshar\""
+     },
+     {
+      "name": "About Kissu",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"about\", \"kissu\""
+     },
+     {
+      "name": "Site Statement",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"statement\""
+     },
+     {
+      "name": "Anime Goods",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"anime\", \"good\""
+     },
+     {
+      "name": "Thread qa-185549",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"185549\""
+     },
+     {
+      "name": "New Age Brand New /qa/ bump when drunk",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"bump\"; not \"age\", \"brand\", \"when\""
+     },
+     {
+      "name": "Thread qa-138870",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"138870\""
+     },
+     {
+      "name": "Chronic Illnesses",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"chronic\", \"illnesse\""
+     },
+     {
+      "name": "Dreams Thread",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"dream\""
+     },
+     {
+      "name": "Thread qa-184637",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"184637\""
+     },
+     {
+      "name": "Thread qa-82826",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"82826\""
+     },
+     {
+      "name": "~ Kissu Original Content ~",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"content\"; not \"kissu\", \"original\""
+     },
+     {
+      "name": "imageboard happenings thread",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"imageboard\", \"happen\""
+     },
+     {
+      "name": "Music sharing thread",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"music\", \"shar\""
+     },
+     {
+      "name": "Cute animals",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"cute\", \"animal\""
+     },
+     {
+      "name": "4chan happenings thread",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"4chan\", \"happen\""
+     },
+     {
+      "name": "Thread qa-185487",
+      "detail": "a heading on /qa",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"185487\""
+     },
+     {
+      "name": "Confusing Features",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"confus\", \"feature\""
+     },
+     {
+      "name": "Catalog Pages",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/boards/ shows \"catalog\", \"page\""
+     },
+     {
+      "name": "Thread Pages",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/boards/ shows \"thread\", \"page\""
+     },
+     {
+      "name": "Community Behavior",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"community\", \"behavior\""
+     },
+     {
+      "name": "Financial Support",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"financial\", \"support\""
+     },
+     {
+      "name": "Kissu Pass System",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"pass\"; not \"kissu\", \"system\""
+     },
+     {
+      "name": "Other Methods",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"other\", \"method\""
+     },
+     {
+      "name": "Developer tools",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"developer\""
+     },
+     {
+      "name": "User-Interface API",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"user\", \"interface\", \"api\""
+     },
+     {
+      "name": "JSON API",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"json\", \"api\""
+     },
+     {
+      "name": "Source code",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"code\"; not \"source\""
+     },
+     {
+      "name": "How Do I Contact the Staff Members",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"how\", \"contact\", \"staff\", \"member\""
+     },
+     {
+      "name": "Japan Travels 2.0",
+      "detail": "a heading on /aut/thread/5213",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"japan\", \"travel\", \"2\", \"0\""
+     },
+     {
+      "name": "Thread jp-126058",
+      "detail": "a heading on /jp/thread/126058",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/boards/ shows \"thread\"; not \"126058\""
+     },
+     {
+      "name": "/poll/",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"poll\""
+     },
+     {
+      "name": "/amv/ Cyberpunk Edgerunners Season 2",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/boards/ shows none of its words; not \"amv\", \"cyberpunk\", \"edgerunner\", \"season\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "/lounge/ is for general comfy talk and random comfy things",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "Smoke weed it's good for you",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "Bunny girls are always relevant",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "==heading==",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "Seagal",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "Seisatsu",
+    "sites": [
+     "sushigirl.us"
+    ]
+   },
+   {
+    "name": "Otaku Romance - Kissu.moe",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Meta",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Otaku Culture",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Hobby",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Filesharing",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "About Kissu",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Site Statement",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Anime Goods",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Chronic Illnesses",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Cute animals",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Confusing Features",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Community Behavior",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Financial Support",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Other Methods",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Developer tools",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "User-Interface API",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "JSON API",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "How Do I Contact the Staff Members",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "Japan Travels 2.0",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "/poll/",
+    "sites": [
+     "kissu.moe"
+    ]
+   },
+   {
+    "name": "/amv/ Cyberpunk Edgerunners Season 2",
+    "sites": [
+     "kissu.moe"
+    ]
+   }
+  ],
+  "queued": []
+ }
 }

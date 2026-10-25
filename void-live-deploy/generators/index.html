@@ -12,7 +12,7 @@
 <meta property="og:url" content="https://a-to-mind.com/generators/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<script>if (/[?&](?:g|seed|n)=/.test(location.search)) { document.documentElement.classList.add('pre'); setTimeout(function () { document.documentElement.classList.remove('pre'); }, 2500); } // the link carries a generator and a seed: hold the paint until the result is drawn (never for long: a page that cannot draw still shows its words)</script>
+<script>if (navigator.onLine !== false && /[?&](?:g|seed|n)=/.test(location.search)) { document.documentElement.classList.add('pre'); setTimeout(function () { document.documentElement.classList.remove('pre'); }, 2500); } // the link carries a generator and a seed: hold the paint until the result is drawn (never for long: a page that cannot draw still shows its words; never offline, where a module the worker has not kept yet would hold it)</script>
 <style>
   /* a-to-mind.com/generators/ (Versus' perchance.org floor): one file and one module; nothing leaves the device but a picture ask */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
@@ -92,13 +92,23 @@
     <label class="vh" for="ownText" id="ownL">One entry per line</label>
     <textarea id="ownText" placeholder="One entry per line" maxlength="20000"></textarea>
     <div class="row"><button type="button" class="go" id="ownGo">Regenerate</button></div>
+    <p class="note"><a href="/generators/make/" id="editorLink">Open the full editor: many lists, nested lists, odds, {a|b} choices, a live preview, share, publish and remix →</a></p>
   </details>
+
+  <section id="hub" aria-labelledby="hubH">
+    <h2 id="hubH">People's generators</h2>
+    <p class="note" id="ownWords">Make your own in plain lists: [list] references, nested lists, odds and weights like ^2, inline choices {a|b|c}, ranges {1-10} and {a-z}, smart articles {a} and plurals {s}, all in <a href="/generators/make/">the editor</a>.</p>
+    <div class="row" role="group" aria-label="Order"><button type="button" id="hubNew" aria-pressed="true">Newest</button><button type="button" id="hubPop" aria-pressed="false">Most played</button><a href="/generators/make/" class="go" id="hubMake" style="font-size:14px;border-radius:999px;padding:7px 14px;min-height:40px;display:inline-flex;align-items:center;text-decoration:none;background:var(--accent);color:var(--on-accent,#fff)">Make and publish your own</a><a href="/image/" id="hubImage" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">AI image generator →</a><a href="/generators/chat/" id="hubChat" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">Character chat →</a><a href="/generators/story/" id="hubStory" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">Story writer →</a></div>
+    <h2 id="aiH">AI name generators</h2>
+    <nav class="chips" id="aiGens" aria-labelledby="aiH"><a href="/generators/make/?t=ai-fantasy-names">AI fantasy names</a><a href="/generators/make/?t=ai-character-names">AI character names</a><a href="/generators/make/?t=ai-town-names">AI town names</a><a href="/generators/make/?t=ai-pet-names">AI pet names</a><a href="/generators/make/?t=ai-band-names">AI band names</a></nav>
+    <ul class="res" id="hubList"><li class="note">Loading…</li></ul>
+  </section>
 
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/generators/?g=fantasy-names">Fantasy names</a><a href="/generators/?g=town-names">Town names</a><a href="/generators/?g=band-names">Band names</a><a href="/generators/?g=writing-prompts">Writing prompts</a><a href="/generators/?g=dnd-npcs">D&amp;D NPCs</a><a href="/generators/?g=superpowers">Superpowers</a><a href="/generators/?g=haiku">Haiku</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
-  <footer id="foot">Nothing is sent anywhere except when you ask for a picture.</footer>
+  <footer id="foot">Nothing you make here is sent anywhere unless you ask for a picture or publish a generator.</footer>
 </main>
 <script type="module">
   // static imports so tools/preload.mjs lists them and sw.js keeps them whole: the page opens offline (a dynamic import was never cached)
@@ -119,7 +129,7 @@
     if (de) { document.documentElement.lang = 'de'; document.title = 'Zufallsgeneratoren: Namen, Ideen und Geschichten · Verse'; }
     const nameOf = (x) => (de ? x.de : x.en);
     $('title').textContent = W.title; $('sub').textContent = W.sub; $('count').textContent = G.GENERATORS.length + ' ' + W.gens; $('nL').textContent = W.many; $('regen').textContent = W.regenerate; $('copyAll').textContent = W.copyAll; $('share').textContent = W.share;
-    $('favH').textContent = W.favs; $('ownH').textContent = W.own; $('ownL').textContent = W.ownHint; $('ownText').placeholder = W.ownHint; $('ownGo').textContent = W.regenerate; $('gselL').textContent = W.title; $('foot').textContent = de ? 'Es wird nichts gesendet, außer wenn du ein Bild möchtest.' : 'Nothing is sent anywhere except when you ask for a picture.';
+    $('favH').textContent = W.favs; $('ownH').textContent = W.own; $('ownL').textContent = W.ownHint; $('ownText').placeholder = W.ownHint; $('ownGo').textContent = W.regenerate; $('gselL').textContent = W.title; $('foot').textContent = de ? 'Es wird nichts gesendet, außer du willst ein Bild oder veröffentlichst einen Generator.' : 'Nothing you make here is sent anywhere unless you ask for a picture or publish a generator.';
     for (const x of G.GENERATORS) { const o = document.createElement('option'); o.value = x.id; o.textContent = nameOf(x); $('gsel').append(o); const a = document.createElement('a'); a.href = '/generators/?g=' + x.id; a.textContent = nameOf(x); a.dataset.id = x.id; a.addEventListener('click', (e) => { e.preventDefault(); state.g = x.id; state.seed = G.newSeed(); go(); }); $('chips').append(a); }
     $('n').value = state.n;
     const link = () => location.origin + '/generators/?g=' + state.g + '&seed=' + state.seed + '&n=' + state.n;
@@ -169,6 +179,20 @@
     if (state.g === 'own') $('own').open = true;
     drawFavs(); go();
     mountRelated($('related'), '/generators/');
+    // the hub: generators people published (functions/api/generators.js); titles only, as text; each opens in the editor
+    async function hub(sort) {
+      $('hubNew').setAttribute('aria-pressed', String(sort === 'new')); $('hubPop').setAttribute('aria-pressed', String(sort === 'popular'));
+      try { const j = await (await fetch('/api/generators?sort=' + sort)).json(); const items = (j && j.items) || [];
+        $('hubList').replaceChildren(...(items.length ? items.map((g) => { const li = document.createElement('li'), a = document.createElement('a'); a.href = '/gen/' + encodeURIComponent(g.id); a.textContent = g.title; a.className = 'txt'; a.style.color = 'inherit';
+          const m = document.createElement('div'); m.className = 'pic'; m.textContent = (de ? g.plays + '× gespielt · ' : 'played ' + g.plays + ' times · ') + g.day;
+          const acts = document.createElement('div'); acts.className = 'acts'; const rb = document.createElement('button'); rb.type = 'button'; rb.textContent = de ? 'Melden' : 'Report'; rb.setAttribute('aria-label', (de ? 'Melden: ' : 'Report ') + g.title);
+          rb.addEventListener('click', async () => { if (!confirm(de ? 'Diesen Generator melden?' : 'Report this generator as harmful or rude?')) return; try { await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: g.id, act: 'report' }) }); } catch (_) {} rb.textContent = de ? 'Gemeldet' : 'Reported'; rb.disabled = true; });
+          acts.append(rb); li.append(a, m, acts); return li; }) : [Object.assign(document.createElement('li'), { className: 'note', textContent: de ? 'Noch keiner. Mach den ersten!' : 'None yet. Publish the first one!' })]));
+      } catch (_) { $('hubList').replaceChildren(Object.assign(document.createElement('li'), { className: 'note', textContent: de ? 'Die Sammlung braucht Internet.' : 'The hub needs the internet.' })); }
+    }
+    $('hubNew').addEventListener('click', () => hub('new')); $('hubPop').addEventListener('click', () => hub('popular'));
+    if (de) { $('hubH').textContent = 'Generatoren von anderen'; $('hubNew').textContent = 'Neueste'; $('hubPop').textContent = 'Meistgespielt'; $('hubMake').textContent = 'Eigenen machen und teilen'; $('hubImage').textContent = 'KI-Bildgenerator →'; $('hubChat').textContent = 'Figuren-Chat →'; $('hubStory').textContent = 'Geschichtenschreiber →'; $('editorLink').textContent = 'Zum vollen Editor: viele Listen, verschachtelt, Gewichte, {a|b}, Live-Vorschau, teilen und veröffentlichen →'; }
+    hub('new');
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
