@@ -115,7 +115,7 @@
   <form id="sf" hidden role="search"><label class="vh" for="sq" id="sqL">Search events</label><input type="search" id="sq" placeholder="Search events" maxlength="100"></form>
   <ul class="list" id="results" hidden></ul>
 
-  <div class="rem" id="remBar"><span id="remL">Next reminder</span>: <b id="remNext">—</b></div>
+  <div class="rem" id="remBar"><span><span id="remL">Next reminder</span>:</span> <b id="remNext">—</b></div>
   <div id="alert" role="alert" hidden><span id="alertL">Reminder</span>: <b id="alertText"></b><button type="button" id="alertClose">Close</button></div>
 
   <section class="pane" id="inviteCard" hidden aria-labelledby="invH">
@@ -256,7 +256,7 @@
         $('period').textContent = C.fmtDay(c, lang); const occs = C.onDay(store.events, C.dayKey(c)); v.append(listOf(occs));
         const b = el('button', '', '+ ' + W.newEvent); b.type = 'button'; b.style.marginTop = '8px'; b.addEventListener('click', () => openEditor(null, c)); v.append(b);
       }
-      $('count').textContent = store.events.length ? store.events.length + ' ' + W.events : ''; remBar(); store.view = state.view; keep();
+      $('count').textContent = store.events.length ? store.events.length + ' ' + (store.events.length === 1 ? (de ? 'Termin' : 'event') : W.events) : ''; remBar(); store.view = state.view; keep();
     }
     function showDetail(o) {
       state.sel = o; $('detail').hidden = false; $('detTitle').textContent = o.title; const dl = $('detList'); dl.replaceChildren();
