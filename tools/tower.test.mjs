@@ -51,7 +51,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   assert.match(h, /<div class="tw-head">Versus<\/div>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
-  assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.doesNotMatch(h, /<img|logo/i);
+  assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.match(h, /class="tw-logo"/); // logos only (owner, 2026-10-25)
   assert.match(sk.detailText(t.floors[0]), /^0 of 11 aspects ahead of /);
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
@@ -109,15 +109,15 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
   assert.equal(ago('2026-10-25T08:59:30Z', now), 'just now'); assert.equal(ago('2026-10-25T08:45:00Z', now), '15 minutes ago'); assert.equal(ago('2026-10-24T09:00:00Z', now), '24 hours ago'); assert.equal(ago('2026-10-23T09:00:00Z', now), '2 days ago'); assert.equal(ago('2026-09-01T00:00:00Z', now), 'on 2026-09-01'); assert.equal(ago('x', now), '');
   // the splash: Verse's mark left, the site's fighter right (keyed by its host, so the same face as anywhere else), names in plain text, an energy bar each
   const vs = vsHtml(cur, esc);
-  assert.ok(vs.indexOf('aria-label="Verse"') < vs.indexOf('class="tw-vsmark"') && vs.indexOf('class="tw-vsmark"') < vs.indexOf("calculator.net's fighter"), 'Verse, VS, the site');
+  assert.ok(vs.indexOf('src="/icon.svg"') < vs.indexOf('class="tw-vsmark"') && vs.indexOf('class="tw-vsmark"') < vs.indexOf('domain=calculator.net'), 'Verse, VS, the site: logos only');
   assert.match(vs, /class="tw-who">Verse<\/span>/); assert.match(vs, /class="tw-who">calculator\.net<\/span>/); assert.match(vs, /class="tw-vs tw-in"/); assert.doesNotMatch(vsHtml(cur, esc, { enter: false }), /tw-in/);
   assert.equal((vs.match(/<i data-k="v">/g) || []).length, 2, "Verse's bar: the two aspects it has won or is equal-and-better on"); assert.equal((vs.match(/<i data-k="s">/g) || []).length, 1, "the site's bar: the one aspect Verse loses"); assert.equal((vs.match(/<i>/g) || []).length, (cur.m - 2) + (cur.m - 1), 'the rest grey on both');
-  assert.equal(siteFace(cur, 24), siteFace({ site: 'calculator.net', url: 'https://www.calculator.net/x' }, 24)); assert.match(siteFace(cur, 24), /width="24"/); assert.doesNotMatch(vs, /<img|logo/i);
+  assert.equal(siteFace(cur, 24), siteFace({ site: 'calculator.net', url: 'https://www.calculator.net/x' }, 24)); assert.match(siteFace(cur, 24), /width="24"/); assert.match(vs, /class="tw-logo"/); // logos only (owner, 2026-10-25)
   assert.ok(hashOf('calculator.net') !== hashOf('isitchristmas.com'));
   // the card: the splash before the stack, the rows inside the current site's button with the numbers and the awareness line, a conquered site with its small face
   const won = { ...ev, [FLOORS[0].id]: all(FLOORS[0]) }, t2 = tower([], won), h = towerHtml(t2, esc, { now }); assert.equal(t2.floors.find((x) => x.state === 'current').id, f.id);
   assert.ok(h.indexOf('class="tw-vs') < h.indexOf('class="tw-stack')); assert.match(h, /95 ms vs 132 ms/); assert.match(h, /last measured 3 hours ago · next: the gate re-measures on the next deploy/);
-  assert.match(h, new RegExp('data-state="beaten"><span class="tw-face"><svg[^>]*aria-label="' + FLOORS[0].site.replace(/\./g, '\\.') + "'s fighter\""));
+  assert.match(h, new RegExp('data-state="beaten"><span class="tw-face"><span class="tw-logo-wrap"[^>]*><img class="tw-logo" src="[^"]*' + FLOORS[0].site.replace(/\./g, '\\.'))); // the beaten site's logo, never a face
   assert.equal((h.match(/<li data-v=/g) || []).length, cur0.m); assert.equal((h.match(/<li data-v="won"/g) || []).length, 2); assert.equal((h.match(/<li data-v="lost"/g) || []).length, 0);
   const m = matchupHtml(cur, esc, { now }); assert.ok(m.startsWith('<style>') && m.includes('class="tw-vs') && m.includes('3 of 3 vs 2 of 3') && m.includes('last measured 3 hours ago'));
   assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
@@ -146,7 +146,7 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   assert.ok(html.includes('<b>Surpassed (1)</b>')); assert.ok(!/max-height:min\(48vh/.test(html), 'no scroll cap hides the list');
   // the site's own icon when the gate kept one; the drawn fighter otherwise
   const { siteFace } = await import('../void-live-deploy/skills/tower.js');
-  assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /^<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /^<svg/);
+  assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /s2\/favicons\?sz=128&domain=tradukka\.com/); assert.doesNotMatch(siteFace(won, 24), /<svg/, 'logos only, never a drawn face');
   assert.equal(tower([], ev, null, { [won.site]: 'tower.icons/x.png' }).floors.find((f) => f.id === lane.id).icon, 'tower.icons/x.png');
 });
 

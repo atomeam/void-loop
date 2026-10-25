@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-50';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-51';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
@@ -64,14 +64,19 @@ export const metaLine = (f, now = Date.now()) => { const at = lastAt(f);
   return (at ? 'last measured ' + ago(at, now) : f.measured ? 'last measured: time not recorded' : 'not measured yet') + ' · next: ' + (f.lost && f.lost.length ? f.lost[0] + ' (Verse loses on it, so it comes first)' : 'the gate re-measures on the next deploy'); };
 const siteSeed = (f) => hostOf(f.url) || hostOf(f.site) || String(f.site || f.id || '');
 /** the site's fighter at a size, facing Verse. Pure. */
-export const siteFace = (f, size = 56) => (f && f.icon && /^tower\.icons\/[\w.-]+$/.test(f.icon) ? '<img class="tw-logo" src="/' + f.icon + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:contain;background:#fff;padding:' + Math.round(size / 10) + 'px;box-sizing:border-box">' : faceSvg(siteSeed(f), { size, facing: 'left' }));
+// the site's own logo (owner, 2026-10-25: "ive asked for the silly faces to be replaced by logos of the sites"): the icon the gate kept
+// (tower.icons/), else the site's favicon from a favicon service by its host; the drawn fighter only if that picture will not load
+export const logoUrl = (f) => (f && f.icon && /^tower\.icons\/[\w.-]+$/.test(f.icon) ? '/' + f.icon : 'https://www.google.com/s2/favicons?sz=128&domain=' + encodeURIComponent(siteSeed(f)));
+// no faces, logos only (owner, 2026-10-25: "no faces logo only"): if no logo loads, the site's first letter on a plain disc
+const letterDisc = (f, size) => '<span style="display:inline-grid;place-items:center;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:#fff;color:#15131c;font:700 ' + Math.round(size * 0.5) + 'px system-ui,sans-serif">' + String(siteSeed(f) || '?').charAt(0).toUpperCase() + '</span>';
+export const siteFace = (f, size = 56) => '<span class="tw-logo-wrap" style="display:inline-block;width:' + size + 'px;height:' + size + 'px;line-height:0;vertical-align:middle"><img class="tw-logo" src="' + logoUrl(f) + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" referrerpolicy="no-referrer" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:contain;background:#fff;padding:' + Math.round(size / 8) + 'px;box-sizing:border-box" onerror="this.outerHTML=this.dataset.fb" data-fb="' + letterDisc(f, size).replace(/"/g, '&quot;') + '"></span>';
 /** the VS splash for the current fight: Verse's mark left, the site's fighter right, names in plain text under them, an energy bar each (Verse's
  *  lit by the aspects it has won or is equal-and-better on, the site's by the aspects Verse still loses, the unmeasured grey). Pure. */
 export function vsHtml(f, esc, { enter = true } = {}) {
   const m = Math.max(1, f.m || 0), n = Math.max(0, f.n || 0), lost = (f.lost || []).length;
   const bar = (k, lit) => '<span class="tw-bar" aria-hidden="true">' + Array.from({ length: m }, (_, i) => '<i' + (i < lit ? ' data-k="' + k + '"' : '') + '></i>').join('') + '</span>';
   return '<div class="tw-vs' + (enter ? ' tw-in' : '') + '" role="group" aria-label="' + esc('Verse versus ' + f.site + ': Verse ahead on ' + n + ' of ' + m + ' aspects, ' + f.site + ' on ' + lost) + '">'
-    + '<div class="tw-side tw-v">' + verseFace({ size: 56 }) + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
+    + '<div class="tw-side tw-v">' + '<img class="tw-logo" src="/icon.svg" alt="" width="56" height="56" style="width:56px;height:56px">' + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
     + '<div class="tw-vsmark" aria-hidden="true">VS</div>'
     + '<div class="tw-side tw-s">' + siteFace(f, 56) + '<span class="tw-who">' + esc(f.site) + '</span>' + bar('s', lost) + '<span class="tw-bar-n">' + lost + ' of ' + m + '</span></div></div>';
 }
