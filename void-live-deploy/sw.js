@@ -7,7 +7,10 @@ const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/ski
 const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/g/', '/is-it/christmas', '/tools/'];
 // any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
 const isTool = (p) => TOOLS.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
+// the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
+// gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
+// and a page opened offline before that still shows itself from its own HTML
+const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
 const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vendor path (below), so it is dropped on activate

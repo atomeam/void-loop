@@ -154,8 +154,9 @@ export async function measure(browser, url, tag, ask, probe) {
           out.icon = await iconOf(p).catch(() => null); }
         if (probe && probe.motion && Object.keys(probe.motion).length) out.motion = await motionOf(p).catch(() => null);
         // offline: the same page reloaded with the network cut; it counts when it still shows itself (some words, not the browser's error page)
-        // as for a returning visitor: a page that installs a service worker gets up to 5 s for it to be ready (the same wait for both sites)
-        await p.evaluate(() => (navigator.serviceWorker ? Promise.race([navigator.serviceWorker.ready.then(() => 1), new Promise((r) => setTimeout(() => r(0), 5000))]) : 0)).catch(() => 0);
+        // as for a returning visitor: a page that installs a service worker gets up to 10 s for it to be ready (the same wait for both sites; 5 s was
+        // short of Verse's own install on the runner once it had 21 tool pages to keep, 2026-10-25)
+        await p.evaluate(() => (navigator.serviceWorker ? Promise.race([navigator.serviceWorker.ready.then(() => 1), new Promise((r) => setTimeout(() => r(0), 10000))]) : 0)).catch(() => 0);
         await ctx.setOffline(true);
         try { await p.reload({ waitUntil: 'load', timeout: 12000 }); } catch (_) { /* the browser's own error page, or nothing */ }
         out.offline = await p.evaluate(() => (location.protocol.startsWith('http') && document.body && document.body.innerText.trim().length > 40 ? 1 : 0)).catch(() => 0);
