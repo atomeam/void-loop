@@ -255,6 +255,9 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
       }
       if (!type) { // a page that answers after a network call (the weather, a translation): read once its text has stopped changing, up to 12 s more
         // (weather was read at 3 s with "Looking…" on it and scored 1 of 5 for an answer that landed a moment later)
+        // a page that says it is busy (aria-busy="true" while it waits on a network call, as /weather/ does) is given up to 20 s to finish: a
+        // page waiting with the same words on it reads as settled otherwise
+        await p.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 20000 }).catch(() => {});
         let r = await read(), t0 = Date.now();
         for (;;) { await p.waitForTimeout(800); const n = await read().catch(() => r); const same = n.text === r.text; r = n; if (same || Date.now() - t0 > 12000) break; }
         return r.text + '\n' + r.boxes; }

@@ -93,6 +93,7 @@
   }
   async function look(place, coords) {
     $('status').textContent = 'Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset…';
+    document.querySelector('main').setAttribute('aria-busy', 'true'); // busy while the forecast is fetched: a reader (and the tower gate) waits for it
     try {
       let loc = coords || null;
       if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
@@ -104,7 +105,7 @@
       let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
       if (kept && kept.v) { draw(kept.v, new Date(kept.at).toLocaleString()); $('alerts').textContent = 'Alerts need the network.'; $('radar').textContent = 'Radar needs the network.'; }
       else $('status').textContent = 'The forecast service did not answer. Check the network and try again.';
-    }
+    } finally { document.querySelector('main').removeAttribute('aria-busy'); }
   }
   const q = new URLSearchParams(location.search), asked = placeOf(q.get('q') || q.get('place') || '');
   $('q').value = asked;
