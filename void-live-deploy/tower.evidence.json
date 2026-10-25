@@ -1793,52 +1793,52 @@
   "translate": {
    "speed": {
     "verdict": "better",
-    "verse": 251,
-    "best": 641,
-    "evidence": "Verse 251 ms to the load event (median of 3, phone width) vs Google Translate 641 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T05:35:51.159Z"
+    "verse": 216,
+    "best": 564,
+    "evidence": "Verse 216 ms to the load event (median of 3, phone width) vs Google Translate 564 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Translate 3 of 3 loads answered",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Translate 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Translate 0 unnamed controls or images",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Translate 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Translate 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs Google Translate 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Translate (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T05:35:51.159Z"
+    "at": "2026-10-25T05:38:02.325Z"
    }
   },
   "recipes": {
@@ -2859,6 +2859,108 @@
     "best": 1,
     "evidence": "Verse 0 design defects vs Google Search 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Search (0 low-contrast texts, 1 small tap targets, layout shift 0.02)",
     "at": "2026-10-25T05:36:46.464Z"
+   }
+  },
+  "random generators": {
+   "speed": {
+    "verdict": "better",
+    "verse": 247,
+    "best": 725,
+    "evidence": "Verse 247 ms to the load event (median of 3, phone width) vs perchance.org 725 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs perchance.org 3 of 3 loads answered",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs perchance.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 unnamed controls or images vs perchance.org 0 unnamed controls or images",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs perchance.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs perchance.org 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:38:28.241Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 design defects vs perchance.org 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), perchance.org (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
+    "at": "2026-10-25T05:38:28.241Z"
+   }
+  },
+  "ai models": {
+   "speed": {
+    "verdict": "better",
+    "verse": 250,
+    "best": 457,
+    "evidence": "Verse 250 ms to the load event (median of 3, phone width) vs Hugging Face 457 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse 3 of 3 loads answered vs Hugging Face 3 of 3 loads answered",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Hugging Face 0 px sideways overflow at 390 px",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse 0 unnamed controls or images vs Hugging Face 1 unnamed controls or images",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Hugging Face 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Hugging Face 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-25T05:38:45.943Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 156,
+    "best": 23,
+    "evidence": "Verse 156 design defects vs Hugging Face 23 design defects: Verse (0 low-contrast texts, 156 small tap targets, layout shift 0.00), Hugging Face (1 low-contrast texts, 22 small tap targets, layout shift 0.00)",
+    "at": "2026-10-25T05:38:45.943Z"
    }
   }
  }
