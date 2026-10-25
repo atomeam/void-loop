@@ -25,3 +25,17 @@ test('paragraphs, times, reading level and keywords', () => {
   assert.ok(count('The cat sat on the mat. The dog ran.').grade < 3, 'short words and sentences read at an early grade');
   assert.deepEqual(keywords('Pizza is good. Pizza is hot. The oven is hot!', 2).map((k) => [k.word, k.count]), [['hot', 2], ['pizza', 2]]);
 });
+
+test('phrases of two and three words, goals, pages, versions', async () => {
+  const { phrases, goal, pages, keepVersion, count } = await import('../void-live-deploy/lib/wordcount.js');
+  const t = 'The unit converter is exact. The unit converter shows every unit. A unit converter for engineers.';
+  assert.deepEqual(phrases(t, 2).slice(0, 2).map((p) => [p.phrase, p.count]), [['unit converter', 3], ['the unit', 2]]);
+  assert.deepEqual(phrases(t, 3).map((p) => p.phrase), ['the unit converter']);
+  const g = goal(count('one two three'), 4); assert.deepEqual([g.done, g.left, g.reached], [3, 1, false]); assert.ok(goal(count('abcdef'), 5, 'characters').reached);
+  assert.deepEqual(pages(1000), { single: 2, double: 4 });
+  let v = keepVersion([], 'first', 0); v = keepVersion(v, 'first draft', 30000); assert.equal(v.length, 1, 'not within a minute');
+  v = keepVersion(v, 'first draft', 61000); assert.equal(v.length, 2); assert.equal(v[0].text, 'first draft');
+  v = keepVersion(v, 'first draft', 200000); assert.equal(v.length, 2, 'the same text twice is one version');
+  v = keepVersion(v, 'x'.repeat(150), 200500); assert.equal(v.length, 3, 'a big change is kept at once');
+  assert.equal(keepVersion([], '   ', 0).length, 0);
+});

@@ -5595,6 +5595,19 @@ try {
       && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the rest of wordcounter.net on /word-count/: a goal with its progress, two- and three-word phrases, the limits a text fits, earlier versions
+  if (want("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version")) {
+    const Z = await fresh(); const t = 'The blue whale is huge. The blue whale eats krill. A blue whale sings.';
+    await Z.p.goto(base + 'word-count/?goal=50&t=' + encodeURIComponent(t)); await Z.p.waitForTimeout(300);
+    const got = { goal: await Z.p.$eval('#goalnote', (e) => e.textContent), bar: await Z.p.$eval('#goalbar', (e) => e.value), two: await Z.p.$eval('#kw2 li', (e) => e.textContent), three: await Z.p.$eval('#kw3 li', (e) => e.textContent),
+      x: await Z.p.$eval('#fits li', (e) => e.textContent), speak: await Z.p.$eval('#speak', (e) => !e.disabled) };
+    await Z.p.click('#vsum'); await Z.p.click('#keepnow'); await Z.p.fill('#text', 'Something else entirely.'); await Z.p.click('#vlist li button'); await Z.p.waitForTimeout(200);
+    const restored = await Z.p.$eval('#text', (e) => e.value), kept = await Z.p.$$eval('#vlist li', (l) => l.length);
+    check("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version",
+      /^14 of 50 words · 36 to go/.test(got.goal) && Math.abs(got.bar - 0.28) < 0.01 && /^blue whale · 3/.test(got.two) && /^the blue whale · 2/.test(got.three) && /X \(Twitter\) post: 210 left of 280/.test(got.x) && got.speak
+      && restored === t && kept >= 2 && !Z.errors.length, JSON.stringify({ got, restored, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of online-stopwatch.com: an interval timer that walks get ready, work, rest from a link, and a chess clock with an increment
   if (want("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move")) {
     const Z = await fresh(); await Z.p.goto(base + 'stopwatch/?iv=2,1,2,1,0,1'); await Z.p.click('#ivgo'); await Z.p.waitForTimeout(300);

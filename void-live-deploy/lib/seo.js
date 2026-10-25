@@ -29,7 +29,7 @@ export const PAGES = Object.freeze([
     asks: ['online stopwatch', 'countdown timer', 'timer with alarm', 'stopwatch with laps', '5 minute timer', 'interval timer', 'tabata timer', 'chess clock'],
     action: { template: '/stopwatch/?t={duration}', input: 'duration' },
     links: [['5 minute timer', '/stopwatch/?t=5m'], ['10 minute timer', '/stopwatch/?t=10m'], ['Tabata 20/10', '/stopwatch/?iv=20,10,8,1,0,10'], ['HIIT 40/20', '/stopwatch/?iv=40,20,10,1,0,10'], ['Blitz chess 3+2', '/stopwatch/?cc=3%2B2']] },
-  { path: '/word-count/', name: 'Word counter', does: 'Words, characters with and without spaces, sentences, paragraphs, reading and speaking time, as you type. Nothing sent anywhere.',
+  { path: '/word-count/', name: 'Word counter', does: 'Words, characters with and without spaces, sentences, paragraphs, pages, reading and speaking time and repeated phrases as you type, with a word goal, read aloud, earlier versions kept on your device and the limits your text fits. Nothing sent anywhere.',
     asks: ['word counter', 'character counter', 'count words online', 'sentence counter', 'reading time calculator', 'speaking time calculator'] },
   { path: '/base-converter/', name: 'Binary, decimal, hex and octal converter', does: 'Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text.',
     asks: ['binary to decimal', 'hex to binary', 'decimal to binary', 'hex to decimal', 'octal converter', 'binary translator', 'number base converter'],
