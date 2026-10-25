@@ -273,6 +273,7 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
 }
 
 /** one floor measured against its live site in its own browser, its rows written into data.floors[f.id] (the stored rows are read for `was`) */
+const FLOOR_MS = Number(process.env.TOWER_FLOOR_MS) || 6 * 60000;
 async function measureFloor(f, data) {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
@@ -291,7 +292,7 @@ async function measureFloor(f, data) {
     // a floor's own aspects asked as a question (tower-probes.mjs askParts: 'huge numbers') are scored on the same two answers
     for (const [a, items] of Object.entries(probe.askParts || {})) if (vt !== null && st !== null) { v.parts = { ...(v.parts || {}), [a]: score(vt, items) }; s.parts = { ...(s.parts || {}), [a]: score(st, items) }; }
   }
-  await b.close();
+  await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed
   const ev = (data.floors[f.id] = data.floors[f.id] || {});
   const where = 'Verse' + (versePage ? ' (' + versePage + ')' : '');
   const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of; ev[aspect] = { ...record(ev[aspect], verdict(a, c, m.hi, ideal), a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || ''), at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
@@ -361,7 +362,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let failed = 0;
   for (const f of floors) {
     console.log((out ? 'slice ' + (sh ? sh.i + '/' + sh.n : path.basename(out)) + ', ' : '') + 'measuring ' + f.id + (floors.length > 1 ? ' (' + (floors.indexOf(f) + 1) + ' of ' + floors.length + ')' : ''));
-    try { done[f.id] = await measureFloor(f, data); } catch (e) { failed++; console.log('::warning::' + f.id + ' not measured: ' + (e && e.message || e)); continue; }
+    // a floor gets FLOOR_MS at most: one page that never answers an evaluate once held a fight run for 50 minutes until the next deploy
+    // cancelled it, and the verdicts it had already measured (coin flip, 2026-10-25 01:30) were never committed
+    let timer; const stop = new Promise((_, no) => { timer = setTimeout(() => no(new Error('took more than ' + Math.round(FLOOR_MS / 1000) + ' s: stopped')), FLOOR_MS); });
+    try { done[f.id] = await Promise.race([measureFloor(f, data), stop]); } catch (e) { failed++; console.log('::warning::' + f.id + ' not measured: ' + (e && e.message || e)); continue; } finally { clearTimeout(timer); }
     if (!out) write(FILE, data);
   }
   if (out) write(out, { note: 'one slice of the tower gate\'s sweep (tools/tower-merge.mjs): folded into tower.evidence.json by the merge job, never committed itself', shard: sh ? sh.i + '/' + sh.n : 'floors', at: new Date().toISOString(), floors: done });

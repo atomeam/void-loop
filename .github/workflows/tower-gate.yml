@@ -67,7 +67,7 @@ jobs:
             node tools/tower-gate.mjs --which $(git diff --name-only HEAD~1 HEAD 2>/dev/null) > floors.txt
           fi
           echo "measuring: $(paste -sd, floors.txt)"
-          while IFS= read -r f; do [ -n "$f" ] && { node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; }; done < floors.txt
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < floors.txt # a floor that hangs costs 8 minutes, never the run
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}
