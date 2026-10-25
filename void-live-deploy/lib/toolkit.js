@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -33,6 +33,7 @@ export const RELATED = Object.freeze({
   '/calculator/': ['/base-converter/', '/convert/', '/random/'],
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/'],
+  '/translate/': ['/word-count/', '/time/'],
   '/base64/': ['/word-count/', '/base-converter/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
@@ -100,6 +101,8 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // translate: 'translate hello to spanish', 'how do you say thank you in japanese', 'good morning in french' (the code from lib/translate-langs.js's names, a few common ones here)
+  [/^(?:please\s+)?translate\s+(.+?)\s+(?:to|into|in)\s+([a-z]+(?:\s+[a-z]+)?)$|^how\s+(?:do|would)\s+(?:you|i|we)\s+say\s+(.+?)\s+in\s+([a-z]+(?:\s+[a-z]+)?)$/i, (m) => '/translate/?q=' + encodeURIComponent(m[1] || m[3]) + '&to=' + encodeURIComponent((m[2] || m[4]).toLowerCase())],
   [/^(?:what(?:'s| is) the )?weather(?: (?:in|for|at) (.+))?$|^forecast(?: (?:in|for) (.+))?$/i, (m) => '/weather/' + (m[1] || m[2] ? '?q=' + encodeURIComponent(m[1] || m[2]) : '')],
   [/^(?:what )?time (?:is it )?in (.+)$|^(.+) time$/i, (m) => '/time/?q=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:is it|is today) (.+)$/i, (m) => '/is-it/' + encodeURIComponent(m[1].toLowerCase().replace(/[?!.]+$/, '').trim().replace(/\s+/g, '-'))],

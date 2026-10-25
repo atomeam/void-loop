@@ -9,12 +9,13 @@ export const VISION_FALLBACK = '@cf/llava-hf/llava-1.5-7b-hf'; // beta image-to-
 
 export const ART_MODEL = '@cf/black-forest-labs/flux-2-klein-4b'; // the Art Forge (functions/api/card-art.js): text-to-image, one picture per subject for ever, painted at the card's 16:9 art window (owner, 2026-10-18: "a really good free image generator capable of realistic epic cards"; ~100 neurons a picture, inside the free daily allowance at the 30 a day cap)
 export const ART_FALLBACK = '@cf/black-forest-labs/flux-1-schnell'; // when klein fails: square only (no width or height), cropped into the window
+export const TRANSLATE_MODEL = '@cf/meta/m2m100-1.2b'; // the translator (functions/api/translate.js, the tower's Google Translate floor): Meta's many-to-many model, 100 languages, input { text, source_lang, target_lang } (two-letter codes), output { translated_text }
 
 // Which free model answers on which path. A path missing here uses FREE_MODEL.
 // answers run on the free model (owner's wishlist #1, docs/wishlist.md; asked by Verse, 2026-10-24: "migrate answer generation from gpt-oss-120b to gemma"):
 // gemma-4-26b-a4b spends a fraction of gpt-oss-120b's neurons an answer, so the free 10k a day holds; the bake-off's winner stays the second try
 export const ANSWER_FALLBACK = '@cf/openai/gpt-oss-120b';
-export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL };
+export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL, translate: TRANSLATE_MODEL };
 export const PATHS = Object.keys(PATH_MODELS);
 
 export function models(path) {

@@ -202,6 +202,16 @@ export const PROBES = Object.freeze({
     facts: [['a strength rating', /\b(?:very weak|weak|fair|strong|very strong)\b|\bstrength\b/i], ['the time to crack', /\bcrack/i], ['why it is weak', /\bwhy\b|\breasons?\b/i], ['how to fix it', /\bfix\b|\btips?\b|\bimprove\b/i],
       ['a leak check', /\bleak|\bbreach|\bpwned\b/i], ['nothing sent anywhere', /never sent|not sent|on (?:this|your) device|in your browser/i], ['show the password', /\bshow\b/i]],
   },
+  translate: {
+    site: 'https://translate.google.com/', verse: '/translate/?q=hello&to=es',
+    // the question: hello, into Spanish, in the page's link. The truth: hola (any correct translator agrees), with the language it came from named.
+    // Judged on Verse alone (the site is not asked); the same probe measures every site in the translate lane (lib/tower.js LANES)
+    ask: { verse: '/translate/?q=hello&to=es' },
+    truth: [['hola', /\bhola\b/i], ['the language it came from, detected', /\bdetected\b|\berkannt\b|\bEnglish\b/i]],
+    askParts: { 'language count': [['100 languages', /\b100 (?:languages|Sprachen)\b/i]], 'speech in and out': [['listen', /\blisten\b|\banhören\b/i], ['speak', /\bspeak\b|\bsprechen\b/i]], 'camera text': [['camera', /\bcamera\b|\bkamera\b/i], ['a photo', /\bphoto\b|\bfoto\b/i]] },
+    // what the best translators show: the language detected, 100 or more languages, listen and speak, a camera, copy, share, a history and saved phrases, offline
+    facts: [['the language detected', /detect/i], ['100 languages', /\b100 languages\b/i], ['listen', /\blisten\b/i], ['speak', /\bspeak\b/i], ['camera', /\bcamera\b/i], ['copy', /\bcopy\b/i], ['share', /\bshare\b/i], ['a history', /\bhistory\b/i], ['saved phrases', /\bsaved\b|\bphrasebook\b/i], ['works offline', /\boffline\b/i]],
+  },
   weather: {
     site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
     // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
@@ -301,6 +311,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   gradient: { 'stops with opacity': [['colour stops', /\bstops?\b/i], ['opacity', /\bopacity\b/i]], 'import css': [['import', /\bimport\b|\bpaste\b/i]], presets: [['presets', /\bpresets?\b/i]] },
   'base converter': { 'signed reading': [['a signed reading', /\bsigned\b|two.?s complement/i]], 'all four bases': [['binary', /\bbinary\b/i], ['octal', /\boctal\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i]] },
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
+  translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,
@@ -320,7 +331,10 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
 });
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
-  const p = PROBES[id]; if (!p) return null;
+  // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
+  const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i);
+  const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
+  if (lane) id = lane[1];
   return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */

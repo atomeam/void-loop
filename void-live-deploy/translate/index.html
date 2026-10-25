@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Translate: 100 languages, listen, speak, camera text · Verse</title>
+<meta name="description" content="Translate text between 100 languages with the language detected as you type: listen to the translation, speak instead of typing, read the text in a photo or from the camera, translate text, subtitle and JSON files with their timings and keys kept, copy it, share a link that carries the translation, keep a history and saved phrases, and see them again offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Translate · Verse">
+<meta property="og:description" content="100 languages, detected as you type. Listen, speak, read a photo, copy, share a link, keep phrases; your history stays on your device and opens offline.">
+<meta property="og:url" content="https://a-to-mind.com/translate/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/translate/ (the tower's Google Translate floor): one file and two small modules, nothing stored but the history and saved phrases */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  .langs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin: 8px 0; }
+  select { font: inherit; font-size: 15px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  select option { background: var(--bg); color: var(--ink); }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .panes { grid-template-columns: 1fr; } }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 10px 12px; min-height: 180px; display: flex; flex-direction: column; }
+  textarea { font: inherit; font-size: 22px; line-height: 1.35; color: inherit; background: transparent; border: 0; outline: 0; resize: vertical; width: 100%; min-height: 120px; box-sizing: border-box; flex: 1 1 auto; }
+  textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+  output.big { display: block; font-size: 26px; line-height: 1.3; min-height: 120px; white-space: pre-wrap; overflow-wrap: anywhere; flex: 1 1 auto; }
+  output.big.wait { color: var(--soft); font-size: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .row .count { margin-left: auto; font-size: 12px; color: var(--soft); white-space: nowrap; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list li:first-child { border-top: 0; }
+  .list li a { color: inherit; text-decoration: none; flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; }
+  .list li a b { font-weight: 500; } .list li a span { color: var(--soft); font-size: 13px; }
+  .list li small { color: var(--soft); font-size: 12px; }
+  .list li button { min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .empty { font-size: 13px; color: var(--soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+  .chips a { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  [hidden] { display: none !important; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/translate/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Translate","url":"https://a-to-mind.com/translate/","description":"Translate text between 100 languages with the language detected as you type: listen to the translation, speak instead of typing, read the text in a photo or from the camera, copy it, share a link that carries it, keep a history and saved phrases, and see them again offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"translate, translate english to spanish, spanish to english translation, translate to french, japanese translator, translate photo text, free translator 100 languages","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/translate/?q={text}&to=es"},"text-input":"required name=text"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Translate","item":"https://a-to-mind.com/translate/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1 id="title">Translate</h1>
+  <p class="sub" id="sub">100 languages, detected as you type. Listen, speak, read a photo, copy, share a link, keep phrases, see them again offline.</p>
+
+  <form id="f" autocomplete="off">
+    <div class="langs">
+      <label class="vh" for="from" id="fromL">From</label>
+      <select id="from" aria-labelledby="fromL"><option value="auto" selected>Detect language</option><option value="af">Afrikaans</option><option value="sq">Albanian · Shqip</option><option value="am">Amharic · አማርኛ</option><option value="ar">Arabic · العربية</option><option value="hy">Armenian · Հայերեն</option><option value="ast">Asturian · Asturianu</option><option value="az">Azerbaijani · Azərbaycan</option><option value="ba">Bashkir · Башҡорт</option><option value="be">Belarusian · Беларуская</option><option value="bn">Bengali · বাংলা</option><option value="bs">Bosnian · Bosanski</option><option value="br">Breton · Brezhoneg</option><option value="bg">Bulgarian · Български</option><option value="my">Burmese · မြန်မာ</option><option value="ca">Catalan · Català</option><option value="ceb">Cebuano</option><option value="zh">Chinese · 中文</option><option value="hr">Croatian · Hrvatski</option><option value="cs">Czech · Čeština</option><option value="da">Danish · Dansk</option><option value="nl">Dutch · Nederlands</option><option value="en">English</option><option value="et">Estonian · Eesti</option><option value="tl">Filipino</option><option value="fi">Finnish · Suomi</option><option value="fr">French · Français</option><option value="fy">Frisian · Frysk</option><option value="ff">Fulah · Fulfulde</option><option value="gl">Galician · Galego</option><option value="lg">Ganda · Luganda</option><option value="ka">Georgian · ქართული</option><option value="de">German · Deutsch</option><option value="el">Greek · Ελληνικά</option><option value="gu">Gujarati · ગુજરાતી</option><option value="ht">Haitian Creole · Kreyòl ayisyen</option><option value="ha">Hausa</option><option value="he">Hebrew · עברית</option><option value="hi">Hindi · हिन्दी</option><option value="hu">Hungarian · Magyar</option><option value="is">Icelandic · Íslenska</option><option value="ig">Igbo</option><option value="ilo">Ilocano · Ilokano</option><option value="id">Indonesian · Bahasa Indonesia</option><option value="ga">Irish · Gaeilge</option><option value="it">Italian · Italiano</option><option value="ja">Japanese · 日本語</option><option value="jv">Javanese · Basa Jawa</option><option value="kn">Kannada · ಕನ್ನಡ</option><option value="kk">Kazakh · Қазақ</option><option value="km">Khmer · ខ្មែរ</option><option value="ko">Korean · 한국어</option><option value="lo">Lao · ລາວ</option><option value="lv">Latvian · Latviešu</option><option value="ln">Lingala · Lingála</option><option value="lt">Lithuanian · Lietuvių</option><option value="lb">Luxembourgish · Lëtzebuergesch</option><option value="mk">Macedonian · Македонски</option><option value="mg">Malagasy</option><option value="ms">Malay · Bahasa Melayu</option><option value="ml">Malayalam · മലയാളം</option><option value="mr">Marathi · मराठी</option><option value="mn">Mongolian · Монгол</option><option value="ne">Nepali · नेपाली</option><option value="ns">Northern Sotho · Sesotho sa Leboa</option><option value="no">Norwegian · Norsk</option><option value="oc">Occitan</option><option value="or">Odia · ଓଡ଼ିଆ</option><option value="ps">Pashto · پښتو</option><option value="fa">Persian · فارسی</option><option value="pl">Polish · Polski</option><option value="pt">Portuguese · Português</option><option value="pa">Punjabi · ਪੰਜਾਬੀ</option><option value="ro">Romanian · Română</option><option value="ru">Russian · Русский</option><option value="gd">Scottish Gaelic · Gàidhlig</option><option value="sr">Serbian · Српски</option><option value="sd">Sindhi · سنڌي</option><option value="si">Sinhala · සිංහල</option><option value="sk">Slovak · Slovenčina</option><option value="sl">Slovenian · Slovenščina</option><option value="so">Somali · Soomaali</option><option value="es">Spanish · Español</option><option value="su">Sundanese · Basa Sunda</option><option value="sw">Swahili · Kiswahili</option><option value="ss">Swati · siSwati</option><option value="sv">Swedish · Svenska</option><option value="ta">Tamil · தமிழ்</option><option value="th">Thai · ไทย</option><option value="tn">Tswana · Setswana</option><option value="tr">Turkish · Türkçe</option><option value="uk">Ukrainian · Українська</option><option value="ur">Urdu · اردو</option><option value="uz">Uzbek · Oʻzbek</option><option value="vi">Vietnamese · Tiếng Việt</option><option value="cy">Welsh · Cymraeg</option><option value="wo">Wolof</option><option value="xh">Xhosa · isiXhosa</option><option value="yi">Yiddish · ייִדיש</option><option value="yo">Yoruba · Yorùbá</option><option value="zu">Zulu · isiZulu</option></select>
+      <button type="button" id="swap" aria-label="Swap languages" title="Swap languages">⇄</button>
+      <label class="vh" for="to" id="toL">To</label>
+      <select id="to" aria-labelledby="toL"><option value="af">Afrikaans</option><option value="sq">Albanian · Shqip</option><option value="am">Amharic · አማርኛ</option><option value="ar">Arabic · العربية</option><option value="hy">Armenian · Հայերեն</option><option value="ast">Asturian · Asturianu</option><option value="az">Azerbaijani · Azərbaycan</option><option value="ba">Bashkir · Башҡорт</option><option value="be">Belarusian · Беларуская</option><option value="bn">Bengali · বাংলা</option><option value="bs">Bosnian · Bosanski</option><option value="br">Breton · Brezhoneg</option><option value="bg">Bulgarian · Български</option><option value="my">Burmese · မြန်မာ</option><option value="ca">Catalan · Català</option><option value="ceb">Cebuano</option><option value="zh">Chinese · 中文</option><option value="hr">Croatian · Hrvatski</option><option value="cs">Czech · Čeština</option><option value="da">Danish · Dansk</option><option value="nl">Dutch · Nederlands</option><option value="en">English</option><option value="et">Estonian · Eesti</option><option value="tl">Filipino</option><option value="fi">Finnish · Suomi</option><option value="fr">French · Français</option><option value="fy">Frisian · Frysk</option><option value="ff">Fulah · Fulfulde</option><option value="gl">Galician · Galego</option><option value="lg">Ganda · Luganda</option><option value="ka">Georgian · ქართული</option><option value="de">German · Deutsch</option><option value="el">Greek · Ελληνικά</option><option value="gu">Gujarati · ગુજરાતી</option><option value="ht">Haitian Creole · Kreyòl ayisyen</option><option value="ha">Hausa</option><option value="he">Hebrew · עברית</option><option value="hi">Hindi · हिन्दी</option><option value="hu">Hungarian · Magyar</option><option value="is">Icelandic · Íslenska</option><option value="ig">Igbo</option><option value="ilo">Ilocano · Ilokano</option><option value="id">Indonesian · Bahasa Indonesia</option><option value="ga">Irish · Gaeilge</option><option value="it">Italian · Italiano</option><option value="ja">Japanese · 日本語</option><option value="jv">Javanese · Basa Jawa</option><option value="kn">Kannada · ಕನ್ನಡ</option><option value="kk">Kazakh · Қазақ</option><option value="km">Khmer · ខ្មែរ</option><option value="ko">Korean · 한국어</option><option value="lo">Lao · ລາວ</option><option value="lv">Latvian · Latviešu</option><option value="ln">Lingala · Lingála</option><option value="lt">Lithuanian · Lietuvių</option><option value="lb">Luxembourgish · Lëtzebuergesch</option><option value="mk">Macedonian · Македонски</option><option value="mg">Malagasy</option><option value="ms">Malay · Bahasa Melayu</option><option value="ml">Malayalam · മലയാളം</option><option value="mr">Marathi · मराठी</option><option value="mn">Mongolian · Монгол</option><option value="ne">Nepali · नेपाली</option><option value="ns">Northern Sotho · Sesotho sa Leboa</option><option value="no">Norwegian · Norsk</option><option value="oc">Occitan</option><option value="or">Odia · ଓଡ଼ିଆ</option><option value="ps">Pashto · پښتو</option><option value="fa">Persian · فارسی</option><option value="pl">Polish · Polski</option><option value="pt">Portuguese · Português</option><option value="pa">Punjabi · ਪੰਜਾਬੀ</option><option value="ro">Romanian · Română</option><option value="ru">Russian · Русский</option><option value="gd">Scottish Gaelic · Gàidhlig</option><option value="sr">Serbian · Српски</option><option value="sd">Sindhi · سنڌي</option><option value="si">Sinhala · සිංහල</option><option value="sk">Slovak · Slovenčina</option><option value="sl">Slovenian · Slovenščina</option><option value="so">Somali · Soomaali</option><option value="es" selected>Spanish · Español</option><option value="su">Sundanese · Basa Sunda</option><option value="sw">Swahili · Kiswahili</option><option value="ss">Swati · siSwati</option><option value="sv">Swedish · Svenska</option><option value="ta">Tamil · தமிழ்</option><option value="th">Thai · ไทย</option><option value="tn">Tswana · Setswana</option><option value="tr">Turkish · Türkçe</option><option value="uk">Ukrainian · Українська</option><option value="ur">Urdu · اردو</option><option value="uz">Uzbek · Oʻzbek</option><option value="vi">Vietnamese · Tiếng Việt</option><option value="cy">Welsh · Cymraeg</option><option value="wo">Wolof</option><option value="xh">Xhosa · isiXhosa</option><option value="yi">Yiddish · ייִדיש</option><option value="yo">Yoruba · Yorùbá</option><option value="zu">Zulu · isiZulu</option></select>
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label class="vh" for="in">Text to translate</label>
+        <textarea id="in" placeholder="Type to translate" maxlength="5000" rows="4" spellcheck="true"></textarea>
+        <div class="row">
+          <button type="submit" class="go" id="go">Translate</button>
+          <button type="button" id="speak" aria-pressed="false" title="Speak instead of typing (your microphone, on this device)">Speak</button>
+          <button type="button" id="camera" title="Read the text in a photo or from the camera">Camera or photo</button>
+          <input type="file" id="pic" accept="image/*" capture="environment" hidden>
+          <button type="button" id="file" title="Translate a text, subtitle (SRT, VTT) or JSON file, its timings and keys kept">File</button>
+          <input type="file" id="doc" accept=".txt,.srt,.vtt,.json,.md,text/plain,application/json" hidden>
+          <button type="button" id="clear">Clear</button>
+          <span class="count" id="count">0 / 5000 characters</span>
+        </div>
+      </div>
+      <div class="pane">
+        <output class="big" id="out" aria-live="polite" for="in"></output>
+        <div class="row">
+          <button type="button" id="listen" title="Hear the translation read aloud">Listen</button>
+          <button type="button" id="copy">Copy</button>
+          <button type="button" id="share" title="A link that carries this text and both languages">Share link</button>
+          <button type="button" id="save" title="Keep it in your saved phrases">Save</button>
+        </div>
+      </div>
+    </div>
+    <div class="note" id="note" role="status"></div>
+  </form>
+
+  <h2 id="savedH">Saved phrases</h2>
+  <ul class="list" id="saved"><li class="empty" id="savedEmpty">Nothing saved yet: Save keeps a translation here, on this device.</li></ul>
+  <h2 id="histH">History</h2>
+  <ul class="list" id="hist"><li class="empty" id="histEmpty">Your last 30 translations stay here, on this device, and open offline.</li></ul>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/translate/?q=hello&amp;to=es">hello in Spanish</a><a href="/translate/?q=thank%20you&amp;to=ja">thank you in Japanese</a><a href="/translate/?q=good%20morning&amp;to=fr">good morning in French</a><a href="/translate/?from=es&amp;to=en">Spanish to English</a><a href="/translate/?from=de&amp;to=en">German to English</a><a href="/translate/?from=en&amp;to=zh">English to Chinese</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+
+  <p class="srcs" id="srcs">Translations come from Meta's many-to-many model (100 languages) on Verse's own compute, with MyMemory's free translation memory as the stand-in. Only the text goes to Verse; nothing is stored. Listening and speaking use the voices and microphone of this device.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, L] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.translate.v1', MAX_HIST = 30;
+    const W = L.wordsFor(navigator.language);
+    const savedEmpty = document.getElementById('savedEmpty'), histEmpty = document.getElementById('histEmpty'); // kept: a list emptied and refilled loses them from the page
+    const de = /^de\b/i.test(navigator.language || '');
+    if (de) {
+      document.documentElement.lang = 'de'; document.title = 'Übersetzer: 100 Sprachen, anhören, sprechen, Kameratext · Verse';
+      $('title').textContent = W.title; $('sub').textContent = '100 Sprachen, beim Tippen erkannt. Anhören, sprechen, ein Foto lesen, kopieren, einen Link teilen, Sätze merken, offline wiedersehen.';
+      $('fromL').textContent = W.from; $('toL').textContent = W.to; $('from').options[0].textContent = W.detect; $('swap').setAttribute('aria-label', W.swap); $('swap').title = W.swap;
+      $('in').placeholder = W.placeholder; $('go').textContent = W.translate; $('speak').textContent = W.speak; $('camera').textContent = W.camera; $('clear').textContent = W.clear; $('file').textContent = 'Datei';
+      $('listen').textContent = W.listen; $('copy').textContent = W.copy; $('share').textContent = W.share; $('save').textContent = W.save; $('savedH').textContent = W.phrasebook; $('histH').textContent = W.history;
+      savedEmpty.textContent = 'Noch nichts gemerkt: „Merken" hält eine Übersetzung hier, auf diesem Gerät.'; histEmpty.textContent = 'Die letzten 30 Übersetzungen bleiben hier, auf diesem Gerät, und sind auch offline da.';
+      $('srcs').textContent = 'Die Übersetzungen kommen von Metas Modell für 100 Sprachen auf Verses eigenem Rechner, mit MyMemory als Ersatz. ' + W.nothingSent + ' Anhören und Sprechen nutzen die Stimmen und das Mikrofon dieses Geräts.';
+    }
+    const q = new URLSearchParams(location.search);
+    const state = { from: 'auto', to: 'es', text: '', out: '', detected: '', via: '' };
+    let store = { hist: [], saved: [], to: '' };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    // where to: the link, then the last choice, then the browser's own language unless that is what is typed in
+    const own = L.codeOf(navigator.language) || 'en';
+    state.to = L.codeOf(q.get('to')) || store.to || (own === 'en' ? 'es' : own);
+    state.from = L.codeOf(q.get('from')) || 'auto';
+    $('to').value = state.to; $('from').value = state.from; $('in').value = (q.get('q') || '').slice(0, L.MAX_CHARS);
+    const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
+    const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+    const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, W.copied); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+    const count = () => { $('count').textContent = $('in').value.length.toLocaleString() + ' / ' + L.MAX_CHARS.toLocaleString() + ' ' + W.chars; };
+    const link = () => location.origin + '/translate/?q=' + encodeURIComponent($('in').value.trim()) + (state.from !== 'auto' ? '&from=' + state.from : '') + '&to=' + state.to;
+    const row = (it, saved) => {
+      const li = document.createElement('li'), a = document.createElement('a');
+      a.href = '/translate/?q=' + encodeURIComponent(it.q) + (it.from ? '&from=' + it.from : '') + '&to=' + it.to;
+      const b = document.createElement('b'); b.textContent = it.out; const s = document.createElement('span'); s.textContent = ' ' + it.q;
+      a.append(b, s); const sm = document.createElement('small'); sm.textContent = L.nameOf(it.from || it.detected || 'en') + ' → ' + L.nameOf(it.to);
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = saved ? (de ? 'Entfernen' : 'Remove') : W.save;
+      x.addEventListener('click', () => { if (saved) store.saved = store.saved.filter((y) => y !== it); else if (!store.saved.some((y) => y.q === it.q && y.to === it.to)) store.saved.unshift(it); keep(); lists(); });
+      li.append(a, sm, x); return li;
+    };
+    function lists() {
+      const sv = $('saved'), hs = $('hist'); sv.replaceChildren(); hs.replaceChildren();
+      if (!store.saved.length) sv.append(savedEmpty); else for (const it of store.saved) sv.append(row(it, true));
+      if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it, false));
+    }
+    function show(out, from, detected, via) {
+      state.out = out; state.detected = detected || ''; state.via = via || '';
+      const o = $('out'); o.className = 'big'; o.textContent = out; o.lang = state.to; o.dir = /^(?:ar|fa|he|ur|ps|sd|yi)$/.test(state.to) ? 'rtl' : 'ltr';
+      const parts = [];
+      if (detected && state.from === 'auto') parts.push(W.detected + ': ' + L.nameOf(detected));
+      if (via === 'mymemory') parts.push(de ? 'über MyMemory' : 'via MyMemory'); if (via === 'offline') parts.push(de ? 'aus dem Verlauf (offline)' : 'from your history (offline)');
+      if (via === 'same') parts.push(de ? 'Gleiche Sprache: nichts zu übersetzen' : 'Same language on both sides: nothing to translate');
+      say(parts.join(' · '));
+      for (const id of ['listen', 'copy', 'share', 'save']) $(id).disabled = !out;
+    }
+    let seq = 0, timer = 0, last = '';
+    async function go(force) {
+      const text = $('in').value.trim(); count();
+      const key = text + '␞' + state.from + '␞' + state.to;
+      if (!text) { show('', '', ''); last = ''; return; }
+      if (key === last && !force) return; last = key;
+      const my = ++seq, had = store.hist.find((h) => h.q === text && h.to === state.to && (h.from || 'auto') === state.from);
+      if (!navigator.onLine && had) return show(had.out, had.from, had.detected, 'offline');
+      $('out').className = 'big wait'; $('out').textContent = W.working + '…';
+      try {
+        const r = await fetch('/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, from: state.from === 'auto' ? '' : state.from, to: state.to }) });
+        const j = await r.json(); if (my !== seq) return;
+        if (!r.ok || !j.text) throw new Error(j.error || 'no answer');
+        show(j.text, j.from, j.detected, j.via);
+        const it = { q: text, out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now() };
+        store.hist = [it].concat(store.hist.filter((h) => !(h.q === text && h.to === state.to))).slice(0, MAX_HIST); store.to = state.to; keep(); lists();
+      } catch (e) {
+        if (my !== seq) return;
+        if (had) return show(had.out, had.from, had.detected, 'offline');
+        $('out').className = 'big'; $('out').textContent = ''; say(navigator.onLine ? W.none : W.offline, true);
+      }
+    }
+    const soon = () => { clearTimeout(timer); timer = setTimeout(() => go(false), 700); };
+    $('in').addEventListener('input', () => { count(); soon(); });
+    $('f').addEventListener('submit', (e) => { e.preventDefault(); clearTimeout(timer); go(true); });
+    $('from').addEventListener('change', () => { state.from = $('from').value; go(true); });
+    $('to').addEventListener('change', () => { state.to = $('to').value; store.to = state.to; keep(); go(true); });
+    $('swap').addEventListener('click', () => {
+      const from = state.from === 'auto' ? (state.detected || own) : state.from, to = state.to;
+      state.from = to; state.to = from; $('from').value = to; $('to').value = from;
+      if (state.out) { $('in').value = state.out; } go(true);
+    });
+    $('clear').addEventListener('click', () => { $('in').value = ''; $('in').focus(); go(true); });
+    $('copy').addEventListener('click', () => copy($('copy'), state.out));
+    $('save').addEventListener('click', () => { const it = store.hist[0]; if (it && it.out === state.out) { if (!store.saved.some((y) => y.q === it.q && y.to === it.to)) store.saved.unshift(it); keep(); lists(); toast($('save'), W.saved); } });
+    $('share').addEventListener('click', async () => {
+      const url = link();
+      if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.out, text: $('in').value.trim() + ' → ' + state.out, url }); return; } catch (_) {} }
+      copy($('share'), url); $('share').textContent = W.shared; setTimeout(() => { $('share').textContent = W.share; }, 1200);
+    });
+    // listen: the device's own voices, in the target language
+    const voiceFor = (code) => { const vs = (speechSynthesis.getVoices && speechSynthesis.getVoices()) || []; return vs.find((v) => v.lang && v.lang.toLowerCase().startsWith(code)) || null; };
+    $('listen').addEventListener('click', () => {
+      if (!('speechSynthesis' in window) || !state.out) return say(de ? 'Dieses Gerät kann nicht vorlesen' : 'This device cannot read aloud', true);
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(state.out); u.lang = state.to; const v = voiceFor(state.to); if (v) u.voice = v; speechSynthesis.speak(u);
+    });
+    // speak: the device's own recognition, in the source language
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null;
+    if (!SR) $('speak').title = de ? 'Dieser Browser kann nicht zuhören (Chrome und Safari können es)' : 'This browser cannot listen (Chrome and Safari can)';
+    $('speak').addEventListener('click', () => {
+      if (!SR) return say($('speak').title, true);
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = state.from === 'auto' ? navigator.language : state.from; rec.interimResults = true; rec.continuous = false;
+      $('speak').setAttribute('aria-pressed', 'true'); say(de ? 'Ich höre zu' : 'Listening');
+      rec.onresult = (e) => { let s = ''; for (const r of e.results) s += r[0].transcript; $('in').value = s.slice(0, L.MAX_CHARS); count(); if (e.results[e.results.length - 1].isFinal) go(true); };
+      rec.onerror = (e) => { say((de ? 'Mikrofon: ' : 'Microphone: ') + (e.error || 'no'), true); };
+      rec.onend = () => { rec = null; $('speak').setAttribute('aria-pressed', 'false'); };
+      try { rec.start(); } catch (_) { rec = null; }
+    });
+    // camera or photo: a picture downsized on the device, read by Verse, then translated
+    $('camera').addEventListener('click', () => $('pic').click());
+    $('pic').addEventListener('change', async () => {
+      const f = $('pic').files && $('pic').files[0]; if (!f) return;
+      say(W.reading + '…'); $('out').className = 'big wait'; $('out').textContent = W.reading + '…';
+      try {
+        const img = await createImageBitmap(f); const s = Math.min(1, 1024 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); const data = c.toDataURL('image/jpeg', .82);
+        const r = await fetch('/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image: data, from: state.from === 'auto' ? '' : state.from, to: state.to }) });
+        const j = await r.json(); if (!r.ok || !j.text) throw new Error(j.error || 'no');
+        $('in').value = (j.read || '').slice(0, L.MAX_CHARS); count(); last = $('in').value.trim() + '␞' + state.from + '␞' + state.to;
+        show(j.text, j.from, j.detected, j.via);
+        const it = { q: $('in').value.trim(), out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now() };
+        store.hist = [it].concat(store.hist).slice(0, MAX_HIST); keep(); lists();
+      } catch (e) { $('out').className = 'big'; $('out').textContent = ''; say(/no text/i.test(String(e.message)) ? W.nothingRead : W.none, true); }
+      $('pic').value = '';
+    });
+    // a file: its words translated in batches under the 5,000-character cap, put back in its own shape, downloaded under the target language's name
+    $('file').addEventListener('click', () => $('doc').click());
+    $('doc').addEventListener('change', async () => {
+      const f = $('doc').files && $('doc').files[0]; $('doc').value = ''; if (!f) return;
+      try {
+        if (f.size > 500000) throw new Error(de ? 'Höchstens 500 KB' : 'At most 500 KB a file');
+        const fp = L.fileParts(f.name, await f.text()); if (!fp.parts.length) throw new Error(de ? 'Keine Wörter in der Datei' : 'No words in the file');
+        const out = [], batches = []; let cur = [];
+        for (const p of fp.parts) { if (cur.length && (cur.join('\n\n').length + p.length > 4500)) { batches.push(cur); cur = []; } cur.push(p.replace(/\n+/g, ' ')); } if (cur.length) batches.push(cur);
+        for (let i = 0; i < batches.length; i++) {
+          say((de ? 'Übersetze die Datei: ' : 'Translating the file: ') + Math.round(i / batches.length * 100) + '%');
+          const r = await fetch('/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: batches[i].join('\n\n'), from: state.from === 'auto' ? '' : state.from, to: state.to }) });
+          const j = await r.json(); if (!r.ok || !j.text) throw new Error(j.error || W.none);
+          const got = j.text.split(/\n{2,}/); if (got.length !== batches[i].length) throw new Error(de ? 'Die Teile kamen nicht vollständig zurück' : 'The parts did not all come back');
+          out.push(...got);
+        }
+        const text = fp.rebuild(out), a = document.createElement('a'), ext = f.name.match(/\.[a-z0-9]+$/i);
+        a.href = URL.createObjectURL(new Blob([text], { type: fp.kind === 'json' ? 'application/json' : 'text/plain' }));
+        a.download = f.name.replace(/\.[a-z0-9]+$/i, '') + '.' + state.to + (ext ? ext[0] : '.txt'); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        say((de ? 'Fertig: ' : 'Done: ') + a.download + ' (' + fp.parts.length + (de ? ' Teile' : ' parts') + ')');
+      } catch (e) { say(String(e.message || e), true); }
+    });
+    addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
+    lists(); count(); show('', '', '');
+    if ($('in').value.trim()) go(true); else if (!navigator.onLine) say(W.offline);
+    mountRelated($('related'), '/translate/', [{ label: de ? 'Wörter zählen' : 'Count the words', href: () => ($('in').value.trim() ? '/word-count/?t=' + encodeURIComponent($('in').value.trim()) : null) }]);
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

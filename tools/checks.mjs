@@ -84,6 +84,8 @@ for (const [name, file] of [
   ['progress-chart', 'progress-chart.test.mjs'],
   ['loop-parts', 'loop-parts.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
+  ['translate', 'translate.test.mjs'],
+  ['floor-kit', 'floor-kit.test.mjs'],
   ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['memory-preview', 'memory-preview.test.mjs'],
   ['decide-cards', 'decide-cards.test.mjs'],

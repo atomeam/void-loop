@@ -11,7 +11,7 @@
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
-export const FLOORS = [
+const HAND_FLOORS = [
   // the tutorial floors (2026-10-23): one-trick sites, the first fights, so the climb starts where a whole site can be out-done
   { id: 'is it', site: 'isitchristmas.com', url: 'https://isitchristmas.com/', ask: 'is it christmas?', page: '/is-it/christmas', label: 'Is it…?', glyph: '?', fatality: 'a midnight wave across 36 places and your own flag turning with your pointer, that the site cannot do', extra: ['big answer', 'local language'] },
   { id: 'coin flip', learned: "a fair coin has to be checkable: every flip from the device's secure random numbers, a real coin's two faces shown one at a time, and the gate learned to find a coin however a site flips it and read a side that is only drawn", site: 'justflipacoin.com', url: 'https://justflipacoin.com/', ask: 'flip a coin', page: '/flip/', label: 'Coin flip', glyph: '◐', fatality: 'any real coin ever minted with its real faces, a coin you design yourself, and what it is worth', extra: ['flip animation', 'flip history'] },
@@ -46,7 +46,7 @@ export const FLOORS = [
   { id: 'colour codes', learned: "a colour page has to speak every model people use: it took hexcolor16.com's list to 15 models (CIELab, Oklab, OKLCH among them), its VGA palette and a random colour, and learned to keep the layout still on a slow first visit", site: 'hexcolor16.com', url: 'https://hexcolor16.com/ff5733', ask: 'ff5733 color', page: '/color/?c=ff5733', label: 'Colour codes', glyph: '◉', fatality: 'contrast for text on the colour, the nearest name by eye, and the page opens offline, with no ads, analytics or web fonts', extra: ['every colour model', 'shades and palettes'] },
   { id: 'encoder', learned: 'an encoder belongs in the browser, whole: both ways live, every character set both ways with nothing fetched, files of any size streamed, and the gate learned to judge accuracy against the standard itself (RFC 4648) instead of waiting on a site that answers only when pressed', fatality: 'all 44 character sets both ways on the device, the multi-byte ones inverted out of the browser\'s own decoder; each line separately, LF or CRLF, MIME lines, downloads, files past the 100 MB cap', site: 'base64encode.org', url: 'https://www.base64encode.org/', ask: 'base64 encode hello', page: '/base64/', label: 'Encoder', glyph: '⌗', extra: ['decode too', 'files and character sets'] },
   { id: 'weather', site: 'weather.gov', url: 'https://www.weather.gov/', ask: 'weather in boston', label: 'Weather', glyph: '☂', extra: ['hourly and daily forecast', 'alerts', 'radar'] },
-  { id: 'translate', site: 'Google Translate', url: 'https://translate.google.com/', ask: 'translate hello to spanish', label: 'Translate', glyph: '⇄', extra: ['language count', 'speech in and out', 'camera text'] },
+  { id: 'translate', site: 'Google Translate', url: 'https://translate.google.com/', ask: 'translate hello to spanish', page: '/translate/?q=hello&to=es', label: 'Translate', glyph: '⇄', extra: ['language count', 'speech in and out', 'camera text'] },
   { id: 'recipes', site: 'Allrecipes', url: 'https://www.allrecipes.com/', ask: 'pancake recipe', label: 'Recipes', glyph: '◒', extra: ['search by ingredient', 'scaling', 'step mode'] },
   { id: 'calendar', site: 'Google Calendar', url: 'https://calendar.google.com/', ask: 'my calendar', label: 'Calendar', glyph: '▦', extra: ['reminders', 'invites', 'recurring events'] },
   { id: 'docs and notes', site: 'Google Docs', url: 'https://docs.google.com/', ask: 'notepad', label: 'Docs and notes', glyph: '✎', extra: ['rich formatting', 'search', 'version history'] },
@@ -80,6 +80,24 @@ export const FLOORS = [
   { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
   { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
 ];
+
+// Lanes (owner, 2026-10-25: "defeat every single translate site one by one before we move on . its ok to punch down we can just confirm we
+// beat suspectected ops after each victory so we wipe out the entire lane each time"): the other sites that do what a floor's site does.
+// Each is a floor of its own, right behind its leader, measured by the same gate against the same Verse page, ask and aspects (its evidence
+// row is keyed 'leader: host'); the lane is wiped out when every one of them is beaten. Named in plain text only, as every floor is.
+// The climb goes up the lane from its bottom (owner, 2026-10-25: "let go to the bottom of the translate list and work up"): each lane is listed
+// least visited first, and its sites stand in front of the leader, so the leader is the lane's last fight.
+export const LANES = Object.freeze({
+  translate: ['https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
+});
+const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
+/** the hand-named floors with each one's lane unrolled behind it. Pure. */
+export function withLanes(floors, lanes = LANES) {
+  const out = [];
+  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra }); } out.push(f); }
+  return out;
+}
+export const FLOORS = withLanes(HAND_FLOORS);
 // fatality (owner, 2026-10-24: "i like the match then killshot", then "killshot= fatality"): once a site's aspects are matched, the one thing Verse does that the site cannot
 // answer, so the site becomes obsolete rather than equal. Only a thing that is built and live is written here; the card shows it as a plain line.
 /** a floor's fatality, which is also called its killshot (owner, 2026-10-24: "killshot= fatality", then "killshot can be kept too"): either field names it. Pure. */
@@ -134,7 +152,9 @@ export function tower(onlySite = [], evidence = {}, frontier = null) {
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => hard(a) - hard(b) || (a.m - a.n) - (b.m - b.n) || a.order - b.order), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // a lane site stands where its leader would and just in front of it, so the climb goes up the lane from its bottom and the leader is its last fight
+  const lead = new Map(all.map((f) => [f.id, f])), key = (f) => (f.lane && lead.get(f.lane) && !lead.get(f.lane).beaten ? lead.get(f.lane) : f);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

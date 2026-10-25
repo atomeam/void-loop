@@ -476,7 +476,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-24T21:42:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -484,88 +484,96 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T05:26:49Z",
-   "subject": "The 3D calculator comes in five Verse models that take turns on new cards: SL-200 SOLAR pocket, FX-900 SCIENTIFIC, DT-12 DESK printing…"
+   "at": "2026-10-25T06:12:16Z",
+   "subject": "Tower gate: translate measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:24:40Z",
-   "subject": "An ask bar on every tool page, and the 3D tower first on the card"
+   "at": "2026-10-25T06:09:09Z",
+   "subject": "Incident: the browser suite failed on 747b0851 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T05:22:22Z",
-   "subject": "Incident: the browser suite failed on 79a919b3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T06:05:28Z",
+   "subject": "BASE.md: the estate, reverse-engineered (bindings, limits, cliffs, live inventory)"
   },
   {
-   "at": "2026-10-25T05:21:59Z",
-   "subject": "/compare/ shows each site as the gate saw it, since every site refuses to be framed"
+   "at": "2026-10-25T06:02:47Z",
+   "subject": "Handoff: the weather floor stands at 9 of 12 after its page and probe; what the next tower run reads first"
   },
   {
-   "at": "2026-10-25T05:21:45Z",
-   "subject": "The tower card gets a 3D tower: floors on a plinth in deep space, names in gold, the current floor a scaffold"
+   "at": "2026-10-25T06:01:47Z",
+   "subject": "Tower gate: translate measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:20:08Z",
-   "subject": "Tower gate: weather,shopping,chat measured against their live sites"
+   "at": "2026-10-25T06:01:07Z",
+   "subject": "Tower gate: weather measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:18:24Z",
-   "subject": "The sitemap is generated: every tool page, the home page, the tower, the fix pages and every is-it day, lastmod from git…"
+   "at": "2026-10-25T05:58:03Z",
+   "subject": "Tower gate: translate measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:16:46Z",
-   "subject": "/tools/: every tool on one page, and a bench that opens any number of them at once"
+   "at": "2026-10-25T05:51:28Z",
+   "subject": "llms.txt lists every tool page, one honest line each, written from the same table (lib/seo.js) by tools/seo-pages.mjs between \"Tool pages\"…"
   },
   {
-   "at": "2026-10-25T05:16:17Z",
-   "subject": "Tower gate: weather,travel,jobs measured against their live sites"
+   "at": "2026-10-25T05:50:07Z",
+   "subject": "Tower gate: calculator,unit converter,password measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:14:40Z",
-   "subject": "Incident: the browser suite failed on a2633ad4 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T05:50:00Z",
+   "subject": "Tower gate: translate,assistant,code hosting measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:14:29Z",
-   "subject": "/convert/ paints finished and reaches its load event before its code"
+   "at": "2026-10-25T05:48:30Z",
+   "subject": "Link previews: the tower pages get their og tags (/conquered/ had none, /compare/ lacked twitter:card and og:url); a test holds every tool…"
   },
   {
-   "at": "2026-10-25T05:11:34Z",
-   "subject": "Tower gate: is it measured against their live sites"
+   "at": "2026-10-25T05:47:47Z",
+   "subject": "The tower card's link rows stay off a copied card"
   },
   {
-   "at": "2026-10-25T05:11:01Z",
-   "subject": "Incident: the browser suite failed on 5c78fb78 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T05:46:32Z",
+   "subject": "Verse fixes its figure skill: learn to handle \"low poly wolf\""
   },
   {
-   "at": "2026-10-25T05:10:55Z",
-   "subject": "Tower gate: calculator,password measured against their live sites"
+   "at": "2026-10-25T05:45:52Z",
+   "subject": "The tower gate: a run by hand gets its own concurrency group, so a deploy's run never cancels it"
   },
   {
-   "at": "2026-10-25T05:03:25Z",
-   "subject": "The photo resizer floor surpassed: its learned line, the tower lib at ladder-45, the handoff closed for this run"
+   "at": "2026-10-25T05:43:27Z",
+   "subject": "Deep links for exact asks: a visible \"Common asks\" row on every tool page whose link takes a setting, the same links the JSON-LD's…"
   },
   {
-   "at": "2026-10-25T05:01:38Z",
-   "subject": "Tower gate: weather,music,podcasts measured against their live sites"
+   "at": "2026-10-25T05:39:20Z",
+   "subject": "Tower gate: translate,random generators,ai models measured against their live sites"
   },
   {
-   "at": "2026-10-25T05:01:00Z",
-   "subject": "The password strength floor gets its probe, the gate types into a password box and into Verse's own page, and base64encode.org's lesson is…"
+   "at": "2026-10-25T05:38:14Z",
+   "subject": "Incident: the browser suite failed on c5e4cded (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T04:59:17Z",
-   "subject": "Tower gate: photo resizer,games,learning measured against their live sites"
+   "at": "2026-10-25T05:37:20Z",
+   "subject": "Tower gate: translate,email,search measured against their live sites"
   },
   {
-   "at": "2026-10-25T04:59:14Z",
-   "subject": "Incident: the browser suite failed on b90872b0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T05:34:30Z",
+   "subject": "Tower gate: weather,video,social measured against their live sites"
   },
   {
-   "at": "2026-10-25T04:56:20Z",
-   "subject": "Tower gate: password measured against their live sites"
+   "at": "2026-10-25T05:34:26Z",
+   "subject": "/tools/: the Is it…? page joins the kit"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (tower session, 2026-10-25, 06:05)",
+    "line": "the weather floor (weather.gov) got Verse's own /weather/ page (dadffdb: lib/weather.js, Open-Meteo for any place, °F and °C side by side, the next 24 hours, 7 days with today first, sunrise and sunset, the weather service's alerts and…"
+   },
+   {
+    "name": "Claude (seo run, 2026-10-25)",
+    "line": "honest search presence for the tool pages, five commits on main: the sitemap is generated (tools/sitemap.mjs, a volatile refresh step: every tool page, the tower, the /fix/ and /is-it/…"
+   },
    {
     "name": "Claude (tower session, 2026-10-25, 05:00)",
     "line": "the photo resizer floor (pancardresizer.com) surpassed in one gate run after its probe: the gate puts its own one-pixel PNG into /resize-image/ with the size in the link (verseFile, PIXEL in tower-gate.mjs), 3 of 3 against the arithmetic…"
@@ -581,14 +589,6 @@
    {
     "name": "grok-bot (podcast)",
     "line": "Verse Out Loud, Verse's own weekly podcast: tools/podcast.mjs reads the week from the record, Piper voices it in CI (free: no Workers AI neurons, no key, lib/models.js untouched), /podcast/rss.xml is Apple/Spotify-ready, \"play the…"
-   },
-   {
-    "name": "Lists caught up, run 5 (Grok Bot, 2026-10-22)",
-    "line": "three live sources that were quietly dead are back. three.js on live was the page's HTML for fresh browsers (Cloudflare's edge kept a year-long immutable copy of the fallback page from when the file was missing on 2026-10-15), so every 3D…"
-   },
-   {
-    "name": "Lists caught up, run 4 (Grok Bot, 2026-10-21)",
-    "line": "four of Verse's asks are built. A pick from 'pick for me' says how close it matches you ('Match N%') and which signal chose it, the same as JSON on the card (lib/taste.js pickRecord). The calendar file names your browser's time zone. The…"
    }
   ],
   "ladders": [

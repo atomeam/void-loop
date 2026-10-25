@@ -28,7 +28,7 @@ export function hardness(f) {
 // the sites that are one tool (owner, 2026-10-24: back to the easy sites): the first scan read the top of the list and found DNS services, parked
 // domains, adult sites and login walls, because most of the top is not a tool. A one-tool site says what it is in its name, so the scan takes
 // every host in the whole list (a million) whose name says a tool, in the order people visit them, and measures only those.
-export const TOOL_HOST = /(calc|convert|generator|counter|timer|stopwatch|coinflip|flipacoin|dice|random|picker|wheel|qrcode|colou?r|hex|base64|json|minif|formatter|validator|compress|resize|speedtest|whatismy|checker|tester|ruler|clock|lorem|uuid|password|diff|regex|epoch|timestamp|unit|metronome|tuner|spinner|scoreboard|tally|notepad|sketch|draw|emoji|fonts?\.)/i;
+export const TOOL_HOST = /(calc|convert|generator|counter|timer|stopwatch|coinflip|flipacoin|dice|random|picker|wheel|qrcode|colou?r|hex|base64|json|minif|formatter|validator|compress|resize|speedtest|whatismy|checker|tester|ruler|clock|lorem|uuid|password|diff|regex|epoch|timestamp|unit|metronome|tuner|spinner|scoreboard|tally|notepad|sketch|draw|emoji|fonts?\.|translat|dictionar|deepl|linguee|reverso|lingvanex|papago|thesaurus)/i; // translators and dictionaries (owner, 2026-10-25: other translate sites were skipped because no word for them was here)
 export const ADULT = /(porn|xxx|sex|adult|nude|cam(?:s|girl)|escort|fuck|hentai|onlyfans|bet|casino|crack|torrent|warez)/i;
 /** true for a host whose name says a tool and that is not adult or illegal. Pure. */
 export const isToolHost = (host) => TOOL_HOST.test(String(host)) && !ADULT.test(String(host));
