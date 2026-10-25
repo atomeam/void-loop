@@ -1278,52 +1278,52 @@
   "colour codes": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 156,
-    "best": 384,
-    "evidence": "Verse (/color/?c=ff5733) 156 ms to the load event (median of 3, phone width) vs hexcolor16.com 384 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T14:07:11.285Z"
+    "verse": 142,
+    "best": 370,
+    "evidence": "Verse (/color/?c=ff5733) 142 ms to the load event (median of 3, phone width) vs hexcolor16.com 370 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs hexcolor16.com 3 of 3 loads answered",
-    "at": "2026-10-25T14:07:11.285Z"
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs hexcolor16.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T14:07:11.285Z"
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs hexcolor16.com 1 unnamed controls or images",
-    "at": "2026-10-25T14:07:11.285Z"
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/color/?c=ff5733) 0 (1: the page shows itself again with the network cut) vs hexcolor16.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T14:07:11.285Z"
+    "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs hexcolor16.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs hexcolor16.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T14:07:11.285Z"
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/color/?c=ff5733) 4 of 4 right against the worked-out answer; judged against the standard, not hexcolor16.com (the site is not asked)",
-    "at": "2026-10-25T14:07:11.285Z",
+    "at": "2026-10-25T14:46:53.095Z",
     "of": 4
    },
    "completeness": {
@@ -1331,22 +1331,22 @@
     "verse": 13,
     "best": 12,
     "evidence": "Verse (/color/?c=ff5733) 13 of 13 things a full answer shows vs hexcolor16.com 12 of 13 things a full answer shows (Verse lacks: none; site lacks: text contrast)",
-    "at": "2026-10-25T14:07:11.285Z",
+    "at": "2026-10-25T14:46:53.095Z",
     "of": 13
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 128,
-    "evidence": "Verse (/color/?c=ff5733) 0 design defects vs hexcolor16.com 128 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), hexcolor16.com (123 low-contrast texts, 4 small tap targets, layout shift 0.44)",
-    "at": "2026-10-25T14:07:11.285Z"
+    "evidence": "Verse (/color/?c=ff5733) 0 design defects vs hexcolor16.com 128 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), hexcolor16.com (123 low-contrast texts, 4 small tap targets, layout shift 0.38)",
+    "at": "2026-10-25T14:46:53.095Z"
    },
    "every colour model": {
     "verdict": "better",
     "verse": 15,
     "best": 12,
     "evidence": "Verse (/color/?c=ff5733) 15 of 15 shown vs hexcolor16.com 12 of 15 shown (Verse lacks: none; site lacks: HWB, Oklab, OKLCH)",
-    "at": "2026-10-25T14:07:11.285Z",
+    "at": "2026-10-25T14:46:53.095Z",
     "of": 15,
     "part": true
    },
@@ -1355,7 +1355,7 @@
     "verse": 12,
     "best": 10,
     "evidence": "Verse (/color/?c=ff5733) 12 of 12 shown vs hexcolor16.com 10 of 12 shown (Verse lacks: none; site lacks: the 16 VGA colours, a random colour)",
-    "at": "2026-10-25T14:07:11.285Z",
+    "at": "2026-10-25T14:46:53.095Z",
     "of": 12,
     "part": true
    }
