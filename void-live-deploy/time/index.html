@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Time zones: the time in any city, a converter and a meeting planner · Verse</title>
+<meta name="description" content="The current time in any city, a world clock of the places you pick, a time zone converter and a meeting planner that finds the hours that suit everyone. Daylight saving included, from your browser's own time-zone data, so it works offline. No ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Time zones · Verse">
+<meta property="og:description" content="The time in any city, a converter and a meeting planner, with daylight saving, offline. Share your cities as a link.">
+<meta property="og:url" content="https://a-to-mind.com/time/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/time/ (the tower's timeanddate.com floor): one file and one small module, no third party, no time service */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --work: #cfeedd; --edge: #f6ecc8; --night: transparent; --bad: #c0392b; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --work: #173c28; --edge: #3a3315; --bad: #ff7a6e; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 22px 0 6px; }
+  .big { text-align: center; font: 700 clamp(44px, 15vw, 96px)/1.1 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; margin: 6px 0 2px; letter-spacing: -.02em; }
+  .place { text-align: center; font-size: 20px; font-weight: 600; margin: 0; } .sub { text-align: center; color: var(--soft); font-size: 14px; margin: 2px 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 10px 0; }
+  button, select, input { font: inherit; font-size: 15px; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  input, select { border-radius: 10px; cursor: text; } select { cursor: pointer; max-width: 100%; } input[type=text] { width: 12em; }
+  button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+  ul.clocks { list-style: none; padding: 0; margin: 0; } .clocks li { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); padding: 8px 0; }
+  .clocks .who { flex: 1; min-width: 0; } .clocks .who b { display: block; } .clocks small { color: var(--soft); }
+  .clocks .t { font: 600 22px ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .clocks button { min-height: 40px; min-width: 40px; padding: 0 10px; }
+  .conv { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } #convout { font-size: 18px; }
+  .plan { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; } table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+  th, td { padding: 4px 6px; text-align: center; white-space: nowrap; } th { position: sticky; left: 0; background: var(--bg); text-align: left; font-weight: 600; }
+  td.work { background: var(--work); } td.edge { background: var(--edge); } td.best { outline: 2px solid var(--accent); outline-offset: -2px; } sup { color: var(--soft); }
+  .note { font-size: 13px; color: var(--soft); } .err { color: var(--bad); }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/zones.js">
+<link rel="modulepreload" href="/skills/worldtime.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Time zones</h1>
+  <p class="place" id="place">Your time</p>
+  <div class="big" id="big" aria-live="off">--:--</div>
+  <p class="sub" id="date"></p>
+  <p class="sub" id="zone"></p>
+  <div class="row"><button type="button" id="h24" aria-pressed="false">24-hour</button><button type="button" id="link">Copy link</button></div>
+
+  <section aria-labelledby="wh"><h2 id="wh">World clock</h2>
+    <ul class="clocks" id="clocks"></ul>
+    <div class="row"><label for="add" class="note">Add a city</label><input type="text" id="add" list="cities" placeholder="Tokyo, Paris, EST, UTC+5" autocomplete="off" spellcheck="false"><button type="button" id="addgo">Add</button></div>
+    <p class="note err" id="addnote" aria-live="polite"></p>
+    <datalist id="cities"></datalist>
+  </section>
+
+  <section aria-labelledby="ch"><h2 id="ch">Time zone converter</h2>
+    <div class="conv"><input type="text" id="ct" value="9:00 am" aria-label="Time" spellcheck="false" autocomplete="off" style="width:7em"><span>in</span><select id="cfrom" aria-label="From city"></select><span>is</span></div>
+    <ul class="clocks" id="convout"></ul>
+    <p class="note">Any time (3pm, 15:30, noon) in one of your cities, today there, shown in all the others, with the day when it changes.</p>
+  </section>
+
+  <section aria-labelledby="mh"><h2 id="mh">Meeting planner</h2>
+    <p class="note" id="best"></p>
+    <div class="plan"><table id="plan"></table></div>
+    <div class="row"><label for="pday" class="note">Day to plan</label><input type="date" id="pday"></div>
+    <p class="note">Each hour of the day in your first city, across the others: green is working hours (8 to 6), yellow early or late (7, 6 to 9 pm), the rest night; ¹ is the next day, ⁻¹ the day before.</p>
+  </section>
+
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>From your browser's own time-zone data, daylight saving included: nothing is asked of a time service, so it opens offline after one visit. Your cities are kept on this device. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt } from '/lib/zones.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
+  const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const youPlace = { name: 'Your time (' + cityOf(you) + ')', tz: you, you: true };
+  let h24 = saved.h24 === true, places = Array.isArray(saved.places) && saved.places.length ? saved.places.filter((p) => p && p.tz) : [{ name: 'London', tz: 'Europe/London' }, { name: 'New York', tz: 'America/New_York' }, { name: 'Tokyo', tz: 'Asia/Tokyo' }];
+  let main = null; // the city at the top: the one asked for in the link, else you
+  const q = new URLSearchParams(location.search), asked = (q.get('c') || q.get('q') || '').split(/\s*[,;|]\s*/).filter(Boolean);
+  const missing = [];
+  if (asked.length) { const found = asked.map((n) => findPlace(n, ZONES) || (missing.push(n), null)).filter(Boolean); if (found.length) { main = found[0]; places = found; } }
+  if (q.get('h') === '24') h24 = true; else if (q.get('h') === '12') h24 = false;
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ h24, places })); } catch (_) {} };
+  const all = () => [youPlace, ...places.filter((p) => p.tz !== you || p.name !== youPlace.name)];
+  const at = () => new Date();
+  const dayWord = (n) => (n === 1 ? ' · tomorrow' : n === -1 ? ' · yesterday' : '');
+  const fmtDate = (tz, d) => new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(d);
+  const abbr = (tz, d) => { try { return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' }).formatToParts(d).find((x) => x.type === 'timeZoneName').value; } catch (_) { return ''; } };
+
+  function drawTop() {
+    const p = main || youPlace, now = at(), w = wall(p.tz, now), off = offsetMin(p.tz, now), d = dst(p.tz, now);
+    $('place').textContent = main ? 'Time in ' + p.name : p.name;
+    $('big').textContent = clockText(w.h, w.m, { h24, s: w.s });
+    $('date').textContent = fmtDate(p.tz, now);
+    $('zone').textContent = p.tz.replace(/_/g, ' ') + ' · ' + abbr(p.tz, now) + ' · ' + gmt(off) + ' · ' + (d.observes ? (d.now ? 'daylight saving time now' : 'standard time now (it keeps daylight saving)') : 'no daylight saving') + (main && p.tz !== you ? ' · ' + gapText(off - offsetMin(you, now)) + ' of you' : '');
+    document.title = (main ? clockText(w.h, w.m, { h24 }) + ' in ' + p.name : 'Time zones') + ' · Verse';
+  }
+  function drawClocks() {
+    const now = at(), yo = offsetMin(you, now), yd = Date.UTC(...wall(you, now).ymd);
+    $('clocks').replaceChildren(...all().map((p, i) => {
+      const w = wall(p.tz, now), off = offsetMin(p.tz, now), li = document.createElement('li'), who = document.createElement('div'), t = document.createElement('div');
+      who.className = 'who'; const b = document.createElement('b'); b.textContent = p.name; const s = document.createElement('small');
+      s.textContent = w.day + dayWord(Math.round((Date.UTC(...w.ymd) - yd) / 86400000)) + ' · ' + gmt(off) + (p.you ? '' : ' · ' + gapText(off - yo)); who.append(b, s);
+      t.className = 't'; t.textContent = clockText(w.h, w.m, { h24 }); li.append(who, t);
+      if (!p.you) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + p.name); x.addEventListener('click', () => { places = places.filter((o) => o !== p); if (main === p) main = null; save(); drawAll(); }); li.append(x); }
+      return li; }));
+  }
+  function fillSelect() { const v = $('cfrom').value; $('cfrom').replaceChildren(...all().map((p, i) => new Option(p.name, String(i)))); if (v && +v < all().length) $('cfrom').value = v; }
+  function drawConvert() {
+    const list = all(), from = list[+$('cfrom').value || 0] || list[0], when = instantOf($('ct').value, from.tz);
+    if (!when) { $('convout').replaceChildren(Object.assign(document.createElement('li'), { textContent: 'That time was not understood: try 3pm, 15:30 or noon.', className: 'err' })); return; }
+    const rows = convert(when, [from.tz, ...list.filter((p) => p !== from).map((p) => p.tz)]), names = [from, ...list.filter((p) => p !== from)];
+    $('convout').replaceChildren(...rows.map((r, i) => { const li = document.createElement('li'), who = document.createElement('div'), t = document.createElement('div'); who.className = 'who';
+      const b = document.createElement('b'); b.textContent = names[i].name; const s = document.createElement('small'); s.textContent = r.day + dayWord(r.dayShift) + ' · ' + gmt(offsetMin(r.tz, when)); who.append(b, s);
+      t.className = 't'; t.textContent = clockText(r.h, r.m, { h24 }); li.append(who, t); return li; }));
+  }
+  function drawPlan() {
+    const list = all(), tz0 = list[0].tz, day = $('pday').value ? $('pday').value.split('-').map(Number) : null, ymd = day ? [day[0], day[1] - 1, day[2]] : wall(tz0, at()).ymd;
+    const rows = planner(list.map((p) => p.tz), ymd), best = bestSpans(rows, { h24 });
+    $('best').textContent = best.kind === 'work' ? 'Best time to meet, inside everyone\'s working hours: ' + best.spans.join(', ') + ' (' + (list[0].you ? 'your time' : list[0].name) + ').'
+      : best.kind === 'edge' ? 'No hour is inside everyone\'s working hours; closest, early or late for someone: ' + best.spans.join(', ') + ' (' + (list[0].you ? 'your time' : list[0].name) + ').' : 'No hour is daytime for everyone in these cities.';
+    const sup = (n) => (n === 1 ? '¹' : n === -1 ? '⁻¹' : '');
+    const tr = list.map((p, i) => { const r = document.createElement('tr'), th = document.createElement('th'); th.textContent = p.you ? 'You' : p.name; r.append(th);
+      for (const row of rows) { const c = row.cells[i], td = document.createElement('td'); td.className = c.fit + (row.all === best.kind ? ' best' : ''); td.textContent = h24 ? String(c.h).padStart(2, '0') + (c.m ? ':' + String(c.m).padStart(2, '0') : '') : ((c.h % 12) || 12) + (c.m ? ':' + String(c.m).padStart(2, '0') : '') + (c.h < 12 ? 'a' : 'p'); if (c.dayShift) td.append(Object.assign(document.createElement('sup'), { textContent: sup(c.dayShift) })); r.append(td); }
+      return r; });
+    $('plan').replaceChildren(...tr);
+  }
+  function drawAll() { $('h24').setAttribute('aria-pressed', String(h24)); fillSelect(); drawTop(); drawClocks(); drawConvert(); drawPlan(); }
+
+  function add() {
+    const p = findPlace($('add').value, ZONES); if (!p) { $('addnote').textContent = 'No city or zone called "' + $('add').value + '" here: try a big city near it, a zone like EST, or UTC+5.'; return; }
+    $('addnote').textContent = ''; $('add').value = ''; if (!places.some((o) => o.tz === p.tz && o.name === p.name)) places.push(p); save(); drawAll();
+  }
+  $('addgo').addEventListener('click', add); $('add').addEventListener('keydown', (e) => { if (e.key === 'Enter') add(); });
+  $('cities').append(...ZONES.filter((z) => z.includes('/') && !/^Etc\//.test(z)).map((z) => new Option(z.replace(/_/g, ' '), cityOf(z))));
+  $('h24').addEventListener('click', () => { h24 = !h24; save(); drawAll(); });
+  for (const id of ['ct', 'cfrom']) $(id).addEventListener('input', drawConvert);
+  $('pday').addEventListener('input', drawPlan);
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + '?c=' + places.map((p) => encodeURIComponent(p.name)).join(',') + (h24 ? '&h=24' : ''); try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
+  if (missing.length) $('addnote').textContent = 'Not found: ' + missing.join(', ') + '.';
+  drawAll();
+  setInterval(() => { drawTop(); if (new Date().getSeconds() === 0) drawClocks(); }, 1000);
+  mountRelated(document.getElementById('related'), '/time/');
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

@@ -59,6 +59,15 @@ export function flipsOf(text) { const [before = '', ...after] = String(text || '
 export function scoreOf(m, items) { const has = [], missing = []; for (const [label, f] of items || []) { let ok = false; try { ok = !!f(m); } catch (_) { ok = false; } (ok ? has : missing).push(label); } return { n: has.length, of: has.length + missing.length, has, missing }; }
 const everyone = (f) => (t) => { const ps = peopleIn(t); return ps.length > 0 && ps.every(f); };
 
+// the clock times in a text, as minutes after midnight: "9:05 PM", "21:05", "9:05:07 pm", "09:05" (a time with no AM or PM read as 24-hour). Pure.
+export function timesIn(text) {
+  const out = []; for (const m of String(text || '').matchAll(/(?<![\d:])(\d{1,2}):(\d{2})(?::\d{2})?(?:\s*([ap])\.?\s?m\.?\b)?/gi)) { let h = +m[1]; const mi = +m[2]; if (mi > 59) continue;
+    if (m[3]) { if (h < 1 || h > 12) continue; h = (h % 12) + (/p/i.test(m[3]) ? 12 : 0); } else if (h > 23) continue; out.push(h * 60 + mi); }
+  return out;
+}
+/** Tokyo's wall clock now, from the zone rules (UTC+9, no daylight saving since 1951): { min (after midnight), day, month (its English name) }. Pure. */
+export function tokyoNow(now = new Date()) { const t = new Date(now.getTime() + 9 * 3600000); return { min: t.getUTCHours() * 60 + t.getUTCMinutes(), day: t.getUTCDate(), month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][t.getUTCMonth()] }; }
+
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -176,6 +185,32 @@ export const PROBES = Object.freeze({
     askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],
   },
+  calculator: {
+    site: 'https://www.calculator.net/', verse: '/calculator/',
+    // truth null: calculator.net's address cannot carry a sum and its calculator is a pad of buttons with no box to type into, so the same
+    // question cannot be put to both yet (the gate would need to press its keys): accuracy stays unverified, never counted
+    truth: null,
+    // what a full scientific calculator offers: calculator.net's own pad (the four operations, brackets, powers, roots, trig and its inverse in
+    // degrees or radians, ln and log, pi, n!, %, memory, Ans, EXP, the sign key) and the history and keyboard input the best apps add
+    facts: [['the four operations', /[×*][\s\S]{0,200}[÷/]|[÷/][\s\S]{0,200}[×*]/], ['brackets', /\([\s\S]{0,80}\)/], ['powers', /x\s*[ʸ^y²³]|\bpowers?\b/i], ['roots', /√|\broots?\b/i],
+      ['sin, cos and tan', /\bsin\b[\s\S]{0,80}\bcos\b[\s\S]{0,80}\btan\b/i], ['inverse trig', /sin\s*(?:⁻¹|-1|\^-1)|\basin\b|\barcsin\b/i], ['degrees and radians', /\bdeg(?:rees?)?\b[\s\S]{0,80}\brad(?:ians?)?\b/i],
+      ['logarithms', /\bln\b[\s\S]{0,80}\blog\b|\blog\b[\s\S]{0,80}\bln\b/i], ['pi', /π|\bpi\b/i], ['factorial', /n!|\bfactorial\b/i], ['percent', /%/],
+      ['memory', /\bM\+[\s\S]{0,60}\bMR\b|\bMR\b[\s\S]{0,60}\bM\+|\bmemory\b/i], ['last answer', /\bAns\b/], ['exponent entry', /\bEXP\b|×\s*10/], ['change sign', /±|\+\/[-−]/],
+      ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
+  },
+  'time zones': {
+    site: 'https://www.timeanddate.com/', verse: '/time/?c=Tokyo',
+    // the same question to both: Tokyo's own page on each; the truth is worked out here, at the moment the answer is read, from the zone rules
+    // (Japan keeps UTC+9 all year, no daylight saving): the wall clock in Tokyo to the minute (2 minutes either way for the read), the day, the offset
+    ask: { site: 'https://www.timeanddate.com/worldclock/japan/tokyo', verse: '/time/?c=Tokyo' },
+    truth: () => [['the time in Tokyo now, to the minute', { test: (t) => { const n = tokyoNow(); return timesIn(t).some((m) => Math.min(Math.abs(m - n.min), 1440 - Math.abs(m - n.min)) <= 2); } }],
+      ["Tokyo's date today", { test: (t) => { const n = tokyoNow(); return new RegExp('\\b' + n.month + '\\s+' + n.day + '\\b|\\b' + n.day + '\\.?\\s+' + n.month + '\\b', 'i').test(t); } }],
+      ['UTC+9', /\b(?:UTC|GMT)\s*\+\s*0?9(?![\d:])/i]],
+    // what the best time-zone pages show for a city (timeanddate.com's city page and world clock, its converter and meeting planner)
+    facts: [['the time now', /\b\d{1,2}:\d{2}(?::\d{2})?\b/], ['the date', /\b(?:mon|tues|wednes|thurs|fri|satur|sun)day\b/i], ['the time zone', /\btime ?zones?\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/],
+      ['daylight saving', /\bdaylight saving\b|\bDST\b/i], ['a world clock', /\bworld ?clock\b/i], ['a converter', /\bconverter\b/i], ['a meeting planner', /\bmeeting planner\b/i],
+      ['the difference from you', /\bhours?\s+(?:ahead|behind)\b|\btime difference\b/i], ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['a share link', /\bcopy link\b|\bshare\b/i]],
+  },
 });
 // a floor's own named aspects (its `extra` in lib/tower.js), each a list both pages are scored on the same way: how many of the list a page
 // shows is its score, and the list's length is the best there is. The colour models are the union of what hexcolor16.com (hex, decimal, RGB,
@@ -196,6 +231,8 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,
   'random number': { 'true randomness': [['names where its randomness comes from', /atmospheric noise|\bdrand\b|randomness beacon|getRandomValues|\bhardware\b/i], ['a draw others can check', /\bcheckable\b|\bverifiab|\bre-deriv|\bsigned\b/i]], 'range choice': [['a range', /\bmin(?:imum)?\b[\s\S]{0,120}\bmax|\bfrom\b[\s\S]{0,60}\bto\b|\bbetween\b[\s\S]{0,40}\band\b/i], ['how many', /\bhow many\b|\bgenerate\s+\d+|\bnumber of\b/i], ['no repeats', /\bno repeats?\b|\bunique\b|\bwithout repe/i]] },
   stopwatch: { alarms: [['an alarm', /\balarm\b/i]], laps: [['laps', /\blaps?\b/i]] },
+  calculator: { history: [['a history of results', /\bhistory\b/i]], 'unit and scientific modes': [['scientific functions', /\bsin\b[\s\S]{0,80}\bcos\b/i], ['degrees and radians', /\bdeg(?:rees?)?\b[\s\S]{0,80}\brad(?:ians?)?\b/i], ['unit conversion', /\bunit conver|\bconvert\b|\bmiles\b[\s\S]{0,40}\bkm\b/i]] },
+  'time zones': { 'world time': [['several cities at once', /\bworld ?clock\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/]], 'meeting planner': [['a meeting planner', /\bmeeting planner\b/i], ['the hours that suit everyone', /\bbest time\b|\bworking hours\b/i]] },
   'word count': { 'live counting': [['counts as you type', /\bas you (?:type|edit)\b/i]], 'characters and sentences': [['characters', /\bcharacters\b/i], ['characters without spaces', /without spaces/i], ['sentences', /\bsentences\b/i], ['paragraphs', /\bparagraphs\b/i]] },
   'random user': { 'output formats': [['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]], seed: [['a seed', /\bseed\b/i]], nationalities: [['United States', /united states|\bamerican\b/i], ['United Kingdom', /united kingdom|\bbritish\b/i], ['France', /\bfrance\b|\bfrench\b/i], ['Germany', /\bgermany\b|\bgerman\b/i], ['Spain', /\bspain\b|\bspanish\b/i], ['Brazil', /\bbrazil/i], ['India', /\bindia\b|\bindian\b/i], ['Japan', /\bjapan/i]] },
 });

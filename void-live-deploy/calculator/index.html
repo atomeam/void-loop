@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scientific calculator with history, memory and unit conversion · Verse</title>
+<meta name="description" content="A free online scientific calculator: brackets, powers, roots, sin, cos and tan in degrees or radians, logs, factorial, percent, memory keys, a history of results kept on your device, unit conversion and keyboard input. Exact display (0.1 + 0.2 = 0.3). Works offline. No ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Scientific calculator · Verse">
+<meta property="og:description" content="Brackets, powers, roots, trig in degrees or radians, percent, memory, a history kept on your device, units, offline. Share a sum as a link.">
+<meta property="og:url" content="https://a-to-mind.com/calculator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/calculator/ (the tower's calculator.net floor): one file and one small module, no third party */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --key: #ecebf3; --fn: #e2def2; --accent: #6d4aff; --bad: #c0392b; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --key: #1b1924; --fn: #241f36; --accent: #a58bff; --bad: #ff7a6e; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 520px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 8px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 20px 0 6px; }
+  .screen { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  #expr { box-sizing: border-box; width: 100%; font: 20px/1.4 ui-monospace, Menlo, Consolas, monospace; color: inherit; background: transparent; border: 0; padding: 2px 0; text-align: right; outline: none; }
+  #out { text-align: right; font: 700 clamp(30px, 10vw, 44px)/1.2 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-height: 1.2em; }
+  #out.preview { color: var(--soft); font-weight: 500; } #out.err { color: var(--bad); font-size: 17px; font-weight: 500; }
+  .status { display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 10px 0; }
+  button, select, input.box { font: inherit; font-size: 15px; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+  .keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+  .keys button { border-radius: 12px; min-height: 48px; padding: 0; background: var(--key); border-color: transparent; font-size: 17px; }
+  .keys button.fn { background: var(--fn); font-size: 15px; } .keys button.eq { background: var(--accent); color: var(--on-accent, #fff); font-weight: 700; }
+  .keys[data-sci=false] .sci { display: none; }
+  ol#hist { list-style: none; padding: 0; margin: 0; } #hist li { border-bottom: 1px solid var(--line); }
+  #hist button { width: 100%; text-align: right; border: 0; border-radius: 0; font: 15px/1.4 ui-monospace, Menlo, Consolas, monospace; padding: 6px 4px; display: block; }
+  #hist b { display: block; font-size: 17px; }
+  .units { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } input.box { border-radius: 10px; width: 7em; cursor: text; } select { border-radius: 10px; }
+  .note { font-size: 13px; color: var(--soft); }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/calculator.js">
+<link rel="modulepreload" href="/skills/calc.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Scientific calculator</h1>
+  <div class="screen">
+    <div class="status"><span id="angle">Degrees</span><span id="memshow"></span></div>
+    <input id="expr" type="text" inputmode="none" autocomplete="off" spellcheck="false" aria-label="Sum to work out" placeholder="0">
+    <div id="out" aria-live="polite">0</div>
+  </div>
+  <div class="row"><button type="button" id="deg" aria-pressed="true">Deg</button><button type="button" id="rad" aria-pressed="false">Rad</button><button type="button" id="sci" aria-pressed="true">Scientific</button><button type="button" id="copy">Copy result</button><button type="button" id="link">Copy link</button></div>
+  <div class="keys" id="keys" data-sci="true"></div>
+  <p class="note">Type on your keyboard: digits, + − * / ^ ( ) % !, Enter for =, Esc clears, Backspace deletes. Percent works as calculators mean it: 200 + 10% is 220, 17% of 240 is 40.8. Results are exact to 15 digits, so 0.1 + 0.2 = 0.3.</p>
+
+  <section aria-labelledby="hh"><h2 id="hh">History</h2>
+    <ol id="hist"></ol>
+    <p class="note" id="histnote">Each result you work out is kept here, on this device only. Tap one to use it again.</p>
+    <div class="row" id="histrow" hidden><button type="button" id="clearhist">Clear history</button></div>
+  </section>
+
+  <section aria-labelledby="uh"><h2 id="uh">Unit conversion</h2>
+    <div class="units"><input class="box" id="uval" type="text" inputmode="decimal" value="1" aria-label="Amount"><select id="ufrom" aria-label="From unit"></select><span>to</span><select id="uto" aria-label="To unit"></select></div>
+    <p id="uout" aria-live="polite"></p>
+    <p class="note">Length, weight and temperature. Or type it in the sum: 5 miles to km, 100 c to f.</p>
+  </section>
+
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Worked out on this device, with no third party; it opens offline after one visit. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { calc, show, grouped, memory, remember } from '/lib/calculator.js';
+  import { convertUnits, expressionOf } from '/skills/calc.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.calculator.v1';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
+  const saved = load();
+  let deg = saved.deg !== false, sci = saved.sci !== false, mem = Number(saved.mem) || 0, ans = Number(saved.ans) || 0, hist = Array.isArray(saved.hist) ? saved.hist : [], done = false;
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ deg, sci, mem, ans, hist })); } catch (_) {} };
+  const q = new URLSearchParams(location.search);
+  if (q.get('a') === 'rad') deg = false; else if (q.get('a') === 'deg') deg = true;
+
+  // the keys: [label, what it types (or an action), class, name for a screen reader]
+  const K = [
+    ['sin', 'sin(', 'fn sci'], ['cos', 'cos(', 'fn sci'], ['tan', 'tan(', 'fn sci'], ['π', 'π', 'fn sci', 'pi'], ['e', 'e', 'fn sci', 'e, 2.718'],
+    ['sin⁻¹', 'asin(', 'fn sci', 'inverse sine'], ['cos⁻¹', 'acos(', 'fn sci', 'inverse cosine'], ['tan⁻¹', 'atan(', 'fn sci', 'inverse tangent'], ['ln', 'ln(', 'fn sci', 'natural log'], ['log', 'log(', 'fn sci', 'log base 10'],
+    ['x²', '^2', 'fn sci', 'square'], ['xʸ', '^', 'fn sci', 'power'], ['√', '√(', 'fn sci', 'square root'], ['∛', '∛(', 'fn sci', 'cube root'], ['n!', '!', 'fn sci', 'factorial'],
+    ['1/x', ':inv', 'fn sci', 'one over'], ['±', ':neg', 'fn sci', 'change sign'], ['×10ˣ', '×10^', 'fn sci', 'times ten to the power'], ['(', '(', 'fn'], [')', ')', 'fn'],
+    ['MC', ':mc', 'fn', 'memory clear'], ['MR', ':mr', 'fn', 'memory recall'], ['M+', ':m+', 'fn', 'memory add'], ['M−', ':m-', 'fn', 'memory subtract'], ['%', '%', 'fn', 'percent'],
+    ['7', '7'], ['8', '8'], ['9', '9'], ['÷', '÷', 'fn', 'divide'], ['C', ':clear', 'fn', 'clear'],
+    ['4', '4'], ['5', '5'], ['6', '6'], ['×', '×', 'fn', 'times'], ['⌫', ':back', 'fn', 'delete'],
+    ['1', '1'], ['2', '2'], ['3', '3'], ['−', '−', 'fn', 'minus'], ['Ans', 'Ans', 'fn', 'last answer'],
+    ['0', '0'], ['.', '.', '', 'point'], ['EXP', 'e', 'sci fn', 'e for an exponent, 2e5'], ['+', '+', 'fn', 'plus'], ['=', ':eq', 'eq', 'equals'],
+  ];
+  for (const [label, act, cls, name] of K) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; if (name) b.setAttribute('aria-label', name); b.addEventListener('click', () => press(act)); $('keys').append(b); }
+
+  const ex = $('expr'), out = $('out');
+  // where the next key goes: the caret the person last put in the box, else the end (an unfocused box forgets its caret in some browsers)
+  let caret = null; const mark = () => { caret = document.activeElement === ex ? ex.selectionStart : caret; };
+  for (const ev of ['keyup', 'click', 'select']) ex.addEventListener(ev, mark);
+  const setExpr = (v) => { ex.value = v; caret = null; };
+  const opts = () => ({ deg, ans, mem });
+  function preview() {
+    const t = ex.value.trim(); out.className = 'preview';
+    if (!t) { out.textContent = '0'; return; }
+    const r = calc(t, opts()); out.textContent = r.ok ? '= ' + grouped(r.value) : ''; // a sum half typed shows nothing, not an error
+  }
+  function equals() {
+    const t = ex.value.trim(); if (!t) return;
+    const r = calc(t, opts());
+    if (!r.ok) { out.className = 'err'; out.textContent = 'Error: ' + r.error; return; }
+    ans = Number(r.value.toPrecision(15)); hist = remember(hist, t, r.value); out.className = ''; out.textContent = grouped(r.value);
+    setExpr(show(r.value)); done = true; drawHist(); save();
+  }
+  function insert(s) {
+    if (done) { done = false; if (/^[\d.π(√∛a-z]/i.test(s) && !/^\^/.test(s)) setExpr(''); else caret = null; } // a new number starts a new sum; an operator carries on from the answer
+    const focused = document.activeElement === ex, a = Math.min(focused ? ex.selectionStart : caret ?? ex.value.length, ex.value.length), b = Math.max(a, focused ? ex.selectionEnd : a);
+    ex.value = ex.value.slice(0, a) + s + ex.value.slice(b); caret = a + s.length; try { ex.setSelectionRange(caret, caret); } catch (_) {}
+    preview();
+  }
+  const current = () => { const r = calc(ex.value, opts()); return r.ok ? r.value : (ex.value.trim() ? null : 0); };
+  function press(act) {
+    if (act[0] !== ':') return insert(act);
+    const k = act.slice(1);
+    if (k === 'eq') return equals();
+    if (k === 'clear') { setExpr(''); done = false; return preview(); }
+    if (k === 'back') { done = false; const focused = document.activeElement === ex, a = Math.min(focused ? ex.selectionStart : caret ?? ex.value.length, ex.value.length), b = focused ? ex.selectionEnd : a;
+      if (a !== b) { ex.value = ex.value.slice(0, a) + ex.value.slice(b); caret = a; } else if (a) { ex.value = ex.value.slice(0, a - 1) + ex.value.slice(a); caret = a - 1; } try { ex.setSelectionRange(caret, caret); } catch (_) {} return preview(); }
+    if (k === 'inv' || k === 'neg') { const t = ex.value.trim() || '0'; setExpr(k === 'inv' ? '1/(' + t + ')' : (/^-\(.*\)$/.test(t) ? t.slice(2, -1) : '-(' + t + ')')); done = false; return preview(); }
+    if (k === 'mr') return insert(show(mem));
+    const v = current(); if (v === null) { out.className = 'err'; out.textContent = 'Error: finish the sum before using memory'; return; }
+    mem = memory(mem, k, v); drawMem(); save();
+  }
+  function drawMem() { $('memshow').textContent = mem ? 'M = ' + grouped(mem) : ''; }
+  function drawAngle() { $('deg').setAttribute('aria-pressed', String(deg)); $('rad').setAttribute('aria-pressed', String(!deg)); $('angle').textContent = deg ? 'Degrees' : 'Radians'; }
+  function drawSci() { $('keys').dataset.sci = String(sci); $('sci').setAttribute('aria-pressed', String(sci)); }
+  function drawHist() {
+    $('hist').replaceChildren(...hist.map((h) => { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.append(h.e + ' ='); const v = document.createElement('b'); v.textContent = h.v; b.append(v);
+      b.addEventListener('click', () => { setExpr(h.v); done = true; out.className = ''; out.textContent = h.v; }); li.append(b); return li; }));
+    $('histrow').hidden = !hist.length;
+  }
+  $('deg').addEventListener('click', () => { deg = true; drawAngle(); preview(); save(); }); $('rad').addEventListener('click', () => { deg = false; drawAngle(); preview(); save(); });
+  $('sci').addEventListener('click', () => { sci = !sci; drawSci(); save(); });
+  $('clearhist').addEventListener('click', () => { hist = []; drawHist(); save(); });
+  const flash = (b, said) => { const w = b.textContent; b.textContent = said; setTimeout(() => { b.textContent = w; }, 1200); };
+  $('copy').addEventListener('click', async () => { const r = calc(ex.value, opts()); if (!r.ok) return; try { await navigator.clipboard.writeText(show(r.value)); flash($('copy'), 'Copied'); } catch (_) {} });
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (ex.value.trim() ? '?e=' + encodeURIComponent(ex.value.trim()) + (deg ? '' : '&a=rad') : (deg ? '' : '?a=rad')); try { await navigator.clipboard.writeText(u); flash($('link'), 'Copied'); } catch (_) {} });
+
+  // the keyboard: the sum box takes typing as it is; from anywhere else on the page, keys go into it; Enter is =, Esc clears
+  ex.addEventListener('input', () => { done = false; mark(); preview(); });
+  ex.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); equals(); } else if (e.key === 'Escape') { e.preventDefault(); press(':clear'); } else if (done && e.key.length === 1) { e.preventDefault(); insert(e.key === '*' ? '×' : e.key === '/' ? '÷' : e.key); } });
+  addEventListener('keydown', (e) => {
+    if (e.target === ex || (e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Enter' && e.target && e.target.tagName === 'BUTTON') return; // Enter on a focused key presses that key
+    if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); equals(); } else if (e.key === 'Escape') press(':clear'); else if (e.key === 'Backspace') { e.preventDefault(); press(':back'); }
+    else if (e.key.length === 1 && /[\d.+\-*/^()%!a-zπ]/i.test(e.key)) { e.preventDefault(); insert(e.key === '*' ? '×' : e.key === '/' ? '÷' : e.key); ex.focus(); try { ex.setSelectionRange(caret, caret); } catch (_) {} }
+  });
+
+  // units: the stage calculator's own conversions (skills/calc.js convertUnits)
+  const UNITS = [['Length', [['m', 'metres'], ['km', 'kilometres'], ['cm', 'centimetres'], ['mm', 'millimetres'], ['mi', 'miles'], ['yd', 'yards'], ['ft', 'feet'], ['in', 'inches']]],
+    ['Weight', [['kg', 'kilograms'], ['g', 'grams'], ['lb', 'pounds'], ['oz', 'ounces']]], ['Temperature', [['c', '°C'], ['f', '°F'], ['k', 'kelvin']]]];
+  for (const sel of [$('ufrom'), $('uto')]) for (const [g, us] of UNITS) { const og = document.createElement('optgroup'); og.label = g; for (const [v, l] of us) og.append(new Option(l, v)); sel.append(og); }
+  $('ufrom').value = saved.uf || 'mi'; $('uto').value = saved.ut || 'km';
+  function units() { const v = calc($('uval').value, opts()), from = $('ufrom').value, to = $('uto').value, r = v.ok ? convertUnits(v.value, from, to) : null;
+    const name = (u) => [].concat(...UNITS.map((x) => x[1])).find((x) => x[0] === u)[1];
+    $('uout').textContent = r === null ? (v.ok ? 'Those two do not measure the same thing.' : 'Type an amount.') : show(v.value) + ' ' + name(from) + ' = ' + grouped(r) + ' ' + name(to);
+    try { const s = load(); s.uf = from; s.ut = to; localStorage.setItem(KEY, JSON.stringify({ ...s, deg, sci, mem, ans, hist })); } catch (_) {} }
+  for (const id of ['uval', 'ufrom', 'uto']) $(id).addEventListener('input', units);
+
+  // a sum in the link (?e=), or an ask (?q=what is 17% of 240), is worked out on arrival
+  const asked = q.get('e') || (q.get('q') ? expressionOf(q.get('q')) || q.get('q') : '');
+  drawAngle(); drawSci(); drawMem(); drawHist(); units();
+  if (asked) { setExpr(asked); equals(); try { history.replaceState(null, '', location.pathname + (deg ? '' : '?a=rad')); } catch (_) {} } else preview(); // worked out once: a reload does not add it to the history again
+  mountRelated(document.getElementById('related'), '/calculator/');
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

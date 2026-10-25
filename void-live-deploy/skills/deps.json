@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 769,
+ "counted": 771,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1760,6 +1760,13 @@
    "tests": 1
   },
   {
+   "file": "lib/calculator.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/correction-fix.js",
    "skills": 0,
    "direct": 0,
@@ -1908,6 +1915,13 @@
   },
   {
    "file": "lib/wordcount.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/zones.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2961,6 +2975,12 @@
    "importedBy": [
     "skills/calc-more.js"
    ]
+  },
+  "lib/calculator.js": {
+   "imports": [
+    "skills/calc.js"
+   ],
+   "importedBy": []
   },
   "lib/card-art.js": {
    "imports": [
@@ -6368,6 +6388,12 @@
     "skills/writing-aids.js"
    ]
   },
+  "lib/zones.js": {
+   "imports": [
+    "skills/worldtime.js"
+   ],
+   "importedBy": []
+  },
   "lib/zorbleflux.js": {
    "imports": [
     "lib/field-kit.js"
@@ -6594,7 +6620,9 @@
   },
   "skills/calc.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/calculator.js"
+   ]
   },
   "skills/calendar-file.js": {
    "imports": [
@@ -9770,6 +9798,7 @@
   "skills/worldtime.js": {
    "imports": [],
    "importedBy": [
+    "lib/zones.js",
     "skills/time.js"
    ]
   },

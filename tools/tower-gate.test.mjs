@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { verdict, rescore, germanScore, sharingScore, MEASURES, UA } from './tower-gate.mjs';
-import { probeFor, score, PROBES } from './tower-probes.mjs';
+import { probeFor, score, PROBES, timesIn, tokyoNow } from './tower-probes.mjs';
 import { FLOORS, aspectsOf } from '../void-live-deploy/lib/tower.js';
 
 test('the gate presents as an ordinary browser, not a headless one', () => { assert.doesNotMatch(UA, /headless/i); assert.match(UA, /Chrome\/\d+/); });
@@ -43,7 +43,7 @@ test('a probe exists only for a floor on the tower, and floors with no fair ques
 test('the colour floors\' own aspects are lists both pages are scored on, and they tell the models apart', async () => {
   const { PARTS } = await import('./tower-probes.mjs');
   const models = probeFor('colour codes').parts['every colour model'], palettes = probeFor('colour').parts['shades and palettes'];
-  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'coin flip', 'colour', 'colour codes', 'gradient', 'random number', 'random user', 'stopwatch', 'wheel', 'word count']);
+  assert.equal(models.length, 15); assert.equal(palettes.length, 12); assert.deepEqual(Object.keys(PARTS).sort(), ['base converter', 'calculator', 'coin flip', 'colour', 'colour codes', 'gradient', 'random number', 'random user', 'stopwatch', 'time zones', 'wheel', 'word count']);
   const has = (t) => score(t, models).has;
   assert.deepEqual(has('OKLCH'), ['OKLCH']); assert.deepEqual(has('Hunter Lab'), ['Hunter Lab']); assert.deepEqual(has('CIE Lab'), ['CIELab']); assert.deepEqual(has('CIELCH'), ['CIELCh']); assert.deepEqual(has('CIELUV'), ['CIELUV']);
   // hexcolor16.com's list, as the owner read it off the page on 2026-10-24
@@ -204,4 +204,13 @@ test('a coin: its own flip control pressed 10 times by the gate, every side read
     assert.equal(scoreOf(still, c.motion['flip animation']).n, 0, 'a word swapped at once is not an animation: ' + JSON.stringify(still));
     assert.equal(await look('/plain'), null, 'no flip control: not measured');
   } finally { await b.close(); server.close(); }
+});
+test('the time zones probe: Tokyo now worked out from its zone rules, read in 12- or 24-hour form, on both pages; a wrong hour or offset is wrong', () => {
+  assert.deepEqual(timesIn('9:05 PM · 21:05 · 9:05:07 pm · 09:05 · 25:00 · 3:61'), [1265, 1265, 1265, 545]);
+  assert.deepEqual(tokyoNow(new Date('2026-10-25T12:19:30Z')), { min: 21 * 60 + 19, day: 25, month: 'October' });
+  const p = probeFor('time zones'), n = tokyoNow(), h = Math.floor(n.min / 60), mm = String(n.min % 60).padStart(2, '0'), off = String((h + 5) % 24);
+  const verse = 'Time in Tokyo\n' + ((h % 12) || 12) + ':' + mm + ':30 ' + (h < 12 ? 'AM' : 'PM') + '\nSunday, ' + n.month + ' ' + n.day + ', 2026\nAsia/Tokyo · GMT+9 · UTC+9';
+  const site = 'Current Local Time in Tokyo, Japan\n' + h + ':' + mm + ':30\nSunday, ' + n.day + ' ' + n.month + ' 2026\nUTC/GMT +9 hours';
+  assert.equal(score(verse, p.truth).n, 3); assert.equal(score(site, p.truth).n, 3); assert.equal(score(off + ':' + mm + ' UTC+10', p.truth).n, 0);
+  assert.equal(probeFor('calculator').truth, null, "calculator.net's address cannot carry a sum: accuracy unverified"); assert.ok(probeFor('calculator').facts.length >= 15);
 });

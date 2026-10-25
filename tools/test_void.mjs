@@ -5519,6 +5519,36 @@ try {
       && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !Z.errors.length, JSON.stringify({ first, back, km, link, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's calculator.net floor: /calculator/ works out an ask in its link, typing and its keys, with no floating noise, in degrees or
+  // radians, and keeps its history and memory on the device across a reload
+  if (want('calculator page: an ask in the link, typing and the keys work it out exactly (0.1 + 0.2 = 0.3), radians switch, history and memory survive a reload')) {
+    const Z = await fresh(); const out = () => Z.p.$eval('#out', (e) => e.textContent.trim()), key = (k) => Z.p.locator('#keys button', { hasText: new RegExp('^' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }).first().click();
+    await Z.p.goto(base + 'calculator/?e=' + encodeURIComponent('what is 17% of 240')); const linked = await out();
+    await Z.p.keyboard.press('Escape'); await Z.p.keyboard.type('0.1+0.2'); await Z.p.keyboard.press('Enter'); const typed = await out();
+    for (const k of ['C', '2', 'xʸ', '1', '0', '=']) await key(k); const keyed = await out();
+    await key('M+'); await key('C'); await Z.p.click('#rad'); await Z.p.keyboard.type('cos(pi)'); await Z.p.keyboard.press('Enter'); const rad = await out();
+    await Z.p.reload(); await Z.p.waitForTimeout(300);
+    const kept = { hist: await Z.p.$$eval('#hist li', (l) => l.length), mem: await Z.p.$eval('#memshow', (e) => e.textContent), angle: await Z.p.$eval('#angle', (e) => e.textContent) };
+    kept.list = await Z.p.$$eval('#hist li', (l) => l.map((x) => x.textContent));
+    check('calculator page: an ask in the link, typing and the keys work it out exactly (0.1 + 0.2 = 0.3), radians switch, history and memory survive a reload',
+      linked === '40.8' && typed === '0.3' && keyed === '1,024' && rad === '-1' && kept.hist === 4 && kept.mem === 'M = 1,024' && kept.angle === 'Radians' && !Z.errors.length, JSON.stringify({ linked, typed, keyed, rad, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's timeanddate.com floor: /time/ shows a linked city's time from the browser's own zone data, adds a city, converts a time and
+  // plans a meeting across the cities, and keeps them across a reload
+  if (want('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept')) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(200);
+    const top = await Z.p.evaluate(() => ({ place: document.getElementById('place').textContent, big: document.getElementById('big').textContent, zone: document.getElementById('zone').textContent,
+      want: new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: '2-digit' }).format(new Date()).replace(/ /g, ' ') }));
+    await Z.p.fill('#add', 'Paris'); await Z.p.click('#addgo');
+    const after = await Z.p.evaluate(() => ({ clocks: [...document.querySelectorAll('#clocks b')].map((b) => b.textContent), conv: document.querySelectorAll('#convout li').length, plan: document.querySelectorAll('#plan tr').length, best: document.getElementById('best').textContent }));
+    await Z.p.fill('#ct', 'noon'); const conv = await Z.p.$$eval('#convout .t', (t) => t.map((x) => x.textContent));
+    await Z.p.goto(base + 'time/'); const kept = await Z.p.$$eval('#clocks b', (b) => b.map((x) => x.textContent));
+    check('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept',
+      top.place === 'Time in Tokyo' && top.big.replace(/:\d\d (?=[AP]M)/, ' ') === top.want && /UTC\+9/.test(top.zone) && after.clocks.includes('Paris') && after.conv === 3 && after.plan === 3 && /meet|working|daytime/i.test(after.best)
+      && conv[0] === '12:00 PM' && kept.includes('Tokyo') && kept.includes('Paris') && !Z.errors.length, JSON.stringify({ top, after, conv, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);
