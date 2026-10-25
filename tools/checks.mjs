@@ -96,6 +96,7 @@ for (const [name, file] of [
   ['image-gen', 'image-gen.test.mjs'],
   ['generators-hub', 'generators-hub.test.mjs'],
   ['gallery', 'gallery.test.mjs'],
+  ['character', 'character.test.mjs'],
   ['notes', 'notes.test.mjs'],
   ['chat-notes', 'chat-notes.test.mjs'],
   ['note-extras', 'note-extras.test.mjs'],

@@ -10,6 +10,7 @@ import * as imageRoute from '../void-live-deploy/functions/api/image.js';
 import * as hubRoute from '../void-live-deploy/functions/api/generators.js';
 import * as galleryRoute from '../void-live-deploy/functions/api/gallery.js';
 import * as genRoute from '../void-live-deploy/functions/gen/[id].js';
+import * as answerRoute from '../void-live-deploy/functions/api/answer.js';
 import { pictureOf } from './tower-gate.mjs';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 
@@ -33,13 +34,18 @@ function png(seed) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw, { level: 0 })), chunk('IEND', Buffer.alloc(0))]).toString('base64');
 }
 let painterOn = true;
-const env = { DB: d1(), SALT: 'e2e-salt', READ_TOKEN: 'e2e-owner', AI: { run: async (_m, input) => { if (!painterOn) throw new Error('stub painter off'); const f = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData(); return { image: png(+f.get('seed') || 0) }; } } }; // secret-scan: ok (made-up values for a local test)
+const env = { DB: d1(), SALT: 'e2e-salt', READ_TOKEN: 'e2e-owner', AI: { run: async (_m, input) => { if (input.messages) return { response: 'Beep. A stub reply to: ' + input.messages.at(-1).content }; if (!painterOn) throw new Error('stub painter off'); const f = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData(); return { image: png(+f.get('seed') || 0) }; } } }; // secret-scan: ok (made-up values for a local test)
 const freeDown = async () => new Response('stub: the free painter is not called in this test', { status: 503, headers: { 'content-type': 'text/plain' } });
 
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
   const gm = u.pathname.match(/^\/gen\/([a-z2-7]{8})$/);
   if (gm) { const r = await genRoute.onRequestGet({ env: { ...env, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'generators/make/index.html'))) } }, params: { id: gm[1] }, request: new Request('http://' + req.headers.host + req.url) }); res.writeHead(r.status, { 'content-type': 'text/html' }); res.end(await r.text()); return; }
+  if (u.pathname === '/api/answer') {
+    const body = await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); });
+    const r = await answerRoute.onRequestPost({ request: new Request('http://' + req.headers.host + req.url, { method: 'POST', headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.21' }, body }), env, waitUntil: () => {} });
+    res.writeHead(r.status, { 'content-type': 'application/json' }); res.end(Buffer.from(await r.arrayBuffer())); return;
+  }
   if (u.pathname === '/api/gallery') {
     const body = req.method === 'POST' ? await new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); }) : undefined;
     const request = new Request('http://' + req.headers.host + req.url, { method: req.method, headers: { ...req.headers, 'cf-connecting-ip': '198.51.100.20' }, body });
@@ -146,7 +152,22 @@ ok(g.n === 1, 'the gate\'s picture check (tower-gate.mjs pictureOf) sees a gener
 painterOn = false; store.clear(); resetGuard(); // a new minute for the per-connection limit
 const g0 = await pictureOf(browser, base + '/image/?' + new URLSearchParams({ prompt: 'a castle on a hill', seed: '8', n: '1', go: '1' }), 5000, '#pics img');
 ok(g0.n === 0 && /resting/.test(g0.missing[0]), 'and does not count the page when the painter rests: ' + g0.missing[0]);
-// sideways overflow at 390 px on the three pages
-for (const u of ['/generators/', '/generators/make/', '/image/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
+// 6. character chat: a starter, a message, a reply kept on the device, a character shared by link
+await page.goto(base + '/generators/chat/'); await page.waitForSelector('#chars button');
+await page.locator('#chars button', { hasText: 'Bolt' }).click();
+ok(/Is it true that humans laugh at puns/.test(await page.locator('#log').innerText()), 'a starter character greets');
+await page.fill('#say', 'What is a pun?'); await page.keyboard.press('Enter'); await page.waitForFunction(() => /stub reply/.test(document.getElementById('log').innerText), null, { timeout: 8000 }).catch(() => {});
+ok(/Beep\. A stub reply to: What is a pun\?/.test(await page.locator('#log').innerText()), 'the message gets a reply from the answer route (stub model)');
+await page.reload(); await page.waitForSelector('#log li');
+ok(/What is a pun\?/.test(await page.locator('#log').innerText()), 'the chat is still there after a reload (kept on the device)');
+await shot('8-chat');
+await page.click('#share'); await page.waitForTimeout(300); const clink = await page.evaluate(() => navigator.clipboard.readText());
+const p3 = await ctx.newPage(); p3.on('pageerror', (e) => errs.push(e.message)); await p3.goto(clink.replace(/^https?:\/\/[^/]+/, base)); await p3.waitForSelector('#log li');
+ok(/#c=/.test(clink) && (await p3.locator('#keepShared').isVisible()) && /Bolt/.test(await p3.locator('#h').innerText()), 'a shared character opens from its link, with Keep');
+ok(!/What is a pun/.test(await p3.locator('#log').innerText()), 'the link carries the character, never the chat'); await p3.close();
+await page.fill('#say', 'say something nsfw'); await page.keyboard.press('Enter'); await page.waitForTimeout(800);
+ok(/not something this character will talk about/.test(await page.locator('#note').innerText()), 'a refused message is said plainly');
+// sideways overflow at 390 px on the pages
+for (const u of ['/generators/', '/generators/make/', '/image/', '/generators/chat/']) { await page.goto(base + u); await page.waitForTimeout(300); const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(o <= 0, u + ' has no sideways scroll at 390 px (' + o + ')'); }
 ok(errs.length === 0, 'no page errors ' + errs.join(' | '));
 await browser.close(); server.close(); process.exit(bad ? 1 : 0);

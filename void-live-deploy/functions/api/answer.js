@@ -32,6 +32,7 @@ import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
+import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -159,6 +160,23 @@ async function takeAnswer(request, env, body) {
   } catch (e) { await recordShortfall(env, 'take', reasonOf(e)); return Response.json({ take: null, note: 'model busy' }); }
 }
 
+// Character chat (/generators/chat/, lib/character.js): a made-up character's reply, from the same free answer model under the same per-connection
+// limit as any answer (rateLimited, 12 a minute). The rules come first in the system message; the visitor's character sheet, memory and last 12 turns
+// follow as data. Refused words get no model call. Nothing is cached or written: the chat lives on the visitor's device.
+async function characterAnswer(request, env, body) {
+  const de = body && body.lang === 'de', say = (k) => CHAT_SAYS[k][de ? 1 : 0];
+  const p = chatMessages(body);
+  if (p.error && !p.refused) return Response.json({ reply: null, note: p.error }, { status: p.status });
+  if (p.refused) return Response.json({ reply: null, note: p.error, say: say(p.error) });
+  if (!modelsOn(env)) return Response.json({ reply: null, note: 'models off', say: say('off') });
+  if (await rateLimited(request, env)) return Response.json({ reply: null, note: 'slow down', say: say('slow') }, { status: 429 });
+  try {
+    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => ({ ...m, content: m.role === 'system' ? m.content + ' ' + INJECTION_RULE : redact(m.content) })), max_tokens: 320, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const reply = cleanReply(scrubOut(redact(noThink(pick(r))), env), p.name);
+    return reply ? Response.json({ reply }) : Response.json({ reply: null, note: 'empty', say: say('busy') });
+  } catch (e) { await recordShortfall(env, 'character', reasonOf(e)); return Response.json({ reply: null, note: 'model busy', say: say('busy') }); }
+}
+
 // Draft from a tab (the Verse extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
 // selected text; the page asks here. Masked before the model sees it, never cached, never written to D1 (page text is the
 // visitor's). No model, or a model that fails: the rules draft, so the panel always gets something it can use.
@@ -260,6 +278,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'draft') return draftAnswer(request, env, body);
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
+  if (body && body.mode === 'character') return characterAnswer(request, env, body);
   const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)

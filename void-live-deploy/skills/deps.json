@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 820,
+ "counted": 821,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 20,
    "direct": 1,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 5
   },
   {
@@ -1599,6 +1599,13 @@
    "tests": 5
   },
   {
+   "file": "lib/character.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
@@ -2133,7 +2140,8 @@
     "lib/memory-core.js",
     "lib/proposal.js",
     "lib/plan.js",
-    "skills/take.js"
+    "skills/take.js",
+    "lib/character.js"
    ],
    "importedBy": [
     "functions/api/bench.js",
@@ -2879,6 +2887,7 @@
     "lib/card-forge.js",
     "lib/card-image.js",
     "lib/card-look.js",
+    "lib/character.js",
     "lib/image-gen.js",
     "lib/wiki-look.js"
    ],
@@ -3573,6 +3582,27 @@
     "skills/rally.js",
     "skills/showcase.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/character.js": {
+   "imports": [
+    "lib/art-rules.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/chat-calendar.js": {
@@ -4602,6 +4632,7 @@
     "lib/card-image.js",
     "lib/card-look.js",
     "lib/card-share.js",
+    "lib/character.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/self-context.js",
@@ -4895,6 +4926,7 @@
     "lib/card-image.js",
     "lib/card-look.js",
     "lib/card-share.js",
+    "lib/character.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/image-gen.js",
