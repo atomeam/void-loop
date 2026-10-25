@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendar: month, week and day with reminders, invites and repeats · Verse</title>
+<meta name="description" content="A calendar on your device: month, week and day views, events that repeat (daily, weekly, monthly, yearly, chosen weekdays), reminders that fire on the device, invites as a link or an email with the .ics, import and export .ics, quick add in plain words, search, keyboard arrows. Nothing goes to a server; it works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Calendar · Verse">
+<meta property="og:description" content="Month, week and day; events that repeat, remind and invite; everything on your device, offline.">
+<meta property="og:url" content="https://a-to-mind.com/calendar/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.classList.add('pre'); // the link carries a view or an event: hold the paint until it is drawn (html.pre)</script>
+<style>
+  /* a-to-mind.com/calendar/ (Versus' Google Calendar floor): one file and one module; nothing stored but your events, in this browser */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --today: #efe9ff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --today: #221c3a; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  input[type=search] { width: 100%; border-radius: 12px; font-size: 17px; }
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button.go, button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button.bad { color: var(--bad); }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .seg { display: inline-flex; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; } .seg button + button { margin-left: -1px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; justify-content: space-between; margin: 12px 0 6px; }
+  .bar h2 { margin: 0; font-size: 18px; color: var(--ink); flex: 1 1 auto; min-width: 140px; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 10px 12px; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  html.pre main { visibility: hidden; }
+  [hidden] { display: none !important; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* the next reminder and a reminder that fires */
+  .rem { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 14px; color: var(--soft); margin: 4px 0 8px; }
+  .rem b { color: var(--ink); font-weight: 500; }
+  #alert { border: 2px solid var(--accent); border-radius: 14px; background: var(--today); padding: 10px 14px; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+  #alert b { font-weight: 600; }
+  /* month: 7 columns, 6 rows; each day a button; the events as chips inside it */
+  .dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-size: 12px; color: var(--soft); text-align: center; margin: 4px 0 2px; }
+  .month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+  .month button.cell { border-radius: 8px; padding: 4px 3px 3px; min-height: 64px; text-align: left; display: flex; flex-direction: column; align-items: stretch; gap: 2px; font-size: 12px; overflow: hidden; }
+  .month .cell .d { font-size: 13px; font-weight: 600; align-self: flex-start; min-width: 22px; line-height: 22px; text-align: center; border-radius: 11px; }
+  .month .cell.other .d, .month .cell.other .chip { color: var(--soft); }
+  .month .cell.today .d { background: var(--accent); color: var(--on-accent, #fff); }
+  .month .cell[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .chip { display: block; font-size: 11px; line-height: 1.3; padding: 1px 4px; border-radius: 4px; background: var(--today); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip.more { background: none; color: var(--soft); }
+  @media (max-width: 640px) { .month button.cell { min-height: 58px; } .chip { font-size: 10px; } }
+  /* week: seven day sections (columns when there is room), day: one list */
+  .week { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  @media (min-width: 760px) { .week { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+  .dayhead { display: flex; align-items: baseline; gap: 8px; font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+  .dayhead .d { color: var(--soft); font-weight: 500; }
+  .dayhead.today .d { color: var(--accent); }
+  ul.ev { list-style: none; margin: 0; padding: 0; }
+  ul.ev li { border-top: 1px solid var(--line); }
+  ul.ev li:first-child { border-top: 0; }
+  ul.ev button { width: 100%; text-align: left; border: 0; border-radius: 8px; background: none; padding: 8px 6px; display: flex; gap: 10px; align-items: baseline; min-height: 44px; font-size: 15px; }
+  ul.ev button:hover { background: var(--today); }
+  ul.ev .t { flex: none; color: var(--soft); font-size: 13px; min-width: 4.6em; font-variant-numeric: tabular-nums; }
+  ul.ev .t.all { color: var(--accent); }
+  ul.ev .name { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  ul.ev .rep { color: var(--soft); font-size: 12px; flex: none; }
+  .empty { color: var(--soft); font-size: 13px; padding: 6px; }
+  /* one event in detail */
+  #detail h3 { margin: 0 0 4px; font-size: 22px; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+  #detail dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 15px; }
+  #detail dt { color: var(--soft); } #detail dd { margin: 0; overflow-wrap: anywhere; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list li:first-child { border-top: 0; }
+  /* the editor */
+  dialog { border: 1px solid var(--line); border-radius: 16px; background: var(--box); color: var(--ink); padding: 16px; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); box-sizing: border-box; overflow: auto; }
+  dialog::backdrop { background: rgba(0, 0, 0, .45); }
+  dialog h2 { margin: 0 0 10px; font-size: 18px; color: var(--ink); }
+  .f { display: grid; gap: 4px; margin: 0 0 10px; font-size: 14px; color: var(--soft); }
+  .f input, .f select, .f textarea { width: 100%; color: var(--ink); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ink); }
+  .checks label { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; cursor: pointer; }
+  .checks input { width: 22px; height: 22px; min-height: 0; margin: 0; padding: 0; accent-color: var(--accent); }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; }
+  @media print { button, form, #related, #asks, #alert, .rem, .bar .seg, .srcs, h1, .sub { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/calendar/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Calendar","url":"https://a-to-mind.com/calendar/","description":"A calendar on your device: month, week and day views, events that repeat (daily, weekly, monthly, yearly, chosen weekdays), reminders that fire on the device, invites as a link or an email with the .ics, import and export .ics, quick add in plain words, search and keyboard arrows. Nothing goes to a server; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"online calendar, calendar with reminders, recurring events calendar, calendar invite link, import ics file, week view calendar, free calendar app no account","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/calendar/?q={event}"},"event-input":"required name=event"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Calendar","item":"https://a-to-mind.com/calendar/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1 id="title">Calendar</h1>
+  <p class="sub" id="sub">Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.</p>
+
+  <form id="qa" autocomplete="off">
+    <label class="vh" for="q" id="qL">Quick add</label>
+    <input type="search" id="q" placeholder='Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"' maxlength="200" enterkeyhint="done">
+    <div class="row">
+      <button type="submit" class="go" id="add">Add</button>
+      <button type="button" id="newBtn">New event</button>
+      <button type="button" id="searchBtn" aria-expanded="false" aria-controls="sf">Search</button>
+      <button type="button" id="allow" hidden>Allow notifications</button>
+    </div>
+    <div class="note" id="note" role="status"></div>
+  </form>
+  <form id="sf" hidden role="search"><label class="vh" for="sq" id="sqL">Search events</label><input type="search" id="sq" placeholder="Search events" maxlength="100"></form>
+  <ul class="list" id="results" hidden></ul>
+
+  <div class="rem" id="remBar"><span id="remL">Next reminder</span>: <b id="remNext">—</b></div>
+  <div id="alert" role="alert" hidden><span id="alertL">Reminder</span>: <b id="alertText"></b><button type="button" id="alertClose">Close</button></div>
+
+  <section class="pane" id="inviteCard" hidden aria-labelledby="invH">
+    <h2 id="invH" style="margin:0 0 4px">You are invited</h2>
+    <div id="invBody"></div>
+    <div class="row"><button type="button" class="go" id="invAdd">Add to my calendar</button><button type="button" id="invIcs">Download .ics</button></div>
+  </section>
+
+  <div class="bar">
+    <div class="seg" role="group" aria-label="Move">
+      <button type="button" id="prev" aria-label="Previous">‹</button>
+      <button type="button" id="today">Today</button>
+      <button type="button" id="next" aria-label="Next">›</button>
+    </div>
+    <h2 id="period" aria-live="polite"></h2>
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="vMonth" aria-pressed="true">Month</button>
+      <button type="button" id="vWeek" aria-pressed="false">Week</button>
+      <button type="button" id="vDay" aria-pressed="false">Day</button>
+    </div>
+  </div>
+
+  <section class="pane" id="detail" hidden aria-labelledby="detTitle">
+    <h3 id="detTitle"></h3>
+    <dl id="detList"></dl>
+    <div class="row">
+      <button type="button" id="detEdit">Edit</button>
+      <button type="button" id="detShare" title="A link that carries this event">Share link</button>
+      <button type="button" id="detMail" title="An email to the invitees with the .ics">Invite by email</button>
+      <button type="button" id="detIcs">Download .ics</button>
+      <button type="button" class="bad" id="detDel">Delete</button>
+      <button type="button" id="detClose">Close</button>
+    </div>
+  </section>
+
+  <div class="pane" id="view" style="margin-top:8px"></div>
+
+  <div class="row">
+    <label for="icsFile" class="vh" id="icsL">Import .ics</label>
+    <button type="button" id="importBtn">Import .ics</button><input type="file" id="icsFile" accept=".ics,text/calendar" hidden>
+    <button type="button" id="exportBtn">Export all as .ics</button>
+    <span class="note" id="count" style="margin:0"></span>
+  </div>
+  <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D switch the view, N is a new event, / searches</p>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calendar/?q=dentist%20tomorrow%203pm%2C%20remind%20me%2030%20minutes%20before">Dentist tomorrow at 3pm, remind me 30 minutes before</a><a href="/calendar/?q=lunch%20with%20Sam%20tomorrow%201pm">Lunch with Sam tomorrow 1pm</a><a href="/calendar/?q=team%20call%20every%20monday%2010%3A00">Team call every Monday 10:00</a><a href="/calendar/?q=rent%20on%20the%201st%20every%20month">Rent on the 1st, every month</a><a href="/calendar/?show=today">Today</a><a href="/calendar/?show=this-week">This week</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+
+  <p class="srcs" id="srcs">Events, reminders and invites stay in this browser; nothing goes to a server. An invite is a link that carries the event itself, or an email with the .ics file.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<dialog id="ed" aria-labelledby="edH">
+  <form id="edF" method="dialog">
+    <h2 id="edH">New event</h2>
+    <label class="f"><span id="lTitle">Title</span><input id="eTitle" maxlength="200" required autocomplete="off"></label>
+    <div class="checks" style="margin:0 0 10px"><label><input type="checkbox" id="eAll"><span id="lAll">All day</span></label></div>
+    <div class="two">
+      <label class="f"><span id="lStart">Starts</span><input type="date" id="eSd" required></label>
+      <label class="f"><span class="vh" id="lStartT">Start time</span><input type="time" id="eSt" aria-labelledby="lStart lStartT"></label>
+      <label class="f"><span id="lEnd">Ends</span><input type="date" id="eEd" required></label>
+      <label class="f"><span class="vh" id="lEndT">End time</span><input type="time" id="eEt" aria-labelledby="lEnd lEndT"></label>
+    </div>
+    <div class="two">
+      <label class="f"><span id="lRep">Repeat</span><select id="eFreq"><option value="">Never</option><option value="DAILY">Daily</option><option value="WEEKLY">Weekly</option><option value="MONTHLY">Monthly</option><option value="YEARLY">Yearly</option></select></label>
+      <label class="f"><span id="lEvery">Every</span><input type="number" id="eInt" min="1" max="99" value="1" inputmode="numeric"></label>
+    </div>
+    <div class="checks" id="eDays" style="margin:0 0 10px" hidden></div>
+    <div class="two" id="eEnds">
+      <label class="f"><span id="lUntil">Until</span><input type="date" id="eUntil"></label>
+      <label class="f"><span id="lTimes">Times</span><input type="number" id="eCount" min="1" max="999" inputmode="numeric"></label>
+    </div>
+    <div class="f"><span id="lRem">Reminder</span><div class="checks" id="eRem"></div></div>
+    <label class="f"><span id="lNotes">Notes</span><textarea id="eNotes" rows="2" maxlength="5000"></textarea></label>
+    <label class="f"><span id="lInv">Invitees (emails, with commas)</span><input id="eInv" maxlength="2000" autocomplete="off" inputmode="email"></label>
+    <div class="row">
+      <button type="submit" class="go" id="eSave">Save</button>
+      <button type="button" id="eCancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module">
+  // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, C] = await Promise.all([import('/lib/toolkit.js'), import('/lib/calendar.js')]);
+    const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = C.wordsFor(lang);
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
+    const REM_CHOICES = [[0, W.atTime], [10, '10 ' + W.minBefore], [30, '30 ' + W.minBefore], [60, '1 ' + W.hourBefore], [1440, '1 ' + W.dayBefore]];
+    if (de) {
+      document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
+      const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
+        detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+      for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
+      $('q').placeholder = W.placeholder; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
+      [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
+    }
+    const KEY = C.KEY; let store = { events: [], view: 'month', lastCheck: '' };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    store.events = (store.events || []).map(C.normalize).filter(Boolean);
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    const q = new URLSearchParams(location.search), now = () => new Date();
+    const state = { view: ['month', 'week', 'day'].includes(q.get('view')) ? q.get('view') : store.view || 'month', cursor: C.startOfDay(now()), sel: null, editing: null };
+    if (q.get('d') && C.parseLocal(q.get('d'))) state.cursor = C.startOfDay(C.parseLocal(q.get('d')));
+    if (q.get('show')) { const s = q.get('show'); if (s === 'tomorrow') { state.cursor = C.addDays(state.cursor, 1); state.view = 'day'; } else if (s === 'today') state.view = 'day'; else if (/week/.test(s)) { state.view = 'week'; if (/next/.test(s)) state.cursor = C.addDays(state.cursor, 7); } }
+    const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
+    const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+    const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, W.copied); } catch (_) { prompt('Copy:', v); } };
+    const download = (name, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' })); a.download = name; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
+    const sameDay = (a, b) => C.dayKey(a) === C.dayKey(b);
+    const timeOf = (o) => (o.allDay ? W.allDay : C.fmtTime(C.parseLocal(o.start), lang) + ' – ' + C.fmtTime(C.parseLocal(o.end), lang));
+    const whenOf = (o) => { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); const d = C.fmtDay(s, lang); if (o.allDay) return d + (o.end !== o.start ? ' – ' + C.fmtDay(e, lang) : '') + ', ' + W.allDay; return d + ', ' + C.fmtTime(s, lang) + ' – ' + (sameDay(s, e) ? '' : C.fmtDay(e, lang) + ', ') + C.fmtTime(e, lang); };
+    const occBtn = (o, showDate) => { const b = el('button'); b.type = 'button'; const t = el('span', 't' + (o.allDay ? ' all' : ''), o.allDay ? W.allDay : C.fmtTime(C.parseLocal(o.start), lang)); b.append(t, el('span', 'name', (showDate ? C.fmtDay(C.parseLocal(o.start), lang, { year: false }) + ': ' : '') + o.title)); if (o.rrule) b.append(el('span', 'rep', '↻ ' + C.repeatText(o.rrule, lang))); b.addEventListener('click', () => showDetail(o)); return b; };
+    const listOf = (occs, showDate) => { const ul = el('ul', 'ev'); if (!occs.length) ul.append(el('li', 'empty', W.empty)); for (const o of occs) { const li = el('li'); li.append(occBtn(o, showDate)); ul.append(li); } return ul; };
+
+    function render() {
+      document.documentElement.classList.remove('pre');
+      const v = $('view'); v.replaceChildren(); const c = state.cursor, td = C.startOfDay(now());
+      for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day']]) $(id).setAttribute('aria-pressed', String(state.view === name));
+      if (state.view === 'month') {
+        $('period').textContent = C.fmtMonth(c, lang);
+        const dow = el('div', 'dow'); for (const n of C.dayNames(lang)) dow.append(el('span', '', n)); v.append(dow);
+        const g = el('div', 'month'), days = C.monthGrid(c.getFullYear(), c.getMonth()), occs = C.agenda(store.events, C.dayKey(days[0]), C.dayKey(days[41])), byDay = {};
+        for (const o of occs) { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); for (let d = C.startOfDay(s); d <= e && d <= days[41]; d = C.addDays(d, 1)) (byDay[C.dayKey(d)] = byDay[C.dayKey(d)] || []).push(o); }
+        for (const d of days) { const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
+          if (sameDay(d, c)) b.setAttribute('aria-current', 'true'); b.append(el('span', 'd', String(d.getDate()))); const list = byDay[k] || [];
+          for (const o of list.slice(0, 3)) b.append(el('span', 'chip', (o.allDay ? '' : C.fmtTime(C.parseLocal(o.start), lang).replace(/:00/, '').replace(/ ([AP])M/, '$1').toLowerCase() + ' ') + o.title)); if (list.length > 3) b.append(el('span', 'chip more', '+' + (list.length - 3) + ' ' + W.more));
+          b.addEventListener('click', () => { state.cursor = d; state.view = 'day'; render(); }); g.append(b); }
+        v.append(g);
+      } else if (state.view === 'week') {
+        const a = C.startOfWeek(c), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
+        const g = el('div', 'week');
+        for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang)[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(store.events, C.dayKey(d)))); g.append(sec); }
+        v.append(g);
+      } else {
+        $('period').textContent = C.fmtDay(c, lang); const occs = C.onDay(store.events, C.dayKey(c)); v.append(listOf(occs));
+        const b = el('button', '', '+ ' + W.newEvent); b.type = 'button'; b.style.marginTop = '8px'; b.addEventListener('click', () => openEditor(null, c)); v.append(b);
+      }
+      $('count').textContent = store.events.length ? store.events.length + ' ' + W.events : ''; remBar(); store.view = state.view; keep();
+    }
+    function showDetail(o) {
+      state.sel = o; $('detail').hidden = false; $('detTitle').textContent = o.title; const dl = $('detList'); dl.replaceChildren();
+      const add = (k, v) => { if (!v) return; dl.append(el('dt', '', k), el('dd', '', v)); };
+      add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes); add(W.invite, o.invitees.join(', '));
+      $('detMail').hidden = false; $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
+    }
+    const baseOf = (o) => store.events.find((e) => e.id === o.id) || o;
+    function remBar() {
+      const n = C.nextReminder(store.events, C.fmtLocal(now())); const at = n ? C.parseLocal(n.at) : null;
+      $('remNext').textContent = n ? n.event.title + ' · ' + C.fmtDay(at, lang, { year: false }) + ', ' + C.fmtTime(at, lang) + ' (' + C.reminderText(n.minutes, lang) + ')' : W.noRem;
+      $('allow').hidden = !('Notification' in window) || Notification.permission !== 'default' || !store.events.some((e) => e.reminders.length);
+    }
+    // the editor
+    const ids = { eTitle: 'title', eNotes: 'notes', eInv: 'inv' };
+    function openEditor(ev, day) {
+      state.editing = ev; const e = ev || { title: '', allDay: false, start: C.fmtLocal(new Date((day || state.cursor).getFullYear(), (day || state.cursor).getMonth(), (day || state.cursor).getDate(), Math.min(23, now().getHours() + 1), 0)), rrule: null, reminders: [], notes: '', invitees: [] };
+      if (!ev) e.end = C.fmtLocal(new Date(C.parseLocal(e.start).getTime() + 3600000));
+      $('edH').textContent = ev ? W.edit : W.newEvent; $('eTitle').value = e.title; $('eAll').checked = e.allDay; const s = C.parseLocal(e.start), f = C.parseLocal(e.end);
+      $('eSd').value = C.dayKey(s); $('eSt').value = e.allDay ? '09:00' : C.fmtLocal(s).slice(11); $('eEd').value = C.dayKey(f); $('eEt').value = e.allDay ? '10:00' : C.fmtLocal(f).slice(11);
+      $('eFreq').value = e.rrule ? e.rrule.freq : ''; $('eInt').value = e.rrule ? e.rrule.interval : 1; $('eUntil').value = e.rrule && e.rrule.until ? e.rrule.until : ''; $('eCount').value = e.rrule && e.rrule.count ? e.rrule.count : '';
+      const days = $('eDays'); days.replaceChildren(); C.dayNames(lang).forEach((n, i) => { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = C.DAYS[(i + 1) % 7]; cb.checked = !!(e.rrule && e.rrule.byday && e.rrule.byday.includes(cb.value)); lb.append(cb, el('span', '', n)); days.append(lb); });
+      const rem = $('eRem'); rem.replaceChildren(); for (const [m, label] of REM_CHOICES) { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = String(m); cb.checked = e.reminders.includes(m); lb.append(cb, el('span', '', label)); rem.append(lb); }
+      $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
+    }
+    const syncEditor = () => { const all = $('eAll').checked, f = $('eFreq').value; $('eSt').disabled = all; $('eEt').disabled = all; $('eDays').hidden = f !== 'WEEKLY'; $('eEnds').hidden = !f; $('eInt').disabled = !f; };
+    $('eAll').addEventListener('change', syncEditor); $('eFreq').addEventListener('change', syncEditor);
+    $('eSd').addEventListener('change', () => { if ($('eEd').value < $('eSd').value) $('eEd').value = $('eSd').value; });
+    $('edF').addEventListener('submit', (e) => {
+      e.preventDefault(); const all = $('eAll').checked, freq = $('eFreq').value;
+      const ev = { id: state.editing ? state.editing.id : undefined, title: $('eTitle').value, allDay: all, start: all ? $('eSd').value : $('eSd').value + 'T' + ($('eSt').value || '09:00'), end: all ? $('eEd').value : $('eEd').value + 'T' + ($('eEt').value || '10:00'),
+        rrule: freq ? { freq, interval: +$('eInt').value || 1, until: $('eUntil').value || undefined, count: +$('eCount').value || undefined, byday: freq === 'WEEKLY' ? [...$('eDays').querySelectorAll('input:checked')].map((c) => c.value) : undefined } : null,
+        reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [] };
+      const n = C.normalize(ev); if (!n) return say(W.titleL + '?', true);
+      store.events = C.withEvent(store.events, n); keep(); $('ed').close(); state.cursor = C.startOfDay(C.parseLocal(n.start)); render(); const first = C.occurrences(n, n.start, C.fmtLocal(C.addDays(C.parseLocal(n.start), 400)))[0]; showDetail(first || n); say(W.added + ': ' + n.title); checkReminders();
+    });
+    $('eCancel').addEventListener('click', () => $('ed').close());
+    $('newBtn').addEventListener('click', () => openEditor(null));
+    $('detEdit').addEventListener('click', () => state.sel && openEditor(baseOf(state.sel)));
+    $('detClose').addEventListener('click', () => { $('detail').hidden = true; state.sel = null; });
+    $('detDel').addEventListener('click', () => {
+      const o = state.sel; if (!o) return; const base = baseOf(o);
+      if (base.rrule && o.occurrence) { const one = confirm(W.deleteOne + '? (' + (de ? 'Abbrechen' : 'Cancel') + ' = ' + W.deleteAll + ')'); if (one) { base.exdates = (base.exdates || []).concat(o.occurrence); store.events = C.withEvent(store.events, base); } else store.events = C.withoutEvent(store.events, base.id); }
+      else store.events = C.withoutEvent(store.events, base.id);
+      keep(); $('detail').hidden = true; state.sel = null; render();
+    });
+    // invites: a link that carries the event, a mail with the .ics, the .ics itself
+    const inv = () => state.sel && C.inviteLink(baseOf(state.sel), location.origin);
+    $('detShare').addEventListener('click', async () => { const i = inv(); if (!i) return; if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.sel.title, text: whenOf(state.sel), url: i.url }); return; } catch (_) {} } copy($('detShare'), i.url); });
+    $('detMail').addEventListener('click', () => { const i = inv(); if (i) location.href = i.mailto; });
+    $('detIcs').addEventListener('click', () => { const i = inv(); if (i) download(state.sel.title.replace(/[^\w.-]+/g, '_') + '.ics', i.ics); });
+    $('exportBtn').addEventListener('click', () => { download('verse-calendar.ics', C.icsOf(store.events)); toast($('exportBtn'), store.events.length + ' ' + W.exportDone); });
+    $('importBtn').addEventListener('click', () => $('icsFile').click());
+    $('icsFile').addEventListener('change', async () => { const f = $('icsFile').files[0]; if (!f) return; const got = C.parseIcs(await f.text()); for (const e of got) store.events = C.withEvent(store.events, e); keep(); render(); say(got.length + ' ' + W.imported); $('icsFile').value = ''; });
+    // an invite received: ?e= carries the event whole
+    if (q.get('e')) { const e = C.eventFromLink(q.get('e')); if (e) { $('inviteCard').hidden = false; const b = $('invBody'); b.replaceChildren(el('b', '', e.title), el('div', '', whenOf(e))); if (e.rrule) b.append(el('div', '', W.repeat + ': ' + C.repeatText(e.rrule, lang))); if (e.reminders.length) b.append(el('div', '', W.reminder + ': ' + e.reminders.map((m) => C.reminderText(m, lang)).join(', '))); if (e.notes) b.append(el('div', '', e.notes));
+      const had = store.events.some((x) => x.id === e.id); if (had) { $('invAdd').textContent = W.alreadyIn; $('invAdd').disabled = true; }
+      $('invAdd').addEventListener('click', () => { store.events = C.withEvent(store.events, e); keep(); $('inviteCard').hidden = true; state.cursor = C.startOfDay(C.parseLocal(e.start)); state.view = 'day'; render(); showDetail(C.occurrences(e, e.start, e.start)[0] || e); say(W.added + ': ' + e.title); history.replaceState(null, '', '/calendar/?d=' + C.dayKey(state.cursor) + '&view=day'); });
+      $('invIcs').addEventListener('click', () => download(e.title.replace(/[^\w.-]+/g, '_') + '.ics', C.icsOf([e]))); state.cursor = C.startOfDay(C.parseLocal(e.start)); } }
+    // quick add: the box, or ?q= in the link (added once: the same title at the same time is not added twice)
+    function quick(text) {
+      const e = C.quickAdd(text, now()); if (!e) return say(W.nothing, true);
+      const dup = store.events.find((x) => x.title.toLowerCase() === e.title.toLowerCase() && x.start === e.start); const n = dup || e; if (!dup) { store.events = C.withEvent(store.events, e); keep(); }
+      state.cursor = C.startOfDay(C.parseLocal(n.start)); state.view = 'day'; render(); showDetail(C.occurrences(n, n.start, n.start)[0] || n); say((dup ? W.alreadyIn : W.added) + ': ' + n.title + ', ' + whenOf(n)); $('q').value = ''; checkReminders();
+    }
+    $('qa').addEventListener('submit', (e) => { e.preventDefault(); const t = $('q').value.trim(); if (t) quick(t); });
+    if (q.get('q')) { quick(q.get('q')); history.replaceState(null, '', '/calendar/?d=' + C.dayKey(state.cursor) + '&view=day'); }
+    // search
+    $('searchBtn').addEventListener('click', () => { const open = $('sf').hidden; $('sf').hidden = !open; $('searchBtn').setAttribute('aria-expanded', String(open)); if (open) $('sq').focus(); else { $('results').hidden = true; } });
+    const doSearch = () => { const t = $('sq').value.trim(), ul = $('results'); ul.replaceChildren(); if (!t) { ul.hidden = true; return; } const hits = C.search(store.events, t); ul.hidden = false; if (!hits.length) ul.append(el('li', 'empty', W.nothing)); for (const e of hits.slice(0, 30)) { const li = el('li'), o = C.occurrences(e, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 400)))[0] || e; li.append(occBtn(o, true)); ul.append(li); } };
+    $('sq').addEventListener('input', doSearch); $('sf').addEventListener('submit', (e) => { e.preventDefault(); doSearch(); });
+    // moving about
+    const move = (n) => { const c = state.cursor; state.cursor = state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : n); render(); };
+    $('prev').addEventListener('click', () => move(-1)); $('next').addEventListener('click', () => move(1)); $('today').addEventListener('click', () => { state.cursor = C.startOfDay(now()); render(); });
+    for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day']]) $(id).addEventListener('click', () => { state.view = name; render(); });
+    addEventListener('keydown', (e) => { if ($('ed').open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { if (e.key === 'Escape' && !$('ed').open) e.target.blur(); return; }
+      if (e.key === 'ArrowLeft') move(-1); else if (e.key === 'ArrowRight') move(1); else if (e.key === 't' || e.key === 'T') $('today').click(); else if (e.key === 'm' || e.key === 'M') $('vMonth').click(); else if (e.key === 'w' || e.key === 'W') $('vWeek').click(); else if (e.key === 'd' || e.key === 'D') $('vDay').click();
+      else if (e.key === 'n' || e.key === 'N') openEditor(null); else if (e.key === '/') { e.preventDefault(); if ($('sf').hidden) $('searchBtn').click(); else $('sq').focus(); } else if (e.key === 'Escape') { if (!$('detail').hidden) $('detClose').click(); } });
+    // reminders: a timer while the page is open; the system's notification when allowed, the banner on the page always
+    const beep = () => { try { const ac = new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < 2; i++) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + i * .35); o.stop(ac.currentTime + i * .35 + .2); } } catch (_) {} try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (_) {} };
+    function checkReminders() {
+      const n = now(), since = store.lastCheck && C.parseLocal(store.lastCheck) && n - C.parseLocal(store.lastCheck) < 3600000 ? store.lastCheck : C.fmtLocal(new Date(n.getTime() - 3600000));
+      const due = C.dueReminders(store.events, since, C.fmtLocal(n)); store.lastCheck = C.fmtLocal(n); keep();
+      for (const r of due) { const st = C.parseLocal(r.event.start), body = C.fmtDay(st, lang, { year: false }) + ', ' + (r.event.allDay ? W.allDay : C.fmtTime(st, lang)) + ' · ' + C.reminderText(r.minutes, lang);
+        $('alert').hidden = false; $('alertText').textContent = r.event.title + ' — ' + body; beep();
+        if ('Notification' in window && Notification.permission === 'granted') { try { new Notification(r.event.title, { body, tag: r.event.id + r.at }); } catch (_) {} } }
+      if (due.length) remBar();
+    }
+    $('alertClose').addEventListener('click', () => { $('alert').hidden = true; });
+    $('allow').addEventListener('click', async () => { try { const p = await Notification.requestPermission(); say(p === 'granted' ? W.allowed : W.denied); } catch (_) { say(W.denied); } remBar(); });
+    setInterval(checkReminders, 20000); checkReminders();
+    addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
+    if (!q.get('q')) render();
+    setTimeout(() => document.documentElement.classList.remove('pre'), 2500);
+    mountRelated($('related'), '/calendar/', [{ label: de ? 'Timer bis zum Termin' : 'Countdown to the next event', href: () => { const o = C.agenda(store.events, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 60))).find((x) => !x.allDay); const m = o ? Math.max(1, Math.round((C.parseLocal(o.start) - now()) / 60000)) : 10; return '/stopwatch/?t=' + encodeURIComponent(m + ' minutes'); } }, { label: de ? 'Wetter am Tag' : 'Weather that day', href: () => '/weather/' }]);
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

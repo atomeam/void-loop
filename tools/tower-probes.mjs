@@ -227,6 +227,21 @@ export const PROBES = Object.freeze({
       ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
       ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
   },
+  calendar: {
+    site: 'https://calendar.google.com/', verse: '/calendar/',
+    // the question: one line of plain words in the page's link, an event tomorrow at 3 pm with a reminder half an hour before, repeating monthly.
+    // The truth is worked out from the gate's own clock (lib/calendar.js quickAdd and the page agree with it or they are wrong): the event is
+    // shown by its title, on tomorrow's weekday, at 3:00 PM (15:00 for a German browser), with the reminder and the repeat in words. Judged on
+    // Verse alone (the site is not asked); the same probe measures every site in the calendar lane (lib/tower.js LANES)
+    ask: { verse: '/calendar/?q=' + encodeURIComponent('dentist tomorrow 3pm, remind me 30 minutes before, every month') },
+    truth: () => { const t = new Date(Date.now() + 86400000); const wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][t.getDay()], day = t.getDate();
+      return [['the event, dentist', /\bdentist\b/i], ["tomorrow's weekday and day", new RegExp('\\b' + wd + '\\b[^\\n]{0,4}\\b' + day + '\\b|\\b' + day + '\\.?\\s[^\\n]{0,12}' + wd)], ['3:00 PM', /\b3:00 PM\b|\b15:00\b/], ['the reminder, 30 minutes before', /\b30 (?:minutes|Minuten) (?:before|vorher)\b/i], ['the repeat, every month', /\bevery month\b|\bmonthly\b|\bjeden Monat\b|\bmonatlich\b/i]]; },
+    askParts: { reminders: [['the reminder in words', /\d+ (?:minutes?|hours?|days?|Minuten?|Stunden?|Tage?) (?:before|vorher)\b/i], ['the next reminder shown', /next reminder|nächste Erinnerung/i]], invites: [['an invite', /\binvite\b|\beinladen\b/i], ['a share link', /\bshare\b|\bteilen\b/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['the repeat in words', /\bevery (?:day|week|month|year|\d+)\b|\bjede[nr]? \b|\balle \d+\b/i], ['a repeat marker on the list', /↻/]] },
+    // what the best calendars show: Google Calendar's month, week and day views, today, a new event, repeats, reminders, invites, search, .ics
+    // import and export; the best add a share link, quick add in plain words, keyboard shortcuts, notifications on the device, and open offline
+    facts: [['a month view', /\bmonth\b/i], ['a week view', /\bweek\b/i], ['a day view', /\bday\b/i], ['today', /\btoday\b/i], ['a new event', /\bnew event\b|\badd\b/i], ['repeating events', /\brepeat|\bevery\b/i], ['reminders', /\bremind/i], ['invites', /\binvite/i],
+      ['a share link', /\bshare\b/i], ['.ics import and export', /\.ics\b/i], ['search', /\bsearch\b/i], ['quick add in plain words', /\bquick add\b/i], ['keyboard shortcuts', /\barrow keys\b|\bkeyboard\b/i], ['notifications', /\bnotification/i], ['works offline', /\boffline\b/i]],
+  },
   weather: {
     site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
     // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
@@ -328,6 +343,7 @@ export const PARTS = Object.freeze({ colour: COLOUR_PARTS, 'colour codes': COLOU
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
+  calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,

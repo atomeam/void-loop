@@ -11,9 +11,9 @@ test('a floor is found by id, by host, or by its lane host', () => {
 test('a lane site takes its lane\'s probe; a floor with none gets a skeleton naming every extra aspect', () => {
   assert.equal(draftProbe(floorFor('translate: deepl.com')).ready, true);
   assert.equal(draftProbe(floorFor('recipes')).ready, true, 'the recipes floor has its probe now (2026-10-25)');
-  const f = { id: 'calendar', site: 'calendar.google.com', url: 'https://calendar.google.com/', extra: ['reminders', 'invites'] };
+  const f = { id: 'docs and notes', site: 'docs.google.com', url: 'https://docs.google.com/', extra: ['reminders', 'invites'] };
   const d = draftProbe(f); assert.equal(d.ready, false);
-  for (const w of ["'calendar': {", "verse: '/calendar/'", "'reminders':", "'invites':", 'TODO']) assert.ok(d.text.includes(w), w);
+  for (const w of ["'docs and notes': {", "verse: '/docs-and-notes/'", "'reminders':", "'invites':", 'TODO']) assert.ok(d.text.includes(w), w);
 });
 
 test('a site added to a lane goes to its bottom, the next fight; one already there is refused', () => {
@@ -30,6 +30,6 @@ test('the brief says where a floor stands and what to do next, from the evidence
   const t = tower([], ev), f = FLOORS.find((x) => x.id === 'translate: deepl.com'), b = brief(f, ev, t);
   assert.equal(b.lane, 'translate'); assert.deepEqual(b.lost, ['speed']); assert.ok(b.unmeasured.includes('offline')); assert.ok(b.lines.some((l) => /speed\s+worse/.test(l)));
   assert.ok(b.next.some((n) => n.startsWith('fix speed'))); assert.ok(b.next.some((n) => n.startsWith('measure')));
-  const fresh = brief({ id: 'calendar', site: 'calendar.google.com', url: 'https://calendar.google.com/', extra: [] }, {}, t);
+  const fresh = brief({ id: 'docs and notes', site: 'docs.google.com', url: 'https://docs.google.com/', extra: [] }, {}, t);
   assert.ok(fresh.next[0].startsWith('build the page')); assert.ok(fresh.next[1].startsWith('add the probe'));
 });

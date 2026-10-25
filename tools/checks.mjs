@@ -88,6 +88,7 @@ for (const [name, file] of [
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
+  ['calendar', 'calendar.test.mjs'],
   ['floor-kit', 'floor-kit.test.mjs'],
   ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['memory-preview', 'memory-preview.test.mjs'],

@@ -1,0 +1,129 @@
+// The calendar page's pure half (lib/calendar.js): recurrence for every FREQ (BYDAY, COUNT, UNTIL, a 31st skipping short months), the .ics round
+// trip, the invite link, reminders due and next, the quick-add parser in English and German, the words, and the page's registrations
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import * as C from '../void-live-deploy/lib/calendar.js';
+import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
+import { PAGES } from '../void-live-deploy/lib/seo.js';
+import { FLOORS, LANES } from '../void-live-deploy/lib/tower.js';
+import { probeFor, score } from './tower-probes.mjs';
+
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
+const now = new Date(2026, 9, 25, 10, 0); // Sunday 25 October 2026, 10:00 local
+const starts = (ev, a, b) => C.occurrences(ev, a, b).map((o) => o.start);
+
+test('local wall-clock dates read and written back; a day, a week, a month grid', () => {
+  assert.equal(C.fmtLocal(C.parseLocal('2026-10-26T15:00')), '2026-10-26T15:00'); assert.equal(C.dayKey(C.parseLocal('2026-10-26')), '2026-10-26'); assert.equal(C.parseLocal('nope'), null);
+  assert.equal(C.dayKey(C.startOfWeek(new Date(2026, 9, 25))), '2026-10-19', 'Monday starts the week'); assert.equal(C.dayKey(C.startOfWeek(new Date(2026, 9, 25), 0)), '2026-10-25');
+  const g = C.monthGrid(2026, 9); assert.equal(g.length, 42); assert.equal(C.dayKey(g[0]), '2026-09-28'); assert.equal(C.dayKey(g[41]), '2026-11-08');
+  assert.equal(C.dayKey(C.addMonths(new Date(2026, 0, 31), 1)), '2026-02-28', 'clipped to the month');
+});
+test('an event is made whole, or refused without a title or a start', () => {
+  const e = C.normalize({ title: ' Dentist ', start: '2026-10-26T15:00', reminders: ['30', 30, -1, 'x'], invitees: 'a@b.co, nope, c@d.org' });
+  assert.equal(e.title, 'Dentist'); assert.equal(e.end, '2026-10-26T16:00'); assert.deepEqual(e.reminders, [30]); assert.deepEqual(e.invitees, ['a@b.co', 'c@d.org']); assert.equal(e.rrule, null); assert.ok(e.id);
+  assert.equal(C.normalize({ start: '2026-10-26' }), null); assert.equal(C.normalize({ title: 'x' }), null);
+  assert.deepEqual(C.normalize({ title: 'x', start: '2026-10-26T10:00', allDay: true, end: '2026-10-25' }).end, '2026-10-26', 'an end before the start is the start');
+});
+test('occurrences: a plain event once; daily, weekly, monthly and yearly with INTERVAL, COUNT and UNTIL', () => {
+  const one = { title: 'x', start: '2026-10-26T15:00' }; assert.deepEqual(starts(one, '2026-10-01', '2026-10-31'), ['2026-10-26T15:00']); assert.deepEqual(starts(one, '2026-11-01', '2026-11-30'), []);
+  assert.deepEqual(starts({ ...one, rrule: { freq: 'DAILY', interval: 2, count: 4 } }, '2026-10-01', '2026-12-31'), ['2026-10-26T15:00', '2026-10-28T15:00', '2026-10-30T15:00', '2026-11-01T15:00']);
+  assert.deepEqual(starts({ ...one, rrule: { freq: 'DAILY', until: '2026-10-28' } }, '2026-10-01', '2026-12-31'), ['2026-10-26T15:00', '2026-10-27T15:00', '2026-10-28T15:00'], 'UNTIL includes its day');
+  assert.deepEqual(starts({ ...one, rrule: { freq: 'WEEKLY', interval: 2 } }, '2026-11-01', '2026-12-10'), ['2026-11-09T15:00', '2026-11-23T15:00', '2026-12-07T15:00']);
+  assert.deepEqual(starts({ ...one, rrule: { freq: 'MONTHLY' } }, '2026-10-01', '2027-02-28'), ['2026-10-26T15:00', '2026-11-26T15:00', '2026-12-26T15:00', '2027-01-26T15:00', '2027-02-26T15:00']);
+  assert.deepEqual(starts({ title: 'rent', start: '2026-10-31T09:00', rrule: { freq: 'MONTHLY' } }, '2026-10-01', '2027-01-31'), ['2026-10-31T09:00', '2026-12-31T09:00', '2027-01-31T09:00'], 'a 31st skips November');
+  assert.deepEqual(starts({ title: 'bday', start: '2026-11-03', allDay: true, rrule: { freq: 'YEARLY' } }, '2027-01-01', '2029-12-31'), ['2027-11-03', '2028-11-03', '2029-11-03']);
+  assert.deepEqual(starts({ title: 'leap', start: '2028-02-29', allDay: true, rrule: { freq: 'YEARLY' } }, '2028-01-01', '2033-12-31'), ['2028-02-29', '2032-02-29']);
+  assert.equal(C.occurrences({ ...one, rrule: { freq: 'DAILY' } }, '2026-10-26', '2099-12-31').length <= 5000, true, 'capped');
+});
+test('occurrences: BYDAY weekly on chosen days, monthly on the nth weekday, and a day struck out (EXDATE)', () => {
+  const mw = { title: 'gym', start: '2026-10-26T18:00', rrule: { freq: 'WEEKLY', byday: ['MO', 'WE'] } };
+  assert.deepEqual(starts(mw, '2026-10-26', '2026-11-08'), ['2026-10-26T18:00', '2026-10-28T18:00', '2026-11-02T18:00', '2026-11-04T18:00']);
+  assert.deepEqual(starts({ ...mw, rrule: { freq: 'WEEKLY', byday: ['MO', 'WE'], count: 3 } }, '2026-10-01', '2026-12-31'), ['2026-10-26T18:00', '2026-10-28T18:00', '2026-11-02T18:00']);
+  assert.deepEqual(starts({ title: 'wed start', start: '2026-10-28T18:00', rrule: { freq: 'WEEKLY', byday: ['MO', 'WE'] } }, '2026-10-01', '2026-11-03'), ['2026-10-28T18:00', '2026-11-02T18:00'], 'nothing before the start');
+  assert.deepEqual(starts({ title: 'board', start: '2026-11-03T19:00', rrule: { freq: 'MONTHLY', byday: ['1TU'] } }, '2026-11-01', '2027-01-31'), ['2026-11-03T19:00', '2026-12-01T19:00', '2027-01-05T19:00']);
+  assert.deepEqual(starts({ title: 'payday', start: '2026-10-30T09:00', rrule: { freq: 'MONTHLY', byday: ['-1FR'] } }, '2026-10-01', '2026-12-31'), ['2026-10-30T09:00', '2026-11-27T09:00', '2026-12-25T09:00']);
+  assert.deepEqual(starts({ ...mw, exdates: ['2026-10-28'] }, '2026-10-26', '2026-11-01'), ['2026-10-26T18:00']);
+  const multi = C.occurrences({ title: 'trip', start: '2026-10-30', end: '2026-11-02', allDay: true }, '2026-11-01', '2026-11-01'); assert.equal(multi.length, 1, 'a trip under way counts on its middle day');
+  const a = C.agenda([{ title: 'b', start: '2026-10-26T09:00' }, { title: 'a', start: '2026-10-26', allDay: true }, { title: 'c', start: '2026-10-25T20:00' }], '2026-10-25', '2026-10-26'); assert.deepEqual(a.map((o) => o.title), ['c', 'a', 'b'], 'by day, all-day first');
+});
+test('RRULE text both ways', () => {
+  assert.equal(C.rruleText({ freq: 'WEEKLY', interval: 2, byday: ['MO', 'WE'], until: '2026-12-20' }), 'FREQ=WEEKLY;INTERVAL=2;UNTIL=20261220T235959;BYDAY=MO,WE');
+  assert.deepEqual(C.parseRrule('RRULE:FREQ=MONTHLY;COUNT=5;BYDAY=-1FR'), { freq: 'MONTHLY', interval: 1, count: 5, byday: ['-1FR'] }); assert.deepEqual(C.parseRrule('FREQ=WEEKLY;UNTIL=20261220T235959Z'), { freq: 'WEEKLY', interval: 1, until: '2026-12-20' });
+  assert.equal(C.parseRrule('FREQ=HOURLY'), null); assert.equal(C.parseRrule(''), null);
+});
+test('.ics out and back in: floating local times, all-day dates, the rule, the alarms, the attendees, folded lines, Z times and TZID', () => {
+  const evs = [C.normalize({ id: 'abc', title: 'Dentist; teeth, cleaning', start: '2026-10-26T15:00', end: '2026-10-26T16:00', rrule: { freq: 'MONTHLY' }, reminders: [30, 1440], notes: 'bring the card\nand cash', invitees: ['sam@example.com'] }),
+    C.normalize({ id: 'bd', title: 'Birthday ' + 'x'.repeat(120), start: '2026-11-03', allDay: true, rrule: { freq: 'YEARLY' }, exdates: ['2027-11-03'] })];
+  const ics = C.icsOf(evs, new Date(Date.UTC(2026, 9, 25, 8, 0, 0)));
+  assert.ok(ics.startsWith('BEGIN:VCALENDAR\r\nVERSION:2.0\r\n')); assert.ok(ics.includes('DTSTART:20261026T150000\r\nDTEND:20261026T160000\r\nSUMMARY:Dentist\\; teeth\\, cleaning\r\nDESCRIPTION:bring the card\\nand cash\r\nRRULE:FREQ=MONTHLY'));
+  assert.ok(ics.includes('TRIGGER:-PT30M') && ics.includes('TRIGGER:-P1D') && ics.includes('ATTENDEE;CN=sam;RSVP=TRUE:mailto:sam@example.com') && ics.includes('DTSTAMP:20261025T080000Z'));
+  assert.ok(ics.includes('DTSTART;VALUE=DATE:20261103\r\nDTEND;VALUE=DATE:20261104') && ics.includes('EXDATE;VALUE=DATE:20271103'));
+  assert.ok(ics.split('\r\n').every((l) => l.length <= 75), 'folded at 75');
+  const back = C.parseIcs(ics); assert.equal(back.length, 2);
+  assert.equal(back[0].title, 'Dentist; teeth, cleaning'); assert.equal(back[0].notes, 'bring the card\nand cash'); assert.deepEqual(back[0].reminders, [30, 1440]); assert.deepEqual(back[0].invitees, ['sam@example.com']); assert.deepEqual(back[0].rrule, { freq: 'MONTHLY', interval: 1 }); assert.equal(back[0].id, 'abc');
+  assert.equal(back[1].title, evs[1].title); assert.equal(back[1].allDay, true); assert.equal(back[1].start, '2026-11-03'); assert.equal(back[1].end, '2026-11-03'); assert.deepEqual(back[1].exdates, ['2027-11-03']);
+  assert.deepEqual(back.map((e) => C.icsOf([e], new Date(0)).replace(/DTSTAMP:[^\r]*/, '')), evs.map((e) => C.icsOf([e], new Date(0)).replace(/DTSTAMP:[^\r]*/, '')), 'the round trip is exact');
+  // other people's files: Google's TZID, a UTC time, a DURATION, no DTEND on an all-day
+  const g = C.parseIcs('BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:1@google.com\nDTSTART;TZID=Europe/Berlin:20261126T090000\nDURATION:PT45M\nSUMMARY:Standup\nRRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR\nBEGIN:VALARM\nTRIGGER;RELATED=END:-PT5M\nEND:VALARM\nBEGIN:VALARM\nTRIGGER:-PT10M\nACTION:DISPLAY\nEND:VALARM\nEND:VEVENT\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20261224\nSUMMARY:Christmas Eve\nEND:VEVENT\nBEGIN:VEVENT\nDTSTART:20261101T120000Z\nSUMMARY:utc\nEND:VEVENT\nEND:VCALENDAR');
+  assert.equal(g.length, 3); assert.equal(g[0].start, '2026-11-26T09:00'); assert.equal(g[0].end, '2026-11-26T09:45'); assert.deepEqual(g[0].reminders, [10], 'an alarm from the end is not a reminder before'); assert.deepEqual(g[0].rrule.byday, ['MO', 'TU', 'WE', 'TH', 'FR']);
+  assert.equal(g[1].allDay, true); assert.equal(g[1].end, '2026-12-24'); assert.equal(g[2].start, C.fmtLocal(new Date(Date.UTC(2026, 10, 1, 12))), 'a Z time lands on the device clock');
+  assert.deepEqual(C.parseIcs('hello'), []); assert.deepEqual(C.parseIcs(''), []);
+});
+test('an invite is a link that carries the whole event, and a mail with the .ics as its body', () => {
+  const e = C.normalize({ id: 'inv1', title: 'Lunch with Sam ☕', start: '2026-10-26T13:00', reminders: [10], invitees: ['sam@example.com', 'ana@example.org'], notes: 'the usual place' });
+  const i = C.inviteLink(e, 'https://a-to-mind.com/'); assert.ok(i.url.startsWith('https://a-to-mind.com/calendar/?e=')); assert.doesNotMatch(i.url.split('?e=')[1], /[+/=]/, 'base64url');
+  const back = C.eventFromLink(i.url.split('?e=')[1]); assert.equal(back.title, 'Lunch with Sam ☕'); assert.equal(back.start, e.start); assert.deepEqual(back.reminders, [10]); assert.deepEqual(back.invitees, e.invitees); assert.equal(back.id, 'inv1');
+  assert.ok(i.mailto.startsWith('mailto:sam@example.com,ana@example.org?subject=Invitation%3A%20Lunch')); const body = decodeURIComponent(i.mailto.split('&body=')[1]); assert.ok(body.includes('BEGIN:VCALENDAR') && body.includes(i.url) && body.includes('the usual place'));
+  assert.equal(C.eventFromLink('not base64 at all!'), null); assert.equal(C.eventFromLink(''), null); assert.equal(C.inviteLink({ title: '' }), null);
+});
+test('reminders: the ones due in a window, and the next one from now', () => {
+  const evs = [C.normalize({ title: 'dentist', start: '2026-10-26T15:00', reminders: [30], rrule: { freq: 'MONTHLY' } }), C.normalize({ title: 'call', start: '2026-10-25T10:20', reminders: [0, 10] }), C.normalize({ title: 'nothing', start: '2026-10-25T11:00' })];
+  const n = C.nextReminder(evs, '2026-10-25T10:00'); assert.equal(n.event.title, 'call'); assert.equal(n.at, '2026-10-25T10:10'); assert.equal(n.minutes, 10);
+  assert.equal(C.nextReminder(evs, '2026-10-25T10:21').event.title, 'dentist'); assert.equal(C.nextReminder(evs, '2026-10-25T10:21').at, '2026-10-26T14:30');
+  assert.equal(C.nextReminder(evs, '2026-11-27T00:00').at, '2026-12-26T14:30', 'a repeat keeps reminding'); assert.equal(C.nextReminder([evs[2]], '2026-10-25T10:00'), null);
+  assert.deepEqual(C.dueReminders(evs, '2026-10-25T10:09', '2026-10-25T10:20').map((r) => r.event.title + ' ' + r.at), ['call 2026-10-25T10:10', 'call 2026-10-25T10:20']);
+  assert.deepEqual(C.dueReminders(evs, '2026-10-25T10:10', '2026-10-25T10:19'), [], 'the edge: since is exclusive, now inclusive');
+});
+test('quick add: one line of English or German into an event', () => {
+  const d = C.quickAdd('dentist tomorrow 3pm, remind me 30 minutes before, every month', now);
+  assert.equal(d.title, 'dentist'); assert.equal(d.start, '2026-10-26T15:00'); assert.equal(d.end, '2026-10-26T16:00'); assert.deepEqual(d.reminders, [30]); assert.deepEqual(d.rrule, { freq: 'MONTHLY', interval: 1 }); assert.equal(d.allDay, false);
+  const l = C.quickAdd('lunch with Sam tomorrow 1pm', now); assert.equal(l.title, 'lunch with Sam'); assert.equal(l.start, '2026-10-26T13:00'); assert.equal(l.rrule, null); assert.deepEqual(l.reminders, []);
+  const t = C.quickAdd('team call every monday 10:00 for 30 minutes', now); assert.equal(t.title, 'team call'); assert.equal(t.start, '2026-10-26T10:00'); assert.equal(t.end, '2026-10-26T10:30'); assert.deepEqual(t.rrule, { freq: 'WEEKLY', interval: 1, byday: ['MO'] });
+  const z = C.quickAdd('Zahnarzt morgen 15 Uhr, erinnere mich 10 min vorher', now); assert.equal(z.title, 'Zahnarzt'); assert.equal(z.start, '2026-10-26T15:00'); assert.deepEqual(z.reminders, [10]);
+  const b = C.quickAdd("mum's birthday 3 nov all day, every year", now); assert.equal(b.title, "mum's birthday"); assert.equal(b.start, '2026-11-03'); assert.equal(b.allDay, true); assert.equal(b.rrule.freq, 'YEARLY');
+  const s = C.quickAdd('standup every weekday 9:15, 10 times', now); assert.deepEqual(s.rrule, { freq: 'WEEKLY', interval: 1, count: 10, byday: ['MO', 'TU', 'WE', 'TH', 'FR'] }); assert.equal(s.start, '2026-10-25T09:15');
+  const g = C.quickAdd('gym 3-4pm friday', now); assert.equal(g.start, '2026-10-30T15:00'); assert.equal(g.end, '2026-10-30T16:00');
+  const r = C.quickAdd('rent every 2 months on 2026-11-01 until 20 dec 2027', now); assert.equal(r.title, 'rent'); assert.equal(r.start, '2026-11-01'); assert.deepEqual(r.rrule, { freq: 'MONTHLY', interval: 2, until: '2027-12-20' });
+  assert.equal(C.quickAdd('room 12 meeting at 3', now).start, '2026-10-25T15:00'); assert.equal(C.quickAdd('yoga 7.11. 18:30', now).start, '2026-11-07T18:30'); assert.equal(C.quickAdd('flight nov 3 6:45am', now).start, '2026-11-03T06:45');
+  assert.equal(C.quickAdd('next sunday brunch noon', now).start, '2026-11-01T12:00', 'next sunday, said on a Sunday, is the one after'); assert.equal(C.quickAdd('call mum tonight at 8', now).start, '2026-10-25T20:00');
+  assert.equal(C.quickAdd('from 9 to 5 work tomorrow', now).end, '2026-10-26T17:00'); assert.equal(C.quickAdd('conference 12/3', now).start, '2026-12-03');
+  assert.equal(C.quickAdd('tomorrow 3pm', now), null, 'nothing left for a title'); assert.equal(C.quickAdd('', now), null); assert.equal(C.quickAdd('   ', now), null);
+  assert.equal(C.quickAdd('just a note', now).allDay, true, 'no time means all day today'); assert.equal(C.quickAdd('just a note', now).start, '2026-10-25');
+});
+test('the words: times, days, repeats and reminders in English and German', () => {
+  const d = C.parseLocal('2026-10-26T15:00'); assert.equal(C.fmtTime(d), '3:00 PM'); assert.equal(C.fmtTime(d, 'de-DE'), '15:00'); assert.equal(C.fmtTime(C.parseLocal('2026-10-26T00:05')), '12:05 AM');
+  assert.equal(C.fmtDay(d), 'Monday, 26 October 2026'); assert.equal(C.fmtDay(d, 'de'), 'Montag, 26. Oktober 2026'); assert.equal(C.fmtDay(d, 'en', { weekday: false, year: false }), '26 October'); assert.equal(C.fmtMonth(d, 'de'), 'Oktober 2026');
+  assert.deepEqual(C.dayNames('en'), ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']); assert.deepEqual(C.dayNames('de'), ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']);
+  assert.equal(C.repeatText({ freq: 'MONTHLY', interval: 1 }), 'every month'); assert.equal(C.repeatText({ freq: 'WEEKLY', interval: 2, byday: ['MO', 'WE'] }), 'every 2 weeks on Mon, Wed'); assert.equal(C.repeatText({ freq: 'DAILY', interval: 1, until: '2026-12-20', count: 5 }), 'every day until 20 December 2026, 5 times');
+  assert.equal(C.repeatText({ freq: 'MONTHLY', interval: 1, byday: ['-1FR'] }), 'every month on last Fri'); assert.equal(C.repeatText({ freq: 'MONTHLY', interval: 1 }, 'de'), 'jeden Monat'); assert.equal(C.repeatText({ freq: 'WEEKLY', interval: 1 }, 'de'), 'jede Woche'); assert.equal(C.repeatText(null), '');
+  assert.equal(C.reminderText(30), '30 minutes before'); assert.equal(C.reminderText(60), '1 hour before'); assert.equal(C.reminderText(1440), '1 day before'); assert.equal(C.reminderText(0), 'at the time'); assert.equal(C.reminderText(10, 'de'), '10 Minuten vorher');
+  const en = C.wordsFor('en-US'), de = C.wordsFor('de-DE'); assert.deepEqual(Object.keys(en).sort(), Object.keys(de).sort()); assert.equal(de.title, 'Kalender'); for (const k of Object.keys(en)) assert.ok(en[k] && de[k], k);
+  assert.equal(C.search([{ title: 'Dentist', notes: '', invitees: [] }, { title: 'Lunch', notes: 'with Sam', invitees: ['sam@x.co'] }], 'sam').length, 1); assert.equal(C.search([], 'x').length, 0);
+  const evs = C.withEvent([], { title: 'a', start: '2026-10-26T10:00', id: 'a' }); assert.equal(C.withEvent(evs, { title: 'a2', start: '2026-10-26T10:00', id: 'a' }).length, 1); assert.equal(C.withoutEvent(evs, 'a').length, 0);
+});
+test('the page is registered: toolkit, the service worker, the SEO table, the ask bar, MAP, the floor, its lane and its probe', () => {
+  assert.equal(TOOLS['/calendar/'], 'Calendar'); assert.ok(RELATED['/calendar/'].includes('/time/'));
+  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes("'/calendar/'")); assert.ok(PAGES.some((p) => p.path === '/calendar/' && p.action.template.includes('{event}')));
+  assert.ok(fs.readFileSync(path.join(root, '..', 'docs', 'MAP.md'), 'utf8').includes('lib/calendar.js'));
+  const html = fs.readFileSync(path.join(root, 'calendar', 'index.html'), 'utf8'); assert.ok(html.includes("import('/lib/calendar.js')") && html.includes('<nav id="related"') && html.includes('<!-- asks -->') && html.includes('rel="canonical" href="https://a-to-mind.com/calendar/"'));
+  assert.equal(routeAsk('add dentist tomorrow 3pm to my calendar'), '/calendar/?q=dentist%20tomorrow%203pm'); assert.equal(routeAsk('my calendar'), '/calendar/'); assert.equal(routeAsk("what's on tomorrow"), '/calendar/?show=tomorrow'); assert.equal(routeAsk('remind me to call mum tomorrow 6pm'), '/calendar/?q=call%20mum%20tomorrow%206pm'); assert.equal(routeAsk('my week'), '/calendar/?show=week');
+  assert.equal(routeAsk('pancake recipe'), '/recipes/?q=pancake', 'the recipes route still wins its own asks');
+  const f = FLOORS.find((x) => x.id === 'calendar'); assert.equal(f.page, '/calendar/'); assert.ok(f.fatality); assert.equal(LANES.calendar[0], 'https://calendar.online/'); assert.equal(LANES.calendar[LANES.calendar.length - 1], 'https://outlook.live.com/calendar'); assert.equal(LANES.calendar.length, 10);
+  assert.ok(FLOORS.some((x) => x.id === 'calendar: calendar.online')); assert.equal(probeFor('calendar: teamup.com').verse, '/calendar/');
+  const p = probeFor('calendar'); assert.equal(p.truth.length, 5); assert.ok(p.ask.verse.includes('dentist%20tomorrow%203pm'));
+  const t = new Date(Date.now() + 86400000), shown = 'dentist\nMonday, 26 October 2026, 3:00 PM – 4:00 PM\nRepeat every month\nReminder 30 minutes before'.replace('Monday, 26', ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][t.getDay()] + ', ' + t.getDate());
+  assert.equal(score(shown, p.truth).n, 5, score(shown, p.truth).missing.join()); assert.equal(score('Dentist 3:00 PM every week', p.truth).n, 2);
+  assert.equal(Object.keys(p.parts).join(), 'reminders,invites,recurring events'); assert.equal(score('Reminders · Notification · Invite · .ics · repeats', Object.values(p.parts).flat()).n, 5);
+});

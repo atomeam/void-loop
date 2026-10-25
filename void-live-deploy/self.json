@@ -476,7 +476,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-24T21:42:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -484,84 +484,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T07:41:11Z",
-   "subject": "Versus: the ladder where Verse fights real sites is named Versus everywhere a person reads it"
+   "at": "2026-10-25T14:05:49Z",
+   "subject": "Versus shows logos only: each site's own logo, Verse's own icon, no drawn faces"
   },
   {
-   "at": "2026-10-25T07:40:41Z",
-   "subject": "Tower gate: weather measured against their live sites"
+   "at": "2026-10-25T12:42:04Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-10-25T07:40:30Z",
-   "subject": "Tower gate: translate measured against their live sites"
+   "at": "2026-10-25T12:05:51Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-10-25T07:36:53Z",
-   "subject": "Incident: the browser suite failed on 9ca44e4a (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T12:04:35Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
   },
   {
-   "at": "2026-10-25T07:35:13Z",
-   "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com measured against their live sites"
+   "at": "2026-10-25T12:02:02Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-10-25T07:34:47Z",
-   "subject": "The tower card says when a newer Verse is live"
+   "at": "2026-10-25T11:58:54Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-10-25T07:34:03Z",
-   "subject": "Tower gate: translate: reverso.net,translate: bing.com,translate: deepl.com measured against their live sites"
+   "at": "2026-10-25T11:46:30Z",
+   "subject": "Tower gate: every floor measured against its live site (6 slices)"
   },
   {
-   "at": "2026-10-25T07:31:25Z",
-   "subject": "Brands and famous characters are drawn like anything else"
+   "at": "2026-10-25T09:54:35Z",
+   "subject": "Verse fixes its fakeuser skill: learn to handle \"can u make a fake user profile\""
   },
   {
-   "at": "2026-10-25T07:28:53Z",
-   "subject": "Verse fixes its cartoon skill: learn to handle \"make a 2d toon dog\""
+   "at": "2026-10-25T09:44:37Z",
+   "subject": "Verse fixes its gradient skill: learn to handle \"generate a gradient blue to pink\""
   },
   {
-   "at": "2026-10-25T07:28:03Z",
-   "subject": "/api/weather: a place and its forecast in one round trip, kept on the edge, so /weather/ draws at once"
+   "at": "2026-10-25T09:22:38Z",
+   "subject": "Incident: the browser suite failed on 9fb2b5d5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T07:26:28Z",
-   "subject": "The card shows every surpassed site and each site's own icon; every conquest has a taught-me line"
+   "at": "2026-10-25T09:20:13Z",
+   "subject": "Incident: the browser suite failed on 21b8e837 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T07:22:18Z",
-   "subject": "Incident: the browser suite failed on 022256dd (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T09:01:52Z",
+   "subject": "Incident: the browser suite failed on 4850e837 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T07:22:05Z",
-   "subject": "Painted backdrops behind the stage: one pre-rendered scene per ask, the cards' shadows on it, the walker on its floor"
+   "at": "2026-10-25T08:58:17Z",
+   "subject": "Tower gate: recipes,recipes: budgetbytes.com,recipes: cookpad.com,recipes: yummly.com measured against their live sites"
   },
   {
-   "at": "2026-10-25T07:21:35Z",
-   "subject": "Tower gate: translate: papago.naver.com,translate: linguee.com,translate: translate.yandex.com measured against their live sites"
+   "at": "2026-10-25T08:56:31Z",
+   "subject": "Tower gate: recipes: budgetbytes.com measured against their live sites"
   },
   {
-   "at": "2026-10-25T07:21:01Z",
-   "subject": "Incident: the browser suite failed on d2196b4e (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T08:54:40Z",
+   "subject": "Tower gate: recipes: minimalistbaker.com measured against their live sites"
   },
   {
-   "at": "2026-10-25T07:20:40Z",
-   "subject": "Verse fixes its make skill: learn to handle \"low poly cat\""
+   "at": "2026-10-25T08:52:33Z",
+   "subject": "The worker installs fast and the gate waits 10 s for it: Verse's own pages read offline again"
   },
   {
-   "at": "2026-10-25T07:20:00Z",
-   "subject": "Tower gate: translate: lingvanex.com,translate: itranslate.com,translate: mymemory.translated.net measured against their live sites"
+   "at": "2026-10-25T08:52:16Z",
+   "subject": "Incident: the browser suite failed on e8293663 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T07:13:01Z",
-   "subject": "Incident: the browser suite failed on b7755d02 (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T08:52:10Z",
+   "subject": "/recipes/ keeps its title, its line and its search box readable while a linked recipe is drawn"
   },
   {
-   "at": "2026-10-25T07:05:54Z",
-   "subject": "The cartoon you drew walks the stage: Let it walk on every cartoon card, a figure on the floor with a shadow, a tap makes it speak"
+   "at": "2026-10-25T08:46:21Z",
+   "subject": "Tower gate: recipes,recipes: minimalistbaker.com,recipes: budgetbytes.com,recipes: cookpad.com,recipes: yummly.com measured against their…"
   },
   {
-   "at": "2026-10-25T07:03:44Z",
-   "subject": "Handoff: the weather floor at 11 of 12, why its accuracy row still says Looking, and what the next run tries first"
+   "at": "2026-10-25T08:42:48Z",
+   "subject": "Incident: the browser suite failed on 7f846c43 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
