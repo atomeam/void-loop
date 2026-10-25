@@ -476,13 +476,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-24T21:42:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-25T07:27:57Z",
+   "subject": "/api/weather: a place and its forecast in one round trip, kept on the edge, so /weather/ draws at once"
+  },
+  {
+   "at": "2026-10-25T07:26:28Z",
+   "subject": "The card shows every surpassed site and each site's own icon; every conquest has a taught-me line"
+  },
   {
    "at": "2026-10-25T07:22:18Z",
    "subject": "Incident: the browser suite failed on 022256dd (void-live-deploy/incidents.json)"
@@ -554,14 +562,6 @@
   {
    "at": "2026-10-25T06:49:46Z",
    "subject": "A page that marks itself busy is read by the gate once it is done; /weather/ says so while it fetches"
-  },
-  {
-   "at": "2026-10-25T06:48:12Z",
-   "subject": "The translate lane starts at its smallest sites: six more small translators, tradukka.com first, Google Translate last"
-  },
-  {
-   "at": "2026-10-25T06:43:52Z",
-   "subject": "Incident: the browser suite failed on f5814061 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

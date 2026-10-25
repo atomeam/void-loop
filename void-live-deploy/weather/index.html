@@ -95,9 +95,13 @@
     $('status').textContent = 'Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset…';
     document.querySelector('main').setAttribute('aria-busy', 'true'); // busy while the forecast is fetched: a reader (and the tower gate) waits for it
     try {
-      let loc = coords || null;
+      let loc = coords || null, w = null;
+      // Verse's own /api/weather first: the place and its forecast in one round trip, kept on the edge for ten minutes, so the page draws at once;
+      // a 404 there is a place not found; anything else falls back to asking Open-Meteo from here
+      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place)), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
       if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
-      const w = await get(forecastUrl(loc.lat, loc.lon)), v = viewOf(w, loc);
+      if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
+      const v = viewOf(w, loc);
       if (!v.hours.length) throw new Error('no forecast');
       draw(v); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
       extras(loc);

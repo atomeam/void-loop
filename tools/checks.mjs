@@ -452,6 +452,7 @@ for (const [name, file] of [
   ['preload', 'preload.test.mjs'],
   ['pwcheck', 'pwcheck.test.mjs'],
   ['weather-page', 'weather.test.mjs'],
+  ['weather-api', 'weather-api.test.mjs'],
   ['baseconv', 'baseconv.test.mjs'],
   ['imgfit', 'imgfit.test.mjs'],
   ['arrange', 'arrange.test.mjs'],

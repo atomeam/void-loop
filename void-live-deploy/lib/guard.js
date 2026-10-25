@@ -52,6 +52,7 @@ export const LIMITS = {
   react: { rpm: 60, body: 300 }, // spectator reactions (functions/api/react.js): a closed list of 6 ids and a ledger slug in; integer counts out; 20 a minute and 200 a day per hashed connection in the route itself, no model
   digest: { rpm: 6, body: 70000 }, // Verse reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
   video: { rpm: 30, body: 0 }, // Verse's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
+  weather: { rpm: 30, body: 0 }, // the weather page's forecast for a place (functions/api/weather.js): GET, edge-cached ten minutes, 10 fresh lookups a minute, no model, no KV
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   filmfind: { rpm: 20, body: 0 }, // film discovery as JSON (functions/api/filmfind.js): GET only, one fixed host (iTunes), at most 10 upstream GETs per call, edge-cached a day, no KV, no model, nothing written
