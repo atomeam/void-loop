@@ -5598,8 +5598,8 @@ try {
     await Z.ctx.close();
   }
   // base64encode.org offers dozens of character sets: /base64/ groups 44 of them, writes Windows-1252 and EBCDIC with the browser's own decoder
-  // (or its tables), names a character a set cannot hold, and reads Shift_JIS while saying it is decode only
-  if (want("base64 character sets: grouped, Windows-1252 and EBCDIC both ways, an unencodable character named, Shift_JIS decode only, fits 390 px")) {
+  // (or its tables), names a character a set cannot hold, and writes Shift_JIS too, from the browser's own decoder turned around
+  if (want("base64 character sets: grouped, Windows-1252, EBCDIC and Shift_JIS both ways, an unencodable character named, fits 390 px")) {
     const Z = await fresh(); await Z.p.setViewportSize({ width: 390, height: 844 }); await Z.p.goto(base + 'base64/');
     const groups = await Z.p.$$eval('#cs optgroup', (g) => g.map((x) => x.label + ':' + x.children.length)), first = await Z.p.$eval('#cs', (e) => e.value);
     const b64 = () => Z.p.$eval('#b64', (e) => e.value), note = () => Z.p.$eval('#note', (e) => e.textContent);
@@ -5608,12 +5608,31 @@ try {
     await Z.p.selectOption('#cs', 'ibm037'); await Z.p.fill('#text', 'HELLO'); const ebcdic = await b64();
     await Z.p.fill('#b64', 'yMXT09Y='); const ebcdicBack = await Z.p.$eval('#text', (e) => e.value);
     await Z.p.selectOption('#cs', 'shift_jis'); await Z.p.fill('#b64', 'grGC8YLJgr+CzQ=='); const sjis = await Z.p.$eval('#text', (e) => e.value);
-    await Z.p.fill('#text', 'x'); const sjisEnc = await note();
+    await Z.p.fill('#text', 'こんにちは'); const sjisEnc = await b64();
     const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth);
-    check("base64 character sets: grouped, Windows-1252 and EBCDIC both ways, an unencodable character named, Shift_JIS decode only, fits 390 px",
-      first === 'auto' && groups.length >= 6 && groups.some((g) => /^EBCDIC and DOS:/.test(g)) && groups.some((g) => /decode only/.test(g)) && w1252 === 'Y2Fm6SCA'
-      && /“😀” \(character 4\) is not in Windows-1252/.test(unenc) && ebcdic === 'yMXT09Y=' && ebcdicBack === 'HELLO' && sjis === 'こんにちは' && /decode only/.test(sjisEnc) && wide <= 390 && !Z.errors.length,
+    check("base64 character sets: grouped, Windows-1252, EBCDIC and Shift_JIS both ways, an unencodable character named, fits 390 px",
+      first === 'auto' && groups.length >= 6 && groups.some((g) => /^EBCDIC and DOS:/.test(g)) && groups.some((g) => /^Asian, multi-byte:7$/.test(g)) && w1252 === 'Y2Fm6SCA'
+      && /“😀” \(character 4\) is not in Windows-1252/.test(unenc) && ebcdic === 'yMXT09Y=' && ebcdicBack === 'HELLO' && sjis === 'こんにちは' && sjisEnc === 'grGC8YLJgr+CzQ==' && wide <= 390 && !Z.errors.length,
       JSON.stringify({ groups, first, w1252, unenc, ebcdic, ebcdicBack, sjis, sjisEnc, wide, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // what base64encode.org has that /base64/ lacked (2026-10-25): each line on its own, LF or CRLF, Download for the Base64 and the decoded file,
+  // a file of any size read a slice at a time with only its start in the box, and /base64/?mode=decode opening on the decode side
+  if (want("base64 more: each line separately, CRLF, Download and Download file, a 10 MB file without freezing, ?mode=decode focused")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base64/?mode=decode'); const focused = await Z.p.evaluate(() => document.activeElement && document.activeElement.id);
+    await Z.p.check('#lines'); await Z.p.selectOption('#eol', 'crlf'); await Z.p.fill('#text', 'f\nfo\nfoo'); const lines = await Z.p.$eval('#b64', (e) => e.value);
+    const [d1] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dlb')]); const dlName = d1.suggestedFilename(), dlText = fs.readFileSync(await d1.path(), 'utf8');
+    await Z.p.uncheck('#lines'); await Z.p.fill('#b64', 'data:image/png;base64,iVBORw=='); const shown = await Z.p.isVisible('#dl');
+    const [d2] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dl')]); const fileName = d2.suggestedFilename(), fileBytes = [...fs.readFileSync(await d2.path())];
+    const big = Buffer.alloc(10 * 1048576, 0); for (let i = 0; i < big.length; i += 4093) big[i] = i & 255;
+    await Z.p.selectOption('#eol', 'lf'); const t0 = Date.now(); await Z.p.setInputFiles('#file', { name: 'big.bin', mimeType: 'application/octet-stream', buffer: big });
+    await Z.p.waitForSelector('#fbox:not([hidden])', { timeout: 30000 }); const took = Date.now() - t0;
+    const preview = await Z.p.$eval('#fileout', (e) => e.value.length), note = await Z.p.$eval('#fprev', (e) => e.textContent);
+    const [d3] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dlf')]); const bigName = d3.suggestedFilename(), bigOut = fs.readFileSync(await d3.path(), 'utf8');
+    check("base64 more: each line separately, CRLF, Download and Download file, a 10 MB file without freezing, ?mode=decode focused",
+      focused === 'b64' && lines === 'Zg==\nZm8=\nZm9v' && dlName === 'base64.b64.txt' && dlText === 'Zg==\r\nZm8=\r\nZm9v' && shown && fileName === 'decoded.png' && fileBytes.join() === '137,80,78,71'
+      && preview < 10000 && /Only the start is shown/.test(note) && bigName === 'big.bin.b64.txt' && bigOut === big.toString('base64') && took < 20000 && !Z.errors.length,
+      JSON.stringify({ focused, lines, dlName, dlText, shown, fileName, fileBytes, preview, note, bigName, bigLen: bigOut.length, took, errors: Z.errors }));
     await Z.ctx.close();
   }
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {

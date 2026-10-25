@@ -5,8 +5,8 @@
  * 76 characters (MIME). Decoding takes either alphabet, padded or not, ignores line breaks and spaces, takes a data: URL whole, and says
  * plainly what is wrong (the character and where it is) instead of giving garbage. Pure, no btoa/atob (they are Latin-1 only), no network:
  * single-byte sets are read with the browser's own TextDecoder (and written with the reverse of it), the few it lacks (EBCDIC 037, DOS 437
- * and 850, ISO-8859-16) are tables here; Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR are decode only (their tables are too
- * big to carry). Tests: tools/base64.test.mjs.
+ * and 850, ISO-8859-16) are tables here; Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR are written both ways too, from the
+ * browser's own decoder swept once and inverted in memory (multiTable), with no table carried and nothing fetched. Tests: tools/base64.test.mjs.
  */
 const STD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const URL_SAFE = STD.slice(0, 62) + '-_';
@@ -23,15 +23,15 @@ export const CHARSET_GROUPS = Object.freeze([
   { group: 'Greek, Turkish, Hebrew, Arabic', sets: [['iso-8859-7', 'ISO-8859-7 (Greek)'], ['windows-1253', 'Windows-1253 (Greek)'], ['iso-8859-9', 'ISO-8859-9 (Turkish)'],
     ['windows-1254', 'Windows-1254 (Turkish)'], ['iso-8859-8', 'ISO-8859-8 (Hebrew)'], ['windows-1255', 'Windows-1255 (Hebrew)'], ['iso-8859-6', 'ISO-8859-6 (Arabic)'], ['windows-1256', 'Windows-1256 (Arabic)']] },
   { group: 'Asian', sets: [['windows-874', 'Windows-874 (Thai)'], ['iso-8859-11', 'ISO-8859-11 (Thai)'], ['windows-1258', 'Windows-1258 (Vietnamese)']] },
-  { group: 'Asian, decode only (Base64 to text)', decodeOnly: true, sets: [['shift_jis', 'Shift_JIS (CP932, Japanese)'], ['euc-jp', 'EUC-JP (Japanese)'], ['iso-2022-jp', 'ISO-2022-JP (Japanese)'],
+  { group: 'Asian, multi-byte', multi: true, sets: [['shift_jis', 'Shift_JIS (CP932, Japanese)'], ['euc-jp', 'EUC-JP (Japanese)'], ['iso-2022-jp', 'ISO-2022-JP (Japanese)'],
     ['gbk', 'GBK (CP936, Chinese)'], ['gb18030', 'GB18030 (Chinese)'], ['big5', 'Big5 (CP950, Chinese)'], ['euc-kr', 'EUC-KR (CP949, Korean)']] },
   { group: 'EBCDIC and DOS', sets: [['ibm037', 'EBCDIC 037 (IBM, US and Canada)'], ['cp437', 'CP437 (DOS, US)'], ['cp850', 'CP850 (DOS, Western Europe)']] },
 ]);
 /** every character set by id: its label ('utf-8': 'UTF-8', 'latin1': 'ISO-8859-1 (Latin-1)', ...). */
 export const CHARSETS = Object.freeze(Object.fromEntries(CHARSET_GROUPS.flatMap((g) => g.sets)));
-const DECODE_ONLY = new Set(CHARSET_GROUPS.filter((g) => g.decodeOnly).flatMap((g) => g.sets.map((s) => s[0])));
-/** whether text can be written in this character set here (the multi-byte Asian sets are decode only). */
-export const canEncode = (cs) => !DECODE_ONLY.has(cs);
+const MULTI = new Set(CHARSET_GROUPS.filter((g) => g.multi).flatMap((g) => g.sets.map((s) => s[0])));
+/** whether text can be written in this character set here: every one of them, both ways. */
+export const canEncode = (cs) => !!CHARSETS[cs];
 const nameOf = (cs) => (CHARSETS[cs] || cs).split(/ \(|, /)[0];
 
 // the sets TextDecoder lacks (or that WHATWG reads as another set), as tables checked against the Unicode consortium's mapping files
@@ -53,7 +53,7 @@ function table(cs) {
   if (TABLES[cs]) t = Array.from(TABLES[cs]);
   else if (cs === 'latin1') t = Array.from(ASCII + C1 + String.fromCharCode(...Array.from({ length: 96 }, (_, i) => 160 + i)));
   else if (cs === 'ascii') t = Array.from(ASCII).concat(Array(128).fill(''));
-  else if (CHARSETS[cs] && !DECODE_ONLY.has(cs) && !/^utf-/.test(cs)) {
+  else if (CHARSETS[cs] && !MULTI.has(cs) && !/^utf-/.test(cs)) {
     try { const d = new TextDecoder(WITH_C1[cs] || cs); t = Array.from({ length: 256 }, (_, i) => { const c = d.decode(Uint8Array.of(i)); return c === '\ufffd' ? '' : c; }); } catch (_) { t = null; }
     if (t && WITH_C1[cs]) for (let i = 128; i < 160; i++) t[i] = String.fromCharCode(i);
   }
@@ -65,8 +65,56 @@ function reverse(cs) {
   reverses.set(cs, m); return m;
 }
 
+// the multi-byte Asian sets, written with no table carried in the page and nothing fetched: on first use every valid byte sequence of the set is
+// read once with the browser's own TextDecoder and the result inverted (code point -> bytes), kept in memory. The sequences swept are the set's
+// own lead and trail byte ranges (WHATWG Encoding); where one character has two codes, the one the WHATWG encoder writes is kept.
+const LEADS = {
+  shift_jis: { leads: [[0x81, 0x9f], [0xe0, 0xfc]], trails: [[0x40, 0x7e], [0x80, 0xfc]], singles: [[0xa1, 0xdf]], late: [0xed, 0xee] }, // NEC-selected IBM rows: the IBM codes (FA-FC) win
+  'euc-jp': { leads: [[0xa1, 0xfe]], trails: [[0xa1, 0xfe]], kana: true }, // JIS X 0212 (8F xx xx) is decode only in every encoder
+  gbk: { leads: [[0x81, 0xfe]], trails: [[0x40, 0x7e], [0x80, 0xfe]], singles: [[0x80, 0x80]] },
+  gb18030: { leads: [[0x81, 0xfe]], trails: [[0x40, 0x7e], [0x80, 0xfe]], four: true },
+  big5: { leads: [[0xa1, 0xfe]], trails: [[0x40, 0x7e], [0xa1, 0xfe]], last: [0x2550, 0x255e, 0x2561, 0x256a, 0x5341, 0x5345] }, // HKSCS (81-A0) is decode only, as in WHATWG
+  'euc-kr': { leads: [[0x81, 0xfe]], trails: [[0x41, 0xfe]] },
+};
+const multis = new Map();
+const each = (ranges, f) => { for (const [a, b] of ranges) for (let x = a; x <= b; x++) f(x); };
+/** the code point -> bytes map of a multi-byte set (built once, a fraction of a second), or null for a set that is not one. */
+export function multiTable(cs) {
+  if (multis.has(cs)) return multis.get(cs);
+  const spec = LEADS[cs === 'iso-2022-jp' ? 'euc-jp' : cs]; if (!spec) return null;
+  const d = new TextDecoder(cs === 'iso-2022-jp' ? 'euc-jp' : cs), m = new Map(), late = new Set(spec.late || []), last = new Set(spec.last || []);
+  const put = (bytes) => { const s = d.decode(Uint8Array.from(bytes)); if (!s || s.includes('�')) return; const cps = Array.from(s); if (cps.length !== 1) return; const cp = cps[0].codePointAt(0); if (!m.has(cp) || last.has(cp)) m.set(cp, bytes); };
+  for (let i = 0; i < 0x80; i++) put([i]); // ASCII as the decoder reads it (one ICU build swaps 1C and 7F in Shift_JIS; browsers do not)
+  if (spec.singles) each(spec.singles, (b) => put([b]));
+  if (spec.kana) each([[0xa1, 0xdf]], (b) => put([0x8e, b]));
+  const sweep = (lead) => each(spec.trails, (t) => put([lead, t]));
+  each(spec.leads, (l) => { if (!late.has(l)) sweep(l); }); for (const l of late) sweep(l);
+  if (spec.four) { // GB18030's four-byte codes: the BMP part read in one pass (39,420 codes, one character each); the rest is the standard's arithmetic
+    const buf = new Uint8Array(39420 * 4); for (let p = 0; p < 39420; p++) buf.set(gbFour(p), p * 4);
+    const s = d.decode(buf); if (s.length === 39420) for (let p = 0; p < 39420; p++) { const cp = s.charCodeAt(p); if (!m.has(cp)) m.set(cp, Array.from(buf.subarray(p * 4, p * 4 + 4))); }
+  }
+  let out = m;
+  if (cs === 'iso-2022-jp') { out = new Map(); for (const [cp, b] of m) if (b.length === 1) out.set(cp, b); else if (b.length === 2 && b[0] >= 0xa1) out.set(cp, [b[0] - 0x80, b[1] - 0x80]); } // EUC-JP's JIS X 0208, less 0x80 a byte (half-width kana, 8E xx, has no place in it)
+  multis.set(cs, out); return out;
+}
+// a GB18030 four-byte pointer as its bytes (GB18030-2005: b1 81-FE, b2 30-39, b3 81-FE, b4 30-39)
+function gbFour(p) { const b4 = p % 10; p = (p - b4) / 10; const b3 = p % 126; p = (p - b3) / 126; const b2 = p % 10; return [(p - b2) / 10 + 0x81, b2 + 0x30, b3 + 0x81, b4 + 0x30]; }
+function multiToBytes(t, cs) {
+  const m = multiTable(cs), out = []; let at = 0, jis = false;
+  for (const ch of t) {
+    at++; const cp = ch.codePointAt(0);
+    let b = cs === 'iso-2022-jp' && (cp === 0x1b || cp === 0x0e || cp === 0x0f) ? null : m.get(cp);
+    if (!b && cs === 'gb18030' && cp >= 0x10000) b = gbFour(cp - 0x10000 + 189000); // every supplementary character, in order from 90 30 81 30
+    if (!b) return { ok: false, error: '“' + ch + '” (character ' + at + ') is not in ' + nameOf(cs) + ': choose UTF-8 to encode it' };
+    if (cs === 'iso-2022-jp') { const two = b.length === 2; if (two !== jis) { out.push(0x1b, two ? 0x24 : 0x28, 0x42); jis = two; } } // ESC $ B into JIS X 0208, ESC ( B back to ASCII
+    for (const x of b) out.push(x);
+  }
+  if (jis) out.push(0x1b, 0x28, 0x42);
+  return { ok: true, bytes: Uint8Array.from(out) };
+}
+
 /** the bytes of a text in a character set: { ok, bytes } or { ok: false, error } naming the first character the set cannot hold (never a silent
- *  '?'), or saying that a multi-byte Asian set is decode only here. Pure. */
+ *  '?'). Pure. */
 export function textToBytes(text, charset = 'utf-8') {
   const t = String(text ?? '');
   if (charset === 'utf-16le' || charset === 'utf-16be') {
@@ -74,7 +122,7 @@ export function textToBytes(text, charset = 'utf-8') {
     for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); out[2 * i + (be ? 1 : 0)] = c & 255; out[2 * i + (be ? 0 : 1)] = c >> 8; }
     return { ok: true, bytes: out };
   }
-  if (DECODE_ONLY.has(charset)) return { ok: false, error: nameOf(charset) + ' is decode only here (its tables are too big to carry in the page): paste Base64 to read it as ' + nameOf(charset) + ', or choose UTF-8 to encode text' };
+  if (MULTI.has(charset)) return multiToBytes(t, charset);
   const tb = table(charset);
   if (tb) {
     const rev = reverse(charset), out = new Uint8Array(t.length); let n = 0, at = 0;
@@ -106,14 +154,16 @@ export function bytesToText(bytes, charset = 'utf-8') {
     }
     return { ok: true, text: parts.join('') };
   }
-  const cs = CHARSETS[charset] && DECODE_ONLY.has(charset) ? charset : 'utf-8';
+  const cs = CHARSETS[charset] && MULTI.has(charset) ? charset : 'utf-8';
   try { return { ok: true, text: new TextDecoder(cs, { fatal: true, ignoreBOM: cs === 'utf-8' }).decode(b) }; } catch (_) {
     return { ok: false, error: 'the ' + b.length + ' decoded bytes are not ' + nameOf(cs) + ' text (a file, binary data, or another character set?): see them in hex, or download them' };
   }
 }
 
-/** bytes as Base64: { url: URL-safe alphabet, pad: '=' padding (default true), wrap: line length, 0 for none }. Pure. */
-export function encodeBytes(bytes, { url = false, pad = true, wrap = 0 } = {}) {
+/** the newline a choice names: 'crlf' (Windows) or '\r\n' gives CR LF, anything else LF (Unix). Pure. */
+export const eolOf = (e) => (e === 'crlf' || e === '\r\n' ? '\r\n' : '\n');
+/** bytes as Base64: { url: URL-safe alphabet, pad: '=' padding (default true), wrap: line length, 0 for none, eol: 'lf' or 'crlf' between wrapped lines }. Pure. */
+export function encodeBytes(bytes, { url = false, pad = true, wrap = 0, eol = 'lf' } = {}) {
   const b = bytes instanceof Uint8Array ? bytes : Uint8Array.from(bytes || []), A = url ? URL_SAFE : STD, parts = [];
   let chunk = '';
   for (let i = 0; i < b.length; i += 3) {
@@ -122,12 +172,27 @@ export function encodeBytes(bytes, { url = false, pad = true, wrap = 0 } = {}) {
     if (chunk.length >= 8192) { parts.push(chunk); chunk = ''; }
   }
   parts.push(chunk); const s = parts.join('');
-  return wrap > 0 ? (s.match(new RegExp('.{1,' + wrap + '}', 'g')) || []).join('\n') : s;
+  return wrap > 0 ? (s.match(new RegExp('.{1,' + wrap + '}', 'g')) || []).join(eolOf(eol)) : s;
 }
-/** a text as Base64 (its bytes in `charset`, UTF-8 by default): { ok, base64, bytes } or { ok: false, error }. Pure. */
+/** a text as Base64 (its bytes in `charset`, UTF-8 by default): { ok, base64, bytes } or { ok: false, error }. With `lines`, each line (split at
+ *  LF, CR LF or CR) is encoded on its own and the results joined with `eol`, as base64encode.org's "Encode each line separately". Pure. */
 export function encodeText(text, opts = {}) {
+  if (opts.lines) {
+    const out = [], all = []; let n = 0;
+    for (const line of String(text ?? '').split(/\r\n|\n|\r/)) { n++; const r = textToBytes(line, opts.charset); if (!r.ok) return { ...r, error: 'line ' + n + ': ' + r.error }; out.push(encodeBytes(r.bytes, opts)); all.push(r.bytes); }
+    const bytes = new Uint8Array(all.reduce((a, b) => a + b.length, 0)); let o = 0; for (const b of all) { bytes.set(b, o); o += b.length; }
+    return { ok: true, base64: out.join(eolOf(opts.eol)), bytes, lines: n };
+  }
   const r = textToBytes(text, opts.charset); if (!r.ok) return r;
   return { ok: true, base64: encodeBytes(r.bytes, opts), bytes: r.bytes };
+}
+/** Base64 read one line at a time (each line its own Base64, as "Encode each line separately" writes it), the texts joined with `eol`:
+ *  { ok, text, bytes, lines } or { ok: false, error } naming the line. Pure. */
+export function decodeLines(input, charset = 'utf-8', eol = 'lf') {
+  const texts = [], all = []; let n = 0;
+  for (const line of String(input ?? '').split(/\r\n|\n|\r/)) { n++; const r = decodeText(line, charset); if (!r.ok) return { ...r, error: 'line ' + n + ': ' + r.error }; texts.push(r.text); all.push(r.bytes); }
+  const bytes = new Uint8Array(all.reduce((a, b) => a + b.length, 0)); let o = 0; for (const b of all) { bytes.set(b, o); o += b.length; }
+  return { ok: true, text: texts.join(eolOf(eol)), bytes, lines: n, alphabet: 'standard', padded: false };
 }
 
 /** a data: URL's parts ({ mime, body }), or null when the text is not one. Pure. */
@@ -191,6 +256,18 @@ export function decodeText(input, charset = 'utf-8') {
   const r = decodeBytes(input); if (!r.ok) return r;
   const cs = charset === 'auto' ? sniffCharset(r.bytes) : charset, t = bytesToText(r.bytes, cs);
   return t.ok ? { ...r, text: t.text, charset: cs } : { ...r, ok: false, error: t.error, binary: true };
+}
+
+/** how much of a file is read at a time: a whole number of 3-byte groups (no padding until the end) that is also a whole number of 76-character
+ *  MIME lines (3 * 76 * 16384 bytes, 3.6 MB), so a file of any size is encoded a slice at a time and the slices join with nothing in between */
+export const FILE_CHUNK = 3 * 76 * 16384;
+/** a Blob or File as Base64, read with File.slice a chunk at a time: yields strings that, joined, equal encodeBytes of the whole (the same
+ *  options; with wrap, the newline between two slices is put at the start of the next). `chunk` must be a multiple of 3 * wrap / 4 * 3. */
+export async function* base64Chunks(blob, opts = {}, chunk = FILE_CHUNK) {
+  for (let at = 0; at < blob.size; at += chunk) {
+    const s = encodeBytes(new Uint8Array(await blob.slice(at, at + chunk).arrayBuffer()), opts);
+    yield (at > 0 && opts.wrap > 0 ? eolOf(opts.eol) : '') + s;
+  }
 }
 
 /** bytes in hex, two digits each, a space between: "68 65 6c 6c 6f". Pure. */

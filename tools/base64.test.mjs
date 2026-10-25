@@ -1,7 +1,7 @@
 // lib/base64.js: RFC 4648 Base64 and Base64URL, exact for UTF-8 text (emoji, accents), plain errors on bad input, files as data: URLs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { encodeText, decodeText, encodeBytes, decodeBytes, textToBytes, bytesToText, hexOf, dataUrl, dataUrlParts, sizeOf, sniffCharset, CHARSETS, CHARSET_GROUPS, canEncode } from '../void-live-deploy/lib/base64.js';
+import { encodeText, decodeText, encodeBytes, decodeBytes, textToBytes, bytesToText, hexOf, dataUrl, dataUrlParts, sizeOf, sniffCharset, CHARSETS, CHARSET_GROUPS, canEncode, multiTable, decodeLines, base64Chunks, FILE_CHUNK } from '../void-live-deploy/lib/base64.js';
 
 test('the RFC 4648 test vectors (section 10), both ways', () => {
   const V = [['', ''], ['f', 'Zg=='], ['fo', 'Zm8='], ['foo', 'Zm9v'], ['foob', 'Zm9vYg=='], ['fooba', 'Zm9vYmE='], ['foobar', 'Zm9vYmFy']];
@@ -107,12 +107,38 @@ test('a character a set cannot hold is named with its place, never turned into ?
   assert.match(textToBytes('Жж', 'ibm037').error, /“Ж” \(character 1\) is not in EBCDIC 037/);
   assert.match(bytesToText(Uint8Array.from([0x41, 0xc8]), 'ascii').error, /byte 2 \(0xc8\) has no character in US-ASCII/);
 });
-test('Shift_JIS, GBK, Big5, EUC-KR and the other multi-byte sets decode, and say plainly they are decode only', () => {
+test('Shift_JIS, GBK, Big5, EUC-KR and the other multi-byte sets decode, and encode too, from the decoder swept and inverted in memory', () => {
   assert.equal(decodeText('grGC8YLJgr+CzQ==', 'shift_jis').text, 'こんにちは', 'こんにちは in Shift_JIS (what Python gives)');
   assert.equal(decodeText(Buffer.from([0xc4, 0xe3, 0xba, 0xc3]).toString('base64'), 'gbk').text, '你好');
   assert.equal(decodeText(Buffer.from([0xa7, 0x41, 0xa6, 0x6e]).toString('base64'), 'big5').text, '你好');
   assert.equal(decodeText(Buffer.from([0xbe, 0xc8, 0xb3, 0xe7]).toString('base64'), 'euc-kr').text, '안녕');
   assert.equal(decodeText('/w==', 'shift_jis').ok, false);
-  for (const cs of ['shift_jis', 'euc-jp', 'iso-2022-jp', 'gbk', 'gb18030', 'big5', 'euc-kr']) { assert.equal(canEncode(cs), false, cs); assert.match(textToBytes('x', cs).error, /is decode only here/); }
+  // what Python's codecs give for the same text, byte for byte (python3 -c 'base64.b64encode(t.encode(cs))')
+  const PY = [['shift_jis', 'こんにちは 日本語 ABC', 'grGC8YLJgr+CzSCT+pZ7jOogQUJD'], ['euc-jp', 'こんにちは 日本語 ABC', 'pLOk86TLpMGkzyDG/MvcuOwgQUJD'],
+    ['iso-2022-jp', 'こんにちは 日本語 ABC', 'GyRCJDMkcyRLJEEkTxsoQiAbJEJGfEtcOGwbKEIgQUJD'], ['gbk', '你好，世界', 'xOO6w6OsysC95w=='], ['gb18030', '你好 😀 €', 'xOO6wyCUOfw2IKLj'],
+    ['big5', '你好 世界', 'p0GmbiClQKzJ'], ['euc-kr', '안녕하세요', 'vsiz58fPvLy/5A==']];
+  for (const [cs, t, b] of PY) { const r = encodeText(t, { charset: cs }); assert.equal(r.base64, b, cs); assert.equal(decodeText(b, cs).text, t, cs); assert.equal(canEncode(cs), true, cs); }
+  // every character each set's table holds goes out and comes back the same (a sample of each, every 7th, to keep the test quick)
+  for (const cs of ['shift_jis', 'euc-jp', 'iso-2022-jp', 'gbk', 'gb18030', 'big5', 'euc-kr']) {
+    const cps = [...multiTable(cs).keys()].filter((c, i) => i % 7 === 0 && c !== 0x1b && c !== 0x0e && c !== 0x0f), t = String.fromCodePoint(...cps);
+    const r = encodeText(t, { charset: cs }); assert.equal(r.ok, true, cs + ': ' + r.error); assert.equal(decodeText(r.base64, cs).text, t, cs + ' round trip');
+  }
+  // GB18030 holds every Unicode character: the supplementary planes by the standard's arithmetic, checked against the decoder
+  const far = '𠀀𝄞🎉\u{10FFFF}'; assert.equal(decodeText(encodeText(far, { charset: 'gb18030' }).base64, 'gb18030').text, far);
+  assert.match(textToBytes('😀', 'shift_jis').error, /“😀” \(character 1\) is not in Shift_JIS: choose UTF-8/);
   assert.equal(canEncode('windows-1252'), true);
+});
+test('each line on its own, LF or CR LF, and files read a slice at a time', async () => {
+  assert.equal(encodeText('f\nfo\r\nfoo', { lines: true }).base64, 'Zg==\nZm8=\nZm9v', 'each line its own Base64');
+  assert.equal(encodeText('f\nfo', { lines: true, eol: 'crlf' }).base64, 'Zg==\r\nZm8=');
+  assert.equal(decodeLines('Zg==\r\nZm8=\nZm9v', 'utf-8', 'crlf').text, 'f\r\nfo\r\nfoo');
+  assert.match(decodeLines('Zg==\na*b=').error, /^line 2: /);
+  const long = 'x'.repeat(200);
+  assert.equal(encodeText(long, { wrap: 76, eol: 'crlf' }).base64, Buffer.from(long).toString('base64').match(/.{1,76}/g).join('\r\n'), 'MIME lines end in CR LF when asked');
+  assert.equal(FILE_CHUNK % 3, 0); assert.equal((FILE_CHUNK / 3 * 4) % 76, 0, 'a slice is whole 76-character lines');
+  const bytes = Uint8Array.from({ length: 3 * 76 * 5 + 7 }, (_, i) => (i * 31) & 255), blob = new Blob([bytes]);
+  for (const opts of [{}, { wrap: 76 }, { wrap: 76, eol: 'crlf', url: true, pad: false }]) {
+    let s = ''; for await (const part of base64Chunks(blob, opts, 3 * 76)) s += part; // slices of 228 bytes: 304 characters, four lines each
+    assert.equal(s, encodeBytes(bytes, opts), JSON.stringify(opts));
+  }
 });
