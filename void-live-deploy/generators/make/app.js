@@ -14,12 +14,12 @@
     let current = [], compiled = null;
     function lineOf(n) { const ta = $('src'), lines = ta.value.split('\n'); let at = 0; for (let i = 0; i < n - 1 && i < lines.length; i++) at += lines[i].length + 1; ta.focus(); ta.setSelectionRange(at, at + (lines[n - 1] || '').length); }
     // imports: published generators by id, fetched once and kept for this visit (three levels deep at most)
-    const imported = {}, loading = new Set();
+    const imported = {}, importedText = {}, loading = new Set();
     async function loadImports(g, depth = 0) {
       if (depth > 2) return;
       await Promise.all((g.imports || []).filter((id) => !imported[id] && !loading.has(id)).map(async (id) => {
         loading.add(id);
-        try { const j = await (await fetch('/api/generators?id=' + id)).json(); if (j && j.ok) { imported[id] = L.compile(j.text); await loadImports(imported[id], depth + 1); } } catch (_) {}
+        try { const j = await (await fetch('/api/generators?id=' + id)).json(); if (j && j.ok) { importedText[id] = j.text; imported[id] = L.compile(j.text); await loadImports(imported[id], depth + 1); } } catch (_) {}
       }));
     }
     // inputs: what the generator asks before generating ($inputs), drawn as controls; a change makes new results at the same seed
@@ -41,7 +41,7 @@
       compiled = L.compile($('src').value);
       if ((compiled.imports || []).some((id) => !imported[id] && !loading.has(id))) loadImports(compiled).then(() => draw());
       drawInputs(compiled);
-      const r = L.generate(compiled, state.seed, state.n, { imports: imported, inputs: chosen }); current = r.results;
+      const r = results(compiled); current = r.results;
       $('errs').replaceChildren(...r.errors.slice(0, 8).map((e) => { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.textContent = 'line ' + e.line; b.addEventListener('click', () => lineOf(e.line)); li.append(b, document.createTextNode(' ' + e.message)); return li; }));
       $('seed').textContent = 'seed ' + state.seed;
       if (compiled.title && !$('name').value) $('name').placeholder = compiled.title;
@@ -49,14 +49,40 @@
       $('res').replaceChildren(...current.map((x, i) => row(x, i)));
       $('outH').textContent = (($('name').value || compiled.title || '').trim() || 'Results');
     }
+    // each result with its parts (tap a part to roll just that part) and its {ai: ...} texts, filled by the answer model a few at a time
+    function results(g) {
+      if (g.errors.length) return { results: [], errors: g.errors };
+      const out = [];
+      for (let i = 0; i < state.n; i++) { const seed = L.seedFor(state.seed, i), r = L.run(g, seed, { imports: imported, inputs: chosen, spans: true }); if (r.errors.length) return { results: out, errors: r.errors }; out.push({ ...r, seed }); }
+      return { results: out, errors: [] };
+    }
+    const aiDone = new Map(), aiQueue = []; let aiBusy = false;
+    const aiKey = (prompt, seed) => seed + '|' + prompt;
+    const aiFill = (x) => x.ai.map((p) => { const v = aiDone.get(aiKey(p, x.seed)); if (v === undefined && !aiQueue.some((q) => q.k === aiKey(p, x.seed))) { aiQueue.push({ k: aiKey(p, x.seed), prompt: p, seed: x.seed }); pumpAi(); } return v; });
+    async function pumpAi() {
+      if (aiBusy || !aiQueue.length) return; aiBusy = true; const job = aiQueue.shift();
+      try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'aitext', prompt: job.prompt, seed: job.seed }) }); const j = await r.json(); aiDone.set(job.k, j.text || ('(' + (j.say || 'the AI text is resting') + ')')); }
+      catch (_) { aiDone.set(job.k, navigator.onLine ? '(the AI text is resting)' : '(AI text needs the internet)'); }
+      aiBusy = false; current.forEach((x, i) => { if (x.ai.length && $('res').children[i]) $('res').children[i].replaceWith(row(x, i)); }); pumpAi();
+    }
+    const plain = (x) => L.aiMarks(L.tidySpans(x.spans).map((p) => p.t).join(''), aiFill(x), '…');
     function row(x, i) {
-      const li = document.createElement('li'), t = document.createElement('div'); t.className = 'txt'; t.textContent = x.output;
+      const li = document.createElement('li'), t = document.createElement('div'); t.className = 'txt';
+      const texts = aiFill(x);
+      for (const [k, part] of L.tidySpans(x.spans).entries()) {
+        const shown = L.aiMarks(part.t, texts, '…');
+        if (part.src !== undefined && shown.trim() && !/\u0005/.test(part.t)) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'tap'; b.textContent = shown; b.title = 'Tap to roll just this part'; b.setAttribute('aria-label', 'Roll again: ' + shown);
+          b.addEventListener('click', () => { const r = L.reroll(compiled, x.spans[k], (L.rng(Date.now() + k)() * 4294967296) >>> 0, { imports: imported, inputs: chosen, vars: x.vars }); if (!r.errors.length) { x.spans[k] = { ...x.spans[k], t: r.t }; const n = row(x, i); li.replaceWith(n); const nb = n.querySelectorAll('.tap')[[...li.querySelectorAll('.tap')].indexOf(b)]; if (nb) nb.focus(); } });
+          t.append(b);
+        } else t.append(document.createTextNode(shown));
+      }
       const acts = document.createElement('div'); acts.className = 'acts';
       const mk = (label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => fn(b)); acts.append(b); return b; };
-      mk('Copy', async (b) => { await copy(li.querySelector('.txt').textContent); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); });
-      mk('Re-roll this one', () => { const r = L.run(compiled, (L.rng(Date.now() + i)() * 4294967296) >>> 0, { imports: imported, inputs: chosen }); if (!r.errors.length) { current[i] = { output: r.output, image: r.image }; li.replaceWith(row(current[i], i)); } });
-      const pic = document.createElement('a'); pic.className = 'btn'; pic.textContent = 'Picture it →'; pic.href = '/image/?' + new URLSearchParams({ prompt: (x.image || x.output).slice(0, 400), go: '1' }); acts.append(pic);
-      if ('speechSynthesis' in window) mk('Read aloud', () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(li.querySelector('.txt').textContent)); } catch (_) {} });
+      mk('Copy', async (b) => { await copy(plain(x)); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); });
+      mk('Re-roll this one', () => { const sd = (L.rng(Date.now() + i)() * 4294967296) >>> 0, r = L.run(compiled, sd, { imports: imported, inputs: chosen, spans: true }); r.seed = sd; if (!r.errors.length) { current[i] = r; li.replaceWith(row(current[i], i)); } });
+      const pic = document.createElement('a'); pic.className = 'btn'; pic.textContent = 'Picture it →'; pic.href = '/image/?' + new URLSearchParams({ prompt: (x.image ? L.aiMarks(x.image, [], '') : plain(x)).slice(0, 400), go: '1' }); acts.append(pic);
+      if ('speechSynthesis' in window) mk('Read aloud', () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(plain(x))); } catch (_) {} });
       li.append(t); if (x.image) { const ip = document.createElement('div'); ip.className = 'imgp'; ip.textContent = 'Picture prompt: ' + x.image; li.append(ip); }
       li.append(acts); return li;
     }
@@ -65,7 +91,7 @@
     $('name').addEventListener('input', () => { $('outH').textContent = $('name').value.trim() || 'Results'; });
     $('regen').addEventListener('click', () => { state.seed = (L.rng(Date.now())() * 4294967296) >>> 0; draw(); });
     $('n').addEventListener('change', () => { state.n = Math.max(1, Math.min(20, +$('n').value || 5)); $('n').value = state.n; draw(); });
-    $('copyAll').addEventListener('click', async () => { await copy(current.map((x) => x.output).join('\n')); say('Copied'); });
+    $('copyAll').addEventListener('click', async () => { await copy(current.map(plain).join('\n')); say('Copied'); });
     // on this device: a list of generators, each keeping its last 10 versions
     function save(silent) {
       const text = $('src').value, title = ($('name').value || (compiled && compiled.title) || 'My generator').trim().slice(0, 60);
@@ -106,8 +132,8 @@
         const engine = await (await fetch('/lib/listgen.js')).text(), title = ($('name').value || (compiled && compiled.title) || 'Random generator').trim();
         const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
         const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(title) + '</title><style>body{font:17px/1.5 system-ui,sans-serif;max-width:640px;margin:24px auto;padding:0 16px}li{margin:8px 0;white-space:pre-line}button{font:inherit;padding:8px 16px;border-radius:999px}</style></head><body><h1>' + esc(title) + '</h1><button id="go">Regenerate</button><ol id="res"></ol><p style="font-size:13px;color:#666">Made with Verse, a-to-mind.com/generators/make/</p>'
-          + '<script type="application/json" id="gen">' + JSON.stringify($('src').value).replace(/</g, '\\u003c') + '<\/script><script type="module">' + engine.replace(/<\/script/gi, '<\\/script') + '\nconst T = JSON.parse(document.getElementById("gen").textContent); const go = () => { const r = generate(T, (Math.random() * 4294967296) >>> 0, 5); document.getElementById("res").replaceChildren(...(r.errors.length ? r.errors.map((e) => "line " + e.line + ": " + e.message) : r.results.map((x) => x.output)).map((t) => Object.assign(document.createElement("li"), { textContent: t }))); }; document.getElementById("go").onclick = go; go();<\/script></body></html>';
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) + '.html'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); say('Downloaded: it runs offline in any browser.');
+          + '<script type="application/json" id="gen">' + JSON.stringify({ main: $('src').value, imports: importedText, inputs: chosen }).replace(/</g, '\\u003c') + '<\/script><script type="module">' + engine.replace(/<\/script/gi, '<\\/script') + '\nconst T = JSON.parse(document.getElementById("gen").textContent), I = {}; for (const [k, v] of Object.entries(T.imports || {})) I[k] = compile(v); const go = () => { const r = generate(T.main, (Math.random() * 4294967296) >>> 0, 5, { imports: I, inputs: T.inputs || {} }); document.getElementById("res").replaceChildren(...(r.errors.length ? r.errors.map((e) => "line " + e.line + ": " + e.message) : r.results.map((x) => aiMarks(x.output, [], ""))).map((t) => Object.assign(document.createElement("li"), { textContent: t }))); }; document.getElementById("go").onclick = go; go();<\/script></body></html>';
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) + '.html'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); say('Downloaded: it runs offline in any browser' + (Object.keys(importedText).length ? ', with the ' + Object.keys(importedText).length + ' generator(s) it imports inside it' : '') + ((compiled && /\{\s*ai\s*:/i.test($('src').value)) ? '; its {ai: ...} text needs this site, so the file leaves it out.' : '.'));
       } catch (_) { say('The download needs the page loaded once online.'); }
     });
     // what opens: a published one (?id=), a shared one (#g=), the last one kept here, or the starter

@@ -75,7 +75,7 @@ test('errors are plain words with the line they are on', () => {
 });
 test('the $output = ... one-line form, $title, and an image list', () => {
   const g = L.compile('$title = Names\n$output = [n.titleCase]\n$image = a portrait of [n]\nn\n  zed\n'); assert.deepEqual(g.errors, []);
-  assert.equal(g.title, 'Names'); assert.deepEqual(L.run(g, 1), { output: 'Zed', image: 'a portrait of zed', errors: [] });
+  assert.equal(g.title, 'Names'); assert.deepEqual(L.run(g, 1), { output: 'Zed', image: 'a portrait of zed', errors: [], ai: [] });
 });
 test('limits: text, output length, work', () => {
   assert.ok(L.compile('output\n  a\n' + 'x'.repeat(L.MAX_TEXT)).errors.length >= 0);
@@ -126,4 +126,32 @@ test('$meta and $inputs say plainly what is wrong', () => {
   assert.match(L.compile('$meta\n  colour = red\noutput\n  a\n').errors[0].message, /\$meta line/);
   assert.match(L.compile('$meta\n  image = https://evil.example/x.png\noutput\n  a\n').errors[0].message, /gallery/);
   assert.match(L.compile('$inputs\n  g = dropdown a\noutput\n  a\n').errors[0].message, /an input is/);
+});
+test('presentTense, futureTense, negativeForm and verbBase', () => {
+  const t = (w) => [L.presentTense(w), L.futureTense(w), L.negativeForm(w)];
+  assert.deepEqual(t('walked to town'), ['walks to town', 'will walk to town', 'did not walk to town']);
+  assert.deepEqual(t('flew away'), ['flies away', 'will fly away', 'did not fly away']);
+  assert.deepEqual(t('walks home'), ['walks home', 'will walk home', 'does not walk home']);
+  assert.deepEqual(t('is happy'), ['is happy', 'will be happy', 'is not happy']);
+  assert.deepEqual(t('can swim'), ['can swim', 'can swim', 'cannot swim']);
+  assert.deepEqual(t('will sing'), ['sings', 'will sing', 'will not sing']);
+  assert.deepEqual(t('Smiled'), ['Smiles', 'Will smile', 'Did not smile']);
+  for (const [a, b] of [['liked', 'like'], ['created', 'create'], ['stopped', 'stop'], ['carried', 'carry'], ['visited', 'visit'], ['goes', 'go'], ['went', 'go']]) assert.equal(L.verbBase(a), b, a);
+  assert.equal(L.run('output\n  [v.futureTense]\nv\n  ran home\n', 1).output, 'will run home');
+});
+test('tap to reroll: the output entry\'s parts, tidied across parts; one part worked out again with the kept values', () => {
+  const g = L.compile('output\n  [n = name, ""]{A} [adj] [animal] named [n] saw {2-3} bird{s}.\nname\n  Pip\nadj\n  odd\n  big\n  eager\nanimal\n  owl\n  cat\n');
+  for (let s = 1; s < 20; s++) {
+    const r = L.run(g, s, { spans: true }), parts = L.tidySpans(r.spans);
+    assert.equal(parts.map((x) => x.t).join(''), r.output); assert.deepEqual(r.vars, { n: 'Pip' });
+    const i = parts.findIndex((x) => x.src === 'adj'); const again = L.reroll(g, r.spans[i], s + 100, { vars: r.vars }); assert.match(again.t, /^(?:odd|big|eager)$/);
+    const next = r.spans.slice(); next[i] = { ...next[i], t: again.t }; const t = L.tidySpans(next).map((x) => x.t).join('');
+    assert.match(t, /^(?:An odd|A big|An eager) (?:owl|cat) named Pip saw [23] birds\.$/, t);
+  }
+  assert.equal(L.reroll(g, { src: 'n', kind: '[' }, 1, { vars: { n: 'Pip' } }).t, 'Pip', 'a kept value stays itself');
+});
+test('{ai: ...}: the prompt is worked out and marked for the page to fill; at most three a result', () => {
+  const r = L.run('output\n  Hi. {ai: one line about a [x] knight} {ai: a} {ai: b} {ai: c}\nx\n  brave\n', 1);
+  assert.deepEqual(r.ai, ['one line about a brave knight', 'a', 'b']);
+  assert.equal(L.aiMarks(r.output, ['A knight.', 'A.']), 'Hi. A knight. A. … ');
 });

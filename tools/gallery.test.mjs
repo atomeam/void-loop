@@ -25,7 +25,7 @@ const list = async (env, sort = 'new') => (await (await gallery.onRequestGet({ e
 
 test('only a picture Verse painted today can be shared, never bytes from the caller; the picture is served by its id', async () => {
   const env = world(), P = { prompt: 'a lighthouse at dawn', style: 'painting', shape: 'square', seed: 5 };
-  assert.match((await post(env, { act: 'share', ...P })).error, /made here today/, 'nothing painted yet');
+  assert.match((await post(env, { act: 'share', ...P })).error, /about a day[\s\S]*Same seed again/, 'nothing painted: said plainly, with the way back');
   assert.equal((await post(env, { act: 'share', ...P, img: 'data:image/png;base64,AAAA' })).ok, false, 'an image sent along is ignored');
   await paint(env, P);
   const r = await post(env, { act: 'share', ...P }); assert.equal(r.ok, true); assert.match(r.id, gallery.ID_RE);
@@ -73,4 +73,11 @@ test('a published generator\'s link carries its share card from $meta; the text 
   const r = await gen.onRequestGet({ env, params: { id: 'abcdefgh' }, request: new Request('https://a-to-mind.com/gen/abcdefgh') }); const t = await r.text();
   assert.equal(r.status, 200); assert.match(t, /Secret pets/); assert.doesNotMatch(t, /hidden-entry-text/);
   assert.equal((await gen.onRequestGet({ env, params: { id: 'zzzzzzzz' }, request: new Request('https://a-to-mind.com/gen/zzzzzzzz') })).status, 404);
+});
+test('a picture made yesterday can still be shared while the cache keeps it; older is said plainly', async () => {
+  const env = world(), y = new Date(Date.now() - 864e5).toISOString().slice(0, 10), old = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10);
+  const put = async (d, prompt) => store.set((await image.cacheReq('https://x', [d, prompt, '', 'none', 'square', 3])).url, JSON.stringify({ state: 'art', img: 'data:image/jpeg;base64,' + JPEG }));
+  await put(y, 'a moon'); await put(old, 'a sun');
+  assert.equal((await post(env, { act: 'share', prompt: 'a moon', seed: 3 })).ok, true);
+  const r = await post(env, { act: 'share', prompt: 'a sun', seed: 3 }); assert.equal(r.ok, false); assert.equal(r.why, 'gone');
 });

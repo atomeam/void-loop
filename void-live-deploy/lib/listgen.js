@@ -26,9 +26,10 @@
 // /image/. A text with no indented line at all is one plain list, one entry per line (the old "make your own" box keeps working).
 // Plain text out, never HTML: the pages put it in with textContent.
 
+export const AI_MAX = 3, AI_PROMPT_MAX = 400;
 export const MAX_TEXT = 20000, MAX_OUT = 8000, MAX_STEPS = 20000, MAX_DEPTH = 60, MAX_LINES = 2000;
 const NAME = /^[$A-Za-z_][\w$]*$/;
-export const METHODS = Object.freeze(['selectOne', 'selectMany', 'selectUnique', 'selectAll', 'joinItems', 'consumableList', 'titleCase', 'upperCase', 'lowerCase', 'sentenceCase', 'pluralForm', 'singularForm', 'possessiveForm', 'pastTense']);
+export const METHODS = Object.freeze(['selectOne', 'selectMany', 'selectUnique', 'selectAll', 'joinItems', 'consumableList', 'titleCase', 'upperCase', 'lowerCase', 'sentenceCase', 'pluralForm', 'singularForm', 'possessiveForm', 'pastTense', 'presentTense', 'futureTense', 'negativeForm']);
 const RESERVED = new Set(METHODS);
 
 /** a seeded random number source in [0, 1): mulberry32. Pure. */
@@ -213,7 +214,39 @@ export const possessiveForm = (s) => String(s).replace(/([A-Za-z]+)(\W*)$/, (_, 
 const PAST = { be: 'was', is: 'was', are: 'were', go: 'went', do: 'did', have: 'had', has: 'had', make: 'made', see: 'saw', take: 'took', come: 'came', get: 'got', give: 'gave', find: 'found', run: 'ran', eat: 'ate', fly: 'flew', fight: 'fought', sing: 'sang', write: 'wrote', ride: 'rode', steal: 'stole', break: 'broke', speak: 'spoke', know: 'knew', think: 'thought', bring: 'brought', buy: 'bought', fall: 'fell', sleep: 'slept', win: 'won', lose: 'lost', say: 'said', tell: 'told', swim: 'swam', drink: 'drank', begin: 'began', leave: 'left', meet: 'met', hold: 'held', build: 'built', send: 'sent', sit: 'sat', stand: 'stood', wake: 'woke', put: 'put', cut: 'cut', hit: 'hit', let: 'let', set: 'set' };
 /** a verb's past tense (the first word of a phrase): "walk to town" -> "walked to town". Pure. */
 export const pastTense = (s) => String(s).replace(/^(\s*)([A-Za-z]+)/, (_, sp, w) => { const lo = w.toLowerCase(); let p = PAST[lo] || (/e$/.test(lo) ? lo + 'd' : /[^aeiou]y$/.test(lo) ? lo.slice(0, -1) + 'ied' : /^[^aeiou]*[aeiou][^aeiouwxy]$/.test(lo) ? lo + lo.slice(-1) + 'ed' : lo + 'ed'); return sp + keepCase(w, p); });
-const STRING_METHODS = { possessiveForm, pastTense, titleCase, upperCase: (s) => String(s).toUpperCase(), lowerCase: (s) => String(s).toLowerCase(), sentenceCase, pluralForm, singularForm };
+const UNPAST = Object.fromEntries(Object.entries(PAST).filter(([k]) => !['is', 'has'].includes(k)).map(([a, b]) => [b, a]));
+const MODAL = /^(?:can|could|will|would|shall|should|may|might|must)$/i;
+/** a verb's plain form, whatever tense it came in: "walked", "walks", "will walk", "flew" -> "walk", "fly". Pure. */
+export function verbBase(w) {
+  const lo = String(w).toLowerCase();
+  if (lo === 'is' || lo === 'are' || lo === 'was' || lo === 'were' || lo === 'am') return 'be';
+  if (lo === 'has' || lo === 'had') return 'have';
+  if (UNPAST[lo]) return UNPAST[lo];
+  if (/[^aeiou]ied$/.test(lo)) return lo.slice(0, -3) + 'y';
+  if (/([^aeiouwxy])\1ed$/.test(lo) && !/(?:ll|ss)ed$/.test(lo)) return lo.slice(0, -3);
+  if (/ated$|[^aeiou][aeiou][bcdgklmnprstvz]ed$/.test(lo) && !/(?:ened|ited|ered|eled|aled|oned|ored)$/.test(lo)) return lo.slice(0, -1); // liked, smiled, created -> like, smile, create
+  if (/ed$/.test(lo) && lo.length > 4) return lo.slice(0, -2);
+  if (/[^aeiou]ies$/.test(lo)) return lo.slice(0, -3) + 'y';
+  if (/(?:ss|x|z|ch|sh|o)es$/.test(lo)) return lo.slice(0, -2);
+  if (/[^s]s$/.test(lo) && lo.length > 3) return lo.slice(0, -1);
+  return lo;
+}
+const thirdPerson = (b) => (b === 'be' ? 'is' : b === 'have' ? 'has' : /[^aeiou]y$/.test(b) ? b.slice(0, -1) + 'ies' : /(?:s|x|z|ch|sh|o)$/.test(b) ? b + 'es' : b + 's');
+const verbFirst = (s, fn) => String(s).replace(/^(\s*)(?:(will)\s+)?([A-Za-z]+)/i, (_, sp, will, w) => { const out = fn(will ? w : w, !!will); return sp + (/^[A-Z]/.test(will || w) ? out.charAt(0).toUpperCase() + out.slice(1) : out); });
+/** "walked to town" -> "walks to town" (he/she/it). Pure. */
+export const presentTense = (s) => verbFirst(s, (w) => (MODAL.test(w) ? w.toLowerCase() : thirdPerson(verbBase(w))));
+/** "walked to town" -> "will walk to town". Pure. */
+export const futureTense = (s) => verbFirst(s, (w, will) => (will ? 'will ' + verbBase(w) : MODAL.test(w) ? w.toLowerCase() : 'will ' + verbBase(w)));
+/** "walks to town" -> "does not walk to town", "walked" -> "did not walk", "is happy" -> "is not happy", "can fly" -> "cannot fly". Pure. */
+export const negativeForm = (s) => verbFirst(s, (w, will) => {
+  const lo = w.toLowerCase(); if (will) return 'will not ' + verbBase(w);
+  if (/^(?:is|are|was|were|am|has|had|have)$/.test(lo) && lo.startsWith('ha') === false) return lo + ' not';
+  if (lo === 'can') return 'cannot'; if (MODAL.test(lo)) return lo + ' not';
+  if (UNPAST[lo] || /ed$/.test(lo)) return 'did not ' + verbBase(w);
+  if (/s$/.test(lo) && verbBase(w) !== lo) return 'does not ' + verbBase(w);
+  return 'do not ' + lo;
+});
+const STRING_METHODS = { possessiveForm, pastTense, presentTense, futureTense, negativeForm, titleCase, upperCase: (s) => String(s).toUpperCase(), lowerCase: (s) => String(s).toLowerCase(), sentenceCase, pluralForm, singularForm };
 // "a" or "an" before a word: vowel sounds, with the usual exceptions
 export function articleFor(word) {
   const w = String(word || '').toLowerCase();
@@ -238,16 +271,19 @@ export function inputValues(g, chosen = {}) {
 }
 /** one result: { output, image, errors }. `g` is compile()'s answer (or the text itself). `imports` maps a hub id to that generator compiled;
  *  `inputs` are the values chosen in the generator's inputs. The same g, seed, imports and inputs give the same result. Pure. */
-export function run(gen, seed = 1, { image = true, imports = {}, inputs = {} } = {}) {
+export function run(gen, seed = 1, { image = true, imports = {}, inputs = {}, spans = false } = {}) {
   const g = typeof gen === 'string' ? compile(gen) : gen;
   if (g.errors.length) return { output: '', image: '', errors: g.errors };
   const out = outputName(g); if (!out) return { output: '', image: '', errors: [{ line: 1, message: 'there is no output list' }] };
   const vars = Object.assign(Object.create(null), inputValues(g, inputs));
-  const ctx = { g, rand: rng(seed), vars, c: { steps: 0, depth: 0 }, line: g.lists[out].line, imports: imports || {}, others: new Map() };
+  const ctx = { g, rand: rng(seed), vars, c: { steps: 0, depth: 0 }, line: g.lists[out].line, imports: imports || {}, others: new Map(), ai: [], armSpans: !!spans, spans: null };
   try {
     const output = finishText(pick(ctx, g.lists[out]));
+    const sp = ctx.spans; ctx.armSpans = false;
     const im = image && imageName(g) ? finishText(pick(ctx, g.lists[imageName(g)])) : '';
-    return { output, image: im, errors: [] };
+    const res = { output, image: im, errors: [], ai: ctx.ai };
+    if (spans) { res.spans = sp || [{ t: output }]; res.vars = Object.fromEntries(Object.entries(ctx.vars).filter(([, v]) => typeof v === 'string' || typeof v === 'number')); }
+    return res;
   } catch (e) {
     if (!(e instanceof GenError)) throw e;
     return { output: '', image: '', errors: [{ line: e.line || ctx.line || 1, message: e.message }] };
@@ -282,7 +318,8 @@ function pick(ctx, node) {
     const total = items.reduce((a, [, o]) => a + o, 0); let r = ctx.rand() * total, chosen = items[items.length - 1][0];
     for (const [it, o] of items) { r -= o; if (r < 0) { chosen = it; break; } }
     if (chosen.items) return pick(ctx, chosen);
-    return evalText(ctx, chosen.text, chosen.line);
+    if (ctx.armSpans) { ctx.armSpans = false; ctx.spanTarget = chosen; } // the output's own entry: its parts are kept for tap-to-reroll
+    return evalText(ctx, chosen.text, chosen.line, ctx.spanTarget === chosen);
   });
 }
 function leaves(ctx, node) { const out = []; for (const it of node.items) { if (it.items) out.push(...leaves(ctx, it)); else { const o = oddsNow(ctx, it); if (o > 0) out.push({ ...it, odds: o, owner: node.owner }); } } return out; }
@@ -291,27 +328,30 @@ function leaves(ctx, node) { const out = []; for (const it of node.items) { if (
 function finishText(s) {
   let t = String(s).replace(/<br\s*\/?>/gi, '\n');
   t = t.replace(/\u0002/g, (_, at, all) => { const m = all.slice(0, at).match(/(-?\d+(?:\.\d+)?)[^\d]*$/); return m && Number(m[1]) === 1 ? '' : 's'; });
-  t = t.replace(/\u0001([aA])(\s*)([^\s\u0001]*)/g, (_, a, sp, w) => { const x = articleFor(w.replace(/^[^A-Za-z0-9]+/, '')); return (a === 'A' ? x.charAt(0).toUpperCase() + x.slice(1) : x) + (sp || ' ') + w; });
+  t = t.replace(/\u0001([aA])([\s\u0003\u0004]*)([^\s\u0001\u0003\u0004]*)/g, (_, a, sp, w) => { const x = articleFor(w.replace(/^[^A-Za-z0-9]+/, '')); return (a === 'A' ? x.charAt(0).toUpperCase() + x.slice(1) : x) + (sp || ' ') + w; });
   return t.slice(0, MAX_OUT);
 }
 
-function evalText(ctx, text, line) {
+function evalText(ctx, text, line, record = false) {
   if (ctx.c.depth + 1 > MAX_DEPTH) throw new GenError('the generator calls itself without end (more than ' + MAX_DEPTH + ' levels deep)', line);
   ctx.c.depth++; const prev = ctx.line; ctx.line = line;
   try {
     const s = String(text); let out = '';
+    const parts = record ? [] : null, lit = (x) => { if (!parts) return; const l = parts[parts.length - 1]; if (l && l.src === undefined) l.t += x; else parts.push({ t: x }); };
     for (let i = 0; i < s.length; i++) {
       const c = s[i];
-      if (c === '\\') { const n = s[i + 1]; out += n === 's' ? ' ' : n === 'n' ? '\n' : n === undefined ? '' : n; i++; continue; }
+      if (c === '\\') { const n = s[i + 1]; const x = n === 's' ? ' ' : n === 'n' ? '\n' : n === undefined ? '' : n; out += x; lit(x); i++; continue; }
       if (c === '[' || c === '{') {
         const end = closing(s, i); if (end < 0) throw new GenError('a ' + c + ' is never closed', line);
         const inner = s.slice(i + 1, end);
-        out += c === '[' ? asText(evalExpr(ctx, inner, line)) : evalChoice(ctx, inner, line);
+        const x = c === '[' ? asText(evalExpr(ctx, inner, line)) : evalChoice(ctx, inner, line);
+        out += x; if (parts) parts.push({ t: x, src: inner, kind: c, line });
         i = end; continue;
       }
-      out += c;
+      out += c; lit(c);
       if (out.length > MAX_OUT * 2) break;
     }
+    if (parts) ctx.spans = parts;
     return out;
   } finally { ctx.c.depth--; ctx.line = prev; }
 }
@@ -330,6 +370,8 @@ function evalChoice(ctx, inner, line) {
   const t = inner.trim();
   if (t === 'a' || t === 'A') return '\u0001' + t;
   if (t === 's') return '\u0002';
+  const ai = inner.match(/^\s*ai\s*:([\s\S]+)$/i); // {ai: a prompt with [lists]}: the page asks the answer model and puts the text in (lib/listgen.js aiMarks)
+  if (ai) { const prompt = evalText(ctx, ai[1].trim(), line).replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ').trim().slice(0, AI_PROMPT_MAX); if (!prompt || ctx.ai.length >= AI_MAX) return ''; ctx.ai.push(prompt); return '\u0005' + (ctx.ai.length - 1) + '\u0005'; }
   const lr = t.match(/^([a-zA-Z])\s*-\s*([a-zA-Z])$/);
   if (lr) { const lo = Math.min(lr[1].charCodeAt(0), lr[2].charCodeAt(0)), hi = Math.max(lr[1].charCodeAt(0), lr[2].charCodeAt(0)); step(ctx, line); return String.fromCharCode(lo + Math.floor(ctx.rand() * (hi - lo + 1))); }
   const dice = t.match(/^(\d{0,2})d(\d{1,4})\s*(?:([+-])\s*(\d{1,4}))?$/i);
@@ -487,6 +529,22 @@ function member(ctx, v, p, line) {
   if (name === 'selectOne' || name === 'joinItems') return v;
   throw new GenError('"' + asText(v).slice(0, 20) + '" has no way called ' + name, line);
 }
+
+/** the parts of a result (run(..., { spans: true }).spans) as they read: "a"/"an" and {s} worked out across parts. Pure. */
+export function tidySpans(spans) {
+  const raw = spans.map((x) => x.t);
+  return spans.map((x, i) => { const all = finishText(raw.slice(0, i).join('') + '\u0004' + raw[i] + '\u0003' + raw.slice(i + 1).join('')); return { ...x, t: all.slice(all.indexOf('\u0004') + 1, all.indexOf('\u0003')) }; });
+}
+/** a new value for one tappable part of a result: the part's [ ] or { } worked out again with a fresh seed and the result's kept values. Pure. */
+export function reroll(gen, span, seed = 1, { imports = {}, inputs = {}, vars = {} } = {}) {
+  const g = typeof gen === 'string' ? compile(gen) : gen;
+  if (!span || span.src === undefined) return { t: span ? span.t : '', errors: [] };
+  const ctx = { g, rand: rng(seed), vars: Object.assign(Object.create(null), inputValues(g, inputs), vars), c: { steps: 0, depth: 0 }, line: span.line || 1, imports, others: new Map(), ai: [], armSpans: false };
+  try { const t = span.kind === '[' ? asText(evalExpr(ctx, span.src, span.line)) : evalChoice(ctx, span.src, span.line); return { t, errors: [], ai: ctx.ai }; }
+  catch (e) { if (!(e instanceof GenError)) throw e; return { t: span.t, errors: [{ line: e.line || 1, message: e.message }] }; }
+}
+/** a result's text with its {ai: ...} marks filled: `texts[i]` for mark i, or `wait` while it is being written. Pure. */
+export const aiMarks = (text, texts = [], wait = '…') => String(text).replace(/\u0005(\d+)\u0005/g, (_, i) => (texts[+i] != null ? texts[+i] : wait));
 
 // sharing: the whole generator in the link's fragment (#g=...), so nothing is stored anywhere for a share. 'p.' is the text as base64url;
 // 'z.' is the text deflated first (CompressionStream, every current browser and Node), about a third of the size

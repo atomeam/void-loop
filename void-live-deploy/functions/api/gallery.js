@@ -7,7 +7,7 @@
 //   DELETE ?id=<id> (owner key)   -> { ok } gone for good
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open endpoint with no account. The most a caller can do is:
-//   - share a picture: NEVER bytes they send. The share names the words, style, shape and seed of a picture /api/image painted today, and the
+//   - share a picture: NEVER bytes they send. The share names the words, style, shape and seed of a picture /api/image painted in the last day, and the
 //     picture is read from that route's own edge cache; nothing is kept unless Verse's painter made it, under its refusals (no sexual or hateful
 //     words, no photo of a named real person, no keys) and the free painter's safety filter. The prompt is checked again here. So a stranger cannot
 //     upload an image, only re-show one Verse made for a refused-checked prompt. SHARE_MINUTE a minute and SHARE_DAY a day from one connection,
@@ -86,8 +86,11 @@ export async function onRequestPost({ request, env }) {
     if ((await bump(here, 'gallery:share:' + conn)) > SHARE_MINUTE) return json({ ok: false, error: 'slow down: a few a minute' }, 429, { 'retry-after': '60' });
     const prompt = cleanLine(b.prompt, PROMPT_MAX), negative = cleanLine(b.negative, NEGATIVE_MAX), style = styleOf(b.style), shape = shapeOf(b.shape), seed = seedOf(b.seed);
     if (refusalOf(prompt, negative, style, isSecret)) return json({ ok: false, error: 'that picture cannot go in the gallery' }, 400);
-    let hit = null; try { const r = await caches.default.match(await cacheReq(here, [day, prompt, negative, style, shape, seed])); hit = r ? await r.json() : null; } catch (_) {}
-    if (!hit || hit.state !== 'art' || !/^data:image\/(?:jpeg|png);base64,/.test(hit.img || '')) return json({ ok: false, error: 'only a picture made here today can be shared: make it again, then share' }, 404);
+    // the picture as /api/image kept it: made today, or yesterday while its day in the edge cache lasts (the cache keeps a picture 24 hours, and
+    // only in the data centre that made it: an older picture, or one made far away, is gone and is made again with the same seed)
+    let hit = null;
+    for (const d of [day, dayOf(Date.now() - 864e5)]) { try { const r = await caches.default.match(await cacheReq(here, [d, prompt, negative, style, shape, seed])); hit = r ? await r.json() : null; } catch (_) { hit = null; } if (hit) break; }
+    if (!hit || hit.state !== 'art' || !/^data:image\/(?:jpeg|png);base64,/.test(hit.img || '')) return json({ ok: false, why: 'gone', error: 'the painter keeps a picture for about a day, so this one can no longer be shared: press "Same seed again" to make it again (the same words and seed make the same picture), then share it' }, 404);
     if (hit.img.length > IMG_KEEP) return json({ ok: false, error: 'that picture is too big for the gallery' }, 413);
     if ((await used(env, 's:' + conn, day)) >= SHARE_DAY) return json({ ok: false, error: 'that is enough sharing for today' }, 429, { 'retry-after': String(secondsToMidnight()) });
     if ((await used(env, 's:all', day)) >= SHARE_ALL) return json({ ok: false, error: 'the gallery is busy today; try tomorrow' }, 429, { 'retry-after': String(secondsToMidnight()) });

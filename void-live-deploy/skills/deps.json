@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 821,
+ "counted": 822,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 20,
    "direct": 1,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 5
   },
   {
@@ -1655,6 +1655,13 @@
    "tests": 1
   },
   {
+   "file": "lib/story.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2141,7 +2148,8 @@
     "lib/proposal.js",
     "lib/plan.js",
     "skills/take.js",
-    "lib/character.js"
+    "lib/character.js",
+    "lib/story.js"
    ],
    "importedBy": [
     "functions/api/bench.js",
@@ -2889,6 +2897,7 @@
     "lib/card-look.js",
     "lib/character.js",
     "lib/image-gen.js",
+    "lib/story.js",
     "lib/wiki-look.js"
    ],
    "reachedBy": [
@@ -4636,6 +4645,7 @@
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/self-context.js",
+    "lib/story.js",
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
@@ -4931,6 +4941,7 @@
     "lib/fix-audit.js",
     "lib/image-gen.js",
     "lib/self-context.js",
+    "lib/story.js",
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
@@ -6649,6 +6660,27 @@
    ],
    "reachedBy": [
     "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/story.js": {
+   "imports": [
+    "lib/art-rules.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/gallery.js",

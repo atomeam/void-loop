@@ -42,7 +42,7 @@
       mk(T.copy, () => copy(p.prompt));
       if (kept) mk(T.hide, async () => { await tx('readwrite', (st) => st.delete(p.id)); drawGal(); });
       else { const k = mk(T.keep, async () => { await tx('readwrite', (st) => st.put({ ...p, at: Date.now() })); k.textContent = T.kept; k.setAttribute('aria-pressed', 'true'); drawGal(); }); mk(T.hide, () => f.remove()); }
-      if (!kept && p.painter) { const sh = mk(T.share, async () => { sh.disabled = true; try { const j = await (await fetch('/api/gallery', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ act: 'share', prompt: p.prompt, negative: p.negative || '', style: p.style, shape: p.shape, seed: p.seed }) })).json(); if (j.ok) { sh.textContent = T.shared; pub(state.pubSort); } else { sh.disabled = false; say(j.error || T.noShare); } } catch (_) { sh.disabled = false; say(T.noShare); } }); }
+      if (p.painter || kept) { const sh = mk(T.share, async () => { sh.disabled = true; try { const j = await (await fetch('/api/gallery', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ act: 'share', prompt: p.prompt, negative: p.negative || '', style: p.style, shape: p.shape, seed: p.seed }) })).json(); if (j.ok) { sh.textContent = T.shared; pub(state.pubSort); } else { sh.disabled = false; say(j.error || T.noShare); } } catch (_) { sh.disabled = false; say(T.noShare); } }); }
       cap.append(pp, meta, acts); f.append(fr, cap); return f;
     }
     // the public gallery (functions/api/gallery.js): pictures by their own address, the words shown as text; votes and reports

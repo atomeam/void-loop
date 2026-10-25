@@ -33,6 +33,7 @@ import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
+import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -177,6 +178,28 @@ async function characterAnswer(request, env, body) {
   } catch (e) { await recordShortfall(env, 'character', reasonOf(e)); return Response.json({ reply: null, note: 'model busy', say: say('busy') }); }
 }
 
+// The story writer (/generators/story/) and the generators' {ai: ...} text (lib/story.js): the same free answer model and the same 12-a-minute
+// limit as any answer. An {ai: ...} text is kept in the edge cache by its prompt and the result's seed for a week, so the same link shows the same
+// words and asking again costs nothing; a story part is never cached (it continues the visitor's own story, kept on their device).
+async function storyAnswer(request, env, body) {
+  const de = body && body.lang === 'de', say = (k) => STORY_SAYS[k][de ? 1 : 0], ai = body.mode === 'aitext';
+  const p = ai ? aiTextMessages(body) : storyMessages(body);
+  if (p.error && !p.refused) return Response.json({ text: null, note: p.error }, { status: p.status });
+  if (p.refused) return Response.json({ text: null, note: p.error, say: say(p.error) });
+  const seed = Math.max(0, Math.min(4294967295, Math.floor(Number(body.seed) || 0)));
+  const cacheReq = ai ? new Request(new URL(request.url).origin + '/__void-answer/aitext/' + await sha(p.prompt + '|' + seed)) : null;
+  if (cacheReq) { try { const hit = await caches.default.match(cacheReq); if (hit) return Response.json({ text: await hit.text(), cached: true }); } catch (_) {} }
+  if (!modelsOn(env)) return Response.json({ text: null, note: 'models off', say: say('off') });
+  if (await rateLimited(request, env)) return Response.json({ text: null, note: 'slow down', say: say('slow') }, { status: 429 });
+  try {
+    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: ai ? 160 : Math.min(900, p.words * 2 + 80), chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const text = cleanText(scrubOut(redact(noThink(pick(r))), env), ai ? AI_TEXT_MAX : PART_MAX);
+    if (!text) return Response.json({ text: null, note: 'empty', say: say('busy') });
+    if (cacheReq) { try { await caches.default.put(cacheReq, new Response(text, { headers: { 'cache-control': 'max-age=604800' } })); } catch (_) {} }
+    return Response.json({ text });
+  } catch (e) { await recordShortfall(env, ai ? 'aitext' : 'story', reasonOf(e)); return Response.json({ text: null, note: 'model busy', say: say('busy') }); }
+}
+
 // Draft from a tab (the Verse extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
 // selected text; the page asks here. Masked before the model sees it, never cached, never written to D1 (page text is the
 // visitor's). No model, or a model that fails: the rules draft, so the panel always gets something it can use.
@@ -279,6 +302,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
   if (body && body.mode === 'character') return characterAnswer(request, env, body);
+  if (body && (body.mode === 'story' || body.mode === 'aitext')) return storyAnswer(request, env, body);
   const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)
