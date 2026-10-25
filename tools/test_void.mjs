@@ -5549,6 +5549,22 @@ try {
       && conv[0] === '12:00 PM' && kept.includes('Tokyo') && kept.includes('Paris') && !Z.errors.length, JSON.stringify({ top, after, conv, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the same page's sun and moon, date to date, and an event link that holds one moment in every city
+  if (want('time zones page extras: twilight, solar noon, golden hour and the moon; days and business days between dates; an event link shown in every city')) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(200);
+    const sm = await Z.p.$$eval('#sunmoon dt', (d) => d.map((x) => x.textContent + ': ' + x.nextElementSibling.textContent));
+    await Z.p.fill('#d1', '2026-10-26'); await Z.p.fill('#d2', '2026-11-09'); await Z.p.fill('#bn', '10');
+    const dates = { span: await Z.p.$eval('#dout', (e) => e.textContent), biz: await Z.p.$eval('#bout', (e) => e.textContent) };
+    await Z.p.goto(base + 'time/?at=2026-11-02T15:00:00Z&cities=Tokyo,London'); await Z.p.waitForTimeout(200);
+    const ev = { shown: await Z.p.$eval('#event', (e) => !e.hidden), rows: await Z.p.$$eval('#evlist li', (l) => l.map((x) => x.querySelector('b').textContent + ' ' + x.querySelector('.t').textContent)) };
+    const has = (k, re) => sm.some((x) => x.startsWith(k + ':') && re.test(x));
+    check('time zones page extras: twilight, solar noon, golden hour and the moon; days and business days between dates; an event link shown in every city',
+      has('Sunrise', /\d:\d\d [AP]M/) && has('Solar noon', /\d:\d\d [AP]M \(the sun [\d.]+° high\)/) && has('Day length', /hours/) && has('Civil dawn and dusk', / to /) && has('Astronomical dawn and dusk', / to /)
+      && has('Golden hour', / to .* and /) && has('Moon phase', /% lit/) && sm.some((x) => /^Moon(rise|set):/.test(x))
+      && /^14 days \(2 weeks\) · 10 weekdays · 4 weekend days · 336 hours$/.test(dates.span) && /Monday, November 9, 2026$/.test(dates.biz)
+      && ev.shown && ev.rows.includes('Tokyo 12:00 AM') && ev.rows.includes('London 3:00 PM') && !Z.errors.length, JSON.stringify({ sm, dates, ev, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the tower's base64encode.org floor: /base64/ encodes and decodes live both ways, exact for emoji, names bad input, and turns a file into a data: URL
   if (want("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL")) {
     const Z = await fresh(); await Z.p.goto(base + 'base64/?t=hello');

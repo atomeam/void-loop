@@ -1,7 +1,8 @@
 // lib/zones.js: the time in any city, a converter and a meeting planner, all from the browser's own zone data (Intl), daylight saving included
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, sunDay, coordsOf, lengthText } from '../void-live-deploy/lib/zones.js';
+import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
+import { sunDay } from '../void-live-deploy/lib/sun-day.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
   assert.deepEqual(findPlace('tokyo'), { name: 'Tokyo', tz: 'Asia/Tokyo' }); assert.equal(findPlace('Asia/Tokyo').tz, 'Asia/Tokyo'); assert.equal(findPlace('time in Tokyo').tz, 'Asia/Tokyo');
@@ -46,4 +47,20 @@ test('sunrise, sunset and day length worked out on the device, within 2 minutes 
   assert.deepEqual(coordsOf({ name: 'Your time (Paris)', tz: 'Europe/Paris', you: true }), { lat: 48.86, lon: 2.35 }, 'your own zone stands at its city');
   assert.equal(sunDay({ name: 'Eastern Time', tz: 'America/New_York' }), null, 'a zone, not a city: no coordinate guessed');
   assert.equal(sunDay({ name: 'UTC+9', tz: 'Etc/GMT-9' }), null);
+});
+test('solar noon, the three twilights and golden hour within 2 minutes of NOAA; the moon from the sky skills\' own almanac', () => {
+  const tz = 'Asia/Tokyo', s = sunDay({ name: 'Tokyo', tz }, [2026, 5, 21]), hm = (d) => { const w = wall(tz, d); return w.h * 60 + w.m + w.s / 60; }, near = (d, h, m) => Math.abs(hm(d) - (h * 60 + m)) <= 2;
+  assert.ok(near(s.noon, 11, 43), 'solar noon ' + s.noon.toISOString()); assert.ok(near(s.civil.dawn, 3, 55) && near(s.civil.dusk, 19, 30), 'civil');
+  assert.ok(near(s.nautical.dawn, 3, 18) && near(s.nautical.dusk, 20, 7), 'nautical ' + s.nautical.dusk.toISOString()); assert.ok(s.astronomical.dawn < s.nautical.dawn && s.nautical.dawn < s.civil.dawn && s.civil.dawn < s.rise);
+  assert.ok(s.golden.morning[0] < s.rise && s.rise < s.golden.morning[1] && s.golden.evening[0] < s.set && s.set < s.golden.evening[1], 'golden hour brackets sunrise and sunset');
+  assert.ok(s.noonAlt > 77 && s.noonAlt < 78.5, 'the sun 77.7° high at the solstice (90 - 35.69 + 23.44)');
+  const full = sunDay({ name: 'Tokyo', tz }, [2026, 9, 26]).moon; assert.equal(full.name, 'full moon'); assert.ok(full.illumination > 97, 'the full moon of 26 October 2026: ' + full.illumination);
+  assert.ok(full.rise || full.set, 'a moonrise or moonset');
+  assert.equal(sunDay({ name: 'Longyearbyen', tz: 'Arctic/Longyearbyen' }, [2026, 5, 21]).astronomical.dawn, null, 'never dark at midnight sun');
+});
+test('date to date: the start day counted, the end not, weekdays and weekends; business days on and back (weekends only)', () => {
+  assert.deepEqual(dateSpan('2026-10-26', '2026-11-09'), { days: 14, weeks: 2, rest: 0, weekdays: 10, weekendDays: 4, hours: 336 });
+  assert.deepEqual(dateSpan('2026-01-01', '2027-01-01'), { days: 365, weeks: 52, rest: 1, weekdays: 261, weekendDays: 104, hours: 8760 });
+  assert.equal(dateSpan('2026-10-24', '2026-10-26').weekdays, 0, 'a weekend'); assert.equal(dateSpan('2026-11-09', '2026-10-26').days, -14); assert.equal(dateSpan('2026-10-26', '2026-10-26').days, 0);
+  assert.deepEqual(businessDay('2026-10-23', 1), { iso: '2026-10-26', text: 'Monday, October 26, 2026' }); assert.equal(businessDay('2026-10-26', -1).iso, '2026-10-23'); assert.equal(businessDay('2026-10-26', 10).iso, '2026-11-09');
 });

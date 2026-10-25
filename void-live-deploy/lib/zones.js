@@ -5,8 +5,8 @@
  * Pure but for the browser's zone list. Tests: tools/zones.test.mjs.
  */
 import { offsetMin, instantIn, ymdIn, parseClock, gmt, zoneOf } from '../skills/worldtime.js';
-import { riseSet } from './astro.js';
-export { offsetMin, gmt };
+import { daysBetween, addDays, isWeekend, addBusinessDays, businessDaysBetween, formatDay } from './date-math.js';
+export { offsetMin, gmt, instantIn, ymdIn };
 
 // cities people ask for whose zone is named after another city (the zone list itself covers Tokyo, Paris, Sydney and 400 more)
 const ALIAS = {
@@ -125,14 +125,15 @@ export function coordsOf(place) {
   if (!place) return null; const n = key(place.name), z = key(cityOf(place.tz || ''));
   const c = COORDS[n] || (place.you || n === z ? COORDS[z] : null); return c ? { lat: c[0], lon: c[1] } : null;
 }
-/** sunrise, sunset and the day's length for a place on its own day `ymd` ([y, mo0, d], today there by default), computed here from the sun's
- *  position (lib/astro.js riseSet: the upper edge with the usual refraction, held to an independent almanac): { rise, set (Dates or null),
- *  dayMin, state ('always up' | 'always down' | null) }, or null when the place has no coordinate. Pure. */
-export function sunDay(place, ymd, now = new Date()) {
-  const c = coordsOf(place); if (!c) return null;
-  const [y, mo, d] = ymd || ymdIn(place.tz, now), start = instantIn(place.tz, y, mo, d, 0, 0).getTime(), r = riseSet('sun', start, c.lat, c.lon);
-  const dayMin = r.rise && r.set && r.set > r.rise ? Math.round((r.set - r.rise) / 60000) : r.state === 'always up' ? 1440 : r.state === 'always down' ? 0 : null;
-  return { ...c, rise: r.rise, set: r.set, dayMin, state: r.state };
-}
 /** "10 hours 42 minutes". Pure. */
 export const lengthText = (min) => { const h = Math.floor(min / 60), m = min % 60; return h + (h === 1 ? ' hour ' : ' hours ') + m + (m === 1 ? ' minute' : ' minutes'); };
+
+/** from one day to another ('YYYY-MM-DD'), the way timeanddate.com counts: the start day counted, the end day not. { days, weeks, weekdays,
+ *  weekendDays, hours }, negative when the end is earlier. Weekends only: no public holidays are known offline. lib/date-math.js does the counting. Pure. */
+export function dateSpan(a, b) {
+  const days = daysBetween(a, b), weekdays = days ? businessDaysBetween(addDays(a, -1), addDays(b, -1)) : 0;
+  return { days, weeks: Math.trunc(days / 7), rest: days % 7 || 0, weekdays, weekendDays: days - weekdays, hours: days * 24 };
+}
+/** a day n business days (Monday to Friday) after a day, or before it when n is negative: the date and its name. Pure. */
+export function businessDay(iso, n) { const d = addBusinessDays(iso, n); return { iso: d, text: formatDay(d) }; }
+export { isWeekend, formatDay };

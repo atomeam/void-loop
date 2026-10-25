@@ -73,8 +73,8 @@ export function nextPhase(t, which) {
 
 // sunrise and sunset (or moonrise and moonset) from the start of a day: the crossings of the horizon. The upper limb with the usual refraction is
 // 0.833 degrees below the horizon for the sun's centre, and for the moon's centre too once its parallax is taken off (moonHor does). dayStart is UTC ms.
-export function riseSet(body, dayStart, lat, lon) {
-  const h0 = -0.833;
+// h0: another altitude for the sun's centre (-6, -12, -18 for civil, nautical and astronomical twilight; 6 for the end of golden hour)
+export function riseSet(body, dayStart, lat, lon, h0 = -0.833) {
   const alt = (x) => (body === 'moon' ? moonHor(x, lat, lon).alt : sunHor(x, lat, lon).alt) - h0;
   const out = { rise: null, set: null, state: null };
   let a = dayStart, fa = alt(a);

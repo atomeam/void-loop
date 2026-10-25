@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 772,
+ "counted": 773,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -682,17 +682,17 @@
    "tests": 1
   },
   {
-   "file": "lib/showers.js",
+   "file": "lib/date-math.js",
    "skills": 2,
    "direct": 1,
    "dependants": 5,
    "tests": 1
   },
   {
-   "file": "lib/date-math.js",
+   "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3,
+   "dependants": 5,
    "tests": 1
   },
   {
@@ -1718,6 +1718,13 @@
    "tests": 2
   },
   {
+   "file": "lib/zones.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/anchor-density.js",
    "skills": 0,
    "direct": 0,
@@ -1907,6 +1914,13 @@
    "tests": 1
   },
   {
+   "file": "lib/sun-day.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/toolkit.js",
    "skills": 0,
    "direct": 0,
@@ -1922,13 +1936,6 @@
   },
   {
    "file": "lib/wordcount.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/zones.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2723,7 +2730,7 @@
    ],
    "importedBy": [
     "lib/skyfacts.js",
-    "lib/zones.js",
+    "lib/sun-day.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -3425,9 +3432,11 @@
    "imports": [],
    "importedBy": [
     "lib/date-ask.js",
+    "lib/zones.js",
     "skills/date-grid.js"
    ],
    "reachedBy": [
+    "lib/sun-day.js",
     "skills/date-calc.js"
    ]
   },
@@ -5506,7 +5515,7 @@
     "functions/api/mcp.js",
     "functions/tools.json.js",
     "lib/skyfacts.js",
-    "lib/zones.js",
+    "lib/sun-day.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -5972,6 +5981,13 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/sun-day.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/zones.js"
+   ],
+   "importedBy": []
+  },
   "lib/table-tools.js": {
    "imports": [],
    "importedBy": [
@@ -6404,9 +6420,11 @@
   "lib/zones.js": {
    "imports": [
     "skills/worldtime.js",
-    "lib/astro.js"
+    "lib/date-math.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/sun-day.js"
+   ]
   },
   "lib/zorbleflux.js": {
    "imports": [
@@ -9814,6 +9832,9 @@
    "importedBy": [
     "lib/zones.js",
     "skills/time.js"
+   ],
+   "reachedBy": [
+    "lib/sun-day.js"
    ]
   },
   "skills/writing-aids.js": {
