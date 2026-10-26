@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (scores session) · main · the sports floor: /scores/ tier 1 shipped (scoreboard, standings, team pages, favourites, offline copy, .ics), probe and lane; tiers 2 to 4 of the owner's list (fantasy-lite, simulators, polls, individual sports) not started · 2026-10-26 02:30 UTC
 - Claude (tower session) · main · tower run: the recipes lane measured from its bottom (skinnytaste.com up, three floors a hand run, the main session's /recipes/ page and probe as they stand); any gap the verdicts show on Verse's side fixed on the page or the probe · 2026-10-25 08:22 UTC
 - Claude (tower run) · main · the password floor (passwordsgenerator.net): a /password/ page it never had (lib/password.js: exact entropy, rejection sampling, passphrases, the rival's exclusions and three more), its probe, facts and parts in tower-probes.mjs, then the gate run by hand · 2026-10-25 05:30 UTC
 - Claude (tower run) · main · the encoder floor (base64encode.org) to surpassed: the gate presses a form's submit and reads the reply page, RFC 4648 probes, completeness and the floor's parts, and /base64/ closes its gaps (each line, LF/CRLF, downloads, any file size, every set both ways offline) · 2026-10-25 04:00 UTC

@@ -4,7 +4,7 @@ const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
-const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/calendar/', '/notes/', '/generators/', '/boards/', '/image/', '/g/', '/is-it/christmas', '/tools/'];
+const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/scores/', '/calendar/', '/notes/', '/generators/', '/boards/', '/image/', '/g/', '/is-it/christmas', '/tools/'];
 // any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
 // pages kept the first time they are opened, never at install (2026-10-25: four more pages at install made the worker miss the gate's 10 s wait,
 // and /generators/ read 0 offline again); their own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code

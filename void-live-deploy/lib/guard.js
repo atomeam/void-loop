@@ -19,6 +19,7 @@ export const LIMITS = {
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)
+  scores: { rpm: 60, body: 0 }, // GET only: a league from a closed list and a day in, public scores out (functions/api/scores.js), edge-cached 20 s live to 6 h final; 30 misses a minute in the route itself
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number

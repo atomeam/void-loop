@@ -1,6 +1,6 @@
 {
  "floor": "sports",
- "verse_page": null,
+ "verse_page": "/scores/",
  "researched": "2026-10-25",
  "sites": {
   "espn.com": {
@@ -17,40 +17,40 @@
      "name": "Live scoreboard",
      "detail": "Scores for every game of a day per league (NFL, NBA, MLB, NHL, soccer, college, F1, tennis, golf), live-updating, with date picker",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a league and a day, live / final / upcoming rows with local kick-off, status and scores, a day picker (yesterday, today, tomorrow, date box), 12 leagues (EPL, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL, F1), refresh every 30 s while a game is live; tennis and cricket not built (no free feed read)"
     },
     {
      "group": "core",
      "name": "Gamecast",
      "detail": "Live play-by-play for one game: field/court drawing, win probability, box score, team stats, drive/shot charts",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): game detail: score, goals and cards with minutes, team stats side by side, line-ups; no play-by-play, field drawing, win probability or shot charts"
     },
     {
      "group": "core",
      "name": "Box scores",
      "detail": "Per-player stat lines for a finished or live game",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): US leagues: per-player tables from the summary feed (up to 4 groups); soccer: events, stats and line-ups"
     },
     {
      "group": "core",
      "name": "Schedules",
      "detail": "Team and league schedules with times in your zone, TV channel, results for past dates",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a team page with its next and last five games, kick-offs in the viewer zone, a day-by-day scoreboard, and an .ics file for an upcoming game; no TV channel"
     },
     {
      "group": "core",
      "name": "Standings",
      "detail": "League, conference and division tables, playoff picture and clinch markers",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a table per league and group with the columns of its sport (P W D L GD Pts; W L Pct GB Strk; NFL PF PA), sortable columns, a search box, the viewer's followed teams highlighted, and a check that the sums add up (P = W+D+L, Pts = 3W+D, Pct = W/(W+L)); no playoff cut-lines or last-5 form dots yet"
     },
     {
      "group": "core",
@@ -58,7 +58,7 @@
      "detail": "Roster, schedule, stats, news, injuries, depth chart, transactions",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/sport.js: a team card from TheSportsDB with Wikipedia fallback (\"nba team celtics\"); no roster, schedule or stats"
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): next and last five games and a follow star; no roster, stats, news, injuries or depth chart"
     },
     {
      "group": "core",
@@ -97,8 +97,8 @@
      "name": "Favourites",
      "detail": "Pick favourite teams and leagues; home, scores and alerts reorder around them",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): followed teams and leagues kept on the device (a2m.void.scores.v1), their games float to the top, a \"My teams\" view; no alerts"
     },
     {
      "group": "power",
@@ -177,8 +177,8 @@
      "name": "Share a game or story",
      "detail": "Share links to games, clips and articles",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a link holds league, day, tab, game or team; word-only preview; no per-game image"
     },
     {
      "group": "sharing",
@@ -243,23 +243,148 @@
      "paid": true,
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy: live points and my fantasy team",
+     "detail": "tier 2 of the owner's order (2026-10-26); not built",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Start/sit and trade comparator",
+     "detail": "tier 2; only where a free projection source exists",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Mock draft simulator",
+     "detail": "tier 2",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Pick'em, survivor and bracket challenge, on device",
+     "detail": "tier 2 (no account, no wagering)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Playoff and standings simulator",
+     "detail": "tier 3",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Trade and salary-cap checker",
+     "detail": "tier 3; needs a free reliable cap source, none found",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Power ratings, playoff odds, win-probability curve (Verse's own, computed from results)",
+     "detail": "tier 3; never called FPI/BPI/SPI",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Search across teams, leagues and players",
+     "detail": "teams filtered in a day's games and in a table; no league or player search",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): teams filtered in a day's games and in a table; no league or player search"
+    },
+    {
+     "group": "core",
+     "name": "Head-to-head and form in a game",
+     "detail": "tier 1 gap",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Polls and brackets (AP, CFP, NCAA)",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Recruiting and transfer portal",
+     "detail": "tier 4; no free permitted source known",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Draft hubs",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Golf leaderboard, UFC fight cards, tennis draws, NASCAR, medal tables",
+     "detail": "tier 4: tennis and cricket have no free feed read yet",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Injuries, depth charts and transactions",
+     "detail": "tier 4 (the team drawer)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Venue guides and radio links",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
     }
    ]
   }
  },
  "gaps": [
-  "live scoreboard for a league and date",
-  "standings tables",
-  "schedules with your time zone",
-  "one-game Gamecast (play-by-play + box score)",
-  "favourite teams that reorder the page",
-  "team page beyond the Wikipedia summary",
-  "player stats",
-  "alerts"
+  "play-by-play, win probability and shot charts",
+  "league stat leaders",
+  "head-to-head and form",
+  "playoff cut-lines and last-5 form dots",
+  "tennis and cricket (no free feed read yet)",
+  "team rosters, injuries and depth charts",
+  "player pages and stats",
+  "alerts",
+  "fantasy, simulators, polls, draft (tiers 2 to 4)"
  ],
  "verse_extra": [
   "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",
-  "no ads, no betting promotion, no account needed"
+  "no ads, no betting promotion, no account needed",
+  "live, final and upcoming games for 12 leagues with scores kept on the device when the feed is down",
+  "standings that check their own sums",
+  "an .ics file for any upcoming game",
+  "German UI"
  ],
  "first_page": "Scores page /scores/ for sports fans who want today's results without ads or betting. First: \"nba scores\" opens every game of the day for a league (live score, clock, final), date arrows, tap a game for its box score, standings tab, favourite teams kept on the device that float to the top, a link that holds league+date. Built on a keyless public scoreboard feed cached at the edge. Will not build: fantasy, odds, video streaming, articles or alerts."
 }

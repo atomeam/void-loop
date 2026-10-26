@@ -57,7 +57,7 @@ const HAND_FLOORS = [
   // page starts blank and the probe reads its board list, its make-a-board form and its formatting preview, never a post. noShot: no picture of a
   // rival board is ever kept (tools/tower-gate.mjs): a board's front page can carry explicit or illegal pictures, and this repository is public
   { id: 'image boards', site: '4chan', url: 'https://www.4chan.org/', ask: 'image boards', page: '/boards/', label: 'Image boards', glyph: '▧', noShot: true, extra: ['catalog', 'replies and quoting', 'image posts', 'archive'] },
-  { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
+  { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', page: '/scores/', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
   { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
   { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
@@ -101,6 +101,8 @@ export const LANES = Object.freeze({
   "docs and notes": ['https://anotepad.com/', 'https://standardnotes.com/', 'https://notepad.pw/', 'https://simplenote.com/', 'https://docs.zoho.com/', 'https://onenote.com/', 'https://evernote.com/', 'https://notion.so/'],
   // the image and text boards, least visited first (text boards among them), the leader last; none of them is ever pictured (noShot on the floor)
   'image boards': ['https://bbs.progrider.org/', 'https://textboard.org/', 'https://sushigirl.us/', 'https://uboachan.net/', 'https://desuchan.net/', 'https://kissu.moe/', 'https://wizchan.org/', 'https://lainchan.org/', 'https://7chan.org/', 'https://www.2chan.net/', 'https://5ch.net/'],
+  // sports (owner, 2026-10-26: "need a sports page"): scores sites, smallest first, the leader (ESPN) last; thescore.com and bleacherreport.com left out (an app and a news site, not scores pages), nowgoal.com left out (betting odds first)
+  sports: ['https://www.thesportsdb.com/', 'https://www.besoccer.com/', 'https://int.soccerway.com/', 'https://www.onefootball.com/', 'https://www.365scores.com/', 'https://www.fotmob.com/', 'https://www.cbssports.com/', 'https://www.bbc.com/sport', 'https://www.sofascore.com/', 'https://www.flashscore.com/', 'https://www.livescore.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');

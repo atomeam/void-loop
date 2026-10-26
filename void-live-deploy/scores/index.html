@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scores: live scores, schedules and standings · Verse</title>
+<meta name="description" content="Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1. Box scores, team pages, favourite teams kept on your device. No ads, no betting.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Scores · Verse">
+<meta property="og:description" content="Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and F1. Favourite teams on your device, no ads, no betting.">
+<meta property="og:url" content="https://a-to-mind.com/scores/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/scores/ (Versus' ESPN floor): one file and two small modules; kept on the device: followed teams and leagues, and the last answer per day */
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --live: #c2162f; --box: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --live: #ff6b7e; --on-accent: #15131c; --box: #14121c; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 16px 0 6px; }
+  button, input[type=date] { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; box-sizing: border-box; }
+  input[type=date] { border-radius: 10px; background: var(--box); cursor: text; }
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button[aria-pressed="true"], button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .chips a { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .chips a[aria-current="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 10px 0 0; }
+  .seg { display: inline-flex; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+  .note { font-size: 13px; color: var(--soft); margin: 8px 0; min-height: 3em; } .note.bad { color: var(--bad); }
+  /* the list's room is kept before its games arrive, so nothing below it moves */
+  #out { min-height: 440px; }
+  ul.games { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  ul.games li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--line); }
+  ul.games li:first-child { border-top: 0; }
+  .st { font-size: 13px; color: var(--soft); text-align: center; line-height: 1.25; } .st.live { color: var(--live); font-weight: 700; }
+  .tm { display: flex; align-items: center; gap: 4px; min-width: 0; } .tm + .tm { margin-top: 2px; }
+  .tm a, .tm span.tn { color: inherit; text-decoration: none; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 32px; display: flex; align-items: center; }
+  .tm .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--line); }
+  .tm .sc { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 1.6em; text-align: right; }
+  .tm.w .tn, .tm.w .sc { font-weight: 700; } .tm.l { color: var(--soft); }
+  .star { border: 0; padding: 0; min-width: 40px; min-height: 40px; font-size: 20px; line-height: 1; color: var(--soft); background: transparent; } .star[aria-pressed="true"] { color: var(--accent); background: transparent; }
+  .gm { min-height: 40px; padding: 4px 12px; font-size: 13px; }
+  .fav { box-shadow: inset 3px 0 0 var(--accent); }
+  .tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 4px 4px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap; } th { color: var(--soft); font-weight: 600; font-size: 12px; border-top: 0; }
+  th:nth-child(1), td:nth-child(1) { text-align: center; width: 2em; } th:nth-child(2), td:nth-child(2) { text-align: left; }
+  td.nm a { color: inherit; text-decoration: none; display: inline-flex; min-height: 32px; align-items: center; }
+  tr.fav td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin-top: 8px; }
+  .big { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; text-align: center; font-size: 15px; } .big b { font-size: 34px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .ev { list-style: none; margin: 0; padding: 0; font-size: 14px; } .ev li { padding: 4px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; } .ev li:first-child { border-top: 0; } .ev .m { min-width: 3.4em; color: var(--soft); font-variant-numeric: tabular-nums; }
+  .cmp { display: grid; grid-template-columns: 1fr auto 1fr; gap: 2px 10px; font-size: 14px; text-align: center; } .cmp span:nth-child(3n+2) { color: var(--soft); }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a { color: inherit; }
+  .empty { font-size: 14px; color: var(--soft); padding: 14px 4px; }
+  td.nm .star { min-width: 30px; min-height: 30px; font-size: 18px; } td.nm { white-space: normal; }
+  .srt { border: 0; border-radius: 6px; padding: 0 4px; min-height: 30px; min-width: 26px; font-size: 12px; font-weight: 600; color: var(--soft); background: transparent; }
+  th[aria-sort=ascending] .srt::after { content: ' ▲'; } th[aria-sort=descending] .srt::after { content: ' ▼'; }
+  [hidden] { display: none !important; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/scores/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Scores","url":"https://a-to-mind.com/scores/","description":"Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1, with box scores, team pages and favourite teams kept on your device. No ads, no betting.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"live scores, nba scores, premier league table, bundesliga results, nfl scores today, f1 standings, football scores yesterday","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/scores/?league={league}"},"league-input":"required name=league"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Scores","item":"https://a-to-mind.com/scores/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1 id="title">Scores</h1>
+  <p class="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and Formula 1. No ads, no betting.</p>
+
+  <nav class="chips" id="leagues" aria-label="League">
+    <a href="/scores/?league=epl">Premier League</a><a href="/scores/?league=laliga">La Liga</a><a href="/scores/?league=bundesliga">Bundesliga</a><a href="/scores/?league=seriea">Serie A</a><a href="/scores/?league=ligue1">Ligue 1</a><a href="/scores/?league=mls">MLS</a><a href="/scores/?league=ucl">Champions League</a><a href="/scores/?league=nba">NBA</a><a href="/scores/?league=nfl">NFL</a><a href="/scores/?league=mlb">MLB</a><a href="/scores/?league=nhl">NHL</a><a href="/scores/?league=f1">Formula 1</a>
+  </nav>
+
+  <div class="row">
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="tScores" aria-pressed="true" data-k="scores">Scores</button><button type="button" id="tTable" aria-pressed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pressed="false" data-k="mine">My teams</button>
+    </div>
+    <button type="button" id="favLeague" aria-pressed="false">Follow league</button>
+  </div>
+  <div class="row" id="days">
+    <button type="button" id="prev" aria-label="Previous day">‹</button>
+    <label class="vh" for="date">Day</label><input type="date" id="date">
+    <button type="button" id="next" aria-label="Next day">›</button>
+    <button type="button" id="dYes" data-k="yesterday">Yesterday</button><button type="button" id="dToday" data-k="today">Today</button><button type="button" id="dTom" data-k="tomorrow">Tomorrow</button>
+    <button type="button" id="share" data-k="share">Share link</button>
+  </div>
+  <div class="row"><label class="vh" for="find">Search teams</label><input type="search" id="find" placeholder="Search teams" maxlength="40" autocomplete="off" style="font:inherit;font-size:16px;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:4px 12px;background:var(--box);color:inherit;box-sizing:border-box;flex:1 1 180px;min-width:0"></div>
+  <div class="note" id="note" role="status" aria-live="polite"></div>
+
+  <div id="out" aria-live="polite"><p class="empty" id="first">Live scores, final scores and upcoming schedules for the league and day above: the games, kick-off times in your own time zone, and the standings table.</p></div>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/scores/?league=nba">NBA scores</a><a href="/scores/?league=epl">Premier League scores</a><a href="/scores/?league=epl&amp;tab=standings">Premier League table</a><a href="/scores/?league=bundesliga">Bundesliga</a><a href="/scores/?league=nfl">NFL scores</a><a href="/scores/?league=mlb">MLB scores</a><a href="/scores/?league=nhl">NHL scores</a><a href="/scores/?league=f1&amp;tab=standings">Formula 1 standings</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+
+  <p class="srcs" id="srcs">Scores come from the public score feeds of <a href="https://www.espn.com/" rel="noopener">ESPN</a> (unofficial), <a href="https://www.openligadb.de/" rel="noopener">OpenLigaDB</a> (Bundesliga) and <a href="https://github.com/jolpica/jolpica-f1" rel="noopener">Jolpica</a> (Formula 1), read by Verse's server and kept a short while. Data may be delayed by a minute or more. Followed teams stay on this device. No odds, no betting, no fantasy.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<script type="module">
+  // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, S] = await Promise.all([import('/lib/toolkit.js'), import('/lib/scores.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.scores.v1', CKEY = 'a2m.void.scores.cache.v1', POLL = 30000;
+    const lang = navigator.language || 'en', W = S.wordsFor(lang), de = /^de\b/i.test(lang);
+    const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v && typeof v === 'object' ? v : d; } catch (_) { return d; } };
+    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} };
+    const mem = load(KEY, { teams: [], leagues: [], last: '' });
+    const h = (tag, a, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v === false || v == null) continue; if (k === 'text') e.textContent = v; else if (k === 'onclick') e.addEventListener('click', v); else e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) if (c != null) e.append(c); return e; };
+    const out = $('out'), note = $('note');
+    // ---- state, kept in the address so a link holds the league, the day and the open game or team ----
+    const q = new URLSearchParams(location.search), today = () => S.localDay();
+    const state = { league: S.leagueOf(q.get('league')) ? q.get('league') : (S.leagueOf(mem.last) ? mem.last : (de ? 'bundesliga' : 'epl')), date: S.dateOk(q.get('date') || '') ? q.get('date') : today(),
+      tab: ['scores', 'standings', 'mine'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
+    let timer = 0, token = 0, again = () => {}, sort = { c: -1, up: false };
+    const needle = () => ($('find').value || '').trim().toLowerCase();
+    const hit = (g) => !needle() || [g.home && g.home.name, g.away && g.away.name, g.name, g.home && g.home.abbr, g.away && g.away.abbr].some((x) => x && String(x).toLowerCase().includes(needle()));
+    const url = () => { const p = new URLSearchParams({ league: state.league }); if (state.date !== today()) p.set('date', state.date); if (state.tab !== 'scores') p.set('tab', state.tab); if (state.game) p.set('game', state.game); if (state.team) { p.set('team', state.team); p.set('tn', state.tn); } return '/scores/?' + p; };
+    const push = () => { try { history.replaceState(null, '', url()); } catch (_) {} };
+    const say = (t, bad) => { note.textContent = t || ''; note.classList.toggle('bad', !!bad); };
+    // ---- data: the API, the last good answer kept on the device ----
+    const api = async (p, early) => {
+      const qs = new URLSearchParams(p).toString(), ck = load(CKEY, {});
+      if (early && ck[qs]) early({ j: ck[qs].j, from: ck[qs].t, saved: true }); // the last good copy is on screen at once, with its time, while the feed is asked
+      try {
+        const r = await fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }), j = await r.json();
+        if (!j.ok) throw new Error(j.kind || 'away');
+        ck[qs] = { t: Date.now(), j }; const keys = Object.keys(ck).sort((a, b) => ck[b].t - ck[a].t); for (const k of keys.slice(40)) delete ck[k]; save(CKEY, ck);
+        return { j, from: j.stale ? Date.parse(j.at) : 0 };
+      } catch (_) { if (ck[qs]) return { j: ck[qs].j, from: ck[qs].t, saved: true }; return null; }
+    };
+    const clock = (t) => new Date(t).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
+    const dayLabel = (d) => new Date(d + 'T12:00:00').toLocaleDateString(lang, { weekday: 'short', day: 'numeric', month: 'short' });
+    // ---- favourites ----
+    const isFav = (lg, t) => mem.teams.some((x) => x.l === lg && x.i === t.id);
+    const toggleTeam = (lg, t) => { const i = mem.teams.findIndex((x) => x.l === lg && x.i === t.id); if (i >= 0) mem.teams.splice(i, 1); else if (t.id) mem.teams.push({ l: lg, i: t.id, n: t.name }); save(KEY, mem); };
+    const favBtn = (lg, t, redraw) => { const on = isFav(lg, t); return h('button', { type: 'button', class: 'star', 'aria-pressed': on ? 'true' : 'false', 'aria-label': (on ? W.unfollow : W.follow) + ' ' + t.name, text: on ? '★' : '☆', onclick: () => { toggleTeam(lg, t); redraw(); } }); };
+    // ---- drawing ----
+    const teamLine = (lg, g, side, redraw) => {
+      const t = g[side], won = g.state === 'final' && t.winner, lost = g.state === 'final' && g[side === 'home' ? 'away' : 'home'].winner;
+      const link = t.id && !t.id.startsWith('ol') && S.leagueOf(lg).kind === 'espn' ? h('a', { class: 'tn', href: '/scores/?league=' + lg + '&team=' + t.id + '&tn=' + encodeURIComponent(t.name), text: t.name, onclick: (e) => { e.preventDefault(); state.team = t.id; state.tn = t.name; state.game = ''; state.tab = 'scores'; run(); } }) : h('span', { class: 'tn', text: t.name });
+      return h('div', { class: 'tm' + (won ? ' w' : '') + (lost ? ' l' : '') }, t.id && !t.id.startsWith('ol') ? favBtn(lg, t, redraw) : null, h('span', { class: 'dot', style: t.color ? 'background:#' + t.color : null }), link, h('span', { class: 'sc', text: g.state === 'pre' ? '' : t.score }));
+    };
+    const stOf = (g) => g.state === 'live' ? h('div', { class: 'st live', text: W.live + (g.status ? ' ' + g.status : '') }) : g.state === 'final' ? h('div', { class: 'st', text: (g.status && g.status.length <= 10 ? g.status : W.ft) }) : h('div', { class: 'st', text: g.start ? clock(g.start) : '' });
+    const gameLi = (lg, g, redraw) => {
+      if (g.kind === 'race') return h('li', null, stOf(g), h('div', null, h('div', { class: 'tn', text: g.name }), h('div', { class: 'st', style: 'text-align:left', text: g.venue })), h('button', { type: 'button', class: 'gm', text: W.results, onclick: () => { state.game = g.id; run(); } }));
+      const fav = isFav(lg, g.home) || isFav(lg, g.away);
+      return h('li', { class: fav ? 'fav' : null }, stOf(g), h('div', null, teamLine(lg, g, 'home', redraw), teamLine(lg, g, 'away', redraw)), g.id && !g.id.startsWith('ol') ? h('button', { type: 'button', class: 'gm', text: W.details, onclick: () => { state.game = g.id; run(); } }) : h('span'));
+    };
+    const gamesList = (lg, games, redraw) => { const s = games.filter(hit).sort((a, b) => ((isFav(lg, b.home) || isFav(lg, b.away)) - (isFav(lg, a.home) || isFav(lg, a.away))) || ({ live: 0, pre: 1, final: 2 }[a.state] - { live: 0, pre: 1, final: 2 }[b.state]) || String(a.start).localeCompare(String(b.start))); return h('ul', { class: 'games' }, s.map((g) => gameLi(lg, g, redraw))); };
+    const setNote = (r) => {
+      const bits = [];
+      if (!navigator.onLine) bits.push(W.offline.trim());
+      if (r && (r.saved || r.from)) bits.push((r.saved ? W.saved : W.stale) + ' ' + clock(r.from) + '.');
+      if (r && r.j && r.j.at && !r.saved && !r.from) bits.push(W.updated + ' ' + clock(r.j.at) + '.');
+      bits.push(W.delayed); say(bits.join(' '), !!(r && (r.saved || r.from)));
+    };
+    const sorry = () => { out.replaceChildren(h('p', { class: 'empty', text: W.failed })); say(W.failed, true); };
+    const anyLive = (list) => list.some((g) => g.state === 'live');
+    // the three views
+    async function scoresView(tk) {
+      const lg = state.league;
+      const paint = (r) => { const games = r.j.games || []; again = () => paint(r); setNote(r); const l = games.filter(hit); out.replaceChildren(l.length ? gamesList(lg, games, () => paint(r)) : h('p', { class: 'empty', text: needle() ? W.none : W.none })); return anyLive(games); };
+      const r = await api({ league: lg, date: state.date }, (c) => { if (tk === token) paint(c); }); if (tk !== token) return;
+      if (!r) return sorry();
+      return paint(r);
+    }
+    async function tableView(tk) {
+      const lg = state.league, grp = S.leagueOf(lg).grp;
+      const paint = (r) => {
+        const groups = r.j.groups || []; again = () => paint(r); setNote(r);
+        const bad = groups.flatMap((g) => S.rowIssues(g, grp));
+        const draw = () => out.replaceChildren(...(groups.length ? groups.map((g) => { const rows = g.rows.filter((x) => !needle() || x.name.toLowerCase().includes(needle()) || x.abbr.toLowerCase() === needle());
+          if (sort.c >= 0 && sort.c < g.cols.length) rows.sort((a, b) => ((parseFloat(String(a.cells[sort.c]).replace('+', '')) || 0) - (parseFloat(String(b.cells[sort.c]).replace('+', '')) || 0)) * (sort.up ? 1 : -1));
+          return h('div', null, g.name ? h('h2', { text: g.name }) : null, h('div', { class: 'tbl' }, h('table', { 'data-tab': 'standings' },
+            h('thead', null, h('tr', null, h('th', { text: '#' }), h('th', { text: W.team }), g.cols.map((c, ci) => h('th', { 'aria-sort': sort.c === ci ? (sort.up ? 'ascending' : 'descending') : 'none' }, h('button', { type: 'button', class: 'srt', text: c, 'aria-label': 'Sort by ' + c, onclick: () => { sort = { c: ci, up: sort.c === ci ? !sort.up : false }; draw(); } }))))),
+            h('tbody', null, rows.map((row) => h('tr', { class: isFav(lg, row) ? 'fav' : null }, h('td', { text: String(row.rank) }),
+              h('td', { class: 'nm' }, row.id && S.leagueOf(lg).kind === 'espn' ? [favBtn(lg, row, draw), h('a', { href: '/scores/?league=' + lg + '&team=' + row.id + '&tn=' + encodeURIComponent(row.name), text: row.name, onclick: (e) => { e.preventDefault(); state.team = row.id; state.tn = row.name; run(); } })] : row.name),
+              row.cells.map((c) => h('td', { text: c }))))))));
+        }) : [h('p', { class: 'empty', text: W.none })]), ...(bad.length ? [h('p', { class: 'note bad', text: W.badTable + ' ' + bad.slice(0, 4).map((b) => b.name + ' (' + b.why + ')').join('; ') })] : []));
+        again = draw; draw(); return false;
+      };
+      const r = await api({ league: lg, view: 'standings' }, (c) => { if (tk === token) paint(c); }); if (tk !== token) return;
+      if (!r) return sorry();
+      return paint(r);
+    }
+    async function mineView(tk) {
+      const mine = mem.teams, lgs = [...new Set([...mem.leagues, ...mine.map((t) => t.l)])].slice(0, 6);
+      if (!lgs.length) { say(W.delayed); out.replaceChildren(h('p', { class: 'empty', text: W.noMine })); return false; }
+      const rs = await Promise.all(lgs.map((l) => api({ league: l, date: state.date }))); if (tk !== token) return;
+      const parts = []; let live = false, worst = null;
+      lgs.forEach((l, i) => {
+        const r = rs[i]; if (!r) return; if (r.saved || r.from) worst = r;
+        const all = mem.leagues.includes(l), games = (r.j.games || []).filter((g) => all || isFav(l, g.home) || isFav(l, g.away));
+        if (!games.length) return; live = live || anyLive(games);
+        parts.push(h('div', null, h('h2', { text: S.leagueOf(l)[de ? 'de' : 'name'] }), gamesList(l, games, () => run(true))));
+      });
+      setNote(worst); out.replaceChildren(...(parts.length ? parts : [h('p', { class: 'empty', text: W.noMineDay })])); return live;
+    }
+    async function gameView(tk) {
+      const lg = state.league, isF1 = S.leagueOf(lg).kind === 'f1';
+      if (isF1) { const r = await api({ league: lg, date: state.date }); if (tk !== token) return; const g = r && (r.j.games || []).find((x) => x.id === state.game); if (!g) return sorry(); setNote(r);
+        out.replaceChildren(backBtn(), h('div', { class: 'pane' }, h('h2', { text: g.name, style: 'margin-top:0' }), h('p', { class: 'note', text: g.venue + ' · ' + dayLabel(state.date) + (g.state === 'pre' ? ' · ' + clock(g.start) : '') }),
+          g.results.length ? h('div', { class: 'tbl' }, h('table', null, h('thead', null, h('tr', null, h('th', { text: '#' }), h('th', { text: W.driver }), h('th', { text: 'Grid' }), h('th', { text: 'Pts' }), h('th', { text: W.results }))), h('tbody', null, g.results.map((x) => h('tr', null, h('td', { text: x.pos }), h('td', { text: x.driver }), h('td', { text: x.grid }), h('td', { text: x.points }), h('td', { text: x.time })))))) : h('p', { class: 'empty', text: W.none }))); return g.state === 'live'; }
+      const r = await api({ league: lg, view: 'game', id: state.game }); if (tk !== token) return;
+      if (!r) return sorry(); setNote(r);
+      const j = r.j, g = j.game, side = (hs) => (g ? g[hs] : { name: '', score: '' });
+      const kids = [backBtn()];
+      if (g) kids.push(h('div', { class: 'pane' }, h('div', { class: 'big' }, h('span', { text: side('home').name }), h('b', { text: (side('home').score || '–') + ' : ' + (side('away').score || '–') }), h('span', { text: side('away').name })),
+        h('p', { class: 'note', style: 'text-align:center;min-height:0', text: [g.state === 'live' ? W.live + ' ' + g.status : g.state === 'final' ? g.status || W.ft : W.kick + ' ' + (g.start ? clock(g.start) : ''), g.venue].filter(Boolean).join(' · ') })));
+      if (g && g.state === 'pre' && g.start) kids.push(h('div', { class: 'row' }, h('button', { type: 'button', text: W.cal, onclick: () => { const f = S.icsOf(g, S.leagueOf(lg)); if (!f) return; const a = h('a', { href: URL.createObjectURL(new Blob([f], { type: 'text/calendar' })), download: 'game.ics' }); document.body.append(a); a.click(); a.remove(); } })));
+      const ev = j.events.length ? j.events : (g && g.events) || [];
+      if (ev.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.events, style: 'margin-top:0' }), h('ul', { class: 'ev' }, ev.map((e) => h('li', null, h('span', { class: 'm', text: e.min }), h('span', { text: (e.kind === 'red' ? '🟥 ' : e.kind === 'yellow' ? '🟨 ' : '⚽ ') + (e.who || e.text) + (e.team ? ' (' + e.team + ')' : '') }))))));
+      if (j.stats.length === 2 && j.stats[0].stats.length) { const [a, b] = j.stats, cells = []; a.stats.forEach((s, i) => { const o = b.stats.find((x) => x.label === s.label); if (o) cells.push(h('span', { text: s.value }), h('span', { text: s.label }), h('span', { text: o.value })); });
+        kids.push(h('div', { class: 'pane' }, h('h2', { text: W.teamStats + ' · ' + a.team + ' / ' + b.team, style: 'margin-top:0' }), h('div', { class: 'cmp' }, cells))); }
+      if (j.lineups.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.lineups, style: 'margin-top:0' }), j.lineups.map((l) => h('p', { class: 'note', style: 'min-height:0', text: l.team + ': ' + l.starters.map((p) => (p.n ? p.n + ' ' : '') + p.name).join(', ') }))));
+      for (const t of j.players) for (const gr of t.groups) if (gr.rows.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.box + ' · ' + t.team + ' · ' + gr.name, style: 'margin-top:0' }), h('div', { class: 'tbl' }, h('table', null,
+        h('thead', null, h('tr', null, h('th', { text: '' }), h('th', { text: '' }), gr.labels.map((l) => h('th', { text: l })))), h('tbody', null, gr.rows.map((p, i) => h('tr', null, h('td', { text: String(i + 1) }), h('td', { text: p.name }), gr.labels.map((_, k) => h('td', { text: p.stats[k] || '' })))))))));
+      out.replaceChildren(...kids); return !!(g && g.state === 'live');
+    }
+    async function teamView(tk) {
+      const lg = state.league, r = await api({ league: lg, view: 'team', team: state.team }); if (tk !== token) return;
+      if (!r) return sorry(); setNote(r);
+      const games = r.j.games || [], last = games.filter((g) => g.state === 'final').slice(-5).reverse(), next = games.filter((g) => g.state !== 'final').slice(0, 5);
+      const star = state.team ? favBtn(lg, { id: state.team, name: state.tn || '' }, () => teamView(tk)) : null;
+      const dated = (g) => dayLabel(S.localDay(new Date(g.start)));
+      const sec = (title, list) => list.length ? [h('h2', { text: title }), h('ul', { class: 'games' }, list.map((g) => { const li = gameLi(lg, g, () => teamView(tk)); li.querySelector('.st').append(h('br'), dated(g)); return li; }))] : [];
+      out.replaceChildren(backBtn(), h('div', { class: 'row' }, star, h('h2', { text: state.tn || W.team, style: 'margin:0' })), ...sec(W.next, next), ...sec(W.last, last), games.length ? null : h('p', { class: 'empty', text: W.none }));
+      return anyLive(games);
+    }
+    const backBtn = () => h('div', { class: 'row' }, h('button', { type: 'button', text: '‹ ' + W.back, onclick: () => { if (state.game) state.game = ''; else { state.team = ''; state.tn = ''; } run(); } }));
+    // ---- the loop ----
+    async function run(quiet) {
+      clearTimeout(timer); const tk = ++token; push();
+      const lg = S.leagueOf(state.league); mem.last = state.league; save(KEY, mem);
+      document.title = lg.name + ' ' + (state.tab === 'standings' ? W.standings : W.scores) + ' · Verse';
+      for (const a of $('leagues').children) { const on = a.getAttribute('href').endsWith('league=' + state.league); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }
+      for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
+      const fl = mem.leagues.includes(state.league); $('favLeague').setAttribute('aria-pressed', String(fl)); $('favLeague').textContent = fl ? W.unfollowLeague : W.followLeague;
+      $('days').hidden = state.tab === 'standings' || !!state.team;
+      $('date').value = state.date; if (!quiet) { say(W.loading + '…'); }
+      let live = false;
+      try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (_) { sorry(); }
+      if (tk === token && live) { timer = setTimeout(() => { if (document.visibilityState === 'visible' && navigator.onLine) run(true); else timer = setTimeout(() => run(true), POLL); }, POLL); say(note.textContent + ' ' + W.refreshing); }
+    }
+    // ---- controls ----
+    for (const a of $('leagues').children) a.addEventListener('click', (e) => { e.preventDefault(); state.league = new URL(a.href).searchParams.get('league'); state.game = ''; state.team = ''; state.tn = ''; if (state.tab === 'mine') state.tab = 'scores'; run(); });
+    const tab = (t) => () => { state.tab = t; state.game = ''; state.team = ''; state.tn = ''; run(); };
+    $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine'));
+    const goDay = (d) => { if (S.dateOk(d)) { state.date = d; state.game = ''; state.team = ''; if (state.tab === 'standings') state.tab = 'scores'; run(); } };
+    $('prev').addEventListener('click', () => goDay(S.shiftDay(state.date, -1))); $('next').addEventListener('click', () => goDay(S.shiftDay(state.date, 1)));
+    $('dYes').addEventListener('click', () => goDay(S.shiftDay(today(), -1))); $('dToday').addEventListener('click', () => goDay(today())); $('dTom').addEventListener('click', () => goDay(S.shiftDay(today(), 1)));
+    $('date').addEventListener('change', () => goDay($('date').value));
+    $('favLeague').addEventListener('click', () => { const i = mem.leagues.indexOf(state.league); if (i >= 0) mem.leagues.splice(i, 1); else mem.leagues.push(state.league); save(KEY, mem); run(true); });
+    $('find').addEventListener('input', () => again());
+    $('share').addEventListener('click', async () => { const u = location.origin + url(); try { if (navigator.share) await navigator.share({ title: document.title, url: u }); else { await navigator.clipboard.writeText(u); say(W.copied); } } catch (_) { say(u); } });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && timer) run(true); });
+    addEventListener('online', () => run(true));
+    for (const e of document.querySelectorAll('[data-k]')) if (de && W[e.dataset.k]) e.textContent = W[e.dataset.k];
+    if (de) { document.documentElement.lang = 'de'; $('sub').textContent = 'Live-Ergebnisse, Spielpläne und Tabellen für Fußball, NBA, NFL, MLB, NHL und Formel 1. Keine Werbung, keine Wetten.'; }
+    run();
+    mountRelated($('related'), '/scores/', []);
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

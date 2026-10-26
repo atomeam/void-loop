@@ -217,6 +217,25 @@ export const PROBES = Object.freeze({
     // what the best translators show: the language detected, 100 or more languages, listen and speak, a camera, copy, share, a history and saved phrases, offline
     facts: [['the language detected', /detect/i], ['100 languages', /\b100 languages\b/i], ['listen', /\blisten\b/i], ['speak', /\bspeak\b/i], ['camera', /\bcamera\b/i], ['copy', /\bcopy\b/i], ['share', /\bshare\b/i], ['a history', /\bhistory\b/i], ['saved phrases', /\bsaved\b|\bphrasebook\b/i], ['works offline', /\boffline\b/i]],
   },
+  sports: {
+    site: 'https://www.espn.com/', verse: '/scores/?league=epl&date=2025-05-25',
+    // the question: one Premier League day in the page's link, the last matchday of 2024-25 (25 May 2025), worked out by hand and never read off a
+    // rival: all ten games kicked off together that Sunday and are finished, and Arsenal were at home to Southampton. Judged on Verse alone (the
+    // site is not asked); the same probe measures every site in the sports lane (lib/tower.js LANES). The page's own words ("Live scores",
+    // "standings") are in its first paint, so the aspects below are asked of ROWS the page draws from a feed, never of a loading state
+    ask: { verse: '/scores/?league=epl&date=2025-05-25' },
+    truth: [['Arsenal against Southampton', /Arsenal[\s\S]{0,200}Southampton|Southampton[\s\S]{0,200}Arsenal/], ['all ten games of the day finished (FT)', (t) => (String(t).match(/\bFT\b/g) || []).length >= 10], ['a score beside Arsenal', /Arsenal\s+\d\b/]],
+    pageParts: {
+      // live scores: games with their score and status as rows from the feed (a past day is the fixed fact; the live refresh is the page's own 30 s loop)
+      'live scores': { verse: '/scores/?league=epl&date=2025-05-25', items: [['a team with its score (Arsenal, Liverpool, Chelsea or Everton, then a number)', /(?:Arsenal|Liverpool|Chelsea|Everton)\s+\d\b/], ['a finished mark', /\bFT\b/], ['kick-off or status per game, ten rows', (t) => (String(t).match(/\bDetails\b/g) || []).length >= 10]] },
+      // schedules: a team's page, Arsenal (ESPN team 359): last games with results and next games with dates in the viewer's zone
+      schedules: { verse: '/scores/?league=epl&team=359&tn=Arsenal', items: [['last games', /\bLast games\b/], ['next games', /\bNext games\b/], ['a dated row', /\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),? (?:[A-Z][a-z]{2} \d{1,2}|\d{1,2} [A-Z][a-z]{2})\b/]] },
+      // standings: the Premier League table, twenty ranked rows with points
+      standings: { verse: '/scores/?league=epl&tab=standings', items: [['a points column', /\bPts\b/], ['rank 1 and rank 20 rows', (t) => /^1\t/m.test(String(t)) && /^20\t/m.test(String(t))], ['goal difference', /\bGD\b/]] },
+    },
+    // what the best score sites show: the day's games with scores, live marks, a day picker, standings, box scores and match detail, favourite teams, schedules in your zone, a share link, offline
+    facts: [['the day\'s games', /\bFT\b|\bLIVE\b/], ['a day picker', /\byesterday\b/i], ['standings', /\bstandings\b/i], ['leagues', /\bpremier league\b/i], ['match details', /\bdetails\b/i], ['my teams', /\bmy teams\b/i], ['follow a team', /\bfollow\b/i], ['a share link', /\bshare\b/i], ['the source named', /\bESPN\b/], ['delayed data said', /\bdelayed\b/i], ['no betting', /\bno betting\b/i], ['Formula 1', /\bFormula 1\b/], ['NBA', /\bNBA\b/], ['works offline', /\boffline\b|\bdevice\b/i]],
+  },
   recipes: {
     site: 'https://www.allrecipes.com/', verse: '/recipes/?q=pancakes',
     // the question: pancakes, in the page's link. The truth any correct pancake recipe agrees on (worked out by hand, lib/recipes.js BUILT_IN):

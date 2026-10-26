@@ -491,84 +491,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-25T17:34:48Z",
-   "subject": "Translate a website: a bare address like news.site.org is accepted (the server checks it, not the form)"
+   "at": "2026-10-26T01:58:50Z",
+   "subject": "Tower gate: image boards: wizchan.org measured against their live sites"
   },
   {
-   "at": "2026-10-25T17:33:24Z",
-   "subject": "Live gate fixes: /image/ keeps its own Workers AI share (the forge had used the shared 30), retries without the seed field, shorter…"
+   "at": "2026-10-25T23:10:34Z",
+   "subject": "Verse fixes its gears skill: learn to handle \"make a gear assembly\""
   },
   {
-   "at": "2026-10-25T17:30:32Z",
-   "subject": "Incident: the browser suite failed on fe4daf2c (void-live-deploy/incidents.json)"
+   "at": "2026-10-25T22:09:52Z",
+   "subject": "Verse fixes its vector-field-mind skill: learn to handle \"create a vector of a leaf\""
   },
   {
-   "at": "2026-10-25T17:27:47Z",
-   "subject": "Boards: the page is static words and forms before load; its module moved to /boards/app.js, imported after load"
+   "at": "2026-10-25T21:59:44Z",
+   "subject": "Verse fixes its cartoon skill: learn to handle \"funny cartoon dog\""
   },
   {
-   "at": "2026-10-25T17:26:43Z",
-   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com,random…"
+   "at": "2026-10-25T20:44:18Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-25T17:25:11Z",
-   "subject": "Generators: {wheel: list} spun on the page, $layout cards/grid/table, a published generator's shared data, five AI name generators; tap…"
+   "at": "2026-10-25T20:18:28Z",
+   "subject": "Incident: the browser suite failed on defcc4b0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:20:11Z",
-   "subject": "Tower gate: random generators: reedsy.com,random generators: writingexercises.com,random generators: behindthename.com,random generators…"
+   "at": "2026-10-25T20:16:40Z",
+   "subject": "Incident: the browser suite failed on a53b1f17 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:19:33Z",
-   "subject": "comments: the widget named by a test"
+   "at": "2026-10-25T20:08:43Z",
+   "subject": "Incident: the browser suite failed on 18af836f (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:17:58Z",
-   "subject": "Tower gate: image boards: bbs.progrider.org,image boards: textboard.org,image boards: uboachan.net,image boards: desuchan.net,image…"
+   "at": "2026-10-25T20:01:10Z",
+   "subject": "Incident: the browser suite failed on 34b0bcc9 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:17:45Z",
-   "subject": "Tower gate: random generators measured against their live sites"
+   "at": "2026-10-25T19:59:51Z",
+   "subject": "Incident: the browser suite failed on 9f3b72fc (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:15:33Z",
-   "subject": "Verse fixes its figure skill: learn to handle \"low poly fox\""
+   "at": "2026-10-25T19:58:18Z",
+   "subject": "Incident: the browser suite failed on e89dc826 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:15:17Z",
-   "subject": "Comments under published generators and /image/ (signed sum, rates, reports, owner delete); tap-to-reroll skips a/an and s; features list"
+   "at": "2026-10-25T19:51:25Z",
+   "subject": "Incident: the browser suite failed on 789036e8 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:10:47Z",
-   "subject": "Tower gate: random generators: tools.dungeonmastersvault.com,random generators: chaoticshiny.com,random generators: springhole.net,random…"
+   "at": "2026-10-25T19:51:11Z",
+   "subject": "Incident: the browser suite failed on 222b55c9 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T17:09:50Z",
-   "subject": "Generators: tap a word to reroll it, present/future/negative tenses, {ai: ...} text and a story writer on the answer route's caps, imports…"
+   "at": "2026-10-25T19:29:17Z",
+   "subject": "Incident: the browser suite failed on 1307dbc9 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-25T16:59:57Z",
-   "subject": "Character chat: made-up characters with a persona, memory and chats on the device, shared by link, replies from the answer route's free…"
+   "at": "2026-10-25T19:06:06Z",
+   "subject": "Tower gate: sports measured against their live sites"
   },
   {
-   "at": "2026-10-25T16:55:01Z",
-   "subject": "List language: expressions, if/else, conditional odds, [names[gender]], $inputs, $meta and imports; /gen/<id> share cards; a public image…"
+   "at": "2026-10-25T18:58:50Z",
+   "subject": "Handoff: the tool pages' rival gaps closed today"
   },
   {
-   "at": "2026-10-25T16:50:09Z",
-   "subject": "Tower gate: random generators: seventhsanctum.com,random generators: rangen.co.uk,random generators: tools.dungeonmastersvault.com…"
+   "at": "2026-10-25T18:58:38Z",
+   "subject": "Weather card: an hour-by-hour graph to seven days, pressure, visibility and dew point"
   },
   {
-   "at": "2026-10-25T16:49:50Z",
-   "subject": "Stopwatch: interval timer, chess clock, more countdown presets, saved timers and alarm choice"
+   "at": "2026-10-25T18:57:58Z",
+   "subject": "Tower gate: sports,base converter measured against their live sites"
   },
   {
-   "at": "2026-10-25T16:48:44Z",
-   "subject": "Tower gate: calendar: calendar.zoho.com,recipes: budgetbytes.com,recipes: food52.com,calendar,recipes measured against their live sites"
+   "at": "2026-10-25T18:48:27Z",
+   "subject": "Base converter: the working step by step, fractions exactly, any base to 36"
   },
   {
-   "at": "2026-10-25T16:48:17Z",
-   "subject": "Feature scan: image-boards,random-generators researched by Verse"
+   "at": "2026-10-25T18:40:59Z",
+   "subject": "Tower gate: sports,colour,colour codes measured against their live sites"
   }
  ],
  "builders": {
