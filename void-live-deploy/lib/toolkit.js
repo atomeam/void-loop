@@ -122,6 +122,9 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // podcasts: 'search podcasts', 'podcasts about history', 'top podcasts', 'podcast charts', 'podcast player' (the plain 'podcast' and 'play the podcast' stay with Verse's own show on the stage)
+  [/^(?:search |find |browse )?podcasts? (?:about|on|for) (.+)$|^(?:search|find) (?:for )?(?:a )?podcasts?(?: (?:about|on|for) )?(.*)$/i, (m) => '/podcasts/' + (m[1] || m[2] ? '?q=' + encodeURIComponent((m[1] || m[2]).trim()) : '')],
+  [/^(?:top |best |popular )?podcasts$|^podcast (?:charts?|player|directory|app)$/i, () => '/podcasts/'],
   // calendar: 'add dentist tomorrow 3pm to my calendar', 'remind me to call mum tomorrow 6pm', 'my calendar', "what's on tomorrow", 'my week'
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
   // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
