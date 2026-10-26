@@ -13630,6 +13630,476 @@
     "at": "2026-10-26T03:13:08.270Z",
     "of": 19
    }
+  },
+  "news: euronews.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 124,
+    "best": 1364,
+    "evidence": "Verse (/news/?sec=world) 124 ms to the load event (median of 3, phone width) vs euronews.com 1364 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs euronews.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs euronews.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 96,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs euronews.com 96 unnamed controls or images",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs euronews.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs euronews.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not euronews.com (the site is not asked)",
+    "at": "2026-10-26T03:09:53.743Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 338,
+    "evidence": "Verse (/news/?sec=world) 2 design defects vs euronews.com 338 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), euronews.com (20 low-contrast texts, 318 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:09:53.743Z"
+   },
+   "breadth of sources": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs euronews.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T03:09:53.743Z",
+    "of": 1,
+    "part": true
+   },
+   "freshness": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs euronews.com 0 of 1 shown (Verse lacks: none; site lacks: ages)",
+    "at": "2026-10-26T03:09:53.743Z",
+    "of": 1,
+    "part": true
+   },
+   "topic following": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs euronews.com 1 of 2 shown (Verse lacks: none; site lacks: my news)",
+    "at": "2026-10-26T03:09:53.743Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 23,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs euronews.com 3 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, technology, science, sport, culture, regions, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
+    "at": "2026-10-26T03:09:53.743Z",
+    "of": 23
+   }
+  },
+  "news: aljazeera.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 115,
+    "best": 1079,
+    "evidence": "Verse (/news/?sec=world) 115 ms to the load event (median of 3, phone width) vs aljazeera.com 1079 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs aljazeera.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs aljazeera.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs aljazeera.com 2 unnamed controls or images",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs aljazeera.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs aljazeera.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not aljazeera.com (the site is not asked)",
+    "at": "2026-10-26T03:10:22.430Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 11,
+    "evidence": "Verse (/news/?sec=world) 2 design defects vs aljazeera.com 11 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), aljazeera.com (2 low-contrast texts, 9 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:10:22.430Z"
+   },
+   "breadth of sources": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs aljazeera.com 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
+    "at": "2026-10-26T03:10:22.430Z",
+    "of": 1,
+    "part": true
+   },
+   "freshness": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs aljazeera.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T03:10:22.430Z",
+    "of": 1,
+    "part": true
+   },
+   "topic following": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs aljazeera.com 1 of 2 shown (Verse lacks: none; site lacks: my news)",
+    "at": "2026-10-26T03:10:22.430Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 23,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs aljazeera.com 3 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, world, business, technology, science, sport, culture, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
+    "at": "2026-10-26T03:10:22.430Z",
+    "of": 23
+   }
+  },
+  "news: npr.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 137,
+    "best": 1265,
+    "evidence": "Verse (/news/?sec=world) 137 ms to the load event (median of 3, phone width) vs npr.org 1265 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs npr.org 3 of 3 loads answered",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs npr.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 71,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs npr.org 71 unnamed controls or images",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs npr.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs npr.org 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not npr.org (the site is not asked)",
+    "at": "2026-10-26T03:11:02.003Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 70,
+    "evidence": "Verse (/news/?sec=world) 2 design defects vs npr.org 70 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), npr.org (24 low-contrast texts, 46 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:11:02.003Z"
+   },
+   "breadth of sources": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs npr.org 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
+    "at": "2026-10-26T03:11:02.003Z",
+    "of": 1,
+    "part": true
+   },
+   "freshness": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs npr.org 0 of 1 shown (Verse lacks: none; site lacks: ages)",
+    "at": "2026-10-26T03:11:02.003Z",
+    "of": 1,
+    "part": true
+   },
+   "topic following": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs npr.org 0 of 2 shown (Verse lacks: none; site lacks: follow, my news)",
+    "at": "2026-10-26T03:11:02.003Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 23,
+    "best": 4,
+    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs npr.org 4 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, business, sport, regions, search, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
+    "at": "2026-10-26T03:11:02.003Z",
+    "of": 23
+   }
+  },
+  "news: apnews.com": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs apnews.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 100,
+    "best": 200,
+    "evidence": "Verse (/news/?sec=world) 100 ms to the load event (median of 3, phone width) vs the bar (apnews.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs the bar (apnews.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs the bar (apnews.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs the bar (apnews.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (apnews.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 2 design defects vs the bar (apnews.com unreachable) 0 design defects",
+    "at": "2026-10-26T03:12:12.121Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T03:12:12.121Z",
+    "of": 3
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 23,
+    "best": 23,
+    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs the bar (apnews.com unreachable) 23 of 23 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:12:12.121Z",
+    "of": 23
+   },
+   "breadth of sources": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (apnews.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:12:12.121Z",
+    "of": 1,
+    "part": true
+   },
+   "freshness": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (apnews.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:12:12.121Z",
+    "of": 1,
+    "part": true
+   },
+   "topic following": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs the bar (apnews.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:12:12.121Z",
+    "of": 2,
+    "part": true
+   }
+  },
+  "news: theguardian.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 110,
+    "best": 965,
+    "evidence": "Verse (/news/?sec=world) 110 ms to the load event (median of 3, phone width) vs theguardian.com 965 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs theguardian.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs theguardian.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs theguardian.com 3 unnamed controls or images",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs theguardian.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs theguardian.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not theguardian.com (the site is not asked)",
+    "at": "2026-10-26T03:13:41.542Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 73,
+    "evidence": "Verse (/news/?sec=world) 2 design defects vs theguardian.com 73 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), theguardian.com (23 low-contrast texts, 50 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T03:13:41.542Z"
+   },
+   "breadth of sources": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs theguardian.com 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
+    "at": "2026-10-26T03:13:41.542Z",
+    "of": 1,
+    "part": true
+   },
+   "freshness": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs theguardian.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T03:13:41.542Z",
+    "of": 1,
+    "part": true
+   },
+   "topic following": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs theguardian.com 0 of 2 shown (Verse lacks: none; site lacks: follow, my news)",
+    "at": "2026-10-26T03:13:41.542Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 23,
+    "best": 10,
+    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs theguardian.com 10 of 23 things a full answer shows (Verse lacks: none; site lacks: regions, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Full articles, Follow topics (My News), Live freshness timestamps)",
+    "at": "2026-10-26T03:13:41.542Z",
+    "of": 23
+   }
   }
  },
  "icons": {
@@ -13772,6 +14242,11 @@
   "player.fm": "tower.icons/player.fm.ico",
   "podchaser.com": "tower.icons/podchaser.com.png",
   "podbean.com": "tower.icons/podbean.com.png",
-  "castbox.fm": "tower.icons/castbox.fm.png"
+  "castbox.fm": "tower.icons/castbox.fm.png",
+  "euronews.com": "tower.icons/euronews.com.png",
+  "aljazeera.com": "tower.icons/aljazeera.com.ico",
+  "npr.org": "tower.icons/npr.org.png",
+  "apnews.com": "tower.icons/apnews.com.ico",
+  "theguardian.com": "tower.icons/theguardian.com.png"
  }
 }
