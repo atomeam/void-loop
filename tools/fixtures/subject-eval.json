@@ -876,5 +876,113 @@
    "notFound": false,
    "about": "bread"
   }
+ },
+ {
+  "ask": "snake jailbird",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "cletus spuckler",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "lindsey naegle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "disco stu",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "superintendent chalmers",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "sideshow mel",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "kirk van houten",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "rainier wolfcastle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "itchy and scratchy",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "frylock",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "meatwad",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "master shake",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
  }
 ]

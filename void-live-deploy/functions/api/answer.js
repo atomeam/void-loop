@@ -41,7 +41,7 @@ import { quoteBody, batch } from './markets.js';
 import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
 import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
-import { grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
+import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -69,6 +69,9 @@ async function sources(ask) {
   // its own: the summaries above hold only fuzzy neighbours (Happy Harry's). When none holds every word of the ask, read the redirect's section, or the
   // full-text search's section hit, and put that first (lib/no-answer.js)
   if (isNameAsk(q) && !sourcesMatch(q, out)) { const sec = await sectionSource(q); if (sec) out.unshift(sec); }
+  // the page whose own title holds most of the ask's words leads ("marie curie physicist chemist" is Marie Curie, not Pierre Curie, whom the search ranked first); a tie keeps the search's order
+  const need = askWords(q), over = (x) => { const t = new Set(String(x.title || '').toLowerCase().match(/[a-z0-9]+/g) || []); return need.filter((w) => t.has(w) || t.has(w + 's') || t.has(w.replace(/s$/, ''))).length; };
+  out.map((x, i) => [x, i]).sort((a, b) => over(b[0]) - over(a[0]) || a[1] - b[1]).forEach(([x], i) => { out[i] = x; });
   return out;
 }
 const WIKI = 'https://en.wikipedia.org/w/api.php?format=json&origin=*';
