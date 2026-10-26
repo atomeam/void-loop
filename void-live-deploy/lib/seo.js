@@ -67,7 +67,7 @@ export const PAGES = Object.freeze([
   { path: '/sports/', name: 'Sports', does: 'Browse 42 sports, search teams, events, venues and players across all of them in one box, see which athletes were born on this day, and read about the free read-only scores API. No ads, no betting, no account.',
     asks: ['browse sports', 'sports search', 'search a team', 'search a stadium', 'athletes born today', 'free sports api', 'list of sports'],
     action: { template: '/sports/?q={team}', input: 'team' },
-    links: [['Search Arsenal', '/sports/?q=arsenal'], ['Search Lakers', '/sports/?q=lakers'], ['Search Wembley', '/sports/?q=wembley'], ['Search Messi', '/sports/?q=messi'], ['Search Formula 1', '/sports/?q=formula'], ['Premier League scores', '/scores/?league=epl']] },
+    links: [['Search Arsenal', '/sports/?q=arsenal'], ['Search Lakers', '/sports/?q=lakers'], ['Search Wembley', '/sports/?q=wembley'], ['Search Messi', '/sports/?q=messi'], ['Search Formula 1', '/sports/?q=formula'], ['Search Wimbledon', '/sports/?q=wimbledon']] },
   { path: '/translate/', name: 'Translate', does: 'Translate text between 100 languages with the language detected as you type: listen to the translation, speak instead of typing, read the text in a photo or from the camera, copy it, share a link that carries it, keep a history and saved phrases, and see them again offline.',
     asks: ['translate', 'translate english to spanish', 'spanish to english translation', 'translate to french', 'japanese translator', 'translate photo text', 'free translator 100 languages'],
     action: { template: '/translate/?q={text}&to=es', input: 'text' },
