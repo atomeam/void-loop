@@ -3,7 +3,8 @@
 // logos or photos: teams are text and the colour the feed gives them. Every picture is role=img with an alt text that says the facts, and every function returns { svg, alt }.
 // Pure strings; nothing here touches a page. The source is named inside each picture: "Drawn by Verse from <source> data".
 const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const cut = (v, n) => { const s = String(v || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+// a name too long for its place is cut at a whole word (never with dots); the full text stays in the picture's alt text and caption
+const cut = (v, n) => { const s = String(v || ''); if (s.length <= n) return s; const k = s.lastIndexOf(' ', n); return s.slice(0, k > n / 2 ? k : n).trim(); };
 const colour = (c, fallback) => (/^[0-9a-f]{6}$/i.test(String(c || '')) ? '#' + c : fallback);
 const FONT = 'system-ui, -apple-system, Segoe UI, sans-serif', W = 600;
 const wrap = (h, alt, inner) => ({ alt, svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + h + '" width="100%" role="img" aria-label="' + esc(alt) + '" font-family="' + FONT + '"><title>' + esc(alt) + '</title><rect width="' + W + '" height="' + h + '" rx="14" fill="#14121c"/>' + inner + '</svg>' });

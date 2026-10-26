@@ -57,9 +57,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 2,
     "checked": 0,
-    "proven": 17
+    "proven": 18
    },
    "from": 110,
    "to": 130
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 2,
-    "proven": 43
+    "proven": 44
    },
    "from": 305,
    "to": 352
@@ -569,7 +569,7 @@
     "show me linemote 1"
    ],
    "tier": "proven",
-   "why": "1 browser-suite mention, 4 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
    "flavor": "Proven 4 times over by those who asked, and kept among the making things. The void remembers each asking.",
    "glow": 100,
    "n": 20
@@ -1205,7 +1205,7 @@
     "spin a wheel with pizza, tacos and sushi"
    ],
    "tier": "proven",
-   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Let the stage be the proof.",
    "glow": 100,
    "n": 57
@@ -2065,7 +2065,7 @@
     "how bad is the pollen in London"
    ],
    "tier": "proven",
-   "why": "1 browser-suite mention, 9 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the sky and earth. Let the stage be the proof.",
    "glow": 100,
    "n": 101
@@ -2395,7 +2395,7 @@
     "what did void do today"
    ],
    "tier": "proven",
-   "why": "9 browser-suite mentions, 28 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 28 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 28 real askings. Ask, and see.",
    "glow": 100,
    "n": 120
@@ -2427,8 +2427,9 @@
     "next holiday in canada",
     "holidays in france"
    ],
-   "tier": "tested",
-   "why": "19 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 19 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 19 askings, each one answered. The void remembers each asking.",
    "glow": 94.7,
    "n": 122
   },
@@ -2672,7 +2673,7 @@
     "loan payment $15000 at 5.9% over 36 months"
    ],
    "tier": "proven",
-   "why": "5 browser-suite mentions, 15 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 15 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. Turn the page when you are done.",
    "glow": 100,
    "n": 136
@@ -3044,7 +3045,7 @@
     "lovebird lakeland menu"
    ],
    "tier": "proven",
-   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the body and mind; set down here after it answered true 3 times. It has not failed a reader yet.",
    "glow": 100,
    "n": 158
@@ -5957,8 +5958,9 @@
     "show my automations",
     "automations"
    ],
-   "tier": "tested",
-   "why": "7 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 7 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 7 askings, each one answered. Say the words below and it answers.",
    "glow": 100,
    "n": 324
   },
