@@ -400,8 +400,8 @@
      "name": "Great circle map of a route",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "/flights/map/ draws the paths on a plain 30-degree grid; no coastlines (the file stays small and offline)"
+     "verse": "has",
+     "verse_evidence": "/flights/map/ draws each great-circle leg over Natural Earth 1:110m coastlines (public domain, 11 KB, offline) on a 30-degree grid"
     },
     {
      "group": "core",
@@ -496,8 +496,8 @@
      "name": "Direct flights from an airport",
      "detail": "",
      "paid": false,
-     "verse": "skipped",
-     "verse_evidence": "needs an airline schedule feed; Verse bundles none and does not guess which airlines fly a route"
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/ lists nonstop routes and their airlines from OpenFlights (ODbL), as of June 2014 and labelled may be out of date; no current schedule"
     },
     {
      "group": "core",
@@ -536,10 +536,9 @@
  },
  "gaps": [
   "live fares (no feed)",
-  "nonstop route data (no schedule feed)",
   "flight status and live map (OpenSky terms unverified)",
-  "coastlines on the great circle map",
-  "destination photos with credit (lib/free-pics.js, server side; not wired)"
+  "destination photos with credit (lib/free-pics.js, server side; not wired)",
+  "current nonstop routes (the bundled OpenFlights routes stop in June 2014)"
  ],
  "verse_extra": [
   "the destination's local time, forecast, currency and country facts by asking",

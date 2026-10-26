@@ -1,5 +1,5 @@
 // /flights/routes/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
-import { mountFlights } from '/lib/flights-ui.js';
-mountFlights(document.getElementById('app'), {"panels":["controls","routes"],"controls":["origin"],"de":{"h1":"Wohin kann ich fliegen","intro":"Wählen Sie einen Flughafen und eine Flugzeit und sehen Sie, welche Flughäfen ein Flug dieser Länge erreichen könnte, die nächsten zuerst, nach Land. Das ist Reichweite, auf Ihrem Gerät berechnet, kein Flugplan: Ob eine Fluggesellschaft eine Strecke nonstop fliegt, zeigen die Anbieter. Jedes Ergebnis öffnet die Strecke mit den Links zur Suche."}});
-// the related row and the ask bar come after the first paint, so the page itself loads first
-import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/routes/'));
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["controls","routes"],"controls":["origin"],"de":{"h1":"Wohin kann ich fliegen","intro":"Wählen Sie einen Flughafen und eine Flugzeit und sehen Sie, welche Flughäfen ein Flug dieser Länge erreichen könnte, die nächsten zuerst, nach Land. Das ist Reichweite, auf Ihrem Gerät berechnet, kein Flugplan: Ob eine Fluggesellschaft eine Strecke nonstop fliegt, zeigen die Anbieter. Jedes Ergebnis öffnet die Strecke mit den Links zur Suche."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/routes/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

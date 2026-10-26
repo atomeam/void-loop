@@ -137,3 +137,19 @@ test('the asks that reach the pages', () => {
   assert.equal(o('airport codes'), '/flights/airports/'); assert.equal(o('layover calculator'), '/flights/trip/'); assert.equal(o('flight co2 calculator'), '/flights/co2/'); assert.equal(o('great circle map'), '/flights/map/');
   for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo']) assert.equal(o(no), '', no);
 });
+test('coastlines: the encoder and the decoder agree, the file is small, and the map draws them under the route', async () => {
+  const { linesOf, encodeLine, varint, Q } = await import('./coast-build.mjs'), { COAST, COAST_Q } = await import('../void-live-deploy/lib/flights-coast.js');
+  const geo = { features: [{ geometry: { type: 'LineString', coordinates: [[-9.13, 38.72], [-9.13, 38.72], [2.35, 48.85], [179.9, -16.5], [-179.9, -16.6]] } }] }, lines = linesOf(geo);
+  assert.deepEqual(lines[0].length, 4, 'a repeated point is dropped'); assert.deepEqual(C.decodeCoast(lines.map(encodeLine), Q)[0], lines[0].map(([x, y]) => [x / Q, y / Q]));
+  for (const n of [1, -1, 15, -16, 16, 1000, -720]) assert.deepEqual(C.decodeCoast([varint(0) + varint(0) + varint(n) + varint(-n)], 1)[0][1], [n, -n]);
+  assert.equal(COAST_Q, 4); assert.ok(COAST.length > 100 && JSON.stringify(COAST).length < 20000, 'about 11 KB');
+  const world = C.decodeCoast(COAST, COAST_Q); assert.ok(world.every((l) => l.every(([x, y]) => x >= -180 && x <= 180 && y >= -90 && y <= 90)));
+  const svg = C.mapSvg(C.parseRoute(idx, 'JFK-LHR').ports, 640, 320, world); assert.ok(svg.indexOf('class="coast"') < svg.indexOf('stroke="var(--accent)"'), 'the coast is drawn first, under the route');
+});
+test('nonstop routes: read from routes.dat, packed, and read back; the file credits OpenFlights under the ODbL and says June 2014', async () => {
+  const { routesOf, pack } = await import('./routes-build.mjs');
+  const dat = 'TP,1,LIS,1,MAD,2,,0,320\nIB,2,LIS,1,MAD,2,Y,0,320\nTP,1,LIS,1,OPO,3,,0,320\nXX,9,LIS,1,ZZZ,4,,0,320\nTP,1,LIS,1,JFK,5,,1,330\n', p = pack(routesOf(dat, new Set(['LIS', 'MAD', 'OPO', 'JFK'])));
+  assert.deepEqual(C.routesFrom(p, 'LIS'), [{ to: 'MAD', airlines: ['IB', 'TP'] }, { to: 'OPO', airlines: ['TP'] }], 'nonstop only, known airports only'); assert.deepEqual(C.routesFrom(p, 'MAD'), []);
+  const real = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/flights/routes.json', import.meta.url), 'utf8')); assert.equal(real.asOf, '2014-06'); assert.match(real.licence, /ODbL/); assert.match(real.licence, /OpenFlights/);
+  const lis = C.routesFrom(real, 'LIS').map((r) => r.to); assert.ok(lis.includes('MAD') && lis.includes('OPO')); for (const r of C.routesFrom(real, 'LHR')) assert.ok(idx.byIata.has(r.to), r.to);
+});

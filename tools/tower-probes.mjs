@@ -687,10 +687,10 @@ const LANE_PROBES = Object.freeze({
   },
   'travel: flightconnections.com': {
     ask: { verse: '/flights/routes/?from=LIS' },
-    truth: [['from Lisbon', /Airports a flight from Lisbon/], ['Madrid within reach', /\bMAD\b/], ['Porto within reach', /\bOPO\b/], ['a flight time for each', /\b\d h \d{2} min|\b\d{2} min/]],
-    askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable/i]] },
+    truth: [['from Lisbon', /(?:Airports a flight from|nonstop route from) Lisbon/], ['Madrid within reach', /\bMAD\b/], ['Porto within reach', /\bOPO\b/], ['a flight time for each', /\b\d h \d{2} min|\b\d{2} min/]],
+    askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable|may be out of date/i]] },
     pageParts: {}, parts: {},
-    facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+    facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable|may be out of date/i], ['nonstop routes', /nonstop/i], ['the routes\' date and source', /June 2014[\s\S]{0,200}OpenFlights|OpenFlights[\s\S]{0,200}June 2014/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'sports: thesportsdb.com': {
     ask: { verse: '/sports/?q=arsenal' },

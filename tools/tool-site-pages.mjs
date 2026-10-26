@@ -116,6 +116,12 @@ export function pageOf(row, kind) {
 export function appOf(row, kind) {
   const pdf = kind === 'pdf', fl = kind === 'flights', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
   const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
+  if (fl) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), ${JSON.stringify(cfg)}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+`;
   return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
 import { ${fn} } from '/lib/${lib}.js';
 ${fn}(document.getElementById('app'), ${JSON.stringify(cfg)});

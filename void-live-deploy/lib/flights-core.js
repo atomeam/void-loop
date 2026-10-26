@@ -340,10 +340,17 @@ export function parseRoute(idx, text) {
   const ports = [], bad = []; for (const tok of String(text || '').split(/[\s,\-–>→;/]+/).filter(Boolean)) { const a = airportOf(idx, tok); if (a) ports.push(a); else bad.push(tok); }
   return { ports, bad };
 }
-/** an equirectangular map as SVG: a 30-degree graticule, the airports and the great-circle paths between them (a path across the date line is drawn in two pieces). No coastline is drawn: the file stays small and offline. */
-export function mapSvg(ports, w = 640, h = 320) {
-  if (!ports.length) return '';
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+/** the coastline strings of lib/flights-coast.js (tools/coast-build.mjs) back into lines of [lon, lat] in degrees. Pure. */
+export function decodeCoast(lines, q = 4) {
+  return (lines || []).map((s) => { const nums = []; let v = 0, sh = 0; for (const ch of s) { const d = B64.indexOf(ch); if (d < 0) continue; v += (d & 31) * 2 ** sh; if (d >= 32) { sh += 5; continue; } nums.push(v % 2 ? -(v + 1) / 2 : v / 2); v = 0; sh = 0; }
+    const pts = []; let x = 0, y = 0; for (let i = 0; i + 1 < nums.length; i += 2) { x += nums[i]; y += nums[i + 1]; pts.push([x / q, y / q]); } return pts; });
+}
+/** an equirectangular map as SVG: the coastlines when given (Natural Earth, lines of [lon, lat]), a 30-degree graticule, the airports and the great-circle paths between them drawn over them (a path across the date line is drawn in two pieces). */
+export function mapSvg(ports, w = 640, h = 320, coast = null) {
+  if (!ports.length && !coast) return '';
   const X = (lon) => ((lon + 540) % 360) / 360 * w, Y = (lat) => (90 - lat) / 180 * h; let g = '';
+  if (coast) { let d = ''; for (const l of coast) { let prev = null; for (const [lon, lat] of l) { const x = X(lon === 180 ? 179.999 : lon), y = Y(lat); d += (prev === null || Math.abs(x - prev) > w / 2 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1); prev = x; } } g += '<path class="coast" d="' + d + '" fill="none" stroke="var(--soft)" stroke-width="0.8" stroke-linejoin="round"/>'; }
   for (let lo = -180; lo <= 180; lo += 30) g += '<line x1="' + X(lo === 180 ? 179.999 : lo).toFixed(1) + '" y1="0" x2="' + X(lo === 180 ? 179.999 : lo).toFixed(1) + '" y2="' + h + '" stroke="var(--line)" stroke-width="1"/>';
   for (let la = -60; la <= 60; la += 30) g += '<line x1="0" y1="' + Y(la) + '" x2="' + w + '" y2="' + Y(la) + '" stroke="var(--line)" stroke-width="' + (la === 0 ? 1.6 : 1) + '"/>';
   let paths = '';
@@ -362,4 +369,11 @@ export const AIRCRAFT = Object.freeze([['Regional jet (about 1,500 km)', 1500], 
 export function reachable(idx, from, { minMin = 0, maxMin = 600, cc = '', big = false, limit = 60 } = {}) {
   const out = []; for (const b of idx.list) { if (b.iata === from.iata || (cc && b.cc !== cc) || (big && b.size < 1)) continue; const km = distanceKm(from, b), min = flightMinutes(km); if (min >= minMin && min <= maxMin) out.push({ a: b, km, minutes: min }); }
   return out.sort((x, y) => x.km - y.km).slice(0, limit);
+}
+
+// ---------- nonstop routes (OpenFlights, June 2014; flights/routes.json, tools/routes-build.mjs) ----------
+/** the nonstop routes from an airport in the packed file: [{ to, airlines: [...] }]; [] when it has none. Pure. */
+export function routesFrom(packed, code) {
+  const row = packed && packed.r && packed.r[String(code || '').toUpperCase()]; if (!row) return [];
+  return row.split(';').filter(Boolean).map((x) => { const [to, al] = x.split('.'); return { to, airlines: al ? al.split(',') : [] }; });
 }

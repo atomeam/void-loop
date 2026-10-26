@@ -6,6 +6,8 @@
  */
 import * as C from '/lib/flights-core.js';
 import { DE } from '/lib/flights-de.js';
+import { COAST, COAST_Q } from '/lib/flights-coast.js';
+let coast = null; const coastLines = () => coast || (coast = C.decodeCoast(COAST, COAST_Q));
 
 const KEY = 'a2m.void.flights.v1';
 const isDe = () => /^de\b/i.test(navigator.language || '') || new URLSearchParams(location.search).get('lang') === 'de';
@@ -113,7 +115,7 @@ PANELS.facts = (cfg) => {
   const out = $(s, '#fa-out'), near = $(s, '#fa-near'); if (state.from && state.to) out.style.minHeight = '400px'; // room for the answer, so the page below does not jump
   const upd = () => {
     const a = ap(state.from), b = ap(state.to); near.textContent = '';
-    if (!a || !b) { out.innerHTML = '<p class="soft">' + esc(t('Pick two airports to see the distance, the flight time, the time difference and the CO2 of the flight.')) + '</p>'; return; }
+    if (!a || !b) { out.innerHTML = '<p class="soft">' + esc(t('Pick two airports to see the Distance in km, miles and nm, the typical flight time, the time difference, the Direction, the distance actually flown, the CO2 of the flight and the Nearby airports of each end.')) + '</p>'; return; }
     if (a.iata === b.iata) { out.innerHTML = '<p class="soft">' + esc(t('Pick two different airports.')) + '</p>'; return; }
     const f = C.legFacts(a, b, depLocal(), { cabin: state.cab, pax: state.ad + state.ch, ret: !state.oneWay && !!state.ret });
     const shift = f.dayShift ? ' (' + (f.dayShift > 0 ? '+' : '−') + Math.abs(f.dayShift) + ' ' + t(Math.abs(f.dayShift) === 1 ? 'day' : 'days') + ')' : '', d = f.diffMin;
@@ -143,7 +145,7 @@ PANELS.co2 = () => {
   const out = $(s, '#c-out'), how = $(s, '#c-how'); if (state.from && state.to) out.style.minHeight = '250px';
   how.innerHTML = '<p>' + esc(t('The estimate for one seat is a fixed 20 kg for taxi, take-off and landing plus 0.09 kg for each kilometre flown (the great-circle distance plus an allowance for the route: 50 km under 550 km, 100 km up to 5,500 km, 125 km beyond). That is the economy figure of a typical jet about 80 percent full. A bigger seat takes more of the floor: premium economy 1.6, business 2.9 and first 4 times on flights over 3,700 km; business and first 1.5 times on shorter ones. A return trip doubles it and each passenger counts once.')) + '</p><p>' + esc(t('The range is 25 percent either way, because aircraft, load and route differ. The second figure multiplies by 1.9 for contrails and nitrogen oxides at altitude, the usual factor for CO2 equivalent. It is an average, not an airline’s own figure.')) + '</p>';
   const upd = () => {
-    const a = ap(state.from), b = ap(state.to); if (!a || !b || a.iata === b.iata) { out.innerHTML = '<p class="soft">' + esc(t('Pick two different airports to see the CO2 of the flight.')) + '</p>'; return; }
+    const a = ap(state.from), b = ap(state.to); if (!a || !b || a.iata === b.iata) { out.innerHTML = '<p class="soft">' + esc(t('Pick two different airports to see the kg CO2 of a seat on the flight, its Range, the figure per passenger-kilometre and with high-altitude effects.')) + '</p>'; return; }
     const km = C.distanceKm(a, b), c = C.co2(km, state.cab, state.ad + state.ch, !state.oneWay && !!state.ret);
     out.innerHTML = '<p class="big">' + esc(num(c.kg)) + ' <small>kg CO2</small></p><p class="note">' + esc(apName(a) + ' → ' + apName(b) + ' · ' + num(km) + ' km · ' + t(C.CABINS[state.cab]) + ' · ' + c.pax + ' ' + t(c.pax === 1 ? 'passenger' : 'passengers') + ' · ' + (c.legs === 2 ? t('return') : t('one way'))) + '</p><dl class="dl"><div><dt>' + esc(t('Range')) + '</dt><dd>' + esc(num(c.low) + ' – ' + num(c.high) + ' kg') + '</dd></div><div><dt>' + esc(t('With high-altitude effects (×1.9)')) + '</dt><dd>' + esc(num(c.withNonCo2) + ' kg CO2e') + '</dd></div><div><dt>' + esc(t('Per passenger-kilometre')) + '</dt><dd>' + esc(num(c.perKm) + ' g') + '</dd></div><div><dt>' + esc(t('Cabin factor')) + '</dt><dd>×' + esc(c.cabinFactor) + '</dd></div></dl>';
   };
@@ -156,7 +158,7 @@ PANELS.time = () => {
   const out = $(s, '#t-out'); if (state.from && state.to) out.style.minHeight = '230px';
   const upd = () => {
     const a = ap(state.from), b = ap(state.to), v = ap(state.via);
-    if (!a || !b || a.iata === b.iata) { out.innerHTML = '<p class="soft">' + esc(t('Pick where from and to, and when you leave, to get the flight time and the local arrival time.')) + '</p>'; return; }
+    if (!a || !b || a.iata === b.iata) { out.innerHTML = '<p class="soft">' + esc(t('Pick where from and to, and when you leave, to get the typical flight time (like 7 h 20 min), the time it Arrives in local time, the time difference with daylight saving on that date (each time with its offset, like UTC+01) and the date line. Add a stop for the whole journey.')) + '</p>'; return; }
     const dep = depLocal();
     if (!v) { const f = C.legFacts(a, b, dep); out.innerHTML = leg(a, b, f) + '<p class="note">' + esc(t('Add a stop to see the whole journey with the wait between the flights.')) + ' ' + esc(t('Daylight saving is applied for the date you pick; the offsets from UTC are shown with each time.')) + '</p>'; return; }
     const f1 = C.legFacts(a, v, dep), lay = state.stay, dep2Utc = f1.arrUtc + lay * 60000, dep2 = C.utcToLocal(v.tz, dep2Utc).local, f2 = C.legFacts(v, b, dep2), total = (f2.arrUtc - f1.depUtc) / 60000;
@@ -172,19 +174,19 @@ PANELS.route = () => {
   const inp = $(s, '#r-in'), out = $(s, '#r-out'), map = $(s, '#r-map'); out.style.minHeight = '230px'; map.style.minHeight = '195px'; const q = new URLSearchParams(location.search).get('route'); if (q) inp.value = q;
   const upd = () => {
     if (!idx) return; const { ports, bad } = C.parseRoute(idx, inp.value);
-    if (ports.length < 2) { out.innerHTML = '<p class="soft">' + esc(t('Type two or more airport codes, like JFK-LHR-SIN.')) + '</p>'; map.innerHTML = C.mapSvg(ports); return; }
+    if (ports.length < 2) { out.innerHTML = '<p class="soft">' + esc(t('Type two or more airport codes, like JFK-LHR-SIN.')) + '</p>'; map.innerHTML = C.mapSvg(ports, 640, 320, coastLines()); return; }
     let tot = 0, min = 0; const rows = [];
     for (let i = 0; i + 1 < ports.length; i++) { const km = C.distanceKm(ports[i], ports[i + 1]); tot += km; min += C.flightMinutes(km); rows.push('<tr><td>' + esc(ports[i].iata + ' → ' + ports[i + 1].iata) + '</td><td>' + esc(num(km) + ' km') + '</td><td>' + esc(num(C.km2mi(km)) + ' ' + t('miles')) + '</td><td>' + esc(C.hm(C.flightMinutes(km))) + '</td></tr>'); }
     out.innerHTML = '<table class="tbl"><thead><tr><th>' + esc(t('Leg')) + '</th><th>km</th><th>' + esc(t('miles')) + '</th><th>' + esc(t('Time')) + '</th></tr></thead><tbody>' + rows.join('') + '</tbody><tfoot><tr><th>' + esc(t('Total')) + '</th><th>' + esc(num(tot) + ' km') + '</th><th>' + esc(num(C.km2mi(tot)) + ' ' + t('miles')) + '</th><th>' + esc(C.hm(min)) + '</th></tr></tfoot></table>' + (bad.length ? '<p class="note bad">' + esc(t('Not found:') + ' ' + bad.join(', ')) + '</p>' : '') + '<h3>' + esc(t('Airports on the route')) + '</h3><ul class="plain">' + ports.map((x) => '<li><b>' + esc(x.iata) + '</b> ' + esc(x.name) + ' <span class="soft">' + esc(x.city + ' · ' + x.country + ' · ' + C.offsetLabel(C.offsetMin(x.tz, Date.now()))) + '</span></li>').join('') + '</ul><p class="note">' + esc(t('The map shows the great-circle paths on a plain grid of 30 degrees: no coastlines are drawn.')) + '</p>';
-    map.innerHTML = C.mapSvg(ports);
+    map.innerHTML = C.mapSvg(ports, 640, 320, coastLines());
   };
   inp.addEventListener('input', () => { upd(); const u = new URL(location.href); u.searchParams.set('route', inp.value); try { history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (_) { /* no history */ } }); subs.add(upd); upd(); return s;
 };
 
 /** airports: look up a code, a city or a country. */
 PANELS.airports = () => {
-  const s = pane('Airport finder', 'airports'); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="a-q">' + esc(t('City, airport name, country or code (IATA or ICAO)')) + '</label><input type="search" id="a-q" autocomplete="off" placeholder="lisbon, LHR, EGLL, japan"></div><ul class="alist" id="a-list"></ul><div id="a-det"></div>');
-  const q = $(s, '#a-q'), list = $(s, '#a-list'), det = $(s, '#a-det'); let picked = ''; if (new URLSearchParams(location.search).get('code')) det.style.minHeight = '420px';
+  const s = pane('Airport finder', 'airports'); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="a-q">' + esc(t('City, airport name, country or code (IATA or ICAO)')) + '</label><input type="search" id="a-q" autocomplete="off" placeholder="lisbon, LHR, EGLL, japan"></div><p class="soft" id="a-help"></p><ul class="alist" id="a-list"></ul><div id="a-det"></div>');
+  const q = $(s, '#a-q'), list = $(s, '#a-list'), det = $(s, '#a-det'); let picked = ''; $(s, '#a-help').textContent = t('Each airport shows its IATA and ICAO codes, city and country, its Position on a map, its time zone and the time there now, its size, other airports of the same city, Nearby airports, and a link to Fly from here or Fly to here.'); if (new URLSearchParams(location.search).get('code')) det.style.minHeight = '420px';
   const detail = (a) => {
     picked = a.iata; const near = C.nearby(idx, a, 200, 6), same = C.sameCity(idx, a), now = nowLabel(a), off = C.offsetLabel(C.offsetMin(a.tz, Date.now()));
     det.innerHTML = '<div class="card"><h3>' + esc(a.name) + '</h3><dl class="dl"><div><dt>IATA</dt><dd>' + esc(a.iata) + '</dd></div><div><dt>ICAO</dt><dd>' + esc(a.icao) + '</dd></div><div><dt>' + esc(t('City')) + '</dt><dd>' + esc(a.city) + '</dd></div><div><dt>' + esc(t('Country')) + '</dt><dd>' + esc(a.country + ' (' + a.cc + ')') + '</dd></div><div><dt>' + esc(t('Position')) + '</dt><dd>' + esc(a.lat.toFixed(4) + ', ' + a.lon.toFixed(4)) + ' · <a href="https://www.openstreetmap.org/?mlat=' + a.lat + '&mlon=' + a.lon + '#map=12/' + a.lat + '/' + a.lon + '" target="_blank" rel="noopener noreferrer">' + esc(t('on a map')) + ' ↗</a></dd></div><div><dt>' + esc(t('Time zone')) + '</dt><dd>' + esc(a.tz + ' · ' + off + (now ? ' · ' + t('now') + ' ' + now : '') + (a.approx ? ' · ' + t('placed by position, may be an hour out') : '')) + '</dd></div><div><dt>' + esc(t('Size')) + '</dt><dd>' + esc(t(['small airport', 'medium airport', 'large airport'][a.size])) + '</dd></div></dl>'
@@ -206,17 +208,21 @@ PANELS.airports = () => {
 
 /** routes: where a flight of a given length from here would land. */
 PANELS.routes = () => {
-  const s = pane('Where can I go?', 'routes'); s.insertAdjacentHTML('beforeend', '<div class="grid3"><div class="field"><label for="w-h">' + esc(t('Flight time up to')) + ': <output id="w-ho">4 h</output></label><input type="range" id="w-h" min="1" max="17" value="4"></div><div class="field"><label for="w-c">' + esc(t('Country')) + '</label><select id="w-c"><option value="">' + esc(t('Any country')) + '</option></select></div><label class="chk"><input type="checkbox" id="w-b" checked> ' + esc(t('Larger airports only')) + '</label></div><p class="note" id="w-note"></p><ul class="alist" id="w-list"></ul>');
-  const h = $(s, '#w-h'), ho = $(s, '#w-ho'), c = $(s, '#w-c'), big = $(s, '#w-b'), list = $(s, '#w-list'), note = $(s, '#w-note'); let filled = false; note.style.minHeight = '5.5em'; if (state.from) list.style.minHeight = '600px';
+  const s = pane('Where can I go?', 'routes'); s.insertAdjacentHTML('beforeend', '<div class="grid3"><div class="field"><label for="w-h">' + esc(t('Flight time up to')) + ': <output id="w-ho">4 h</output></label><input type="range" id="w-h" min="1" max="17" value="4"></div><div class="field"><label for="w-c">' + esc(t('Country')) + '</label><select id="w-c"><option value="">' + esc(t('Any country')) + '</option></select></div><label class="chk"><input type="checkbox" id="w-b" checked> ' + esc(t('Larger airports only')) + '</label><label class="chk"><input type="checkbox" id="w-n" checked> ' + esc(t('Only nonstop routes (as of June 2014)')) + '</label></div><p class="note" id="w-note"></p><ul class="alist" id="w-list"></ul><p class="note" id="w-credit"></p>');
+  const h = $(s, '#w-h'), ho = $(s, '#w-ho'), c = $(s, '#w-c'), big = $(s, '#w-b'), non = $(s, '#w-n'), list = $(s, '#w-list'), note = $(s, '#w-note'); let filled = false, routes = null; note.style.minHeight = '5.5em'; if (state.from) list.style.minHeight = '600px';
+  $(s, '#w-credit').textContent = t('Nonstop routes: OpenFlights (openflights.org/data), Open Database License (ODbL). Routes as of June 2014, may be out of date: check with the airline or a provider. The route file of this page (/flights/routes.json) is offered under the ODbL too.');
+  fetch('/flights/routes.json').then((r) => r.json()).then((d) => { routes = d; upd(); }).catch(() => { routes = false; upd(); });
   const upd = () => {
     if (!idx) return; if (!filled) { filled = true; const seen = new Map(); for (const a of idx.list) seen.set(a.cc, a.country); for (const [k, v] of [...seen].sort((x, y) => x[1].localeCompare(y[1]))) c.insertAdjacentHTML('beforeend', '<option value="' + esc(k) + '">' + esc(v) + '</option>'); }
     ho.textContent = h.value + ' h'; list.textContent = ''; const a = ap(state.from);
-    if (!a) { note.textContent = t('Pick the airport you leave from to see where a flight of that length would land.'); return; }
-    const res = C.reachable(idx, a, { maxMin: +h.value * 60, cc: c.value, big: big.checked, limit: 80 });
-    note.textContent = t('Airports a flight from') + ' ' + apName(a) + ' ' + t('of up to') + ' ' + h.value + ' h ' + t('could reach, nearest first. This is range, not a timetable: whether an airline flies the route nonstop is shown by the providers, not here.') + ' (' + res.length + ')';
-    for (const r of res) { const li = document.createElement('li'); li.innerHTML = '<a href="/flights/?from=' + a.iata + '&to=' + r.a.iata + '"><b>' + esc(r.a.iata) + '</b> ' + esc(r.a.city) + '</a> <span class="soft">' + esc(r.a.country + ' · ' + num(r.km) + ' km · ' + C.hm(r.minutes)) + '</span>'; list.append(li); }
+    if (!a) { note.textContent = t('Pick the airport you leave from to see where a flight of that length would land, each with its distance in km and its flight time (like 1 h 05 min).'); return; }
+    const res = C.reachable(idx, a, { maxMin: +h.value * 60, cc: c.value, big: big.checked, limit: 4000 }), rt = routes ? new Map(C.routesFrom(routes, a.iata).map((r) => [r.to, r.airlines])) : null;
+    const shown = (non.checked && rt ? res.filter((r) => rt.has(r.a.iata)) : res).slice(0, 80);
+    if (non.checked && rt) note.textContent = t('Airports with a nonstop route from') + ' ' + apName(a) + ' ' + t('in the June 2014 data, up to') + ' ' + h.value + ' h, ' + t('nearest first. Routes change: check with the airline or a provider before you plan on one.') + ' (' + shown.length + ' / ' + rt.size + ')';
+    else note.textContent = t('Airports a flight from') + ' ' + apName(a) + ' ' + t('of up to') + ' ' + h.value + ' h ' + t('could reach, nearest first. This is range, not a timetable: whether an airline flies the route nonstop is shown by the providers, not here.') + ' (' + shown.length + ')' + (routes === null && non.checked ? ' · ' + t('The route list is still loading.') : '');
+    for (const r of shown) { const li = document.createElement('li'), al = rt && rt.get(r.a.iata); li.innerHTML = '<a href="/flights/?from=' + a.iata + '&to=' + r.a.iata + '"><b>' + esc(r.a.iata) + '</b> ' + esc(r.a.city) + '</a> <span class="soft">' + esc(r.a.country + ' · ' + num(r.km) + ' km · ' + C.hm(r.minutes) + (al ? ' · ' + t('nonstop in 2014') + (al.length ? ': ' + al.slice(0, 6).join(', ') + (al.length > 6 ? ' +' + (al.length - 6) : '') : '') : '')) + '</span>'; list.append(li); }
   };
-  for (const i of [h, c, big]) i.addEventListener('input', upd); subs.add(upd); upd(); return s;
+  for (const i of [h, c, big, non]) i.addEventListener('input', upd); subs.add(upd); upd(); return s;
 };
 
 // ---------- the price log ----------
@@ -262,10 +268,10 @@ PANELS.trip = () => {
   const s = pane('Trip and layovers', 'trip');
   s.insertAdjacentHTML('beforeend', '<p class="note">' + esc(t('Paste a booking confirmation and the flights are read out of it, or add each flight by hand. Times are the airport’s own clock; the page works out the waits between flights across time zones. Kept on this device.')) + '</p>'
     + '<div class="field"><label for="i-paste">' + esc(t('Paste a confirmation text')) + '</label><textarea id="i-paste" rows="5" placeholder="Booking reference: ABC123&#10;12 Dec 2026&#10;BA 117 London (LHR) 18:25 → New York (JFK) 21:05"></textarea></div><div class="row"><button type="button" class="go" id="i-read">' + esc(t('Read the flights')) + '</button> <button type="button" id="i-add">' + esc(t('Add a flight by hand')) + '</button></div><p class="live" id="i-msg" role="status"></p>'
-    + '<div id="i-segs"></div><div id="i-lay"></div><div id="i-sum"></div><div class="row"><button type="button" id="i-ics">' + esc(t('Download for my calendar (.ics)')) + '</button> <button type="button" id="i-link">' + esc(t('Copy a link to this trip')) + '</button> <button type="button" id="i-clear">' + esc(t('Clear the trip')) + '</button></div>');
+    + '<p class="soft" id="i-help"></p><div id="i-segs"></div><div id="i-lay"></div><div id="i-sum"></div><div class="row"><button type="button" id="i-ics">' + esc(t('Download for my calendar (.ics)')) + '</button> <button type="button" id="i-link">' + esc(t('Copy a link to this trip')) + '</button> <button type="button" id="i-clear">' + esc(t('Clear the trip')) + '</button></div>');
   const msg = $(s, '#i-msg'), say = (m) => { msg.textContent = m; }; let segs = (mem().trip || []).map(C.cleanSeg).filter(Boolean);
   const tok = (location.hash.match(/trip=([A-Za-z0-9_-]+)/) || [])[1]; let fromLink = 0;
-  const save = () => keep({ trip: segs.slice(0, 30) });
+  const save = () => keep({ trip: segs.slice(0, 30) }); $(s, '#i-help').textContent = t('Each flight gets its Departs (local) and Arrives (local) times on the airport’s own clock; between two flights a line like Wait: 1 h 20 min shows the layover, with a warning when it is tight, overnight or at another airport.');
   const draw = () => {
     const box = $(s, '#i-segs'); box.textContent = '';
     segs.forEach((g, i) => { const d = document.createElement('div'); d.className = 'seg'; d.dataset.i = i;
@@ -292,6 +298,15 @@ PANELS.trip = () => {
 function loadIndex() {
   return fetch('/flights/airports.json').then((r) => r.json()).then((d) => { idx = C.makeIndex(d); document.documentElement.dataset.flightsReady = '1'; for (const k of ['from', 'to']) { const w = state[k + 'q']; if (w) { const r = C.searchAirports(idx, w, 1)[0]; if (r) state[k] = r.iata; state[k + 'q'] = ''; } } if (state.from || state.to) emit(); for (const f of subs) f(); }).catch(() => { const n = document.getElementById('fl-err'); if (n) n.hidden = false; });
 }
+// the page keeps itself, its code and the airport list in the service worker's cache (sw.js CACHE, 'void-shell-v2': keep the two names the same), so a reload with the
+// network cut shows the whole page even when the worker took over a moment ago and has not fetched the page yet (the worker answers a page from this cache by its path)
+const SW_CACHE = 'void-shell-v2';
+function keepForOffline() {
+  try {
+    if (!('caches' in window)) return; const app = location.pathname + 'app.js';
+    caches.open(SW_CACHE).then((c) => Promise.all([location.pathname, app, '/lib/flights-ui.js', '/lib/flights-core.js', '/lib/flights-de.js', '/lib/flights-coast.js', '/lib/ics.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/flights/airports.json'].map((u) => c.match(u).then((hit) => hit || c.add(u)).catch(() => {})))).catch(() => {});
+  } catch (_) { /* no cache here: the page still works online */ }
+}
 /** mounts the panels a page asks for into root: { panels: [...], controls: [...], share: true }. */
 export function mountFlights(root, cfg = {}) {
   readState(); root.textContent = '';
@@ -304,7 +319,6 @@ export function mountFlights(root, cfg = {}) {
   const credit = document.createElement('p'); credit.className = 'note'; credit.innerHTML = esc(t('Airport data: OurAirports (public domain), ourairports.com/data. Time zones are placed by country, region and position.')); root.append(credit);
   if (isDe()) { document.documentElement.lang = 'de'; if (cfg.de) { const h = document.querySelector('h1'), p = document.querySelector('.intro'); if (h && cfg.de.h1) h.textContent = cfg.de.h1; if (p && cfg.de.intro) p.textContent = cfg.de.intro; if (cfg.de.h1) document.title = cfg.de.h1 + ' · Verse'; } }
   const done = loadIndex();
-  // the airport list is kept for offline use once the service worker is in charge (sw.js keeps /flights/airports.json like page code)
-  if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(() => fetch('/flights/airports.json')).catch(() => {});
+  keepForOffline();
   return done;
 }
