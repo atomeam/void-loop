@@ -9,7 +9,7 @@ test('every tool page is linked to at least one other, only to tools that exist,
     assert.ok(TOOLS[p], p); assert.ok(rel.length >= 1, p); assert.ok(!rel.includes(p), p);
     for (const r of rel) assert.ok(TOOLS[r], p + ' -> ' + r);
     let html = fs.readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
-    for (const m of html.matchAll(/<script type="module" src="(\/[^"]+)"/g)) html += fs.readFileSync(new URL('../void-live-deploy' + m[1], import.meta.url), 'utf8'); // a page whose code is in a file of its own
+    for (const m of html.matchAll(/<script type="module" src="(\/[^"]+)"|\bimport\('(\/[a-z0-9-]+\/[a-z0-9-]+\.js)'\)/g)) html += fs.readFileSync(new URL('../void-live-deploy' + (m[1] || m[2]), import.meta.url), 'utf8'); // a page whose code is in a file of its own, loaded as a module script or imported after the load event (/boards/)
     assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '\/[a-z0-9-]+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');
