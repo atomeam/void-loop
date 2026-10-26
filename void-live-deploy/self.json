@@ -491,6 +491,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:30:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:30:06Z",
+   "subject": "Scores: the day's picture (lib/daily-art.js, photo when a licensed one is found, else Verse's illustration) with its credit on stories…"
+  },
+  {
+   "at": "2026-10-26T03:29:34Z",
+   "subject": "Versus by size: Tranco rank of every site, size column, By size view, next-10 tool and monthly workflow"
+  },
+  {
+   "at": "2026-10-26T03:29:23Z",
+   "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
+  },
+  {
+   "at": "2026-10-26T03:28:48Z",
+   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:28:42Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
    "at": "2026-10-26T03:28:02Z",
    "subject": "Sports: common asks that each take a setting in the link"
   },
@@ -545,30 +569,6 @@
   {
    "at": "2026-10-26T03:18:08Z",
    "subject": "Fix three red checks: scores owns sports-score asks (calendar leaves them), /fix/ pages share one CSP splat rule (83 -> 66 rules), real…"
-  },
-  {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Versus: PDF tools and kanban floors with lanes, feature maps, probes, and a page of its own per lane site (LANE_PAGES)"
-  },
-  {
-   "at": "2026-10-26T03:18:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:17:38Z",
-   "subject": "Daily art helper for the reports: an illustration by Verse per league, section or wrap each day inside its own budget, a deterministic SVG…"
-  },
-  {
-   "at": "2026-10-26T03:17:08Z",
-   "subject": "News: a one-line headline link is a 26 px tap target"
-  },
-  {
-   "at": "2026-10-26T03:14:09Z",
-   "subject": "Tower gate: news: euronews.com,news: aljazeera.com,news: npr.org,news: apnews.com,news: theguardian.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:13:34Z",
-   "subject": "Tower gate: podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts: podbean.com,podcasts: castbox.fm measured…"
   }
  ],
  "builders": {
