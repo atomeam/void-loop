@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 885,
+ "counted": 889,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -283,11 +283,18 @@
    "tests": 1
   },
   {
+   "file": "lib/flight-sites.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/tool-sites.js",
    "skills": 7,
    "direct": 2,
    "dependants": 11,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/card-image.js",
@@ -644,7 +651,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 14
+   "tests": 16
   },
   {
    "file": "lib/chat-calendar.js",
@@ -759,6 +766,13 @@
    "tests": 1
   },
   {
+   "file": "lib/ics.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -767,13 +781,6 @@
   },
   {
    "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/ics.js",
    "skills": 2,
    "direct": 1,
    "dependants": 3,
@@ -1956,6 +1963,20 @@
    "tests": 1
   },
   {
+   "file": "lib/flights-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/flights-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
@@ -2213,6 +2234,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/flights-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/fuzzy.js",
@@ -4993,6 +5021,46 @@
     "skills/fix-audit.js"
    ]
   },
+  "lib/flight-sites.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tool-sites.js",
+    "lib/toolkit.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/seo.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/kanban-board.js",
+    "skills/merge.js",
+    "skills/pdf-tools.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/flights-core.js": {
+   "imports": [
+    "lib/ics.js"
+   ],
+   "importedBy": [
+    "lib/flights-ui.js"
+   ]
+  },
+  "lib/flights-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/flights-ui.js"
+   ]
+  },
+  "lib/flights-ui.js": {
+   "imports": [
+    "lib/flights-core.js",
+    "lib/flights-de.js"
+   ],
+   "importedBy": []
+  },
   "lib/forge-duel.js": {
    "imports": [],
    "importedBy": [
@@ -5303,10 +5371,12 @@
   "lib/ics.js": {
    "imports": [],
    "importedBy": [
+    "lib/flights-core.js",
     "lib/ritual.js",
     "skills/calendar-file.js"
    ],
    "reachedBy": [
+    "lib/flights-ui.js",
     "skills/ritual-template.js"
    ]
   },
@@ -8364,7 +8434,9 @@
    ]
   },
   "lib/tool-sites.js": {
-   "imports": [],
+   "imports": [
+    "lib/flight-sites.js"
+   ],
    "external": [
     ", "
    ],
@@ -8386,7 +8458,8 @@
   },
   "lib/toolkit.js": {
    "imports": [
-    "lib/tool-sites.js"
+    "lib/tool-sites.js",
+    "lib/flight-sites.js"
    ],
    "importedBy": [
     "skills/toolkit.js"

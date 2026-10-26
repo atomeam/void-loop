@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:14:43Z",
+   "subject": "Flights: /flights/ and a page for each travel lane site (/flights/trip/, /airports/, /time/, /distance/, /map/, /co2/, /routes/) on a…"
+  },
+  {
+   "at": "2026-10-26T05:14:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:14:26Z",
    "subject": "Exact page title first, Food before Creature, the live record keeps what the route said"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T05:00:00Z",
    "subject": "Tower gate: pdf: codeshack.io,travel: tripwaffle.com,travel: aruljohn.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:57:09Z",
-   "subject": "Feature scan: travel researched by Verse"
-  },
-  {
-   "at": "2026-10-26T04:56:44Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
