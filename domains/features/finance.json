@@ -1,6 +1,6 @@
 {
  "floor": "finance",
- "verse_page": null,
+ "verse_page": "/markets/",
  "researched": "2026-10-25",
  "sites": {
   "finance.yahoo.com": {
@@ -18,7 +18,7 @@
      "detail": "Price, change, day range, 52-week range, volume, market cap, P/E, EPS, dividend, for stocks, ETFs, funds, indices, FX, futures, crypto",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/markets.js: crypto board with live prices and 7-day sparklines (CoinGecko via /api/markets); skills/crypto.js: one coin price; crypto only, no stocks"
+     "verse_evidence": "/markets/: price, change, previous close, open, day range, 52-week range, volume, market cap (crypto only) for shares, ETFs, indices, currency pairs and coins; no P/E, EPS, dividend or futures"
     },
     {
      "group": "core",
@@ -26,7 +26,7 @@
      "detail": "Price chart with ranges 1D to max, line/candle, comparisons",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "markets.js draws 7-day sparklines only"
+     "verse_evidence": "/markets/: line chart 1D, 5D, 1M, 6M, YTD, 1Y, 5Y, Max with a hover and arrow-key readout and a two-symbol comparison; no candles or indicators"
     },
     {
      "group": "core",
@@ -34,15 +34,15 @@
      "detail": "Indices, top gainers/losers, most active, trending tickers, sectors",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "markets.js top coins board; no equities"
+     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending"
     },
     {
      "group": "core",
      "name": "Watchlists",
      "detail": "Lists of symbols with live prices, multiple lists, columns",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/markets/: a watchlist kept on the device (20 symbols), refreshed every minute while the page is open, last prices offline, a link that carries the list; one list, no custom columns"
     },
     {
      "group": "core",
@@ -81,16 +81,16 @@
      "name": "Historical data",
      "detail": "Daily/weekly/monthly OHLC history table with download (CSV)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/markets/: the close on any day back to 1990 (Close on a day) and the chart to Max; no table or CSV download"
     },
     {
      "group": "core",
      "name": "Search by name or ticker",
      "detail": "Autocompleting symbol search",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/markets/: a ticker, or one of about 60 company names, indices, 30 coins and the ECB currency pairs; no full-text search of every listed company"
     },
     {
      "group": "core",
@@ -98,7 +98,7 @@
      "detail": "FX rates and conversion",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "lib/calc-more.js converts currency at a rate the person types; no live FX rates; crypto in fiat via crypto.js"
+     "verse_evidence": "/markets/ links to /convert/ and shows any ECB currency pair with its rate chart"
     },
     {
      "group": "power",
@@ -153,8 +153,8 @@
      "name": "Compare symbols",
      "detail": "Overlay several tickers on one chart",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/markets/: Compare with another symbol draws both as percent change over the chosen range"
     },
     {
      "group": "power",
@@ -177,8 +177,8 @@
      "name": "Share quote or article",
      "detail": "Share links to quotes, charts and stories",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/markets/: Copy link carries the symbol, range and day; the watchlist link carries the list"
     },
     {
      "group": "offline-mobile",
@@ -232,19 +232,20 @@
   }
  },
  "gaps": [
-  "stock/ETF/index quote with a real chart",
-  "watchlist on the device",
-  "market overview (indices, movers)",
-  "historical data with CSV download",
+  "historical data table with CSV download",
   "portfolio with cost basis and gain",
-  "per-ticker news",
+  "per-ticker news (no free feed is permitted for this use)",
   "screener",
-  "price alerts"
+  "price alerts",
+  "financial statements, P/E and other fundamentals (no free, reliable, permitted source)"
  ],
  "verse_extra": [
   "read-only Bitcoin address lookup (mempool.space)",
   "refuses seed phrases and never holds keys",
-  "no ads"
+  "no ads",
+  "data source and delay said on every quote",
+  "close on any chosen day",
+  "works with the last saved prices offline"
  ],
  "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades."
 }

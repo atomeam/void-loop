@@ -503,7 +503,8 @@ export default {
      "show me a vector field mind",
      "vector field mind",
      "evolving vector field",
-     "flow field mind"
+     "flow field mind",
+     "create a vector of a leaf"
     ]
    },
    {

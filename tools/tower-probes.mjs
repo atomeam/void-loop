@@ -265,6 +265,23 @@ export const PROBES = Object.freeze({
       ['search', /\bsearch\b/i], ['follow topics', /\bfollow\b/i], ['my news', /\bmy news\b/i], ['saved for later', /\bsaved\b/i], ['several languages', /\bespañol\b[\s\S]*\bdeutsch\b|\bdeutsch\b/i], ['story ages', (t) => rowsIn(t).length > 0],
       ['the same story from several sources', /\b\d+ sources\b/i], ['a share link', /\bcopy link\b/i], ['headlines only', /\bheadlines only\b/i], ['works offline', /\boffline\b/i]],
   },
+  finance: {
+    site: 'https://finance.yahoo.com/', verse: '/markets/?s=AAPL&r=5y&on=2024-12-31',
+    // the question: Apple's close on the last trading day of 2024, in the page's link (a day that never changes, so no live price is guessed). The truth any correct quote
+    // page agrees on, worked out by hand from the exchange's record (never read off the site): AAPL closed 2024 at 250.42 US dollars, on 31 Dec 2024. The words beside it
+    // ("AAPL · USD") appear only once the price has come back, so a page that is still loading fails. Judged on Verse alone (the site is not asked); the same probe measures
+    // every site in the finance lane (lib/tower.js LANES)
+    ask: { verse: '/markets/?s=AAPL&r=5y&on=2024-12-31' },
+    truth: [['the close on 31 Dec 2024 is 250.42', /Close on 31 Dec 2024:\s*250\.42\b/], ['the symbol and its currency, from the answer', /\bAAPL · USD\b/], ['a price with cents', /\b\d{1,3}(?:,\d{3})*\.\d{2}\b[\s\S]{0,60}today/]],
+    // real numbers for fixed params, so a loading-only page fails: a quote with a percent move and its source; a chart with its change over the range; the watchlist box
+    askParts: { 'live quotes': [['a price with its move in percent', /[+−]\d+\.\d{2}%\) today/], ['the source named', /Source: (?:Stooq|Yahoo|CoinGecko|ECB)/], ['a 52-week range of two prices', /52-week range\s*\d[\d,]*\.\d{2}\s*–\s*\d[\d,]*\.\d{2}/]],
+      charts: [['ranges from 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\bYTD\b[\s\S]{0,40}\b5Y\b[\s\S]{0,20}\bMax\b/], ['the move over the range, from the drawn series', /[+−]\d+\.\d+% over 5Y/], ['a hover readout', /Move across the chart/i]],
+      watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
+    // what the best quote pages show (Yahoo Finance's price and change, previous close, day range, 52-week range, volume, market cap, a chart with ranges, a watchlist, indices,
+    // movers, comparing, history); news, financial statements, options and portfolios are not here and not claimed
+    facts: [['the price and its change in percent', /[+−]\d+\.\d{2}%/], ['the previous close', /previous close/i], ['the day range', /day range/i], ['the 52-week range', /52-week range/i], ['volume', /\bvolume\b/i], ['market cap', /market cap/i],
+      ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['the source and the delay said', /may be delayed/i]],
+  },
   'image boards': {
     site: 'https://www.4chan.org/', verse: '/boards/',
     // the boards start blank (owner, 2026-10-25: "leave the categories blank but user creatable"), so nothing here depends on a board or posts
@@ -450,6 +467,7 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
   translate: { 'language count': [['100 languages', /\b100 languages\b/i]], 'speech in and out': [['listen', /\blisten\b/i], ['speak', /\bspeak\b/i]], 'camera text': [['camera', /\bcamera\b/i]] },
   recipes: { 'search by ingredient': [['search by ingredient', /by ingredient|what can i make/i]], scaling: [['servings to scale', /\bservings?\b|\bscale\b/i]], 'step mode': [['one step at a time', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i]] },
+  finance: { 'live quotes': [['a price with its move in percent', /[+−]\d+\.\d{2}%\) today/], ['the source named', /Source: (?:Stooq|Yahoo|CoinGecko|ECB)/]], charts: [['ranges from 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\bYTD\b[\s\S]{0,40}\b5Y\b[\s\S]{0,20}\bMax\b/], ['a hover readout', /Move across the chart/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
   'image boards': { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
   'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]] }, // 'image generation', 'list language' and 'publish and remix' are pageParts: a real picture, a working engine
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },

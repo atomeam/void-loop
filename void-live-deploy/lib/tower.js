@@ -58,7 +58,7 @@ const HAND_FLOORS = [
   // rival board is ever kept (tools/tower-gate.mjs): a board's front page can carry explicit or illegal pictures, and this repository is public
   { id: 'image boards', site: '4chan', url: 'https://www.4chan.org/', ask: 'image boards', page: '/boards/', label: 'Image boards', glyph: '▧', noShot: true, extra: ['catalog', 'replies and quoting', 'image posts', 'archive'] },
   { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', page: '/scores/', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
-  { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
+  { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', page: '/markets/', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
   { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', page: '/news/', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
   { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', label: 'Photos', glyph: '◰', extra: ['editing', 'albums', 'search by content'] },
@@ -107,6 +107,8 @@ export const LANES = Object.freeze({
   sports: ['https://www.thesportsdb.com/', 'https://www.besoccer.com/', 'https://int.soccerway.com/', 'https://www.onefootball.com/', 'https://www.365scores.com/', 'https://www.fotmob.com/', 'https://www.cbssports.com/', 'https://www.bbc.com/sport', 'https://www.sofascore.com/', 'https://www.flashscore.com/', 'https://www.livescore.com/'],
   // the news sites, least visited first and the leader last (written from what each is, not measured: egress was closed when this was written, so the gate is the first check that each answers)
   news: ['https://www.allsides.com/', 'https://www.thelocal.com/', 'https://www.rnz.co.nz/', 'https://www.channelnewsasia.com/', 'https://www.france24.com/en/', 'https://www.dw.com/en/', 'https://www.euronews.com/', 'https://www.aljazeera.com/', 'https://www.npr.org/', 'https://apnews.com/', 'https://www.theguardian.com/international'],
+  // the finance quote sites, least visited first, Yahoo Finance (the floor itself) last; each is measured at its own url by the finance probe against /markets/
+  finance: ['https://www.stockq.org/', 'https://stooq.com/', 'https://www.macrotrends.net/', 'https://companiesmarketcap.com/', 'https://stockanalysis.com/', 'https://finviz.com/', 'https://www.barchart.com/', 'https://www.investing.com/', 'https://www.tradingview.com/', 'https://www.marketwatch.com/', 'https://www.google.com/finance/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');

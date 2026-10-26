@@ -13,7 +13,7 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/image/': 'AI image generator', '/tools/': 'Every tool',
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
@@ -38,6 +38,7 @@ export const RELATED = Object.freeze({
   '/scores/': ['/time/', '/calendar/', '/weather/'],
   '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
+  '/markets/': ['/convert/', '/calculator/', '/time/'],
   '/generators/': ['/image/', '/random/', '/flip/', '/wheel/'],
   '/image/': ['/generators/', '/resize-image/', '/color/'],
   '/notes/': ['/word-count/', '/translate/', '/calendar/'],
@@ -53,7 +54,7 @@ export const CARD_ASK = Object.freeze({
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
-  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
   '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/image/': 'draw a cartoon cat',
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
@@ -149,6 +150,9 @@ const ROUTES = [
   // scores: 'nba scores', 'premier league table', 'bundesliga results', 'f1 standings', 'live scores' (the league's page for today; a table for standings/table)
   [/^(?:live |today'?s? )?(premier league|epl|english premier league|la ?liga|bundesliga|serie a|ligue 1|mls|champions league|ucl|nba|nfl|mlb|nhl|f1|formula 1|formula one) (?:live )?(scores?|results?|fixtures|games|matches|standings?|table|schedule)$|^(?:live )?(scores?|sports scores)$/i,
     (m) => { const a = (m[1] || '').toLowerCase().replace(/\s+/g, ''), id = ({ premierleague: 'epl', englishpremierleague: 'epl', laliga: 'laliga', seriea: 'seriea', ligue1: 'ligue1', championsleague: 'ucl', formula1: 'f1', formulaone: 'f1' })[a] || a; return '/scores/' + (id ? '?league=' + id + (/stand|table/i.test(m[2] || '') ? '&tab=standings' : '') : ''); }],
+  // markets: 'aapl stock price', 'stock price of apple', 'tesla stock', 'stock market', 'markets'
+  [/^(?:the )?(?:stock |share )?(?:price|quote|chart) (?:of|for) (.+)$|^(.+?) (?:stock|shares?|share price|stock price|stock quote|stock chart)$/i, (m) => '/markets/?s=' + encodeURIComponent(m[1] || m[2])],
+  [/^(?:the )?(?:stock market|markets|stocks|finance)$/i, () => '/markets/'],
   // recipes: 'pancake recipe', 'recipe for pancakes', 'how do I make pancakes', 'how to cook rice'; and by what is in the fridge, 'what can I make with eggs, spinach'
   [/^what (?:can|could|should) (?:i|we) (?:make|cook|bake) (?:with|from|using) (.+)$|^recipes? (?:with|using|from) (.+)$/i, (m) => '/recipes/?i=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:(?:an? |the )?(?:easy |simple |quick |best |homemade )?recipes? for (.+)|(.+?) recipes?|how (?:do|would|can) (?:i|you|we) (?:make|cook|bake) (.+)|how to (?:make|cook|bake) (.+))$/i, (m) => '/recipes/?q=' + encodeURIComponent(m[1] || m[2] || m[3] || m[4])],
