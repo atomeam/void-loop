@@ -2502,86 +2502,85 @@
   "photos": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 155,
-    "best": 529,
-    "evidence": "Verse (/photos/) 155 ms to the load event (median of 3, phone width) vs Google Photos 529 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:03:04.570Z"
+    "verse": 161,
+    "best": 846,
+    "evidence": "Verse (/photos/) 161 ms to the load event (median of 3, phone width) vs Google Photos 846 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/) 3 of 3 loads answered vs Google Photos 3 of 3 loads answered",
-    "at": "2026-10-26T04:03:04.570Z"
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/photos/) 0 px sideways overflow at 390 px vs Google Photos 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:03:04.570Z"
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/photos/) 0 unnamed controls or images vs Google Photos 2 unnamed controls or images",
-    "at": "2026-10-26T04:03:04.570Z"
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/photos/) 1 (1: the page shows itself again with the network cut) vs Google Photos 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:03:04.570Z"
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/photos/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Photos 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:03:04.570Z",
-    "was": "equal-and-better"
+    "evidence": "Verse (/photos/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Photos 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 20,
-    "evidence": "Verse (/photos/) 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.06)",
-    "at": "2026-10-26T04:03:04.570Z"
+    "evidence": "Verse (/photos/) 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.02), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T04:05:46.653Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/) 3 of 3 right against the worked-out answer; judged against the standard, not Google Photos (the site is not asked)",
-    "at": "2026-10-26T04:03:04.570Z",
+    "at": "2026-10-26T04:05:46.653Z",
     "of": 3
    },
    "editing": {
-    "verdict": "worse",
-    "verse": 5,
+    "verdict": "equal-and-better",
+    "verse": 7,
     "best": 7,
-    "evidence": "Verse (/photos/) 5 of 7 shown for the question (Verse lacks: crop, rotate); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:03:04.570Z",
+    "evidence": "Verse (/photos/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:05:46.653Z",
     "of": 7,
     "part": true
    },
    "compress and convert": {
-    "verdict": "worse",
-    "verse": 6,
+    "verdict": "equal-and-better",
+    "verse": 7,
     "best": 7,
-    "evidence": "Verse (/photos/) 6 of 7 shown for the question (Verse lacks: a quality choice); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:03:04.570Z",
+    "evidence": "Verse (/photos/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:05:46.653Z",
     "of": 7,
     "part": true
    },
    "metadata and privacy": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/photos/) 1 of 2 shown for the question (Verse lacks: EXIF); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:03:04.570Z",
+    "evidence": "Verse (/photos/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:05:46.653Z",
     "of": 2,
     "part": true
    },
@@ -2590,7 +2589,7 @@
     "verse": 27,
     "best": 1,
     "evidence": "Verse (/photos/) 27 of 30 things a full answer shows vs Google Photos 1 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider, Size saved readout)",
-    "at": "2026-10-26T04:03:04.570Z",
+    "at": "2026-10-26T04:05:46.653Z",
     "of": 30
    }
   },
