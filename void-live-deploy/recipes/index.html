@@ -86,6 +86,8 @@
   #cook .text { flex: 1 1 auto; display: flex; align-items: center; font-size: clamp(22px, 4.5vw, 34px); line-height: 1.35; max-width: 760px; margin: 0 auto; width: 100%; }
   #cook .timers { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; min-height: 44px; }
   #cook .count { font-size: 40px; font-variant-numeric: tabular-nums; text-align: center; min-height: 1.2em; }
+  #cook .voicebar { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 6px 0; min-height: 44px; } #cook #cookHeard { font-size: 14px; color: var(--soft); }
+  #cook .vnote { font-size: 12px; color: var(--soft); text-align: center; margin: 0 0 8px; }
   #cook .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } #cook .nav button { min-height: 56px; font-size: 18px; }
   @media print { button, form, #cook, #related, #asks, #histH, #hist, .srcs, .chips, .note, h1, .sub { display: none !important; } .panes { display: block; } .pane { border: 0; padding: 0; } }
 </style>
@@ -215,6 +217,8 @@
   <div class="text" id="cookText"></div>
   <div class="timers" id="cookTimers"></div>
   <div class="count" id="cookCount" aria-live="polite"></div>
+  <div class="voicebar" id="voiceBar" hidden><button type="button" id="cookVoice" aria-pressed="false">Voice</button><span id="cookHeard" role="status"></span></div>
+  <p class="vnote" id="voiceNote" hidden></p>
   <div class="nav"><button type="button" id="cookPrev">Previous</button><button type="button" id="cookNext">Next</button></div>
 </div>
 
@@ -225,7 +229,7 @@
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
       if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
@@ -455,13 +459,35 @@
     function cookShow() {
       const r = state.recipe; if (!r) return; state.step = Math.max(0, Math.min(r.steps.length - 1, state.step));
       $('cookName').textContent = r.name; $('cookPos').textContent = W.step + ' ' + (state.step + 1) + ' ' + W.of + ' ' + r.steps.length; $('cookText').textContent = stepText(r.steps[state.step]);
+      if (voiceOn) speakStep(false);
       $('cookPrev').disabled = state.step === 0; $('cookNext').textContent = state.step === r.steps.length - 1 ? W.done : W.next;
       const ts = $('cookTimers'); ts.replaceChildren();
       if (timer) { const b = el('button', '', W.stop + ' (' + R.clock(tLeft) + ')'); b.type = 'button'; b.addEventListener('click', () => { stopTimer(); cookShow(); }); ts.append(b); }
       else for (const t of R.timersIn(r.steps[state.step])) { const b = el('button', '', '⏱ ' + t.label); b.type = 'button'; b.title = W.start; b.addEventListener('click', () => startTimer(t.seconds)); ts.append(b); }
     }
+    // voice: your browser's speech recognition (lib/kitchen.js voiceCommand reads what it heard): next, back, repeat, timers, ingredients, close; the step is read aloud and
+    // the listening pauses while it is, or it would hear itself. Some browsers send the audio to their maker to turn it into words: said before it is switched on.
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null, voiceOn = false, spokenKey = '';
+    const say2 = (text, then) => { try { if (!window.speechSynthesis) return then && then(); const u = new SpeechSynthesisUtterance(text); u.lang = navigator.language || 'en'; u.onend = u.onerror = () => then && then(); speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (_) { then && then(); } };
+    const listen = () => { if (!voiceOn || $('cook').hidden || !rec) return; try { rec.start(); } catch (_) {} };
+    function speakStep(force) { const r = state.recipe; if (!voiceOn || !r) return; const key = r.id + ':' + state.step; if (!force && key === spokenKey) return; spokenKey = key; try { rec.stop(); } catch (_) {} say2(stepText(r.steps[state.step]), listen); }
+    function voiceDo(cmd) {
+      const r = state.recipe; if (!r) return;
+      if (cmd === 'next') $('cookNext').click(); else if (cmd === 'prev') { if (!$('cookPrev').disabled) $('cookPrev').click(); } else if (cmd === 'repeat') speakStep(true);
+      else if (cmd === 'timer') { const t = R.timersIn(r.steps[state.step])[0]; if (t) startTimer(t.seconds); } else if (cmd === 'stopTimer' || (cmd === 'stop' && timer)) { stopTimer(); cookShow(); }
+      else if (cmd === 'ingredients') { try { rec.stop(); } catch (_) {} say2(r.ingredients.map(line).join('. '), listen); } else if (cmd === 'close') { voiceStop(); cookClose(); }
+    }
+    function voiceStart() {
+      if (!SR) return; rec = new SR(); rec.continuous = true; rec.interimResults = false; rec.lang = navigator.language || 'en';
+      rec.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { const said = e.results[i][0].transcript.trim(), cmd = K.voiceCommand(said); $('cookHeard').textContent = KW.heard + ': ' + said.slice(0, 40); if (cmd) voiceDo(cmd); } };
+      rec.onend = () => { if (voiceOn && !$('cook').hidden && !(window.speechSynthesis && speechSynthesis.speaking)) setTimeout(listen, 250); };
+      rec.onerror = (e) => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { voiceStop(); $('cookHeard').textContent = KW.voiceDenied; } };
+      voiceOn = true; $('cookVoice').setAttribute('aria-pressed', 'true'); $('cookVoice').textContent = KW.voiceOn; $('voiceNote').textContent = KW.voiceHelp; spokenKey = ''; speakStep(true);
+    }
+    function voiceStop() { voiceOn = false; try { rec && rec.stop(); } catch (_) {} try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {} rec = null; $('cookVoice').setAttribute('aria-pressed', 'false'); $('cookVoice').textContent = KW.voice; $('cookHeard').textContent = ''; $('voiceNote').textContent = KW.voiceNote; }
+    if (SR) { $('voiceBar').hidden = false; $('voiceNote').hidden = false; $('voiceNote').textContent = KW.voiceNote; $('cookVoice').addEventListener('click', () => (voiceOn ? voiceStop() : voiceStart())); }
     const cookOpen = () => { if (!state.recipe) return; state.step = 0; $('cook').hidden = false; document.body.style.overflow = 'hidden'; wake(); cookShow(); $('cookNext').focus(); };
-    const cookClose = () => { $('cook').hidden = true; document.body.style.overflow = ''; unwake(); $('cookBtn').focus(); };
+    const cookClose = () => { if (voiceOn) voiceStop(); $('cook').hidden = true; document.body.style.overflow = ''; unwake(); $('cookBtn').focus(); };
     $('cookBtn').addEventListener('click', cookOpen); $('cookClose').addEventListener('click', cookClose);
     $('cookPrev').addEventListener('click', () => { state.step--; cookShow(); });
     $('cookNext').addEventListener('click', () => { if (state.recipe && state.step >= state.recipe.steps.length - 1) return cookClose(); state.step++; cookShow(); });

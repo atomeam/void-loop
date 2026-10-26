@@ -185,7 +185,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287); void-live-deploy/recipes/index.html:150 timers found in each step, tap to start; no video"
+     "verse_evidence": "2026-10-25: guided step mode with timers and voice; no video"
     },
     {
      "name": "Smart thermometer",
@@ -390,8 +390,8 @@
      "name": "Voice-controlled cook mode",
      "detail": "move between steps by voice",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287); no voice control"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Voice in step mode: say next, back, repeat, start timer, stop timer, ingredients, close (English and German); the step is read aloud and listening pauses while it is; uses the browser's own speech recognition and says before it is switched on that some browsers send the audio to their maker; no Voice button where the browser has none (lib/kitchen.js voiceCommand; tools/kitchen.test.mjs)"
     },
     {
      "name": "Shopping list synced with the web",
@@ -449,8 +449,8 @@
      "name": "Hands-free cook mode with one-tap timers",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287); void-live-deploy/recipes/index.html:150 timers found in each step, tap to start"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Step mode keeps the screen on, one large step, one-tap timers, and now voice commands and the step read aloud"
     },
     {
      "name": "Daily dinner finder quiz",
@@ -894,7 +894,6 @@
   "Cost per serving in your currency and from your own prices (a rough US estimate is built, 2026-10-25): budgetbytes.com",
   "Post your own recipe, cooksnaps: cookpad.com, allrecipes.com, food52.com",
   "Import a recipe from a link, social video or photo of a handwritten card: cookpad.com",
-  "Voice / hands-free cook mode: epicurious.com, delish.com",
   "Recommendations by time of day or taste: tasty.co, yummly.com, delish.com (dinner quiz)",
   "Technique explainers and equipment reviews: seriouseats.com",
   "Q&A / comments: food52.com, recipetineats.com",

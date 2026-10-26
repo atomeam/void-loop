@@ -53,3 +53,9 @@ test('store links: fixed https addresses, a clean search from a list line, a cou
   const evil = K.storeLink('walmart', '1 cup ../../evil?x=1&url=http://evil.test'); assert.ok(evil.startsWith('https://www.walmart.com/search?q='), evil); assert.ok(!/[&]url=|evil\.test\//.test(evil.slice('https://www.walmart.com/search?q='.length)), 'the item is encoded into the search');
   assert.deepEqual(['en-US', 'en-GB', 'de-DE', 'fr-FR', 'en'].map(K.defaultStore), ['walmart', 'tesco', 'rewe', 'walmart', 'walmart']);
 });
+test('voice commands: next, back, repeat, timers, ingredients, close, in English and German; anything else is nothing', () => {
+  const cases = [['next', 'next'], ['Okay, next step.', 'next'], ['go back', 'prev'], ['previous', 'prev'], ['repeat that', 'repeat'], ['say it again', 'repeat'], ['start timer', 'timer'], ['start the timer please', 'timer'], ['set a timer', 'timer'], ['timer', 'timer'],
+    ['stop the timer', 'stopTimer'], ['timer stop', 'stopTimer'], ['cancel timer', 'stopTimer'], ['stop', 'stop'], ['close', 'close'], ['stop cooking', 'close'], ['what are the ingredients', 'ingredients'],
+    ['weiter', 'next'], ['zurück', 'prev'], ['nochmal bitte', 'repeat'], ['Timer starten', 'timer'], ['Timer stopp', 'stopTimer'], ['Zutaten', 'ingredients'], ['schließen', 'close'], ['banana bread', null], ['', null], ['I am so hungry now', null], ['x'.repeat(200), null]];
+  for (const [said, want] of cases) assert.equal(K.voiceCommand(said), want, JSON.stringify(said));
+});
