@@ -12,9 +12,9 @@
    "why": "robots.txt asks robots not to read it"
   },
   "colorcanon.com": {
-   "at": "2026-10-26T07:10:53Z",
+   "at": "2026-10-26T07:20:06Z",
    "outcome": "not-judged",
-   "why": "the model answered 401"
+   "why": "the answer was not JSON (empty)"
   },
   "heycolor.com": {
    "at": "2026-10-26T07:16:04Z",
@@ -58,6 +58,21 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is a B2B service for protecting digital marketing campaigns from bad traffic and spy tools, which is a niche professional servic)",
    "title": "MagicChecker.com: Protect your digital campaigns"
+  },
+  "colornames.org": {
+   "at": "2026-10-26T07:20:32Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON (empty)"
+  },
+  "convertlive.com": {
+   "at": "2026-10-26T07:21:00Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON (empty)"
+  },
+  "online-calculator.com": {
+   "at": "2026-10-26T07:21:36Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON (empty)"
   }
  },
  "runs": [
@@ -74,6 +89,14 @@
    "line": "Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com",
    "built": 0,
    "queued": 3,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-26T07:21:40Z",
+   "line": "Versus: took on no site (also read: 4 not-judged); next heycolor.com",
+   "built": 0,
+   "queued": 0,
    "fixed": [],
    "pages_per_day": 0
   }
