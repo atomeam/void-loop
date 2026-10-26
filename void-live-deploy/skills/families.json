@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 7,
+  "experiment": 9,
   "tested": 26,
   "checked": 17,
   "proven": 297
@@ -1441,7 +1441,7 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 1,
+    "experiment": 3,
     "tested": 2,
     "checked": 1,
     "proven": 29
@@ -1922,6 +1922,22 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 8
+    },
+    {
+     "name": "pdf-tools",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
+    },
+    {
+     "name": "kanban-board",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
     },
     {
      "name": "coral",

@@ -16,162 +16,162 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Split by range, every N pages, or extract",
      "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
     },
     {
      "name": "Delete pages",
      "detail": "Pick pages to remove from a PDF and save the rest.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Rotate pages",
      "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
     },
     {
      "name": "Compress PDF",
      "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
     },
     {
      "name": "Images to PDF",
      "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
     },
     {
      "name": "PDF to images",
      "detail": "Every page saved as JPG or PNG.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
     },
     {
      "name": "Convert to and from Word, Excel, PowerPoint",
      "detail": "Office files to PDF and back; done on a server.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
     },
     {
      "name": "Edit PDF (text, shapes, images)",
      "detail": "Add text, draw shapes, insert images and annotations on pages.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
     },
     {
      "name": "Sign PDF",
      "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
     },
     {
      "name": "Watermark",
      "detail": "Stamp text or an image across all pages, with opacity and position.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
     },
     {
      "name": "Page numbers",
      "detail": "Number pages, choose position, first number and format.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
     },
     {
      "name": "Protect and unlock with a password",
      "detail": "Encrypt a PDF with a password or remove a known password.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
     },
     {
      "name": "Repair PDF",
      "detail": "Recover a damaged PDF as far as it can be read.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built: pdf-lib refuses a damaged file; no recovery"
     },
     {
      "name": "OCR (make scanned text searchable)",
      "detail": "Recognise text in scans.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
     },
     {
      "name": "Redact",
      "detail": "Black out text for good.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: true redaction needs the text layer rewritten; not built"
     },
     {
      "name": "Compare two PDFs",
      "detail": "Show differences between two versions.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet"
     },
     {
      "name": "Crop pages",
      "detail": "Trim margins of every page or chosen ones.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
     },
     {
      "name": "Scan to PDF with the camera",
      "detail": "Take photos on a phone and make a PDF.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "Images to PDF takes a photo from the phone camera through the file chooser; no in-page scanner with edge detection"
     },
     {
      "name": "PDF/A for archiving",
      "detail": "Convert to the long-term archive format.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: PDF/A conversion needs fonts embedded and colour profiles; not built"
     },
     {
      "name": "No account needed",
      "detail": "Use a tool without signing up or in.",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "no account anywhere on Verse"
+     "verse_evidence": "no account anywhere"
     },
     {
      "name": "Free limits",
      "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
      "paid": true,
      "verse": "has",
-     "verse_evidence": "no daily cap, only the device's own memory and a 50 MB / 500 page read limit on the Ask card"
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
     }
    ]
   },
@@ -186,120 +186,120 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Split by range, every N pages, or extract",
      "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
     },
     {
      "name": "Delete pages",
      "detail": "Pick pages to remove from a PDF and save the rest.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Rotate pages",
      "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
     },
     {
      "name": "Compress PDF",
      "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
     },
     {
      "name": "Images to PDF",
      "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
     },
     {
      "name": "PDF to images",
      "detail": "Every page saved as JPG or PNG.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
     },
     {
      "name": "Convert to and from Word, Excel, PowerPoint",
      "detail": "Office files to PDF and back; done on a server.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
     },
     {
      "name": "Edit PDF (text, shapes, images)",
      "detail": "Add text, draw shapes, insert images and annotations on pages.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
     },
     {
      "name": "Sign PDF",
      "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
     },
     {
      "name": "Watermark",
      "detail": "Stamp text or an image across all pages, with opacity and position.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
     },
     {
      "name": "Page numbers",
      "detail": "Number pages, choose position, first number and format.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
     },
     {
      "name": "Protect and unlock with a password",
      "detail": "Encrypt a PDF with a password or remove a known password.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
     },
     {
      "name": "OCR (make scanned text searchable)",
      "detail": "Recognise text in scans.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
     },
     {
      "name": "Scan to PDF with the camera",
      "detail": "Take photos on a phone and make a PDF.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "Images to PDF takes a photo from the phone camera through the file chooser; no in-page scanner with edge detection"
     },
     {
      "name": "Free limits",
      "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
      "paid": true,
      "verse": "has",
-     "verse_evidence": "no daily cap, only the device's own memory and a 50 MB / 500 page read limit on the Ask card"
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
     }
    ]
   },
@@ -315,148 +315,148 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Split by range, every N pages, or extract",
      "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
     },
     {
      "name": "Delete pages",
      "detail": "Pick pages to remove from a PDF and save the rest.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Rotate pages",
      "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
     },
     {
      "name": "Compress PDF",
      "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
     },
     {
      "name": "Images to PDF",
      "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
     },
     {
      "name": "PDF to images",
      "detail": "Every page saved as JPG or PNG.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
     },
     {
      "name": "Convert to and from Word, Excel, PowerPoint",
      "detail": "Office files to PDF and back; done on a server.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
     },
     {
      "name": "Edit PDF (text, shapes, images)",
      "detail": "Add text, draw shapes, insert images and annotations on pages.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
     },
     {
      "name": "Sign PDF",
      "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
     },
     {
      "name": "Watermark",
      "detail": "Stamp text or an image across all pages, with opacity and position.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
     },
     {
      "name": "Page numbers",
      "detail": "Number pages, choose position, first number and format.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
     },
     {
      "name": "Protect and unlock with a password",
      "detail": "Encrypt a PDF with a password or remove a known password.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
     },
     {
      "name": "OCR (make scanned text searchable)",
      "detail": "Recognise text in scans.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
     },
     {
      "name": "Compare two PDFs",
      "detail": "Show differences between two versions.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet"
     },
     {
      "name": "Crop pages",
      "detail": "Trim margins of every page or chosen ones.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
     },
     {
      "name": "Repair PDF",
      "detail": "Recover a damaged PDF as far as it can be read.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built: pdf-lib refuses a damaged file; no recovery"
     },
     {
      "name": "PDF/A for archiving",
      "detail": "Convert to the long-term archive format.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: PDF/A conversion needs fonts embedded and colour profiles; not built"
     },
     {
      "name": "No account needed",
      "detail": "Use a tool without signing up or in.",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "no account anywhere on Verse"
+     "verse_evidence": "no account anywhere"
     },
     {
      "name": "Works offline",
      "detail": "The tools open and run with no connection.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "the service worker keeps the pages and, after the first idle fetch, the libraries"
     }
    ]
   },
@@ -471,141 +471,141 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Split by range, every N pages, or extract",
      "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
     },
     {
      "name": "Delete pages",
      "detail": "Pick pages to remove from a PDF and save the rest.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Rotate pages",
      "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
     },
     {
      "name": "Compress PDF",
      "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
     },
     {
      "name": "Images to PDF",
      "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
     },
     {
      "name": "PDF to images",
      "detail": "Every page saved as JPG or PNG.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
     },
     {
      "name": "Convert to and from Word, Excel, PowerPoint",
      "detail": "Office files to PDF and back; done on a server.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
     },
     {
      "name": "Edit PDF (text, shapes, images)",
      "detail": "Add text, draw shapes, insert images and annotations on pages.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
     },
     {
      "name": "Sign PDF",
      "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
     },
     {
      "name": "Watermark",
      "detail": "Stamp text or an image across all pages, with opacity and position.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
     },
     {
      "name": "Page numbers",
      "detail": "Number pages, choose position, first number and format.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
     },
     {
      "name": "Protect and unlock with a password",
      "detail": "Encrypt a PDF with a password or remove a known password.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
     },
     {
      "name": "OCR (make scanned text searchable)",
      "detail": "Recognise text in scans.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
     },
     {
      "name": "Crop pages",
      "detail": "Trim margins of every page or chosen ones.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
     },
     {
      "name": "Redact",
      "detail": "Black out text for good.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: true redaction needs the text layer rewritten; not built"
     },
     {
      "name": "Compare two PDFs",
      "detail": "Show differences between two versions.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "not built yet"
     },
     {
      "name": "Free limits",
      "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
      "paid": true,
      "verse": "has",
-     "verse_evidence": "no daily cap, only the device's own memory and a 50 MB / 500 page read limit on the Ask card"
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
     },
     {
      "name": "No account needed",
      "detail": "Use a tool without signing up or in.",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "no account anywhere on Verse"
+     "verse_evidence": "no account anywhere"
     }
    ]
   },
@@ -620,120 +620,120 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Split by range, every N pages, or extract",
      "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
     },
     {
      "name": "Delete pages",
      "detail": "Pick pages to remove from a PDF and save the rest.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Rotate pages",
      "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
     },
     {
      "name": "Compress PDF",
      "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
     },
     {
      "name": "Images to PDF",
      "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
     },
     {
      "name": "PDF to images",
      "detail": "Every page saved as JPG or PNG.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
     },
     {
      "name": "Convert to and from Word, Excel, PowerPoint",
      "detail": "Office files to PDF and back; done on a server.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
     },
     {
      "name": "Edit PDF (text, shapes, images)",
      "detail": "Add text, draw shapes, insert images and annotations on pages.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
     },
     {
      "name": "Watermark",
      "detail": "Stamp text or an image across all pages, with opacity and position.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
     },
     {
      "name": "Page numbers",
      "detail": "Number pages, choose position, first number and format.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
     },
     {
      "name": "Protect and unlock with a password",
      "detail": "Encrypt a PDF with a password or remove a known password.",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
     },
     {
      "name": "OCR (make scanned text searchable)",
      "detail": "Recognise text in scans.",
      "paid": true,
      "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
     },
     {
      "name": "Crop pages",
      "detail": "Trim margins of every page or chosen ones.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
     },
     {
      "name": "Free limits",
      "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
      "paid": true,
      "verse": "has",
-     "verse_evidence": "no daily cap, only the device's own memory and a 50 MB / 500 page read limit on the Ask card"
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
     },
     {
      "name": "No account needed",
      "detail": "Use a tool without signing up or in.",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "no account anywhere on Verse"
+     "verse_evidence": "no account anywhere"
     }
    ]
   },
@@ -747,22 +747,22 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Reorder pages with thumbnails",
      "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
     },
     {
      "name": "Files stay on the device",
      "detail": "The work happens in the browser or an offline app; nothing is uploaded.",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "the Ask a PDF card reads files on the device; no editing tools yet"
+     "verse": "has",
+     "verse_evidence": "everything runs in the browser with the vendored pdf-lib and pdf.js; the footer says so"
     }
    ]
   },
@@ -776,111 +776,20 @@
      "name": "Merge PDFs",
      "detail": "Combine several PDFs into one, drag to reorder files before joining.",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no /pdf/ page yet"
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
     },
     {
      "name": "Files stay on the device",
      "detail": "The work happens in the browser or an offline app; nothing is uploaded.",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "the Ask a PDF card reads files on the device; no editing tools yet"
+     "verse": "has",
+     "verse_evidence": "everything runs in the browser with the vendored pdf-lib and pdf.js; the footer says so"
     }
    ]
   }
  },
  "union_gaps": [
-  {
-   "name": "Merge PDFs",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com",
-    "10015.io",
-    "codeshack.io"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Reorder pages with thumbnails",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com",
-    "10015.io"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Split by range, every N pages, or extract",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Delete pages",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Rotate pages",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Compress PDF",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Images to PDF",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "PDF to images",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
   {
    "name": "Convert to and from Word, Excel, PowerPoint",
    "sites": [
@@ -912,18 +821,7 @@
     "sejda.com",
     "pdfcandy.com"
    ],
-   "verse": "missing"
-  },
-  {
-   "name": "Page numbers",
-   "sites": [
-    "ilovepdf.com",
-    "smallpdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
+   "verse": "partial"
   },
   {
    "name": "Protect and unlock with a password",
@@ -958,16 +856,6 @@
    "verse": "missing"
   },
   {
-   "name": "Crop pages",
-   "sites": [
-    "ilovepdf.com",
-    "tools.pdf24.org",
-    "sejda.com",
-    "pdfcandy.com"
-   ],
-   "verse": "missing"
-  },
-  {
    "name": "Compare two PDFs",
    "sites": [
     "ilovepdf.com",
@@ -998,27 +886,12 @@
     "ilovepdf.com",
     "smallpdf.com"
    ],
-   "verse": "missing"
+   "verse": "partial"
   },
   {
    "name": "PDF/A for archiving",
    "sites": [
     "ilovepdf.com",
-    "tools.pdf24.org"
-   ],
-   "verse": "missing"
-  },
-  {
-   "name": "Files stay on the device",
-   "sites": [
-    "10015.io",
-    "codeshack.io"
-   ],
-   "verse": "partial"
-  },
-  {
-   "name": "Works offline",
-   "sites": [
     "tools.pdf24.org"
    ],
    "verse": "missing"

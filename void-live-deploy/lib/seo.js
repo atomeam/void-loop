@@ -6,6 +6,7 @@
  * page takes its setting in the link, a potentialAction whose urlTemplate reaches it) and a visible "Common asks" row of real links to the exact
  * setup people most often want. llms.txt lists the pages from the same table. Pure. Tests: tools/seo.test.mjs.
  */
+import { SITE_PAGES } from './tool-sites.js';
 export const SITE = 'https://a-to-mind.com';
 
 /** one row per tool page: path (as lib/toolkit.js TOOLS names it), name, what it does (true of the page), the phrases people search, the setting
@@ -138,6 +139,8 @@ export const PAGES = Object.freeze([
   { path: '/weather/', name: 'Weather', does: 'The weather now, the next 24 hours and 7 days ahead for any place, in °F and °C side by side, with sunrise and sunset, the weather service’s alerts and radar for the United States, and a link that carries the place.',
     asks: ['weather', 'weather forecast', 'weather tomorrow', 'hourly weather', '7 day forecast', 'weather radar', 'sunrise and sunset times'],
     action: { template: '/weather/?q={search_term_string}', input: 'search_term_string', search: true } },
+  // the PDF and Kanban floors (lib/tool-sites.js): the leader's page and one for each site of its lane
+  ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
   { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
 ]);
