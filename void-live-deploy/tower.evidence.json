@@ -681,60 +681,60 @@
   },
   "encoder": {
    "speed": {
-    "verdict": "better",
-    "verse": 209,
-    "best": 743,
-    "evidence": "Verse (/base64/) 209 ms to the load event (median of 3, phone width) vs base64encode.org 743 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T13:10:36.204Z"
+    "verdict": "equal-and-better",
+    "verse": 182,
+    "best": 863,
+    "evidence": "Verse (/base64/) 182 ms to the load event (median of 3, phone width) vs base64encode.org 863 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:10:36.204Z"
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/base64/) 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
-    "at": "2026-10-26T13:10:36.204Z"
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 3 of 3 loads answered",
-    "at": "2026-10-26T13:10:36.204Z"
+    "best": 2,
+    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 2 of 3 loads answered",
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/base64/) 1 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:10:36.204Z"
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/base64/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:10:36.204Z"
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 5,
-    "best": 34,
-    "evidence": "Verse (/base64/) 5 design defects vs base64encode.org 34 design defects: Verse (0 low-contrast texts, 5 small tap targets, layout shift 0.00), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.37)",
-    "at": "2026-10-26T13:10:36.204Z"
+    "best": 33,
+    "evidence": "Verse (/base64/) 5 design defects vs base64encode.org 33 design defects: Verse (0 low-contrast texts, 5 small tap targets, layout shift 0.00), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T18:21:45.398Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/base64/) 1 of 1 right against the worked-out answer; judged against the standard, not base64encode.org (the site is not asked)",
-    "at": "2026-10-26T13:10:36.204Z",
+    "at": "2026-10-26T18:21:45.398Z",
     "of": 1
    },
    "decode too": {
@@ -742,7 +742,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/base64/) 1 of 1 shown vs base64encode.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:10:36.204Z",
+    "at": "2026-10-26T18:21:45.398Z",
     "of": 1,
     "part": true
    },
@@ -751,16 +751,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/base64/) 2 of 2 shown vs base64encode.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:10:36.204Z",
+    "at": "2026-10-26T18:21:45.398Z",
     "of": 2,
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 15,
+    "verdict": "better",
+    "verse": 16,
     "best": 15,
-    "evidence": "Verse (/base64/) 15 of 16 things a full answer shows vs base64encode.org 15 of 16 things a full answer shows (Verse lacks: Decode Base64 (sister site base64decode.org); site lacks: Decode Base64 (sister site base64decode.org))",
-    "at": "2026-10-26T13:10:36.204Z",
+    "evidence": "Verse (/base64/) 16 of 16 things a full answer shows vs base64encode.org 15 of 16 things a full answer shows (Verse lacks: none; site lacks: Decode Base64 (sister site base64decode.org))",
+    "at": "2026-10-26T18:21:45.398Z",
     "of": 16
    }
   },
@@ -18414,7 +18414,7 @@
   "randomuser.me": "tower.icons/randomuser.me.ico",
   "timeanddate.com": "tower.icons/timeanddate.com.ico",
   "weather.gov": "tower.icons/weather.gov.ico",
-  "base64encode.org": "tower.icons/base64encode.org.ico",
+  "base64encode.org": "tower.icons/base64encode.org.webp",
   "tradukka.com": "tower.icons/tradukka.com.ico",
   "imtranslator.net": "tower.icons/imtranslator.net.ico",
   "pancardresizer.com": "tower.icons/pancardresizer.com.png",
