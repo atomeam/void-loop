@@ -10480,52 +10480,52 @@
   "sports: thesportsdb.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 98,
-    "best": 374,
-    "evidence": "Verse (/sports/) 98 ms to the load event (median of 3, phone width) vs thesportsdb.com 374 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:08:12.477Z"
+    "verse": 131,
+    "best": 328,
+    "evidence": "Verse (/sports/) 131 ms to the load event (median of 3, phone width) vs thesportsdb.com 328 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/sports/) 0 px sideways overflow at 390 px vs thesportsdb.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 146,
     "evidence": "Verse (/sports/) 0 unnamed controls or images vs thesportsdb.com 146 unnamed controls or images",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/sports/) 1 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 right against the worked-out answer; judged against the standard, not thesportsdb.com (the site is not asked)",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 3
    },
    "design polish": {
@@ -10533,7 +10533,7 @@
     "verse": 2,
     "best": 59,
     "evidence": "Verse (/sports/) 2 design defects vs thesportsdb.com 59 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 59 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:08:12.477Z"
+    "at": "2026-10-26T04:10:08.473Z"
    },
    "live scores": {
     "verdict": "equal-and-better",
@@ -10567,7 +10567,7 @@
     "verse": 11,
     "best": 7,
     "evidence": "Verse (/sports/) 11 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: none; site lacks: sports to browse, search across sports, a stats strip, no betting)",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 11
    },
    "sport search": {
@@ -10575,7 +10575,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/sports/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 4,
     "part": true
    },
@@ -10584,7 +10584,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/sports/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 2,
     "part": true
    },
@@ -10593,7 +10593,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/sports/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 5,
     "part": true
    },
@@ -10602,7 +10602,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:08:12.477Z",
+    "at": "2026-10-26T04:10:08.473Z",
     "of": 3,
     "part": true
    }
@@ -15059,6 +15059,230 @@
     "at": "2026-10-26T04:09:07.776Z",
     "of": 16
    }
+  },
+  "music: chordchord.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 172,
+    "best": 296,
+    "evidence": "Verse (/chords/) 172 ms to the load event (median of 3, phone width) vs chordchord.com 296 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/chords/) 3 of 3 loads answered vs chordchord.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/chords/) 0 px sideways overflow at 390 px vs chordchord.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/chords/) 0 unnamed controls or images vs chordchord.com 1 unnamed controls or images",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/chords/) 0 (1: the page shows itself again with the network cut) vs chordchord.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/chords/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chordchord.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/chords/) 4 of 4 right against the worked-out answer; judged against the standard, not chordchord.com (the site is not asked)",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 46,
+    "evidence": "Verse (/chords/) 1 design defects vs chordchord.com 46 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), chordchord.com (28 low-contrast texts, 17 small tap targets, layout shift 0.24)",
+    "at": "2026-10-26T04:10:32.706Z"
+   },
+   "chord finder": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 3,
+    "part": true
+   },
+   "scale finder": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 3,
+    "part": true
+   },
+   "guitar and piano shapes": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 3,
+    "part": true
+   },
+   "chords in a key": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 3,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 18,
+    "best": 5,
+    "evidence": "Verse (/chords/) 18 of 18 things a full answer shows vs chordchord.com 5 of 18 things a full answer shows (Verse lacks: none; site lacks: guitar fingerings, a piano keyboard, inversions, a chord named from notes, chords in a key, seventh chords, a transposer, plays the chord, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
+    "at": "2026-10-26T04:10:32.706Z",
+    "of": 18
+   }
+  },
+  "music: metronomeonline.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 117,
+    "best": 138,
+    "evidence": "Verse (/metronome/) 117 ms to the load event (median of 3, phone width) vs metronomeonline.com 138 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/metronome/) 3 of 3 loads answered vs metronomeonline.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/metronome/) 0 px sideways overflow at 390 px vs metronomeonline.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 5,
+    "evidence": "Verse (/metronome/) 0 unnamed controls or images vs metronomeonline.com 5 unnamed controls or images",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/metronome/) 0 (1: the page shows itself again with the network cut) vs metronomeonline.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/metronome/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs metronomeonline.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/metronome/) 4 of 4 right against the worked-out answer; judged against the standard, not metronomeonline.com (the site is not asked)",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 19,
+    "evidence": "Verse (/metronome/) 3 design defects vs metronomeonline.com 19 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), metronomeonline.com (17 low-contrast texts, 1 small tap targets, layout shift 0.19)",
+    "at": "2026-10-26T04:11:01.932Z"
+   },
+   "tap tempo": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 2,
+    "part": true
+   },
+   "accents": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 3,
+    "part": true
+   },
+   "subdivisions": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 3,
+    "part": true
+   },
+   "practice timer": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 2,
+    "part": true
+   },
+   "light and dark mode": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/metronome/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 1,
+    "part": true
+   },
+   "sounds": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/metronome/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 4,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 21,
+    "best": 5,
+    "evidence": "Verse (/metronome/) 21 of 21 things a full answer shows vs metronomeonline.com 5 of 21 things a full answer shows (Verse lacks: none; site lacks: tap tempo, accents, a visual beat, a practice timer, a speed trainer, silent bars, tempo presets, setlists, volume, nothing leaves your device, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
+    "at": "2026-10-26T04:11:01.932Z",
+    "of": 21
+   }
   }
  },
  "icons": {
@@ -15215,6 +15439,8 @@
   "iloveimg.com": "tower.icons/iloveimg.com.png",
   "codeshack.io": "tower.icons/codeshack.io.png",
   "jasperbernaers.com": "tower.icons/jasperbernaers.com.png",
-  "anotherproducer.com": "tower.icons/anotherproducer.com.png"
+  "anotherproducer.com": "tower.icons/anotherproducer.com.png",
+  "chordchord.com": "tower.icons/chordchord.com.png",
+  "metronomeonline.com": "tower.icons/metronomeonline.com.png"
  }
 }
