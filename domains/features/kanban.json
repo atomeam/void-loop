@@ -1,0 +1,709 @@
+{
+ "floor": "kanban",
+ "verse_page": "void-live-deploy/kanban/index.html",
+ "researched": "2026-10-26",
+ "method": "Searched the web for each site (a fetch of the sites themselves fails from the builder's network), so features come from search results, vendor pages and third-party reviews; paid tiers and limits change often, confirm before any price claim.",
+ "sites": {
+  "trello.com": {
+   "leader": true,
+   "url": "https://trello.com/",
+   "sources": [
+    "https://clickup.com/learn/topic/project-management/tools/trello/",
+    "https://www.getmagical.com/blog/trello-tips-tricks-shortcuts"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/task-board.js has fixed stacks (Today, All, Waiting, Someday, Done), not named columns"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "tasks with words, due day, priority and minutes; no description"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Keyboard shortcuts and keyboard moves",
+     "detail": "Move and open cards without a mouse.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "task-board tasks carry a due day and show overdue in red"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Attachments and card covers",
+     "detail": "Files or images on a card.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Calendar, timeline, table views",
+     "detail": "The same cards as a calendar, a roadmap or a table.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Automation (rules, buttons)",
+     "detail": "When X happens, do Y; run daily or weekly.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Recurring cards",
+     "detail": "A card that comes back on a schedule.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Power-ups and integrations",
+     "detail": "Slack, Drive, GitHub and more.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Share a board by link",
+     "detail": "A link that opens the board for others.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    }
+   ]
+  },
+  "kanbanflow.com": {
+   "url": "https://kanbanflow.com/",
+   "sources": [
+    "https://www.getapp.com/project-management-planning-software/a/kanbanflow/",
+    "https://www.helloleads.io/blog/?p=1849"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/task-board.js has fixed stacks (Today, All, Waiting, Someday, Done), not named columns"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "tasks with words, due day, priority and minutes; no description"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "task-board tasks carry a due day and show overdue in red"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "WIP limits",
+     "detail": "Cap the number of cards in a column and warn past it.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Swimlanes",
+     "detail": "Rows that group cards across columns.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Time tracking and Pomodoro timer",
+     "detail": "Time spent on a card.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Recurring cards",
+     "detail": "A card that comes back on a schedule.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    }
+   ]
+  },
+  "wekan.fi": {
+   "url": "https://wekan.fi/",
+   "sources": [
+    "https://wekan.fi/",
+    "https://github.com/wekan/wekan"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/task-board.js has fixed stacks (Today, All, Waiting, Someday, Done), not named columns"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "tasks with words, due day, priority and minutes; no description"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "task-board tasks carry a due day and show overdue in red"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "WIP limits",
+     "detail": "Cap the number of cards in a column and warn past it.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Swimlanes",
+     "detail": "Rows that group cards across columns.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Attachments and card covers",
+     "detail": "Files or images on a card.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    }
+   ]
+  },
+  "abacktools.com": {
+   "url": "https://abacktools.com/tools/productivity/planning/kanban-board",
+   "sources": [
+    "https://abacktools.com/tools/productivity/planning/kanban-board"
+   ],
+   "features": [
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/task-board.js has fixed stacks (Today, All, Waiting, Someday, Done), not named columns"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "tasks with words, due day, priority and minutes; no description"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Kept on the device, no account",
+     "detail": "Boards saved in the browser, nothing sent.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "task-board is kept in this browser only"
+    }
+   ]
+  },
+  "jasperbernaers.com": {
+   "url": "https://jasperbernaers.com/kanban-board/",
+   "sources": [
+    "https://jasperbernaers.com/kanban-board/"
+   ],
+   "features": [
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/task-board.js has fixed stacks (Today, All, Waiting, Someday, Done), not named columns"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "tasks with words, due day, priority and minutes; no description"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no /kanban/ page yet"
+    },
+    {
+     "name": "Kept on the device, no account",
+     "detail": "Boards saved in the browser, nothing sent.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "task-board is kept in this browser only"
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  {
+   "name": "Columns (lists) you name, add, move and delete",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi",
+    "abacktools.com",
+    "jasperbernaers.com"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Cards with title and description",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi",
+    "abacktools.com",
+    "jasperbernaers.com"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Drag and drop cards between columns",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi",
+    "abacktools.com",
+    "jasperbernaers.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Several boards",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Coloured labels",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Due dates",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Checklists with progress",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Members and assignees",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Comments and activity log",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Search and filter",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Archive cards and columns",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Import and export (JSON, CSV)",
+   "sites": [
+    "trello.com",
+    "wekan.fi",
+    "jasperbernaers.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Board and card templates",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Dark mode and board backgrounds",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "WIP limits",
+   "sites": [
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Swimlanes",
+   "sites": [
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Attachments and card covers",
+   "sites": [
+    "trello.com",
+    "wekan.fi"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Recurring cards",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Keyboard shortcuts and keyboard moves",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Calendar, timeline, table views",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Automation (rules, buttons)",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Time tracking and Pomodoro timer",
+   "sites": [
+    "kanbanflow.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Power-ups and integrations",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Share a board by link",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  }
+ ],
+ "verse_extra": []
+}

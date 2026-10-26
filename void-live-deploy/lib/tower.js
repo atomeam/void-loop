@@ -52,6 +52,10 @@ const HAND_FLOORS = [
   { id: 'translate', site: 'Google Translate', url: 'https://translate.google.com/', ask: 'translate hello to spanish', page: '/translate/?q=hello&to=es', label: 'Translate', glyph: '⇄', extra: ['language count', 'speech in and out', 'camera text'] },
   { id: 'recipes', site: 'Allrecipes', url: 'https://www.allrecipes.com/', ask: 'pancake recipe', page: '/recipes/?q=pancakes', label: 'Recipes', glyph: '◒', extra: ['search by ingredient', 'scaling', 'step mode'] },
   { id: 'calendar', site: 'Google Calendar', url: 'https://calendar.google.com/', ask: 'my calendar', page: '/calendar/', label: 'Calendar', glyph: '▦', fatality: 'an event typed as one line of plain words, an invite that is a link carrying the whole event, and the whole calendar on the device, offline', extra: ['reminders', 'invites', 'recurring events'] },
+  // PDF tools (owner, 2026-10-26: "everything the sites have", smallest first): ilovepdf.com has the longest list of tools (merge, split, remove and organize pages, compress, repair, scan, edit, sign, watermark, rotate, number, redact, compare, and the conversions); Verse's page works on the device, so a file never goes anywhere
+  { id: 'pdf', site: 'ilovepdf.com', url: 'https://www.ilovepdf.com/', ask: 'merge pdf', page: '/pdf/', label: 'PDF tools', glyph: '▤', extra: ['merge and split', 'page tools', 'images to pdf', 'compress'] },
+  // kanban (same order): Trello is the one everyone compares to; its boards, lists, cards, labels, due dates and checklists are the baseline, its paid views and automation the ceiling
+  { id: 'kanban', site: 'Trello', url: 'https://trello.com/', ask: 'kanban board', page: '/kanban/', label: 'Kanban', glyph: '▥', extra: ['boards and columns', 'card details', 'drag and drop', 'import and export'] },
   { id: 'docs and notes', site: 'Google Docs', url: 'https://docs.google.com/', ask: 'notepad', page: '/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread', label: 'Docs and notes', glyph: '✎', extra: ['rich formatting', 'search', 'version history'] },
   // the chans (owner, 2026-10-25: "Let's go after the chans next ... sweep through the image boards and text boards"): boards anyone makes, so Verse's
   // page starts blank and the probe reads its board list, its make-a-board form and its formatting preview, never a post. noShot: no picture of a
@@ -61,7 +65,7 @@ const HAND_FLOORS = [
   { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', page: '/markets/', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
   { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', page: '/news/', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
-  { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', label: 'Photos', glyph: '◰', extra: ['editing', 'albums', 'search by content'] },
+  { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', page: '/photos/', label: 'Photos', glyph: '◰', extra: ['editing', 'compress and convert', 'metadata and privacy'] },
   { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
   { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', extra: ['courses', 'progress tracking', 'practice'] },
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
@@ -109,13 +113,26 @@ export const LANES = Object.freeze({
   news: ['https://www.allsides.com/', 'https://www.thelocal.com/', 'https://www.rnz.co.nz/', 'https://www.channelnewsasia.com/', 'https://www.france24.com/en/', 'https://www.dw.com/en/', 'https://www.euronews.com/', 'https://www.aljazeera.com/', 'https://www.npr.org/', 'https://apnews.com/', 'https://www.theguardian.com/international'],
   // the finance quote sites, least visited first, Yahoo Finance (the floor itself) last; each is measured at its own url by the finance probe against /markets/
   finance: ['https://www.stockq.org/', 'https://stooq.com/', 'https://www.macrotrends.net/', 'https://companiesmarketcap.com/', 'https://stockanalysis.com/', 'https://finviz.com/', 'https://www.barchart.com/', 'https://www.investing.com/', 'https://www.tradingview.com/', 'https://www.marketwatch.com/', 'https://www.google.com/finance/'],
+  // PDF tools, least visited first, the leader (ilovepdf.com) last; each found alive and not parked by a web search on 2026-10-26 (a fetch from the builder's network is closed)
+  pdf: ['https://codeshack.io/pdf-merge-tool/', 'https://10015.io/tools/pdf-merger', 'https://www.pdfcandy.com/', 'https://www.sejda.com/', 'https://tools.pdf24.org/en/', 'https://smallpdf.com/'],
+  // kanban boards, least visited first, Trello last; each found alive by a web search on 2026-10-26, none behind a sign-in on the page measured (kanbanflow.com and wekan.fi ask for an account only to save a shared board)
+  kanban: ['https://jasperbernaers.com/kanban-board/', 'https://abacktools.com/tools/productivity/planning/kanban-board', 'https://wekan.fi/', 'https://kanbanflow.com/'],
+  // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
+  photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
+});
+// A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
+// floor id of a lane site -> the Verse page built to have every feature that site has, which the gate measures it against instead of the leader's page.
+// A site not listed here is still measured against its leader's page until its own page is built.
+export const LANE_PAGES = Object.freeze({
+  'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
+  'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
 export function withLanes(floors, lanes = LANES) {
   const out = [];
-  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
+  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: LANE_PAGES[f.id + ': ' + h] || f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
   return out;
 }
 export const FLOORS = withLanes(HAND_FLOORS);
