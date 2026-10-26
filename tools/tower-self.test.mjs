@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
+import { parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
@@ -108,4 +108,11 @@ test('the loop\'s model route takes the owner\'s questions only in shape: system
   assert.equal(bodyOf({ messages: [{ role: 'user', content: 'x'.repeat(24001) }] }), null);
   assert.equal(bodyOf({ messages: Array(5).fill({ role: 'user', content: 'x' }) }), null);
   assert.equal(bodyOf({ messages: [{ role: 'user', content: 'x' }], max_tokens: 99999 }).max, 2000);
+});
+
+test('the model\'s answer is found however it is wrapped', () => {
+  assert.equal(parseAnswer('{"family":"colour","why":"x"}').family, 'colour');
+  assert.equal(parseAnswer('Thinking {about} it.\n```json\n{"family":"none","why":"a shop"}\n```').family, 'none');
+  assert.equal(parseAnswer(JSON.stringify({ response: { family: 'calculator' } })).family, 'calculator');
+  assert.equal(parseAnswer('no json here'), null);
 });
