@@ -39,6 +39,17 @@ for (const id of Object.keys(F.SOURCES)) {
   }
   await wait(1200);
 }
+// loc.gov: the shape of its answers is not documented well, so a few variants are asked once each (3 s apart, far under its 20 a minute) and the shapes recorded; the parser follows what answers
+if (!only.length || only.includes('loc')) {
+  res.explore = {}; const ctxl = await F.probeContext(mk());
+  for (const [name, url] of Object.entries({ photos: 'https://www.loc.gov/photos/?q=baseball&fo=json&c=5', search: 'https://www.loc.gov/search/?q=baseball&fo=json&fa=online-format:image&c=5', pictures: 'https://www.loc.gov/pictures/search/?q=baseball&fo=json', freeToUse: 'https://www.loc.gov/free-to-use/?fo=json' })) {
+    await wait(3000);
+    try { const r = await ctxl.http(url); const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (_) {}
+      res.explore[name] = { status: r.status, json: !!j, topKeys: j ? Object.keys(j).slice(0, 40) : [], shape: j ? resultShape(j) : null, head: j ? undefined : t.slice(0, 120).replace(/\s+/g, ' '), contentKeys: j && j.content && typeof j.content === 'object' ? Object.keys(j.content).slice(0, 40) : undefined };
+      if (j && j.results && j.results[0]) res.explore[name].firstResult = JSON.stringify(j.results[0]).slice(0, 1500);
+    } catch (e) { res.explore[name] = { error: redact(e && e.message) }; }
+  }
+}
 // rejection logic with names: a named player is searched on Commons only (never stock), and what the filter does with it is recorded
 try {
   const o = { ...mk(), kind: 'player', fromAnswer: true, sources: ['commons', 'pexels', 'pixabay', 'unsplash'], cache: null, max: 5 };
