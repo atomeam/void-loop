@@ -70,24 +70,24 @@
     },
     "vsCard": 0.3875,
     "since": "2026-10-25",
-    "last": "2026-10-25",
-    "days": 15,
+    "last": "2026-10-26",
+    "days": 16,
     "tried": [
       {
-        "score": 0.5,
+        "score": 0.4625,
         "kept": false
       },
       {
-        "score": 0.725,
-        "kept": true
+        "score": 0.4625,
+        "kept": false
       },
       {
-        "score": 0.575,
-        "kept": true
+        "score": 0.4375,
+        "kept": false
       }
     ]
   },
-  "played": "2026-10-25",
+  "played": "2026-10-26",
   "history": [
     {
       "date": "2026-10-11",
@@ -161,6 +161,11 @@
     },
     {
       "date": "2026-10-25",
+      "rating": 1609,
+      "vsCard": 0.3875
+    },
+    {
+      "date": "2026-10-26",
       "rating": 1609,
       "vsCard": 0.3875
     }
