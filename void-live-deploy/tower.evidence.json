@@ -11874,77 +11874,76 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 107,
-    "best": 906,
-    "evidence": "Verse (/markets/caps/) 107 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 906 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "verse": 140,
+    "best": 994,
+    "evidence": "Verse (/markets/caps/) 140 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 994 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/caps/) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/caps/) 1 of 4 right against the worked-out answer (missed: Bitcoin is rank 1, a price in dollars on its row, a market cap in trillions or billions); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Crypto market caps The 50 largest coins by market cap, in US dollars. Prices may be delayed. No ads, no account. Find a coin Total market cap of these 50: – Coins by market cap # Coin Price 24h Mkt ca\"",
-    "at": "2026-10-26T04:49:52.636Z",
-    "was": "equal-and-better",
+    "evidence": "Verse (/markets/caps/) 4 of 4 right against the worked-out answer; judged against the standard, not companiesmarketcap.com (the site is not asked)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 50,
     "best": 66,
-    "evidence": "Verse (/markets/caps/) 0 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "evidence": "Verse (/markets/caps/) 50 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 50 small tap targets, layout shift 0.02), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "live quotes": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/caps/) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price in dollars, a 24 hour move in percent; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 3 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 3,
     "part": true
    },
    "charts": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 2,
     "best": 0,
-    "evidence": "Verse (/markets/caps/) 1 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: the 7 day move; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 2,
     "part": true
    },
@@ -11953,16 +11952,16 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 8,
+    "verse": 14,
     "best": 4,
-    "evidence": "Verse (/markets/caps/) 8 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: price, 24 hour change, 7 day change, 24 hour volume, a total market cap, Compare symbols, Links, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 14 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: Compare symbols, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 17
    }
   },
@@ -16062,67 +16061,67 @@
   "kanban: jasperbernaers.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 199,
-    "best": 285,
-    "evidence": "Verse (/kanban/simple/) 199 ms to the load event (median of 3, phone width) vs jasperbernaers.com 285 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "verse": 189,
+    "best": 531,
+    "evidence": "Verse (/kanban/simple/) 189 ms to the load event (median of 3, phone width) vs jasperbernaers.com 531 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/simple/) 3 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 1 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/kanban/simple/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "evidence": "Verse (/kanban/simple/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/simple/) 4 of 4 right against the worked-out answer; judged against the standard, not jasperbernaers.com (the site is not asked)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 41,
-    "evidence": "Verse (/kanban/simple/) 0 design defects vs jasperbernaers.com 41 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), jasperbernaers.com (27 low-contrast texts, 14 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "best": 42,
+    "evidence": "Verse (/kanban/simple/) 0 design defects vs jasperbernaers.com 42 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (28 low-contrast texts, 14 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/simple/) 1 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
@@ -16131,7 +16130,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/simple/) 3 of 3 shown vs jasperbernaers.com 3 of 3 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 3,
     "part": true
    },
@@ -16140,7 +16139,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
@@ -16149,83 +16148,83 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 18,
+    "verdict": "better",
+    "verse": 21,
     "best": 19,
-    "evidence": "Verse (/kanban/simple/) 18 of 21 things a full answer shows vs jasperbernaers.com 19 of 21 things a full answer shows (Verse lacks: Several boards, Cards with title and description, Drag and drop cards between columns; site lacks: archive, Coloured labels)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "evidence": "Verse (/kanban/simple/) 21 of 21 things a full answer shows vs jasperbernaers.com 19 of 21 things a full answer shows (Verse lacks: none; site lacks: archive, Coloured labels)",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 21
    }
   },
   "kanban: abacktools.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 179,
-    "best": 483,
-    "evidence": "Verse (/kanban/quick/) 179 ms to the load event (median of 3, phone width) vs abacktools.com 483 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "verse": 164,
+    "best": 539,
+    "evidence": "Verse (/kanban/quick/) 164 ms to the load event (median of 3, phone width) vs abacktools.com 539 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/quick/) 3 of 3 loads answered vs abacktools.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 0 px sideways overflow at 390 px vs abacktools.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 0 unnamed controls or images vs abacktools.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 1 (1: the page shows itself again with the network cut) vs abacktools.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/kanban/quick/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "evidence": "Verse (/kanban/quick/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/quick/) 4 of 4 right against the worked-out answer; judged against the standard, not abacktools.com (the site is not asked)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 25,
-    "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "boards and columns": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
@@ -16234,7 +16233,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/quick/) 2 of 3 shown vs abacktools.com 2 of 3 shown (Verse lacks: checklists; site lacks: due dates)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 3,
     "part": true
    },
@@ -16243,7 +16242,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
@@ -16252,16 +16251,16 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: import)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 16,
+    "verse": 18,
     "best": 14,
-    "evidence": "Verse (/kanban/quick/) 16 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: checklists, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "evidence": "Verse (/kanban/quick/) 18 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: checklists, Several boards, Columns (lists) you name, add, move and delete; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 21
    }
   },
@@ -16269,66 +16268,66 @@
    "speed": {
     "verdict": "equal-and-better",
     "verse": 198,
-    "best": 40,
-    "evidence": "Verse (/kanban/teams/) 198 ms to the load event (median of 3, phone width) vs wekan.fi 40 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "best": 48,
+    "evidence": "Verse (/kanban/teams/) 198 ms to the load event (median of 3, phone width) vs wekan.fi 48 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/teams/) 3 of 3 loads answered vs wekan.fi 3 of 3 loads answered",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 0 px sideways overflow at 390 px vs wekan.fi 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/teams/) 0 unnamed controls or images vs wekan.fi 1 unnamed controls or images",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 1 (1: the page shows itself again with the network cut) vs wekan.fi 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wekan.fi 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/teams/) 4 of 4 right against the worked-out answer; judged against the standard, not wekan.fi (the site is not asked)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
-    "evidence": "Verse (/kanban/teams/) 0 design defects vs wekan.fi 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), wekan.fi (2 low-contrast texts, 1 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "evidence": "Verse (/kanban/teams/) 0 design defects vs wekan.fi 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wekan.fi (2 low-contrast texts, 1 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/teams/) 1 of 2 shown vs wekan.fi 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
@@ -16337,7 +16336,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/teams/) 3 of 3 shown vs wekan.fi 3 of 3 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 3,
     "part": true
    },
@@ -16346,7 +16345,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 0 of 2 shown (Verse lacks: none; site lacks: drag)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
@@ -16355,83 +16354,83 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 1 of 2 shown (Verse lacks: none; site lacks: export)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 12,
-    "evidence": "Verse (/kanban/teams/) 18 of 21 things a full answer shows vs wekan.fi 12 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: drag and drop, search, archive, export, keyboard moves, on this device, works offline, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "evidence": "Verse (/kanban/teams/) 20 of 21 things a full answer shows vs wekan.fi 12 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: drag and drop, search, archive, export, keyboard moves, on this device, works offline, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 21
    }
   },
   "kanban: kanbanflow.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 142,
-    "best": 235,
-    "evidence": "Verse (/kanban/flow/) 142 ms to the load event (median of 3, phone width) vs kanbanflow.com 235 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "verdict": "better",
+    "verse": 224,
+    "best": 276,
+    "evidence": "Verse (/kanban/flow/) 224 ms to the load event (median of 3, phone width) vs kanbanflow.com 276 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/flow/) 3 of 3 loads answered vs kanbanflow.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 0 px sideways overflow at 390 px vs kanbanflow.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/flow/) 0 unnamed controls or images vs kanbanflow.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 1 (1: the page shows itself again with the network cut) vs kanbanflow.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/kanban/flow/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs kanbanflow.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/flow/) 4 of 4 right against the worked-out answer; judged against the standard, not kanbanflow.com (the site is not asked)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 12,
-    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "boards and columns": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 2,
     "best": 1,
-    "evidence": "Verse (/kanban/flow/) 1 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: add a column; site lacks: columns)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: none; site lacks: columns)",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
@@ -16440,7 +16439,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 3 of 3 shown vs kanbanflow.com 0 of 3 shown (Verse lacks: none; site lacks: labels, due dates, checklists)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 3,
     "part": true
    },
@@ -16449,7 +16448,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 0 of 2 shown (Verse lacks: none; site lacks: drag)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
@@ -16458,83 +16457,83 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 5,
-    "evidence": "Verse (/kanban/flow/) 18 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "evidence": "Verse (/kanban/flow/) 20 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 21
    }
   },
   "kanban": {
    "speed": {
     "verdict": "better",
-    "verse": 205,
-    "best": 1383,
-    "evidence": "Verse (/kanban/) 205 ms to the load event (median of 3, phone width) vs Trello 1383 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "verse": 284,
+    "best": 1492,
+    "evidence": "Verse (/kanban/) 284 ms to the load event (median of 3, phone width) vs Trello 1492 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/) 3 of 3 loads answered vs Trello 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/) 0 px sideways overflow at 390 px vs Trello 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/) 0 unnamed controls or images vs Trello 1 unnamed controls or images",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/) 1 (1: the page shows itself again with the network cut) vs Trello 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/kanban/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Trello 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/) 4 of 4 right against the worked-out answer; judged against the standard, not Trello (the site is not asked)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 13,
-    "evidence": "Verse (/kanban/) 0 design defects vs Trello 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), Trello (0 low-contrast texts, 13 small tap targets, layout shift 0.05)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "evidence": "Verse (/kanban/) 0 design defects vs Trello 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Trello (0 low-contrast texts, 13 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/) 1 of 2 shown vs Trello 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
@@ -16543,7 +16542,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/kanban/) 3 of 3 shown vs Trello 0 of 3 shown (Verse lacks: none; site lacks: labels, due dates, checklists)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 3,
     "part": true
    },
@@ -16552,7 +16551,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
@@ -16561,16 +16560,16 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 0 of 2 shown (Verse lacks: none; site lacks: export, import)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 5,
-    "evidence": "Verse (/kanban/) 18 of 21 things a full answer shows vs Trello 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: columns, labels, due dates, checklists, search, archive, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "evidence": "Verse (/kanban/) 20 of 21 things a full answer shows vs Trello 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: columns, labels, due dates, checklists, search, archive, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 21
    }
   },
@@ -17051,6 +17050,7 @@
   "tripwaffle.com": "tower.icons/tripwaffle.com.png",
   "aruljohn.com": "tower.icons/aruljohn.com.ico",
   "clock7.com": "tower.icons/clock7.com.png",
-  "co2.myclimate.org": "tower.icons/co2.myclimate.org.png"
+  "co2.myclimate.org": "tower.icons/co2.myclimate.org.png",
+  "abacktools.com": "tower.icons/abacktools.com.png"
  }
 }
