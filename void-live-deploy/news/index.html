@@ -47,6 +47,8 @@
   .sk { border-top: 1px solid var(--line); height: 87px; box-sizing: border-box; padding: 12px 0; }
   .sk i { display: block; height: 14px; border-radius: 7px; background: var(--line); margin: 0 0 9px; opacity: .7; } .sk i:nth-child(1) { width: 92%; } .sk i:nth-child(2) { width: 60%; } .sk i:nth-child(3) { width: 30%; }
   .compact .story { min-height: 64px; } .compact .story .s { display: none; } .compact #list { min-height: 520px; } .compact .sk { height: 64px; }
+  #reportBox article { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; background: var(--box); }
+  #reportBox h2 { font-size: 15px; margin: 0 0 6px; } #reportBox p { margin: 4px 0; } #reportBox .by { font-size: 12px; color: var(--soft); }
   .pane { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; background: var(--box); }
   .pane[hidden] { display: none; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; padding: 0; list-style: none; }
@@ -69,7 +71,7 @@
     <input type="search" id="q" placeholder="Search the headlines" maxlength="60" enterkeyhint="search">
   </form>
   <nav id="secs" aria-label="Sections">
-    <button type="button" data-sec="top" aria-pressed="true">Top stories</button><button type="button" data-sec="world" aria-pressed="false">World</button><button type="button" data-sec="uk" aria-pressed="false">UK</button><button type="button" data-sec="us" aria-pressed="false">US</button><button type="button" data-sec="business" aria-pressed="false">Business</button><button type="button" data-sec="tech" aria-pressed="false">Technology</button><button type="button" data-sec="science" aria-pressed="false">Science</button><button type="button" data-sec="sport" aria-pressed="false">Sport</button><button type="button" data-sec="culture" aria-pressed="false">Culture</button><button type="button" data-sec="africa" aria-pressed="false">Africa</button><button type="button" data-sec="asia" aria-pressed="false">Asia</button><button type="button" data-sec="europe" aria-pressed="false">Europe</button><button type="button" data-sec="middle-east" aria-pressed="false">Middle East</button><button type="button" data-sec="latin-america" aria-pressed="false">Latin America</button><button type="button" data-sec="my" aria-pressed="false">My news</button><button type="button" data-sec="saved" aria-pressed="false">Saved</button>
+    <button type="button" data-sec="top" aria-pressed="true">Top stories</button><button type="button" data-sec="world" aria-pressed="false">World</button><button type="button" data-sec="uk" aria-pressed="false">UK</button><button type="button" data-sec="us" aria-pressed="false">US</button><button type="button" data-sec="business" aria-pressed="false">Business</button><button type="button" data-sec="tech" aria-pressed="false">Technology</button><button type="button" data-sec="science" aria-pressed="false">Science</button><button type="button" data-sec="sport" aria-pressed="false">Sport</button><button type="button" data-sec="culture" aria-pressed="false">Culture</button><button type="button" data-sec="africa" aria-pressed="false">Africa</button><button type="button" data-sec="asia" aria-pressed="false">Asia</button><button type="button" data-sec="europe" aria-pressed="false">Europe</button><button type="button" data-sec="middle-east" aria-pressed="false">Middle East</button><button type="button" data-sec="latin-america" aria-pressed="false">Latin America</button><button type="button" data-sec="report" aria-pressed="false">Verse reports</button><button type="button" data-sec="my" aria-pressed="false">My news</button><button type="button" data-sec="saved" aria-pressed="false">Saved</button>
   </nav>
   <div class="row">
     <label class="vh" for="lang">Language</label>
@@ -87,6 +89,7 @@
   </section>
   <p id="status" role="status" aria-live="polite">Loading the headlines…</p>
   <ol id="list" aria-label="Headlines"><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li></ol>
+  <div id="reportBox" hidden></div>
   <div class="row"><button type="button" id="follow">Follow topics</button><button type="button" id="copyLink">Copy link to this view</button></div>
 
   <!-- asks -->
@@ -109,7 +112,7 @@
     mem.topics = mem.topics || []; mem.sources = mem.sources || []; mem.saved = mem.saved || []; mem.cache = mem.cache || {};
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (_) { /* full or blocked: the page still works */ } };
     const url = new URLSearchParams(location.search);
-    const st = { sec: L.SECTIONS[url.get('sec')] || url.get('sec') === 'my' || url.get('sec') === 'saved' ? url.get('sec') : 'top', lang: L.LANGS[url.get('lang')] ? url.get('lang') : (L.LANGS[mem.lang] ? mem.lang : 'en'), q: url.get('q') || '', src: '', list: [], sources: [], at: 0, offline: false };
+    const st = { sec: L.SECTIONS[url.get('sec')] || url.get('sec') === 'my' || url.get('sec') === 'saved' || url.get('sec') === 'report' ? url.get('sec') : 'top', lang: L.LANGS[url.get('lang')] ? url.get('lang') : (L.LANGS[mem.lang] ? mem.lang : 'en'), q: url.get('q') || '', src: '', list: [], sources: [], at: 0, offline: false };
     $('q').value = st.q; $('lang').value = st.lang;
     const setSize = (px) => { mem.fs = Math.min(24, Math.max(13, px)); document.documentElement.style.setProperty('--fs', mem.fs + 'px'); keep(); };
     if (mem.fs) document.documentElement.style.setProperty('--fs', mem.fs + 'px');
@@ -188,8 +191,39 @@
       finally { $('app').removeAttribute('aria-busy'); }
       sourceMenu(); draw();
     }
+
+    // Verse reports (lib/news-report.js): loaded only when the tab is opened, never before the load event. Drafts are built here from the feeds' own words
+    // and shown at once; the polish (a text model, checked again here) is asked for the brief on opening and for the rest only when pressed.
+    async function showReport() {
+      const R = await import('/lib/news-report.js'), box = $('reportBox'); box.textContent = ''; status('Writing from today\'s headlines…'); $('app').setAttribute('aria-busy', 'true');
+      const secs = ['top', 'business', 'tech', 'science', 'sport'], got = {};
+      await Promise.all(secs.map(async (sec) => { const key = st.lang + ':' + sec; if (!mem.cache[key]) { try { const j = await (await fetch('/api/news?sec=' + sec + '&lang=' + st.lang)).json(); if (j.ok) { mem.cache[key] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); } } catch (_) { /* offline: the kept ones */ } } got[sec] = (mem.cache[key] || { stories: [] }).stories; }));
+      $('app').removeAttribute('aria-busy'); if (st.sec !== 'report') return;
+      const srcsOf = (s) => [...new Set([s.src, ...(s.also || []).map((a) => a.src)])];
+      const ask = async (kind, items) => { try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'report', kind, items }) }); return await r.json(); } catch (_) { return null; } };
+      function card(title, kind, items, auto) {
+        const p = R.prepare({ kind, items }); if (p.error) return null;
+        const art = el('article'), h = el('h2', null, title), body = el('p', null, p.draft), by = el('p', 'by', R.label(p.names, Date.now(), false)); art.append(h, body, by);
+        const polish = async (btn) => { if (btn) { btn.disabled = true; btn.textContent = 'Writing…'; } const j = await ask(kind, items); const v = R.settle(j && j.polished && j.text !== p.draft ? j.text : null, p.draft, p.source, p.names);
+          if (v.polished) { body.textContent = v.text; by.textContent = R.label(p.names, Date.now(), true); } if (btn) btn.remove(); };
+        if (auto) polish(null); else { const b = el('button', null, 'Write it up in plain words'); b.type = 'button'; b.onclick = () => polish(b); art.append(b); }
+        return art;
+      }
+      const lead = (sec) => (got[sec] || []).slice().sort((a, b) => b.n - a.n || b.t - a.t);
+      const briefItems = secs.flatMap((sec, i) => lead(sec).slice(0, sec === 'top' ? 2 : 1).map((s) => ({ sec, srcs: srcsOf(s), title: s.title, summary: s.summary || '' })));
+      const b = briefItems.length ? card('Verse brief', 'brief', briefItems, true) : null; if (b) box.append(b);
+      // changes since 06:00 on the followed topics
+      if (mem.topics.length) { const all = [...new Map(secs.flatMap((s) => got[s]).map((s) => [s.id, s])).values()], found = R.changedOn(all, mem.topics, R.morning()); const items = found.map((f) => ({ topic: f.topic, srcs: f.srcs, title: f.title, sec: 'top' }));
+        const c = items.length ? card('Since this morning on your topics', 'changes', items, false) : null; if (c) box.append(c); else box.append(el('p', 'sub', 'Nothing new on ' + mem.topics.join(', ') + ' since this morning.')); }
+      else box.append(el('p', 'sub', 'Follow a topic (My news) and what changed on it since this morning appears here.'));
+      const clusters = [...new Map([...(got.top || []), ...(got.business || []), ...(got.tech || []), ...(got.science || []), ...(got.sport || [])].filter((s) => s.n > 1).map((s) => [s.id, s])).values()].sort((a, b) => b.n - a.n).slice(0, 12);
+      if (clusters.length) { box.append(el('h2', null, 'Stories several sources are telling')); for (const s of clusters) { const c = card(s.n + ' sources', 'cluster', [{ src: s.src, title: s.title, summary: s.summary || '' }, ...(s.also || []).map((a) => ({ src: a.src, title: a.title, summary: '' }))], false); if (c) box.append(c); } }
+      if (!box.children.length) box.append(el('p', 'sub', 'No headlines to write from yet. Try again when you are online.'));
+      status('Written by Verse from the headlines on this page: every sentence names the sources that said it, and the links to read them are in each section.');
+    }
     async function pick(sec) {
       st.sec = sec; for (const b of $('secs').children) b.setAttribute('aria-pressed', String(b.dataset.sec === sec));
+      $('list').hidden = sec === 'report'; $('reportBox').hidden = sec !== 'report'; if (sec === 'report') { $('pane').hidden = true; return showReport(); }
       if (sec === 'saved') { st.src = ''; sourceMenu(); draw(); return; }
       if (sec === 'my') { draw(); await Promise.all(['top', 'world'].filter((s) => !mem.cache[st.lang + ':' + s]).map((s) => fetch('/api/news?sec=' + s + '&lang=' + st.lang).then((r) => r.json()).then((j) => { if (j.ok) { mem.cache[st.lang + ':' + s] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); } }).catch(() => {}))); draw(); return; }
       await load(sec);

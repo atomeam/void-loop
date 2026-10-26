@@ -34,8 +34,9 @@
      "name": "Full articles",
      "detail": "Original reporting with images, maps, embedded video and related links",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "Verse links out to sources"
+     "verse": "has",
+     "verse_evidence": "news page Verse reports tab (lib/news-report.js): a summary of each multi-source story, a daily brief and what changed on followed topics, written by Verse from the feeds' own headlines and summaries, every sentence naming its sources, labelled \"Written by Verse from <sources>\"; it is not original reporting and links out for the articles",
+     "shows": "Verse reports"
     },
     {
      "group": "core",
@@ -108,8 +109,8 @@
      "name": "In-depth and explainers",
      "detail": "Long-form analysis, Q&As, data visualisations",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "Verse reports: plain-words summaries of what several sources say; no long-form analysis or data visualisations"
     },
     {
      "group": "power",
@@ -173,13 +174,13 @@
   }
  },
  "gaps": [
-  "original reporting, live pages and video (Verse links out to the source)",
   "breaking news push alerts (no accounts or push on this page)",
   "40+ languages (four: English, Spanish, French, German)",
   "most-read lists (the feeds publish none; the multi-source lift is Verse's own)",
   "fact-check and explainer desks",
   "archive search beyond what the feeds carry now",
-  "plain-words summary per story (needs a model call per cluster; not built to stay on existing caps)"
+  "plain-words summary per story (needs a model call per cluster; not built to stay on existing caps)",
+  "original reporting by people, live pages and video (Verse writes from the feeds' words only and links out)"
  ],
  "verse_extra": [
   "the same story from several outlets grouped into one with an 'N sources' list",
@@ -187,7 +188,8 @@
   "a headlines-only reading mode and bigger text",
   "a read-later list on the device",
   "works offline with the last headlines",
-  "no ads, no account, no tracking"
+  "no ads, no account, no tracking",
+  "Verse reports: a summary per multi-source story, a daily brief and what changed on your topics, grounded in the feeds' words, sources named, checked against them"
  ],
  "first_page": "News page /news/ for readers who want a calm, ad-free front page. First: \"news\" opens top stories gathered from several open sources (Wikipedia In the news, public RSS from major outlets, Hacker News) with source and age on each, section tabs, topics followed on the device, and a link holding the chosen sections. Will not build: original reporting, comments, video streaming or push alerts."
 }

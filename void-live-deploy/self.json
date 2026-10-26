@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:54:34Z",
+   "subject": "Money: Verse spends what it has earned on the most needed area; wishlist rows for game photos, fantasy data and more pictures"
+  },
+  {
+   "at": "2026-10-26T02:52:14Z",
+   "subject": "Scores: a Sports tab (42-sport grid, one search box over TheSportsDB, born on this day, a stats strip, the free API described) and…"
+  },
+  {
+   "at": "2026-10-26T02:52:01Z",
+   "subject": "Recipes: browse by time and by occasion"
+  },
+  {
+   "at": "2026-10-26T02:50:30Z",
+   "subject": "Recipes: voice cook mode"
+  },
+  {
    "at": "2026-10-26T02:48:36Z",
    "subject": "Recipes: hand the shopping list to a store, as links"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-26T02:34:49Z",
    "subject": "News: eight common asks that each take a setting, and no ellipsis added when a summary is cut"
-  },
-  {
-   "at": "2026-10-26T02:34:07Z",
-   "subject": "Calendar: a year view"
-  },
-  {
-   "at": "2026-10-26T02:33:40Z",
-   "subject": "Versus card: its code is fetched under a 5-minute key, so a plain reload always brings the current card"
-  },
-  {
-   "at": "2026-10-26T02:33:32Z",
-   "subject": "Markets page for the finance floor: quotes, charts, watchlist, compare, movers, with a free-source API"
-  },
-  {
-   "at": "2026-10-26T02:33:06Z",
-   "subject": "Calendar: choose the week's first day, and show week numbers"
   }
  ],
  "builders": {
@@ -739,6 +739,14 @@
    "cost": "Amazon PA-API needs an Associates account with sales (docs)",
    "value": "low now",
    "why": "wait until Verse sells more"
+  },
+  {
+   "rank": 12,
+   "item": "Real photos of games for the sports, news and finance reports",
+   "free": "official highlight embeds (league and club channels through the platform's own embed), openly licensed photos (Wikimedia Commons, Openverse; CC0, CC-BY, CC-BY-SA, author and licence shown under…",
+   "cost": "a licensed agency photo feed (AP, Getty or a regional wire): quote-based, not listed here until a provider's price is read from its own page",
+   "value": "high: the one thing ESPN and every sports page has that Verse can't show for most games",
+   "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
   }
  ],
  "clips": {

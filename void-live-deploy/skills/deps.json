@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 850,
+ "counted": 851,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1599,6 +1599,13 @@
    "tests": 0
   },
   {
+   "file": "lib/news.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 18,
+   "tests": 1
+  },
+  {
    "file": "lib/privacy.js",
    "skills": 0,
    "direct": 0,
@@ -1642,6 +1649,13 @@
   },
   {
    "file": "lib/near-miss.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 1
+  },
+  {
+   "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
    "dependants": 17,
@@ -1873,13 +1887,6 @@
   },
   {
    "file": "lib/misskey.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2275,6 +2282,7 @@
     "lib/plan.js",
     "skills/take.js",
     "lib/character.js",
+    "lib/news-report.js",
     "lib/story.js"
    ],
    "importedBy": [
@@ -5538,10 +5546,55 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/news-report.js": {
+   "imports": [
+    "lib/news.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
   "lib/news.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/news.js"
+    "functions/api/news.js",
+    "lib/news-report.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/noise.js": {
