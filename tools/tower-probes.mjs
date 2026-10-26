@@ -412,6 +412,20 @@ export const PROBES = Object.freeze({
     facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
       ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
+  // paint (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint-by-number art, fought from Verse's own /paint/. The ask opens a
+  // known template, so the counts are checkable against the formula: the heart is 155 cells on a 16 by 16 grid in four numbered colours,
+  // 15 + 36 + 64 + 40. Judged on Verse alone (their side is an app store listing, not a page).
+  paint: {
+    site: 'https://heycolor.com/', verse: '/paint/',
+    ask: { verse: '/paint/?t=heart' },
+    truth: [['the cells to paint, counted (155)', /\b155 cells/], ['colour 1 has 15 cells', /1 \u00b7 0\/15/], ['colour 2 has 36', /2 \u00b7 0\/36/], ['colour 3 has 64', /3 \u00b7 0\/64/], ['colour 4 has 40', /4 \u00b7 0\/40/], ['the grid is 16 by 16', /16 \u00d7 16/]],
+    facts: [
+      ['paint by number', /paint by number/i], ['numbered cells', /\bnumbered cells\b/i], ['a numbered palette', /palette/i], ['the progress count', /cells painted/],
+      ['next cell', /Next cell/], ['start over', /Start over/], ['download a PNG', /Download PNG/], ['a share link', /Share link/],
+      ['save to a gallery', /Save to gallery/], ['your gallery', /Your gallery/], ['upload your own image', /Upload your own image/],
+      ['kept on this device', /on this device/i], ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i], ['four colours', /4 colours/],
+    ],
+  },
   // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management
   // beside it; Verse's /g/ is a gist page that keeps the work beside the code — a task list, a timer and notes on this device, with the
   // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are

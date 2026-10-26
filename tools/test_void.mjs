@@ -719,6 +719,34 @@ try {
       facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
     await F.ctx.close();
   }
+  // the paint floor (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint by number, fought from /paint/ — the counts the probe
+  // checks are the page's own formula (155 cells, 15 + 36 + 64 + 40 in four colours on a 16 by 16 grid), and the engine really paints
+  if (want("paint: the numbered cells painted by number, the palette counting down, next cell, a gallery on this device, and every item the paint probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'paint/?t=heart' });
+    await P.p.waitForSelector('#grid button', { timeout: 10000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.paint;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('paint: the template is drawn and counted — 155 cells, four numbered colours, a 16 by 16 grid — and every item the paint probe reads is on the page', /155 cells/.test(t) && /16 × 16/.test(t) && !miss.length, JSON.stringify({ miss }));
+    await P.p.click('#grid button[data-code="1"]'); await P.p.waitForTimeout(150);
+    const afterOne = await text();
+    await P.p.click('#grid button[data-code="2"]'); await P.p.waitForTimeout(150);
+    const wrong = await P.p.$eval('#note', (e) => e.textContent);
+    check('paint: a tap fills a cell of the chosen colour and the count follows; the wrong colour says so instead of filling', /1 of 155 cells painted/.test(afterOne) && /1 · 1\/15/.test(afterOne) && /colour 2/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ cells painted/) || []), wrong }));
+    await P.p.click('#next'); await P.p.waitForTimeout(150);
+    const hints = await P.p.evaluate(() => document.querySelectorAll('#grid button.hint').length);
+    await P.p.click('#save'); await P.p.waitForTimeout(200);
+    const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
+    check('paint: next cell marks one to paint, and saving puts the painting in the gallery on this device', hints === 1 && gallery.length === 1 && /heart/.test(gallery[0]) && /1 painted/.test(gallery[0]), JSON.stringify({ hints, gallery }));
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 10000 });
+    const kept = await P.p.evaluate(() => document.querySelectorAll('#gallery li').length);
+    check('paint: the gallery survives a reload (it is on this device, nothing uploaded)', kept === 1, JSON.stringify({ kept }));
+    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share').length);
+    check('paint: the upload, the palette, the PNG export and the share control are all there', inputs >= 7, JSON.stringify({ inputs }));
+    await P.ctx.close();
+  }
   // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
   // code — a task list, a timer and notes on this device — and every item the gate reads is on it (the probe's own lists, run here)
   if (want("gist: the work beside the code — tasks, a timer, notes and sizes on the device, and every item the codebase probe reads")) {

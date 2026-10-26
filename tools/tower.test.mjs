@@ -52,7 +52,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
   assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.match(h, /class="tw-logo"/); // logos only (owner, 2026-10-25)
-  assert.match(sk.detailText(t.floors[0]), /^0 of 11 aspects ahead of /);
+  assert.match(sk.detailText(t.floors[0]), new RegExp('^0 of ' + t.floors[0].m + ' aspects ahead of ')); // whichever floor stands first, its own count
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
@@ -61,11 +61,12 @@ test('the tower skill answers its asks and not near misses; the card is headed V
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;
-  const a = tower([], {}), ev = { [FLOORS[0].id]: Object.fromEntries(aspectsOf(FLOORS[0]).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
+  const a = tower([], {}), first = a.floors[0], ev = { [first.id]: Object.fromEntries(aspectsOf(first).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
-  assert.match(said, /isitchristmas\.com is surpassed\./); assert.match(said, /Now: (?!isitchristmas)/);
-  assert.match(sk.changes(b, a).join(' '), /isitchristmas\.com slipped\./);
+  assert.ok(said.includes(first.site + ' is surpassed.'), said); // beating the site at the front moves the marker
+  assert.ok(/Now: /.test(said) && !said.includes('Now: ' + first.site), said);
+  assert.ok(sk.changes(b, a).join(' ').includes(first.site + ' slipped.'));
   assert.deepEqual(sk.changes(null, b), []);
 });
 
