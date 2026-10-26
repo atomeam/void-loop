@@ -10480,52 +10480,52 @@
   "sports: thesportsdb.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 147,
-    "best": 296,
-    "evidence": "Verse (/sports/) 147 ms to the load event (median of 3, phone width) vs thesportsdb.com 296 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:58:28.673Z"
+    "verse": 98,
+    "best": 374,
+    "evidence": "Verse (/sports/) 98 ms to the load event (median of 3, phone width) vs thesportsdb.com 374 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/sports/) 0 px sideways overflow at 390 px vs thesportsdb.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 146,
     "evidence": "Verse (/sports/) 0 unnamed controls or images vs thesportsdb.com 146 unnamed controls or images",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/sports/) 1 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 right against the worked-out answer; judged against the standard, not thesportsdb.com (the site is not asked)",
-    "at": "2026-10-26T03:58:28.673Z",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 3
    },
    "design polish": {
@@ -10533,7 +10533,7 @@
     "verse": 2,
     "best": 59,
     "evidence": "Verse (/sports/) 2 design defects vs thesportsdb.com 59 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 59 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:58:28.673Z"
+    "at": "2026-10-26T04:08:12.477Z"
    },
    "live scores": {
     "verdict": "equal-and-better",
@@ -10563,11 +10563,11 @@
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 7,
+    "verdict": "better",
+    "verse": 11,
     "best": 7,
-    "evidence": "Verse (/sports/) 7 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: teams, events, venues, players; site lacks: sports to browse, search across sports, a stats strip, no betting)",
-    "at": "2026-10-26T03:58:28.673Z",
+    "evidence": "Verse (/sports/) 11 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: none; site lacks: sports to browse, search across sports, a stats strip, no betting)",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 11
    },
    "sport search": {
@@ -10575,7 +10575,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/sports/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:58:28.673Z",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 4,
     "part": true
    },
@@ -10584,7 +10584,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/sports/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:58:28.673Z",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 2,
     "part": true
    },
@@ -10593,7 +10593,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/sports/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:58:28.673Z",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 5,
     "part": true
    },
@@ -10602,7 +10602,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:58:28.673Z",
+    "at": "2026-10-26T04:08:12.477Z",
     "of": 3,
     "part": true
    }
@@ -14853,6 +14853,212 @@
     "at": "2026-10-26T04:03:23.639Z",
     "of": 14
    }
+  },
+  "music: jasperbernaers.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 141,
+    "best": 418,
+    "evidence": "Verse (/tuner/) 141 ms to the load event (median of 3, phone width) vs jasperbernaers.com 418 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/tuner/) 3 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/tuner/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/tuner/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/tuner/) 0 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/tuner/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tuner/) 4 of 4 right against the worked-out answer; judged against the standard, not jasperbernaers.com (the site is not asked)",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 50,
+    "evidence": "Verse (/tuner/) 0 design defects vs jasperbernaers.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (44 low-contrast texts, 6 small tap targets, layout shift 0.03)",
+    "at": "2026-10-26T04:08:37.419Z"
+   },
+   "microphone tuning": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/tuner/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 3,
+    "part": true
+   },
+   "instrument presets": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tuner/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 4,
+    "part": true
+   },
+   "reference tones": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 2,
+    "part": true
+   },
+   "adjustable A4": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 18,
+    "best": 10,
+    "evidence": "Verse (/tuner/) 18 of 18 things a full answer shows vs jasperbernaers.com 10 of 18 things a full answer shows (Verse lacks: none; site lacks: reference tones, a pitch pipe, nothing recorded or sent, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads)",
+    "at": "2026-10-26T04:08:37.419Z",
+    "of": 18
+   }
+  },
+  "music: anotherproducer.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 192,
+    "best": 281,
+    "evidence": "Verse (/bpm/) 192 ms to the load event (median of 3, phone width) vs anotherproducer.com 281 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/bpm/) 3 of 3 loads answered vs anotherproducer.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse (/bpm/) 0 px sideways overflow at 390 px vs anotherproducer.com 7 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/bpm/) 0 unnamed controls or images vs anotherproducer.com 2 unnamed controls or images",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/bpm/) 0 (1: the page shows itself again with the network cut) vs anotherproducer.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/bpm/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotherproducer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/bpm/) 4 of 4 right against the worked-out answer; judged against the standard, not anotherproducer.com (the site is not asked)",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 31,
+    "evidence": "Verse (/bpm/) 1 design defects vs anotherproducer.com 31 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), anotherproducer.com (12 low-contrast texts, 19 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T04:09:07.776Z"
+   },
+   "tap tempo counter": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/bpm/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 3,
+    "part": true
+   },
+   "half and double time": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 2,
+    "part": true
+   },
+   "note lengths": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/bpm/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 4,
+    "part": true
+   },
+   "tempo of a file": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 8,
+    "evidence": "Verse (/bpm/) 16 of 16 things a full answer shows vs anotherproducer.com 8 of 16 things a full answer shows (Verse lacks: none; site lacks: half and double, average of the last taps, a click on each tap, nothing uploaded, Playlists, Original music creation, Share links, cards and codes, No account)",
+    "at": "2026-10-26T04:09:07.776Z",
+    "of": 16
+   }
   }
  },
  "icons": {
@@ -15007,6 +15213,8 @@
   "squoosh.app": "tower.icons/squoosh.app.png",
   "photopea.com": "tower.icons/photopea.com.png",
   "iloveimg.com": "tower.icons/iloveimg.com.png",
-  "codeshack.io": "tower.icons/codeshack.io.png"
+  "codeshack.io": "tower.icons/codeshack.io.png",
+  "jasperbernaers.com": "tower.icons/jasperbernaers.com.png",
+  "anotherproducer.com": "tower.icons/anotherproducer.com.png"
  }
 }
