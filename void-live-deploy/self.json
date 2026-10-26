@@ -491,6 +491,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:23:52Z",
+   "subject": "Live eval fixes: title-matching page first, plural place words, The_X first, adaptive wait, candidate list pages probed"
+  },
+  {
+   "at": "2026-10-26T05:23:07Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:22:43Z",
+   "subject": "Tower gate: finance: finviz.com,finance: companiesmarketcap.com,kanban: abacktools.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:22:32Z",
+   "subject": "Subject eval: 2 of 13 live"
+  },
+  {
+   "at": "2026-10-26T05:21:46Z",
+   "subject": "Tower gate: word count,time zones,wheel,recipes: food52.com,tildegit,codebase measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:21:15Z",
+   "subject": "Tower gate: kanban: abacktools.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:20:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:20:37Z",
    "subject": "Live eval keeps what the page saw for a failing ask; 'the X' tries The_X first"
   },
@@ -541,34 +569,6 @@
   {
    "at": "2026-10-26T05:10:48Z",
    "subject": "Tower gate: finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:07:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:07:14Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:06:59Z",
-   "subject": "Tower gate: pdf: codeshack.io,travel: clock7.com,travel: airmilescalculator.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:06:59Z",
-   "subject": "Subject eval workflow: the 42 asks against the live sites, screenshots as artifacts, a small record committed"
-  },
-  {
-   "at": "2026-10-26T05:06:15Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:06:01Z",
-   "subject": "Colour words alone no longer recolour the clock: red panda, white house and orange juice reach the answer path"
-  },
-  {
-   "at": "2026-10-26T05:03:08Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
