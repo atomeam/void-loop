@@ -1,6 +1,6 @@
 // /metronome/ (Versus' metronomeonline.com lane site): the beat clock. The page is whole before this loads; this wires its controls to a look-ahead
 // scheduler on the audio clock (the click is placed 25 to 120 ms ahead of time, so the beat does not wobble when the page is busy).
-import { barTicks, defaultAccents, TIME_SIGS, clampBpm, tempoName, tapTempo, rampPlan, silentBar, practiceLadder, beatSeconds, cleanEntry } from '/lib/music-tools.js';
+import { barTicks, defaultAccents, TIME_SIGS, clampBpm, tempoName, tapTempo, rampPlan, silentBar, practiceLadder, beatSeconds, cleanEntry, polyTicks } from '/lib/music-tools.js';
 import { audio, click, say, setVolume, keepAwake } from '/lib/music-audio.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { $, boot, mem, keep, setlist, saveSetlist, drawSetlist, setlistLink, shareLink, t, wire, num, isDe } from '/lib/music-ui.js';
@@ -33,6 +33,7 @@ function scheduleBeat(at) {
     const stepBy = num($('rampStep'), 0, 40, 0), every = num($('rampEvery'), 1, 64, 4), to = num($('rampTo'), 20, 400, 160);
     if (stepBy > 0 && bar % every === 0 && st.bpm !== to) { const plan = rampPlan(st.bpm, to, stepBy, 1); if (plan[1]) { st.bpm = plan[1].bpm; show(); } }
   }
+  if (beat === 0 && !quiet) for (const k of polyTicks(bpm, st.sig, +$('poly').value)) click(at + k.at, k.level, 'wood', 0.9);
   for (const k of ticks) { const when = at + (k.at - beat * beatSeconds(bpm)); if (!quiet && !($('voice').checked && k.sub === 0)) click(when, k.level, st.snd, 1); queue.push({ when, beat, level: k.level, sub: k.sub, quiet }); }
   if (!ticks.length) queue.push({ when: at, beat, level: 0, sub: 0, quiet });
   nextBeatAt = at + bs; beat++; if (beat >= TIME_SIGS[st.sig].beats) { beat = 0; bar++; }

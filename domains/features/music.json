@@ -338,8 +338,8 @@
      "name": "Polyrhythm (two beats against each other)",
      "detail": "A second pulse in another subdivision",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "not built: a second layer of ticks is the next step on /metronome/"
+     "verse": "has",
+     "verse_evidence": "/metronome/ a second pulse of 2 to 9 against the bar"
     },
     {
      "group": "extra",
@@ -501,8 +501,8 @@
      "name": "Strobe display",
      "detail": "A strobe instead of a needle for fine tuning",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "not built: the needle shows cents; a strobe is a next step"
+     "verse": "has",
+     "verse_evidence": "/tuner/ Needle or Strobe display (stripes drift by the cents, still when in tune)"
     }
    ]
   },
@@ -623,16 +623,16 @@
      "name": "Scale on a fretboard",
      "detail": "Show a scale on a virtual guitar neck",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "not built: scales are shown on a piano keyboard; a fretboard view is a next step"
+     "verse": "has",
+     "verse_evidence": "/chords/ every scale drawn on a 12-fret guitar neck, roots filled"
     },
     {
      "group": "extra",
      "name": "Choose a chord by clicking the fretboard",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "not built"
+     "verse": "has",
+     "verse_evidence": "/chords/ tap frets on the neck (or six lists) and the chord is named"
     },
     {
      "group": "extra",
@@ -646,9 +646,6 @@
   }
  },
  "gaps": [
-  "polyrhythm on the metronome",
-  "a strobe display on the tuner",
-  "scales and chords on a guitar fretboard (and choosing a chord by clicking the neck)",
   "a song library with licensed sheets (skipped: copyright)",
   "a catalogue of songs to search and a player for them (skipped: licences)"
  ],

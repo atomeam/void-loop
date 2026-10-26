@@ -53,6 +53,8 @@ const CSS = `
   .bk { position: absolute; top: 0; width: 28px; height: 112px; margin-left: -14px; background: var(--blk); border: 1px solid var(--line); border-radius: 0 0 6px 6px; color: #ddd; font-size: 10px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; z-index: 3; min-height: 0; min-width: 0; box-sizing: border-box; }
   .bk.on { background: var(--hit); }
   .kbi { position: relative; display: flex; flex: 0 0 auto; }
+  .strobe { height: 54px; border-radius: 10px; margin: 8px 0; background: repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--tint) 14px 28px); background-size: 28px 100%; } .strobe.ok { background: repeating-linear-gradient(90deg, var(--good) 0 14px, var(--tint) 14px 28px); }
+  .neck { width: 100%; min-height: 150px; } .neck svg { width: 100%; height: auto; display: block; } .neck text { fill: var(--ink); font: 9px system-ui; }
   .meter { position: relative; height: 54px; border-radius: 10px; background: var(--tint); overflow: hidden; margin: 8px 0; }
   .meter i { position: absolute; top: 0; bottom: 0; width: 4px; left: 50%; margin-left: -2px; background: var(--accent); transition: left .12s; } .meter b { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--good); }
   .meter.ok i { background: var(--good); }
@@ -94,6 +96,7 @@ const PAGES = {
   <section class="pane" aria-label="Rhythm and sound">
     <h2>Time signature, subdivisions and sound</h2>
     <div class="row"><label>Time signature<select id="sig">${opt(SIGS, '4/4')}</select></label><label>Subdivision<select id="sub">${opt(SUBS, 'none')}</select></label><label>Sound<select id="snd">${opt(SOUNDS, 'click')}</select></label></div>
+    <div class="row"><label>Polyrhythm: a second pulse of this many in each bar<select id="poly"><option value="0">Off</option>${[2, 3, 4, 5, 6, 7, 8, 9].map((n) => `<option value="${n}">${n} against the bar</option>`).join('')}</select></label></div>
     <div class="row"><label>Volume<input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></label><label>Beats per minute<input type="number" id="bpmIn" min="20" max="400" value="120" inputmode="numeric" aria-label="Type the tempo"></label></div>
     <div class="row"><label class="chk"><input type="checkbox" id="voice"> Voice count (says 1 2 3 4)</label><label class="chk"><input type="checkbox" id="vis" checked> Visual beat (flash)</label><label class="chk"><input type="checkbox" id="stress" checked> Accent the first beat</label></div>
     <h2>Tempo presets</h2>
@@ -143,7 +146,9 @@ const PAGES = {
   <section class="pane" aria-label="Tuner">
     <div class="row"><label>Instrument and tuning<select id="tun">${opt(TUNINGS, 'guitar-standard')}</select></label><label>Reference pitch A4 (Hz)<input type="number" id="a4" min="410" max="470" value="440" step="1" inputmode="numeric"></label></div>
     <div class="read" id="note" aria-live="polite">–<small id="hz">Turn the microphone on and play a note</small></div>
+    <div class="row c" role="group" aria-label="Display"><button type="button" id="dispNeedle" aria-pressed="true">Needle</button><button type="button" id="dispStrobe" aria-pressed="false">Strobe</button></div>
     <div class="meter" id="meter" role="img" aria-label="How flat or sharp the note is"><b></b><i id="needle"></i></div>
+    <div class="strobe" id="strobe" role="img" aria-label="Strobe: the stripes stand still when the note is in tune" hidden></div>
     <p class="note" id="verdict" role="status" aria-live="polite" style="text-align:center;font-size:16px;color:var(--ink)">Waiting for a note.</p>
     <div class="row c"><button type="button" id="mic" class="go" aria-pressed="false">Turn the microphone on</button></div>
     <p class="note" id="status" role="status" aria-live="polite">The microphone is used only to find the pitch, on this device. Nothing is recorded or sent.</p>
@@ -197,12 +202,21 @@ const PAGES = {
     <p class="note" id="idOut" role="status" aria-live="polite">Pick two or more notes to name the chord, and to see every scale that holds them.</p>
     <ul class="chips" id="idScales" aria-label="Scales that hold the picked notes"></ul>
   </section>
+  <section class="pane" aria-label="Choose a chord on the neck">
+    <h2>Choose a chord on the guitar neck</h2>
+    <div class="neck" id="pickNeck" aria-label="Tap the frets you hold, one per string"></div>
+    <div class="grid2" id="neckSel">${['Low E', 'A', 'D', 'G', 'B', 'High E'].map((n, i) => `<label class="note">${n} string<select data-s="${i}"><option value="x">Not played</option><option value="0">Open</option>${Array.from({ length: 12 }, (_, f) => `<option value="${f + 1}">Fret ${f + 1}</option>`).join('')}</select></label>`).join('')}</div>
+    <p class="note" id="neckOut" role="status" aria-live="polite">Tap the neck or use the lists to hold frets; the chord is named here.</p>
+    <div class="row"><button type="button" id="neckClear">Clear the neck</button></div>
+  </section>
   <section class="pane" aria-label="Scale finder">
     <h2>Scale finder</h2>
     <div class="row"><label>Root<select id="sRoot">${opt(NOTES_OPT, 'C')}</select></label><label>Scale<select id="sType">${opt(SCALE_OPT, 'major')}</select></label></div>
     <p class="read" id="sName" style="font-size:28px;min-height:36px" aria-live="polite">C Major <small id="sNotes">C D E F G A B</small></p>
     <p class="note" id="sSteps" style="text-align:center">W W H W W W H</p>
     <div class="kb" id="sKb" style="height:130px" aria-label="Scale on a piano keyboard"><div class="kbi" id="sKbi"></div></div>
+    <h2>On the guitar neck</h2>
+    <div class="neck" id="neck" aria-label="The scale on a guitar fretboard, 12 frets, root notes filled"></div>
     <div class="row c"><button type="button" id="sPlay" class="go">Play the scale</button></div>
     <h2>Chords in this key</h2>
     <div class="row"><label class="chk"><input type="checkbox" id="sev"> Seventh chords</label></div>

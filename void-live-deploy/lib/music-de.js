@@ -63,5 +63,7 @@ export const DE = Object.freeze({
   'Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.': 'Kostenlos, ohne Konto, ohne Werbung. Im Browser erzeugt: nichts verlässt dein Gerät. Funktioniert offline.',
   'Make me a song': 'Mach mir ein Lied', 'On the piano keyboard': 'Auf der Klaviertastatur',
   'The usual reference is A4 = 440 Hz; change it above for other pitch standards. Press a string to hear its note and tune to it by ear.': 'Üblich ist A4 = 440 Hz; ändere es oben für andere Stimmtonhöhen. Drücke eine Saite, um ihren Ton zu hören und danach zu stimmen.',
+  'Polyrhythm: a second pulse of this many in each bar': 'Polyrhythmus: ein zweiter Puls mit so vielen in jedem Takt', Off: 'Aus', Display: 'Anzeige', Needle: 'Nadel', Strobe: 'Strobo', 'On the guitar neck': 'Auf dem Gitarrenhals', 'Choose a chord on the guitar neck': 'Akkord auf dem Gitarrenhals wählen', 'Clear the neck': 'Hals leeren', 'Not played': 'Nicht gespielt', Open: 'Leer',
+  'Tap the neck or use the lists to hold frets; the chord is named here.': 'Tippe auf den Hals oder nutze die Listen, um Bünde zu greifen; hier steht der Akkord.',
   Verse: 'Verse', 'Verse, Chorus, Etude no. 3': 'Strophe, Refrain, Etüde Nr. 3',
 });

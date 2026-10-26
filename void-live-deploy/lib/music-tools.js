@@ -368,3 +368,15 @@ export function recordingToSheet(events, bpm = 100) {
   }
   return out.join(' ');
 }
+
+// ---- a second pulse against the bar, the strobe tuner and the guitar neck (2026-10-26) ----
+/** a polyrhythm's second layer: `n` evenly spaced pulses across one bar of `sig` at `bpm` (3 against the bar's 4 beats is 3:4): [{ at, level }], the first strong. [] for n outside 2 to 9. Pure. */
+export function polyTicks(bpm, sig, n) { const k = Math.round(+n); if (!(k >= 2 && k <= 9)) return []; const bar = barSeconds(bpm, sig); return Array.from({ length: k }, (_, i) => ({ at: i * bar / k, level: i === 0 ? 3 : 1 })); }
+/** how far a strobe's stripes move in one frame for a reading in cents: still when in tune (within 1 cent), faster the further off, to the right for sharp and left for flat, at most 14 px. Pure. */
+export const strobeStep = (cents) => (!Number.isFinite(+cents) || Math.abs(cents) <= 1 ? 0 : Math.max(-14, Math.min(14, cents * 0.35)));
+/** a guitar neck as a grid for a scale: map[string][fret] is 2 for the root, 1 for another note of the scale, 0 for none, frets 0 (open) to `frets`, strings lowest first. Pure. */
+export function fretboardMap(pcs, rootPc, tuning = STRINGS_STANDARD, frets = 12) {
+  const set = new Set(pcs); return tuning.map((open) => Array.from({ length: frets + 1 }, (_, f) => { const pc = (open + f) % 12; return pc === rootPc ? 2 : set.has(pc) ? 1 : 0; }));
+}
+/** the pitch classes under a hand on the neck: frets[i] is the fret held on string i (null = not played, 0 = open). Pure. */
+export const fretsToPcs = (frets, tuning = STRINGS_STANDARD) => [...new Set((frets || []).map((f, i) => (f === null || f === undefined || f === '' ? null : (tuning[i] + +f) % 12)).filter((x) => x !== null))];

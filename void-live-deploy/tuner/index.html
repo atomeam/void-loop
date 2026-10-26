@@ -58,6 +58,8 @@
   .bk { position: absolute; top: 0; width: 28px; height: 112px; margin-left: -14px; background: var(--blk); border: 1px solid var(--line); border-radius: 0 0 6px 6px; color: #ddd; font-size: 10px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; z-index: 3; min-height: 0; min-width: 0; box-sizing: border-box; }
   .bk.on { background: var(--hit); }
   .kbi { position: relative; display: flex; flex: 0 0 auto; }
+  .strobe { height: 54px; border-radius: 10px; margin: 8px 0; background: repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--tint) 14px 28px); background-size: 28px 100%; } .strobe.ok { background: repeating-linear-gradient(90deg, var(--good) 0 14px, var(--tint) 14px 28px); }
+  .neck { width: 100%; min-height: 150px; } .neck svg { width: 100%; height: auto; display: block; } .neck text { fill: var(--ink); font: 9px system-ui; }
   .meter { position: relative; height: 54px; border-radius: 10px; background: var(--tint); overflow: hidden; margin: 8px 0; }
   .meter i { position: absolute; top: 0; bottom: 0; width: 4px; left: 50%; margin-left: -2px; background: var(--accent); transition: left .12s; } .meter b { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--good); }
   .meter.ok i { background: var(--good); }
@@ -81,6 +83,7 @@
 <link rel="modulepreload" href="/lib/music-tools.js">
 <link rel="modulepreload" href="/lib/music-audio.js">
 <link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
 <link rel="modulepreload" href="/lib/music-ui.js">
 <link rel="modulepreload" href="/lib/music-de.js">
 <!-- /modulepreload -->
@@ -93,7 +96,9 @@
   <section class="pane" aria-label="Tuner">
     <div class="row"><label>Instrument and tuning<select id="tun"><option value="guitar-standard" selected>Guitar, standard (E A D G B E)</option><option value="guitar-dropd">Guitar, drop D</option><option value="guitar-dadgad">Guitar, DADGAD</option><option value="guitar-opeg">Guitar, open G</option><option value="guitar-opend">Guitar, open D</option><option value="guitar-halfdown">Guitar, half step down</option><option value="guitar-7">Guitar, 7-string</option><option value="bass4">Bass, 4-string</option><option value="bass5">Bass, 5-string</option><option value="ukulele">Ukulele (G C E A)</option><option value="violin">Violin (G D A E)</option><option value="viola">Viola (C G D A)</option><option value="cello">Cello (C G D A)</option><option value="mandolin">Mandolin (G D A E)</option><option value="banjo">Banjo, open G</option><option value="chromatic">Any note (chromatic)</option></select></label><label>Reference pitch A4 (Hz)<input type="number" id="a4" min="410" max="470" value="440" step="1" inputmode="numeric"></label></div>
     <div class="read" id="note" aria-live="polite">–<small id="hz">Turn the microphone on and play a note</small></div>
+    <div class="row c" role="group" aria-label="Display"><button type="button" id="dispNeedle" aria-pressed="true">Needle</button><button type="button" id="dispStrobe" aria-pressed="false">Strobe</button></div>
     <div class="meter" id="meter" role="img" aria-label="How flat or sharp the note is"><b></b><i id="needle"></i></div>
+    <div class="strobe" id="strobe" role="img" aria-label="Strobe: the stripes stand still when the note is in tune" hidden></div>
     <p class="note" id="verdict" role="status" aria-live="polite" style="text-align:center;font-size:16px;color:var(--ink)">Waiting for a note.</p>
     <div class="row c"><button type="button" id="mic" class="go" aria-pressed="false">Turn the microphone on</button></div>
     <p class="note" id="status" role="status" aria-live="polite">The microphone is used only to find the pitch, on this device. Nothing is recorded or sent.</p>

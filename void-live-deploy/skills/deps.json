@@ -962,6 +962,13 @@
    "tests": 0
   },
   {
+   "file": "lib/scores.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 4
+  },
+  {
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
@@ -981,13 +988,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/scores.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 3
   },
   {
    "file": "lib/learn.js",
@@ -2188,6 +2188,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/fantasy.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4711,6 +4718,12 @@
    "importedBy": [
     "skills/fakeuser.js"
    ]
+  },
+  "lib/fantasy.js": {
+   "imports": [
+    "lib/scores.js"
+   ],
+   "importedBy": []
   },
   "lib/field-attention.js": {
    "imports": [
@@ -7266,6 +7279,7 @@
    "importedBy": [
     "functions/api/report.js",
     "functions/api/scores.js",
+    "lib/fantasy.js",
     "lib/reports.js",
     "skills/scores.js"
    ]
@@ -9422,6 +9436,10 @@
     "lib/ladder.js",
     "lib/match-history.js"
    ],
+   "importedBy": []
+  },
+  "skills/fantasy.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/feelings.js": {
