@@ -1,0 +1,1858 @@
+{
+ "site": "finviz.com",
+ "url": "https://finviz.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 720,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 725,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 288,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 4433,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 720,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 725,
+   "ext": true
+  },
+  {
+   "f": "a.ad.gt/813",
+   "t": "js",
+   "b": 9259,
+   "ext": true
+  },
+  {
+   "f": "a.amxrtb.com/cframe.js",
+   "t": "js",
+   "b": 14439,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/client",
+   "t": "js",
+   "b": 276383,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/style",
+   "t": "css",
+   "b": 696,
+   "ext": true
+  },
+  {
+   "f": "ads.pubmatic.com/google-esp.js",
+   "t": "js",
+   "b": 9612,
+   "ext": true
+  },
+  {
+   "f": "ads.pubmatic.com/pwt.js",
+   "t": "js",
+   "b": 419528,
+   "ext": true
+  },
+  {
+   "f": "ajs-assets.ftstatic.com/ftUtils.js",
+   "t": "js",
+   "b": 105421,
+   "ext": true
+  },
+  {
+   "f": "ats-wrapper.privacymanager.io/ats.js",
+   "t": "js",
+   "b": 130487,
+   "ext": true
+  },
+  {
+   "f": "bidder-front-57.smilewanted.com/get_config_prebidjs",
+   "t": "js",
+   "b": 11022,
+   "ext": true
+  },
+  {
+   "f": "btloader.com/tag",
+   "t": "js",
+   "b": 98672,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/apstag.js",
+   "t": "js",
+   "b": 372701,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/aps_csm.js",
+   "t": "js",
+   "b": 6482,
+   "ext": true
+  },
+  {
+   "f": "cdn.browsiprod.com/bootstrap.js",
+   "t": "js",
+   "b": 55689,
+   "ext": true
+  },
+  {
+   "f": "cdn.browsiprod.com/web-vitals-4.2.3.js",
+   "t": "js",
+   "b": 7212,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/config.js",
+   "t": "js",
+   "b": 121307,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/config.js",
+   "t": "js",
+   "b": 161805,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/wrap.js",
+   "t": "js",
+   "b": 425970,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/wrap.js",
+   "t": "js",
+   "b": 375020,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/main.css",
+   "t": "css",
+   "b": 2268,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/main.js",
+   "t": "js",
+   "b": 8335,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/main.js",
+   "t": "js",
+   "b": 8335,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/manifest.js",
+   "t": "js",
+   "b": 99,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/manifest.js",
+   "t": "js",
+   "b": 99,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/html5API.js",
+   "t": "js",
+   "b": 96407,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/html5API.js",
+   "t": "js",
+   "b": 96407,
+   "ext": true
+  },
+  {
+   "f": "cdn.flashtalking.com/TweenMax.min.js",
+   "t": "js",
+   "b": 116228,
+   "ext": true
+  },
+  {
+   "f": "cdn.hadronid.net/hadron.js",
+   "t": "js",
+   "b": 59325,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/esp.js",
+   "t": "js",
+   "b": 121105,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/id5-api.js",
+   "t": "js",
+   "b": 120304,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/id5PrebidModule.js",
+   "t": "js",
+   "b": 102362,
+   "ext": true
+  },
+  {
+   "f": "cdn.insiad.com/ins-ag.min.js",
+   "t": "js",
+   "b": 112956,
+   "ext": true
+  },
+  {
+   "f": "cdn.jsdelivr.net/pubcid.min.js",
+   "t": "js",
+   "b": 382,
+   "ext": true
+  },
+  {
+   "f": "cdn.mgaru.dev/myGaruStandalone.js",
+   "t": "js",
+   "b": 2733,
+   "ext": true
+  },
+  {
+   "f": "cdn1.anonymised.io/auth.js",
+   "t": "js",
+   "b": 94219,
+   "ext": true
+  },
+  {
+   "f": "cdn1.anonymised.io/bundle.js",
+   "t": "js",
+   "b": 89799,
+   "ext": true
+  },
+  {
+   "f": "config.aps.amazon-adsystem.com/3310",
+   "t": "js",
+   "b": 9526,
+   "ext": true
+  },
+  {
+   "f": "connect.facebook.net/fbevents.js",
+   "t": "js",
+   "b": 435232,
+   "ext": true
+  },
+  {
+   "f": "connect.facebook.net/1307438174199790",
+   "t": "js",
+   "b": 287140,
+   "ext": true
+  },
+  {
+   "f": "connectid.analytics.yahoo.com/connectId-gpt.js",
+   "t": "js",
+   "b": 8729,
+   "ext": true
+  },
+  {
+   "f": "content.quantcount.com/adchoices.css",
+   "t": "css",
+   "b": 3632,
+   "ext": true
+  },
+  {
+   "f": "content.quantcount.com/adchoices.css",
+   "t": "css",
+   "b": 3632,
+   "ext": true
+  },
+  {
+   "f": "content.quantcount.com/adchoices.css",
+   "t": "css",
+   "b": 3632,
+   "ext": true
+  },
+  {
+   "f": "creative-measurement.quantcount.com/viewabilitylib.js",
+   "t": "js",
+   "b": 45007,
+   "ext": true
+  },
+  {
+   "f": "creative-measurement.quantcount.com/viewabilitylib.js",
+   "t": "js",
+   "b": 45007,
+   "ext": true
+  },
+  {
+   "f": "csync.smilewanted.com//",
+   "t": "js",
+   "b": 9523,
+   "ext": true
+  },
+  {
+   "f": "d9.flashtalking.com/d9core",
+   "t": "js",
+   "b": 10814,
+   "ext": true
+  },
+  {
+   "f": "d9.flashtalking.com/d9core",
+   "t": "js",
+   "b": 10813,
+   "ext": true
+  },
+  {
+   "f": "data.dianomi.com/pixeljs",
+   "t": "js",
+   "b": 3229,
+   "ext": true
+  },
+  {
+   "f": "dmp.im-apps.net/provider.js",
+   "t": "js",
+   "b": 4890,
+   "ext": true
+  },
+  {
+   "f": "dtasrvr.com/o.js",
+   "t": "js",
+   "b": 2069,
+   "ext": true
+  },
+  {
+   "f": "ep1.adtrafficquality.[token].js",
+   "t": "js",
+   "b": 63401,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/VFc2VJAc.js",
+   "t": "js",
+   "b": 43763,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "152.v1.2e6e5faa.js",
+   "t": "js",
+   "b": 56803,
+   "map": true
+  },
+  {
+   "f": "1689.v1.10d1a3fd.js",
+   "t": "js",
+   "b": 79736
+  },
+  {
+   "f": "2195.v1.440eb658.js",
+   "t": "js",
+   "b": 19056,
+   "map": true
+  },
+  {
+   "f": "2321.v1.11f38b4b.js",
+   "t": "js",
+   "b": 218940,
+   "map": true
+  },
+  {
+   "f": "2332.v1.c129b528.js",
+   "t": "js",
+   "b": 21008,
+   "map": true
+  },
+  {
+   "f": "2389.v1.364e3b8b.js",
+   "t": "js",
+   "b": 26189,
+   "map": true
+  },
+  {
+   "f": "2547.v1.246693df.js",
+   "t": "js",
+   "b": 89537,
+   "map": true
+  },
+  {
+   "f": "2886.v1.0984508d.js",
+   "t": "js",
+   "b": 55106,
+   "map": true
+  },
+  {
+   "f": "2960.v1.c4a65317.js",
+   "t": "js",
+   "b": 65838,
+   "map": true
+  },
+  {
+   "f": "2982.v1.f6bd809f.js",
+   "t": "js",
+   "b": 41536,
+   "map": true
+  },
+  {
+   "f": "3826.v1.1a9495d5.js",
+   "t": "js",
+   "b": 21982,
+   "map": true
+  },
+  {
+   "f": "3838.v1.415c3a28.js",
+   "t": "js",
+   "b": 764450,
+   "map": true
+  },
+  {
+   "f": "3844.v1.bd121352.js",
+   "t": "js",
+   "b": 134421,
+   "map": true
+  },
+  {
+   "f": "3916.v1.bf3735ac.js",
+   "t": "js",
+   "b": 34141,
+   "map": true
+  },
+  {
+   "f": "4446.v1.e35d2f8a.js",
+   "t": "js",
+   "b": 13903,
+   "map": true
+  },
+  {
+   "f": "4482.v1.da33d88e.js",
+   "t": "js",
+   "b": 114604,
+   "map": true
+  },
+  {
+   "f": "4874.v1.60953f43.js",
+   "t": "js",
+   "b": 55485,
+   "map": true
+  },
+  {
+   "f": "4875.v1.9eb8eaab.js",
+   "t": "js",
+   "b": 24121,
+   "map": true
+  },
+  {
+   "f": "5026.v1.adb1793c.js",
+   "t": "js",
+   "b": 9841,
+   "map": true
+  }
+ ],
+ "assetCount": 235,
+ "bytes": 23241838,
+ "html": {
+  "mobile": {
+   "title": "Finviz - Stock Screener",
+   "lang": "en",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "finviz.com",
+    "finviz.com",
+    "finviz.com",
+    "finviz.com",
+    "finviz.com",
+    "finviz.com",
+    "www.googletagmanager.com",
+    "uat5-a.investingchannel.com",
+    "ads.pubmatic.com",
+    "finviz.com",
+    "finviz.com",
+    "s.amazon-adsystem.com",
+    "account.anonymised.io",
+    "www.google.com",
+    "google-bidout-d.openx.net",
+    "finviz.com",
+    "gum.criteo.com",
+    "ads.pubmatic.com",
+    "ssum.casalemedia.com",
+    "cm.g.doubleclick.net",
+    "eb2.3lift.com",
+    "ads.pubmatic.com",
+    "eb2.3lift.com",
+    "js-sec.indexww.com"
+   ],
+   "inputTypes": {
+    "text": 1
+   },
+   "ariaLabels": [
+    "Advertisement",
+    "S&amp;P 500 - 1 Day Performance",
+    "Search"
+   ],
+   "roles": {
+    "combobox": 1
+   },
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "finviz.com",
+    "finviz.com",
+    "finviz.com",
+    "www.googletagmanager.com",
+    "finviz.com",
+    "finviz.com",
+    "uat5-a.investingchannel.com",
+    "ads.pubmatic.com",
+    "finviz.com",
+    "finviz.com",
+    "www.google.com",
+    "s.amazon-adsystem.com",
+    "google-bidout-d.openx.net",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "finviz.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "static.dtasrvr.com",
+    "account.anonymised.io",
+    "gum.criteo.com",
+    "cm.g.doubleclick.net",
+    "ads.pubmatic.com",
+    "ssum.casalemedia.com",
+    "eb2.3lift.com",
+    "onetag-sys.com",
+    "gum.criteo.com",
+    "ads.pubmatic.com",
+    "sync.sparteo.com",
+    "js-sec.indexww.com",
+    "ads.pubmatic.com",
+    "eb2.3lift.com"
+   ],
+   "ariaLabels": [
+    "Advertisement",
+    "Markets Closed",
+    "S&amp;P 500 - 1 Day Performance",
+    "Search"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "BEAR",
+   "w": "md"
+  },
+  {
+   "l": "BULL",
+   "w": "md"
+  },
+  {
+   "l": "Close",
+   "w": "md"
+  },
+  {
+   "l": "Heatmap settings",
+   "w": "md"
+  },
+  {
+   "l": "More",
+   "w": "md"
+  },
+  {
+   "l": "Signal settings",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/export",
+   "/grp_export",
+   "/portfolio_export",
+   "/chart",
+   "/image",
+   "/fut_image",
+   "/fut_chart",
+   "/fx_image",
+   "/mktstats_image",
+   "/publish",
+   "/search",
+   "/store/redirect",
+   "/screener?*",
+   "/insidertrading*search=",
+   "/api/v1/screener-export-csv",
+   "/screener/stocks?*",
+   "/screener/etf?*"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 7,
+  "index": true,
+  "sections": [
+   {
+    "s": "sitemap.xml",
+    "n": 7
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "2321.v1.11f38b4b.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "2389.v1.364e3b8b.js",
+   "own": true,
+   "apiPaths": [
+    "/api/market_sentiment${e}@10580"
+   ],
+   "flags": [
+    "disablePointerEventsOnApproach@12712",
+    "useErrorBoundary@13282"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "2960.v1.c4a65317.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "3826.v1.1a9495d5.js",
+   "own": true,
+   "apiPaths": [
+    "/api/map_perf@1827",
+    "/api/maps/counts@1891",
+    "/api/map_perf_screener@2014",
+    "/api/map_perf_groups${window.location.search}@2141",
+    "/api/suggestions@16659",
+    "/api/suggestions/tickers@16821",
+    "/api/related-tickers@16995",
+    "/api/portfolio_data@17123",
+    "/api/set_cookie@17599",
+    "[token]@17936",
+    "/api/user-table-settings/${e}@18289",
+    "/api/user-page-settings/${e}@18519",
+    "/api/ticker-flags@18746"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "3838.v1.415c3a28.js",
+   "own": true,
+   "params": [
+    "t@200630",
+    "sidebar@250417",
+    "settings@250435"
+   ],
+   "apiPaths": [
+    "/api/auto_save@188629",
+    "/api/idea_delete@200782",
+    "/api/ideas_load@204059",
+    "/api/idea_save@207024",
+    "/api/tools_state@524751"
+   ],
+   "flags": [
+    "allowDecimal@66553",
+    "useNativeSelect@499466"
+   ],
+   "storage": [
+    "hasSeenCrossNotification@458211"
+   ],
+   "apis": [
+    "Full screen mode"
+   ],
+   "langs": 10,
+   "usesLocationSearch": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "3844.v1.bd121352.js",
+   "own": true,
+   "apiPaths": [
+    "/api/suggestions@112068",
+    "/api/suggestions/tickers@112230",
+    "/api/related-tickers@112404",
+    "/api/portfolio_data@112532",
+    "/api/set_cookie@113008",
+    "[token]@113345",
+    "/api/user-table-settings/${e}@113698",
+    "/api/user-page-settings/${e}@113928",
+    "/api/ticker-flags@114155"
+   ],
+   "flags": [
+    "useErrorBoundary@16803",
+    "showContact@73927",
+    "showTimeout@100124",
+    "showPlusSign@130852"
+   ],
+   "apis": [
+    "Fast image decoding",
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 3,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "3916.v1.bf3735ac.js",
+   "own": true,
+   "flags": [
+    "useErrorBoundary@8784",
+    "disablePointerEventsOnApproach@17088",
+    "showTimeout@18179"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "4446.v1.e35d2f8a.js",
+   "own": true,
+   "apiPaths": [
+    "/api/stocks-why-moving/${e}@10591",
+    "/api/stocks-why-moving/rating/${e}@13175",
+    "/api/stocks-why-moving/rate@13425"
+   ],
+   "flags": [
+    "useErrorBoundary@10720"
+   ]
+  },
+  {
+   "file": "4482.v1.da33d88e.js",
+   "own": true,
+   "apiPaths": [
+    "/api/settings_submit@110157"
+   ],
+   "flags": [
+    "showOnHover@16121",
+    "useModalOverlay@60052",
+    "showTimeout@103952"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "4874.v1.60953f43.js",
+   "own": true,
+   "flags": [
+    "showValues@41185",
+    "showActionsDivider@43789"
+   ]
+  },
+  {
+   "file": "4875.v1.9eb8eaab.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "5333.v1.ea7d59e2.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "5441.v1.1db84f0b.js",
+   "own": true,
+   "params": [
+    "index@41936"
+   ],
+   "flags": [
+    "enableViewTransition@40048"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "5716.v1.7918fbe3.js",
+   "own": true,
+   "params": [
+    "generate@78506"
+   ],
+   "apiPaths": [
+    "/api/map_perf@88686",
+    "/api/maps/counts@88750",
+    "/api/map_perf_screener@88873",
+    "/api/map_perf_groups${window.location.search}@89000",
+    "/api/map_sparklines@89588"
+   ],
+   "flags": [
+    "showWiim@19342",
+    "showArrow@66618"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "5721.v1.4637d947.js",
+   "own": true,
+   "flags": [
+    "showPlusSign@12826"
+   ]
+  },
+  {
+   "file": "5836.v1.a226df8a.js",
+   "own": true,
+   "params": [
+    "t@18734"
+   ],
+   "apiPaths": [
+    "/api/knowledge-base@10383",
+    "/api/indices_data@14491"
+   ],
+   "flags": [
+    "allowFullScreen@4946",
+    "useErrorBoundary@14653"
+   ]
+  },
+  {
+   "file": "6000.v1.05bf7ee3.js",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "6264.v1.bccef034.js",
+   "own": true,
+   "apis": [
+    "Syncs between tabs"
+   ],
+   "mimes": [
+    "application/vnd.sentry.items.log+json"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "6412.v1.b2723bc4.js",
+   "own": true,
+   "flags": [
+    "disablePointerEventsOnApproach@6753"
+   ]
+  },
+  {
+   "file": "7638.v1.284e221d.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "7779.v1.93efe1ff.js",
+   "own": true,
+   "flags": [
+    "enableDefaultSensors@86691",
+    "isEnabled@103186"
+   ],
+   "apis": [
+    "Off-thread image drawing"
+   ]
+  },
+  {
+   "file": "8123.v1.ec7594c1.js",
+   "own": true,
+   "flags": [
+    "useErrorBoundary@1449"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "8617.v1.1dbcaca0.js",
+   "own": true,
+   "apiPaths": [
+    "/api/set_cookie@21582"
+   ]
+  },
+  {
+   "file": "885.v1.730e5b7d.js",
+   "own": true,
+   "apis": [
+    "Picture in picture"
+   ]
+  },
+  {
+   "file": "8932.v1.a3d3dc12.js",
+   "own": true,
+   "flags": [
+    "allowDangerousHtml@116997"
+   ],
+   "apis": [
+    "Drag and drop files or items",
+    "Paste images or text straight in",
+    "Picture in picture"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "9245.v1.a5484ae4.js",
+   "own": true,
+   "params": [
+    "source@94815"
+   ],
+   "apiPaths": [
+    "/api/watchlists@134248",
+    "/api/watchlists/${e}/items${t@134364",
+    "/api/watchlists/${e}/quotes@134467",
+    "/api/watchlists/${e}/news${a}@134796",
+    "/api/watchlists/${e}/ticker-hover@134877",
+    "/api/watchlists/${e}/ticker-news@135006",
+    "/api/watchlists/${e}/charts@135194",
+    "/api/watchlists/${e}/snapshot@135455",
+    "/api/watchlists/${e}/duplicate@135841",
+    "/api/watchlists/${e}/items@135929",
+    "/api/watchlists/${e}/items/from-portfolio@136075",
+    "/api/watchlists/portfolios@136204",
+    "[token]@136280",
+    "/api/watchlists/${e}@136754",
+    "/api/watchlists/${e}/note@136929",
+    "/api/watchlists/${e}/order@137004",
+    "/api/watchlists/order@137173",
+    "/api/alerts/ticker@137550"
+   ],
+   "flags": [
+    "showDetails@60053",
+    "showAnalystRatings@60068",
+    "showNews@60090",
+    "showCompanyProfile@60102",
+    "showInsiderTrading@60124",
+    "showContact@79890",
+    "useErrorBoundary@132892"
+   ],
+   "keydownHandlers": 1
+  },
+  {
+   "file": "9750.v1.0a49a4c0.js",
+   "own": true,
+   "apiPaths": [
+    "/api/suggestions@6512",
+    "/api/suggestions/tickers@6674",
+    "/api/related-tickers@6848",
+    "/api/portfolio_data@6976",
+    "/api/set_cookie@7452",
+    "[token]@7789",
+    "/api/user-table-settings/${e}@8142",
+    "/api/user-page-settings/${e}@8372",
+    "/api/ticker-flags@8599"
+   ]
+  },
+  {
+   "file": "9913.v1.7e44384b.js",
+   "own": true,
+   "params": [
+    "confirm@81799"
+   ],
+   "apiPaths": [
+    "/api/settings_submit@28378",
+    "/api/newsletter/widget@80934",
+    "/api/portfolio_data@107044",
+    "/api/portfolio_entry@107210",
+    "/api/portfolio_tickers@108879",
+    "/api/portfolio_settings@109090",
+    "/api/indices_data@139943"
+   ],
+   "flags": [
+    "useErrorBoundary@21197",
+    "showPlusSign@43990",
+    "showIndustries@112086",
+    "showNotes@112175"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 3,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "elite_features_dialog.v1.bad42764.js",
+   "own": true,
+   "flags": [
+    "showPlusSign@63924"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 2,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "finviz_t.v1.298ec7f0.js",
+   "own": true,
+   "idb": [
+    "finviz_t@1853"
+   ]
+  },
+  {
+   "file": "google_one_tap.v1.4bb072ef.js",
+   "own": true,
+   "apiPaths": [
+    "/api/auth/google-one-tap@1273"
+   ]
+  },
+  {
+   "file": "header.v1.1c6aed2d.js",
+   "own": true,
+   "flags": [
+    "useErrorBoundary@4755",
+    "disablePointerEventsOnApproach@7028",
+    "showTimeout@8106"
+   ],
+   "routes": [
+    "/subscription@2916",
+    "/elite@3346",
+    "/myaccount@3524",
+    "/apis@3831",
+    "/feature_preview@3990",
+    "/logout@4172"
+   ]
+  },
+  {
+   "file": "knowledge_base_dialog.v1.e5901604.js",
+   "own": true,
+   "params": [
+    "confirm@143830"
+   ],
+   "apiPaths": [
+    "/api/knowledge-base@11821",
+    "/api/settings_submit@34315",
+    "/api/newsletter/widget@142965",
+    "/api/portfolio_data@169003",
+    "/api/portfolio_entry@169169",
+    "/api/portfolio_tickers@170838",
+    "/api/portfolio_settings@171049",
+    "/api/suggestions@195672",
+    "/api/suggestions/tickers@195834",
+    "/api/related-tickers@196008",
+    "/api/set_cookie@196612",
+    "[token]@196949",
+    "/api/user-table-settings/${e}@197302",
+    "/api/user-page-settings/${e}@197532",
+    "/api/ticker-flags@197759"
+   ],
+   "flags": [
+    "useErrorBoundary@26954",
+    "showPlusSign@53678",
+    "showContact@103591",
+    "showTimeout@131486",
+    "showIndustries@174019",
+    "showNotes@174108"
+   ],
+   "routes": [
+    "/contact@13058",
+    "/search@13261",
+    "/*@13432"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 3,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "main.649fc629.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings",
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "redesign.6515f6da.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "notice.v1.f13b0329.js",
+   "own": true,
+   "apiPaths": [
+    "/api/set_cookie@1791"
+   ]
+  },
+  {
+   "file": "recent_quotes_skeleton.v1.8835cb6b.js",
+   "own": true,
+   "storage": [
+    "recentQuotes@88"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "accounts.google.com",
+   "file": "google_one_tap.v1.4bb072ef.js",
+   "at": 1846
+  },
+  {
+   "host": "api.finviz.com",
+   "file": "3838.v1.415c3a28.js",
+   "at": 754571
+  },
+  {
+   "host": "api.pinterest.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 173529
+  },
+  {
+   "host": "api.tumblr.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 183902
+  },
+  {
+   "host": "b.hatena.ne.jp",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 164384
+  },
+  {
+   "host": "bookmark.hatenaapis.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 164551
+  },
+  {
+   "host": "browser-update.org",
+   "file": "browser_check.v1.1605ca48.js",
+   "at": 281
+  },
+  {
+   "host": "bsky.app",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 159941
+  },
+  {
+   "host": "connect.mail.ru",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 171138
+  },
+  {
+   "host": "connect.ok.ru",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 171897
+  },
+  {
+   "host": "docs.sentry.io",
+   "file": "6264.v1.bccef034.js",
+   "at": 135856
+  },
+  {
+   "host": "gab.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 177048
+  },
+  {
+   "host": "getpocket.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 174405
+  },
+  {
+   "host": "git.new",
+   "file": "6239.v1.450fa4e0.js",
+   "at": 1508
+  },
+  {
+   "host": "graph.facebook.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 162252
+  },
+  {
+   "host": "linkedin.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 167257
+  },
+  {
+   "host": "logo.finviz.com",
+   "file": "3844.v1.bd121352.js",
+   "at": 1233
+  },
+  {
+   "host": "o17229.ingest.us.sentry.io",
+   "file": "3844.v1.bd121352.js",
+   "at": 24226
+  },
+  {
+   "host": "pinterest.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 173249
+  },
+  {
+   "host": "reactrouter.com",
+   "file": "5441.v1.1db84f0b.js",
+   "at": 70971
+  },
+  {
+   "host": "redux.js.org",
+   "file": "7779.v1.93efe1ff.js",
+   "at": 3266
+  },
+  {
+   "host": "sentry.io",
+   "file": "3844.v1.bd121352.js",
+   "at": 24167
+  },
+  {
+   "host": "service.weibo.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 191319
+  },
+  {
+   "host": "social-plugins.line.me",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 166751
+  },
+  {
+   "host": "tailwindcss.com",
+   "file": "main.649fc629.css",
+   "at": 39
+  },
+  {
+   "host": "telegram.me",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 181186
+  },
+  {
+   "host": "threads.net",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 183225
+  },
+  {
+   "host": "twitter.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 184747
+  },
+  {
+   "host": "vk.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 187615
+  },
+  {
+   "host": "work.facebook.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 196071
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 161269
+  },
+  {
+   "host": "www.instapaper.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 164937
+  },
+  {
+   "host": "www.livejournal.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 168954
+  },
+  {
+   "host": "www.reddit.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 176853
+  },
+  {
+   "host": "www.tumblr.com",
+   "file": "2321.v1.11f38b4b.js",
+   "at": 183645
+  }
+ ],
+ "thirdParty": [
+  "a.ad.gt",
+  "a.amxrtb.com",
+  "aax.amazon-adsystem.com",
+  "ab.dns-finder.com",
+  "accounts.google.com",
+  "ad-delivery.net",
+  "ad.doubleclick.net",
+  "ads.pubmatic.com",
+  "adservice.google.com",
+  "aegis.anonymised.io",
+  "agen-assets.ftstatic.com",
+  "ajs-assets.ftstatic.com",
+  "api.anonymised.io",
+  "api.btloader.com",
+  "api.id5-sync.com",
+  "api.intentiq.com",
+  "api.pinterest.com",
+  "api.rlcdn.com",
+  "api.tumblr.com",
+  "ats-wrapper.privacymanager.io",
+  "b.hatena.ne.jp",
+  "bid.sparteo.com",
+  "bidder-front-57.smilewanted.com",
+  "bookmark.hatenaapis.com",
+  "browser-update.org",
+  "bsky.app",
+  "btloader.com",
+  "c.amazon-adsystem.com",
+  "c2shb.pubgw.yahoo.com",
+  "cdn.api.btloader.com",
+  "cdn.browsiprod.com",
+  "cdn.confiant-integrations.net",
+  "cdn.flashtalking.com",
+  "cdn.hadronid.net",
+  "cdn.id5-sync.com",
+  "cdn.insiad.com",
+  "cdn.jsdelivr.net",
+  "cdn.mgaru.dev",
+  "cdn1.anonymised.io",
+  "cm.g.doubleclick.net",
+  "config.aps.amazon-adsystem.com",
+  "connect.facebook.net",
+  "connect.mail.ru",
+  "connect.ok.ru",
+  "connectid.analytics.yahoo.com",
+  "content.quantcount.com",
+  "creative-measurement.quantcount.com",
+  "csync.smilewanted.com",
+  "d-bidder.sparteo.com",
+  "d9.flashtalking.com",
+  "data.ad-score.com",
+  "data.dianomi.com",
+  "dd.insiad.com",
+  "dmp.im-apps.net",
+  "docs.sentry.io",
+  "dtasrvr.com",
+  "e.clarity.ms",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "eus.rubiconproject.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "Product analytics",
+  "Sentry"
+ ],
+ "requests": [
+  "https://a.ad.gt/api/v1/collect",
+  "https://aax.amazon-adsystem.com/e/dtb/bid/698444.04/0/prebid?adunitid",
+  "https://ab.dns-finder.com/meta/dns",
+  "https://ad-delivery.net/px.gif?ch&e",
+  "https://ad.doubleclick.net/ccm/s/collect?auid&fmt&gtm",
+  "https://ad.doubleclick.net/ddm/activity/src=2530996;type=dv;cat=dvtest;[token];dc_lat=;dc_rdid=;[token];tfua=;npa=;ord=1",
+  "https://ad.doubleclick.net/favicon.ico?ad&ad_box_&adnet&e&showad&size",
+  "https://adservice.google.com/ddm/fls/z/src=2530996;type=dv;cat=dvtest;[token];dc_lat=;dc_rdid=;[token];tfua=;npa=;ord=1",
+  "https://aegis.anonymised.io/oauth2/token",
+  "https://agen-assets.ftstatic.com/display/7892488/5554450.json",
+  "https://agen-assets.ftstatic.com/display/7892524/5554450.json",
+  "https://api.anonymised.io/v3/anon/interest-scores?aav",
+  "https://api.anonymised.io/v3/interest-scores?aav",
+  "https://api.btloader.com/country?o",
+  "https://api.btloader.com/exd?cv&sid&tid&upapi",
+  "https://api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+  "https://api.id5-sync.com/analytics/1118/id5-api-js",
+  "https://api.id5-sync.com/analytics/1732/id5-api-js",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&gpp&iiqidtype",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gpp&iiqidtype&iiqlocalstorageenabled",
+  "https://api.rlcdn.com/api/identity/envelope?gpp&gpp_sid&pid",
+  "https://bid.sparteo.com/auction?network_id&site_domain",
+  "https://bidder-front-57.smilewanted.[token]",
+  "https://c.amazon-adsystem.com/bao-csm/aps-comm/aps_csm.js",
+  "https://c2shb.pubgw.yahoo.com/admax/bid/partners/PBJS",
+  "https://cdn.api.btloader.com/device?fullVersionList&orgid&platformVersion&upapi",
+  "https://cdn.api.btloader.com/device?fullVersionList&orgid&upapi",
+  "https://cdn.jsdelivr.net/gh/prebid/currency-file@1/latest.json?date",
+  "https://cm.g.doubleclick.net/pixel?google_hm&google_nid&google_redir&google_tc&google_ula",
+  "https://cm.g.doubleclick.net/pixel?google_hm&google_nid&google_redir&google_ula",
+  "https://d-bidder.sparteo.com/v1/img?cs&d&s",
+  "https://d9.flashtalking.com/lgc",
+  "https://data.ad-score.com/data/cors?callback&en&pid&pm_ct&pm_pl&pm_st&pm_td&tt",
+  "https://data.dianomi.com/frontend/ping?uid",
+  "https://data.dianomi.com/frontend/usync?redirect",
+  "https://dd.insiad.com/currency-rates",
+  "https://dd.insiad.com/geodevicedetect?url&userAgent",
+  "https://e.clarity.ms/collect",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://event.ay.delivery/"
+ ],
+ "storage": {
+  "local": [
+   "33acrossId",
+   "33acrossIdTp",
+   "33acrossId_cst",
+   "33acrossId_exp",
+   "33acrossId_last",
+   "BT_AA_DETECTION",
+   "BT_device",
+   "BT_tpc",
+   "DIANOMI-CLICK-COOKIE",
+   "IC_FID",
+   "IC_HM",
+   "IC_TID",
+   "IC_USER_COOKIE",
+   "IH_LGCL_TS",
+   "OPTABLE_RESOLVED",
+   "OPTABLE_SPLIT_TEST",
+   "[token]",
+   "[token]",
+   "[token]",
+   "_GESPSK-crwdcntrl.net",
+   "_GESPSK-esp.criteo.com",
+   "_GESPSK-esp.pubmatic.com",
+   "_GESPSK-id5-sync.com",
+   "_GESPSK-intimatemerger.com",
+   "_GESPSK-mygaruID",
+   "_GESPSK-openx",
+   "_GESPSK-pubcid.org",
+   "_GESPSK-rtbhouse",
+   "_GESPSK-yahoo.com",
+   "__binsUID",
+   "__qca",
+   "_cc_id",
+   "_ccmaid",
+   "_ccmsi",
+   "_gcl_ls",
+   "_iiq_ch",
+   "_iiq_fdata",
+   "_iiq_fdata_1868846730",
+   "_iiq_sync_1868846730",
+   "_im_uid.9001"
+  ],
+  "session": [
+   "BT_sid",
+   "OPTABLE_TARGETING_DONE",
+   "[token]",
+   "_cltk",
+   "featureDiscoveryExposure:watchlist-menu:",
+   "idw-page-count",
+   "idw-session-id",
+   "optableSessionDepth"
+  ],
+  "idb": [
+   "1",
+   "finviz_t"
+  ]
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?confirm",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "9913.v1.7e44384b.js@81799"
+  },
+  {
+   "name": "URL parameter ?generate",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "5716.v1.7918fbe3.js@78506"
+  },
+  {
+   "name": "URL parameter ?index",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "5441.v1.1db84f0b.js@41936"
+  },
+  {
+   "name": "URL parameter ?settings",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@250435"
+  },
+  {
+   "name": "URL parameter ?sidebar",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@250417"
+  },
+  {
+   "name": "URL parameter ?source",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "9245.v1.a5484ae4.js@94815"
+  },
+  {
+   "name": "URL parameter ?t",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@200630"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "8932.v1.a3d3dc12.js@17885"
+  },
+  {
+   "name": "Paste images or text straight in",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "8932.v1.a3d3dc12.js@18632"
+  },
+  {
+   "name": "Embeds account.anonymised.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds ads.pubmatic.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds eb2.3lift.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds google-bidout-d.openx.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds gum.criteo.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds js-sec.indexww.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds onetag-sys.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds ssum.casalemedia.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds static.dtasrvr.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds sync.sparteo.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds uat5-a.investingchannel.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds www.googletagmanager.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call a.ad.gt/api/v1/collect",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.anonymised.io/v3/anon/interest-scores?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.anonymised.io/v3/interest-scores?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/country?o",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.id5-sync.com/analytics/1118/id5-api-js",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.id5-sync.com/analytics/1732/id5-api-js",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /api/alerts/ticker",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9245.v1.a5484ae4.js@137550"
+  },
+  {
+   "name": "API path /api/auth/google-one-tap",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "google_one_tap.v1.4bb072ef.js@1273"
+  },
+  {
+   "name": "API path /api/auto_save",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@188629"
+  },
+  {
+   "name": "API path /api/idea_delete",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@200782"
+  },
+  {
+   "name": "API path /api/idea_save",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@207024"
+  },
+  {
+   "name": "API path /api/ideas_load",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@204059"
+  },
+  {
+   "name": "API path /api/indices_data",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "5836.v1.a226df8a.js@14491"
+  },
+  {
+   "name": "API path /api/knowledge-base",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "5836.v1.a226df8a.js@10383"
+  },
+  {
+   "name": "API path /api/map_perf",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@1827"
+  },
+  {
+   "name": "API path /api/map_perf_groups${window.location.search}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@2141"
+  },
+  {
+   "name": "API path /api/map_perf_screener",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@2014"
+  },
+  {
+   "name": "API path /api/map_sparklines",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "5716.v1.7918fbe3.js@89588"
+  },
+  {
+   "name": "API path /api/maps/counts",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@1891"
+  },
+  {
+   "name": "API path /api/market_sentiment${e}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "2389.v1.364e3b8b.js@10580"
+  },
+  {
+   "name": "API path /api/newsletter/widget",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9913.v1.7e44384b.js@80934"
+  },
+  {
+   "name": "API path /api/portfolio_data",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@17123"
+  },
+  {
+   "name": "API path /api/portfolio_entry",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9913.v1.7e44384b.js@107210"
+  },
+  {
+   "name": "API path /api/portfolio_settings",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9913.v1.7e44384b.js@109090"
+  },
+  {
+   "name": "API path /api/portfolio_tickers",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9913.v1.7e44384b.js@108879"
+  },
+  {
+   "name": "API path /api/related-tickers",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@16995"
+  },
+  {
+   "name": "API path /api/set_cookie",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@17599"
+  },
+  {
+   "name": "API path /api/settings_submit",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "4482.v1.da33d88e.js@110157"
+  },
+  {
+   "name": "API path /api/stocks-why-moving/${e}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "4446.v1.e35d2f8a.js@10591"
+  },
+  {
+   "name": "API path /api/stocks-why-moving/rate",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "4446.v1.e35d2f8a.js@13425"
+  },
+  {
+   "name": "API path /api/stocks-why-moving/rating/${e}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "4446.v1.e35d2f8a.js@13175"
+  },
+  {
+   "name": "API path /api/suggestions",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@16659"
+  },
+  {
+   "name": "API path /api/suggestions/tickers",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@16821"
+  },
+  {
+   "name": "API path /api/ticker-flags",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@18746"
+  },
+  {
+   "name": "API path /api/tools_state",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3838.v1.415c3a28.js@524751"
+  },
+  {
+   "name": "API path /api/user-page-settings/${e}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@18519"
+  },
+  {
+   "name": "API path /api/user-table-settings/${e}",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "3826.v1.1a9495d5.js@18289"
+  }
+ ]
+}
