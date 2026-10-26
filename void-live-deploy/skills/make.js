@@ -11,7 +11,7 @@ const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
 ];
 const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus', cat: 'cube',
-  pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond',
+  pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond', tree: 'cylinder',
   planet: 'planet', icosahedron: 'ico', dice: 'cube', die: 'cube' };
 const COLORS = { red: [235, 70, 70], orange: [245, 150, 60], gold: [235, 190, 80], golden: [235, 190, 80], yellow: [240, 220, 90], green: [80, 200, 120],
   blue: [80, 150, 245], cyan: [80, 210, 230], purple: [160, 110, 240], violet: [160, 110, 240], pink: [240, 120, 190], white: [225, 228, 235],
@@ -242,7 +242,7 @@ async function run(text, api) {
 
 export default {
   name: 'make',
-  examples: ['make a 3d torus', 'show me a gold 3d diamond', 'make a sphere', 'timing game', 'uap timeline', 'low poly cat'], // Connect 4 is its own game now (skills/connect4.js), ahead of this in the index
+  examples: ['make a 3d torus', 'show me a gold 3d diamond', 'make a sphere', 'timing game', 'uap timeline', 'low poly cat', 'make a low poly tree'], // Connect 4 is its own game now (skills/connect4.js), ahead of this in the index
   nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list', 'what is a uap', 'news filter settings'],
   match(lower, text) { return !!makeOf(text); },
   run,
