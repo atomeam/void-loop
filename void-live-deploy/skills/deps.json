@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 898,
+ "counted": 899,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -283,6 +283,13 @@
    "tests": 1
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 7,
+   "direct": 5,
+   "dependants": 13,
+   "tests": 0
+  },
+  {
    "file": "lib/art-source.js",
    "skills": 7,
    "direct": 0,
@@ -309,13 +316,6 @@
    "direct": 1,
    "dependants": 10,
    "tests": 2
-  },
-  {
-   "file": "lib/card-mini.js",
-   "skills": 7,
-   "direct": 5,
-   "dependants": 9,
-   "tests": 0
   },
   {
    "file": "lib/card-share.js",
@@ -584,6 +584,13 @@
    "tests": 8
   },
   {
+   "file": "lib/colour.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
    "file": "lib/ics.js",
    "skills": 3,
    "direct": 1,
@@ -591,10 +598,10 @@
    "tests": 1
   },
   {
-   "file": "lib/colour.js",
+   "file": "lib/pwcheck.js",
    "skills": 3,
-   "direct": 1,
-   "dependants": 7,
+   "direct": 2,
+   "dependants": 9,
    "tests": 1
   },
   {
@@ -609,13 +616,6 @@
    "skills": 3,
    "direct": 1,
    "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 5,
    "tests": 1
   },
   {
@@ -988,6 +988,13 @@
    "direct": 1,
    "dependants": 5,
    "tests": 4
+  },
+  {
+   "file": "lib/writing-aids.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 2
   },
   {
    "file": "lib/appraise-photo.js",
@@ -1550,13 +1557,6 @@
    "tests": 1
   },
   {
-   "file": "lib/writing-aids.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
-  },
-  {
    "file": "lib/zorbleflux.js",
    "skills": 1,
    "direct": 1,
@@ -1845,6 +1845,13 @@
   },
   {
    "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/seo-audit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2373,7 +2380,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/progress-chart.js",
@@ -4186,6 +4193,10 @@
     "skills/wheel.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/languages.js",
@@ -4472,10 +4483,14 @@
    "imports": [],
    "importedBy": [
     "lib/gradient.js",
+    "lib/mcp.js",
     "lib/palettes.js",
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "lib/seo-audit.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
@@ -5907,7 +5922,10 @@
     "lib/sky-math.js",
     "lib/showers.js",
     "lib/mcp-skills.js",
-    "lib/drive.js"
+    "lib/drive.js",
+    "lib/seo-audit.js",
+    "lib/writing-aids.js",
+    "lib/colour.js"
    ],
    "importedBy": [
     "functions/api/mcp.js",
@@ -7035,6 +7053,10 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/writing-aids.js"
@@ -7553,6 +7575,18 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js"
+   ]
+  },
+  "lib/seo-audit.js": {
+   "imports": [
+    "lib/writing-aids.js"
+   ],
+   "importedBy": [
+    "lib/mcp.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js"
    ]
   },
   "lib/seo.js": {
@@ -8903,7 +8937,13 @@
     "skills/util.js"
    ],
    "importedBy": [
+    "lib/mcp.js",
+    "lib/seo-audit.js",
     "skills/writing-aids.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js"
    ]
   },
   "lib/zones.js": {
@@ -12375,6 +12415,10 @@
     "lib/writing-aids.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
     "skills/writing-aids.js"
    ]
   },
