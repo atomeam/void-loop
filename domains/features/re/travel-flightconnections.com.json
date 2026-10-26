@@ -1,0 +1,924 @@
+{
+ "site": "www.flightconnections.com",
+ "url": "https://www.flightconnections.com/",
+ "scanned": "2026-10-26",
+ "status": 202,
+ "assets": [
+  {
+   "f": "5eb915d8a018.0ab8313c.us-east-2.token.awswaf.com/challenge.js",
+   "t": "js",
+   "b": 686435,
+   "ext": true
+  },
+  {
+   "f": "a.pub.[token].js",
+   "t": "js",
+   "b": 29146,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/client",
+   "t": "js",
+   "b": 276337,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/style",
+   "t": "css",
+   "b": 696,
+   "ext": true
+  },
+  {
+   "f": "affiliates.flightconnections.com/rw.js",
+   "t": "js",
+   "b": 11460
+  },
+  {
+   "f": "alcdn.msftauth.net/msal-browser.min.js",
+   "t": "js",
+   "b": 375769,
+   "ext": true
+  },
+  {
+   "f": "appleid.cdn-apple.com/appleid.auth.js",
+   "t": "js",
+   "b": 42880,
+   "ext": true
+  },
+  {
+   "f": "cdn.flightconnections.com/font-awesome.min.css",
+   "t": "css",
+   "b": 188389
+  },
+  {
+   "f": "cdn.flightconnections.com/leaflet.min.css",
+   "t": "css",
+   "b": 10547
+  },
+  {
+   "f": "cdn.flightconnections.com/leaflet_custom.min.css",
+   "t": "css",
+   "b": 4515
+  },
+  {
+   "f": "cdn.flightconnections.com/main.min.css",
+   "t": "css",
+   "b": 309994
+  },
+  {
+   "f": "cdn.flightconnections.com/map_OSM.min.css",
+   "t": "css",
+   "b": 19091
+  },
+  {
+   "f": "cdn.flightconnections.com/validity_datepicker.min.css",
+   "t": "css",
+   "b": 12607
+  },
+  {
+   "f": "cdn.flightconnections.com/basic.min.js",
+   "t": "js",
+   "b": 46796
+  },
+  {
+   "f": "cdn.flightconnections.com/datepickerUX.min.js",
+   "t": "js",
+   "b": 58701
+  },
+  {
+   "f": "cdn.flightconnections.com/forms.min.js",
+   "t": "js",
+   "b": 29912
+  },
+  {
+   "f": "cdn.flightconnections.com/mapbasics.min.js",
+   "t": "js",
+   "b": 300640
+  },
+  {
+   "f": "cdn.flightconnections.com/radius_search.min.js",
+   "t": "js",
+   "b": 22773
+  },
+  {
+   "f": "cdn.flightconnections.com/ux.min.js",
+   "t": "js",
+   "b": 107192
+  },
+  {
+   "f": "cdn.flightconnections.com/Leaflet.Geodesic.min.js",
+   "t": "js",
+   "b": 7295
+  },
+  {
+   "f": "cdn.flightconnections.com/before_pubfig.js",
+   "t": "js",
+   "b": 46404
+  },
+  {
+   "f": "cdn.flightconnections.com/datepicker.min.js",
+   "t": "js",
+   "b": 35542
+  },
+  {
+   "f": "cdn.flightconnections.com/i18n.min.js",
+   "t": "js",
+   "b": 2961
+  },
+  {
+   "f": "cdn.flightconnections.com/datepicker.all.js",
+   "t": "js",
+   "b": 907
+  },
+  {
+   "f": "cdn.flightconnections.com/jquery-3.4.1.min.js",
+   "t": "js",
+   "b": 88144
+  },
+  {
+   "f": "cdn.flightconnections.com/leaflet.min.js",
+   "t": "js",
+   "b": 143908,
+   "map": true
+  },
+  {
+   "f": "cdn.flightconnections.com/showads.js",
+   "t": "js",
+   "b": 21
+  },
+  {
+   "f": "diffuser-cdn.app-us1.com/diffuser.js",
+   "t": "js",
+   "b": 33374,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css2",
+   "t": "css",
+   "b": 12355,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 64317,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166338,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "prism.app-us1.com//",
+   "t": "js",
+   "b": 248,
+   "ext": true
+  },
+  {
+   "f": "public.profitwell.com/profitwell.js",
+   "t": "js",
+   "b": 50608,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/pubads_impl.js",
+   "t": "js",
+   "b": 686402,
+   "ext": true
+  },
+  {
+   "f": "stg.html-load.[token].js",
+   "t": "js",
+   "b": 529401,
+   "ext": true
+  },
+  {
+   "f": "trackcmp.net/t_prism_sitemessages.php",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 569170,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/gtm.js",
+   "t": "js",
+   "b": 339812,
+   "ext": true
+  },
+  {
+   "f": "www.googletagservices.com/gpt.js",
+   "t": "js",
+   "b": 135350,
+   "ext": true
+  }
+ ],
+ "assetCount": 41,
+ "bytes": 5981962,
+ "html": {
+  "mobile": {
+   "title": "FlightConnections: All flights worldwide",
+   "lang": "en",
+   "manifest": "https://www.flightconnections.com/site.webmanifest?3",
+   "hreflang": [
+    "x-default",
+    "en",
+    "en-au",
+    "en-ca",
+    "en-ee",
+    "en-gb",
+    "en-hk",
+    "en-in",
+    "en-ie",
+    "en-my",
+    "en-nz",
+    "en-ph",
+    "en-sg",
+    "en-za",
+    "en-us",
+    "nl",
+    "nl-nl",
+    "nl-be",
+    "es",
+    "es-es",
+    "es-ag",
+    "es-cl",
+    "es-co",
+    "es-ec",
+    "es-mx",
+    "es-pe",
+    "cs",
+    "cs-cz",
+    "pt",
+    "pt-pt",
+    "pt-br",
+    "de",
+    "de-de",
+    "de-at",
+    "de-ch",
+    "fr",
+    "fr-fr",
+    "id",
+    "id-id",
+    "it",
+    "it-it",
+    "pl",
+    "pl-pl",
+    "sv",
+    "sv-se",
+    "tw",
+    "zh-tw",
+    "zh-hk",
+    "zh-hant",
+    "zh",
+    "zh-cn",
+    "zh-sg",
+    "zh-hans",
+    "ja",
+    "ru",
+    "ko",
+    "tr",
+    "th",
+    "vi",
+    "vi-vn"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 5,
+    "twitter": false,
+    "themeColor": true,
+    "appleCapable": true
+   },
+   "iframes": [
+    "www.googletagmanager.com",
+    "accounts.google.com",
+    "accounts.google.com",
+    "accounts.google.com",
+    "accounts.google.com",
+    "googleads.g.doubleclick.net",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "email": 3,
+    "password": 6,
+    "text": 14
+   },
+   "selects": 1,
+   "forms": 11,
+   "ariaLabels": [
+    "Advertisement",
+    "Zoom in",
+    "Zoom out"
+   ],
+   "roles": {
+    "slider": 20
+   },
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "www.googletagmanager.com",
+    "accounts.google.com",
+    "accounts.google.com",
+    "accounts.google.com",
+    "googleads.g.doubleclick.net",
+    "accounts.google.com",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "Zoom in",
+   "w": "d"
+  },
+  {
+   "l": "Zoom out",
+   "w": "d"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "affiliates.flightconnections.com/rw.js",
+   "own": true,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "cdn.flightconnections.com/validity_datepicker.min.css",
+   "own": true,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/basic.min.js",
+   "own": true,
+   "storage": [
+    "userProfile@3772",
+    "userID@6476",
+    "sessionID@6510",
+    "sessionExpired@6611"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/forms.min.js",
+   "own": true,
+   "apiPaths": [
+    "/oauth@4247"
+   ],
+   "flags": [
+    "usePopup@12146"
+   ],
+   "storage": [
+    "googlePrompt@71",
+    "sessionID@4318",
+    "userID@4354",
+    "lastLoginMethod@4440",
+    "lastLoginEmail@4497",
+    "userProfile@10400"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "own": true,
+   "flags": [
+    "showDatesOverlay@31885",
+    "showOtherMonths@233709"
+   ],
+   "storage": [
+    "userProfile@36190",
+    "multiple_aircrafts@51052",
+    "multiple_airlines@158956",
+    "userCurrency@238707",
+    "userCurrencySymbol@238751"
+   ],
+   "apis": [
+    "Full screen mode"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/ux.min.js",
+   "own": true,
+   "storage": [
+    "userProfile@27694",
+    "userID@44204",
+    "sessionID@44237",
+    "userAirports@74031",
+    "userAirportsHTML@74081",
+    "flyFrom@74139",
+    "emailboxClosed@75187",
+    "multiple_airlines@99757"
+   ],
+   "keydownHandlers": 1
+  },
+  {
+   "file": "cdn.flightconnections.com/before_pubfig.js",
+   "own": true,
+   "apiPaths": [
+    "/v2/abr@44929"
+   ],
+   "storage": [
+    "fs.cdi@27031",
+    "fs.cfc@27127",
+    "fs.adb@32229"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/datepicker.min.js",
+   "own": true,
+   "flags": [
+    "showOtherMonths@460",
+    "showOtherYears@529",
+    "disableNavWhenOutOfRange@617"
+   ]
+  },
+  {
+   "file": "cdn.flightconnections.com/jquery-3.4.1.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "cdn.flightconnections.com/leaflet.min.js",
+   "own": true,
+   "apis": [
+    "Uses the location"
+   ],
+   "mimes": [
+    "image/jpeg"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "api.getrewardful.com",
+   "file": "affiliates.flightconnections.com/rw.js",
+   "at": 5900
+  },
+  {
+   "host": "api.mapbox.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 149899
+  },
+  {
+   "host": "api.maptiler.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 149813
+  },
+  {
+   "host": "api.tequila.kiwi.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 225848
+  },
+  {
+   "host": "booking.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 280593
+  },
+  {
+   "host": "cdn.flightconnections.com",
+   "file": "cdn.flightconnections.com/main.min.css",
+   "at": 201168
+  },
+  {
+   "host": "compare-static.flightconnections.com",
+   "file": "cdn.flightconnections.com/basic.min.js",
+   "at": 14931
+  },
+  {
+   "host": "flightconnections.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 229316
+  },
+  {
+   "host": "fontawesome.io",
+   "file": "cdn.flightconnections.com/font-awesome.min.css",
+   "at": 43
+  },
+  {
+   "host": "images.kiwi.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 229389
+  },
+  {
+   "host": "leafletjs.com",
+   "file": "cdn.flightconnections.com/leaflet.min.js",
+   "at": 66
+  },
+  {
+   "host": "login.microsoftonline.com",
+   "file": "cdn.flightconnections.com/forms.min.js",
+   "at": 16708
+  },
+  {
+   "host": "maps.gstatic.com",
+   "file": "cdn.flightconnections.com/leaflet_custom.min.css",
+   "at": 662
+  },
+  {
+   "host": "safetywing.com",
+   "file": "cdn.flightconnections.com/ux.min.js",
+   "at": 72132
+  },
+  {
+   "host": "skyscanner.net",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 217054
+  },
+  {
+   "host": "www.clicktripz.com",
+   "file": "cdn.flightconnections.com/ux.min.js",
+   "at": 71112
+  },
+  {
+   "host": "www.cn.kayak.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143421
+  },
+  {
+   "host": "www.cz.kayak.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143465
+  },
+  {
+   "host": "www.flightconnections.com",
+   "file": "cdn.flightconnections.com/forms.min.js",
+   "at": 4645
+  },
+  {
+   "host": "www.hotelscombined.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 167629
+  },
+  {
+   "host": "www.kayak.ae",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143381
+  },
+  {
+   "host": "www.kayak.co.id",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143629
+  },
+  {
+   "host": "www.kayak.co.jp",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143712
+  },
+  {
+   "host": "www.kayak.co.kr",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143755
+  },
+  {
+   "host": "www.kayak.co.th",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 144003
+  },
+  {
+   "host": "www.kayak.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143315
+  },
+  {
+   "host": "www.kayak.com.br",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143878
+  },
+  {
+   "host": "www.kayak.com.tr",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 144046
+  },
+  {
+   "host": "www.kayak.de",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143509
+  },
+  {
+   "host": "www.kayak.es",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143549
+  },
+  {
+   "host": "www.kayak.fr",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143589
+  },
+  {
+   "host": "www.kayak.it",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143672
+  },
+  {
+   "host": "www.kayak.nl",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143798
+  },
+  {
+   "host": "www.kayak.pl",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143838
+  },
+  {
+   "host": "www.kayak.se",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 143963
+  },
+  {
+   "host": "www.openstreetmap.org",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 150229
+  },
+  {
+   "host": "www.southwest.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 217941
+  },
+  {
+   "host": "www.trawickinternational.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 142744
+  },
+  {
+   "host": "www.tw.kayak.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 144090
+  },
+  {
+   "host": "www.vn.kayak.com",
+   "file": "cdn.flightconnections.com/mapbasics.min.js",
+   "at": 144134
+  }
+ ],
+ "thirdParty": [
+  "5eb915d8a018.0ab8313c.us-east-2.token.awswaf.com",
+  "a.pub.network",
+  "accounts.google.com",
+  "alcdn.msftauth.net",
+  "analytics.google.com",
+  "api.getrewardful.com",
+  "api.mapbox.com",
+  "api.maptiler.com",
+  "api.tequila.kiwi.com",
+  "appleid.cdn-apple.com",
+  "booking.com",
+  "config.content-settings.com",
+  "diffuser-cdn.app-us1.com",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "flightconnections.com",
+  "fontawesome.io",
+  "fonts.googleapis.com",
+  "images.kiwi.com",
+  "leafletjs.com",
+  "login.microsoftonline.com",
+  "maps.gstatic.com",
+  "pagead2.googlesyndication.com",
+  "prism.app-us1.com",
+  "public.profitwell.com",
+  "safetywing.com",
+  "securepubads.g.doubleclick.net",
+  "site-config.com",
+  "skyscanner.net",
+  "stg.html-load.cc",
+  "trackcmp.net",
+  "www.clicktripz.com",
+  "www.cn.kayak.com",
+  "www.cz.kayak.com",
+  "www.googletagmanager.com",
+  "www.googletagservices.com",
+  "www.hotelscombined.com",
+  "www.kayak.ae",
+  "www.kayak.co.id",
+  "www.kayak.co.jp",
+  "www.kayak.co.kr",
+  "www.kayak.co.th",
+  "www.kayak.com",
+  "www.kayak.com.br",
+  "www.kayak.com.tr",
+  "www.kayak.de",
+  "www.kayak.es",
+  "www.kayak.fr",
+  "www.kayak.it",
+  "www.kayak.nl",
+  "www.kayak.pl",
+  "www.kayak.se",
+  "www.openstreetmap.org",
+  "www.southwest.com",
+  "www.trawickinternational.com",
+  "www.tw.kayak.com",
+  "www.vn.kayak.com"
+ ],
+ "services": [
+  "Ads",
+  "Google Analytics",
+  "Maps",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://5eb915d8a018.0ab8313c.us-east-2.token.awswaf.[token]?client",
+  "https://5eb915d8a018.0ab8313c.us-east-2.token.awswaf.[token]?region",
+  "https://analytics.google.com/g/collect?_ee&_eu&_fv&_gaz&_ng&_nsi&_p&_s",
+  "https://cdn.flightconnections.com/tiles/261015/en/1/0-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/1/0-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/1/1-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/1/1-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/0-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/0-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/0-2.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/1-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/1-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/1-2.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/2-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/2-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/2-2.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/3-0.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/3-1.json",
+  "https://cdn.flightconnections.com/tiles/261015/en/2/3-2.json",
+  "https://config.content-settings.com/flightconnections-com.json",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://securepubads.g.doubleclick.net/pagead/purl_config?pppnc&puc_types&url",
+  "https://site-config.com/v2/abr"
+ ],
+ "storage": {
+  "local": [
+   "[token]",
+   "aws_waf_referrer",
+   "awswaf_token_refresh_timestamp",
+   "fs.adb",
+   "fs.cdi",
+   "fs.cfc",
+   "multiple_airlines"
+  ],
+  "session": [
+   "multiple_aircrafts"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "cdn.flightconnections.com/validity_datepicker.min.css"
+  },
+  {
+   "name": "Embeds www.googletagmanager.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call site-config.com/v2/abr",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /oauth",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "cdn.flightconnections.com/forms.min.js@4247"
+  },
+  {
+   "name": "API path /v2/abr",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "cdn.flightconnections.com/before_pubfig.js@44929"
+  },
+  {
+   "name": "Feature flag disableNavWhenOutOfRange",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "cdn.flightconnections.com/datepicker.min.js@617"
+  },
+  {
+   "name": "Feature flag showDatesOverlay",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "cdn.flightconnections.com/mapbasics.min.js@31885"
+  },
+  {
+   "name": "Feature flag showOtherMonths",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "cdn.flightconnections.com/mapbasics.min.js@233709"
+  },
+  {
+   "name": "Feature flag showOtherYears",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "cdn.flightconnections.com/datepicker.min.js@529"
+  },
+  {
+   "name": "Feature flag usePopup",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "cdn.flightconnections.com/forms.min.js@12146"
+  },
+  {
+   "name": "Full screen mode",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "cdn.flightconnections.com/mapbasics.min.js@204887"
+  },
+  {
+   "name": "Widget slider",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=slider] x20"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x3"
+  },
+  {
+   "name": "Uses the location",
+   "kind": "input",
+   "tag": "read",
+   "evidence": "cdn.flightconnections.com/leaflet.min.js@32570"
+  },
+  {
+   "name": "Remembers a setting in the browser: [token]",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: aws_waf_referrer",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: awswaf_token_refresh_timestamp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: fs.adb",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: fs.cdi",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: fs.cfc",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: multiple_airlines",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Language versions: 60 (x-default, en, en-au, en-ca, en-ee, en-gb)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Uses Maps",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  }
+ ]
+}

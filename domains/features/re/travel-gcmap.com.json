@@ -1,0 +1,21 @@
+{
+ "site": "www.gcmap.com",
+ "url": "https://www.gcmap.com/",
+ "scanned": "2026-10-26",
+ "blocked": {
+  "kind": "unreachable",
+  "why": "page.goto: net::ERR_CONNECTION_REFUSED at https://www.gcmap.com/ Call log: - navigating to \"https://"
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}
