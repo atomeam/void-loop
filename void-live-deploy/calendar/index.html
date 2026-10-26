@@ -73,6 +73,10 @@
   /* several calendars: a colour each (the dot before an event, the bar on a chip), a switch each */
   .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--accent)); align-self: center; }
   #calList li { flex-wrap: nowrap; }
+  /* tasks: a tick, a title and the day it is due */
+  .task { display: flex; gap: 10px; align-items: center; min-height: 44px; } .task label { display: flex; gap: 10px; align-items: center; flex: 1 1 auto; min-width: 0; cursor: pointer; overflow-wrap: anywhere; }
+  .task input[type=checkbox] { width: 24px; height: 24px; min-height: 0; margin: 0; padding: 0; flex: none; accent-color: var(--accent); } .task.done label span { color: var(--soft); text-decoration: line-through; }
+  .task .due { flex: none; font-size: 12px; color: var(--soft); } .task .due.late { color: var(--bad); font-weight: 600; }
   #calList label { display: flex; align-items: center; gap: 8px; flex: 1 1 auto; min-width: 0; min-height: 44px; cursor: pointer; overflow-wrap: anywhere; }
   #calList input[type=checkbox] { width: 22px; height: 22px; min-height: 0; margin: 0; padding: 0; flex: none; accent-color: var(--accent); }
   input[type=color] { width: 44px; min-width: 44px; padding: 4px; flex: none; }
@@ -116,12 +120,19 @@
       <button type="button" id="newBtn">New event</button>
       <button type="button" id="searchBtn" aria-expanded="false" aria-controls="sf">Search</button>
       <button type="button" id="calsBtn" aria-expanded="false" aria-controls="cals">Calendars</button>
+      <button type="button" id="tasksBtn" aria-expanded="false" aria-controls="tasks">Tasks</button>
       <button type="button" id="allow" hidden>Allow notifications</button>
     </div>
     <div class="note" id="note" role="status"></div>
   </form>
   <form id="sf" hidden role="search"><label class="vh" for="sq" id="sqL">Search events</label><input type="search" id="sq" placeholder="Search events" maxlength="100"></form>
   <ul class="list" id="results" hidden></ul>
+  <section class="pane" id="tasks" hidden aria-labelledby="tasksH" style="margin-top:8px">
+    <h2 id="tasksH" style="margin:0 0 4px">Tasks</h2>
+    <ul class="list" id="taskList"></ul>
+    <form id="taskAdd" class="row" autocomplete="off"><label class="vh" for="taskT" id="taskTL">New task</label><input id="taskT" maxlength="200" placeholder="New task" style="flex:1 1 150px"><label class="vh" for="taskD" id="taskDL">Due</label><input type="date" id="taskD"><button type="submit" id="taskBtn">Add task</button></form>
+    <div class="row"><button type="button" id="taskClear">Clear done</button><span class="note" id="taskNote" style="margin:0"></span></div>
+  </section>
   <section class="pane" id="cals" hidden aria-labelledby="calsH" style="margin-top:8px">
     <h2 id="calsH" style="margin:0 0 4px">Calendars</h2>
     <ul class="list" id="calList"></ul>
@@ -188,7 +199,7 @@
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
 
-  <p class="srcs" id="srcs">Events, reminders and invites stay in this browser; an event can carry a location with a map link. An invite is a link that carries the event itself, or an email with the .ics file; guests answer yes, maybe or no (RSVP) and see who is coming. Several calendars, each with its own colour and an on/off switch: yours, birthdays, public holidays by country. Share a calendar by a view link or an edit link, no account; subscribe to any calendar by its address (.ics or webcal). Only a shared calendar, a subscription and invite replies go to Verse's server.</p>
+  <p class="srcs" id="srcs">Events, reminders and invites stay in this browser; an event can carry a location with a map link. Tasks with a due day sit beside events. An invite is a link that carries the event itself, or an email with the .ics file; guests answer yes, maybe or no (RSVP) and see who is coming. Several calendars, each with its own colour and an on/off switch: yours, birthdays, public holidays by country. Share a calendar by a view link or an edit link, no account; subscribe to any calendar by its address (.ics or webcal). Only a shared calendar, a subscription and invite replies go to Verse's server.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 
@@ -234,9 +245,9 @@
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
-      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
+      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
     }
     const narrow = matchMedia('(max-width: 640px)');
@@ -261,6 +272,24 @@
       const r = await fetch('/api/icsfeed?url=' + encodeURIComponent(c.url)).then(async (x) => ({ status: x.status, j: await x.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
       if (!r.j.ok) return r.j.error || W.feedFail; store.feeds = store.feeds || {}; store.feeds[c.id] = { events: (r.j.events || []).map(C.normalize).filter(Boolean), at: Date.now(), name: r.j.name }; keep(); return '';
     }
+    // tasks (lib/calendar.js tasksOf): a day's tasks are listed under its events, and show in the month as "☐ title"
+    const tasks = () => C.tasksOf(store);
+    const setTasks = (list) => { store.tasks = list; keep(); };
+    const dueText = (t) => (t.due ? C.fmtDay(C.parseLocal(t.due), lang, { weekday: false, year: C.parseLocal(t.due).getFullYear() !== now().getFullYear() }) : '');
+    const taskRow = (t) => { const li = el('li', 'task' + (t.done ? ' done' : '')), lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.checked = t.done; lb.append(cb, el('span', '', t.title)); li.append(lb);
+      const late = !t.done && t.due && t.due < C.dayKey(now()); if (t.due) li.append(el('span', 'due' + (late ? ' late' : ''), (late ? W.overdue + ' · ' : '') + dueText(t)));
+      cb.addEventListener('change', () => { setTasks(C.withTask(tasks(), { ...t, done: cb.checked })); render(); if (!$('tasks').hidden) drawTasks(); }); return li; };
+    const taskList = (day) => { const ts = C.tasksOn(tasks(), day); if (!ts.length) return null; const ul = el('ul', 'ev'); for (const t of C.sortTasks(ts)) ul.append(taskRow(t)); return ul; };
+    function drawTasks() {
+      const ul = $('taskList'); ul.replaceChildren(); const all = C.sortTasks(tasks());
+      if (!all.length) ul.append(el('li', 'empty', W.noTasks));
+      for (const t of all) { const li = taskRow(t), x = el('button', 'bad', '×'); x.type = 'button'; x.setAttribute('aria-label', W.del + ': ' + t.title); x.addEventListener('click', () => { setTasks(C.withoutTask(tasks(), t.id)); drawTasks(); render(); }); li.append(x); ul.append(li); }
+      const open = all.filter((t) => !t.done).length; $('tasksBtn').textContent = W.tasks + (open ? ' (' + open + ')' : '');
+    }
+    $('tasksBtn').addEventListener('click', () => { const open = $('tasks').hidden; $('tasks').hidden = !open; $('tasksBtn').setAttribute('aria-expanded', String(open)); if (open) drawTasks(); });
+    $('taskAdd').addEventListener('submit', (e) => { e.preventDefault(); const title = $('taskT').value.trim(); if (!title) { $('taskT').focus(); return; }
+      setTasks(C.withTask(tasks(), { title, due: $('taskD').value })); $('taskT').value = ''; $('taskD').value = ''; drawTasks(); render(); $('taskNote').textContent = W.taskAdded + ': ' + title; });
+    $('taskClear').addEventListener('click', () => { setTasks(tasks().filter((t) => !t.done)); drawTasks(); render(); });
     const shown = () => C.shownEvents(store.events, cals(), [...extra(), ...sharedEvents(), ...feedEvents()]);
     const callShare = (method, share, { body, op } = {}) => fetch('/api/calshare' + (share ? '?id=' + share.id + (op ? '&op=' + op : '') : ''), { method, headers: { ...(share ? { 'x-cal-key': share.key } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
       .then(async (r) => ({ status: r.status, j: await r.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
@@ -308,6 +337,7 @@
         const dow = el('div', 'dow'); for (const n of C.dayNames(lang)) dow.append(el('span', '', n)); v.append(dow);
         const g = el('div', 'month'), days = C.monthGrid(c.getFullYear(), c.getMonth()), occs = C.agenda(shown(), C.dayKey(days[0]), C.dayKey(days[41])), byDay = {};
         for (const o of occs) { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); for (let d = C.startOfDay(s); d <= e && d <= days[41]; d = C.addDays(d, 1)) (byDay[C.dayKey(d)] = byDay[C.dayKey(d)] || []).push(o); }
+        for (const t of tasks()) if (t.due && t.due >= C.dayKey(days[0]) && t.due <= C.dayKey(days[41])) (byDay[t.due] = byDay[t.due] || []).push({ id: 'task:' + t.id, title: (t.done ? '☑ ' : '☐ ') + t.title, start: t.due, end: t.due, allDay: true, task: true });
         for (const d of days) { const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
           if (sameDay(d, c)) b.setAttribute('aria-current', 'true'); b.append(el('span', 'd', String(d.getDate()))); const list = byDay[k] || [];
           // as many as the cell holds (its height is fixed): one on a phone, two wider; the rest as "+n more" (the day shows them all)
@@ -319,15 +349,16 @@
       } else if (state.view === 'week') {
         const a = C.startOfWeek(c), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
         const g = el('div', 'week');
-        for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang)[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); g.append(sec); }
+        for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang)[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); const tl = taskList(C.dayKey(d)); if (tl) sec.append(tl); g.append(sec); }
         v.append(g);
       } else if (state.view === 'list') { // the schedule: the next 60 days from the day shown, day by day, only the days with something on them
         const z = C.addDays(c, 59); $('period').textContent = C.fmtDay(c, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
         const occs = C.agenda(shown(), C.dayKey(c), C.dayKey(z)), byDay = new Map(); for (const o of occs) { const k = o.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(o); }
+        for (const t of tasks()) if (t.due && t.due >= C.dayKey(c) && t.due <= C.dayKey(z) && !byDay.has(t.due)) byDay.set(t.due, []);
         if (!byDay.size) v.append(el('p', 'empty', W.noneAhead));
-        for (const [k, list] of byDay) { const d = C.parseLocal(k), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.style.marginTop = '8px'; h.append(el('span', 'd', C.fmtDay(d, lang, { year: d.getFullYear() !== td.getFullYear() }))); v.append(h, listOf(list)); }
+        for (const [k, list] of [...byDay].sort((a, b) => a[0].localeCompare(b[0]))) { const d = C.parseLocal(k), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.style.marginTop = '8px'; h.append(el('span', 'd', C.fmtDay(d, lang, { year: d.getFullYear() !== td.getFullYear() }))); v.append(h); if (list.length) v.append(listOf(list)); const tl = taskList(k); if (tl) v.append(tl); }
       } else {
-        $('period').textContent = C.fmtDay(c, lang); const occs = C.onDay(shown(), C.dayKey(c)); v.append(listOf(occs));
+        $('period').textContent = C.fmtDay(c, lang); const occs = C.onDay(shown(), C.dayKey(c)); v.append(listOf(occs)); { const tl = taskList(C.dayKey(c)); if (tl) v.append(tl); }
         const b = el('button', '', '+ ' + W.newEvent); b.type = 'button'; b.style.marginTop = '8px'; b.addEventListener('click', () => openEditor(null, c)); v.append(b);
       }
       $('count').textContent = store.events.length ? store.events.length + ' ' + (store.events.length === 1 ? (de ? 'Termin' : 'event') : W.events) : ''; remBar(); store.view = state.view; keep();
@@ -422,6 +453,8 @@
       } } }
     // quick add: the box, or ?q= in the link (added once: the same title at the same time is not added twice)
     function quick(text) {
+      const task = C.taskFromText(text, now());
+      if (task) { setTasks(C.withTask(tasks(), task)); $('q').value = ''; render(); if (!$('tasks').hidden) drawTasks(); return say(W.taskAdded + ': ' + task.title + (task.due ? ', ' + dueText(task) : '')); }
       const e = C.quickAdd(text, now()); if (!e) return say(W.nothing, true);
       const dup = store.events.find((x) => x.title.toLowerCase() === e.title.toLowerCase() && x.start === e.start); const n = dup || e; if (!dup) { store.events = C.withEvent(store.events, e); keep(); }
       state.cursor = C.startOfDay(C.parseLocal(n.start)); state.view = 'day'; render(); showDetail(C.occurrences(n, n.start, n.start)[0] || n); say((dup ? W.alreadyIn : W.added) + ': ' + n.title + ', ' + whenOf(n)); $('q').value = ''; checkReminders();
@@ -501,7 +534,7 @@
     setInterval(checkReminders, 20000); checkReminders();
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
     if (!q.get('q')) render();
-    holidays();
+    holidays(); { const open = tasks().filter((t) => !t.done).length; if (open) $('tasksBtn').textContent = W.tasks + ' (' + open + ')'; }
     // a shared calendar's link (#share=<id>.<key>): added to this browser's calendars with what the link may do (the hash is taken off the address)
     const link = SH.fromHash(location.hash);
     if (link) { history.replaceState(null, '', location.pathname + location.search); (async () => {

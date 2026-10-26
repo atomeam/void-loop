@@ -127,3 +127,13 @@ test('the page is registered: toolkit, the service worker, the SEO table, the as
   assert.equal(score(shown, p.truth).n, 5, score(shown, p.truth).missing.join()); assert.equal(score('Dentist 3:00 PM every week', p.truth).n, 2);
   assert.equal(Object.keys(p.parts).join(), 'reminders,invites,recurring events'); assert.equal(score('Reminders · Notification · Invite · .ics · repeats', Object.values(p.parts).flat()).n, 5);
 });
+
+test('tasks: well formed or nothing; a day or none; open first by day; "task: buy milk friday" reads its day, "dentist friday" is not a task', () => {
+  assert.equal(C.normalizeTask({ title: ' ' }), null); assert.equal(C.normalizeTask({ title: 'x', due: 'soon' }).due, ''); assert.equal(C.normalizeTask({ title: 'x', due: '2026-11-02', done: 1 }).done, true);
+  let t = C.withTask([], { id: 'a', title: 'tax', due: '2026-11-02' }); t = C.withTask(t, { id: 'b', title: 'milk' }); t = C.withTask(t, { id: 'c', title: 'old', due: '2026-10-01', done: true }); t = C.withTask(t, { id: 'a', title: 'tax return', due: '2026-11-02' });
+  assert.equal(t.length, 3); assert.deepEqual(C.sortTasks(t).map((x) => x.id), ['a', 'b', 'c'], 'open ones by day, the day-less last of them, then the ticked');
+  assert.deepEqual(C.tasksOn(t, '2026-11-02').map((x) => x.title), ['tax return']); assert.equal(C.withoutTask(t, 'b').length, 2);
+  const now = new Date(2026, 9, 26); assert.deepEqual(C.taskFromText('task: buy milk friday', now), { title: 'buy milk', due: '2026-10-30' }); assert.deepEqual(C.taskFromText('todo call Sam', now), { title: 'call Sam', due: '' });
+  assert.deepEqual(C.taskFromText('Aufgabe Steuer 3 nov', now), { title: 'Steuer', due: '2026-11-03' }); assert.equal(C.taskFromText('dentist friday', now), null);
+  assert.deepEqual(C.tasksOf({ tasks: [{ title: 'ok' }, { title: '' }, 5] }).map((x) => x.title), ['ok']);
+});

@@ -110,8 +110,9 @@
      "name": "Tasks on the calendar",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Tasks pane (#tasksBtn): add with a day or none, tick off, clear done; \"task: buy milk friday\" in the quick-add box; a day's tasks sit under its events and show in the month, week and Schedule views (lib/calendar.js tasksOf, taskFromText; tools/calendar.test.mjs)",
+     "shows": "Tasks with a due day"
     },
     {
      "name": "Out of office, focus time, working location",
@@ -361,8 +362,8 @@
      "name": "To-do lists (chores, packing)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a task list with due days; no separate named lists"
     },
     {
      "name": "Recipe box and meal planner, ingredients to the shopping list",
@@ -413,8 +414,8 @@
      "name": "Memos and shared to-dos",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "void-live-deploy/calendar/index.html:194 Notes (per event only)"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: tasks on this device; not shared"
     },
     {
      "name": "Shared photo albums",
@@ -525,8 +526,8 @@
      "name": "Tasks and events in one calendar",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: tasks due on a day show in the same month, week, day and Schedule views as events"
     },
     {
      "name": "Daily planner",
@@ -547,7 +548,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "void-live-deploy/calendar/index.html:194 Notes"
+     "verse_evidence": "2026-10-25: tasks with a title and a day; no sub-tasks or notes"
     },
     {
      "name": "Location reminders, WhatsApp reminders, colour tags",
@@ -788,8 +789,8 @@
      "name": "Tasks with priority and due date",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: tasks with a due day, ticked off, overdue marked; no priority"
     },
     {
      "name": "Follow holiday and sports calendars",
@@ -876,7 +877,7 @@
   }
  },
  "union_gaps": [
-  "Tasks / to-dos on the calendar: calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
+  "Tasks with priority, sub-tasks and shared to-dos (tasks with a due day are built, 2026-10-25): calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
   "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
   "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
   "Drag to move and resize events: calendar.google.com, outlook.live.com",

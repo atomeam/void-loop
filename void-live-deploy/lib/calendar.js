@@ -295,12 +295,12 @@ export function wordsFor(lang) {
     nextRem: 'Nächste Erinnerung', noRem: 'Keine Erinnerung geplant', allow: 'Benachrichtigungen erlauben', allowed: 'Benachrichtigungen an', denied: 'Erinnerungen erscheinen hier auf der Seite', inPage: 'Erinnerung',
     added: 'Eingetragen', addToMine: 'In meinen Kalender', invitedTo: 'Du bist eingeladen', alreadyIn: 'Schon im Kalender', empty: 'Keine Termine', events: 'Termine', more: 'mehr', offline: 'Offline: alles bleibt auf diesem Gerät',
     deleteOne: 'Nur diesen Termin löschen', deleteAll: 'Alle Wiederholungen löschen', results: 'Treffer', nothing: 'Nichts gefunden', keyHelp: 'Pfeiltasten blättern, T ist heute, M W D L wechseln die Ansicht, N ein neuer Termin, / sucht',
-    note: 'Termine, Erinnerungen und Einladungen bleiben in diesem Browser; ein Termin kann einen Ort mit Kartenlink tragen. Eine Einladung ist ein Link, der den Termin selbst trägt, oder eine E-Mail mit der .ics-Datei; Gäste antworten mit Ja, Vielleicht oder Nein und sehen, wer kommt. Mehrere Kalender, jeder mit eigener Farbe und Schalter: deiner, Geburtstage, Feiertage nach Land. Einen Kalender per Link zum Ansehen oder Bearbeiten teilen, ohne Konto; jeden Kalender über seine Adresse abonnieren (.ics oder webcal). Nur ein geteilter Kalender, ein Abo und Antworten auf Einladungen gehen an Verses Server.',
+    note: 'Termine, Erinnerungen und Einladungen bleiben in diesem Browser; ein Termin kann einen Ort mit Kartenlink tragen. Aufgaben mit Fälligkeitstag stehen neben den Terminen. Eine Einladung ist ein Link, der den Termin selbst trägt, oder eine E-Mail mit der .ics-Datei; Gäste antworten mit Ja, Vielleicht oder Nein und sehen, wer kommt. Mehrere Kalender, jeder mit eigener Farbe und Schalter: deiner, Geburtstage, Feiertage nach Land. Einen Kalender per Link zum Ansehen oder Bearbeiten teilen, ohne Konto; jeden Kalender über seine Adresse abonnieren (.ics oder webcal). Nur ein geteilter Kalender, ein Abo und Antworten auf Einladungen gehen an Verses Server.',
     calendars: 'Kalender', calendar: 'Kalender', addCal: 'Kalender hinzufügen', calName: 'Name des neuen Kalenders', removeCal: 'Entfernen', colour: 'Farbe', country: 'Land', show: 'Zeigen', fromNet: 'Feiertage von Nager.Date', readOnly: 'Nur lesen',
     shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
     subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
     replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
-    location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
+    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -311,12 +311,12 @@ export function wordsFor(lang) {
     nextRem: 'Next reminder', noRem: 'No reminder scheduled', allow: 'Allow notifications', allowed: 'Notifications on', denied: 'Reminders will show here on the page', inPage: 'Reminder',
     added: 'Added', addToMine: 'Add to my calendar', invitedTo: 'You are invited', alreadyIn: 'Already in your calendar', empty: 'No events', events: 'events', more: 'more', offline: 'Offline: everything stays on this device',
     deleteOne: 'Delete only this one', deleteAll: 'Delete all repeats', results: 'results', nothing: 'Nothing found', keyHelp: 'Arrow keys move, T is today, M W D L switch the view, N is a new event, / searches',
-    note: 'Events, reminders and invites stay in this browser; an event can carry a location with a map link. An invite is a link that carries the event itself, or an email with the .ics file; guests answer yes, maybe or no (RSVP) and see who is coming. Several calendars, each with its own colour and an on/off switch: yours, birthdays, public holidays by country. Share a calendar by a view link or an edit link, no account; subscribe to any calendar by its address (.ics or webcal). Only a shared calendar, a subscription and invite replies go to Verse\'s server.',
+    note: 'Events, reminders and invites stay in this browser; an event can carry a location with a map link. Tasks with a due day sit beside events. An invite is a link that carries the event itself, or an email with the .ics file; guests answer yes, maybe or no (RSVP) and see who is coming. Several calendars, each with its own colour and an on/off switch: yours, birthdays, public holidays by country. Share a calendar by a view link or an edit link, no account; subscribe to any calendar by its address (.ics or webcal). Only a shared calendar, a subscription and invite replies go to Verse\'s server.',
     calendars: 'Calendars', calendar: 'Calendar', addCal: 'Add calendar', calName: 'Name of the new calendar', removeCal: 'Remove', colour: 'Colour', country: 'Country', show: 'Show', fromNet: 'Holidays from Nager.Date', readOnly: 'Read only',
     shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
     subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
     replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
-    location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
+    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
   };
 }
 
@@ -362,3 +362,31 @@ export function shownEvents(events, cals, extra = []) {
 export const calendarOf = (cals, e) => (cals || []).find((c) => c.id === ((e && e.cal) || 'main')) || (cals || [])[0] || { id: 'main', name: 'My calendar', color: PALETTE[0], on: true };
 /** this browser's country for the holidays (en-GB -> GB), else US. Pure. */
 export const countryOf = (lang) => { const m = /[-_]([A-Za-z]{2})\b/.exec(String(lang || '')); return m ? m[1].toUpperCase() : /^de\b/i.test(String(lang || '')) ? 'DE' : 'US'; };
+
+// tasks on the calendar (owner, 2026-10-25: Google, Any.do, Yahoo, Cozi and TimeTree put to-dos beside events): a title, a day it is due (or none),
+// ticked off or not; kept in the store as { tasks: [...] } beside the events. Pure. Tests: tools/calendar.test.mjs.
+/** a task as it may be kept: { id, title, due ('YYYY-MM-DD' or ''), done }, or null without a title. Pure. */
+export function normalizeTask(t) {
+  if (!t || typeof t !== 'object') return null;
+  const title = String(t.title || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 200); if (!title) return null;
+  const due = /^\d{4}-\d{2}-\d{2}$/.test(String(t.due || '')) && parseLocal(t.due) ? String(t.due) : '';
+  return { id: String(t.id || newId()).replace(/[^\w-]/g, '').slice(0, 40) || newId(), title, due, done: !!t.done };
+}
+/** the tasks a store keeps, well formed, at most 500. Pure. */
+export const tasksOf = (store) => (Array.isArray(store && store.tasks) ? store.tasks : []).map(normalizeTask).filter(Boolean).slice(0, 500);
+/** the tasks with one added or changed (by id). Pure. */
+export function withTask(tasks, t) { const n = normalizeTask(t); if (!n) return tasks || []; return [...(tasks || []).filter((x) => x.id !== n.id), n].slice(-500); }
+export const withoutTask = (tasks, id) => (tasks || []).filter((x) => x.id !== id);
+/** tasks to show in order: open ones first by day (no day last), then the ticked. Pure. */
+export const sortTasks = (tasks) => [...(tasks || [])].sort((a, b) => (a.done - b.done) || String(a.due || '9999').localeCompare(String(b.due || '9999')) || a.title.localeCompare(b.title));
+/** the tasks due on a day. Pure. */
+export const tasksOn = (tasks, day) => (tasks || []).filter((t) => t.due === day);
+/** "todo buy milk friday", "task: call Sam 3 nov", "Aufgabe Steuer morgen": { title, due } or null when the line is not a task. A day in it is
+ *  read as the calendar's quick add reads one; none means no day. Pure. */
+export function taskFromText(text, now = new Date()) {
+  const m = /^\s*(?:todo|to-do|to do|task|aufgabe)\s*:?\s+(.+)$/i.exec(String(text || '')); if (!m) return null;
+  const rest = m[1].replace(/\s+/g, ' ').trim(), e = quickAdd(rest, now);
+  if (!e) return { title: rest.slice(0, 200), due: '' };
+  const dated = e.title.toLowerCase() !== rest.toLowerCase();
+  return { title: e.title, due: dated ? e.start.slice(0, 10) : '' };
+}
