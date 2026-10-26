@@ -164,3 +164,20 @@ test('moving: whole days, times and length kept; a multi-day event keeps its len
   assert.equal(r[1].start, '2026-11-10T18:00'); assert.equal(r[1].end, '2026-11-10T19:00'); assert.ok(!r[1].rrule && !r[1].rsvp && r[1].id !== 'y' && !r[1].exdates.length);
   assert.ok(!C.occurrences(r[0], '2026-11-09', '2026-11-09').length, 'the series skips the day it gave up');
 });
+
+test('time zones: names checked, wall times to instants and back with daylight saving, an event in another zone shown on the viewer\'s clock, .ics with TZID both ways', () => {
+  assert.ok(C.isTz('America/New_York') && C.isTz('UTC')); for (const bad of ['', 'Nope/Zone', '<x>', 'a'.repeat(80), null]) assert.ok(!C.isTz(bad), String(bad));
+  assert.equal(C.wallToDate('2026-11-05T10:00', 'America/New_York').toISOString(), '2026-11-05T15:00:00.000Z', 'EST, UTC-5');
+  assert.equal(C.wallToDate('2026-03-09T10:00', 'America/New_York').toISOString(), '2026-03-09T14:00:00.000Z', 'EDT, UTC-4, after 8 March');
+  assert.equal(C.zoneWall(C.wallToDate('2026-11-05T10:00', 'America/New_York'), 'Asia/Tokyo'), '2026-11-06T00:00', 'the next day in Tokyo');
+  assert.equal(C.tzCity('America/New_York'), 'New York');
+  const e = { id: 's', title: 'Standup', start: '2026-03-05T10:00', end: '2026-03-05T10:30', tz: 'America/New_York', rrule: { freq: 'DAILY', interval: 1, count: 7 } };
+  const o = C.occurrences(e, '2026-03-05', '2026-03-12', 'Europe/London'); assert.equal(o.length, 7);
+  assert.deepEqual(o.map((x) => x.start.slice(5)), ['03-05T15:00', '03-06T15:00', '03-07T15:00', '03-08T14:00', '03-09T14:00', '03-10T14:00', '03-11T14:00'], 'London sees 15:00, then 14:00 once the US clocks have changed and the UK has not');
+  assert.equal(o[0].wallStart, '2026-03-05T10:00'); assert.equal(o[3].occurrence, '2026-03-08', 'the day in its own zone, for exceptions');
+  assert.equal(C.occurrences(e, '2026-03-05', '2026-03-12', 'America/New_York')[0].start, '2026-03-05T10:00', 'in its own zone nothing moves');
+  assert.equal(C.occurrences({ ...e, rrule: null, start: '2026-03-05T22:00', end: '2026-03-05T23:00' }, '2026-03-06', '2026-03-06', 'Asia/Tokyo').length, 1, 'a late evening in New York is the next day in Tokyo, found by the next day\'s range');
+  assert.equal(C.normalize({ title: 'x', start: '2026-01-01', allDay: true, tz: 'Europe/Paris' }).tz, undefined); assert.equal(C.normalize({ title: 'x', start: '2026-01-01T10:00', tz: 'Nope/Zone' }).tz, undefined);
+  const t = C.icsOf([C.normalize(e)]); assert.match(t, /DTSTART;TZID=America\/New_York:20260305T100000/); const back = C.parseIcs(t)[0]; assert.equal(back.tz, 'America/New_York'); assert.equal(back.start, '2026-03-05T10:00');
+  assert.equal(C.parseIcs('BEGIN:VCALENDAR\nBEGIN:VEVENT\nSUMMARY:x\nDTSTART;TZID=W. Europe Standard Time:20260305T100000\nEND:VEVENT\nEND:VCALENDAR')[0].tz, undefined, 'a Windows zone name is not guessed');
+});

@@ -46,7 +46,7 @@ export function normalize(e) {
   const rrule = e.rrule && typeof e.rrule === 'object' && FREQS.includes(String(e.rrule.freq || '').toUpperCase()) ? normalizeRule(e.rrule) : null;
   const reminders = [...new Set((Array.isArray(e.reminders) ? e.reminders : []).map((m) => Math.round(+m)).filter((m) => Number.isFinite(m) && m >= 0 && m <= 4 * 7 * 1440))].sort((a, b) => a - b).slice(0, 5);
   const invitees = [...new Set((Array.isArray(e.invitees) ? e.invitees : String(e.invitees || '').split(/[,;\s]+/)).map((s) => String(s || '').trim()).filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))].slice(0, 50);
-  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(String(e.location || '').trim() ? { location: String(e.location).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 300) } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
+  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(String(e.location || '').trim() ? { location: String(e.location).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 300) } : {}), ...(!allDay && isTz(e.tz) ? { tz: String(e.tz) } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
 }
 // an invite's replies (lib/rsvp.js, /api/rsvp): the organizer keeps the owner key; the link carries only the reply key
 const rsvpOk = (r) => !!r && /^[A-Za-z0-9_-]{11}$/.test(String(r.id || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.owner || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.reply || ''));
@@ -75,7 +75,18 @@ const nthWeekday = (year, month, n, wd) => { // the nth (1..5, or -1 last) weekd
 };
 /** every time an event happens between two local dates (inclusive of a day the range names), its recurrence expanded: [{ ...event, start, end,
  *  occurrence: the local day it is the instance of }], sorted. A plain event is its own one occurrence. Hard cap of 1000 instances. Pure. */
-export function occurrences(ev, fromISO, toISO) {
+export function occurrences(ev, fromISO, toISO, viewTz = localTzName()) {
+  const e = normalize(ev); if (!e) return [];
+  // an event in another zone: its days are worked out in its own zone (a repeat across a clock change keeps its wall time there), then each
+  // occurrence is moved to the viewer's clock (its original day kept as `occurrence`, for exceptions); the range is widened a day each way first
+  if (e.tz && !e.allDay && e.tz !== viewTz) {
+    const f0 = parseLocal(fromISO) || new Date(0), t0 = parseLocal(toISO), t1 = t0 ? (/^\d{4}-\d{2}-\d{2}$/.test(String(toISO).trim()) ? addDays(t0, 1) : t0) : null;
+    return rawOccurrences(e, fmtLocal(addDays(f0, -1)), t1 ? fmtLocal(addDays(t1, 1)) : '').map((o) => { const s = wallToDate(o.start, e.tz), f = wallToDate(o.end, e.tz); return { ...o, start: zoneWall(s, viewTz), end: zoneWall(f, viewTz), wallStart: o.start, wallEnd: o.end }; })
+      .filter((o) => parseLocal(o.end) > f0 && (!t1 || parseLocal(o.start) < t1)).sort((a, b) => a.start.localeCompare(b.start));
+  }
+  return rawOccurrences(e, fromISO, toISO);
+}
+function rawOccurrences(ev, fromISO, toISO) {
   const e = normalize(ev); if (!e) return [];
   const from = parseLocal(fromISO) || new Date(0), to0 = parseLocal(toISO); const to = to0 ? (/^\d{4}-\d{2}-\d{2}$/.test(String(toISO).trim()) ? addDays(to0, 1) : to0) : new Date(8640000000000000);
   const st = parseLocal(e.start), en = parseLocal(e.end), len = Math.max(0, en - st) + (e.allDay ? DAY : 0), out = [];
@@ -139,9 +150,9 @@ export function icsOf(events, now = new Date()) {
   const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Verse//Calendar//EN', 'CALSCALE:GREGORIAN'];
   for (const raw of events || []) { const e = normalize(raw); if (!e) continue; const st = parseLocal(e.start), en = parseLocal(e.end);
     L.push('BEGIN:VEVENT', 'UID:' + e.id + '@a-to-mind.com', 'DTSTAMP:' + now.toISOString().replace(/[-:]|\.\d{3}/g, ''));
-    if (e.allDay) L.push('DTSTART;VALUE=DATE:' + e.start.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + dayKey(addDays(en, 1)).replace(/-/g, '')); else L.push('DTSTART:' + stamp(st), 'DTEND:' + stamp(en));
+    if (e.allDay) L.push('DTSTART;VALUE=DATE:' + e.start.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + dayKey(addDays(en, 1)).replace(/-/g, '')); else if (e.tz) L.push('DTSTART;TZID=' + e.tz + ':' + stamp(st), 'DTEND;TZID=' + e.tz + ':' + stamp(en)); else L.push('DTSTART:' + stamp(st), 'DTEND:' + stamp(en));
     L.push('SUMMARY:' + esc(e.title)); if (e.notes) L.push('DESCRIPTION:' + esc(e.notes)); if (e.location) L.push('LOCATION:' + esc(e.location)); if (e.rrule) L.push('RRULE:' + rruleText(e.rrule));
-    for (const x of e.exdates) L.push('EXDATE' + (e.allDay ? ';VALUE=DATE:' + x.replace(/-/g, '') : ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00'));
+    for (const x of e.exdates) L.push('EXDATE' + (e.allDay ? ';VALUE=DATE:' + x.replace(/-/g, '') : e.tz ? ';TZID=' + e.tz + ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00' : ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00'));
     for (const a of e.invitees) L.push('ATTENDEE;CN=' + esc(a.split('@')[0]) + ';RSVP=TRUE:mailto:' + a);
     for (const m of e.reminders) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(e.title), 'TRIGGER:' + trigger(m), 'END:VALARM');
     L.push('END:VEVENT'); }
@@ -166,7 +177,7 @@ export function parseIcs(text) {
     if (alarm) { if (name === 'TRIGGER' && !/RELATED=END/i.test(params)) { const m = minutesOf(val); if (m != null) alarm.minutes = m; } continue; }
     if (name === 'UID') e.id = val.replace(/@.*$/, '').replace(/[^\w.-]/g, '').slice(0, 40) || undefined;
     else if (name === 'SUMMARY') e.title = unesc(val); else if (name === 'DESCRIPTION') e.notes = unesc(val); else if (name === 'LOCATION') e.location = unesc(val);
-    else if (name === 'DTSTART') { const d = icsDate(val, params); if (d instanceof Date) { e.start = fmtLocal(d); e.allDay = false; } else if (d) { e.start = d.allDay ? dayKey(d.d) : fmtLocal(d.d); e.allDay = d.allDay; } }
+    else if (name === 'DTSTART') { const d = icsDate(val, params); if (d instanceof Date) { e.start = fmtLocal(d); e.allDay = false; } else if (d) { e.start = d.allDay ? dayKey(d.d) : fmtLocal(d.d); e.allDay = d.allDay; const z = /TZID=([^;:]+)/i.exec(params); if (z && !d.allDay && isTz(z[1])) e.tz = z[1]; } }
     else if (name === 'DTEND') { const d = icsDate(val, params); if (d instanceof Date) e.end = fmtLocal(d); else if (d) e.end = d.allDay ? dayKey(addDays(d.d, -1)) : fmtLocal(d.d); }
     else if (name === 'DURATION' && !e.end) { const m = minutesOf(val); if (m != null && e.start) { const s = parseLocal(e.start); e.end = fmtLocal(new Date(s.getTime() + m * 60000)); } }
     else if (name === 'RRULE') e.rrule = parseRrule(val);
@@ -300,7 +311,7 @@ export function wordsFor(lang) {
     shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
     subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
     replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
-    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', moveTo: 'Verschieben auf', moved: 'Verschoben', movedOne: 'Nur dieser Termin verschoben, die Serie bleibt', year: 'Jahr', weekStarts: 'Woche beginnt am', mon: 'Montag', sun: 'Sonntag', sat: 'Samstag', weekNums: 'Wochennummern', weekAbbr: 'KW', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
+    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', moveTo: 'Verschieben auf', moved: 'Verschoben', movedOne: 'Nur dieser Termin verschoben, die Serie bleibt', tz: 'Zeitzone', tzPh: 'Wie mein Kalender', tz2: 'Zweite Zeitzone', tz2Ph: 'z. B. America/New_York', tzThere: 'dort', tzBad: 'Diese Zeitzone kenne ich nicht', year: 'Jahr', weekStarts: 'Woche beginnt am', mon: 'Montag', sun: 'Sonntag', sat: 'Samstag', weekNums: 'Wochennummern', weekAbbr: 'KW', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -316,7 +327,7 @@ export function wordsFor(lang) {
     shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
     subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
     replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
-    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', moveTo: 'Move to', moved: 'Moved', movedOne: 'Moved only this one; the series stays', year: 'Year', weekStarts: 'Week starts on', mon: 'Monday', sun: 'Sunday', sat: 'Saturday', weekNums: 'Week numbers', weekAbbr: 'Wk', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
+    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', moveTo: 'Move to', moved: 'Moved', movedOne: 'Moved only this one; the series stays', tz: 'Time zone', tzPh: 'Same as my calendar', tz2: 'Second time zone', tz2Ph: 'e.g. America/New_York', tzThere: 'there', tzBad: 'I do not know that time zone', year: 'Year', weekStarts: 'Week starts on', mon: 'Monday', sun: 'Sunday', sat: 'Saturday', weekNums: 'Week numbers', weekAbbr: 'Wk', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
   };
 }
 
@@ -433,3 +444,24 @@ export function moveOccurrence(base, occDay, n) {
   const k = dayDiff(occDay, base.start.slice(0, 10)), copy = shiftEvent({ ...base, rrule: null, exdates: [], rsvp: undefined, id: newId() }, k + n);
   return [{ ...base, exdates: [...new Set([...(base.exdates || []), occDay])] }, copy];
 }
+
+// time zones (Google, Zoho, Proton: an event in its own zone, and a second zone beside your own): IANA names ("America/New_York"), worked out with Intl,
+// daylight saving included. An event's times are wall-clock in its zone; occurrences() moves them to the viewer's clock. Pure.
+/** this browser's own zone name. */
+export const localTzName = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) { return ''; } };
+/** whether a string is a zone name this browser knows. Pure. */
+export function isTz(tz) { if (!tz || typeof tz !== 'string' || tz.length > 60 || !/^[A-Za-z][A-Za-z0-9_+\-/]*$/.test(tz)) return false; try { Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch (_) { return false; } }
+const fmtParts = new Map();
+const partsIn = (ms, tz) => { let f = fmtParts.get(tz); if (!f) { f = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }); fmtParts.set(tz, f); }
+  const o = {}; for (const p of f.formatToParts(new Date(ms))) o[p.type] = p.value; return o; };
+/** the zone's offset from UTC at an instant, in ms (positive east). Pure. */
+export function tzOffsetMs(tz, ms) { const p = partsIn(ms, tz); return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(ms / 1000) * 1000; }
+/** the instant (a Date) of a wall-clock time ('YYYY-MM-DDTHH:MM') in a zone; in the hour a clock change skips, the time after it. Pure. */
+export function wallToDate(wall, tz) {
+  const d = parseLocal(wall); if (!d) return new Date(NaN);
+  const guess = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()); let t = guess - tzOffsetMs(tz, guess); const off2 = tzOffsetMs(tz, t); if (off2 !== tzOffsetMs(tz, guess)) t = guess - off2; return new Date(t);
+}
+/** an instant as the wall-clock time ('YYYY-MM-DDTHH:MM') a clock in that zone shows. Pure. */
+export function zoneWall(date, tz) { const p = partsIn(date.getTime(), tz); return p.year + '-' + p.month + '-' + p.day + 'T' + p.hour + ':' + p.minute; }
+/** a short place name for a zone ("America/New_York" -> "New York"). Pure. */
+export const tzCity = (tz) => String(tz || '').split('/').pop().replace(/_/g, ' ');

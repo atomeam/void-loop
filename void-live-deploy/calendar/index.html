@@ -61,6 +61,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   .month .cell.today .d { background: var(--accent); color: var(--on-accent, #fff); }
   .month .cell[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
   .chip { display: block; border-left: 3px solid var(--c, var(--accent)); font-size: 11px; line-height: 1.3; padding: 1px 4px; border-radius: 4px; background: var(--today); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t2 { flex: none; font-size: 12px; color: var(--soft); }
   .mvl { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--soft); } .mvl input { min-height: 40px; padding: 4px 8px; }
   .chip.mv { cursor: grab; user-select: none; -webkit-user-select: none; } .month .cell.over { outline: 2px dashed var(--accent); outline-offset: -2px; } .ghost { position: fixed; z-index: 30; pointer-events: none; padding: 2px 8px; border-radius: 6px; background: var(--accent); color: var(--on-accent, #fff); font-size: 12px; max-width: 70vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chip.more { background: none; color: var(--soft); border-left: 0; }
@@ -147,6 +148,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   <section class="pane" id="cals" hidden aria-labelledby="calsH" style="margin-top:8px">
     <h2 id="calsH" style="margin:0 0 4px">Calendars</h2>
     <ul class="list" id="calList"></ul>
+    <div class="row"><label for="tz2" id="tz2L" style="font-size:14px;color:var(--soft)">Second time zone</label><input id="tz2" list="tzList" autocomplete="off" maxlength="60" placeholder="e.g. America/New_York" style="flex:1 1 180px"></div>
     <div class="row" id="weekOpts"><label for="weekStart" id="weekStartL" style="font-size:14px;color:var(--soft)">Week starts on</label><select id="weekStart"><option value="1">Monday</option><option value="0">Sunday</option><option value="6">Saturday</option></select><div class="checks" style="margin:0"><label><input type="checkbox" id="weekNums"><span id="weekNumsL">Week numbers</span></label></div></div>
     <form id="calAdd" class="row" autocomplete="off"><label class="vh" for="calName" id="calNameL">Name of the new calendar</label><input id="calName" maxlength="60" placeholder="Name of the new calendar" style="flex:1 1 160px"><input type="color" id="calColor" aria-label="Colour" value="#1c7ed6"><button type="submit" id="calAddBtn">Add calendar</button></form>
     <form id="feedAdd" class="row" autocomplete="off"><label class="vh" for="feedUrl" id="feedL">A calendar's address (https:// or webcal://)</label><input id="feedUrl" type="url" inputmode="url" maxlength="1000" placeholder="A calendar's address (https:// or webcal://)" style="flex:1 1 200px"><button type="submit" id="feedBtn">Subscribe</button></form>
@@ -221,6 +223,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   <form id="edF" method="dialog">
     <h2 id="edH">New event</h2>
     <label class="f"><span id="lTitle">Title</span><input id="eTitle" maxlength="200" required autocomplete="off"></label>
+    <label class="f"><span id="lTz">Time zone</span><input id="eTz" list="tzList" autocomplete="off" placeholder="Same as my calendar" maxlength="60"></label>
+    <datalist id="tzList"></datalist>
     <label class="f"><span id="lLoc">Location</span><input id="eLoc" maxlength="300" autocomplete="off"></label>
     <label class="f"><span id="lCal">Calendar</span><select id="eCal"></select></label>
     <div class="checks" style="margin:0 0 10px"><label><input type="checkbox" id="eAll"><span id="lAll">All day</span></label></div>
@@ -259,9 +263,9 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', detMoveL: 'moveTo', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', detMoveL: 'moveTo', lLoc: 'location', lTz: 'tz', tz2L: 'tz2', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
-      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
+      $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('eTz').placeholder = W.tzPh; $('tz2').placeholder = W.tz2Ph; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
     }
     const narrow = matchMedia('(max-width: 640px)');
@@ -287,6 +291,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       if (!r.j.ok) return r.j.error || W.feedFail; store.feeds = store.feeds || {}; store.feeds[c.id] = { events: (r.j.events || []).map(C.normalize).filter(Boolean), at: Date.now(), name: r.j.name }; keep(); return '';
     }
     // tasks (lib/calendar.js tasksOf): a day's tasks are listed under its events, and show in the month as "☐ title"
+    const zones = () => { const dl = $('tzList'); if (!dl.children.length) { let list = []; try { list = Intl.supportedValuesOf('timeZone'); } catch (_) {} if (!list.length) list = ['UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Africa/Cairo', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland']; dl.append(...list.map((z) => { const o = document.createElement('option'); o.value = z; return o; })); } };
+    const tz2 = () => (C.isTz(store.tz2) && store.tz2 !== C.localTzName() ? store.tz2 : '');
     const ws = () => (store.weekStart === 0 || store.weekStart === 1 || store.weekStart === 6 ? store.weekStart : C.defaultWeekStart(lang));
     const wkLabel = (d) => W.weekAbbr + ' ' + C.weekNumber(d, ws());
     const tasks = () => C.tasksOf(store);
@@ -341,7 +347,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     const sameDay = (a, b) => C.dayKey(a) === C.dayKey(b);
     const timeOf = (o) => (o.allDay ? W.allDay : C.fmtTime(C.parseLocal(o.start), lang) + ' – ' + C.fmtTime(C.parseLocal(o.end), lang));
     const whenOf = (o) => { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); const d = C.fmtDay(s, lang); if (o.allDay) return d + (o.end !== o.start ? ' – ' + C.fmtDay(e, lang) : '') + ', ' + W.allDay; return d + ', ' + C.fmtTime(s, lang) + ' – ' + (sameDay(s, e) ? '' : C.fmtDay(e, lang) + ', ') + C.fmtTime(e, lang); };
-    const occBtn = (o, showDate) => { const b = el('button'); b.type = 'button'; const t = el('span', 't' + (o.allDay ? ' all' : ''), o.allDay ? W.allDay : C.fmtTime(C.parseLocal(o.start), lang)); b.append(dotOf(o), t, el('span', 'name', (showDate ? C.fmtDay(C.parseLocal(o.start), lang, { year: false }) + ': ' : '') + o.title)); if (o.rrule) b.append(el('span', 'rep', '↻ ' + C.repeatText(o.rrule, lang))); b.addEventListener('click', () => showDetail(o)); return b; };
+    const occBtn = (o, showDate) => { const b = el('button'); b.type = 'button'; const t = el('span', 't' + (o.allDay ? ' all' : ''), o.allDay ? W.allDay : C.fmtTime(C.parseLocal(o.start), lang)); b.append(dotOf(o), t, ...(tz2() && !o.allDay ? [el('span', 't2', C.fmtTime(C.parseLocal(C.zoneWall(C.parseLocal(o.start), tz2())), lang) + ' ' + C.tzCity(tz2()))] : []), el('span', 'name', (showDate ? C.fmtDay(C.parseLocal(o.start), lang, { year: false }) + ': ' : '') + o.title)); if (o.rrule) b.append(el('span', 'rep', '↻ ' + C.repeatText(o.rrule, lang))); b.addEventListener('click', () => showDetail(o)); return b; };
     const listOf = (occs, showDate) => { const ul = el('ul', 'ev'); if (!occs.length) ul.append(el('li', 'empty', W.empty)); for (const o of occs) { const li = el('li'); li.append(occBtn(o, showDate)); ul.append(li); } return ul; };
 
     function render() {
@@ -392,6 +398,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       const add = (k, v) => { if (!v) return; dl.append(el('dt', '', k), el('dd', '', v)); };
       add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes);
       if (o.location) { const dd = el('dd', '', o.location + ' · '), a = el('a', '', W.map); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(o.location); a.target = '_blank'; a.rel = 'noopener'; dd.append(a); dl.append(el('dt', '', W.location), dd); }
+      if (o.wallStart) add(W.tz, C.tzCity(baseOf(o).tz) + ': ' + C.fmtTime(C.parseLocal(o.wallStart), lang) + ' – ' + C.fmtTime(C.parseLocal(o.wallEnd), lang) + ' ' + W.tzThere);
       add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
       const b0 = baseOf(o); if (b0.rsvp) { const dt = el('dt', '', W.replies), dd = el('dd', '', '…'); dl.append(dt, dd); rsvpCall('GET', { id: b0.rsvp.id, key: b0.rsvp.owner }).then((r) => { dd.textContent = r.j.ok ? (r.j.replies.length ? R.tally(r.j.replies, RW) + ': ' + r.j.replies.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies) : '—'; }); }
       $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDup').hidden = !!o.ro; $('detMoveBox').hidden = !!o.ro || !!o.task; $('detMove').value = o.start.slice(0, 10); $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
@@ -413,9 +420,9 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       const days = $('eDays'); days.replaceChildren(); C.dayNames(lang).forEach((n, i) => { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = C.DAYS[(i + 1) % 7]; cb.checked = !!(e.rrule && e.rrule.byday && e.rrule.byday.includes(cb.value)); lb.append(cb, el('span', '', n)); days.append(lb); });
       const rem = $('eRem'); rem.replaceChildren(); for (const [m, label] of REM_CHOICES) { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = String(m); cb.checked = e.reminders.includes(m); lb.append(cb, el('span', '', label)); rem.append(lb); }
       const cs = $('eCal'); cs.replaceChildren(...cals().filter((c) => c.kind !== 'holidays' && !c.url && !c.gone && !(c.share && c.share.role === 'view')).map((c) => { const o = el('option', '', c.name); o.value = c.id; return o; })); cs.value = e.cal || 'main'; if (!cs.value) cs.value = 'main';
-      $('eLoc').value = e.location || ''; $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
+      zones(); $('eTz').value = e.tz || ''; $('eLoc').value = e.location || ''; $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
     }
-    const syncEditor = () => { const all = $('eAll').checked, f = $('eFreq').value; $('eSt').disabled = all; $('eEt').disabled = all; $('eDays').hidden = f !== 'WEEKLY'; $('eEnds').hidden = !f; $('eInt').disabled = !f; };
+    const syncEditor = () => { const all = $('eAll').checked, f = $('eFreq').value; $('eTz').disabled = all; $('eSt').disabled = all; $('eEt').disabled = all; $('eDays').hidden = f !== 'WEEKLY'; $('eEnds').hidden = !f; $('eInt').disabled = !f; };
     $('eAll').addEventListener('change', syncEditor); $('eFreq').addEventListener('change', syncEditor);
     $('eSd').addEventListener('change', () => { if ($('eEd').value < $('eSd').value) $('eEd').value = $('eSd').value; });
     $('edF').addEventListener('submit', async (e) => {
@@ -423,6 +430,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       const ev = { id: state.editing ? state.editing.id : undefined, title: $('eTitle').value, allDay: all, start: all ? $('eSd').value : $('eSd').value + 'T' + ($('eSt').value || '09:00'), end: all ? $('eEd').value : $('eEd').value + 'T' + ($('eEt').value || '10:00'),
         rrule: freq ? { freq, interval: +$('eInt').value || 1, until: $('eUntil').value || undefined, count: +$('eCount').value || undefined, byday: freq === 'WEEKLY' ? [...$('eDays').querySelectorAll('input:checked')].map((c) => c.value) : undefined } : null,
         reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, location: $('eLoc').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [], cal: $('eCal').value };
+      const zone = $('eTz').value.trim(); if (zone && !all && !C.isTz(zone)) { $('eTz').focus(); return say(W.tzBad, true); } if (zone && !all) ev.tz = zone;
       const n = C.normalize(ev); if (!n) return say(W.titleL + '?', true);
       // into its calendar, out of the one it was in: this browser's, or a shared one through the server
       const was = state.editing ? state.editing.cal || 'main' : null, from = was && sharedOf(was), to = sharedOf(n.cal || 'main');
@@ -543,6 +551,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       $('calNote').textContent = W.shareHint + (holCal() && holCal().on ? ' ' + W.fromNet + '.' : '');
     }
     const setCal = (id, patch) => { store.calendars = cals().map((c) => (c.id === id ? { ...c, ...patch } : c)); keep(); drawCals(); render(); };
+    $('tz2').value = store.tz2 || ''; $('tz2').addEventListener('focus', zones); $('tz2').addEventListener('change', () => { const v = $('tz2').value.trim(); if (v && !C.isTz(v)) { $('tz2').value = ''; store.tz2 = ''; keep(); say(W.tzBad, true); return; } store.tz2 = v; keep(); render(); });
     $('weekStart').value = String(ws()); $('weekNums').checked = !!store.weekNumbers;
     $('weekStart').addEventListener('change', () => { store.weekStart = +$('weekStart').value; keep(); render(); });
     $('weekNums').addEventListener('change', () => { store.weekNumbers = $('weekNums').checked; document.documentElement.classList.toggle('wk', store.weekNumbers); keep(); render(); });

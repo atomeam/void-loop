@@ -81,8 +81,8 @@
      "name": "Time zones per event, secondary time zone, world clock",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "lib/calendar.js:1-7 dates are device wall clock, never a zone"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: an event can carry its own time zone (editor #eTz; its times are wall-clock there and every view shows them on your clock, daylight saving per occurrence; the detail says what it is there); a second time zone shown beside every time (Calendars pane #tz2); .ics with TZID both ways (lib/calendar.js wallToDate, zoneWall, occurrences; tools/calendar.test.mjs). No world clock"
     },
     {
      "name": "Location with map link",
@@ -638,8 +638,8 @@
      "name": "Time zones",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: an event can carry its own time zone (editor #eTz; its times are wall-clock there and every view shows them on your clock, daylight saving per occurrence; the detail says what it is there); a second time zone shown beside every time (Calendars pane #tz2); .ics with TZID both ways (lib/calendar.js wallToDate, zoneWall, occurrences; tools/calendar.test.mjs). No world clock"
     }
    ]
   },
@@ -668,8 +668,8 @@
      "name": "Secondary time zone, events in any zone",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: an event can carry its own time zone (editor #eTz; its times are wall-clock there and every view shows them on your clock, daylight saving per occurrence; the detail says what it is there); a second time zone shown beside every time (Calendars pane #tz2); .ics with TZID both ways (lib/calendar.js wallToDate, zoneWall, occurrences; tools/calendar.test.mjs). No world clock"
     },
     {
      "name": "Reminders by pop-up and email",
@@ -879,7 +879,7 @@
  "union_gaps": [
   "Tasks with priority, sub-tasks and shared to-dos (tasks with a due day are built, 2026-10-25): calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
   "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
-  "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
+  "World clock (time zones per event and a second zone are built, 2026-10-25): calendar.google.com",
   "Resize events and drag between times (drag to another day is built, 2026-10-25): calendar.google.com, outlook.live.com",
   "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",
   "Booking pages / find a time: calendar.google.com, outlook.live.com, calendar.online, calendar.zoho.com (paid)",
