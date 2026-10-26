@@ -1,5 +1,5 @@
 {
- "at": "2026-10-26T05:38:42.615Z",
+ "at": "2026-10-26T11:38:18.186Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -353,7 +353,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [
      "Zeus"
     ],
