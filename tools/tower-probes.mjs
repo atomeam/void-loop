@@ -389,6 +389,51 @@ export const PROBES = Object.freeze({
     facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
+  // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
+  // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
+  // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
+  music: {
+    site: 'https://open.spotify.com/', verse: '/music/',
+    ask: { verse: '/music/' },
+    truth: [['the five music tools named', /Metronome[\s\S]*Piano[\s\S]*Tuner[\s\S]*BPM counter[\s\S]*Chords and scales/], ['the tempo word Allegro for 120 to 156 BPM', /Allegro[\s\S]{0,40}120 to 156 BPM/], ['setlists kept on the device', /setlists?[\s\S]{0,200}(?:on this device|device)/i]],
+    askParts: { catalogue: [['tempo words', /tempo words/i], ['scales', /\bscales\b/i], ['chords', /\bchords\b/i], ['tunings', /\btunings\b/i]], playlists: [['playlists', /\bplaylists\b/i], ['setlists', /\bsetlists?\b/i], ['shared by link', /shared by link|copy link/i]], recommendations: [['recommendations', /\brecommendations\b/i], ['a practice ladder', /\bstart at\b[\s\S]{0,30}\bBPM\b/i], ['what chord comes next', /goes to/i]] },
+    facts: [['a metronome', /\bmetronome\b/i], ['a piano', /\bpiano\b/i], ['a tuner', /\btuner\b/i], ['a BPM counter', /BPM counter/i], ['chords and scales', /chords and scales/i], ['setlists', /\bsetlists?\b/i], ['a catalogue', /\bcatalogue\b/i], ['recommendations', /\brecommendations\b/i], ['no account', /no account/i], ['on your device', /on your device|on this device/i], ['songs in the public domain', /\bpublic domain\b|songs to play/i]],
+  },
+  'music: metronomeonline.com': {
+    site: 'https://metronomeonline.com/', verse: '/metronome/?bpm=120',
+    ask: { verse: '/metronome/?bpm=120' },
+    truth: [['120 BPM', /\b120\b[\s\S]{0,12}BPM/], ['Allegro, the word for 120', /\bAllegro\b/], ['500 ms between beats (60000 / 120)', /\b500 ms\b/], ['a start control', /\bStart\b/]],
+    askParts: { 'tap tempo': [['a tap tempo button', /tap tempo/i], ['the T key taps', /\bT taps\b/]], accents: [['an accent on each beat', /\baccent/i], ['strong, medium, soft or silent', /strong, medium, soft or silent/i], ['the first beat accented', /accent the first beat/i]], subdivisions: [['eighth notes', /eighth notes/i], ['triplets', /triplets/i], ['sixteenth notes', /sixteenth notes/i]], 'practice timer': [['a practice timer', /practice timer/i], ['in minutes', /minutes/i]], 'light and dark mode': [['light or dark', /light or dark/i]], sounds: [['a wood block', /wood block/i], ['a hi-hat', /hi-hat/i], ['a cowbell', /cowbell/i], ['a voice count', /voice count/i]] },
+    facts: [['BPM', /\bBPM\b/], ['tap tempo', /tap tempo/i], ['time signatures', /time signature/i], ['accents', /\baccents?\b/i], ['subdivisions', /subdivision/i], ['sounds', /\bsound\b/i], ['a visual beat', /visual beat/i], ['a practice timer', /practice timer/i], ['a speed trainer', /speed trainer/i], ['silent bars', /silent bars/i], ['tempo presets', /presets/i], ['setlists', /setlist/i], ['volume', /\bvolume\b/i], ['nothing leaves your device', /nothing leaves your device|on this device/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: virtualpiano.net': {
+    site: 'https://virtualpiano.net/', verse: '/piano/',
+    ask: { verse: '/piano/' },
+    truth: [['the white keys on the computer keys 1 2 3 4 5 6 7 8 9 0 q w e r t y', /1 2 3 4 5 6 7 8 9 0 q w e r t y/], ['Shift for a sharp', /\bShift\b[\s\S]{0,20}sharp/i], ['middle C named C4', /\bC4\b[\s\S]{0,12}middle C/i]],
+    askParts: { 'computer keyboard play': [['the key letters', /1 2 3 4 5 6 7 8 9 0 q w e r t y/], ['Shift for a sharp', /\bShift\b/]], 'touch and mouse play': [['tap or click the keys', /tap or click/i], ['a touch screen', /touch screen/i]], sustain: [['a sustain pedal', /sustain/i], ['the space bar', /space bar/i]], instruments: [['a grand piano', /grand piano/i], ['an organ', /\borgan\b/i], ['strings', /\bstrings\b/i]], 'sheet music': [['sheets', /\bsheets?\b/i], ['plain letters', /plain letters/i], ['a song: Ode to Joy', /ode to joy/i]], 'MIDI input': [['a MIDI keyboard', /MIDI keyboard/i]] },
+    facts: [['the computer keyboard', /computer keyboard|computer key/i], ['touch', /touch screen/i], ['a sustain pedal', /sustain/i], ['instruments', /\binstrument\b/i], ['sheets', /\bsheets?\b/i], ['record', /\brecord/i], ['reverb', /\breverb\b/i], ['transpose', /\btranspose\b/i], ['MIDI', /\bMIDI\b/], ['key labels', /computer key on each note|key labels/i], ['an octave shift', /\boctave\b/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: jasperbernaers.com': {
+    site: 'https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', verse: '/tuner/',
+    ask: { verse: '/tuner/' },
+    truth: [['standard guitar tuning E A D G B E', /E A D G B E/], ['the A4 reference of 440 Hz', /\b440\b/], ['cents', /\bcents?\b/i], ['a microphone', /\bmicrophone\b/i]],
+    askParts: { 'microphone tuning': [['a microphone', /\bmicrophone\b/i], ['cents flat or sharp', /\bcents\b[\s\S]{0,40}\b(?:flat|sharp)\b|\b(?:flat|sharp)\b[\s\S]{0,40}\bcents\b/i], ['in tune within 5 cents', /within 5 cents/i]], 'instrument presets': [['guitar', /\bguitar\b/i], ['bass', /\bbass\b/i], ['ukulele', /\bukulele\b/i], ['violin', /\bviolin\b/i]], 'reference tones': [['reference tones', /reference tones?/i], ['a pitch pipe', /pitch pipe/i]], 'adjustable A4': [['an A4 reference', /\bA4\b/], ['in Hz', /\bHz\b/]] },
+    facts: [['a microphone', /\bmicrophone\b/i], ['cents', /\bcents\b/i], ['guitar', /\bguitar\b/i], ['bass', /\bbass\b/i], ['ukulele', /\bukulele\b/i], ['violin', /\bviolin\b/i], ['alternate tunings', /drop d|dadgad|open g/i], ['an adjustable A4', /\bA4\b/], ['reference tones', /reference tones?/i], ['a pitch pipe', /pitch pipe/i], ['nothing recorded or sent', /nothing is recorded or sent|never leaves your device/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: anotherproducer.com': {
+    site: 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', verse: '/bpm/',
+    ask: { verse: '/bpm/' },
+    truth: [['a quarter note lasts 500 ms at 120 BPM', /\b500\b/], ['a dotted quarter lasts 750 ms', /\b750\b/], ['a quarter-note triplet lasts 333.33 ms', /\b333\.33\b/], ['an eighth lasts 250 ms', /\b250\b/]],
+    askParts: { 'tap tempo counter': [['a tap button', /tap here/i], ['any key', /any key/i], ['an average of the last taps', /average the last/i]], 'half and double time': [['half time', /half time/i], ['double time', /double time/i]], 'note lengths': [['milliseconds', /\bms\b/], ['dotted notes', /\bdotted\b/i], ['triplets', /\btriplet\b/i], ['Hz', /\bHz\b/]], 'tempo of a file': [['an audio file', /audio file/i], ['not uploaded', /not uploaded|nothing is uploaded/i]] },
+    facts: [['tap tempo', /\btap\b/i], ['any key', /any key/i], ['half and double', /half time[\s\S]*double time/i], ['a reset', /\breset\b/i], ['average of the last taps', /average the last/i], ['a click on each tap', /click on each tap/i], ['note lengths in ms', /\bms\b/], ['song length in bars', /\bbars\b/i], ['the tempo of a file', /audio file/i], ['nothing uploaded', /not uploaded|nothing is uploaded/i]],
+  },
+  'music: chordchord.com': {
+    site: 'https://chordchord.com/chord-finder', verse: '/chords/',
+    ask: { verse: '/chords/' },
+    truth: [['C major is C E G', /\bC E G\b/], ['C major scale C D E F G A B', /C D E F G A B/], ['the open C chord shape x 3 2 0 1 0', /x 3 2 0 1 0/], ['Am (vi) among the chords of C major', /\bvi\b[\s\S]{0,12}\bAm\b/]],
+    askParts: { 'chord finder': [['a chord finder', /chord finder/i], ['inversions', /inversion/i], ['naming a chord from notes', /which chord is this/i]], 'scale finder': [['a scale finder', /scale finder/i], ['Dorian', /\bdorian\b/i], ['the notes of the scale', /C D E F G A B/]], 'guitar and piano shapes': [['guitar fingerings', /guitar fingerings/i], ['an open shape', /x 3 2 0 1 0/], ['a piano keyboard', /piano keyboard/i]], 'chords in a key': [['roman numerals', /\bvii°/], ['the circle of fifths', /circle of fifths/i], ['progressions', /progressions/i]] },
+    facts: [['chord finder', /chord finder/i], ['scale finder', /scale finder/i], ['guitar fingerings', /guitar fingerings/i], ['a piano keyboard', /piano keyboard/i], ['inversions', /inversion/i], ['a chord named from notes', /which chord is this/i], ['chords in a key', /chords in this key/i], ['seventh chords', /seventh chords/i], ['progressions', /progressions/i], ['the circle of fifths', /circle of fifths/i], ['a transposer', /transpose/i], ['plays the chord', /play the chord/i]],
+  },
   podcasts: {
     site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',
     // the question: open Verse Out Loud's first episode from a link. A page that only loaded shows its title and a search box; a page that works shows

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 868,
+ "counted": 873,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1851,6 +1851,13 @@
    "tests": 3
   },
   {
+   "file": "lib/music-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -1947,6 +1954,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/music-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/podcasts.js",
@@ -2185,6 +2199,20 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/music-audio.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
+   "file": "lib/music-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/page-picture.js",
@@ -5854,6 +5882,32 @@
     "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
+  },
+  "lib/music-audio.js": {
+   "imports": [
+    "lib/music-tools.js"
+   ],
+   "importedBy": []
+  },
+  "lib/music-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/music-ui.js"
+   ]
+  },
+  "lib/music-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/music-audio.js",
+    "lib/music-ui.js"
+   ]
+  },
+  "lib/music-ui.js": {
+   "imports": [
+    "lib/music-tools.js",
+    "lib/music-de.js"
+   ],
+   "importedBy": []
   },
   "lib/near-miss.js": {
    "imports": [],
@@ -10474,6 +10528,10 @@
     "skills/media-pick.js",
     "skills/pick-for-me.js"
    ]
+  },
+  "skills/music-tools.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/music.js": {
    "imports": [
