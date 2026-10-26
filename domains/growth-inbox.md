@@ -47,4 +47,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped (packaged) | 2026-10-21 | Verse Remix Kit | store-publish: templates, 6 files, free; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-22 | fun fact skill: random interesting facts from a public API | new idea by growth agent |
 | building | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
-| building | 2026-10-26 | roll a die or dice | new idea by growth agent |
+| building | 2026-10-26 | roll a die | new idea by growth agent |
