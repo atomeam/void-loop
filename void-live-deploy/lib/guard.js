@@ -24,6 +24,7 @@ export const LIMITS = {
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)
   scores: { rpm: 60, body: 0 }, // GET only: a league from a closed list and a day in, public scores out (functions/api/scores.js), edge-cached 20 s live to 6 h final; 30 misses a minute in the route itself
   sportsearch: { rpm: 30, body: 0 }, // GET only: a name in, TheSportsDB's public answers out (functions/api/sportsearch.js), edge-cached a day; 15 misses a minute in the route itself
+  report: { rpm: 30, body: 0 }, // GET only: a league, a kind and a game id or day in, a short story out (functions/api/report.js), edge-cached 5 minutes to 7 days, at most 40 model calls an hour and 600 a day in all
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number

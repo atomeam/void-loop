@@ -92,7 +92,7 @@
   <div class="row">
     <div class="seg" role="group" aria-label="View">
       <button type="button" id="tScores" aria-pressed="true" data-k="scores">Scores</button><button type="button" id="tTable" aria-pressed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pressed="false" data-k="mine">My teams</button></div>
-    <div class="seg" role="group" aria-label="More"><button type="button" id="tPick" aria-pressed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-pressed="false" data-k="whatif">What if</button><button type="button" id="tDraft" aria-pressed="false" data-k="draft">Mock draft</button><button type="button" id="tSports" aria-pressed="false" data-k="sportsTab">Sports</button>
+    <div class="seg" role="group" aria-label="More"><button type="button" id="tPick" aria-pressed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-pressed="false" data-k="whatif">What if</button><button type="button" id="tDraft" aria-pressed="false" data-k="draft">Mock draft</button><button type="button" id="tSports" aria-pressed="false" data-k="sportsTab">Sports</button><button type="button" id="tReports" aria-pressed="false" data-k="reportsTab">Verse reports</button>
     </div>
     <button type="button" id="favLeague" aria-pressed="false">Follow league</button>
   </div>
@@ -134,11 +134,11 @@
     // ---- state, kept in the address so a link holds the league, the day and the open game or team ----
     const q = new URLSearchParams(location.search), today = () => S.localDay();
     const state = { league: S.leagueOf(q.get('league')) ? q.get('league') : (S.leagueOf(mem.last) ? mem.last : (de ? 'bundesliga' : 'epl')), date: S.dateOk(q.get('date') || '') ? q.get('date') : today(),
-      span: q.get('span') === '7' ? 7 : 1, tab: ['scores', 'standings', 'mine', 'pickem', 'whatif', 'draft', 'sports'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
+      span: q.get('span') === '7' ? 7 : 1, tab: ['scores', 'standings', 'mine', 'pickem', 'whatif', 'draft', 'sports', 'reports'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', story: /^\d{1,12}$/.test(q.get('story') || '') ? q.get('story') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
     let fmode = 'ppr', timer = 0, token = 0, again = () => {}, sort = { c: -1, up: false };
     const needle = () => ($('find').value || '').trim().toLowerCase();
     const hit = (g) => !needle() || [g.home && g.home.name, g.away && g.away.name, g.name, g.home && g.home.abbr, g.away && g.away.abbr].some((x) => x && String(x).toLowerCase().includes(needle()));
-    const url = () => { const p = new URLSearchParams({ league: state.league }); if (state.date !== today()) p.set('date', state.date); if (state.tab !== 'scores') p.set('tab', state.tab); if (state.span === 7) p.set('span', '7'); if (state.game) p.set('game', state.game); if (state.team) { p.set('team', state.team); p.set('tn', state.tn); } return '/scores/?' + p; };
+    const url = () => { const p = new URLSearchParams({ league: state.league }); if (state.date !== today()) p.set('date', state.date); if (state.tab !== 'scores') p.set('tab', state.tab); if (state.span === 7) p.set('span', '7'); if (state.game) p.set('game', state.game); if (state.story && state.tab === 'reports') p.set('story', state.story); if (state.team) { p.set('team', state.team); p.set('tn', state.tn); } return '/scores/?' + p; };
     const push = () => { try { history.replaceState(null, '', url()); } catch (_) {} };
     const say = (t, bad) => { note.textContent = t || ''; note.classList.toggle('bad', !!bad); };
     // ---- data: the API, the last good answer kept on the device ----
@@ -168,7 +168,7 @@
     const gameLi = (lg, g, redraw) => {
       if (g.kind === 'race') return h('li', null, stOf(g), h('div', null, h('div', { class: 'tn', text: g.name }), h('div', { class: 'st', style: 'text-align:left', text: g.venue })), h('button', { type: 'button', class: 'gm', text: W.results, onclick: () => { state.game = g.id; run(); } }));
       const fav = isFav(lg, g.home) || isFav(lg, g.away);
-      return h('li', { class: fav ? 'fav' : null }, stOf(g), h('div', null, teamLine(lg, g, 'home', redraw), teamLine(lg, g, 'away', redraw)), g.id && !g.id.startsWith('ol') ? h('button', { type: 'button', class: 'gm', text: W.details, onclick: () => { state.game = g.id; run(); } }) : h('span'));
+      return h('li', { class: fav ? 'fav' : null }, stOf(g), h('div', null, teamLine(lg, g, 'home', redraw), teamLine(lg, g, 'away', redraw)), g.id && !g.id.startsWith('ol') ? h('div', { style: 'display:flex;flex-direction:column;gap:2px' }, h('button', { type: 'button', class: 'gm', text: W.details, onclick: () => { state.game = g.id; run(); } }), g.state !== 'live' ? h('button', { type: 'button', class: 'gm', text: W.story, onclick: () => { state.tab = 'reports'; state.story = g.id; state.game = ''; run(); } }) : null) : h('span'));
     };
     const gamesList = (lg, games, redraw, byTime) => { const s = games.filter(hit).sort((a, b) => (byTime ? 0 : ((isFav(lg, b.home) || isFav(lg, b.away)) - (isFav(lg, a.home) || isFav(lg, a.away))) || ({ live: 0, pre: 1, final: 2 }[a.state] - { live: 0, pre: 1, final: 2 }[b.state])) || String(a.start).localeCompare(String(b.start))); return h('ul', { class: 'games' }, s.map((g) => gameLi(lg, g, redraw))); };
     const setNote = (r) => {
@@ -266,6 +266,8 @@
       for (const t of j.players) for (const gr of t.groups) if (gr.rows.length) { const fp = nfl && S.fantasyPoints(gr.name, gr.labels, gr.rows[0].stats, fmode) !== null;
         kids.push(h('div', { class: 'pane' }, h('h2', { text: W.box + ' · ' + t.team + ' · ' + gr.name, style: 'margin-top:0' }), h('div', { class: 'tbl' }, h('table', null,
         h('thead', null, h('tr', null, h('th', { text: '' }), h('th', { text: '' }), gr.labels.map((l) => h('th', { text: l })), fp ? h('th', { text: 'FPTS' }) : null)), h('tbody', null, gr.rows.map((p, i) => h('tr', null, h('td', { text: String(i + 1) }), h('td', { text: p.name }), gr.labels.map((_, k) => h('td', { text: p.stats[k] || '' })), fp ? h('td', { text: String(S.fantasyPoints(gr.name, gr.labels, p.stats, fmode)) }) : null))))))); }
+      if (g) { const slot = h('div', { style: 'min-height:260px' }); kids.push(slot); let wpPts = []; try { wpPts = JSON.parse(sessionStorage.getItem('a2m.void.scores.wp.' + g.id)) || []; } catch (_) {}
+        import('/scores/gfx.js').then((m) => { if (tk === token) slot.replaceChildren(m.pane(h, g, j, S.leagueOf(lg).name, wpPts, g.start ? clock(g.start) : '', say)); }).catch(() => {}); }
       out.replaceChildren(...kids); return !!(g && g.state === 'live');
     }
     async function teamView(tk) {
@@ -285,18 +287,18 @@
       const lg = S.leagueOf(state.league); mem.last = state.league; save(KEY, mem);
       document.title = lg.name + ' ' + (state.tab === 'standings' ? W.standings : W.scores) + ' · Verse';
       for (const a of $('leagues').children) { const on = a.getAttribute('href').endsWith('league=' + state.league); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }
-      for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine'], ['tPick', 'pickem'], ['tWhat', 'whatif'], ['tDraft', 'draft'], ['tSports', 'sports']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
+      for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine'], ['tPick', 'pickem'], ['tWhat', 'whatif'], ['tDraft', 'draft'], ['tSports', 'sports'], ['tReports', 'reports']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
       const fl = mem.leagues.includes(state.league); $('favLeague').setAttribute('aria-pressed', String(fl)); $('favLeague').textContent = fl ? W.unfollowLeague : W.followLeague;
       $('nextg').hidden = !(state.tab === 'scores' && !state.team && !state.game && state.span === 1); $('days').hidden = state.tab === 'standings' || state.tab === 'whatif' || state.tab === 'draft' || state.tab === 'sports' || !!state.team;
       $('date').value = state.date; $('vDay').setAttribute('aria-pressed', String(state.span === 1)); $('vWeek').setAttribute('aria-pressed', String(state.span === 7)); $('prev').setAttribute('aria-label', state.span === 7 ? W.prevWeek : 'Previous day'); $('next').setAttribute('aria-label', state.span === 7 ? W.nextWeek : 'Next day'); if (!quiet) { say(W.loading + '…'); }
       let live = false;
-      try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'sports' ? await (await import('/scores/sports.js')).view({ S, h, out, say, W, lang, mem, open: (id) => { state.league = id; state.tab = 'scores'; state.game = ''; state.team = ''; run(); } }) : state.tab === 'pickem' || state.tab === 'whatif' || state.tab === 'draft' ? await (await import('/scores/more.js')).view(state.tab, { S, h, api, state, out, say, setNote, lang, W, clock, token: () => token }) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (e) { console.error('scores', e); sorry(); }
+      try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'reports' ? await (await import('/scores/reports.js')).view({ S, h, api, state, out, say, setNote, W, lang, clock, run, token: () => token }) : state.tab === 'sports' ? await (await import('/scores/sports.js')).view({ S, h, out, say, W, lang, mem, open: (id) => { state.league = id; state.tab = 'scores'; state.game = ''; state.team = ''; run(); } }) : state.tab === 'pickem' || state.tab === 'whatif' || state.tab === 'draft' ? await (await import('/scores/more.js')).view(state.tab, { S, h, api, state, out, say, setNote, lang, W, clock, token: () => token }) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (e) { console.error('scores', e); sorry(); }
       if (tk === token && live) { timer = setTimeout(() => { if (document.visibilityState === 'visible' && navigator.onLine) run(true); else timer = setTimeout(() => run(true), POLL); }, POLL); say(note.textContent + ' ' + W.refreshing); }
     }
     // ---- controls ----
     for (const a of $('leagues').children) a.addEventListener('click', (e) => { e.preventDefault(); state.league = new URL(a.href).searchParams.get('league'); state.game = ''; state.team = ''; state.tn = ''; if (state.tab === 'mine') state.tab = 'scores'; run(); });
-    const tab = (t) => () => { state.tab = t; state.game = ''; state.team = ''; state.tn = ''; run(); };
-    $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine')); $('tPick').addEventListener('click', tab('pickem')); $('tWhat').addEventListener('click', tab('whatif')); $('tDraft').addEventListener('click', tab('draft')); $('tSports').addEventListener('click', tab('sports'));
+    const tab = (t) => () => { state.tab = t; state.story = ''; state.game = ''; state.team = ''; state.tn = ''; run(); };
+    $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine')); $('tPick').addEventListener('click', tab('pickem')); $('tWhat').addEventListener('click', tab('whatif')); $('tDraft').addEventListener('click', tab('draft')); $('tSports').addEventListener('click', tab('sports')); $('tReports').addEventListener('click', tab('reports'));
     const setSpan = (n) => () => { state.span = n; state.game = ''; state.team = ''; if (state.tab !== 'scores') state.tab = 'scores'; run(); };
     $('vDay').addEventListener('click', setSpan(1)); $('vWeek').addEventListener('click', setSpan(7));
     const goDay = (d) => { if (S.dateOk(d)) { state.date = d; state.game = ''; state.team = ''; if (state.tab === 'standings') state.tab = 'scores'; run(); } };

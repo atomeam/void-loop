@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 856,
+ "counted": 859,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -13,7 +13,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 65,
+   "dependants": 66,
    "tests": 4
   },
   {
@@ -48,28 +48,28 @@
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 20,
    "direct": 1,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 20,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 5
   },
   {
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 2
   },
   {
@@ -97,49 +97,49 @@
    "file": "lib/reactions.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 14,
    "direct": 0,
-   "dependants": 44,
+   "dependants": 45,
    "tests": 2
   },
   {
    "file": "lib/autopsy.js",
    "skills": 14,
    "direct": 5,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 5
   },
   {
@@ -153,7 +153,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 3
   },
   {
@@ -167,28 +167,28 @@
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 1
   },
   {
@@ -538,7 +538,7 @@
    "file": "lib/telemetry.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 65,
+   "dependants": 66,
    "tests": 1
   },
   {
@@ -720,7 +720,7 @@
    "file": "lib/automation-fix.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 8
   },
   {
@@ -850,6 +850,27 @@
    "tests": 1
   },
   {
+   "file": "lib/alt-pay.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/pay-share.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 0
+  },
+  {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
@@ -857,39 +878,25 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/pay-share.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/store-products.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 0
-  },
-  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
    "file": "lib/store.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 6
+  },
+  {
+   "file": "lib/plan.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 1
   },
   {
    "file": "lib/gumroad.js",
@@ -897,13 +904,6 @@
    "direct": 1,
    "dependants": 19,
    "tests": 4
-  },
-  {
-   "file": "lib/plan.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 19,
-   "tests": 1
   },
   {
    "file": "lib/store-db.js",
@@ -953,6 +953,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/scores.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 3
   },
   {
    "file": "lib/learn.js",
@@ -1005,13 +1012,6 @@
   },
   {
    "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/scores.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -1504,217 +1504,217 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 22
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 45,
+   "dependants": 46,
    "tests": 8
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 6
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 0
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 6
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 5
   },
   {
    "file": "lib/markets.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 0
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 1
   },
   {
    "file": "lib/privacy.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 5
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 2
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
    "file": "lib/story.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
@@ -1949,6 +1949,13 @@
    "tests": 1
   },
   {
+   "file": "lib/reports.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/rsvp.js",
    "skills": 0,
    "direct": 0,
@@ -2125,6 +2132,13 @@
   },
   {
    "file": "lib/kitchen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/matchgfx.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2327,6 +2341,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -2612,6 +2627,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -2801,6 +2817,17 @@
    ],
    "importedBy": []
   },
+  "functions/api/report.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/models.js",
+    "lib/keeper.js",
+    "lib/scores.js",
+    "functions/api/scores.js",
+    "lib/reports.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/review.js": {
    "imports": [
     "lib/void-me.js",
@@ -2841,7 +2868,9 @@
     "functions/api/answer.js",
     "lib/scores.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/report.js"
+   ]
   },
   "functions/api/share/[room].js": {
    "imports": [
@@ -3095,6 +3124,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3226,6 +3256,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3405,6 +3436,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/routes.js",
     "functions/api/routines.js",
@@ -3489,6 +3521,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3578,6 +3611,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3721,6 +3755,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3933,6 +3968,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -3987,6 +4023,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4064,6 +4101,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4092,6 +4130,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4126,6 +4165,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
@@ -4245,6 +4285,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4300,6 +4341,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4384,6 +4426,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4433,6 +4476,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/routes.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
@@ -4879,6 +4923,7 @@
     "functions/api/podcasts.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -4914,6 +4959,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5059,6 +5105,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5115,6 +5162,7 @@
     "functions/api/generators.js",
     "functions/api/image.js",
     "functions/api/merge.js",
+    "functions/api/report.js",
     "lib/art-rules.js",
     "lib/image-gen.js"
    ],
@@ -5213,6 +5261,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5327,6 +5376,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5350,6 +5400,10 @@
     "lib/arena.js",
     "skills/games.js"
    ]
+  },
+  "lib/matchgfx.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/mcp-skills.js": {
    "imports": [],
@@ -5416,6 +5470,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5454,6 +5509,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5485,6 +5541,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5579,6 +5636,7 @@
     "functions/api/propose-fix.js",
     "functions/api/recipeimport.js",
     "functions/api/reflect.js",
+    "functions/api/report.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js",
@@ -5678,6 +5736,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5705,6 +5764,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5731,6 +5791,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5867,6 +5928,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/scores.js",
     "functions/api/share/index.js",
@@ -5972,6 +6034,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -5997,6 +6060,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6024,6 +6088,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6065,6 +6130,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6138,6 +6204,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6181,6 +6248,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6222,6 +6290,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6260,6 +6329,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6336,6 +6406,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6468,6 +6539,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/tally.js",
@@ -6561,6 +6633,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6589,11 +6662,20 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/reports.js": {
+   "imports": [
+    "lib/scores.js"
+   ],
+   "importedBy": [
+    "functions/api/report.js"
    ]
   },
   "lib/review-api.js": {
@@ -6629,6 +6711,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6670,6 +6753,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6741,6 +6825,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6826,7 +6911,9 @@
   "lib/scores.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/report.js",
     "functions/api/scores.js",
+    "lib/reports.js",
     "skills/scores.js"
    ]
   },
@@ -6859,6 +6946,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6936,6 +7024,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -6983,6 +7072,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7105,6 +7195,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7381,6 +7472,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7481,6 +7573,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
@@ -7516,6 +7609,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7543,6 +7637,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7669,6 +7764,7 @@
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/routes.js",
     "functions/api/routines.js",
@@ -7908,6 +8004,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -7951,6 +8048,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -8042,6 +8140,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/scores.js",
     "functions/api/share/index.js",
@@ -9251,6 +9350,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -9299,6 +9399,7 @@
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
@@ -11301,6 +11402,7 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
+    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",

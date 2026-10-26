@@ -90,6 +90,8 @@ for (const [name, file] of [
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
   ['scores', 'scores.test.mjs'],
+  ['reports', 'reports.test.mjs'],
+  ['matchgfx', 'matchgfx.test.mjs'],
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
   ['calendar', 'calendar.test.mjs'],

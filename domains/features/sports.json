@@ -81,8 +81,8 @@
      "name": "Headlines and stories",
      "detail": "News articles, columns and video highlights per league and team",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse writes its own short stories from score data (Verse reports); no news articles, columns or video"
     },
     {
      "group": "core",
@@ -411,6 +411,30 @@
      "paid": false,
      "verse": "has",
      "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): /api/scores documented in openapi.json (no key, no premium tier) and described on the Sports tab"
+    },
+    {
+     "group": "core",
+     "name": "Editorial: recaps, previews, briefs",
+     "detail": "Verse reports tab: a recap per finished game, a preview per upcoming game, a league brief, a weekly roundup and top stories, written from the feeds' data (template first, model wording only if every number and name is in the data), labelled as written by Verse; no quotes, odds or injuries",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse reports tab: a recap per finished game, a preview per upcoming game, a league brief, a weekly roundup and top stories, written from the feeds' data (template first, model wording only if every number and name is in the data), labelled as written by Verse; no quotes, odds or injuries"
+    },
+    {
+     "group": "core",
+     "name": "Match graphics (score card, timeline, stats bars, lineups, day collage)",
+     "detail": "inline SVG drawn from the feed's data with alt text, Save and Copy picture; lineups on a pitch only where the feed gives a formation",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): inline SVG drawn from the feed's data with alt text, Save and Copy picture; lineups on a pitch only where the feed gives a formation"
+    },
+    {
+     "group": "core",
+     "name": "Shot charts",
+     "detail": "no shot coordinates verified in the free feed; none drawn",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
     }
    ]
   }

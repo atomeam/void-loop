@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:58:04Z",
+   "subject": "Verse reports: market-report mode name, the shared D1 daily cap (10 an hour, 60 a day for the whole site)"
+  },
+  {
    "at": "2026-10-26T02:57:46Z",
    "subject": "Verse reports on /markets/: a daily market wrap and a data-only why-is-it-moving line"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T02:37:08Z",
    "subject": "Calendar: drag an event to another day, or give it a new day with \"Move to\""
-  },
-  {
-   "at": "2026-10-26T02:36:57Z",
-   "subject": "Sports features: what the scores page now covers, and what is still a gap"
   }
  ],
  "builders": {
