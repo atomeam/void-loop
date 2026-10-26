@@ -162,6 +162,11 @@
   $('share').addEventListener('click', async () => { const u = location.origin + location.pathname + (cur ? '?tab=' + tab : ''); try { if (navigator.share) await navigator.share({ title: document.title, text: $('sub').textContent, url: u }); else { await navigator.clipboard.writeText(u); $('share').textContent = say('linkcopied'); setTimeout(() => { $('share').textContent = say('share'); }, 1600); } } catch (_) {} });
   $('lang').addEventListener('click', () => { L = L === 'de' ? 'en' : 'de'; tr(); fbox.firstChild.textContent = say('none'); if (cur) { refresh(); infoPanel(); } });
   tr(); fbox.firstChild.textContent = say('none');
+  // "Send to" (lib/handoff.js): a picture from another page (a PDF page as an image) opens here; the result here (compressed, cropped, edited) goes to the PDF tools
+  import('/lib/handoff.js').then((H) => {
+    H.offer('file', async () => { if (!cur) return null; const r = cur.out || await encode(cur, true).catch(() => null); return r ? { name: E.outName(cur.name, r.mime), type: r.mime, blob: new Blob([r.bytes], { type: r.mime }) } : null; }, { mime: ['image/*'], label: 'the picture' });
+    H.receive('/photos/', { file: async (d) => { await add([new File([d.blob], d.name, { type: d.type })]); return 'opened ' + d.name; } });
+  });
   window.__photos = { items: () => items, show };
   document.documentElement.dataset.photos = 'ready';
   };

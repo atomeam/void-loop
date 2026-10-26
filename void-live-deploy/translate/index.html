@@ -520,6 +520,8 @@
     lists(); count(); show('', '', '');
     if ($('in').value.trim()) go(true); else if (!navigator.onLine) say(W.offline);
     if (q.get('url')) { $('url').value = q.get('url'); website(q.get('url')); }
+    // "Send to" (lib/handoff.js): the translation on screen, to a note, a board or the word counter
+    import('/lib/handoff.js').then((H) => H.offer('text', () => { const t = $('out').textContent.trim(); return t ? { text: t } : null; }, { label: 'the translation' }));
     mountRelated($('related'), '/translate/', [{ label: de ? 'Wörter zählen' : 'Count the words', href: () => ($('in').value.trim() ? '/word-count/?t=' + encodeURIComponent($('in').value.trim()) : null) }]);
   });
 </script>

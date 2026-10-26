@@ -5,6 +5,7 @@
  * visitor opens (a fixed list of providers). English and German. Pure logic: lib/flights-core.js. Tests: tools/flights.test.mjs, tools/flights-page.mjs.
  */
 import * as C from '/lib/flights-core.js';
+import { offer } from '/lib/handoff.js';
 import { DE } from '/lib/flights-de.js';
 import { COAST, COAST_Q } from '/lib/flights-coast.js';
 let coast = null; const coastLines = () => coast || (coast = C.decodeCoast(COAST, COAST_Q));
@@ -180,6 +181,7 @@ PANELS.route = () => {
     out.innerHTML = '<table class="tbl"><thead><tr><th>' + esc(t('Leg')) + '</th><th>km</th><th>' + esc(t('miles')) + '</th><th>' + esc(t('Time')) + '</th></tr></thead><tbody>' + rows.join('') + '</tbody><tfoot><tr><th>' + esc(t('Total')) + '</th><th>' + esc(num(tot) + ' km') + '</th><th>' + esc(num(C.km2mi(tot)) + ' ' + t('miles')) + '</th><th>' + esc(C.hm(min)) + '</th></tr></tfoot></table>' + (bad.length ? '<p class="note bad">' + esc(t('Not found:') + ' ' + bad.join(', ')) + '</p>' : '') + '<h3>' + esc(t('Airports on the route')) + '</h3><ul class="plain">' + ports.map((x) => '<li><b>' + esc(x.iata) + '</b> ' + esc(x.name) + ' <span class="soft">' + esc(x.city + ' · ' + x.country + ' · ' + C.offsetLabel(C.offsetMin(x.tz, Date.now()))) + '</span></li>').join('') + '</ul><p class="note">' + esc(t('The map shows the great-circle paths on a plain grid of 30 degrees: no coastlines are drawn.')) + '</p>';
     map.innerHTML = C.mapSvg(ports, 640, 320, coastLines());
   };
+  offer('route', () => { const r = idx ? C.parseRoute(idx, inp.value).ports.map((x) => x.iata) : []; return r.length >= 2 ? { stops: r } : null; }, { label: 'the route' });
   inp.addEventListener('input', () => { upd(); const u = new URL(location.href); u.searchParams.set('route', inp.value); try { history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (_) { /* no history */ } }); subs.add(upd); upd(); return s;
 };
 
@@ -195,6 +197,7 @@ PANELS.airports = () => {
       + '<p class="row"><a class="btn" href="/flights/?from=' + a.iata + '">' + esc(t('Fly from here')) + '</a> <a class="btn" href="/flights/?to=' + a.iata + '">' + esc(t('Fly to here')) + '</a></p></div>';
   };
   det.addEventListener('click', (e) => { const b = e.target.closest('button[data-show]'); if (b) detail(ap(b.dataset.show)); });
+  offer('place', () => { const a = picked && ap(picked); return a ? { name: a.city || a.name, code: a.iata, lat: a.lat, lon: a.lon, tz: a.tz } : null; }, { label: 'this airport' }); // to the weather, the clocks, the map, a note (lib/handoff.js)
   const upd = () => {
     if (!idx) return; const v = q.value.trim(); list.textContent = '';
     let res = v ? C.searchAirports(idx, v, 12) : [];
@@ -291,6 +294,9 @@ PANELS.trip = () => {
   $(s, '#i-ics').addEventListener('click', () => { const txt = idx && C.tripIcs(idx, segs); if (!txt) { say(t('Fill in the airports and both times of a flight first.')); return; } const b = new Blob([txt], { type: 'text/calendar' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'verse-trip.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); say(t('Saved a calendar file.')); });
   $(s, '#i-link').addEventListener('click', async () => { if (!segs.length) { say(t('Add a flight first.')); return; } const url = location.origin + location.pathname + '#trip=' + C.tripToToken(segs); try { if (navigator.share) { await navigator.share({ title: 'Trip', url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; } try { await navigator.clipboard.writeText(url); say(t('Copied the link.')); } catch (_) { say(url); } });
   if (tok) { const got = C.tripFromToken(tok); if (got.length) { segs = got; fromLink = got.length; } }
+  // the flights to the calendar, the clocks, a board or a note; the airports in order to the map (lib/handoff.js)
+  offer('event', () => { const ev = idx ? C.tripEvents(idx, segs) : []; return ev.length ? { events: ev } : null; }, { label: 'the flights' });
+  offer('route', () => { const st = idx ? C.tripStops(idx, segs) : []; return st.length >= 2 ? { stops: st } : null; }, { label: 'the route' });
   subs.add(draw); draw(); if (fromLink) say(t('This trip came from a link. It is shown here and kept on this device once you change it.')); return s;
 };
 
@@ -304,7 +310,7 @@ const SW_CACHE = 'void-shell-v2';
 function keepForOffline() {
   try {
     if (!('caches' in window)) return; const app = location.pathname + 'app.js';
-    caches.open(SW_CACHE).then((c) => Promise.all([location.pathname, app, '/lib/flights-ui.js', '/lib/flights-core.js', '/lib/flights-de.js', '/lib/flights-coast.js', '/lib/ics.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/flights/airports.json'].map((u) => c.match(u).then((hit) => hit || c.add(u)).catch(() => {})))).catch(() => {});
+    caches.open(SW_CACHE).then((c) => Promise.all([location.pathname, app, '/lib/flights-ui.js', '/lib/flights-core.js', '/lib/flights-de.js', '/lib/flights-coast.js', '/lib/ics.js', '/lib/toolkit.js', '/lib/handoff.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/flights/airports.json'].map((u) => c.match(u).then((hit) => hit || c.add(u)).catch(() => {})))).catch(() => {});
   } catch (_) { /* no cache here: the page still works online */ }
 }
 /** mounts the panels a page asks for into root: { panels: [...], controls: [...], share: true }. */

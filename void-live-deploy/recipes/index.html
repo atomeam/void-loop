@@ -540,6 +540,9 @@
     lists(); setMode(state.mode); $('q').value = state.i || state.q;
     if (state.id || state.q || state.i) go(); else if (!navigator.onLine) say(W.offline);
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); // a recipe still on its way after 2.5 s: show the page as it stands
+    // "Send to" (lib/handoff.js): the shopping list (the ingredients not ticked yet, scaled) to a note or a board, a card each
+    import('/lib/handoff.js').then((H) => H.offer('list', () => { const r = state.recipe; if (!r) return null; const ticks = store.ticks[r.id] || []; const left = r.ingredients.map((x, k) => [x, k]).filter(([, k]) => !ticks.includes(k)).map(([x]) => line(x));
+      return { title: r.name + ' (' + state.servings + ')', items: left.length ? left : r.ingredients.map(line) }; }, { label: 'the shopping list' }));
     mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }]);
   });
 </script>

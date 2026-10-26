@@ -35,8 +35,8 @@
   html.pre main { visibility: hidden; }
   [hidden] { display: none !important; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .layout { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
-  @media (min-width: 780px) { .layout { grid-template-columns: 260px 1fr; align-items: start; } #list { max-height: 70vh !important; } }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 10px; } /* minmax(0, ...): a long note's one-line preview never widens the page past the phone */
+  @media (min-width: 780px) { .layout { grid-template-columns: 260px minmax(0, 1fr); align-items: start; } #list { max-height: 70vh !important; } }
   /* the list of notes (or the search results) */
   #list { list-style: none; margin: 8px 0 0; padding: 0; max-height: 168px; overflow-y: auto; }
   #list li { border-top: 1px solid var(--line); } #list li:first-child { border-top: 0; }
@@ -416,6 +416,14 @@
     show(cur()); drawList();
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); document.documentElement.classList.remove('pre');
+    // "Send to" (lib/handoff.js): text, a list, a trip, a quote, a place arrive as a new note; the open note goes out as text (to the board, the word counter, translation)
+    import('/lib/handoff.js').then((H) => {
+      H.offer('text', () => { flush(); const d = cur(); const text = d ? N.toText(d.html).trim() : ''; return text ? { title: d.title || '', text } : null; }, { label: 'this note' });
+      const asNote = (data, p) => { const t = H.asText(p); if (!t) return ''; flush();
+        const html = p.kind === 'list' ? '<ul>' + p.data.items.map((x) => '<li>' + x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</li>').join('') + '</ul>' : N.textToHtml(t.text);
+        const d = blank({ title: t.title, html }); keep(); show(d); drawList(); return 'a new note, ' + (d.title || W.untitled); };
+      const h = {}; for (const k of ['text', 'list', 'event', 'place', 'route', 'job', 'parcel']) h[k] = asNote; H.receive('/notes/', h);
+    });
     mountRelated($('related'), '/notes/', []);
   });
 </script>

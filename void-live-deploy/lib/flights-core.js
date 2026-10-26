@@ -325,6 +325,24 @@ export function tripIcs(idx, segs, now = new Date()) {
   }
   if (!n) return null; L.push('END:VCALENDAR'); return L.map(fold).join('\r\n') + '\r\n';
 }
+/** a trip's flights as calendar events for "Send to" (lib/handoff.js): each starts on the departure airport's clock, in its zone, and ends at
+ *  the landing moment on that same clock (the landing zone rides along as endTz); flights without both airports and times are left out. Pure. */
+export function tripEvents(idx, segs) {
+  const out = [];
+  for (const s of (segs || []).map(cleanSeg).filter(Boolean)) {
+    const t = segTimes(idx, s); if (!Number.isFinite(t.depUtc) || !Number.isFinite(t.arrUtc) || t.arrUtc <= t.depUtc) continue;
+    const a = idx.byIata.get(s.from), b = idx.byIata.get(s.to), fl = (s.al + (s.no ? ' ' + s.no : '')).trim();
+    out.push({ title: '✈ ' + (fl ? fl + ' ' : '') + s.from + ' → ' + s.to, start: s.dep, end: utcToLocal(a.tz, t.arrUtc).local, tz: a.tz, endTz: b.tz, location: a.name + ' (' + s.from + ')',
+      notes: ['Lands ' + s.arr.replace('T', ' ') + ' local at ' + b.name + ' (' + s.to + ')', s.loc && 'Booking reference ' + s.loc].filter(Boolean).join('\n') });
+  }
+  return out;
+}
+/** the airports of a trip in flying order, for the map (LHR, JFK, SFO), joined when one flight lands where the next leaves. Pure. */
+export function tripStops(idx, segs) {
+  const L = layovers(idx, segs), out = [];
+  for (const s of L.sorted) { if (!s.from || !s.to) continue; if (out[out.length - 1] !== s.from) out.push(s.from); out.push(s.to); }
+  return out.slice(0, 20);
+}
 const b64u = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64u = (s) => new TextDecoder().decode(Uint8Array.from(atob(String(s).replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)));
 /** a trip as a short text for a link (#trip=...): segments as arrays, base64url. */

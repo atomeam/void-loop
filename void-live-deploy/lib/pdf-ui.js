@@ -44,11 +44,13 @@ export function mountPdf(root, cfg) {
   const status = (t, bad) => { say.textContent = t; say.classList.toggle('bad', !!bad); };
   const results = h('div', { class: 'results' });
   const downloads = new Set();
+  let lastImg = null, mainPicker = null; // the first picture made here (a page as an image), and the file list of the tool on top, for "Send to" (lib/handoff.js)
   const offer = (name, bytes, type, note) => {
+    if (/^image\//.test(type) && !lastImg) lastImg = { name, type, bytes };
     const url = URL.createObjectURL(new Blob([bytes], { type })); downloads.add(url);
     results.append(h('p', { class: 'result' }, h('a', { class: 'dl', href: url, download: name }, 'Download ' + name), ' ', h('span', { class: 'note' }, sizeText(bytes.length) + (note ? ' · ' + note : ''))));
   };
-  const reset = () => { for (const u of downloads) URL.revokeObjectURL(u); downloads.clear(); results.replaceChildren(); status(''); };
+  const reset = () => { lastImg = null; for (const u of downloads) URL.revokeObjectURL(u); downloads.clear(); results.replaceChildren(); status(''); };
 
   // a file list: choose, drop or paste; each file can move up or down, and be taken out
   function picker({ accept, multi, label, onChange, pagesBox }) {
@@ -79,7 +81,7 @@ export function mountPdf(root, cfg) {
     drop.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files.length) add(e.dataTransfer.files); });
     const paste = (e) => { const fs = [...((e.clipboardData && e.clipboardData.files) || [])]; if (fs.length) add(fs); };
     if (!alsoMode) document.addEventListener('paste', paste); // only the tool on top takes a pasted file
-    return { files, el: h('div', { class: 'picker' }, drop, input, list), add, destroy: () => document.removeEventListener('paste', paste) };
+    const out = { files, accept, el: h('div', { class: 'picker' }, drop, input, list), add, destroy: () => document.removeEventListener('paste', paste) }; if (!alsoMode) mainPicker = out; return out;
   }
   const field = (label, ctl, hint) => h('label', { class: 'field' }, h('span', {}, label), ctl, hint ? h('span', { class: 'note' }, hint) : null);
   const num = (v, min, max, step = 1) => h('input', { type: 'number', value: v, min, max, step, inputmode: 'decimal' });
@@ -254,6 +256,20 @@ export function mountPdf(root, cfg) {
     if (nx) { e.preventDefault(); show(nx); tabs.querySelector('[data-tool="' + nx + '"]').focus(); }
   } }, TOOL_INFO[id][0]));
   show(current);
+  // "Send to" (lib/handoff.js): a page as a picture goes to the photo tools (the first picture made here, else page 1 of the PDF open in the tool);
+  // a picture from the photo tools lands in Images to PDF, a PDF in the tool on top when it takes one (else the first that does)
+  import('./handoff.js').then(({ offer: offerOut, receive }) => {
+  offerOut('file', async () => {
+    if (lastImg) return { name: lastImg.name, type: lastImg.type, blob: new Blob([lastImg.bytes], { type: lastImg.type }) };
+    const f = mainPicker && mainPicker.accept !== 'image/*' && mainPicker.files[0]; if (!f) return null;
+    const [img] = await pagesToImages(f.bytes, { type: 'image/png', dpi: 150, spec: '1' }); return img ? { name: baseOf(f.name) + '-page-1.png', type: 'image/png', blob: new Blob([img.bytes], { type: 'image/png' }) } : null;
+  }, { mime: ['image/*'], label: 'a page as a picture' });
+  receive('/pdf/', { file: async (d) => {
+    const isImg = /^image\//.test(d.type), want = isImg ? 'img2pdf' : (mainPicker && mainPicker.accept !== 'image/*' ? current : ids.find((x) => x !== 'img2pdf'));
+    if (!ids.includes(want)) return ''; if (want !== current) show(want);
+    await mainPicker.add([new File([d.blob], d.name, { type: d.type })]); return 'ready in ' + TOOL_INFO[want][0] + ': ' + d.name;
+  } });
+  }).catch(() => {});
   // keep the libraries for offline use: fetched once while the page is idle, so the service worker has them before the first tool is pressed
   setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.4.299/build/pdf.min.js', '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 4000);
   return { show };

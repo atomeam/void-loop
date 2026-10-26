@@ -143,6 +143,12 @@
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(box.value); toast($('copy'), 'Copied'); } catch (_) {} });
   $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (box.value && box.value.length <= 4000 ? '?t=' + encodeURIComponent(box.value) : ''); try { await navigator.clipboard.writeText(u); toast($('link'), box.value.length > 4000 ? 'Link copied (text too long to carry)' : 'Copied'); } catch (_) {} });
   draw(); drawVersions();
+  // "Send to" (lib/handoff.js): any page's text arrives in the box (the box's earlier text is kept as a version first); the text goes out to a note, a board, a translation
+  import('/lib/handoff.js').then((H) => {
+    H.offer('text', () => (box.value.trim() ? { text: box.value } : null), { label: 'the text' });
+    const take = (d, p) => { const t = H.asText(p); if (!t) return ''; if (box.value.trim()) keep(true); box.value = (t.title && p.kind === 'text' ? t.title + '\n\n' : '') + t.text; box.dispatchEvent(new Event('input')); const c = count(box.value); return 'counted ' + n(c.words) + ' words'; };
+    H.receive('/word-count/', { text: take, list: take });
+  });
   mountRelated($('related'), '/word-count/', [{ label: 'Rehearse it: a countdown of its speaking time', href: () => { const c = count(box.value); return c.words ? '/stopwatch/?t=' + Math.max(1, Math.round(c.speakSec)) + 's' : null; } }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

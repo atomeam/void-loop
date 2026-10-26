@@ -364,6 +364,9 @@
 
     if (qs.get('c')) { state.cmp = qs.get('c'); $('cmp').value = state.cmp; }
     setWatch(); paintList(); load(); if (list().length) refresh(); loadStrip(); loadMovers();
+    // "Send to" (lib/handoff.js): the quote on screen, as a line of text with the day it was read, to a note, a board or the word counter
+    import('/lib/handoff.js').then((H) => H.offer('text', () => { const q = state.q; if (!q || q.price == null) return null; const pct = q.pct == null ? '' : ' (' + (q.pct >= 0 ? '+' : '') + Number(q.pct).toFixed(2) + '%)';
+      return { title: (q.name || q.sym || state.sym) + ' quote', text: (q.name || state.sym) + ' (' + (q.sym || state.sym) + '): ' + M.fmtPrice(q.price) + (q.currency ? ' ' + q.currency : '') + pct + ', read ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC on Verse markets' + (q.offline ? ' (kept copy, offline)' : '') }; }, { label: 'the quote' }));
     mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }]);
   });
 </script>

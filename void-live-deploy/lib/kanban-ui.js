@@ -243,5 +243,18 @@ export function mountKanban(root, cfg = {}) {
   }
   draw();
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dlg) closeCard(); });
+  // "Send to" (lib/handoff.js): a note, a list, a job, a parcel or a trip arrive as cards in the first column (a dated one gets its due day);
+  // the board's cards go out as a list, to a note or the word counter
+  import('./handoff.js').then(({ offer, receive, asList, asEvents }) => {
+  offer('list', () => { const b = board(), items = b.columns.flatMap((c) => c.cards.map((k) => k.title + (c.name ? ' (' + c.name + ')' : ''))); return items.length ? { title: b.name || '', items } : null; }, { label: 'the cards' });
+  const toCards = (data, p) => {
+    const b = board(), col = b.columns[0]; if (!col) return '';
+    const evs = asEvents(p), lines = p.kind === 'text' && p.data.title ? [p.data.title] : asList(p), n0 = col.cards.length;
+    if (p.kind === 'text' && p.data.title) K.addCard(b, col.id, p.data.title, { desc: p.data.text });
+    else lines.slice(0, 50).forEach((x, i) => K.addCard(b, col.id, x, { due: evs[i] ? evs[i].start.slice(0, 10) : '', desc: evs[i] && evs[i].notes || '' }));
+    rerender(); const n = col.cards.length - n0; return n === 1 ? 'a card in ' + col.name : n + ' cards in ' + col.name;
+  };
+  receive('/kanban/', { text: toCards, list: toCards, event: toCards, job: toCards, parcel: toCards });
+  }).catch(() => {});
   return { state: () => state, draw };
 }

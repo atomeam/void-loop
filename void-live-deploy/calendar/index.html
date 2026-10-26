@@ -638,6 +638,15 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     // subscribed calendars read again when their copy is over an hour old (on opening, never on a timer)
     (async () => { let changed = false; for (const c of feedCals()) { const f = (store.feeds || {})[c.id]; if (navigator.onLine && (!f || Date.now() - f.at > 3600000) && !(await readFeed(c))) changed = true; } if (changed) render(); })(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pullAll(); });
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500);
+    // "Send to" (lib/handoff.js): events, a job's interview, a parcel's expected day or an .ics arrive from other pages; the event open (or the next ones) go out
+    import('/lib/handoff.js').then((H) => {
+      const toH = (e) => ({ title: e.title, start: e.start, end: e.end, allDay: e.allDay, tz: e.tz, location: e.location, notes: e.notes });
+      H.offer('event', () => { if (state.sel && !$('detail').hidden) return { events: [toH(state.sel)] }; const up = C.agenda(store.events, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 30))).slice(0, 10); return up.length ? { events: up.map(toH) } : null; }, { label: de ? 'Termine' : 'events' });
+      const addAll = (evs) => { const got = evs.map((e) => C.normalize({ ...e, id: undefined })).filter(Boolean); for (const e of got) store.events = C.withEvent(store.events, e); keep(); if (got[0]) state.cursor = C.startOfDay(C.parseLocal(got[0].start)); render(); return got.length; };
+      const said = (n) => (de ? n + (n === 1 ? ' Termin' : ' Termine') + ' eingetragen' : 'added ' + n + (n === 1 ? ' event' : ' events'));
+      const ev = (data, p) => said(addAll(H.asEvents(p)));
+      H.receive('/calendar/', { event: ev, job: ev, parcel: ev, file: async (d) => said(addAll(C.parseIcs(await d.blob.text()))) });
+    });
     mountRelated($('related'), '/calendar/', [{ label: de ? 'Timer bis zum Termin' : 'Countdown to the next event', href: () => { const o = C.agenda(store.events, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 60))).find((x) => !x.allDay); const m = o ? Math.max(1, Math.round((C.parseLocal(o.start) - now()) / 60000)) : 10; return '/stopwatch/?t=' + encodeURIComponent(m + ' minutes'); } }, { label: de ? 'Wetter am Tag' : 'Weather that day', href: () => '/weather/' }]);
   });
 </script>
