@@ -32,7 +32,7 @@ const MOTIFS = {
   landscape: 'geography landscape country countries continent continents valley desert canyon terrain plains',
 };
 // the hue each motif is drawn in, so a dragon burns red and the sea is blue whatever the family's hue (the family's hue still tints the rest of the plate)
-export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6, wheel: 330, stopwatch: 4, doll: 8, person: 215 };
+export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6, wheel: 330, stopwatch: 4, doll: 8 }; // person (the neutral portrait plate) takes the family hue
 export const motifHue = (m) => (Number.isFinite(MOTIF_HUE[m]) ? MOTIF_HUE[m] : null);
 // the motifs that stand on a horizon: the plate draws a far ridge and a floor under them, so they sit in a place instead of floating
 export const GROUNDED = new Set(['house', 'tree', 'mountain', 'wave', 'city', 'sword', 'dragon']);
