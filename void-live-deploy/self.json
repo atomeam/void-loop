@@ -491,6 +491,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:41:15Z",
+   "subject": "Music floor: a page for every lane site (/metronome/, /piano/, /tuner/, /bpm/, /chords/) and the hub /music/"
+  },
+  {
+   "at": "2026-10-26T03:41:06Z",
+   "subject": "Search: ESPN's public search as the second source, every kind always listed as text (No team found.), items labelled by source, the…"
+  },
+  {
+   "at": "2026-10-26T03:40:15Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:40:09Z",
+   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:38:28Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com,photos: exifeditor.io,photos: exif.tools measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:38:22Z",
+   "subject": "Feature scan: finance,news researched by Verse"
+  },
+  {
    "at": "2026-10-26T03:35:38Z",
    "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
   },
@@ -545,30 +569,6 @@
   {
    "at": "2026-10-26T03:28:42Z",
    "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:28:02Z",
-   "subject": "Sports: common asks that each take a setting in the link"
-  },
-  {
-   "at": "2026-10-26T03:28:02Z",
-   "subject": "Sports: a page of its own (42-sport grid, one search across teams, events, venues and players, born on this day, the free API), its stage…"
-  },
-  {
-   "at": "2026-10-26T03:27:57Z",
-   "subject": "Incident: the browser suite failed on 086da994 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T03:26:30Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:25:06Z",
-   "subject": "tower-gate test: the finance floor has its own probe now"
-  },
-  {
-   "at": "2026-10-26T03:24:49Z",
-   "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
   }
  ],
  "builders": {
