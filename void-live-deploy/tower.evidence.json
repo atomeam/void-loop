@@ -14790,52 +14790,52 @@
   "pdf: codeshack.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 207,
-    "evidence": "Verse (/pdf/merge/) 108 ms to the load event (median of 3, phone width) vs codeshack.io 207 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:03:23.639Z"
+    "verse": 105,
+    "best": 279,
+    "evidence": "Verse (/pdf/merge/) 105 ms to the load event (median of 3, phone width) vs codeshack.io 279 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "reliability": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 0 of 3 loads answered vs codeshack.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 px sideways overflow at 390 px vs codeshack.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 unnamed controls or images vs codeshack.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 (1: the page shows itself again with the network cut) vs codeshack.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/pdf/merge/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 1,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 1 of 3 right against the worked-out answer (missed: PDFs chosen or dropped, files stay on the device); judged against the standard, not codeshack.io (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/merge/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:03:23.639Z",
+    "at": "2026-10-26T04:44:35.992Z",
     "of": 3
    },
    "design polish": {
@@ -14843,14 +14843,14 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:03:23.639Z"
+    "at": "2026-10-26T04:44:35.992Z"
    },
    "merge and split": {
     "verdict": "equal",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/merge/) 1 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: split; site lacks: split)",
-    "at": "2026-10-26T04:03:23.639Z",
+    "at": "2026-10-26T04:44:35.992Z",
     "of": 2,
     "part": true
    },
@@ -14859,7 +14859,7 @@
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/merge/) 0 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
-    "at": "2026-10-26T04:03:23.639Z",
+    "at": "2026-10-26T04:44:35.992Z",
     "of": 3,
     "part": true
    },
@@ -14868,7 +14868,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:03:23.639Z",
+    "at": "2026-10-26T04:44:35.992Z",
     "of": 1,
     "part": true
    },
@@ -14877,17 +14877,17 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:03:23.639Z",
+    "at": "2026-10-26T04:44:35.992Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "worse",
-    "verse": 1,
-    "best": 4,
-    "evidence": "Verse (/pdf/merge/) 1 of 14 things a full answer shows vs codeshack.io 4 of 14 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF)",
-    "at": "2026-10-26T04:03:23.639Z",
-    "of": 14
+    "verse": 2,
+    "best": 5,
+    "evidence": "Verse (/pdf/merge/) 2 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T04:44:35.992Z",
+    "of": 19
    }
   },
   "music: jasperbernaers.com": {
@@ -15546,68 +15546,68 @@
   },
   "pdf: pdfcandy.com": {
    "speed": {
-    "verdict": "better",
-    "verse": 231,
-    "best": 465,
-    "evidence": "Verse (/pdf/toolbox/) 231 ms to the load event (median of 3, phone width) vs pdfcandy.com 465 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:40:24.433Z"
+    "verdict": "equal-and-better",
+    "verse": 124,
+    "best": 608,
+    "evidence": "Verse (/pdf/toolbox/) 124 ms to the load event (median of 3, phone width) vs pdfcandy.com 608 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "reliability": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/toolbox/) 0 of 3 loads answered vs pdfcandy.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:40:24.433Z"
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/toolbox/) 0 px sideways overflow at 390 px vs pdfcandy.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:40:24.433Z"
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/toolbox/) 0 unnamed controls or images vs pdfcandy.com 2 unnamed controls or images",
-    "at": "2026-10-26T04:40:24.433Z"
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/toolbox/) 0 (1: the page shows itself again with the network cut) vs pdfcandy.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:40:24.433Z"
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/toolbox/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs pdfcandy.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:40:24.433Z"
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/toolbox/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not pdfcandy.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/toolbox/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:40:24.433Z",
+    "at": "2026-10-26T04:45:10.867Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 18,
-    "evidence": "Verse (/pdf/toolbox/) 0 design defects vs pdfcandy.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), pdfcandy.com (4 low-contrast texts, 14 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:40:24.433Z"
+    "best": 17,
+    "evidence": "Verse (/pdf/toolbox/) 0 design defects vs pdfcandy.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), pdfcandy.com (3 low-contrast texts, 14 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:45:10.867Z"
    },
    "merge and split": {
     "verdict": "worse",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/toolbox/) 0 of 2 shown vs pdfcandy.com 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:40:24.433Z",
+    "at": "2026-10-26T04:45:10.867Z",
     "of": 2,
     "part": true
    },
@@ -15616,7 +15616,7 @@
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/toolbox/) 0 of 3 shown vs pdfcandy.com 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:40:24.433Z",
+    "at": "2026-10-26T04:45:10.867Z",
     "of": 3,
     "part": true
    },
@@ -15625,7 +15625,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/toolbox/) 0 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:40:24.433Z",
+    "at": "2026-10-26T04:45:10.867Z",
     "of": 1,
     "part": true
    },
@@ -15634,68 +15634,68 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/toolbox/) 0 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: compress; site lacks: none)",
-    "at": "2026-10-26T04:40:24.433Z",
+    "at": "2026-10-26T04:45:10.867Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "worse",
     "verse": 0,
-    "best": 9,
-    "evidence": "Verse (/pdf/toolbox/) 0 of 14 things a full answer shows vs pdfcandy.com 9 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: reorder pages, on this device, no account, works offline, ask questions about a PDF)",
-    "at": "2026-10-26T04:40:24.433Z",
-    "of": 14
+    "best": 13,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 19 things a full answer shows vs pdfcandy.com 13 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: reorder pages, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
+    "at": "2026-10-26T04:45:10.867Z",
+    "of": 19
    }
   },
   "pdf: sejda.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 118,
-    "best": 327,
-    "evidence": "Verse (/pdf/editor/) 118 ms to the load event (median of 3, phone width) vs sejda.com 327 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:42:10.946Z"
+    "verse": 141,
+    "best": 294,
+    "evidence": "Verse (/pdf/editor/) 141 ms to the load event (median of 3, phone width) vs sejda.com 294 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "reliability": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/editor/) 0 of 3 loads answered vs sejda.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/editor/) 0 px sideways overflow at 390 px vs sejda.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/pdf/editor/) 0 unnamed controls or images vs sejda.com 4 unnamed controls or images",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/editor/) 0 (1: the page shows itself again with the network cut) vs sejda.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/editor/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs sejda.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/editor/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not sejda.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/editor/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:42:10.946Z",
+    "at": "2026-10-26T04:45:39.779Z",
     "of": 3
    },
    "design polish": {
@@ -15703,14 +15703,14 @@
     "verse": 0,
     "best": 168,
     "evidence": "Verse (/pdf/editor/) 0 design defects vs sejda.com 168 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), sejda.com (82 low-contrast texts, 86 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:42:10.946Z"
+    "at": "2026-10-26T04:45:39.779Z"
    },
    "merge and split": {
     "verdict": "worse",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/editor/) 0 of 2 shown vs sejda.com 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:42:10.946Z",
+    "at": "2026-10-26T04:45:39.779Z",
     "of": 2,
     "part": true
    },
@@ -15719,7 +15719,7 @@
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/editor/) 0 of 3 shown vs sejda.com 3 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: none)",
-    "at": "2026-10-26T04:42:10.946Z",
+    "at": "2026-10-26T04:45:39.779Z",
     "of": 3,
     "part": true
    },
@@ -15728,7 +15728,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/editor/) 0 of 1 shown vs sejda.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:42:10.946Z",
+    "at": "2026-10-26T04:45:39.779Z",
     "of": 1,
     "part": true
    },
@@ -15737,68 +15737,68 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/editor/) 0 of 1 shown vs sejda.com 1 of 1 shown (Verse lacks: compress; site lacks: none)",
-    "at": "2026-10-26T04:42:10.946Z",
+    "at": "2026-10-26T04:45:39.779Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "worse",
     "verse": 0,
-    "best": 11,
-    "evidence": "Verse (/pdf/editor/) 0 of 14 things a full answer shows vs sejda.com 11 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: on this device, no account, ask questions about a PDF)",
-    "at": "2026-10-26T04:42:10.946Z",
-    "of": 14
+    "best": 16,
+    "evidence": "Verse (/pdf/editor/) 0 of 19 things a full answer shows vs sejda.com 16 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: on this device, no account, ask questions about a PDF)",
+    "at": "2026-10-26T04:45:39.779Z",
+    "of": 19
    }
   },
   "pdf: tools.pdf24.org": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 127,
-    "best": 152,
-    "evidence": "Verse (/pdf/suite/) 127 ms to the load event (median of 3, phone width) vs tools.pdf24.org 152 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:42:40.678Z"
+    "verse": 126,
+    "best": 102,
+    "evidence": "Verse (/pdf/suite/) 126 ms to the load event (median of 3, phone width) vs tools.pdf24.org 102 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "reliability": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 0 of 3 loads answered vs tools.pdf24.org 3 of 3 loads answered",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/suite/) 0 px sideways overflow at 390 px vs tools.pdf24.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 0 unnamed controls or images vs tools.pdf24.org 3 unnamed controls or images",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/suite/) 0 (1: the page shows itself again with the network cut) vs tools.pdf24.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs tools.pdf24.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not tools.pdf24.org (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/suite/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:42:40.678Z",
+    "at": "2026-10-26T04:46:08.218Z",
     "of": 3
    },
    "design polish": {
@@ -15806,14 +15806,14 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/suite/) 0 design defects vs tools.pdf24.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tools.pdf24.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:42:40.678Z"
+    "at": "2026-10-26T04:46:08.218Z"
    },
    "merge and split": {
     "verdict": "worse",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/suite/) 0 of 2 shown vs tools.pdf24.org 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:42:40.678Z",
+    "at": "2026-10-26T04:46:08.218Z",
     "of": 2,
     "part": true
    },
@@ -15822,7 +15822,7 @@
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/suite/) 0 of 3 shown vs tools.pdf24.org 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:42:40.678Z",
+    "at": "2026-10-26T04:46:08.218Z",
     "of": 3,
     "part": true
    },
@@ -15831,7 +15831,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/suite/) 0 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:42:40.678Z",
+    "at": "2026-10-26T04:46:08.218Z",
     "of": 1,
     "part": true
    },
@@ -15840,68 +15840,68 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/suite/) 0 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: compress; site lacks: none)",
-    "at": "2026-10-26T04:42:40.678Z",
+    "at": "2026-10-26T04:46:08.218Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "worse",
     "verse": 0,
-    "best": 9,
-    "evidence": "Verse (/pdf/suite/) 0 of 14 things a full answer shows vs tools.pdf24.org 9 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF)",
-    "at": "2026-10-26T04:42:40.678Z",
-    "of": 14
+    "best": 13,
+    "evidence": "Verse (/pdf/suite/) 0 of 19 things a full answer shows vs tools.pdf24.org 13 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
+    "at": "2026-10-26T04:46:08.218Z",
+    "of": 19
    }
   },
   "pdf: smallpdf.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 160,
-    "best": 810,
-    "evidence": "Verse (/pdf/studio/) 160 ms to the load event (median of 3, phone width) vs smallpdf.com 810 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:44:34.903Z"
+    "verse": 119,
+    "best": 499,
+    "evidence": "Verse (/pdf/studio/) 119 ms to the load event (median of 3, phone width) vs smallpdf.com 499 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "reliability": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/studio/) 0 of 3 loads answered vs smallpdf.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/studio/) 0 px sideways overflow at 390 px vs smallpdf.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
     "evidence": "Verse (/pdf/studio/) 0 unnamed controls or images vs smallpdf.com 6 unnamed controls or images",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/studio/) 0 (1: the page shows itself again with the network cut) vs smallpdf.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/pdf/studio/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs smallpdf.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/studio/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not smallpdf.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/studio/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 3
    },
    "design polish": {
@@ -15909,14 +15909,14 @@
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/pdf/studio/) 0 design defects vs smallpdf.com 5 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), smallpdf.com (0 low-contrast texts, 4 small tap targets, layout shift 0.10)",
-    "at": "2026-10-26T04:44:34.903Z"
+    "at": "2026-10-26T04:46:26.668Z"
    },
    "merge and split": {
     "verdict": "worse",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/studio/) 0 of 2 shown vs smallpdf.com 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 2,
     "part": true
    },
@@ -15925,7 +15925,7 @@
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/studio/) 0 of 3 shown vs smallpdf.com 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 3,
     "part": true
    },
@@ -15934,7 +15934,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/studio/) 0 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 1,
     "part": true
    },
@@ -15943,7 +15943,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/pdf/studio/) 0 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: compress; site lacks: none)",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 1,
     "part": true
    },
@@ -15952,59 +15952,59 @@
     "verse": 0,
     "best": 11,
     "evidence": "Verse (/pdf/studio/) 0 of 19 things a full answer shows vs smallpdf.com 11 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: delete pages, reorder pages, page numbers, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:44:34.903Z",
+    "at": "2026-10-26T04:46:26.668Z",
     "of": 19
    }
   },
   "pdf": {
    "speed": {
-    "verdict": "better",
-    "verse": 228,
-    "best": 347,
-    "evidence": "Verse (/pdf/) 228 ms to the load event (median of 3, phone width) vs ilovepdf.com 347 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:45:07.209Z"
+    "verdict": "equal-and-better",
+    "verse": 150,
+    "best": 208,
+    "evidence": "Verse (/pdf/) 150 ms to the load event (median of 3, phone width) vs ilovepdf.com 208 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "reliability": {
     "verdict": "worse",
-    "verse": 0,
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/pdf/) 0 of 3 loads answered vs ilovepdf.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:45:07.209Z"
+    "evidence": "Verse (/pdf/) 2 of 3 loads answered vs ilovepdf.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/) 0 px sideways overflow at 390 px vs ilovepdf.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:45:07.209Z"
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/) 0 unnamed controls or images vs ilovepdf.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:45:07.209Z"
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/) 0 (1: the page shows itself again with the network cut) vs ilovepdf.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:45:07.209Z"
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs ilovepdf.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:45:07.209Z"
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/pdf/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not ilovepdf.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:45:07.209Z",
+    "evidence": "Verse (/pdf/) 3 of 3 right against the worked-out answer; judged against the standard, not ilovepdf.com (the site is not asked)",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 3
    },
    "design polish": {
@@ -16012,41 +16012,41 @@
     "verse": 0,
     "best": 25,
     "evidence": "Verse (/pdf/) 0 design defects vs ilovepdf.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), ilovepdf.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:45:07.209Z"
+    "at": "2026-10-26T04:46:56.199Z"
    },
    "merge and split": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/pdf/) 0 of 2 shown vs ilovepdf.com 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:45:07.209Z",
+    "evidence": "Verse (/pdf/) 2 of 2 shown vs ilovepdf.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/) 0 of 3 shown vs ilovepdf.com 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:45:07.209Z",
+    "evidence": "Verse (/pdf/) 3 of 3 shown vs ilovepdf.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 3,
     "part": true
    },
    "images to pdf": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/pdf/) 0 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:45:07.209Z",
+    "evidence": "Verse (/pdf/) 1 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 1,
     "part": true
    },
    "compress": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/pdf/) 0 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: compress; site lacks: none)",
-    "at": "2026-10-26T04:45:07.209Z",
+    "evidence": "Verse (/pdf/) 1 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 1,
     "part": true
    },
@@ -16055,7 +16055,7 @@
     "verse": 0,
     "best": 13,
     "evidence": "Verse (/pdf/) 0 of 19 things a full answer shows vs ilovepdf.com 13 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:45:07.209Z",
+    "at": "2026-10-26T04:46:56.199Z",
     "of": 19
    }
   }
