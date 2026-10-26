@@ -9,6 +9,7 @@
  */
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, SELF_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
+import { jobAskOf } from './job-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -73,6 +74,15 @@ const HAND_RELATED = Object.freeze({
   '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
   '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
   '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
+  // the jobs pages (owner, 2026-10-26): the hub reaches each lane page; each lane page the hub and its closest sisters
+  '/jobs/': ['/jobs/alerts/', '/jobs/salary/', '/jobs/europe/', '/jobs/companies/', '/calendar/'],
+  '/jobs/regions/': ['/jobs/', '/jobs/europe/', '/jobs/alerts/', '/time/'],
+  '/jobs/alerts/': ['/jobs/', '/jobs/categories/', '/jobs/tags/'],
+  '/jobs/europe/': ['/jobs/', '/jobs/regions/', '/translate/'],
+  '/jobs/salary/': ['/jobs/', '/calculator/', '/jobs/tags/', '/convert/'],
+  '/jobs/categories/': ['/jobs/', '/jobs/tags/', '/jobs/companies/'],
+  '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
+  '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
@@ -158,6 +168,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
+  // jobs (owner, 2026-10-26): 'job search', 'remote jobs', 'job alerts', 'jobs in germany', 'remote companies hiring' open the jobs page that does it (lib/job-sites.js)
+  [{ exec: (t) => (jobAskOf(t) ? [t] : null) }, (m, t) => jobAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

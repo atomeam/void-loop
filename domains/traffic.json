@@ -1,9 +1,27 @@
 {
- "at": "2026-10-26T06:00Z",
- "source": "none",
- "note": "no count yet: the first Traffic run (.github/workflows/traffic.yml) fills this in",
- "days": [],
+ "at": "2026-10-26T06:42Z",
+ "source": "verse",
+ "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
+ "week": {
+  "since": "2026-10-20",
+  "unique": true,
+  "people": 1,
+  "views": 1,
+  "ours": 6,
+  "bots": 0
+ },
+ "days": [
+  {
+   "day": "2026-10-26",
+   "all": 7,
+   "people": 1,
+   "ours": 6,
+   "bots": 0,
+   "uniquePeople": 1
+  }
+ ],
  "pages": [],
  "referrers": [],
- "countries": []
+ "countries": [],
+ "line": "People this week: 1 (1 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }

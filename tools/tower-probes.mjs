@@ -397,6 +397,21 @@ export const PROBES = Object.freeze({
     facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
+  // jobs (owner, 2026-10-26: "we have to have everything all the sites have"): LinkedIn Jobs is the floor; Verse's /jobs/ lists remote jobs from three free feeds whose
+  // terms allow showing them (Remotive, Jobicy, Himalayas; lib/jobs-core.js), each credited and linked to its original posting. The question is a keyword search; a right
+  // answer counts its jobs, shows ones that match, names each listing's source and sends Apply to the original posting. Judged on Verse alone (the listings are live).
+  jobs: {
+    site: 'https://www.linkedin.com/jobs/', verse: '/jobs/',
+    ask: { verse: '/jobs/?q=developer' },
+    truth: [['the jobs counted', /\b\d[\d,.]* jobs? · /], ['developer jobs listed', /developer/i], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: {
+      'listing breadth': [['several sources', /Remotive[\s\S]*Jobicy[\s\S]*Himalayas/], ['the same search on other sites', /Open this search on other job sites/i], ['filters', /Job type[\s\S]{0,400}Level/]],
+      alerts: [['save a search as an alert', /Save this search as an alert/i], ['new since the last visit', /new since/i], ['a feed', /RSS/]],
+      applications: [['an application tracker', /Applications/], ['stages', /Interview[\s\S]{0,80}Offer|Offer[\s\S]{0,80}Interview/], ['notes', /Notes|your notes/i], ['CSV export', /Export CSV/i]],
+    },
+    facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
+      ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
   // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
   // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
   // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.
