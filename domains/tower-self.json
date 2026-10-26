@@ -1,0 +1,30 @@
+{
+ "note": "tools/tower-self.mjs: every site Verse took on by itself, what came of it, and one line per run. Written by the loop.",
+ "sites": {
+  "anycolorid.com": {
+   "at": "2026-10-26T07:10:49Z",
+   "outcome": "gone",
+   "why": "a sign-in wall"
+  },
+  "vcalc.com": {
+   "at": "2026-10-26T07:10:49Z",
+   "outcome": "gone",
+   "why": "robots.txt asks robots not to read it"
+  },
+  "colorcanon.com": {
+   "at": "2026-10-26T07:10:53Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401"
+  }
+ },
+ "runs": [
+  {
+   "at": "2026-10-26T07:10:56Z",
+   "line": "Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0
+  }
+ ]
+}

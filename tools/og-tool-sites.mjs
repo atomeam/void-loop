@@ -30,6 +30,7 @@ const exe = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium', '/opt/pw-br
 if (process.argv[1] && path.resolve(process.argv[1]) === new URL(import.meta.url).pathname) {
   const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] }), p = await b.newPage({ viewport: { width: 1200, height: 630 } });
   fs.mkdirSync(root, { recursive: true });
-  for (const r of SITE_PAGES) { if (process.argv[2] && !r.path.startsWith(process.argv[2])) continue; await p.setContent(html(r)); const f = path.join(root, slug(r.path) + '.png'); await p.screenshot({ path: f }); const z = await shrinkFile(f); console.log('wrote og/' + slug(r.path) + '.png (' + Math.round(z.after / 1024) + ' KB, Verse\'s own compressor)'); }
+  // a page Verse built from its family's page (lib/self-sites.js) keeps that page's picture
+  for (const r of SITE_PAGES.filter((x) => !x.base)) { if (process.argv[2] && !r.path.startsWith(process.argv[2])) continue; await p.setContent(html(r)); const f = path.join(root, slug(r.path) + '.png'); await p.screenshot({ path: f }); const z = await shrinkFile(f); console.log('wrote og/' + slug(r.path) + '.png (' + Math.round(z.after / 1024) + ' KB, Verse\'s own compressor)'); }
   await b.close();
 }

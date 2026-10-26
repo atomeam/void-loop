@@ -218,6 +218,8 @@ for (const [name, file] of [
   ['showcase', 'showcase.test.mjs'],
   ['fix-pages', 'fix-pages.test.mjs'],
   ['sitemap', 'sitemap.test.mjs'],
+  ['beacon', 'beacon-pages.test.mjs'],
+  ['traffic', 'traffic.test.mjs'],
   ['indexnow', 'indexnow.test.mjs'],
   ['seo', 'seo.test.mjs'],
   ['seo-audit-unit', 'seo-audit.test.mjs'],
@@ -450,6 +452,7 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
+  ['tower-self', 'tower-self.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
   ['avatar', 'avatar.test.mjs'],
   ['tower-verdict', 'tower-verdict.test.mjs'],
@@ -564,6 +567,8 @@ addScript('index', 'skills-index.mjs', ['--check']);
 // every module a direct page (/flip/, /g/, /conquered/) imports is preloaded in its head (tools/preload.mjs; owner, 2026-10-24: "speed fixes a
 // lot of our other issues and is worth fixing permanently"): an import added without its preload is a waterfall again
 addScript('preload-pages', 'preload.mjs', ['--check']);
+// the page guard (owner, 2026-10-26: "all sites get a page"): a frontier site that reaches the front of the Versus queue has a page of its own (tools/tower-self.mjs)
+addScript('versus-pages', 'tower-self.mjs', ['guard']);
 // Verse's own SEO tool over every page it serves (tools/seo-audit.mjs, lib/seo-audit.js; owner, 2026-10-26: "Verse uses its own tools"): a missing
 // canonical, title, description or share card, a broken internal link, unparsable JSON-LD, a page nothing links to, or one fewer free page leading
 // to what Verse sells fails here; the counts in tools/seo-audit.baseline.json only go down

@@ -2975,105 +2975,147 @@
   },
   "jobs": {
    "speed": {
-    "verdict": "worse",
-    "verse": 301,
-    "best": 300,
-    "evidence": "Verse 301 ms to the load event (median of 3, phone width) vs LinkedIn Jobs 300 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T06:17:04.264Z",
-    "was": "better"
+    "verdict": "equal-and-better",
+    "verse": 145,
+    "best": 316,
+    "evidence": "Verse (/jobs/) 145 ms to the load event (median of 3, phone width) vs LinkedIn Jobs 316 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs LinkedIn Jobs 3 of 3 loads answered",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 3 of 3 loads answered vs LinkedIn Jobs 3 of 3 loads answered",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs LinkedIn Jobs 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 0 px sideways overflow at 390 px vs LinkedIn Jobs 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs LinkedIn Jobs 0 unnamed controls or images",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 0 unnamed controls or images vs LinkedIn Jobs 0 unnamed controls or images",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs LinkedIn Jobs 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 1 (1: the page shows itself again with the network cut) vs LinkedIn Jobs 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs LinkedIn Jobs 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs LinkedIn Jobs 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:10:45.916Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 24,
     "best": 47,
-    "evidence": "Verse 0 design defects vs LinkedIn Jobs 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), LinkedIn Jobs (0 low-contrast texts, 47 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T06:17:04.264Z"
+    "evidence": "Verse (/jobs/) 24 design defects vs LinkedIn Jobs 47 design defects: Verse (24 low-contrast texts, 0 small tap targets, layout shift 0.01), LinkedIn Jobs (0 low-contrast texts, 47 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T07:10:45.916Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/) 4 of 4 right against the worked-out answer; judged against the standard, not LinkedIn Jobs (the site is not asked)",
+    "at": "2026-10-26T07:10:45.916Z",
+    "of": 4
+   },
+   "listing breadth": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:10:45.916Z",
+    "of": 3,
+    "part": true
+   },
+   "alerts": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:10:45.916Z",
+    "of": 3,
+    "part": true
+   },
+   "applications": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:10:45.916Z",
+    "of": 4,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 24,
+    "best": 0,
+    "evidence": "Verse (/jobs/) 24 of 24 things a full answer shows vs LinkedIn Jobs 0 of 24 things a full answer shows (Verse lacks: none; site lacks: keyword search, place, remote region, category, tags, job type, level, salary, date posted, sort, saved jobs, alerts, an RSS feed, application tracker, interview stage, calendar file, CSV export, share link, other job sites, visa sponsorship, source credited, no account, works offline, Apply on company site)",
+    "at": "2026-10-26T07:10:45.916Z",
+    "of": 24
    }
   },
   "shopping": {
    "speed": {
     "verdict": "better",
-    "verse": 245,
-    "best": 650,
-    "evidence": "Verse 245 ms to the load event (median of 3, phone width) vs Amazon 650 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T06:49:46.847Z"
+    "verse": 225,
+    "best": 812,
+    "evidence": "Verse 225 ms to the load event (median of 3, phone width) vs Amazon 812 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
-    "at": "2026-10-26T06:49:46.847Z"
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T06:49:46.847Z"
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 13,
-    "evidence": "Verse 0 unnamed controls or images vs Amazon 13 unnamed controls or images",
-    "at": "2026-10-26T06:49:46.847Z"
+    "best": 9,
+    "evidence": "Verse 0 unnamed controls or images vs Amazon 9 unnamed controls or images",
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T06:49:46.847Z"
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T06:49:46.847Z"
+    "at": "2026-10-26T07:15:20.956Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 46,
-    "evidence": "Verse 4 design defects vs Amazon 46 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.02), Amazon (5 low-contrast texts, 41 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T06:49:46.847Z"
+    "best": 49,
+    "evidence": "Verse 4 design defects vs Amazon 49 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (7 low-contrast texts, 42 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:15:20.956Z"
    }
   },
   "chat": {
