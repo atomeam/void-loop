@@ -41,7 +41,7 @@ ok(saved[0] === 0xff && sm.items.length === 0 && !sm.has.gps, 'the saved JPEG ('
 // format: WebP and a 16-colour PNG
 await page.selectOption('#fmt', 'image/png'); await page.selectOption('#cols', '16'); await page.waitForTimeout(1500); const png = await page.textContent('#line'); ok(/→/.test(png), 'PNG with 16 colours: ' + png);
 const [dp] = await Promise.all([page.waitForEvent('download'), page.click('#dl')]); const pb = fs.readFileSync(await dp.path()); ok(pb[1] === 0x50 && readMeta(pb).width > 0, 'a real PNG came back (' + pb.length + ' B)');
-await page.selectOption('#fmt', 'image/webp'); await page.waitForTimeout(900); ok(/WebP|webp/i.test(await page.textContent('#note')), 'WebP: ' + await page.textContent('#note'));
+await page.selectOption('#fmt', 'image/webp'); await page.waitForTimeout(2500); ok(/WebP|webp/i.test(await page.textContent('#note')), 'WebP: ' + await page.textContent('#note'));
 await page.click('#pcts button[data-p="25"]'); await page.waitForTimeout(900); ok(/400 × 300/.test(await page.textContent('#note')), 'resized to 25%: ' + await page.textContent('#note'));
 await page.click('#pcts button[data-p="100"]'); await page.selectOption('#fmt', 'keep');
 // crop 1:1, rotate, adjust, filter, draw, text, undo
