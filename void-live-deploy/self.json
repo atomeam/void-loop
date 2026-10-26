@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:44:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T04:43:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T04:43:45Z",
+   "subject": "Free pictures: a 403 from loc.gov rests the source; the probe asks loc.gov once (explore only by hand)"
+  },
+  {
    "at": "2026-10-26T04:43:23Z",
    "subject": "Free pictures probe: what each source answered"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T04:35:32Z",
    "subject": "Tower gate: music: jasperbernaers.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
-  },
-  {
-   "at": "2026-10-26T04:34:02Z",
-   "subject": "Tower gate: finance,finance: stockq.org,finance: stooq.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:33:00Z",
-   "subject": "Tower gate: finance: macrotrends.net,finance: investing.com,finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:32:08Z",
-   "subject": "Free pictures: one registry of open-licensed picture sources, a probe, docs and tests"
   }
  ],
  "builders": {
