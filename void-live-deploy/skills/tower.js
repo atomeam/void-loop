@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-52';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-53';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
@@ -159,7 +159,12 @@ const POLL_MS = () => (typeof window !== 'undefined' && window.__towerPollMs) ||
  *  before the lanes landed kept saying 18 surpassed while the file said 30). Pure. */
 export const staleOf = (evidence, t) => { const ids = new Set((t && t.floors || []).map((f) => f.id)); return Object.keys((evidence && evidence.floors) || {}).filter((k) => !ids.has(k)).length; };
 let stale = 0;
-const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null); stale = staleOf(ev, t); return t; };
+// a card that is open for hours reads data newer than the code it was loaded with: when the data names a site this copy does not know, the
+// card fetches the current ladder itself (a fresh import, never the cached one) and carries on; a site neither copy knows was retired, and
+// is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
+let fresh = null;
+const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
+const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -195,10 +200,6 @@ async function run(text, api) {
       t = next;
       draw(next.floors.filter((f) => moved.some((m) => m.startsWith(f.site))).map((f) => f.id));
       if (moved.length) live.textContent = moved.join(' ');
-      // this copy of the page is older than the file it reads: say so, with a reload, instead of a count that stays behind
-      if (stale) { let n = root.querySelector('.tw-stale'); if (!n) { n = document.createElement('div'); n.className = 'tw-stale'; n.setAttribute('data-share-skip', ''); n.style.cssText = 'margin:6px 0;padding:6px 10px;border:1px solid #c9b6ff;border-radius:10px;font-size:13px'; root.prepend(n); }
-        n.innerHTML = 'A newer Verse is live: ' + stale + ' more site' + (stale === 1 ? '' : 's') + ' measured than this page knows. <button type="button" class="tw-reload" style="font:inherit;font-size:13px;padding:2px 10px;border-radius:999px">Reload</button>';
-        n.querySelector('.tw-reload').addEventListener('click', () => location.reload()); }
     };
     timer = setInterval(refresh, POLL_MS());
     onVis = () => { if (document.visibilityState === 'visible') refresh(); };
