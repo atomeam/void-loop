@@ -23,7 +23,8 @@ export async function onRequestPost({ request, env }) {
   if (!b) return new Response('messages are needed (at most 4, 24,000 characters)', { status: 400 });
   if (!env.AI) return new Response('no model bound', { status: 503 });
   try {
-    const r = await env.AI.run(models('will'), { messages: b.messages, max_tokens: b.max, ...(b.schema ? { response_format: { type: 'json_schema', json_schema: b.schema } } : {}) });
+    const r = await env.AI.run(models('will'), { messages: b.messages, max_tokens: b.max, chat_template_kwargs: { enable_thinking: false }, // thinking spent the whole budget and left the answer empty (the first proof runs)
+      ...(b.schema ? { response_format: { type: 'json_schema', json_schema: b.schema } } : {}) });
     let text = pick(r); if (text && typeof text !== 'string') text = JSON.stringify(text);
     return Response.json({ text: String(text || '') });
   } catch (e) { try { await recordShortfall(env, 'tower-self', reasonOf(e)); } catch (_) {} return Response.json({ error: 'the model did not answer: ' + reasonOf(e) }, { status: 503 }); }
