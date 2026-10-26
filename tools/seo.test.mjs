@@ -73,7 +73,9 @@ test('withBlock inserts before the anchor once and rewrites between the markers 
 });
 
 test('every tool page file carries exactly the block the table gives it (node tools/seo-pages.mjs when not), one canonical and one JSON-LD', () => {
-  const all = build(), llms = all.find((x) => x.path === '/llms.txt'), pages = all.filter((x) => x !== llms);
+  // build() also reaches the pages it writes only links into (each tool's "Use with" row, /tools/, the paid pages): up to date like the rest
+  const all = build(), llms = all.find((x) => x.path === '/llms.txt'), pages = all.filter((x) => x !== llms && PAGES.some((p) => p.path === x.path));
+  for (const { path, html, want } of all) assert.equal(html, want, path + ' is out of date');
   assert.equal(pages.length, PAGES.length - Object.keys(SKIP).length);
   assert.ok(llms && llms.want === llms.html, 'llms.txt is reached and up to date');
   for (const { path, html, want } of pages) {
