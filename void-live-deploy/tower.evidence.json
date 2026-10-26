@@ -10436,60 +10436,60 @@
   "sports: thesportsdb.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 76,
-    "best": 343,
-    "evidence": "Verse (/sports/) 76 ms to the load event (median of 3, phone width) vs thesportsdb.com 343 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:36:24.092Z"
+    "verse": 90,
+    "best": 289,
+    "evidence": "Verse (/sports/) 90 ms to the load event (median of 3, phone width) vs thesportsdb.com 289 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:36:24.092Z"
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/sports/) 0 px sideways overflow at 390 px vs thesportsdb.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:36:24.092Z"
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 146,
     "evidence": "Verse (/sports/) 0 unnamed controls or images vs thesportsdb.com 146 unnamed controls or images",
-    "at": "2026-10-26T03:36:24.092Z"
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/sports/) 1 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:36:24.092Z"
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:36:24.092Z"
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 right against the worked-out answer; judged against the standard, not thesportsdb.com (the site is not asked)",
-    "at": "2026-10-26T03:36:24.092Z",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 2,
+    "verse": 0,
     "best": 59,
-    "evidence": "Verse (/sports/) 2 design defects vs thesportsdb.com 59 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 59 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:36:24.092Z"
+    "evidence": "Verse (/sports/) 0 design defects vs thesportsdb.com 59 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 59 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:47:16.790Z"
    },
    "live scores": {
     "verdict": "equal-and-better",
@@ -10519,19 +10519,19 @@
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 7,
+    "verdict": "worse",
+    "verse": 3,
     "best": 7,
-    "evidence": "Verse (/sports/) 7 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: teams, events, venues, players; site lacks: sports to browse, search across sports, a stats strip, no betting)",
-    "at": "2026-10-26T03:36:24.092Z",
+    "evidence": "Verse (/sports/) 3 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: sports to browse, search across sports, teams, events, venues, players, a stats strip, a free API; site lacks: sports to browse, search across sports, a stats strip, no betting)",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 11
    },
    "sport search": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/sports/) 3 of 4 shown for the question (Verse lacks: players); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:36:24.092Z",
+    "evidence": "Verse (/sports/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 4,
     "part": true
    },
@@ -10540,7 +10540,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/sports/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:36:24.092Z",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 2,
     "part": true
    },
@@ -10549,7 +10549,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/sports/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:36:24.092Z",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 5,
     "part": true
    },
@@ -10558,7 +10558,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:36:24.092Z",
+    "at": "2026-10-26T03:47:16.790Z",
     "of": 3,
     "part": true
    }
