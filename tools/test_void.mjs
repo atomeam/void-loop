@@ -982,6 +982,24 @@ try {
       new RegExp(FLOORS[3].site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
+  // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
+  if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
+    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
+    const all = (f) => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
+    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ask('the tower', 1200);
+    const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
+      return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
+        every: [...c.querySelectorAll('.tw-links')].every((l) => l.querySelector('.tw-page')), wide: document.documentElement.scrollWidth <= innerWidth }; }).catch((e) => ({ err: String(e) }));
+    if (process.env.VOID_SHOTS) { await P.p.locator('.tower-floor[data-id="travel"]').scrollIntoViewIfNeeded().catch(() => {}); await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-google-flights.png') }).catch(() => {}); }
+    await P.p.goto(base + 'compare/?floor=travel'); await P.p.waitForTimeout(400);
+    const cmp = await P.p.evaluate(() => ({ src: document.getElementById('vf').getAttribute('src'), who: document.getElementById('who').textContent })).catch((e) => ({ err: String(e) }));
+    check('tower: Google Flights names Verse\'s page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights',
+      /Google Flights ↗/.test(v.links || '') && /Verse's page \/flights\//.test(v.links || '') && /side by side/.test(v.links || '') && v.page === '/flights/' && v.every && v.wide && cmp.src === '/flights/' && /Google Flights/.test(cmp.who || '') && !P.errors.length,
+      JSON.stringify({ v, cmp, errors: P.errors }));
+    await P.ctx.close();
+  }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;

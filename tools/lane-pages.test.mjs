@@ -19,3 +19,19 @@ test('every page a floor, a lane, a probe or the tool table names exists as a fi
   const missing = [...named].filter(([p]) => !exists(p)).map(([p, why]) => p + '  (' + why.slice(0, 2).join('; ') + ')');
   assert.deepEqual(missing, [], 'pages the tower names that do not exist under void-live-deploy:\n' + missing.join('\n'));
 });
+// Every entry on the tower names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): the card shows it and /compare/ opens
+// it beside the site. A floor's `page` is the page the gate measures it against, so where a probe names one too they must be the same page. The floors
+// below have no fitting page yet: each is a page to build, and comes off this list the day its page lands (a listed floor that has a page fails, so the
+// list only shrinks). Nothing else may be added to it without its page.
+const NEEDS_PAGE = ['maps', 'games', 'learning', 'jobs', 'shopping', 'chat', 'video', 'social', 'email', 'search', 'code hosting', 'ai models', 'assistant'];
+test('every floor and lane site names its own Verse page, the same page its probe measures, and the page exists', () => {
+  const path = (p) => String(p || '').replace(/[?#].*$/, ''), bad = [];
+  for (const f of FLOORS) {
+    if (!f.page) { if (!NEEDS_PAGE.includes(f.id)) bad.push(f.id + ': no Verse page'); continue; }
+    if (NEEDS_PAGE.includes(f.id)) bad.push(f.id + ': has ' + f.page + ' now, take it off NEEDS_PAGE');
+    if (!exists(f.page)) bad.push(f.id + ': ' + f.page + ' does not exist under void-live-deploy');
+    let pr = null; try { pr = probeFor(f.id); } catch (_) { /* a floor without a probe */ }
+    if (pr && pr.verse && path(pr.verse) !== path(f.page)) bad.push(f.id + ': the card names ' + f.page + ' but the gate measures ' + pr.verse);
+  }
+  assert.deepEqual(bad, [], 'tower entries without their own Verse page:\n' + bad.join('\n'));
+});

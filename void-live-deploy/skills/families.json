@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 10,
-  "tested": 27,
-  "checked": 17,
+  "tested": 26,
+  "checked": 18,
   "proven": 297
  },
  "families": [
@@ -781,15 +781,15 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 1,
+    "tested": 3,
+    "checked": 2,
     "proven": 15
    },
    "skills": [
     {
      "name": "flights",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-26",
      "last_tested_by": "its tests",
      "promoted": "2026-10-26"
@@ -3059,9 +3059,9 @@
     {
      "name": "tower",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-24",
      "streak": 4

@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-53';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-54';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 import { bySize, sizeOf, rankLabel, words } from '../lib/tower-rank.js';
 
@@ -93,7 +93,7 @@ export const miniFloors = (t) => t.floors.map((f) => ({ id: f.id, site: f.site, 
 // Versus by size (owner, 2026-10-26): each row says how big the site is (its place among the million most visited, tools/tower-rank.mjs), and
 // "By size" lists every site smallest first (unranked, then the biggest rank number down to the leaders), the order a builder should take them in
 const SIZE_CSS = '<style>.tw-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px;min-height:44px}.tw-sortbtn{min-height:44px;padding:0 14px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer}.tw-sortbtn[aria-pressed=true]{border-color:#c9b6ff;background:#2a1a4a}'
-  + '.tw-sortnote{font-size:12px;opacity:.7;flex:1 1 200px}.tw-sizelist .tw-size,.tw-sizelist .tw-count{margin-left:0;white-space:nowrap}.tw-size{font-size:12px;opacity:.85;margin-left:6px;font-variant-numeric:tabular-nums;white-space:nowrap}.tw-sizelist{list-style:none;margin:0;padding:0}.tw-sizelist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:6px 8px;border-bottom:1px solid #221e30;overflow-wrap:anywhere}.tw-sizelist li[data-state=beaten] .tw-name{text-decoration:line-through;opacity:.75}.tw-sizelist li[data-state=current]{border-left:3px solid #c9b6ff}.tw-sizelist .tw-sidebyside{margin-left:8px;font-size:12px}</style>';
+  + '.tw-sortnote{font-size:12px;opacity:.7;flex:1 1 200px}.tw-sizelist .tw-size,.tw-sizelist .tw-count{margin-left:0;white-space:nowrap}.tw-size{font-size:12px;opacity:.85;margin-left:6px;font-variant-numeric:tabular-nums;white-space:nowrap}.tw-sizelist{list-style:none;margin:0;padding:0}.tw-sizelist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:6px 8px;border-bottom:1px solid #221e30;overflow-wrap:anywhere}.tw-sizelist li[data-state=beaten] .tw-name{text-decoration:line-through;opacity:.75}.tw-sizelist li[data-state=current]{border-left:3px solid #c9b6ff}.tw-sizelist .tw-sidebyside,.tw-sizelist .tw-page{margin-left:8px;font-size:12px}</style>';
 const prefStore = () => { try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch (_) { return null; } };
 const SORT_KEY = 'a2m.void.tower.bysize';
 /** the remembered choice of the "By size" view (default off), never throwing. */
@@ -101,10 +101,12 @@ export const readBySize = () => { try { const s = prefStore(); return !!s && s.g
 export const saveBySize = (on) => { try { const s = prefStore(); if (s) s.setItem(SORT_KEY, on ? '1' : '0'); } catch (_) { /* private window or blocked storage: the choice just is not kept */ } };
 const pageLang = () => { try { return (typeof document !== 'undefined' && document.documentElement.lang) || (typeof navigator !== 'undefined' && navigator.language) || 'en'; } catch (_) { return 'en'; } };
 /** the "By size" list: every site, smallest first, with its size and where it stands. Pure. */
+/** an entry's own Verse page as a link ("Verse's page /flights/"), or "no Verse page yet" when it has none. Pure. */
+export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '<span class="tw-page tw-nopage">no Verse page yet</span>');
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
-    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span><a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
+    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
@@ -118,10 +120,11 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + (f.state === 'beaten' ? '</div>' : '</button>');
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
-  const links = (f) => (f.url || f.page ? '<div class="tw-links"' + (f.state === 'beaten' ? '' : ' data-share-skip') + ' style="display:flex;gap:10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
-    + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '')
-    + (f.page ? '<a href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '')
-    + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>' : '');
+  // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): the page the gate measures it against
+  // (lib/tower.js `page`, the same page /compare/ opens beside the site), or, plainly, that it has none yet
+  const links = (f) => '<div class="tw-links"' + (f.state === 'beaten' ? '' : ' data-share-skip') + ' style="display:flex;flex-wrap:wrap;gap:4px 10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">'
+    + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '') + pageLink(f, esc)
+    + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>';
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
