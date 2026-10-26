@@ -2975,104 +2975,147 @@
   },
   "jobs": {
    "speed": {
-    "verdict": "better",
-    "verse": 217,
-    "best": 287,
-    "evidence": "Verse 217 ms to the load event (median of 3, phone width) vs LinkedIn Jobs 287 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T06:05:11.315Z"
+    "verdict": "equal-and-better",
+    "verse": 128,
+    "best": 347,
+    "evidence": "Verse (/jobs/) 128 ms to the load event (median of 3, phone width) vs LinkedIn Jobs 347 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs LinkedIn Jobs 3 of 3 loads answered",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 3 of 3 loads answered vs LinkedIn Jobs 3 of 3 loads answered",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs LinkedIn Jobs 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 0 px sideways overflow at 390 px vs LinkedIn Jobs 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 unnamed controls or images vs LinkedIn Jobs 0 unnamed controls or images",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 0 unnamed controls or images vs LinkedIn Jobs 0 unnamed controls or images",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs LinkedIn Jobs 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 1 (1: the page shows itself again with the network cut) vs LinkedIn Jobs 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs LinkedIn Jobs 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs LinkedIn Jobs 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T06:56:03.544Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 24,
     "best": 47,
-    "evidence": "Verse 0 design defects vs LinkedIn Jobs 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), LinkedIn Jobs (0 low-contrast texts, 47 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T06:05:11.315Z"
+    "evidence": "Verse (/jobs/) 24 design defects vs LinkedIn Jobs 47 design defects: Verse (24 low-contrast texts, 0 small tap targets, layout shift 0.01), LinkedIn Jobs (0 low-contrast texts, 47 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T06:56:03.544Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/) 4 of 4 right against the worked-out answer; judged against the standard, not LinkedIn Jobs (the site is not asked)",
+    "at": "2026-10-26T06:56:03.544Z",
+    "of": 4
+   },
+   "listing breadth": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T06:56:03.544Z",
+    "of": 3,
+    "part": true
+   },
+   "alerts": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T06:56:03.544Z",
+    "of": 3,
+    "part": true
+   },
+   "applications": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T06:56:03.544Z",
+    "of": 4,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 24,
+    "best": 1,
+    "evidence": "Verse (/jobs/) 24 of 24 things a full answer shows vs LinkedIn Jobs 1 of 24 things a full answer shows (Verse lacks: none; site lacks: keyword search, place, remote region, category, tags, job type, level, salary, date posted, sort, saved jobs, alerts, an RSS feed, application tracker, calendar file, CSV export, share link, other job sites, visa sponsorship, source credited, no account, works offline, Apply on company site)",
+    "at": "2026-10-26T06:56:03.544Z",
+    "of": 24
    }
   },
   "shopping": {
    "speed": {
     "verdict": "better",
-    "verse": 253,
-    "best": 933,
-    "evidence": "Verse 253 ms to the load event (median of 3, phone width) vs Amazon 933 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:41:26.793Z"
+    "verse": 259,
+    "best": 912,
+    "evidence": "Verse 259 ms to the load event (median of 3, phone width) vs Amazon 912 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
-    "at": "2026-10-25T11:41:26.793Z"
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "mobile": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:41:26.793Z"
+    "best": 610,
+    "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 610 px sideways overflow at 390 px",
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 14,
-    "evidence": "Verse 0 unnamed controls or images vs Amazon 14 unnamed controls or images",
-    "at": "2026-10-25T11:41:26.793Z"
+    "best": 177,
+    "evidence": "Verse 0 unnamed controls or images vs Amazon 177 unnamed controls or images",
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:41:26.793Z"
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:41:26.793Z"
+    "at": "2026-10-26T06:55:31.746Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 46,
-    "evidence": "Verse 4 design defects vs Amazon 46 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (3 low-contrast texts, 43 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:41:26.793Z"
+    "best": 194,
+    "evidence": "Verse 4 design defects vs Amazon 194 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.02), Amazon (0 low-contrast texts, 193 small tap targets, layout shift 0.29)",
+    "at": "2026-10-26T06:55:31.746Z"
    }
   },
   "chat": {
@@ -17165,60 +17208,59 @@
   "travel: co2.myclimate.org": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 117,
-    "best": 749,
-    "evidence": "Verse (/flights/co2/) 117 ms to the load event (median of 3, phone width) vs co2.myclimate.org 749 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T06:00:57.934Z"
+    "verse": 171,
+    "best": 737,
+    "evidence": "Verse (/flights/co2/) 171 ms to the load event (median of 3, phone width) vs co2.myclimate.org 737 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/co2/) 3 of 3 loads answered vs co2.myclimate.org 3 of 3 loads answered",
-    "at": "2026-10-26T06:00:57.934Z"
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/co2/) 0 px sideways overflow at 390 px vs co2.myclimate.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T06:00:57.934Z"
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/flights/co2/) 0 unnamed controls or images vs co2.myclimate.org 3 unnamed controls or images",
-    "at": "2026-10-26T06:00:57.934Z"
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/co2/) 1 (1: the page shows itself again with the network cut) vs co2.myclimate.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T06:00:57.934Z"
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flights/co2/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs co2.myclimate.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T06:00:57.934Z"
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "better",
+    "verse": 0,
     "best": 1,
-    "evidence": "Verse (/flights/co2/) 2 design defects vs co2.myclimate.org 1 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), co2.myclimate.org (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T06:00:57.934Z",
-    "was": "better"
+    "evidence": "Verse (/flights/co2/) 0 design defects vs co2.myclimate.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), co2.myclimate.org (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T06:16:07.258Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/co2/) 4 of 4 right against the worked-out answer; judged against the standard, not co2.myclimate.org (the site is not asked)",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 4
    },
    "CO2 per passenger": {
@@ -17226,7 +17268,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/co2/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 3,
     "part": true
    },
@@ -17235,7 +17277,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/co2/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 3,
     "part": true
    },
@@ -17244,7 +17286,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/co2/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 1,
     "part": true
    },
@@ -17253,7 +17295,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/co2/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 2,
     "part": true
    },
@@ -17262,67 +17304,66 @@
     "verse": 11,
     "best": 1,
     "evidence": "Verse (/flights/co2/) 11 of 11 things a full answer shows vs co2.myclimate.org 1 of 11 things a full answer shows (Verse lacks: none; site lacks: kg of CO2, a range, high-altitude effects, cabin class, return trip, the method, per passenger-kilometre, nothing sent, works offline, no account)",
-    "at": "2026-10-26T06:00:57.934Z",
+    "at": "2026-10-26T06:16:07.258Z",
     "of": 11
    }
   },
   "travel: flightconnections.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 84,
-    "best": 543,
-    "evidence": "Verse (/flights/routes/) 84 ms to the load event (median of 3, phone width) vs flightconnections.com 543 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T06:01:22.660Z"
+    "verdict": "better",
+    "verse": 227,
+    "best": 671,
+    "evidence": "Verse (/flights/routes/) 227 ms to the load event (median of 3, phone width) vs flightconnections.com 671 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/routes/) 3 of 3 loads answered vs flightconnections.com 3 of 3 loads answered",
-    "at": "2026-10-26T06:01:22.660Z"
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/routes/) 0 px sideways overflow at 390 px vs flightconnections.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T06:01:22.660Z"
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/flights/routes/) 0 unnamed controls or images vs flightconnections.com 2 unnamed controls or images",
-    "at": "2026-10-26T06:01:22.660Z"
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/routes/) 1 (1: the page shows itself again with the network cut) vs flightconnections.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T06:01:22.660Z"
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flights/routes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs flightconnections.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T06:01:22.660Z"
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/flights/routes/) 2 design defects vs flightconnections.com 0 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), flightconnections.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T06:01:22.660Z",
-    "was": "equal-and-better"
+    "evidence": "Verse (/flights/routes/) 0 design defects vs flightconnections.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), flightconnections.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T06:16:35.423Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/routes/) 4 of 4 right against the worked-out answer; judged against the standard, not flightconnections.com (the site is not asked)",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 4
    },
    "where can I go": {
@@ -17330,7 +17371,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/routes/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 2,
     "part": true
    },
@@ -17339,7 +17380,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/routes/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 3,
     "part": true
    },
@@ -17348,7 +17389,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/routes/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 2,
     "part": true
    },
@@ -17357,7 +17398,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/routes/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 2,
     "part": true
    },
@@ -17366,7 +17407,7 @@
     "verse": 12,
     "best": 1,
     "evidence": "Verse (/flights/routes/) 12 of 12 things a full answer shows vs flightconnections.com 1 of 12 things a full answer shows (Verse lacks: none; site lacks: a flight time limit, a country filter, larger airports only, distance for each, flight time for each, nearest first, range not a timetable said, nonstop routes, the routes' date and source, works offline, no account)",
-    "at": "2026-10-26T06:01:22.660Z",
+    "at": "2026-10-26T06:16:35.423Z",
     "of": 12
    }
   }

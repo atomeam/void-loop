@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:56:12Z",
+   "subject": "Games floor: /chess/ for Lichess and a page per lane site under /games/ (checkers, solitaire, mines, word guess, sudoku, slide and merge)…"
+  },
+  {
    "at": "2026-10-26T06:07:54Z",
    "subject": "RULES: an owner chore is worked around or gathered, never dropped (owner, 2026-10-26)"
   },
@@ -565,14 +569,18 @@
   {
    "at": "2026-10-26T05:38:54Z",
    "subject": "Subject eval: 54 of 54 live"
-  },
-  {
-   "at": "2026-10-26T05:37:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Who visits (claude, 2026-10-26)",
+    "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
+   },
+   {
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
+   },
    {
     "name": "Claude (pdf and kanban floors, 2026-10-26)",
     "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
@@ -588,14 +596,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 07:45)",
     "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
-   },
-   {
-    "name": "Claude (Versus rename, 2026-10-25, 08:00)",
-    "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 07:05)",
-    "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
    }
   ],
   "ladders": [
@@ -797,5 +797,10 @@
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
+ },
+ "people": {
+  "line": "People this week: 1 (1 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-26T06:42Z",
+  "source": "verse"
  }
 }

@@ -204,6 +204,27 @@ jobs:
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
 
+      # IndexNow (owner, 2026-10-26: "wire IndexNow into the deployment pipeline so that search engines utilizing the protocol (like Bing and
+      # Yandex) are notified within minutes whenever new single-purpose utility pages go live"): once a-to-mind.com serves this deploy, the
+      # sitemap pages changed since the last successful main deploy go to api.indexnow.org in one POST (tools/indexnow.mjs). The base is that
+      # deploy's commit, not github.event.before: a run that stops for a newer one deploys nothing, so its changes ride on the next. One request
+      # to IndexNow (not Cloudflare), none when no listed page changed; an engine error is a log line, never a failed deploy.
+      - name: Tell IndexNow engines which pages changed
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          base=""
+          for s in $(gh run list --workflow deploy.yml --branch main --status success --json headSha -L 30 -q '.[].headSha' 2>/dev/null || true); do
+            if [ "$s" != "$SHA" ] && git merge-base --is-ancestor "$s" "$SHA" 2>/dev/null; then base=$s; break; fi
+          done
+          [ -n "$base" ] || base="$BEFORE"
+          echo "IndexNow base: ${base:-none} (head $SHA)"
+          node tools/indexnow.mjs --base "$base" --head "$SHA"
+
       # MCP live (frontier #6) checks Verse's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
       # every few hours (5 scheduled runs on 2026-10-12, none for 5 h after #571 added a tool), and a deploy automerge starts
       # fires no workflow_run, so the deploy starts it: the live check follows every main deploy within minutes.
