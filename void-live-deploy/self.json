@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:20:37Z",
+   "subject": "Live eval keeps what the page saw for a failing ask; 'the X' tries The_X first"
+  },
+  {
+   "at": "2026-10-26T05:19:38Z",
+   "subject": "Subject eval: 30 of 42 live"
+  },
+  {
+   "at": "2026-10-26T05:18:39Z",
+   "subject": "Screener keeps the snapshot's coins when the live answer has none; a Share link on the coin pages"
+  },
+  {
+   "at": "2026-10-26T05:18:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:18:17Z",
    "subject": "Kanban quick page: checklists on its cards (items, ticks, n of m on the card, kept in the board JSON), said in its page text"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-26T05:03:08Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:02:53Z",
-   "subject": "PDF and Kanban pages: a share link button and a share picture of their own on every page, page tools and images to PDF under the merge…"
-  },
-  {
-   "at": "2026-10-26T05:02:49Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:02:34Z",
-   "subject": "Keep the art ratchet: the neutral portrait plate takes the family hue"
-  },
-  {
-   "at": "2026-10-26T05:01:52Z",
-   "subject": "Incident: the browser suite failed on cee2d819 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
