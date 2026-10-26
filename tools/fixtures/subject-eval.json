@@ -732,6 +732,132 @@
   }
  },
  {
+  "ask": "red panda",
+  "wiki": {
+   "search": [
+    {
+     "title": "Red panda",
+     "description": "Small mammal native to the Himalayas",
+     "extract": "The red panda is a small mammal native to the eastern Himalayas and southwestern China, a species of the genus Ailurus."
+    }
+   ]
+  },
+  "model": "The red panda is a small mammal native to the eastern Himalayas and southwestern China, a species of the genus Ailurus. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "panda"
+  }
+ },
+ {
+  "ask": "blue whale",
+  "wiki": {
+   "search": [
+    {
+     "title": "Blue whale",
+     "description": "Species of baleen whale",
+     "extract": "The blue whale is a marine mammal and a baleen whale of the genus Balaenoptera, the largest animal known to have existed."
+    }
+   ]
+  },
+  "model": "The blue whale is a marine mammal and a baleen whale of the genus Balaenoptera, the largest animal known to have existed. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "whale"
+  }
+ },
+ {
+  "ask": "green turtle",
+  "wiki": {
+   "search": [
+    {
+     "title": "Green sea turtle",
+     "description": "Species of large sea turtle",
+     "extract": "The green sea turtle is a species of large sea turtle of the family Cheloniidae, found in tropical and subtropical seas."
+    }
+   ]
+  },
+  "model": "The green sea turtle is a species of large sea turtle of the family Cheloniidae, found in tropical and subtropical seas. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "turtle"
+  }
+ },
+ {
+  "ask": "black widow",
+  "wiki": {
+   "search": [
+    {
+     "title": "Latrodectus",
+     "description": "Genus of spiders",
+     "extract": "Latrodectus is a genus of spiders, commonly called black widows, a species of venomous spider found in temperate and tropical regions."
+    }
+   ]
+  },
+  "model": "Latrodectus is a genus of spiders, commonly called black widows, a species of venomous spider found in temperate and tropical regions. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "widow"
+  }
+ },
+ {
+  "ask": "golden gate bridge",
+  "wiki": {
+   "search": [
+    {
+     "title": "Golden Gate Bridge",
+     "description": "Suspension bridge in San Francisco",
+     "extract": "The Golden Gate Bridge is a suspension bridge spanning the Golden Gate strait, the mile-wide channel between San Francisco Bay and the Pacific Ocean."
+    }
+   ]
+  },
+  "model": "The Golden Gate Bridge is a suspension bridge spanning the Golden Gate strait, the mile-wide channel between San Francisco Bay and the Pacific Ocean. [1]",
+  "expect": {
+   "type": "Place",
+   "notMotif": "clock",
+   "about": "gate"
+  }
+ },
+ {
+  "ask": "white house",
+  "wiki": {
+   "search": [
+    {
+     "title": "White House",
+     "description": "Residence of the president of the United States",
+     "extract": "The White House is the official residence and workplace of the president of the United States, located in Washington, D.C."
+    }
+   ]
+  },
+  "model": "The White House is the official residence and workplace of the president of the United States, located in Washington, D.C. [1]",
+  "expect": {
+   "type": "Place",
+   "notMotif": "clock",
+   "about": "house"
+  }
+ },
+ {
+  "ask": "orange juice",
+  "wiki": {
+   "search": [
+    {
+     "title": "Orange juice",
+     "description": "Liquid extract of the orange fruit",
+     "extract": "Orange juice is a liquid extract of the orange tree fruit, produced by squeezing or reaming oranges, a popular beverage."
+    }
+   ]
+  },
+  "model": "Orange juice is a liquid extract of the orange tree fruit, produced by squeezing or reaming oranges, a popular beverage. [1]",
+  "expect": {
+   "type": "Food",
+   "notMotif": "clock",
+   "about": "juice"
+  }
+ },
+ {
   "ask": "how to bake bread",
   "wiki": {
    "search": [

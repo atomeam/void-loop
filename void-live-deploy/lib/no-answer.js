@@ -14,7 +14,7 @@ export function isNoAnswer(text) {
 /** the sources worth listing: those with an https link. A source with no URL is not a source (it cannot be checked). Pure. */
 export const linked = (sources) => (Array.isArray(sources) ? sources : []).filter((s) => s && /^https:\/\/[^\s"'<>]+$/i.test(String(s.url || s.u || '')));
 const STOPQ = new Set('a an the of and or to in on for is are was were what who whom whose where when why how which about tell me please define meaning'.split(' '));
-const words = (s) => String(s || '').toLowerCase().replace(/['’]s\b/g, '').match(/[a-z0-9]+/g) || [];
+const words = (s) => (String(s || '').toLowerCase().replace(/['\u2019]s\b/g, '').match(/[a-z0-9]+/g) || []).map((w) => (w.length > 3 && /[^s]s$/.test(w) ? w.slice(0, -1) : w)); // widows = widow
 /** the distinctive words of an ask ("what is happy time harry" -> happy time harry). Pure. */
 export const askWords = (ask) => words(ask).filter((w) => !STOPQ.has(w));
 /** is the ask a bare name or short phrase ("happy time harry", "who is moe szyslak"), the kind a source either names or does not? A how-to or a comparison is not. Pure. */

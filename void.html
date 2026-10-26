@@ -2050,12 +2050,18 @@ function wantsClearStage(lower) {
       return ok;
     }
 
+    const ALTER_WORDS = new Set(('a an the it its to be is in on at of and or please now just more less very bit little lot too much make turn set change paint color colour this that these those me my one all every each everything everywhere selected thing things stage screen page text font background shape shapes box circle square dot line card cards '
+      + 'blue red green yellow white black purple orange pink gray grey gold cyan teal clock time bigger smaller larger huge tiny big small bold seconds date top bottom left right center centre middle corner side up down').split(' '));
+    function onlyStageWords(lower) {
+      const kinds = new Set(Object.keys(stageKinds).flatMap((k) => [k, k + 's']));
+      return lower.replace(/#[0-9a-f]{3,6}\b/g, ' ').split(/[^a-z0-9]+/).filter(Boolean).every((w) => ALTER_WORDS.has(w) || kinds.has(w) || /^\d+(?:h|hr)?$/.test(w));
+    }
     function wantsAlter(lower) {
       return /\b(make\s+it|turn\s+it|set\s+it|change|paint|color|colour|move|put\s+it|place\s+it)\b/.test(lower)
         || /\b(bigger|smaller|larger|huge|tiny|big|small)\b/.test(lower)
         || /\b(24\s*-?\s*h|24h|military|12\s*-?\s*h|12h|am\s*\/?\s*pm)\b/.test(lower)
         || /\b(cent(?:er|re)|middle|top|bottom|left|right)\b/.test(lower)
-        || /\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal)\b/.test(lower)
+        || (/\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal)\b/.test(lower) && onlyStageWords(lower)) // a colour word alone is an alteration only when nothing else in the ask is a thing: "red panda", "white house" and "orange juice" are asks for something, not a recolouring of the clock
         || /#([0-9a-f]{3}|[0-9a-f]{6})\b/i.test(lower)
         || /\b(bold|seconds|date)\b/.test(lower);
     }

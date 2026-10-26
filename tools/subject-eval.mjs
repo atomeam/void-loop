@@ -7,7 +7,7 @@ import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'
 import { answerFor } from './subject-stub.mjs'; import { offTopic } from './finish.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname), root = path.join(here, '..', 'void-live-deploy');
 const args = process.argv.slice(2), only = args.includes('--only') ? args[args.indexOf('--only') + 1].toLowerCase() : '', shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : path.join(os.tmpdir(), 'subject-eval');
-const fixtures = JSON.parse(fs.readFileSync(path.join(here, 'fixtures', 'subject-eval.json'), 'utf8')).filter((f) => !only || f.ask.toLowerCase().includes(only));
+const fixtures = JSON.parse(fs.readFileSync(path.join(here, 'fixtures', 'subject-eval.json'), 'utf8')).filter((f) => !only || only.split('|').some((o) => f.ask.toLowerCase().includes(o)));
 fs.mkdirSync(shots, { recursive: true });
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html'; const f = path.join(root, p); if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
