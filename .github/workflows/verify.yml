@@ -11,6 +11,11 @@
 # glyphs, calendar, growth suites) and browser-suite (tools/test_void.mjs), each reporting on its own, so one unrelated test
 # can no longer hide the suite's result (a held-file test red on the runner kept every head of main unverified for an hour).
 # The revert reads the browser-suite job (and older verdicts, named verify-main) and names the job it decided from.
+# 2026-10-26 (owner: "ok whats the hold up, fix it so we stop having holdups"; growth over upkeep, 2026-10-15): one group per job (per
+# shard for the suite), shared by every head, never cancelled. A run that has started always finishes; of the heads waiting behind it only
+# the newest runs (GitHub keeps one pending per group). With builders pushing a commit a minute, a group per head put 13 heads x 3 shards of
+# 25-minute suites in the queue and every deploy waited 13+ minutes for a runner. A head skipped this way is covered by the newer head that
+# contains it; a red run still reverts through tools/revert-target.mjs, which checks its target is still on main.
 name: Verse verify
 
 on:
@@ -33,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
-      group: void-verify-fast-${{ github.sha }}
+      group: void-verify-fast
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +85,7 @@ jobs:
       matrix:
         shard: [1, 2, 3]
     concurrency:
-      group: void-verify-${{ github.sha }}-${{ matrix.shard }}
+      group: void-verify-${{ matrix.shard }}
       cancel-in-progress: false
     permissions:
       contents: write # push the revert
