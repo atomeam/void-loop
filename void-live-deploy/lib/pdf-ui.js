@@ -70,7 +70,7 @@ export function mountPdf(root, cfg) {
       }
       draw(); onChange();
     };
-    input.addEventListener('change', () => { add(input.files); input.value = ''; });
+    input.addEventListener('change', () => { const chosen = [...input.files]; input.value = ''; add(chosen); });
     drop.addEventListener('click', () => input.click()); drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
     for (const ev of ['dragover', 'dragenter']) drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); });
     for (const ev of ['dragleave', 'drop']) drop.addEventListener(ev, () => drop.classList.remove('over'));

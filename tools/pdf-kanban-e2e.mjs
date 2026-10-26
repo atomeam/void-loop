@@ -31,7 +31,7 @@ await page.click('[data-tool=split]'); await page.setInputFiles('input.pick', A)
 await page.locator('select').first().selectOption('each'); await page.click('button.go'); await page.waitForSelector('a.dl');
 ok((await page.locator('a.dl').count()) === 4, 'split each page: 3 files and a zip'); 
 await page.click('[data-tool=compress]'); await page.setInputFiles('input.pick', A); await page.waitForSelector('.files li');
-await page.locator('select').first().selectOption('pictures'); await page.click('button.go'); await page.waitForSelector('a.dl, .status.bad, .status:not(:empty)', { timeout: 30000 }); const st = await page.locator('.status').innerText(); ok(/Done|already as small/.test(st), 'compress by pictures answers: ' + st);
+await page.locator('select').first().selectOption('pictures'); await page.click('button.go'); await page.waitForFunction(() => { const t = document.querySelector('.status').innerText; return t && !/^(Compressing|Page \d)/.test(t); }, null, { timeout: 40000 }); const st = await page.locator('.status').innerText(); ok(/Done|already as small/.test(st), 'compress by pictures answers: ' + st);
 await page.click('[data-tool=img2pdf]'); await page.setInputFiles('input.pick', PNG); await page.waitForSelector('.files li'); out = await download(async () => { await page.click('button.go'); await page.waitForSelector('a.dl'); await page.click('a.dl'); });
 ok((await pagesOf(out)) === 1, 'images to pdf makes one page');
 await page.click('[data-tool=pdf2img]'); await page.setInputFiles('input.pick', B); await page.waitForSelector('.files li'); await page.locator('select').nth(1).selectOption('72'); await page.click('button.go'); await page.waitForSelector('a.dl', { timeout: 20000 });

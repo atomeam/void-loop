@@ -155,8 +155,15 @@ export function loadLib() {
   return (libP = libP || new Promise((res, rej) => { const s = document.createElement('script'); s.src = LIB; s.onload = () => res(globalThis.PDFLib); s.onerror = () => { libP = null; rej(new Error('The PDF tools did not load; check the connection once and they will work offline afterwards')); }; document.head.append(s); }));
 }
 export async function tools() { return engine(await loadLib()); }
+/** pdf.js 6 calls Map.getOrInsert and getOrInsertComputed, which only the newest browsers have: the same two methods for the others */
+export function polyfill() {
+  for (const C of [Map, WeakMap]) {
+    if (!C.prototype.getOrInsert) Object.defineProperty(C.prototype, 'getOrInsert', { value(k, v) { if (!this.has(k)) this.set(k, v); return this.get(k); }, configurable: true, writable: true });
+    if (!C.prototype.getOrInsertComputed) Object.defineProperty(C.prototype, 'getOrInsertComputed', { value(k, f) { if (!this.has(k)) this.set(k, f(k)); return this.get(k); }, configurable: true, writable: true });
+  }
+}
 /** pdf.js, loaded once */
-export function loadJs() { return (jsP = jsP || import(PDFJS).then((m) => { m.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; return m; }).catch((e) => { jsP = null; throw e; })); }
+export function loadJs() { polyfill(); return (jsP = jsP || import(PDFJS).then((m) => { m.GlobalWorkerOptions.workerSrc = PDFJS_WORKER; return m; }).catch((e) => { jsP = null; throw e; })); }
 /** a rendered page: canvas at `scale` of the page's natural size (1 = 72 dpi) */
 export async function renderPage(pdfDoc, pageNo, scale) {
   const page = await pdfDoc.getPage(pageNo), vp = page.getViewport({ scale }), c = document.createElement('canvas');

@@ -222,7 +222,12 @@ export function mountKanban(root, cfg = {}) {
   const helpText = () => { const ft = S[lang].ft, on = ['boards', 'columns', 'cards', 'labels', 'due', 'checklist', 'comments', 'assignee', 'wip', 'lanes', 'archive', 'filter', 'timer', 'recur', 'print', 'colour', 'csv', 'share'].filter((k) => k === 'columns' || k === 'cards' || F[k]).map((k) => ft[k]); return t('h1') + ' ' + t('h2') + on.join(', ') + '. ' + t('h3') + (F.trello ? t('h4') : '') + t('h5'); };
   const wrap = h('div', { class: 'kb' });
   root.append(wrap, live);
+  let drawing = false, again = false;
   function draw(keepScroll) {
+    if (drawing) { again = true; return; } // a blur or change fired by replacing the page asks for another draw: do it once this one is done
+    drawing = true; try { paint(keepScroll); } finally { drawing = false; } if (again) { again = false; draw(keepScroll); }
+  }
+  function paint(keepScroll) {
     const ae = document.activeElement, typing = ae && ae.type === 'search' && wrap.contains(ae) ? ae.selectionStart : -1;
     const b = board(), sc = wrap.querySelector('.cols') ? wrap.querySelector('.cols').scrollLeft : 0, fl = !!(F.lanes && group);
     const cols = fl ? laneGrid() : h('div', { class: 'cols' }, ...b.columns.map((c) => colEl(c, c.cards.filter((k) => K.matches(k, filter)))),
