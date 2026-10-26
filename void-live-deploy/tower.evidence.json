@@ -3070,52 +3070,52 @@
   "shopping": {
    "speed": {
     "verdict": "better",
-    "verse": 272,
-    "best": 835,
-    "evidence": "Verse 272 ms to the load event (median of 3, phone width) vs Amazon 835 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T07:21:25.607Z"
+    "verse": 222,
+    "best": 731,
+    "evidence": "Verse 222 ms to the load event (median of 3, phone width) vs Amazon 731 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
-    "at": "2026-10-26T07:21:25.607Z"
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T07:21:25.607Z"
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 10,
     "evidence": "Verse 0 unnamed controls or images vs Amazon 10 unnamed controls or images",
-    "at": "2026-10-26T07:21:25.607Z"
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T07:21:25.607Z"
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T07:21:25.607Z"
+    "at": "2026-10-26T07:25:52.592Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 50,
-    "evidence": "Verse 4 design defects vs Amazon 50 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (7 low-contrast texts, 43 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T07:21:25.607Z"
+    "best": 49,
+    "evidence": "Verse 4 design defects vs Amazon 49 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (7 low-contrast texts, 42 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:25:52.592Z"
    }
   },
   "chat": {
@@ -17410,6 +17410,212 @@
     "at": "2026-10-26T06:16:35.423Z",
     "of": 12
    }
+  },
+  "jobs: arbeitnow.com": {
+   "speed": {
+    "verdict": "better",
+    "verse": 274,
+    "best": 296,
+    "evidence": "Verse (/jobs/europe/) 274 ms to the load event (median of 3, phone width) vs arbeitnow.com 296 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 3 of 3 loads answered vs arbeitnow.com 3 of 3 loads answered",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 0 px sideways overflow at 390 px vs arbeitnow.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 0 unnamed controls or images vs arbeitnow.com 0 unnamed controls or images",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 1 (1: the page shows itself again with the network cut) vs arbeitnow.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs arbeitnow.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/europe/) 4 of 4 right against the worked-out answer; judged against the standard, not arbeitnow.com (the site is not asked)",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 30,
+    "best": 104,
+    "evidence": "Verse (/jobs/europe/) 30 design defects vs arbeitnow.com 104 design defects: Verse (30 low-contrast texts, 0 small tap targets, layout shift 0.01), arbeitnow.com (1 low-contrast texts, 103 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "jobs open in Germany": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "visa sponsorship filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "remote filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "German and English": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 12,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 12 of 12 things a full answer shows vs arbeitnow.com 3 of 12 things a full answer shows (Verse lacks: none; site lacks: Europe, place, keyword, salary, job type, saved jobs, alerts, no account, works offline)",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 12
+   }
+  },
+  "jobs: himalayas.app": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 3 of 3 loads answered vs himalayas.app 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 150,
+    "best": 200,
+    "evidence": "Verse (/jobs/salary/) 150 ms to the load event (median of 3, phone width) vs the bar (himalayas.app unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 0 px sideways overflow at 390 px vs the bar (himalayas.app unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 0 unnamed controls or images vs the bar (himalayas.app unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 (1: the page shows itself again with the network cut) vs the bar (himalayas.app unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/salary/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (himalayas.app unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 30,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 30 design defects vs the bar (himalayas.app unreachable) 0 design defects",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/jobs/salary/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 11,
+    "best": 11,
+    "evidence": "Verse (/jobs/salary/) 11 of 11 things a full answer shows vs the bar (himalayas.app unreachable) 11 of 11 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 11
+   },
+   "salary filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "highest paid first": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "seniority": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "time zones": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   }
   }
  },
  "icons": {
@@ -17584,6 +17790,8 @@
   "clock7.com": "tower.icons/clock7.com.png",
   "co2.myclimate.org": "tower.icons/co2.myclimate.org.png",
   "abacktools.com": "tower.icons/abacktools.com.png",
-  "flightconnections.com": "tower.icons/flightconnections.com.png"
+  "flightconnections.com": "tower.icons/flightconnections.com.png",
+  "arbeitnow.com": "tower.icons/arbeitnow.com.png",
+  "himalayas.app": "tower.icons/himalayas.app.ico"
  }
 }
