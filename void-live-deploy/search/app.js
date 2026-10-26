@@ -1,0 +1,4 @@
+// /search/: written by tools/maps-search-pages.mjs from lib/maps-sites.js; edit the row, not this file
+const go = () => import('/lib/search-ui.js').then(({ mountSearch }) => mountSearch(document.getElementById('app'), {"panels":["box","engines","answer","wiki","wikidata","history","bangs","share"],"de":{"h1":"Suche","intro":"Stellen Sie eine Frage oder tippen Sie Wörter. Verse antwortet mit Quellen, zeigt, was Wikipedia und Wikidata haben, und öffnet dieselbe Suche bei Google, Bing, DuckDuckGo, Brave oder Wikipedia. Bangs wie !g Katzen springen direkt dorthin."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/search/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

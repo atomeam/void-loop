@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 893,
+ "counted": 902,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -651,7 +651,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 16
+   "tests": 18
   },
   {
    "file": "lib/chat-calendar.js",
@@ -759,14 +759,14 @@
    "tests": 1
   },
   {
-   "file": "lib/date-math.js",
+   "file": "lib/ics.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
   },
   {
-   "file": "lib/ics.js",
+   "file": "lib/date-math.js",
    "skills": 2,
    "direct": 1,
    "dependants": 5,
@@ -1047,6 +1047,13 @@
   },
   {
    "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/search-core.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -1505,7 +1512,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 12
+   "tests": 14
   },
   {
    "file": "lib/tower-rank.js",
@@ -1872,6 +1879,13 @@
    "tests": 2
   },
   {
+   "file": "lib/flights-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/icsfeed.js",
    "skills": 0,
    "direct": 0,
@@ -1970,13 +1984,6 @@
    "tests": 1
   },
   {
-   "file": "lib/flights-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/flights-de.js",
    "skills": 0,
    "direct": 0,
@@ -2010,6 +2017,27 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/maps-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/maps-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
+  },
+  {
+   "file": "lib/maps-sites.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/misskey.js",
@@ -2087,6 +2115,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/search-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/translate-web.js",
@@ -2285,6 +2320,13 @@
    "tests": 1
   },
   {
+   "file": "lib/maps-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
    "file": "lib/matchgfx.js",
    "skills": 0,
    "direct": 0,
@@ -2381,6 +2423,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/search-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
@@ -5074,7 +5123,8 @@
     "lib/ics.js"
    ],
    "importedBy": [
-    "lib/flights-ui.js"
+    "lib/flights-ui.js",
+    "lib/maps-ui.js"
    ]
   },
   "lib/flights-de.js": {
@@ -5408,6 +5458,7 @@
    ],
    "reachedBy": [
     "lib/flights-ui.js",
+    "lib/maps-ui.js",
     "skills/ritual-template.js"
    ]
   },
@@ -5728,6 +5779,32 @@
     "functions/api/generators.js",
     "functions/gen/[id].js"
    ]
+  },
+  "lib/maps-core.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/maps-ui.js"
+   ]
+  },
+  "lib/maps-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/maps-ui.js"
+   ]
+  },
+  "lib/maps-sites.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/seo.js"
+   ]
+  },
+  "lib/maps-ui.js": {
+   "imports": [
+    "lib/maps-core.js",
+    "lib/maps-de.js",
+    "lib/flights-core.js"
+   ],
+   "importedBy": []
   },
   "lib/markets-record.js": {
    "imports": [],
@@ -7429,6 +7506,26 @@
     "skills/scores.js"
    ]
   },
+  "lib/search-core.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/search-ui.js",
+    "skills/web-search.js"
+   ]
+  },
+  "lib/search-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/search-ui.js"
+   ]
+  },
+  "lib/search-ui.js": {
+   "imports": [
+    "lib/search-core.js",
+    "lib/search-de.js"
+   ],
+   "importedBy": []
+  },
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js"
@@ -7468,7 +7565,8 @@
   },
   "lib/seo.js": {
    "imports": [
-    "lib/tool-sites.js"
+    "lib/tool-sites.js",
+    "lib/maps-sites.js"
    ],
    "importedBy": []
   },
@@ -10440,6 +10538,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/maps.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/markets.js": {
    "imports": [],
    "importedBy": []
@@ -12386,6 +12488,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/web-search.js": {
+   "imports": [
+    "lib/search-core.js"
+   ],
+   "importedBy": []
   },
   "skills/web4.js": {
    "imports": [

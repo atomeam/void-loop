@@ -35,11 +35,15 @@ function draw(el, r, others, api, dir) {
   const src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bbox + '&layer=mapnik&marker=' + r.latitude + ',' + r.longitude;
   const big = 'https://www.openstreetmap.org/?mlat=' + r.latitude + '&mlon=' + r.longitude + '#map=' + (zoomSpan > 0.1 ? 11 : zoomSpan > 0.05 ? 13 : 15) + '/' + r.latitude + '/' + r.longitude;
   const alt = others.filter((o) => o !== r).slice(0, 4);
+  // Verse's own maps page, with the place (or the way there) in the link: the card is the glance, the page is the whole map (owner, 2026-10-26: "Verse uses its own tools")
+  const ll = r.latitude.toFixed(5) + ',' + r.longitude.toFixed(5), mapsPage = dir ? '/maps/?to=' + encodeURIComponent(ll) : '/maps/?ll=' + ll + '&name=' + encodeURIComponent(r.name);
   el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(label(r).split(', ').slice(1).join(', ')) + '</div>'
     + '<iframe title="map" src="' + src + '" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
     + (alt.length ? '<div class="sub">Other places with this name: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
     + (dir ? '<p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
+    + '<p><a href="' + esc(mapsPage) + '" style="font-weight:600">Open on the maps page →</a> <span class="sub">search, directions by car, bike or on foot, saved places, a link to share</span></p>'
     + '<div class="src">Source: <a href="' + big + '" target="_blank" rel="noopener">OpenStreetMap</a></div>';
+  el.dataset.page = '/maps/';
   el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); draw(el, alt[+a.dataset.alt], others, api, dir); }));
 }
 

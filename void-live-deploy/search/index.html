@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Search · Verse</title>
+<meta name="description" content="Search with answers that cite their sources, Wikipedia and Wikidata results with when each page was last edited, the same search on Google, Bing, DuckDuckGo, Brave and Wikipedia in one tap, bangs like !g and !w that run on your device, and a history kept on your device only. Verse does not crawl the web, and says so.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Search · Verse">
+<meta property="og:description" content="Search with answers that cite their sources, Wikipedia and Wikidata results with when each page was last edited, the same search on Google, Bing, DuckDuckGo, Brave and Wikipedia in one tap, bangs like !g and !w that run on your device, and a history kept on your device only. Verse does not crawl the web, and says so.">
+<meta property="og:url" content="https://a-to-mind.com/search/">
+<meta property="og:image" content="https://a-to-mind.com/og/search.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Search on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Search · Verse">
+<meta name="twitter:description" content="Search with answers that cite their sources, Wikipedia and Wikidata results with when each page was last edited, the same search on Google, Bing, DuckDuckGo, Brave and Wikipedia in one tap, bangs like !g and !w that run on your device, and a history kept on your device only. Verse does not crawl the web, and says so.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/search.png">
+<link rel="search" type="application/opensearchdescription+xml" title="Verse search" href="/search/opensearch.xml">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5f5c6d; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 0 0 6px; } h3 { margin: 10px 0 4px; font-size: 15px; } h4 { margin: 8px 0 2px; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 6px 0 2px; }
+  a { color: var(--accent); } button, select, input, textarea { font: inherit; color: inherit; }
+  button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; min-width: 40px; background: var(--card); cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 44px; width: 100%; max-width: 100%; }
+  .go, button[aria-checked=true], button[aria-selected=true] { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go, button[aria-checked=true], button[aria-selected=true] { color: #0b0a10; } }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 100vh; } #related { min-height: 190px; }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; } .notice h2 { font-size: 15px; margin: 0 0 2px; } .notice a { display: inline-block; min-height: 24px; padding: 2px 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row > input[type=search], .row > input[type=number] { flex: 1 1 12em; width: auto; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 14px; position: relative; min-width: 0; } .field label { color: var(--soft); font-size: 13px; } .rowf { flex-direction: row; gap: 6px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; } .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 4px 10px; }
+  .chk { display: inline-flex; gap: 8px; align-items: center; min-height: 40px; } .chk input { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); } input[type=range] { accent-color: var(--accent); min-height: 32px; }
+  .live { min-height: 1.5em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); } .soft { color: var(--soft); font-size: 13px; } [hidden] { display: none !important; }
+  .btn { display: inline-flex; align-items: center; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 40px; background: var(--card); cursor: pointer; font-size: 15px; } .btn.small { min-height: 32px; font-size: 13px; padding: 4px 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+  .alist, .plain, .results, .srcs, .steps, .toc { padding-left: 0; list-style: none; margin: 6px 0; } .alist li { margin: 3px 0; display: flex; gap: 6px; align-items: center; } .alist li > button:first-child, .alist li > a:first-child { flex: 1; text-align: left; border-radius: 10px; min-height: 44px; } .alist .grow { flex: 1; }
+  .alist a { display: inline-flex; align-items: center; min-height: 40px; } .plain li { padding: 5px 0; border-bottom: 1px solid var(--line); } .srcs { padding-left: 22px; list-style: decimal; } .srcs li { margin: 4px 0; } .srcs a, .links a, .plain a { display: inline-block; min-height: 24px; padding: 2px 0; }
+  .results li { margin: 12px 0; } .results h3 { margin: 0; font-size: 16px; } .results p { margin: 2px 0; font-size: 14px; } .results .cite { color: var(--ok); font-size: 12px; overflow-wrap: anywhere; } .results a { display: inline-block; min-height: 24px; }
+  .steps li { margin: 2px 0; } .steps .step { width: 100%; text-align: left; border-radius: 10px; min-height: 40px; }
+  .dl { margin: 8px 0; } .dl > div { display: flex; flex-wrap: wrap; gap: 2px 12px; padding: 5px 0; border-bottom: 1px solid var(--line); } .dl dt { color: var(--soft); flex: 0 0 12em; font-size: 14px; } .dl dd { margin: 0; flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+  .big { font-size: 34px; font-weight: 700; margin: 6px 0 0; font-variant-numeric: tabular-nums; } .big small { font-size: 16px; font-weight: 500; color: var(--soft); }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; } .links { font-size: 14px; }
+  .mapbox { height: min(60vh, 540px); min-height: 300px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #e8eef0; position: relative; color: var(--ink); } .mapbox.flat { background: var(--card); } .mapbox.flat svg { width: 100%; height: 100%; display: block; }
+  @media (prefers-color-scheme: dark) { .mapbox { background: #1d2226; } }
+  .pick { position: absolute; left: -9999px; } .tbl { width: 100%; border-collapse: collapse; font-size: 14px; } .tbl td { border-bottom: 1px solid var(--line); padding: 5px 8px; } .tablewrap { overflow-x: auto; max-height: 520px; }
+  .chart svg { width: 100%; height: auto; display: block; color: var(--accent); }
+  .sbox { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0; } .sbox .field { flex: 1; margin: 0; } .sbox input { font-size: 17px; min-height: 48px; } .sbox button { min-height: 48px; }
+  .sug { position: absolute; top: 100%; left: 0; right: 0; z-index: 6; list-style: none; margin: 2px 0 0; padding: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 20px #0003; } .sug button { width: 100%; text-align: left; border: 0; border-radius: 8px; min-height: 40px; }
+  .answer p { margin: 6px 0; } sup a { text-decoration: none; padding: 0 2px; } article p { margin: 8px 0; } .lead { float: right; max-width: 40%; max-height: 240px; margin: 0 0 8px 12px; border-radius: 8px; } .toc .l3 { padding-left: 14px; } .toc .l4 { padding-left: 28px; } .toc a { display: inline-block; min-height: 28px; }
+  .share { justify-content: center; } summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  .maplibregl-ctrl button { min-width: 29px; min-height: 29px; border-radius: 0; }
+  @media print { .row, form, footer, #related, .notice { display: none !important; } .mapbox { height: 420px; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/search/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Search","url":"https://a-to-mind.com/search/","description":"Search with answers that cite their sources, Wikipedia and Wikidata results with when each page was last edited, the same search on Google, Bing, DuckDuckGo, Brave and Wikipedia in one tap, bangs like !g and !w that run on your device, and a history kept on your device only. Verse does not crawl the web, and says so.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"search, search engine, search the web, search with sources, private search with history on my device, bangs search, search google bing duckduckgo at once, wikipedia search","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/search/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Search","item":"https://a-to-mind.com/search/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Search</h1>
+  <p class="intro">Ask a question or type words. Verse answers with its sources, shows what Wikipedia and Wikidata have, and opens the same search on Google, Bing, DuckDuckGo, Brave or Wikipedia. Bangs like !g cats jump straight there.</p>
+  <div id="app"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/search/?q=who+wrote+hamlet">Who wrote Hamlet?</a><a href="/search/?q=how+tall+is+mount+everest">How tall is Mount Everest?</a><a href="/search/?q=eiffel+tower">Search Wikipedia for the Eiffel Tower</a><a href="/search/?lang=de">Deutsch</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+  <footer>Verse does not crawl the web: answers come from a language model with Wikipedia as its sources (check them), results from the Wikipedia and Wikidata APIs (CC BY-SA, CC0), and the engine links open the same search on those engines. Bangs and your history run on this device and never leave it. The page opens offline after one visit. No account, no ads, no tracking.</footer>
+</main>
+<script type="module" src="/search/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER)</script>
+</body>
+</html>

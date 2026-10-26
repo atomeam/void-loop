@@ -1,0 +1,20 @@
+// German for the search pages (lib/search-ui.js): the page speaks German on a German browser or with ?lang=de.
+export const DE = {
+  'Search': 'Suchen', 'Search the web': 'Im Web suchen', 'Words, a question, or !bang words': 'Wörter, eine Frage oder !bang Wörter', 'Searching…': 'Suche…',
+  'Verse does not crawl the web. A search here is Verse\'s answer with its sources, Wikipedia and Wikidata, and the same search one tap away on the engines that crawl.': 'Verse durchsucht das Web nicht selbst. Eine Suche hier ist die Antwort von Verse mit Quellen, Wikipedia und Wikidata, und dieselbe Suche einen Tipp entfernt bei den Suchmaschinen, die das Web durchsuchen.',
+  'Verse\'s answer': 'Die Antwort von Verse', 'Sources': 'Quellen', 'From a language model with Wikipedia as its sources: check the sources before you rely on it.': 'Von einem Sprachmodell mit Wikipedia als Quelle: prüfen Sie die Quellen, bevor Sie sich darauf verlassen.',
+  'No answer this time.': 'Diesmal keine Antwort.', 'Too many questions at once: wait a minute and ask again.': 'Zu viele Fragen auf einmal: eine Minute warten und erneut fragen.', 'The answer engine did not answer.': 'Die Antwortmaschine hat nicht geantwortet.',
+  'Wikipedia': 'Wikipedia', 'results': 'Ergebnisse', 'edited': 'bearbeitet', 'Did you mean': 'Meinten Sie', 'Read it here': 'Hier lesen', 'Nothing on Wikipedia for that.': 'Dazu nichts auf Wikipedia.',
+  'Wikidata': 'Wikidata', 'Search this on': 'Diese Suche bei', 'More engines': 'Weitere Suchmaschinen',
+  'History': 'Verlauf', 'Kept on this device only.': 'Nur auf diesem Gerät gespeichert.', 'Pause history': 'Verlauf pausieren', 'Clear history': 'Verlauf löschen', 'No searches yet.': 'Noch keine Suchen.', 'History is paused.': 'Der Verlauf ist pausiert.', 'Remove': 'Entfernen',
+  'Bangs': 'Bangs', 'Type !g, !w, !yt and the words to go straight to that site\'s search. Bangs run on this device.': 'Tippen Sie !g, !w, !yt und die Wörter, um direkt zur Suche dieser Seite zu gehen. Bangs laufen auf diesem Gerät.',
+  'All bangs': 'Alle Bangs', 'Find a bang': 'Bang finden', 'Your own bangs': 'Ihre eigenen Bangs', 'Bang word': 'Bang-Wort', 'Address with %s for the words': 'Adresse mit %s für die Wörter', 'Add': 'Hinzufügen',
+  'A bang needs a word of 1 to 12 letters and an https address with %s in it.': 'Ein Bang braucht ein Wort aus 1 bis 12 Zeichen und eine https-Adresse mit %s.', 'Going to': 'Weiter zu',
+  'You are offline: answers and Wikipedia need the network; bangs, the engine links and your history still work.': 'Sie sind offline: Antworten und Wikipedia brauchen das Netz; Bangs, die Links zu Suchmaschinen und Ihr Verlauf funktionieren weiter.',
+  'Make this your browser\'s search engine': 'Als Suchmaschine des Browsers einrichten', 'Copy link': 'Link kopieren', 'Share': 'Teilen', 'Link copied': 'Link kopiert',
+  'Search as if from': 'Suchen wie aus', 'Country': 'Land', 'Language': 'Sprache', 'Open the search': 'Suche öffnen',
+  'The engines still answer from their own servers where you are: these links set the country and language they show, with personal results off on Google. A captcha can appear.': 'Die Suchmaschinen antworten weiter von ihren eigenen Servern aus, wo Sie sind: diese Links setzen Land und Sprache der Ergebnisse, bei Google ohne personalisierte Ergebnisse. Ein Captcha kann erscheinen.',
+  'Engines to search': 'Zu durchsuchende Suchmaschinen', 'Open all checked': 'Alle markierten öffnen', 'Your browser may ask you to allow pop-ups to open several at once.': 'Ihr Browser fragt vielleicht, ob Pop-ups erlaubt sind, um mehrere auf einmal zu öffnen.',
+  'Contents': 'Inhalt', 'Other languages': 'Andere Sprachen', 'Open on Wikipedia': 'Auf Wikipedia öffnen', 'Text from Wikipedia, CC BY-SA 4.0.': 'Text von Wikipedia, CC BY-SA 4.0.', 'Loading…': 'Lädt…', 'Back to the results': 'Zurück zu den Ergebnissen',
+  'Text size': 'Textgröße', 'Read aloud': 'Vorlesen', 'Stop': 'Stopp',
+};

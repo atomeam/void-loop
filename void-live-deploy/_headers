@@ -44,6 +44,9 @@
 /opensearch.xml
   Content-Type: application/opensearchdescription+xml
 
+/search/opensearch.xml
+  Content-Type: application/opensearchdescription+xml
+
 /openapi.json
   Content-Type: application/json; charset=utf-8
   Access-Control-Allow-Origin: *
