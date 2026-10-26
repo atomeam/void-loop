@@ -14892,53 +14892,53 @@
   },
   "music: jasperbernaers.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 178,
-    "best": 467,
-    "evidence": "Verse (/tuner/) 178 ms to the load event (median of 3, phone width) vs jasperbernaers.com 467 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:27:48.842Z"
+    "verdict": "better",
+    "verse": 214,
+    "best": 390,
+    "evidence": "Verse (/tuner/) 214 ms to the load event (median of 3, phone width) vs jasperbernaers.com 390 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tuner/) 3 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tuner/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tuner/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tuner/) 0 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/tuner/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tuner/) 4 of 4 right against the worked-out answer; judged against the standard, not jasperbernaers.com (the site is not asked)",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 4
    },
    "design polish": {
@@ -14946,14 +14946,14 @@
     "verse": 0,
     "best": 50,
     "evidence": "Verse (/tuner/) 0 design defects vs jasperbernaers.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (44 low-contrast texts, 6 small tap targets, layout shift 0.03)",
-    "at": "2026-10-26T04:27:48.842Z"
+    "at": "2026-10-26T04:39:07.093Z"
    },
    "microphone tuning": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tuner/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 3,
     "part": true
    },
@@ -14962,7 +14962,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tuner/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 4,
     "part": true
    },
@@ -14971,7 +14971,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 2,
     "part": true
    },
@@ -14980,7 +14980,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 2,
     "part": true
    },
@@ -14989,7 +14989,7 @@
     "verse": 18,
     "best": 10,
     "evidence": "Verse (/tuner/) 18 of 18 things a full answer shows vs jasperbernaers.com 10 of 18 things a full answer shows (Verse lacks: none; site lacks: reference tones, a pitch pipe, nothing recorded or sent, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads)",
-    "at": "2026-10-26T04:27:48.842Z",
+    "at": "2026-10-26T04:39:07.093Z",
     "of": 18
    }
   },
@@ -15440,6 +15440,212 @@
     "at": "2026-10-26T04:15:15.858Z",
     "of": 18
    }
+  },
+  "pdf: 10015.io": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 176,
+    "best": 1793,
+    "evidence": "Verse (/pdf/organize/) 176 ms to the load event (median of 3, phone width) vs 10015.io 1793 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/organize/) 0 of 3 loads answered vs 10015.io 3 of 3 loads answered",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/organize/) 0 px sideways overflow at 390 px vs 10015.io 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/organize/) 0 unnamed controls or images vs 10015.io 0 unnamed controls or images",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/organize/) 0 (1: the page shows itself again with the network cut) vs 10015.io 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/pdf/organize/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/organize/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not 10015.io (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/organize/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 8,
+    "evidence": "Verse (/pdf/organize/) 0 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T04:39:37.993Z"
+   },
+   "merge and split": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/organize/) 0 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 2,
+    "part": true
+   },
+   "page tools": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/organize/) 0 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 3,
+    "part": true
+   },
+   "images to pdf": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: images to PDF; site lacks: images to PDF)",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 1,
+    "part": true
+   },
+   "compress": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/pdf/organize/) 0 of 14 things a full answer shows vs 10015.io 4 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF)",
+    "at": "2026-10-26T04:39:37.993Z",
+    "of": 14
+   }
+  },
+  "pdf: pdfcandy.com": {
+   "speed": {
+    "verdict": "better",
+    "verse": 231,
+    "best": 465,
+    "evidence": "Verse (/pdf/toolbox/) 231 ms to the load event (median of 3, phone width) vs pdfcandy.com 465 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 3 loads answered vs pdfcandy.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/toolbox/) 0 px sideways overflow at 390 px vs pdfcandy.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/toolbox/) 0 unnamed controls or images vs pdfcandy.com 2 unnamed controls or images",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/toolbox/) 0 (1: the page shows itself again with the network cut) vs pdfcandy.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs pdfcandy.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not pdfcandy.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/toolbox/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 18,
+    "evidence": "Verse (/pdf/toolbox/) 0 design defects vs pdfcandy.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), pdfcandy.com (4 low-contrast texts, 14 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:40:24.433Z"
+   },
+   "merge and split": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 2 shown vs pdfcandy.com 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 2,
+    "part": true
+   },
+   "page tools": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 3 shown vs pdfcandy.com 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: reorder)",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 3,
+    "part": true
+   },
+   "images to pdf": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 1,
+    "part": true
+   },
+   "compress": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: compress; site lacks: none)",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 9,
+    "evidence": "Verse (/pdf/toolbox/) 0 of 14 things a full answer shows vs pdfcandy.com 9 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: reorder pages, on this device, no account, works offline, ask questions about a PDF)",
+    "at": "2026-10-26T04:40:24.433Z",
+    "of": 14
+   }
   }
  },
  "icons": {
@@ -15599,6 +15805,8 @@
   "anotherproducer.com": "tower.icons/anotherproducer.com.png",
   "chordchord.com": "tower.icons/chordchord.com.png",
   "metronomeonline.com": "tower.icons/metronomeonline.com.png",
-  "virtualpiano.net": "tower.icons/virtualpiano.net.png"
+  "virtualpiano.net": "tower.icons/virtualpiano.net.png",
+  "10015.io": "tower.icons/10015.io.png",
+  "pdfcandy.com": "tower.icons/pdfcandy.com.ico"
  }
 }
