@@ -19,7 +19,7 @@ const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 const results = [];
 for (const fx of fixtures) {
   const { json } = await answerFor(fx, { live });
-  const page = await browser.newPage({ viewport: { width: 520, height: 1100 } }), errs = []; page.on('pageerror', (e) => errs.push(e.message));
+  const page = await browser.newPage({ viewport: { width: 520, height: 1100 } }), errs = [], seen = { called: 0, failed: [], bad: [] }; page.on('pageerror', (e) => errs.push(e.message)); page.on('requestfailed', (r) => seen.failed.push(r.url().replace(/^https:\/\//, '').slice(0, 90) + ' ' + ((r.failure() || {}).errorText || ''))); page.on('response', (r) => { if (r.status() >= 400 && !/127\.0\.0\.1/.test(r.url())) seen.bad.push(r.status() + ' ' + r.url().replace(/^https:\/\//, '').slice(0, 90)); });
   if (!live) await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
   // the page's own Wikipedia reads (a one- or two-word name is looked up in the browser, not by /api/answer): the same fixture answers them
   const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'); // a 1x1 picture stands in for a hotlinked photo
@@ -34,7 +34,7 @@ for (const fx of fixtures) {
     return r.fulfill({ status: 204, body: '' });
   });
   await page.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
-  await page.route(/127\.0\.0\.1:\d+\/api\/answer/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(json) }));
+  await page.route(/127\.0\.0\.1:\d+\/api\/answer/, (r) => { seen.called++; return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(json) }); });
   await page.goto('http://127.0.0.1:' + server.address().port + '/'); await page.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {}); await page.waitForTimeout(400);
   await page.fill('#input', fx.ask); await page.keyboard.press('Enter'); await page.waitForTimeout(2600);
   const card = await page.evaluate(() => { const v = document.querySelector('.vpage.on') || document.querySelector('.vpage'); if (!v) return null;
@@ -79,12 +79,12 @@ for (const fx of fixtures) {
     if (e.notBody && new RegExp(e.notBody, 'i').test(card.body)) problems.push('body holds /' + e.notBody + '/: ' + card.body.slice(0, 120));
     if (!e.noOffTopic) { const off = offTopic(report, e.about || ''); if (off) problems.push(off.slice(0, 160)); }
   }
-  results.push({ ask: fx.ask, ok: !problems.length, problems, card, shot, api: { name: json.name || '', desc: json.desc || '', fuzzy: !!json.fuzzy, noAnswer: !!json.noAnswer, guess: json.guess || '', pic: !!json.pic, sources: (json.sources || []).map((x) => x.title).slice(0, 3), answer: String(json.answer || '').slice(0, 90) } });
+  results.push({ ask: fx.ask, ok: !problems.length, problems, card, shot, seen: { called: seen.called, failed: seen.failed.slice(0, 3), bad: seen.bad.slice(0, 3), text: card ? card.text.replace(/\s+/g, ' ').slice(0, 140) : '' }, api: { name: json.name || '', desc: json.desc || '', fuzzy: !!json.fuzzy, noAnswer: !!json.noAnswer, guess: json.guess || '', pic: !!json.pic, sources: (json.sources || []).map((x) => x.title).slice(0, 3), answer: String(json.answer || '').slice(0, 90) } });
   console.log((problems.length ? 'FAIL ' : 'ok   ') + fx.ask + (card ? '  [' + card.type.trim() + ' | ' + (card.theme || 'no theme') + ' | ' + (card.subject || card.pic) + ' | ' + card.badges.join(', ') + ']' : '') + problems.map((p) => '\n       - ' + p).join('') + '\n       ' + shot);
 }
 console.log('\n' + results.filter((r) => r.ok).length + '/' + results.length + ' pass');
 if (outFile) { // a small record, never the screenshots: what each live ask became
-  const rec = { at: new Date().toISOString(), mode: live ? 'live' : 'stub', pass: results.filter((r) => r.ok).length, total: results.length, results: results.map((r) => ({ ask: r.ask, ok: r.ok, kind: r.card ? r.card.type.trim().slice(0, 60) : '', title: r.card ? r.card.title.trim().slice(0, 80) : '', theme: r.card ? r.card.theme : '', photo: !!(r.card && r.card.photo), api: r.api, ...(r.ok ? {} : { problems: r.problems.map((p) => p.slice(0, 140)).slice(0, 3) }) })) };
+  const rec = { at: new Date().toISOString(), mode: live ? 'live' : 'stub', pass: results.filter((r) => r.ok).length, total: results.length, results: results.map((r) => ({ ask: r.ask, ok: r.ok, kind: r.card ? r.card.type.trim().slice(0, 60) : '', title: r.card ? r.card.title.trim().slice(0, 80) : '', theme: r.card ? r.card.theme : '', photo: !!(r.card && r.card.photo), api: r.api, ...(r.ok ? {} : { seen: r.seen }), ...(r.ok ? {} : { problems: r.problems.map((p) => p.slice(0, 140)).slice(0, 3) }) })) };
   fs.mkdirSync(path.dirname(outFile), { recursive: true }); fs.writeFileSync(outFile, JSON.stringify(rec, null, 1) + '\n');
 }
 await browser.close(); server.close();
