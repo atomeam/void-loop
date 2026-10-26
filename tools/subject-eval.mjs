@@ -6,7 +6,7 @@
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { answerFor } from './subject-stub.mjs'; import { offTopic } from './finish.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname), root = path.join(here, '..', 'void-live-deploy');
-const args = process.argv.slice(2), only = args.includes('--only') ? args[args.indexOf('--only') + 1].toLowerCase() : '', shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : path.join(os.tmpdir(), 'subject-eval');
+const args = process.argv.slice(2), live = args.includes('--live'), outFile = args.includes('--out') ? args[args.indexOf('--out') + 1] : '', only = args.includes('--only') ? args[args.indexOf('--only') + 1].toLowerCase() : '', shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : path.join(os.tmpdir(), 'subject-eval');
 const fixtures = JSON.parse(fs.readFileSync(path.join(here, 'fixtures', 'subject-eval.json'), 'utf8')).filter((f) => !only || only.split('|').some((o) => f.ask.toLowerCase().includes(o)));
 fs.mkdirSync(shots, { recursive: true });
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml' };
@@ -18,14 +18,14 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 const results = [];
 for (const fx of fixtures) {
-  const { json } = await answerFor(fx);
+  const { json } = await answerFor(fx, { live });
   const page = await browser.newPage({ viewport: { width: 520, height: 1100 } }), errs = []; page.on('pageerror', (e) => errs.push(e.message));
-  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+  if (!live) await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
   // the page's own Wikipedia reads (a one- or two-word name is looked up in the browser, not by /api/answer): the same fixture answers them
   const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'); // a 1x1 picture stands in for a hotlinked photo
-  await page.route(/^https:\/\/upload\.wikimedia\.org\//, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+  if (!live) await page.route(/^https:\/\/upload\.wikimedia\.org\//, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
   const w = fx.wiki || {}, jj = (o) => ({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(o) });
-  await page.route(/^https:\/\/en\.wikipedia\.org\//, (r) => {
+  if (!live) await page.route(/^https:\/\/en\.wikipedia\.org\//, (r) => {
     const u = r.request().url();
     if (/\/page\/summary\//.test(u)) { const t = decodeURIComponent(u.split('/summary/')[1]).replace(/_/g, ' '), p = (w.search || []).find((x) => x.title === t); return p ? r.fulfill(jj({ type: 'standard', title: p.title, description: p.description || '', extract: p.extract, timestamp: '2026-09-01T00:00:00Z', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')) } } })) : r.fulfill({ status: 404, body: '{}' }); }
     if (/generator=search/.test(u)) return r.fulfill(jj({ query: { pages: Object.fromEntries((w.search || []).map((x, i) => [i + 1, { title: x.title, index: i + 1, description: x.description }])) } }));
@@ -48,7 +48,8 @@ for (const fx of fixtures) {
   if (process.env.EVAL_RULES) console.log(await page.evaluate(() => { const el = document.querySelector('.vpage .vc-adds'); const out = []; for (const sh of document.styleSheets) { let rs; try { rs = sh.cssRules; } catch (_) { continue; } for (const r of rs) { try { if (r.selectorText && el.matches(r.selectorText) && /overflow|height|contain/.test(r.cssText)) out.push(r.cssText.slice(0, 300)); } catch (_) {} } } return out.join('\n'); }));
   if (process.env.EVAL_CDP) { const c = await page.context().newCDPSession(page); await c.send('DOM.enable'); await c.send('CSS.enable'); const { root } = await c.send('DOM.getDocument'); const { nodeId } = await c.send('DOM.querySelector', { nodeId: root.nodeId, selector: '.vpage .vc-adds' }); const m = await c.send('CSS.getMatchedStylesForNode', { nodeId }); for (const r of m.matchedCSSRules) if (r.rule.style.cssProperties.some((p) => /overflow|^height|flex/.test(p.name))) console.log(r.rule.selectorList.text.slice(0, 120), '=>', r.rule.style.cssProperties.filter((p) => /overflow|height|flex/.test(p.name)).map((p) => p.name + ':' + p.value).join(';')); }
   await page.close();
-  const e = fx.expect || {}, problems = [];
+  const e = { ...(fx.expect || {}) }, problems = [];
+  if (live) for (const k of ['badges', 'body', 'notBody', 'motif', 'photo', 'sources', 'noBadges', 'about']) delete e[k]; // a real page's words differ from a fixture's: live checks the kind, the title, the frame and the honesty rules
   if (!card) problems.push('no card drawn');
   else {
     const report = '> ' + fx.ask + '\n  by: answer-route\n  shows: ' + card.text.replace(/\s*\n\s*/g, ' / ') + '\n  pictures: ' + card.pic + ' ' + card.subject + '\n';
@@ -80,5 +81,9 @@ for (const fx of fixtures) {
   console.log((problems.length ? 'FAIL ' : 'ok   ') + fx.ask + (card ? '  [' + card.type.trim() + ' | ' + (card.theme || 'no theme') + ' | ' + (card.subject || card.pic) + ' | ' + card.badges.join(', ') + ']' : '') + problems.map((p) => '\n       - ' + p).join('') + '\n       ' + shot);
 }
 console.log('\n' + results.filter((r) => r.ok).length + '/' + results.length + ' pass');
+if (outFile) { // a small record, never the screenshots: what each live ask became
+  const rec = { at: new Date().toISOString(), mode: live ? 'live' : 'stub', pass: results.filter((r) => r.ok).length, total: results.length, results: results.map((r) => ({ ask: r.ask, ok: r.ok, kind: r.card ? r.card.type.trim().slice(0, 60) : '', title: r.card ? r.card.title.trim().slice(0, 80) : '', theme: r.card ? r.card.theme : '', photo: !!(r.card && r.card.photo), ...(r.ok ? {} : { problems: r.problems.map((p) => p.slice(0, 140)).slice(0, 3) }) })) };
+  fs.mkdirSync(path.dirname(outFile), { recursive: true }); fs.writeFileSync(outFile, JSON.stringify(rec, null, 1) + '\n');
+}
 await browser.close(); server.close();
 process.exit(results.every((r) => r.ok) ? 0 : 1);
