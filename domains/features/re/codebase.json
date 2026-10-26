@@ -1,0 +1,218 @@
+{
+ "site": "www.codebasehq.com",
+ "url": "https://www.codebasehq.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "analytics.krystal.uk/matomo.js",
+   "t": "js",
+   "b": 65842,
+   "ext": true
+  },
+  {
+   "f": "[token].js",
+   "t": "js",
+   "b": 349055
+  },
+  {
+   "f": "[token].css",
+   "t": "css",
+   "b": 142945
+  }
+ ],
+ "assetCount": 3,
+ "bytes": 557842,
+ "html": {
+  "mobile": {
+   "title": "Codebase - Git, Mercurial and Subversion",
+   "lang": "en",
+   "manifest": null,
+   "share": {
+    "og": 4,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Codebase Blog",
+   "w": "md"
+  },
+  {
+   "l": "Customers",
+   "w": "md"
+  },
+  {
+   "l": "Features",
+   "w": "md"
+  },
+  {
+   "l": "Login",
+   "w": "md"
+  },
+  {
+   "l": "More from Krystal",
+   "w": "d"
+  },
+  {
+   "l": "Pricing",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "SIGNUP NOW",
+   "w": "md"
+  },
+  {
+   "l": "Service Status",
+   "w": "md"
+  },
+  {
+   "l": "Support",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Service",
+   "w": "md"
+  },
+  {
+   "l": "Visit the Krystal website",
+   "w": "m"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [
+   "https://www.codebasehq.com/sitemap.xml.gz"
+  ],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "[token].js",
+   "own": true,
+   "keys": [
+    "Escape@340341",
+    "Enter@342544"
+   ],
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "code.google.com",
+   "file": "[token].js",
+   "at": 150603
+  },
+  {
+   "host": "connect.microsoft.com",
+   "file": "[token].js",
+   "at": 158132
+  },
+  {
+   "host": "css-tricks.com",
+   "file": "[token].js",
+   "at": 315108
+  },
+  {
+   "host": "daverupert.com",
+   "file": "[token].js",
+   "at": 315146
+  },
+  {
+   "host": "erik.eae.net",
+   "file": "[token].js",
+   "at": 183447
+  },
+  {
+   "host": "fluidproject.org",
+   "file": "[token].js",
+   "at": 234049
+  },
+  {
+   "host": "javascript.nwbox.com",
+   "file": "[token].js",
+   "at": 98849
+  },
+  {
+   "host": "jquery.org",
+   "file": "[token].js",
+   "at": 206
+  },
+  {
+   "host": "jsperf.com",
+   "file": "[token].js",
+   "at": 15097
+  },
+  {
+   "host": "msdn.microsoft.com",
+   "file": "[token].js",
+   "at": 32670
+  },
+  {
+   "host": "sam.zoy.org",
+   "file": "[token].js",
+   "at": 315308
+  },
+  {
+   "host": "sizzlejs.com",
+   "file": "[token].js",
+   "at": 91
+  },
+  {
+   "host": "support.microsoft.com",
+   "file": "[token].js",
+   "at": 271202
+  },
+  {
+   "host": "web.archive.org",
+   "file": "[token].js",
+   "at": 218639
+  },
+  {
+   "host": "weblogs.java.net",
+   "file": "[token].js",
+   "at": 8424
+  },
+  {
+   "host": "www.alistapart.com",
+   "file": "[token].js",
+   "at": 315199
+  }
+ ],
+ "thirdParty": [
+  "analytics.krystal.uk",
+  "code.google.com",
+  "connect.microsoft.com",
+  "css-tricks.com",
+  "daverupert.com",
+  "erik.eae.net",
+  "fluidproject.org",
+  "javascript.nwbox.com",
+  "jquery.org",
+  "jsperf.com",
+  "msdn.microsoft.com",
+  "sam.zoy.org",
+  "sizzlejs.com",
+  "support.microsoft.com",
+  "web.archive.org",
+  "weblogs.java.net",
+  "www.alistapart.com"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

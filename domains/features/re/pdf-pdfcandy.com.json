@@ -1,0 +1,735 @@
+{
+ "site": "pdfcandy.com",
+ "url": "https://pdfcandy.com/",
+ "scanned": "2026-10-26",
+ "status": 301,
+ "assets": [
+  {
+   "f": "cdn.paddle.com/paddle.css",
+   "t": "css",
+   "b": 4564,
+   "ext": true
+  },
+  {
+   "f": "cdn.paddle.com/paddle.js",
+   "t": "js",
+   "b": 56981,
+   "ext": true
+  },
+  {
+   "f": "public.profitwell.com/profitwell.js",
+   "t": "js",
+   "b": 50608,
+   "ext": true
+  },
+  {
+   "f": "static.pdfcandy.com/app.pdf.css",
+   "t": "css",
+   "b": 192102
+  },
+  {
+   "f": "static.pdfcandy.com/index.css",
+   "t": "css",
+   "b": 360824
+  },
+  {
+   "f": "static.pdfcandy.com/index.js",
+   "t": "js",
+   "b": 63777
+  },
+  {
+   "f": "static.pdfcandy.com/app.42e7a073.js",
+   "t": "js",
+   "b": 628384
+  },
+  {
+   "f": "static.pdfcandy.com/land.js",
+   "t": "js",
+   "b": 298219
+  },
+  {
+   "f": "static.pdfcandy.com/lang.en.js",
+   "t": "js",
+   "b": 60109
+  },
+  {
+   "f": "www.google-analytics.com/analytics.js",
+   "t": "js",
+   "b": 52310,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 501864,
+   "ext": true
+  }
+ ],
+ "assetCount": 11,
+ "bytes": 2269742,
+ "html": {
+  "mobile": {
+   "title": "90+ Free PDF Tools Online – PDF Candy",
+   "lang": "en",
+   "manifest": null,
+   "hreflang": [
+    "x-default",
+    "en",
+    "de",
+    "fr",
+    "it",
+    "es",
+    "pt",
+    "nl",
+    "sv",
+    "zh-Hans",
+    "id",
+    "vi",
+    "tr",
+    "ru",
+    "ja",
+    "zh-Hant",
+    "th",
+    "ar",
+    "pl",
+    "ko"
+   ],
+   "canonical": true,
+   "share": {
+    "og": 6,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "accepts": [
+    "application/pdf, image/gif, image/png, image/tiff, image/jfif, image/bmp, image/jpeg, image/jpg, , ."
+   ],
+   "inputTypes": {
+    "email": 1,
+    "file": 1,
+    "number": 1,
+    "text": 1
+   },
+   "forms": 1,
+   "downloadAttrs": 2
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "AI",
+   "w": "d"
+  },
+  {
+   "l": "About us",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Business",
+   "w": "md"
+  },
+  {
+   "l": "Contact us",
+   "w": "md"
+  },
+  {
+   "l": "Education",
+   "w": "md"
+  },
+  {
+   "l": "Help",
+   "w": "md"
+  },
+  {
+   "l": "Home",
+   "w": "md"
+  },
+  {
+   "l": "Pricing",
+   "w": "md"
+  },
+  {
+   "l": "Privacy policy",
+   "w": "md"
+  },
+  {
+   "l": "Refund policy",
+   "w": "md"
+  },
+  {
+   "l": "Security",
+   "w": "md"
+  },
+  {
+   "l": "Terms of use",
+   "w": "md"
+  },
+  {
+   "l": "Tools",
+   "w": "md"
+  },
+  {
+   "l": "Windows version",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/admin/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 801,
+  "index": false,
+  "sections": [
+   {
+    "s": "de",
+    "n": 43
+   },
+   {
+    "s": "fr",
+    "n": 43
+   },
+   {
+    "s": "ar",
+    "n": 42
+   },
+   {
+    "s": "cn",
+    "n": 42
+   },
+   {
+    "s": "es",
+    "n": 42
+   },
+   {
+    "s": "id",
+    "n": 42
+   },
+   {
+    "s": "it",
+    "n": 42
+   },
+   {
+    "s": "jp",
+    "n": 42
+   },
+   {
+    "s": "ko",
+    "n": 42
+   },
+   {
+    "s": "nl",
+    "n": 42
+   },
+   {
+    "s": "pl",
+    "n": 42
+   },
+   {
+    "s": "pt",
+    "n": 42
+   },
+   {
+    "s": "ru",
+    "n": 42
+   },
+   {
+    "s": "se",
+    "n": 42
+   },
+   {
+    "s": "th",
+    "n": 42
+   }
+  ],
+  "langs": [
+   "en",
+   "de",
+   "fr",
+   "it",
+   "es",
+   "pt",
+   "nl",
+   "sv",
+   "zh-Hans",
+   "id",
+   "vi",
+   "tr",
+   "ru",
+   "ja",
+   "zh-Hant",
+   "th",
+   "ar",
+   "pl",
+   "ko"
+  ]
+ },
+ "code": [
+  {
+   "file": "static.pdfcandy.com/index.js",
+   "own": true,
+   "params": [
+    "v@29477"
+   ],
+   "apiPaths": [
+    "/api/v2/me@16562",
+    "/api/v2/subscription/upgrade@54831"
+   ],
+   "flags": [
+    "allowLogout@53826",
+    "showAddTaxId@53857"
+   ],
+   "storage": [
+    "request_paddle@40491"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "websocket": true,
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "static.pdfcandy.com/app.42e7a073.js",
+   "own": true,
+   "apiPaths": [
+    "/api/v3@199818",
+    "/ws/v1@199846"
+   ],
+   "flags": [
+    "showSorting@294",
+    "showExport@309",
+    "showDropdown@13463",
+    "showPasswordPopup@45784",
+    "showOneFile@45805",
+    "showZoom@77230",
+    "showSettings@135478",
+    "enableTime@148410",
+    "allowInput@148424"
+   ],
+   "storage": [
+    "gDriveOauthToken@235098",
+    "setupTime@235170"
+   ],
+   "apis": [
+    "Background worker threads",
+    "Drag and drop files or items"
+   ],
+   "mimes": [
+    "application/pdf",
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/bmp",
+    "image/gif",
+    "image/tiff",
+    "application/msword",
+    "application/rtf",
+    "application/x-rtf",
+    "text/richtext",
+    "application/vnd.oasis.opendocument.text",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.ms-excel",
+    "image/vnd.djvu",
+    "image/x-djvu",
+    "application/epub+zip",
+    "application/fb2+xml",
+    "application/x-mobipocket-ebook",
+    "application/vnd.ms-htmlhelp"
+   ],
+   "websocket": true,
+   "usesLocationSearch": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "static.pdfcandy.com/land.js",
+   "own": true,
+   "keys": [
+    "ArrowLeft@111112",
+    "ArrowRight@111236"
+   ],
+   "apiPaths": [
+    "/upload@261753"
+   ],
+   "flags": [
+    "useTransform@89785",
+    "transformsEnabled@90213",
+    "showCloseBtn@249578",
+    "enableEscapeKey@249594"
+   ],
+   "extLists": [
+    ".pdf,.doc,.docx@262128"
+   ],
+   "apis": [
+    "Drag and drop files or items"
+   ],
+   "mimes": [
+    "image/x-icon"
+   ],
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "apis.google.com",
+   "file": "static.pdfcandy.com/app.42e7a073.js",
+   "at": 290353
+  },
+  {
+   "host": "dimsemenov.com",
+   "file": "static.pdfcandy.com/land.js",
+   "at": 240137
+  },
+  {
+   "host": "jquery.malsup.com",
+   "file": "static.pdfcandy.com/land.js",
+   "at": 131776
+  },
+  {
+   "host": "jqueryui.com",
+   "file": "static.pdfcandy.com/land.js",
+   "at": 146871
+  },
+  {
+   "host": "kenwheeler.github.io",
+   "file": "static.pdfcandy.com/land.js",
+   "at": 88361
+  },
+  {
+   "host": "npmcdn.com",
+   "file": "static.pdfcandy.com/app.42e7a073.js",
+   "at": 148833
+  },
+  {
+   "host": "secure.2checkout.com",
+   "file": "static.pdfcandy.com/index.js",
+   "at": 38308
+  },
+  {
+   "host": "secure.avangate.com",
+   "file": "static.pdfcandy.com/index.js",
+   "at": 38161
+  },
+  {
+   "host": "www.dropbox.com",
+   "file": "static.pdfcandy.com/app.42e7a073.js",
+   "at": 289962
+  },
+  {
+   "host": "www.googleapis.com",
+   "file": "static.pdfcandy.com/app.42e7a073.js",
+   "at": 235555
+  }
+ ],
+ "thirdParty": [
+  "apis.google.com",
+  "cdn.paddle.com",
+  "dimsemenov.com",
+  "jquery.malsup.com",
+  "jqueryui.com",
+  "kenwheeler.github.io",
+  "npmcdn.com",
+  "public.profitwell.com",
+  "secure.2checkout.com",
+  "secure.avangate.com",
+  "www.dropbox.com",
+  "www.google-analytics.com",
+  "www.googleapis.com",
+  "www.googletagmanager.com"
+ ],
+ "services": [
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://www.google-analytics.com/g/collect?_ee&_eu&_fv&_p&_s&_ss&cid&dl",
+  "https://www.google-analytics.com/j/collect?_gid&_r&_s&_slc&_u&_v&a&cid"
+ ],
+ "storage": {
+  "local": [
+   "pdfcandy_limits_pdf-chat",
+   "pdfcandy_limits_pdf-summarizer",
+   "pdfcandy_limits_pdf-translator"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?v",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/index.js@29477"
+  },
+  {
+   "name": "Accepts the file types .pdf,.doc,.docx",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/land.js@262128"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@1537"
+  },
+  {
+   "name": "Opens files: application/pdf, image/gif, image/png, image/tiff, image/jfi",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Several files at once",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][multiple]"
+  },
+  {
+   "name": "Download links",
+   "kind": "export",
+   "tag": "observed",
+   "evidence": "a[download] x2"
+  },
+  {
+   "name": "API path /api/v2/me",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/index.js@16562"
+  },
+  {
+   "name": "API path /api/v2/subscription/upgrade",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/index.js@54831"
+  },
+  {
+   "name": "API path /api/v3",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@199818"
+  },
+  {
+   "name": "API path /upload",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/land.js@261753"
+  },
+  {
+   "name": "API path /ws/v1",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@199846"
+  },
+  {
+   "name": "Feature flag allowInput",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@148424"
+  },
+  {
+   "name": "Feature flag allowLogout",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/index.js@53826"
+  },
+  {
+   "name": "Feature flag enableEscapeKey",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/land.js@249594"
+  },
+  {
+   "name": "Feature flag enableTime",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@148410"
+  },
+  {
+   "name": "Feature flag showAddTaxId",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/index.js@53857"
+  },
+  {
+   "name": "Feature flag showCloseBtn",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/land.js@249578"
+  },
+  {
+   "name": "Feature flag showDropdown",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@13463"
+  },
+  {
+   "name": "Feature flag showExport",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@309"
+  },
+  {
+   "name": "Feature flag showOneFile",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@45805"
+  },
+  {
+   "name": "Feature flag showPasswordPopup",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@45784"
+  },
+  {
+   "name": "Feature flag showSettings",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@135478"
+  },
+  {
+   "name": "Feature flag showSorting",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@294"
+  },
+  {
+   "name": "Feature flag showZoom",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@77230"
+  },
+  {
+   "name": "Feature flag transformsEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/land.js@90213"
+  },
+  {
+   "name": "Feature flag useTransform",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "static.pdfcandy.com/land.js@89785"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/index.js@24086"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Input of type number",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=number] x1"
+  },
+  {
+   "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-chat",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-summarizer",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-translator",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Language versions in the sitemap: 19",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Language versions: 20 (x-default, en, de, fr, it, es)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Background worker threads",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/app.42e7a073.js@206513"
+  },
+  {
+   "name": "Live updates over a WebSocket",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "static.pdfcandy.com/index.js"
+  },
+  {
+   "name": "Path kept from crawlers /admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /ar/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /cn/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /de/ (43 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /es/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /fr/ (43 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /id/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /it/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /jp/ (42 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}
