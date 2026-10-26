@@ -18,7 +18,7 @@ export function printFileOf(text) {
   if (/^(?:please\s+)?print\s+.+\s+as\s+(?:a\s+)?(3mf|stl)$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?(?:save|download)\s+(?:a\s+)?(?:3mf|print\s+file)(?:\s+of\s+the\s+stage)?$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?print\s+file\s+for\s+(?:the\s+)?(?:slicer|[\w\s]+)$/i.test(t)) return { what: 'stage' };
-  if (/^(?:please\s+)?get\s+the\s+(?:3mf|stl)\s+for\s+[\w\s]+$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?(?:get|show me)\s+the\s+(?:3mf|stl)\s+for\s+[\w\s]+$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?how\s+to\s+print\s+[\w\s]+$/i.test(t)) return { what: 'stage' };
   return null;
 }
