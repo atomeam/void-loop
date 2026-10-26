@@ -22,6 +22,7 @@ export const LIMITS = {
   news: { rpm: 30, body: 0 }, // GET only: a section and a language from two closed lists in, grouped headlines from fixed public feeds out, edge-cached seven minutes; 20 misses a minute in the route itself (functions/api/news.js)
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)
   scores: { rpm: 60, body: 0 }, // GET only: a league from a closed list and a day in, public scores out (functions/api/scores.js), edge-cached 20 s live to 6 h final; 30 misses a minute in the route itself
+  sportsearch: { rpm: 30, body: 0 }, // GET only: a name in, TheSportsDB's public answers out (functions/api/sportsearch.js), edge-cached a day; 15 misses a minute in the route itself
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number

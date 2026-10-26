@@ -6,7 +6,8 @@ import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readSta
 import { askIn, lookScores, onRequestGet } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
-import { SCOREBOARD, STANDINGS, SUMMARY, OPENLIGA, F1_RACES, F1_RESULTS, F1_DRIVERS, F1_CONS, fakeFeeds } from './scores.fixtures.mjs';
+import { askIn as sAsk, readAll, lookSearch, onRequestGet as sGet } from '../void-live-deploy/functions/api/sportsearch.js';
+import { SDB, SCOREBOARD, STANDINGS, SUMMARY, OPENLIGA, F1_RACES, F1_RESULTS, F1_DRIVERS, F1_CONS, fakeFeeds } from './scores.fixtures.mjs';
 
 const NOW = Date.parse('2025-05-25T16:00:00Z');
 test('twelve leagues, each with an id the page and the API share, and a closed list', () => {
@@ -141,4 +142,13 @@ test('the mock draft: snake order, a bot that mostly takes the best, a pasted li
   assert.deepEqual(draftOrder(3, 2).map((p) => p.team), [0, 1, 2, 2, 1, 0]); assert.equal(draftOrder(10, 6).length, 60); assert.equal(draftOrder(4, 3)[4].round, 2);
   assert.equal(botPick(['a', 'b', 'c', 'd', 'e'], 0), 0); assert.ok(botPick(['a', 'b', 'c', 'd', 'e'], 0.99) <= 3); assert.equal(botPick(['a'], 0.99), 0); assert.equal(botPick([], 0.5), -1);
   assert.deepEqual(playersOf('1. Ann Lee\n2) Bob Ray\n\n  3 - Cy Dee\nann lee\nEve'), ['Ann Lee', 'Bob Ray', 'Cy Dee', 'Eve']); assert.equal(playersOf('x\n'.repeat(5) + 'y').length, 2);
+});
+
+test('the search box: a plain name in, TheSportsDB read into text fields only, nothing else reachable', async () => {
+  assert.deepEqual(sAsk('https://x.test/api/sportsearch?q=arsenal'), { q: 'arsenal' }); for (const bad of ['', 'a', 'x'.repeat(41), '../etc', 'a<b>', 'a;b', 'http://evil.test']) assert.equal(sAsk('https://x.test/api/sportsearch?q=' + encodeURIComponent(bad)), null, bad);
+  const r = readAll(SDB.teams, SDB.event, SDB.venues, SDB.player); assert.equal(r.teams[0].name, 'Arsenal'); assert.equal(r.events[0].hs, '2'); assert.equal(r.venues[0].capacity, '60260'); assert.doesNotMatch(r.players[0].name, /[<>]/); assert.equal(r.teams[0].badge, undefined, 'no picture addresses are passed on');
+  const log = []; const f = async (u) => { log.push(String(u)); return fakeFeeds()(u); }; const out = await lookSearch({ q: 'arsenal' }, f); assert.equal(out.ok, true); assert.equal(log.length, 4); for (const l of log) assert.ok(l.startsWith('https://www.thesportsdb.com/api/v1/json/123/search'), l);
+  assert.equal((await lookSearch({ q: 'x1' }, async () => { throw new Error('down'); })).ok, false);
+  assert.equal((await sGet({ request: new Request('https://a-to-mind.com/api/sportsearch?q=%3Cb%3E'), env: {} })).status, 400);
+  const good = await (await sGet({ request: new Request('https://a-to-mind.com/api/sportsearch?q=arsenal'), env: {}, fetchFn: fakeFeeds() })).json(); assert.equal(good.source, 'thesportsdb'); assert.equal(good.players.length, 1);
 });

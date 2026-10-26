@@ -363,6 +363,54 @@
      "paid": false,
      "verse": "missing",
      "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Browse by sport (icon grid)",
+     "detail": "a grid of 42 emoji-icon sports; six have leagues with live feeds (soccer, basketball, American football, baseball, ice hockey, Formula 1), the rest say plainly that Verse has no free live feed and link to TheSportsDB (thesportsdb.com home page feature, owner 2026-10-26)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): a grid of 42 emoji-icon sports; six have leagues with live feeds (soccer, basketball, American football, baseball, ice hockey, Formula 1), the rest say plainly that Verse has no free live feed and link to TheSportsDB (thesportsdb.com home page feature, owner 2026-10-26)"
+    },
+    {
+     "group": "core",
+     "name": "Search teams, events, venues and players across sports",
+     "detail": "one box through /api/sportsearch to TheSportsDB free public v1 API (test key; edge-cached a day, 15 misses a minute, text fields only, source named)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): one box through /api/sportsearch to TheSportsDB free public v1 API (test key; edge-cached a day, 15 misses a minute, text fields only, source named)"
+    },
+    {
+     "group": "power",
+     "name": "Born on this day athletes",
+     "detail": "Wikipedia On this day births filtered to athletes by their one-line description, kept on the device for the day, CC BY-SA named",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): Wikipedia On this day births filtered to athletes by their one-line description, kept on the device for the day, CC BY-SA named"
+    },
+    {
+     "group": "power",
+     "name": "Hall of fame / famous players strip",
+     "detail": "no free dataset read",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Stats strip of held data",
+     "detail": "leagues, sports, followed teams and saved answers on this device",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): leagues, sports, followed teams and saved answers on this device"
+    },
+    {
+     "group": "power",
+     "name": "Free read-only API with docs",
+     "detail": "/api/scores documented in openapi.json (no key, no premium tier) and described on the Sports tab",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): /api/scores documented in openapi.json (no key, no premium tier) and described on the Sports tab"
     }
    ]
   }

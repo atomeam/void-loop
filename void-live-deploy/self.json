@@ -491,6 +491,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:48:36Z",
+   "subject": "Recipes: hand the shopping list to a store, as links"
+  },
+  {
+   "at": "2026-10-26T02:47:43Z",
+   "subject": "Verify: one shared group per job, so a started suite finishes and only the newest waiting head runs"
+  },
+  {
+   "at": "2026-10-26T02:47:15Z",
+   "subject": "Recipes: cost per serving"
+  },
+  {
+   "at": "2026-10-26T02:45:47Z",
+   "subject": "Calendar: an embed code for a shared calendar"
+  },
+  {
+   "at": "2026-10-26T02:43:18Z",
+   "subject": "Calendar: travel time, \"leave by\" and a directions link"
+  },
+  {
+   "at": "2026-10-26T02:42:00Z",
+   "subject": "Calendar: find a time"
+  },
+  {
+   "at": "2026-10-26T02:40:43Z",
+   "subject": "Tower gate: sports: fotmob.com,sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com…"
+  },
+  {
+   "at": "2026-10-26T02:40:29Z",
+   "subject": "Calendar: an event in its own time zone, and a second zone beside every time"
+  },
+  {
+   "at": "2026-10-26T02:39:18Z",
+   "subject": "Scores: Next games room sized to four rows, playoff places by rank for US conference tables, a mock draft from a pasted list, inputs that…"
+  },
+  {
    "at": "2026-10-26T02:37:08Z",
    "subject": "Calendar: drag an event to another day, or give it a new day with \"Move to\""
   },
@@ -533,42 +569,6 @@
   {
    "at": "2026-10-26T02:33:06Z",
    "subject": "Calendar: choose the week's first day, and show week numbers"
-  },
-  {
-   "at": "2026-10-26T02:32:15Z",
-   "subject": "Podcasts: the ask bar routes search podcasts and podcasts about a topic to the page"
-  },
-  {
-   "at": "2026-10-26T02:32:01Z",
-   "subject": "Podcasts page: Versus' Apple Podcasts floor and its lane"
-  },
-  {
-   "at": "2026-10-26T02:30:46Z",
-   "subject": "Calendar: tasks beside events, with a due day"
-  },
-  {
-   "at": "2026-10-26T02:26:54Z",
-   "subject": "toolkit test: a page's code may be imported after the load event (/boards/)"
-  },
-  {
-   "at": "2026-10-26T02:26:49Z",
-   "subject": "openapi-check: the calendar page's three routes are Verse's own"
-  },
-  {
-   "at": "2026-10-26T02:25:49Z",
-   "subject": "News: keep the e2e screenshot out of the repository"
-  },
-  {
-   "at": "2026-10-26T02:25:48Z",
-   "subject": "News: regenerate cards after the merge"
-  },
-  {
-   "at": "2026-10-26T02:25:48Z",
-   "subject": "News: the Versus probe, the news lane and the BBC feature map"
-  },
-  {
-   "at": "2026-10-26T02:25:48Z",
-   "subject": "News: the /news/ page, registered as a tool page"
   }
  ],
  "builders": {

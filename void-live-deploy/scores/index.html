@@ -92,7 +92,7 @@
   <div class="row">
     <div class="seg" role="group" aria-label="View">
       <button type="button" id="tScores" aria-pressed="true" data-k="scores">Scores</button><button type="button" id="tTable" aria-pressed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pressed="false" data-k="mine">My teams</button></div>
-    <div class="seg" role="group" aria-label="More"><button type="button" id="tPick" aria-pressed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-pressed="false" data-k="whatif">What if</button><button type="button" id="tDraft" aria-pressed="false" data-k="draft">Mock draft</button>
+    <div class="seg" role="group" aria-label="More"><button type="button" id="tPick" aria-pressed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-pressed="false" data-k="whatif">What if</button><button type="button" id="tDraft" aria-pressed="false" data-k="draft">Mock draft</button><button type="button" id="tSports" aria-pressed="false" data-k="sportsTab">Sports</button>
     </div>
     <button type="button" id="favLeague" aria-pressed="false">Follow league</button>
   </div>
@@ -134,7 +134,7 @@
     // ---- state, kept in the address so a link holds the league, the day and the open game or team ----
     const q = new URLSearchParams(location.search), today = () => S.localDay();
     const state = { league: S.leagueOf(q.get('league')) ? q.get('league') : (S.leagueOf(mem.last) ? mem.last : (de ? 'bundesliga' : 'epl')), date: S.dateOk(q.get('date') || '') ? q.get('date') : today(),
-      span: q.get('span') === '7' ? 7 : 1, tab: ['scores', 'standings', 'mine', 'pickem', 'whatif', 'draft'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
+      span: q.get('span') === '7' ? 7 : 1, tab: ['scores', 'standings', 'mine', 'pickem', 'whatif', 'draft', 'sports'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
     let fmode = 'ppr', timer = 0, token = 0, again = () => {}, sort = { c: -1, up: false };
     const needle = () => ($('find').value || '').trim().toLowerCase();
     const hit = (g) => !needle() || [g.home && g.home.name, g.away && g.away.name, g.name, g.home && g.home.abbr, g.away && g.away.abbr].some((x) => x && String(x).toLowerCase().includes(needle()));
@@ -285,18 +285,18 @@
       const lg = S.leagueOf(state.league); mem.last = state.league; save(KEY, mem);
       document.title = lg.name + ' ' + (state.tab === 'standings' ? W.standings : W.scores) + ' · Verse';
       for (const a of $('leagues').children) { const on = a.getAttribute('href').endsWith('league=' + state.league); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }
-      for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine'], ['tPick', 'pickem'], ['tWhat', 'whatif'], ['tDraft', 'draft']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
+      for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine'], ['tPick', 'pickem'], ['tWhat', 'whatif'], ['tDraft', 'draft'], ['tSports', 'sports']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
       const fl = mem.leagues.includes(state.league); $('favLeague').setAttribute('aria-pressed', String(fl)); $('favLeague').textContent = fl ? W.unfollowLeague : W.followLeague;
-      $('nextg').hidden = !(state.tab === 'scores' && !state.team && !state.game && state.span === 1); $('days').hidden = state.tab === 'standings' || state.tab === 'whatif' || state.tab === 'draft' || !!state.team;
+      $('nextg').hidden = !(state.tab === 'scores' && !state.team && !state.game && state.span === 1); $('days').hidden = state.tab === 'standings' || state.tab === 'whatif' || state.tab === 'draft' || state.tab === 'sports' || !!state.team;
       $('date').value = state.date; $('vDay').setAttribute('aria-pressed', String(state.span === 1)); $('vWeek').setAttribute('aria-pressed', String(state.span === 7)); $('prev').setAttribute('aria-label', state.span === 7 ? W.prevWeek : 'Previous day'); $('next').setAttribute('aria-label', state.span === 7 ? W.nextWeek : 'Next day'); if (!quiet) { say(W.loading + '…'); }
       let live = false;
-      try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'pickem' || state.tab === 'whatif' || state.tab === 'draft' ? await (await import('/scores/more.js')).view(state.tab, { S, h, api, state, out, say, setNote, lang, W, clock, token: () => token }) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (e) { console.error('scores', e); sorry(); }
+      try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'sports' ? await (await import('/scores/sports.js')).view({ S, h, out, say, W, lang, mem, open: (id) => { state.league = id; state.tab = 'scores'; state.game = ''; state.team = ''; run(); } }) : state.tab === 'pickem' || state.tab === 'whatif' || state.tab === 'draft' ? await (await import('/scores/more.js')).view(state.tab, { S, h, api, state, out, say, setNote, lang, W, clock, token: () => token }) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (e) { console.error('scores', e); sorry(); }
       if (tk === token && live) { timer = setTimeout(() => { if (document.visibilityState === 'visible' && navigator.onLine) run(true); else timer = setTimeout(() => run(true), POLL); }, POLL); say(note.textContent + ' ' + W.refreshing); }
     }
     // ---- controls ----
     for (const a of $('leagues').children) a.addEventListener('click', (e) => { e.preventDefault(); state.league = new URL(a.href).searchParams.get('league'); state.game = ''; state.team = ''; state.tn = ''; if (state.tab === 'mine') state.tab = 'scores'; run(); });
     const tab = (t) => () => { state.tab = t; state.game = ''; state.team = ''; state.tn = ''; run(); };
-    $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine')); $('tPick').addEventListener('click', tab('pickem')); $('tWhat').addEventListener('click', tab('whatif')); $('tDraft').addEventListener('click', tab('draft'));
+    $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine')); $('tPick').addEventListener('click', tab('pickem')); $('tWhat').addEventListener('click', tab('whatif')); $('tDraft').addEventListener('click', tab('draft')); $('tSports').addEventListener('click', tab('sports'));
     const setSpan = (n) => () => { state.span = n; state.game = ''; state.team = ''; if (state.tab !== 'scores') state.tab = 'scores'; run(); };
     $('vDay').addEventListener('click', setSpan(1)); $('vWeek').addEventListener('click', setSpan(7));
     const goDay = (d) => { if (S.dateOk(d)) { state.date = d; state.game = ''; state.team = ''; if (state.tab === 'standings') state.tab = 'scores'; run(); } };

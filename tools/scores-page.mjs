@@ -6,7 +6,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 import { onRequestGet } from '../void-live-deploy/functions/api/scores.js';
-import { fakeFeeds } from './scores.fixtures.mjs';
+import { fakeFeeds, WIKI_BORN } from './scores.fixtures.mjs';
+import { onRequestGet as searchGet } from '../void-live-deploy/functions/api/sportsearch.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), out = process.argv[2] || '.';
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -14,6 +15,7 @@ const feeds = fakeFeeds();
 const srv = http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
   if (u.pathname === '/api/scores') { const r = await onRequestGet({ request: new Request('http://x' + req.url), env: {}, fetchFn: feeds }); res.writeHead(r.status, { 'content-type': 'application/json' }); return res.end(await r.text()); }
+  if (u.pathname === '/api/sportsearch') { const r = await searchGet({ request: new Request('http://x' + req.url), env: {}, fetchFn: feeds }); res.writeHead(r.status, { 'content-type': 'application/json' }); return res.end(await r.text()); }
   let f = path.join(root, u.pathname); if (f.endsWith('/')) f += 'index.html';
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end('no'); }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f));
@@ -21,6 +23,7 @@ const srv = http.createServer(async (req, res) => {
 await new Promise((r) => srv.listen(0, r)); const base = 'http://localhost:' + srv.address().port;
 const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x)), args: ['--no-sandbox'] });
 const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US', serviceWorkers: 'allow' }), p = await ctx.newPage();
+await ctx.route('https://en.wikipedia.org/**', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(WIKI_BORN) }));
 let fail = 0; const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fail = 1; };
 p.on('console', (m) => m.type() === 'error' && console.log('console:', m.text())); p.on('pageerror', (e) => console.log('pageerror:', e.message));
 await p.goto(base + '/scores/?league=epl&date=2025-05-25', { waitUntil: 'load' }); await p.waitForSelector('ul.games li', { timeout: 8000 });
@@ -40,7 +43,9 @@ ok(await p.evaluate(() => JSON.stringify(localStorage).includes('picks')), 'pick
 await p.click('#tWhat'); await p.waitForSelector('table[data-tab="whatif"]'); await p.click('ul.games li >> nth=0 >> button >> nth=2'); txt = await p.evaluate(() => document.querySelector('table[data-tab="whatif"] tbody').innerText); ok(/68/.test(txt) && /▲1/.test(txt), 'What if: a pick moves a club up the table and says so'); await p.screenshot({ path: path.join(out, 'scores-whatif.png') });
 await p.click('#tDraft'); await p.waitForSelector('textarea'); await p.fill('textarea', Array.from({ length: 12 }, (_, i) => (i + 1) + '. Player ' + (i + 1)).join('\n')); await p.fill('#dnteams', '4'); await p.dispatchEvent('#dnteams', 'change'); await p.fill('#dnrounds', '2'); await p.dispatchEvent('#dnrounds', 'change'); await p.click('text=Start the draft'); await p.waitForSelector('button[aria-label^="Pick "]');
 await p.click('button[aria-label^="Pick "] >> nth=0'); txt = await p.evaluate(() => document.querySelector('#out').innerText); ok(/Your team/.test(txt) && /Player/.test(txt), 'mock draft: a pasted list, a pick, bots taking theirs'); await p.screenshot({ path: path.join(out, 'scores-draft.png') });
-await p.click('#tTable'); await p.waitForSelector('table'); txt = await p.evaluate(() => document.body.innerText); ok(/Liverpool/.test(txt) && /84/.test(txt) && /\bPts\b/.test(txt), 'standings table with points'); ok(!/do not add up/.test(txt), 'the table adds up'); await p.waitForSelector('.fd', { timeout: 5000 }); ok(await p.locator('.fd.W').count() > 0, 'form dots (last five results) beside each club'); ok(/Verse rating/.test(await p.evaluate(() => document.body.innerText)), 'a Verse rating column, said to be Verse\'s own'); ok(/Table key: Champions League/.test(await p.evaluate(() => document.body.innerText)), 'a cut-line key under the table');
+await p.click('#tSports'); await p.waitForSelector('text=Click a sport to browse'); await p.click('button[aria-label="Tennis"]'); ok(/no free live feed/.test(await p.evaluate(() => document.body.innerText)), 'a sport with no feed says so'); await p.click('button[aria-label="Basketball"]'); ok(await p.locator('#out a[href="/scores/?league=nba"]').count() === 1, 'a sport with a feed lists its leagues');
+await p.fill('#gq', 'arsenal'); await p.click('text=Search >> nth=-1'); await p.waitForSelector('text=Emirates Stadium'); txt = await p.evaluate(() => document.body.innerText); ok(/Teams/.test(txt) && /Venues/.test(txt) && /Players/.test(txt) && /TheSportsDB/.test(txt), 'search groups teams, events, venues and players and names its source'); ok(/Test Footballer/.test(txt) && !/A Poet/.test(txt), 'born on this day: athletes only, from Wikipedia'); ok(/Free API/.test(txt) && /openapi\.json/.test(txt), 'the free API is described'); await p.screenshot({ path: path.join(out, 'scores-sports.png') });
+await p.click('#out a[href="/scores/?league=nba"]'); await p.waitForSelector('ul.games li'); await p.click('#leagues a[href$="league=epl"]'); await p.waitForSelector('ul.games li'); await p.click('#tTable'); await p.waitForSelector('table'); txt = await p.evaluate(() => document.body.innerText); ok(/Liverpool/.test(txt) && /84/.test(txt) && /\bPts\b/.test(txt), 'standings table with points'); ok(!/do not add up/.test(txt), 'the table adds up'); await p.waitForSelector('.fd', { timeout: 5000 }); ok(await p.locator('.fd.W').count() > 0, 'form dots (last five results) beside each club'); ok(/Verse rating/.test(await p.evaluate(() => document.body.innerText)), 'a Verse rating column, said to be Verse\'s own'); ok(/Table key: Champions League/.test(await p.evaluate(() => document.body.innerText)), 'a cut-line key under the table');
 await p.click('button.srt >> nth=0'); ok(true, 'a column sorts'); await p.fill('#find', 'arse'); txt = await p.evaluate(() => document.querySelector('tbody').innerText); ok(/Arsenal/.test(txt) && !/Liverpool/.test(txt), 'search narrows the table'); await p.fill('#find', '');
 await p.screenshot({ path: path.join(out, 'scores-table.png') });
 // the page was visited, so a worker may now keep it: reload with the network cut, the saved copy shows with its time
