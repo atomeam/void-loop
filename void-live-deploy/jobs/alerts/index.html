@@ -68,6 +68,7 @@
   <footer>Remote job listings from Remotive, Jobicy and Himalayas, each credited and linked to its original posting, where you apply. Your saved jobs, alerts and applications stay in this browser: no account, no profile, no email, nothing about you on a server. The page works offline after one visit with the last listings it saw. No ads.</footer>
 </main>
 <script type="module" src="/jobs/alerts/app.js"></script>
+<script src="/visit.js" defer></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
