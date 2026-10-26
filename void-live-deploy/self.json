@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:46:29Z",
+   "subject": "Site reverse engineering: no contact detail is ever stored (emails, phones, tel and mailto links, street addresses, contact lines…"
+  },
+  {
+   "at": "2026-10-26T04:45:44Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: smallpdf.com,pdf measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:44:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:44:36Z",
    "subject": "Free pictures: first probe results in docs/free-pictures.md"
   },
@@ -556,18 +568,6 @@
   },
   {
    "at": "2026-10-26T04:39:05Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:38:40Z",
-   "subject": "Free pictures: fix Commons thumbnail host and loc.gov result path from the first probe; probe records result shapes"
-  },
-  {
-   "at": "2026-10-26T04:37:38Z",
-   "subject": "Free pictures probe: what each source answered"
-  },
-  {
-   "at": "2026-10-26T04:36:53Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],

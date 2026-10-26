@@ -1638,7 +1638,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/report.js",
