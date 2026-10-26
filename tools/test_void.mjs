@@ -704,6 +704,21 @@ try {
     check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
     await P.ctx.close();
   }
+  // the coin floor's own completeness checklist (tools/tower-probes.mjs withFeatureFacts, domains/features/coin-flip.json): the gate reads the page
+  // the way a visitor does, so a feature the page has but never says in words counts as missing — the 4 of 7 the tower sat at for a day
+  if (want("coin: /flip/ shows every feature the completeness checklist reads — the counter named, the tap and the result said")) {
+    const { PROBES, factsFromFile } = await import('./tower-probes.mjs');
+    const ff = JSON.parse(fs.readFileSync(new URL('../domains/features/coin-flip.json', import.meta.url), 'utf8'));
+    const F = await fresh({ base: base + 'flip/' });
+    await F.p.waitForSelector('.coin-again', { timeout: 10000 });
+    for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
+    const text = await F.p.evaluate(() => document.body.innerText);
+    const facts = [...PROBES['coin flip'].facts, ...factsFromFile(ff)];
+    const missing = facts.filter(([name, fn]) => { let ok = false; try { ok = typeof fn === 'function' ? !!fn(text) : fn.test(text); } catch (_) {} return !ok; }).map(([name]) => name); // a probe fact is a regex, a feature fact a function — the gate reads both
+    check('coin: /flip/ shows all 7 things a full answer shows — the flip counter named, the tap and the result said in words (the gate\'s own rule, the 3 the tower sat at 4 of 7 on)',
+      facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
+    await F.ctx.close();
+  }
   // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
   if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
     const P = await fresh(); const posts = []; let reads = 0;
