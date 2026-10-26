@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:25:12Z",
+   "subject": "News: the Versus probe, the news lane and the BBC feature map"
+  },
+  {
+   "at": "2026-10-26T02:25:01Z",
+   "subject": "News: the /news/ page, registered as a tool page"
+  },
+  {
    "at": "2026-10-26T02:24:39Z",
    "subject": "News: the feed list, a reader for RSS, RDF and Atom, story grouping across sources and the /api/news route"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-25T19:51:25Z",
    "subject": "Incident: the browser suite failed on 789036e8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:51:11Z",
-   "subject": "Incident: the browser suite failed on 222b55c9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:29:17Z",
-   "subject": "Incident: the browser suite failed on 1307dbc9 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
