@@ -1,7 +1,7 @@
 {
- "at": "2026-10-26T05:30:27.460Z",
+ "at": "2026-10-26T05:38:42.615Z",
  "mode": "live",
- "pass": 53,
+ "pass": 54,
  "total": 54,
  "results": [
   {
@@ -353,7 +353,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [
      "Zeus"
     ],
@@ -468,7 +468,7 @@
   },
   {
    "ask": "sideshow raheem",
-   "ok": false,
+   "ok": true,
    "kind": "Answer — from a source",
    "title": "sideshow raheem",
    "theme": "",
@@ -485,23 +485,7 @@
     ],
     "answer": "\"I Love Lisa\" is the fifteenth episode of the fourth season of the American animated telev"
    },
-   "redirect": "I Love Lisa",
-   "seen": {
-    "called": 1,
-    "failed": [
-     "http://127.0.0.1:42071/build.json?v=1792992432146 net::ERR_ABORTED",
-     "http://127.0.0.1:42071/ net::ERR_ABORTED"
-    ],
-    "bad": [
-     "404 en.wikipedia.org/api/rest_v1/page/summary/Sideshow_raheem"
-    ],
-    "text": "sideshow raheem ANSWER — FROM A SOURCE \"I Love Lisa\" is the fifteenth episode of the fourth season of the American animated television serie … id not have to be taught: fetched, sourced and dated. COPY CARD SAVE CARD SHARE ☆ SAVE COPY TEXT SAVE TEXT VERSE P 1 R 1"
-   },
-   "problems": [
-    "type line \"Answer — from a source\" does not match /Character/",
-    "theme \"\", wanted collectible",
-    "missing the \"not affiliated\" line"
-   ]
+   "redirect": "I Love Lisa"
   },
   {
    "ask": "orangutan opening",
@@ -754,7 +738,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature · Show",
+   "kind": "Creature",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,
@@ -943,21 +927,21 @@
   {
    "ask": "lindsey naegle",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "lindsey naegle",
-   "theme": "",
+   "kind": "Character",
+   "title": "Lindsey Naegle",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Lindsey Naegle",
+    "desc": "fictional character from Simpsons",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of recurring The Simpsons characters"
+     "List of recurring The Simpsons characters § Lindsey Naegle"
     ],
-    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+    "answer": "Lindsey Naegle (; voiced by Tress MacNeille) first appeared in the eighth season episode \""
    },
    "redirect": "List of recurring The Simpsons characters#Lindsey Naegle"
   },
@@ -985,84 +969,84 @@
   {
    "ask": "superintendent chalmers",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "superintendent chalmers",
-   "theme": "",
+   "kind": "Character",
+   "title": "Superintendent Chalmers",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Superintendent Chalmers",
+    "desc": "fictional character from Simpsons",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of recurring The Simpsons characters"
+     "List of recurring The Simpsons characters § Superintendent Chalmers"
     ],
-    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+    "answer": "Superintendent Garibaldi \"Gary\" Chalmers (voiced by Hank Azaria) is the superintendent of "
    },
    "redirect": "List of recurring The Simpsons characters#Superintendent Chalmers"
   },
   {
    "ask": "sideshow mel",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "sideshow mel",
-   "theme": "",
+   "kind": "Character",
+   "title": "Sideshow Mel",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Sideshow Mel",
+    "desc": "fictional character from Simpsons",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "Sideshow Bob"
+     "List of recurring The Simpsons characters § Sideshow Mel"
     ],
-    "answer": "Dr. Robert Underdunk \"Bob\" Terwilliger Jr., PhD, better known as Sideshow Bob, is a recurr"
+    "answer": "Melvin Van Horne, better known as Sideshow Mel (voiced by Dan Castellaneta), is Krusty the"
    },
    "redirect": "List of recurring The Simpsons characters#Sideshow Mel"
   },
   {
    "ask": "kirk van houten",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "kirk van houten",
-   "theme": "",
+   "kind": "Character",
+   "title": "Kirk Van Houten",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Kirk Van Houten",
+    "desc": "fictional character from Simpsons",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "Hostile Kirk Place"
+     "List of recurring The Simpsons characters § Kirk Van Houten"
     ],
-    "answer": "\"Hostile Kirk Place\" is the sixteenth episode of the thirty-fourth season of the American "
+    "answer": "Kirk Evelyn Van Houten (voiced by Hank Azaria) is the father of Milhouse, and the remarrie"
    },
    "redirect": "List of recurring The Simpsons characters#Kirk Van Houten"
   },
   {
    "ask": "rainier wolfcastle",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "rainier wolfcastle",
-   "theme": "",
+   "kind": "Character",
+   "title": "Rainier Wolfcastle",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Rainier Wolfcastle",
+    "desc": "fictional character from Simpsons",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of recurring The Simpsons characters"
+     "List of recurring The Simpsons characters § Rainier Wolfcastle"
     ],
-    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+    "answer": "Rainier Luftwaffe Wolfcastle (voiced by Harry Shearer) is an action hero star and a close "
    },
    "redirect": "List of recurring The Simpsons characters#Rainier Wolfcastle"
   },
@@ -1090,63 +1074,63 @@
   {
    "ask": "frylock",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "frylock",
-   "theme": "",
+   "kind": "Character",
+   "title": "Frylock",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Frylock",
+    "desc": "fictional character from Aqua Teen Hunger Force",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of Aqua Teen Hunger Force characters"
+     "List of Aqua Teen Hunger Force characters § Frylock"
     ],
-    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+    "answer": "Voiced by Carey Means, Franklin French Frylock (known simply as Frylock) is a floating box"
    },
    "redirect": "List of Aqua Teen Hunger Force characters#Frylock"
   },
   {
    "ask": "meatwad",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "meatwad",
-   "theme": "",
+   "kind": "Character",
+   "title": "Meatwad",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Meatwad",
+    "desc": "fictional character from Aqua Teen Hunger Force",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of Aqua Teen Hunger Force characters"
+     "List of Aqua Teen Hunger Force characters § Meatwad"
     ],
-    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+    "answer": "Voiced by Dave Willis, Meatwad is a large and ball-like clump of ground beef (stated by Sh"
    },
    "redirect": "List of Aqua Teen Hunger Force characters#Meatwad"
   },
   {
    "ask": "master shake",
    "ok": true,
-   "kind": "Answer — from a source",
-   "title": "master shake",
-   "theme": "",
+   "kind": "Character",
+   "title": "Master Shake",
+   "theme": "collectible",
    "photo": false,
    "api": {
-    "name": "",
-    "desc": "",
+    "name": "Master Shake",
+    "desc": "fictional character from Aqua Teen Hunger Force",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
     "pic": false,
     "sources": [
-     "List of Aqua Teen Hunger Force characters"
+     "List of Aqua Teen Hunger Force characters § Master Shake"
     ],
-    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+    "answer": "Voiced by Dana Snyder, Master Shake (or simply Shake) is a mean-spirited, narcissistic, ob"
    },
    "redirect": "List of Aqua Teen Hunger Force characters#Master Shake"
   }
