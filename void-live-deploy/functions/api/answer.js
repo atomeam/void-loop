@@ -68,7 +68,8 @@ async function sources(ask) {
   // a name that lives in a section of a "List of ..." page (Happy Time Harry is a section of the Aqua Teen Hunger Force characters list) has no article of
   // its own: the summaries above hold only fuzzy neighbours (Happy Harry's). When none holds every word of the ask, read the redirect's section, or the
   // full-text search's section hit, and put that first (lib/no-answer.js)
-  if (isNameAsk(q) && !sourcesMatch(q, out)) { const sec = await sectionSource(q); if (sec) out.unshift(sec); }
+  // Wikipedia itself says where a name lives: a redirect into a section of a list page leads, even when the list's lead mentions the name in passing (Frylock, Meatwad); the full-text section search only when nothing matches
+  if (isNameAsk(q)) { const sec = await sectionSource(q, !sourcesMatch(q, out)); if (sec) out.unshift(sec); }
   // the page whose own title holds most of the ask's words leads ("marie curie physicist chemist" is Marie Curie, not Pierre Curie, whom the search ranked first); a tie keeps the search's order
   const need = askWords(q), over = (x) => { const t = new Set(String(x.title || '').toLowerCase().match(/[a-z0-9]+/g) || []); return need.filter((w) => t.has(w) || t.has(w + 's') || t.has(w.replace(/s$/, ''))).length; };
   out.map((x, i) => [x, i]).sort((a, b) => over(b[0]) - over(a[0]) || a[1] - b[1]).forEach(([x], i) => { out[i] = x; });
@@ -83,16 +84,16 @@ async function picFor(env, lead) {
     return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
   } catch (_) { return null; }
 }
-async function sectionSource(q) {
+async function sectionSource(q, textSearch = true) {
   try {
     const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
     const red = await fetch(WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title), { headers: UA }).then((r) => r.json()).catch(() => null);
     let hit = listRedirect(red);
-    if (!hit) {
+    if (!hit && textSearch) {
       const fts = await fetch(WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"'), { headers: UA }).then((r) => r.json()).catch(() => null);
       hit = sectionHit(fts && fts.query && fts.query.search, q);
     }
-    if (!hit) return null;
+    if (!hit || !hit.section) return null; // a redirect with no section is an ordinary article: the search already holds it
     const page = await fetch(WIKI + '&action=query&prop=extracts|info&explaintext=1&exsectionformat=wiki&inprop=url&titles=' + encodeURIComponent(hit.page), { headers: UA }).then((r) => r.json()).catch(() => null);
     const pg = page && page.query && Object.values(page.query.pages || {})[0];
     const text = sectionText(pg && pg.extract, hit.section, q);

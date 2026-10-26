@@ -50,8 +50,9 @@ for (const fx of fixtures) {
   if (process.env.EVAL_CDP) { const c = await page.context().newCDPSession(page); await c.send('DOM.enable'); await c.send('CSS.enable'); const { root } = await c.send('DOM.getDocument'); const { nodeId } = await c.send('DOM.querySelector', { nodeId: root.nodeId, selector: '.vpage .vc-adds' }); const m = await c.send('CSS.getMatchedStylesForNode', { nodeId }); for (const r of m.matchedCSSRules) if (r.rule.style.cssProperties.some((p) => /overflow|^height|flex/.test(p.name))) console.log(r.rule.selectorList.text.slice(0, 120), '=>', r.rule.style.cssProperties.filter((p) => /overflow|height|flex/.test(p.name)).map((p) => p.name + ':' + p.value).join(';')); }
   await page.close();
   const e = { ...(fx.expect || {}) }, problems = [];
+  if (live && e.liveExpect) { for (const k of Object.keys(e)) delete e[k]; Object.assign(e, fx.expect.liveExpect); } // Wikipedia's own redirect decides what this name is
   if (live && e.liveTitle) e.title = e.liveTitle; // the real Wikipedia redirects this name elsewhere
-  if (live) for (const k of ['badges', 'body', 'notBody', 'motif', 'photo', 'sources', 'noBadges', 'about']) delete e[k]; // a real page's words differ from a fixture's: live checks the kind, the title, the frame and the honesty rules
+  if (live) for (const k of ['badges', 'body', 'notBody', 'motif', 'photo', 'sources', 'noBadges']) delete e[k]; // a real page's words differ from a fixture's: live checks the kind, the title, the frame and the honesty rules
   if (!card) problems.push('no card drawn');
   else {
     const report = '> ' + fx.ask + '\n  by: answer-route\n  shows: ' + card.text.replace(/\s*\n\s*/g, ' / ') + '\n  pictures: ' + card.pic + ' ' + card.subject + '\n';
