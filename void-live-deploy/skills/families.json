@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 4,
-  "tested": 27,
+  "tested": 28,
   "checked": 17,
   "proven": 295
  },
@@ -1425,21 +1425,22 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 1,
     "proven": 29
    },
    "sources": {
-    "read": 23,
-    "named": 21,
-    "second": 12,
+    "read": 24,
+    "named": 22,
+    "second": 13,
     "answered": 0,
-    "points": 1.43,
+    "points": 1.46,
     "one_live_from_proven": [
      "gh-file",
-     "fact"
+     "fact",
+     "scores"
     ],
-    "words": "Source reliability: 23 skills answer from outside sources; 21 name the source on the card, 12 have a second source, 0 have a kept live answer from it (1.43 of 3 on average). One kept live answer each would make 2 more proven: gh-file, fact."
+    "words": "Source reliability: 24 skills answer from outside sources; 22 name the source on the card, 13 have a second source, 0 have a kept live answer from it (1.46 of 3 on average). One kept live answer each would make 3 more proven: gh-file, fact, scores."
    },
    "skills": [
     {
@@ -1866,6 +1867,26 @@
       "answered": false,
       "points": 2,
       "words": "source 2 of 3: thesportsdb.com, wikipedia.org; named on the card; a second source; no kept live answer yet"
+     }
+    },
+    {
+     "name": "scores",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
+     "source": {
+      "sites": [
+       "espn.com",
+       "jolpi.ca",
+       "openligadb.de"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: espn.com, jolpi.ca, openligadb.de; named on the card; a second source; no kept live answer yet. One kept live answer from espn.com would make it proven"
      }
     },
     {

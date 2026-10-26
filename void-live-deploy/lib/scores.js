@@ -219,13 +219,99 @@ export function ttlFor(view, data, day, now = Date.now()) {
   return age > 2 * DAY ? 1800 : 60; // today and the days beside it can still change (time zones); a far future schedule moves slowly
 }
 
+// ---- tiers 2 and 3: what can be worked out from the feeds above, on the device, labelled as Verse's own ----
+
+/** NFL fantasy points of one box-score row, from the passing, rushing and receiving tables ESPN gives (labels YDS, TD, INT, REC): passing 1 per 25 yards,
+ *  4 per touchdown, -2 per interception; rushing and receiving 1 per 10 yards, 6 per touchdown; receptions 1 (PPR), 0.5 (half) or 0 (standard). Fumbles,
+ *  two-point plays, kickers and defences are NOT in these tables, so it is an estimate and the page says so. mode: 'ppr' | 'half' | 'std'. Pure. */
+export function fantasyPoints(groupName, labels, stats, mode = 'ppr') {
+  const at = (l) => { const i = (labels || []).indexOf(l); const v = i >= 0 ? parseFloat(String((stats || [])[i]).replace(/[^0-9.-]/g, '')) : NaN; return Number.isFinite(v) ? v : 0; }, g = String(groupName || '').toLowerCase();
+  if (g.startsWith('pass')) return Math.round((at('YDS') / 25 + at('TD') * 4 - at('INT') * 2) * 10) / 10;
+  if (g.startsWith('rush')) return Math.round((at('YDS') / 10 + at('TD') * 6) * 10) / 10;
+  if (g.startsWith('rec')) return Math.round((at('YDS') / 10 + at('TD') * 6 + at('REC') * (mode === 'ppr' ? 1 : mode === 'half' ? 0.5 : 0)) * 10) / 10;
+  return null;
+}
+/** the game's progress as a share of regulation time, from the status text ("67'", "45'+2'", "4:12 - 3rd", "Q3 4:12", "P2 10:00"), or null when it cannot be read. Pure. */
+export function progressOf(status, leagueGrp) {
+  const t = String(status || '');
+  if (leagueGrp === 'soccer') { const m = /^(\d{1,3})'(?:\+(\d+))?/.exec(t.trim()); return m ? Math.min(1, (+m[1]) / 90) : /^(?:HT|Half)/i.test(t) ? 0.5 : null; }
+  const len = { nba: 12, nfl: 15, nhl: 20 }[leagueGrp], n = { nba: 4, nfl: 4, nhl: 3 }[leagueGrp]; if (!len) return null;
+  const m = /(\d{1,2}):(\d{2})\s*-\s*(\d)(?:st|nd|rd|th)/i.exec(t) || /(?:Q|P)(\d)\s+(\d{1,2}):(\d{2})/i.exec(t); if (!m) return null;
+  const per = m.length === 4 && /^\d{1,2}$/.test(m[1]) && /^\d$/.test(m[3]) && /-/.test(t) ? +m[3] : +m[1], min = m.length === 4 && /-/.test(t) ? +m[1] : +m[2], sec = m.length === 4 && /-/.test(t) ? +m[2] : +m[3];
+  if (per > n) return 1; const left = min * 60 + sec, total = len * 60;
+  return Math.min(1, Math.max(0, (per - 1) / n + (total - left) / total / n));
+}
+const poisson = (k, l) => { let p = Math.exp(-l); for (let i = 1; i <= k; i++) p *= l / i; return p; };
+/** the chance of each result from the score and the clock, Verse's own model (not a bookmaker's, not ESPN's): football with Poisson goals for the time left
+ *  (1.4 goals a side a game), the others a normal spread of the remaining points (NBA 13 points, NFL 13.5, NHL 2.3 goals over a whole game). { home, draw, away } as
+ *  numbers 0 to 1, or null when the clock cannot be read. Pure. */
+export function winProb(game, leagueGrp) {
+  if (!game || game.state !== 'live') return null; const f = progressOf(game.status, leagueGrp); if (f == null) return null;
+  const d = (+game.home.score || 0) - (+game.away.score || 0), left = 1 - f;
+  if (leagueGrp === 'soccer') { const l = 1.4 * left; let h = 0, dr = 0, a = 0; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) { const p = poisson(i, l) * poisson(j, l), t = d + i - j; if (t > 0) h += p; else if (t === 0) dr += p; else a += p; } const z = h + dr + a; return { home: h / z, draw: dr / z, away: a / z }; }
+  const sd = { nba: 13, nfl: 13.5, nhl: 2.3, mlb: 3.2 }[leagueGrp]; if (!sd) return null; const sdLeft = sd * Math.sqrt(Math.max(left, 0.0001));
+  const erf = (x) => { const t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return x >= 0 ? y : -y; };
+  const h = 0.5 * (1 + erf((d) / (sdLeft * Math.SQRT2))); return { home: h, draw: 0, away: 1 - h };
+}
+/** an Elo-style rating per team from a run of finished games (1500 to start, K 20, a home edge of 60 points, a margin factor), { teamId: { name, elo, n } }, newest
+ *  games last. Verse's own number from the window it was given, never to be mistaken for anyone else's rating. Pure. */
+export function eloOf(games) {
+  const r = {}, get = (t) => (r[t.id] = r[t.id] || { name: t.name, elo: 1500, n: 0 });
+  for (const g of (games || []).filter((x) => x.state === 'final' && x.home.id && x.away.id && x.home.score !== '' && x.away.score !== '').sort((a, b) => String(a.start).localeCompare(String(b.start)))) {
+    const h = get(g.home), a = get(g.away), exp = 1 / (1 + Math.pow(10, -((h.elo + 60) - a.elo) / 400)), hs = +g.home.score, as = +g.away.score, res = hs > as ? 1 : hs < as ? 0 : 0.5;
+    const k = 20 * (1 + Math.log(1 + Math.abs(hs - as)) / 2); h.elo += k * (res - exp); a.elo -= k * (res - exp); h.n++; a.n++;
+  }
+  for (const t of Object.values(r)) t.elo = Math.round(t.elo);
+  return r;
+}
+/** a table with some upcoming games decided by the viewer: picks is { gameId: 'h' | 'd' | 'a' }; each pick adds a win, draw or loss (and soccer points) to the rows, which are
+ *  ranked again by points then the goal difference they had (goals in a what-if are not guessed). Returns a new group of the same shape plus the places moved. Pure. */
+export function simulate(group, games, picks, grp) {
+  const i = (c) => group.cols.indexOf(c), rows = group.rows.map((r) => ({ ...r, cells: r.cells.slice(), was: r.rank })), by = new Map(rows.map((r) => [r.id, r]));
+  const add = (r, col, n) => { if (r && i(col) >= 0) r.cells[i(col)] = String((parseFloat(r.cells[i(col)]) || 0) + n); };
+  for (const g of games || []) {
+    const p = picks[g.id], H = by.get(g.home.id), A = by.get(g.away.id); if (!p || !H || !A || g.state === 'final') continue;
+    for (const r of [H, A]) add(r, i('P') >= 0 ? 'P' : 'GP', 1);
+    if (grp === 'soccer') { if (p === 'h') { add(H, 'W', 1); add(A, 'L', 1); add(H, 'Pts', 3); } else if (p === 'a') { add(A, 'W', 1); add(H, 'L', 1); add(A, 'Pts', 3); } else { add(H, 'D', 1); add(A, 'D', 1); add(H, 'Pts', 1); add(A, 'Pts', 1); } }
+    else { const w = p === 'a' ? A : H, l = p === 'a' ? H : A; add(w, 'W', 1); add(l, 'L', 1); }
+  }
+  for (const r of rows) if (grp !== 'soccer' && i('Pct') >= 0) { const w = parseFloat(r.cells[i('W')]) || 0, l = parseFloat(r.cells[i('L')]) || 0; r.cells[i('Pct')] = w + l ? (w / (w + l)).toFixed(3).replace(/^0/, '') : ''; }
+  const key = (r) => (grp === 'soccer' ? [parseFloat(r.cells[i('Pts')]) || 0, parseFloat(String(r.cells[i('GD')]).replace('+', '')) || 0] : [parseFloat(r.cells[i('Pct')]) || 0, parseFloat(r.cells[i('W')]) || 0]);
+  rows.sort((a, b) => { const x = key(a), y = key(b); return y[0] - x[0] || y[1] - x[1] || a.was - b.was; }); rows.forEach((r, n) => { r.rank = n + 1; r.moved = r.was - r.rank; });
+  return { ...group, rows };
+}
+/** a pick'em card scored against the finished games: { right, played, points, total }: straight picks count one each, confidence picks count their rank (higher is surer). Pure. */
+export function scorePicks(games, picks, conf = {}) {
+  let right = 0, played = 0, points = 0, total = 0;
+  for (const g of games || []) { const p = picks[g.id]; if (!p) continue; const c = +conf[g.id] || 1; if (g.state !== 'final') continue; played++; const res = +g.home.score > +g.away.score ? 'h' : +g.home.score < +g.away.score ? 'a' : 'd'; total += c; if (res === p) { right++; points += c; } }
+  return { right, played, points, total };
+}
+/** a survivor entry: the weeks' picks, { weekStart: teamId }, against the week's finished games: 'alive' | 'out' | 'open' (a game not final yet), and the teams already used. Pure. */
+export function survivorState(picks, weeks) {
+  const used = new Set(); let status = 'alive';
+  for (const [wk, team] of Object.entries(picks || {}).sort()) {
+    if (used.has(team)) return { status: 'out', why: 'a team used twice', used: [...used] }; used.add(team);
+    const g = ((weeks || {})[wk] || []).find((x) => x.home.id === team || x.away.id === team);
+    if (!g || g.state !== 'final') { if (status === 'alive') status = 'open'; continue; }
+    const mine = g.home.id === team ? g.home : g.away, other = g.home.id === team ? g.away : g.home; if (!(+mine.score > +other.score)) return { status: 'out', why: 'lost or drew in week of ' + wk, used: [...used] };
+  }
+  return { status, used: [...used] };
+}
+
+const ALIAS = { 'premier league': 'epl', epl: 'epl', 'english premier league': 'epl', 'la liga': 'laliga', laliga: 'laliga', bundesliga: 'bundesliga', 'serie a': 'seriea', 'ligue 1': 'ligue1', mls: 'mls', 'champions league': 'ucl', ucl: 'ucl', nba: 'nba', nfl: 'nfl', mlb: 'mlb', nhl: 'nhl', f1: 'f1', 'formula 1': 'f1', 'formula one': 'f1' };
+/** a plain ask for scores or a table, "nba scores", "premier league results today", "bundesliga table": { league, tab } or null (no league named means null: "scores" alone goes to the page). Pure. */
+export function scoresAsk(text) {
+  const m = /^(?:live |today'?s? )?(premier league|english premier league|epl|la ?liga|bundesliga|serie a|ligue 1|mls|champions league|ucl|nba|nfl|mlb|nhl|f1|formula 1|formula one) (?:live )?(scores?|results?|fixtures|games|matches|standings?|table|schedule)(?: (?:today|now|tonight))?$/i.exec(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
+  if (!m) return null; const k = m[1].toLowerCase().replace(/^la ?liga$/, 'la liga'); return { league: ALIAS[k], tab: /stand|table/i.test(m[2]) ? 'standings' : 'scores' };
+}
+
 // ---- the page's words (English; German for a German browser) ----
 const EN = { scores: 'Scores', standings: 'Standings', mine: 'My teams', today: 'Today', yesterday: 'Yesterday', tomorrow: 'Tomorrow', live: 'LIVE', ft: 'FT', details: 'Details', back: 'Back', share: 'Share link', copied: 'Link copied',
   follow: 'Follow', unfollow: 'Unfollow', followLeague: 'Follow league', unfollowLeague: 'Following league', none: 'No games on this day.', loading: 'Loading', failed: 'The score feed did not answer just now.', saved: 'Showing the last saved result from',
   stale: 'The feed is not answering, so this is the last good copy from', delayed: 'Data may be delayed by a minute or more.', noMine: 'Follow a team with its star, or a league above, and its games show here.', noMineDay: 'None of your teams play on this day.',
-  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', cal: 'Add to calendar', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', week: 'Week', dayView: 'Day', prevWeek: 'Previous week', nextWeek: 'Next week', thisWeek: 'This week', form: 'Form', plays: 'Play by play', h2h: 'Earlier meetings', last5: 'Last five', cut: 'Table key', badTable: 'Some numbers in this table do not add up:' };
+  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', pickem: "Pick'em", whatif: 'What if', fpts: 'Fantasy points (estimate: no fumbles, kickers or defences)', winp: 'Win chance (Verse\'s own estimate from score and clock)', rating: 'Verse rating', cal: 'Add to calendar', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', noNext: 'No next games listed', week: 'Week', dayView: 'Day', prevWeek: 'Previous week', nextWeek: 'Next week', thisWeek: 'This week', form: 'Form', plays: 'Play by play', h2h: 'Earlier meetings', last5: 'Last five', cut: 'Table key', badTable: 'Some numbers in this table do not add up:' };
 const DE = { scores: 'Ergebnisse', standings: 'Tabelle', mine: 'Meine Teams', today: 'Heute', yesterday: 'Gestern', tomorrow: 'Morgen', live: 'LIVE', ft: 'Ende', details: 'Details', back: 'Zurück', share: 'Link teilen', copied: 'Link kopiert',
   follow: 'Folgen', unfollow: 'Entfolgen', followLeague: 'Liga folgen', unfollowLeague: 'Liga gefolgt', none: 'Keine Spiele an diesem Tag.', loading: 'Lädt', failed: 'Die Ergebnisquelle hat gerade nicht geantwortet.', saved: 'Zuletzt gespeichertes Ergebnis von',
   stale: 'Die Quelle antwortet nicht, das ist die letzte gute Kopie von', delayed: 'Die Daten können eine Minute oder länger verzögert sein.', noMine: 'Folge einem Team mit dem Stern oder oben einer Liga, dann erscheinen ihre Spiele hier.', noMineDay: 'Keines deiner Teams spielt an diesem Tag.',
-  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', cal: 'In den Kalender', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', week: 'Woche', dayView: 'Tag', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', thisWeek: 'Diese Woche', form: 'Form', plays: 'Spielverlauf', h2h: 'Frühere Spiele', last5: 'Letzte fünf', cut: 'Legende', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
+  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', pickem: 'Tippspiel', whatif: 'Was wäre wenn', fpts: 'Fantasy-Punkte (Schätzung: ohne Fumbles, Kicker und Defense)', winp: 'Siegchance (Verses eigene Schätzung aus Stand und Uhr)', rating: 'Verse-Rating', cal: 'In den Kalender', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', noNext: 'Keine nächsten Spiele gelistet', week: 'Woche', dayView: 'Tag', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', thisWeek: 'Diese Woche', form: 'Form', plays: 'Spielverlauf', h2h: 'Frühere Spiele', last5: 'Letzte fünf', cut: 'Legende', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
 export const wordsFor = (lang) => (/^de\b/i.test(lang || '') ? DE : EN);

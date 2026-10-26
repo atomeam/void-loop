@@ -2,7 +2,7 @@
 // checked against allowlists, each feed read into one shape, the Bundesliga fallback, F1, cache lifetimes, the endpoint's bounds, the routes
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart } from '../void-live-deploy/lib/scores.js';
+import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState } from '../void-live-deploy/lib/scores.js';
 import { askIn, lookScores, onRequestGet } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
@@ -59,7 +59,7 @@ test('the endpoint asks only what is allowed', () => {
 test('lookScores calls only the three feeds, with fixed paths, and falls back to OpenLigaDB for the Bundesliga', async () => {
   const log = []; const ok = fakeFeeds(log);
   const a = await lookScores(askIn('https://x.test/api/scores?league=epl&date=2025-05-25', NOW), ok, NOW); assert.equal(a.ok, true); assert.equal(a.games.length, 3); assert.equal(a.source, 'espn'); assert.equal(log[0], 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?limit=400&dates=20250525');
-  const t = await lookScores(askIn('https://x.test/api/scores?league=nba&view=standings', NOW), ok, NOW); assert.equal(t.groups[0].rows.length, 2); assert.ok(log.some((l) => l === 'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings'));
+  const t = await lookScores(askIn('https://x.test/api/scores?league=nba&view=standings', NOW), ok, NOW); assert.equal(t.groups[0].rows.length, 4); assert.ok(log.some((l) => l === 'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings'));
   const g = await lookScores(askIn('https://x.test/api/scores?league=nfl&view=game&id=401', NOW), ok, NOW); assert.equal(g.game.home.name, 'Arsenal');
   const f = await lookScores(askIn('https://x.test/api/scores?league=f1&date=2025-06-01', NOW), ok, Date.parse('2025-06-02T00:00:00Z')); assert.equal(f.games[0].results.length, 2); assert.equal(f.source, 'jolpica');
   const fs = await lookScores(askIn('https://x.test/api/scores?league=f1&view=standings', NOW), ok, NOW); assert.equal(fs.groups.length, 2);
@@ -107,4 +107,25 @@ test('the stale copy answers at once while the feed is asked again behind it', a
     const slow = { ...req(), fetchFn: (u) => new Promise((r) => setTimeout(() => r(fakeFeeds()(u)), 150)) }, t0 = Date.now(); const second = await (await onRequestGet(slow)).json();
     assert.equal(second.stale, true); assert.equal(second.revalidating, true); assert.ok(Date.now() - t0 < 500, 'answered without waiting on the feed'); assert.equal(second.games.length, 3); await Promise.all(slow.pend || pend);
   } finally { delete globalThis.caches; }
+});
+
+test('fantasy points, win chance, ratings, the what-if table, pick\'em and survivor', () => {
+  const rec = ['REC', 'YDS', 'AVG', 'TD', 'LONG'], row = ['8', '100', '12.5', '1', '30'];
+  assert.equal(fantasyPoints('receiving', rec, row, 'ppr'), 24); assert.equal(fantasyPoints('receiving', rec, row, 'half'), 20); assert.equal(fantasyPoints('receiving', rec, row, 'std'), 16);
+  assert.equal(fantasyPoints('passing', ['C/ATT', 'YDS', 'AVG', 'TD', 'INT'], ['20/30', '300', '10', '2', '1'], 'std'), 18); assert.equal(fantasyPoints('rushing', ['CAR', 'YDS', 'AVG', 'TD'], ['20', '100', '5', '1'], 'ppr'), 16); assert.equal(fantasyPoints('kicking', [], []), null);
+  assert.equal(progressOf("45'", 'soccer'), 0.5); assert.equal(progressOf('HT', 'soccer'), 0.5); assert.ok(Math.abs(progressOf('6:00 - 2nd', 'nba') - 0.375) < 1e-9); assert.equal(progressOf('???', 'nba'), null);
+  const live = (st, h, a) => ({ state: 'live', status: st, home: { score: h }, away: { score: a } });
+  const e = winProb(live("67'", '1', '1'), 'soccer'); assert.ok(Math.abs(e.home - e.away) < 1e-9 && e.draw > 0.5 && Math.abs(e.home + e.draw + e.away - 1) < 1e-9);
+  assert.ok(winProb(live("80'", '2', '0'), 'soccer').home > 0.95); assert.ok(winProb(live('2:00 - 4th', '100', '90'), 'nba').home > 0.98); assert.ok(Math.abs(winProb(live('6:00 - 2nd', '50', '50'), 'nba').home - 0.5) < 1e-6);
+  assert.equal(winProb({ state: 'final' }, 'soccer'), null); assert.equal(winProb(live('weird', '1', '0'), 'nba'), null);
+  const gs = [{ state: 'final', start: '2025-01-01', home: { id: 'a', name: 'A', score: '2' }, away: { id: 'b', name: 'B', score: '0' } }, { state: 'final', start: '2025-01-02', home: { id: 'b', name: 'B', score: '1' }, away: { id: 'a', name: 'A', score: '1' } }, { state: 'pre', home: { id: 'a', score: '' }, away: { id: 'c', score: '' } }];
+  const el = eloOf(gs); assert.ok(el.a.elo > 1500 && el.b.elo < 1500 && el.a.n === 2 && !el.c, 'only finished games count');
+  const g = readStandings(STANDINGS, 'soccer').groups[0], up = readScoreboard(SCOREBOARD).filter((x) => x.state === 'pre');
+  const base = simulate(g, up, {}, 'soccer'); assert.deepEqual(base.rows.map((r) => r.name), g.rows.map((r) => r.name), 'no picks, no change');
+  const sim = simulate(g, up, { [up[0].id]: 'a' }, 'soccer'); const nfo = sim.rows.find((r) => r.name === 'Nottingham Forest'), che = sim.rows.find((r) => r.name === 'Chelsea');
+  assert.equal(nfo.cells[5], '68'); assert.equal(nfo.cells[0], '39'); assert.equal(che.cells[3], '9'); assert.equal(nfo.rank, 3); assert.equal(nfo.moved, 1); assert.equal(che.moved, -1); assert.equal(g.rows[2].cells[5], '66', 'the original table is untouched');
+  assert.equal(simulate(g, up, { [up[0].id]: 'd' }, 'soccer').rows.find((r) => r.name === 'Chelsea').cells[5], '67');
+  const fin = readScoreboard(SCOREBOARD), ids = fin.map((x) => x.id); assert.deepEqual(scorePicks(fin, { [ids[0]]: 'h', [ids[2]]: 'h' }), { right: 1, played: 1, points: 1, total: 1 }); assert.deepEqual(scorePicks(fin, { [ids[0]]: 'a' }, { [ids[0]]: 5 }), { right: 0, played: 1, points: 0, total: 5 });
+  const wk = { w1: [{ state: 'final', home: { id: 'a', score: '2' }, away: { id: 'b', score: '1' } }], w2: [{ state: 'pre', home: { id: 'c', score: '' }, away: { id: 'd', score: '' } }] };
+  assert.equal(survivorState({ w1: 'a' }, wk).status, 'alive'); assert.equal(survivorState({ w1: 'a', w2: 'c' }, wk).status, 'open'); assert.equal(survivorState({ w1: 'b' }, wk).status, 'out'); assert.equal(survivorState({ w1: 'a', w2: 'a' }, wk).why, 'a team used twice');
 });

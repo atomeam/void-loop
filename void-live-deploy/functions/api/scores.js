@@ -13,7 +13,7 @@
 //     "stale" instead, and the page says so).
 // Nothing is bet on, nothing is bought, and no key is used: all three sources are free without one.
 import { rateLimited } from './answer.js';
-import { leagueOf, dateOk, idOk, ymd, shiftDay, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, formOf } from '../../lib/scores.js';
+import { leagueOf, dateOk, idOk, ymd, shiftDay, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, formOf, eloOf } from '../../lib/scores.js';
 
 export const RL_MAX = 30, KEEP = 3 * 86400;
 export const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/', ESPN_V2 = 'https://site.api.espn.com/apis/v2/sports/', OPENLIGA = 'https://api.openligadb.de/getmatchdata/bl1/', JOLPICA = 'https://api.jolpi.ca/ergast/f1/';
@@ -51,7 +51,7 @@ export async function lookScores(ask, fetchFn = fetch, now = Date.now()) {
     if (view === 'standings') return { ok: true, ...readStandings(await get(fetchFn, ESPN_V2 + league.path + '/standings'), league.grp), source: 'espn' };
     if (view === 'game') return { ok: true, ...readSummary(await get(fetchFn, base + '/summary?event=' + ask.id)), source: 'espn' };
     if (view === 'team') return { ok: true, games: readScoreboard(await get(fetchFn, base + '/teams/' + ask.id + '/schedule')), source: 'espn' };
-    if (view === 'form') return { ok: true, form: formOf(readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + shiftDay(ask.day, -42).replace(/-/g, '') + '-' + ask.day.replace(/-/g, '')))), source: 'espn' };
+    if (view === 'form') { const gs = readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + shiftDay(ask.day, -42).replace(/-/g, '') + '-' + ask.day.replace(/-/g, ''))); return { ok: true, form: formOf(gs), elo: eloOf(gs), source: 'espn' }; }
     const dates = ask.span > 1 ? ask.day.replace(/-/g, '') + '-' + shiftDay(ask.day, ask.span - 1).replace(/-/g, '') : ask.day.replace(/-/g, '');
     try { return { ok: true, games: readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + dates)), source: 'espn' }; }
     catch (e) {

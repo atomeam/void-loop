@@ -10,7 +10,7 @@ const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/'
 // and /generators/ read 0 offline again); their own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code
 const LATER = ['/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
 const isTool = (p) => TOOLS.includes(p) || LATER.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers))\.js$/.test(p);
+const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|scores\/more)\.js$/.test(p);
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
