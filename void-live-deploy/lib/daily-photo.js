@@ -70,7 +70,7 @@ export function parseCommons(j) {
     const ii = p && p.imageinfo && p.imageinfo[0]; if (!ii || !/^image\/(?:jpeg|png)$/.test(ii.mime || '')) continue;
     const m = ii.extmetadata || {}, v = (k) => (m[k] && m[k].value != null ? m[k].value : ''), artist = v('Artist');
     const href = /href=["']([^"']+)["']/i.exec(String(artist)), thumb = httpsUrl(ii.thumburl || '');
-    if (!thumb || new URL(thumb).hostname !== HOSTS.commonsImages) continue;
+    if (!thumb || !/^(?:upload|thumb)\.wikimedia\.org$/.test(new URL(thumb).hostname)) continue;
     if (/^true$/i.test(stripHtml(v('NonFree'), 10)) || /personality/i.test(stripHtml(v('Restrictions'), 80))) { out.push({ source: 'commons', rejected: 'marked non-free or with personality rights', title: String(p.title || '') }); continue; }
     out.push({ source: 'commons', title: stripHtml(v('ObjectName') || String(p.title || '').replace(/^File:/, ''), 120), thumb, width: ii.thumbwidth || 0, height: ii.thumbheight || 0,
       author: stripHtml(artist, 100), authorUrl: href ? httpsUrl(href[1]) : '', licenceRaw: stripHtml(v('LicenseShortName'), 40), sourcePage: httpsUrl(ii.descriptionurl || ''), taken: dayIn(v('DateTimeOriginal') || v('DateTime')),

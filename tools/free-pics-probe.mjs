@@ -14,6 +14,12 @@ const count = (rej) => { const o = {}; for (const r of rej) o[r.why.replace(/[:(
 const shapes = (cands) => cands.slice(0, 3).map((c) => ({ licRaw: c.licRaw, licVersion: c.licVersion, licUrl: c.licUrl, own: !!c.own, hasAuthor: !!c.author, hasSourcePage: !!c.sourcePage, thumbHost: (() => { try { return new URL(c.thumb).hostname; } catch (_) { return ''; } })(), taken: c.taken }));
 
 const env = process.env;
+// the first array of objects (two levels down at most) and the keys of its first object, with the short text fields that carry rights: what a parser has to read
+function resultShape(j) {
+  const look = (o, path, d) => { if (!o || typeof o !== 'object') return null; if (Array.isArray(o)) return o.length && typeof o[0] === 'object' ? { path, n: o.length, keys: Object.keys(o[0]).slice(0, 40), rights: Object.fromEntries(Object.entries(o[0]).filter(([k, v]) => /right|licen|restrict|image|date|contrib/i.test(k)).map(([k, v]) => [k, JSON.stringify(v).slice(0, 160)])) } : null;
+    if (d >= 2) return null; for (const [k, v] of Object.entries(o)) { const r = look(v, path + '.' + k, d + 1); if (r) return r; } return null; };
+  return look(j, '$', 0);
+}
 const res = { at: new Date().toISOString(), note: 'one polite request per source; no keys, no picture bytes', sources: {}, rejectionLogic: {} };
 const mk = () => { const o = { env, fetch: globalThis.fetch, timeoutMs: 8000, polite: 1000 }; return o; };
 const redact = (s) => String(s || '').replace(/(api_key|wskey|key)=[^&\s]+/gi, '$1=***').slice(0, 160);
@@ -26,7 +32,7 @@ for (const id of Object.keys(F.SOURCES)) {
   try {
     const r = await F.fetchSource(id, q, await F.probeContext(mk()));
     const j = F.judge(r.cands, { sourceId: id, q, kind, date: '' });
-    Object.assign(row, { state: 'works', query: q, status: r.meta.status, ms: r.meta.ms, via: r.meta.via, rate: r.meta.rate, topKeys: Object.keys(r.json || {}).slice(0, 8), found: r.cands.length, accepted: j.ok.length, refused: count(j.rejected), licenceShapes: shapes(r.cands) });
+    Object.assign(row, { state: 'works', query: q, status: r.meta.status, ms: r.meta.ms, via: r.meta.via, rate: r.meta.rate, topKeys: Object.keys(r.json || {}).slice(0, 40), resultShape: resultShape(r.json), found: r.cands.length, accepted: j.ok.length, refused: count(j.rejected), licenceShapes: shapes(r.cands) });
     if (!r.cands.length) row.state = 'answered, no candidates (parser or query?)';
   } catch (e) {
     Object.assign(row, { state: e && e.status === 429 ? 'rate limited (429)' : 'blocked or failed', status: e && e.meta ? e.meta.status : 0, rate: e && e.meta ? e.meta.rate : {}, error: redact(e && e.name === 'AbortError' ? 'timed out' : e && e.message) });

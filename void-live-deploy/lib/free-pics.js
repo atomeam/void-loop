@@ -84,7 +84,7 @@ const flagOff = (env, id) => /^(0|false|no|off)$/i.test(String((env && env['FREE
 
 export const SOURCES = {
   commons: {
-    name: 'Wikimedia Commons', home: 'https://commons.wikimedia.org/', goods: ['sport', 'place', 'person', 'history', 'animal'], hosts: /^upload\.wikimedia\.org$/, perDay: 600, hotlink: true, mime: 'jpeg',
+    name: 'Wikimedia Commons', home: 'https://commons.wikimedia.org/', goods: ['sport', 'place', 'person', 'history', 'animal'], hosts: /^(?:upload|thumb)\.wikimedia\.org$/, perDay: 600, hotlink: true, mime: 'jpeg',
     request: (q) => ({ url: 'https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=' + enc(q + ' filetype:bitmap') + '&prop=imageinfo&iiprop=url|mime|size|extmetadata&iiurlwidth=1024&iiextmetadatafilter=LicenseShortName|LicenseUrl|Artist|ImageDescription|DateTimeOriginal|DateTime|Categories|ObjectName|NonFree|Restrictions' }),
     parse(j) {
       const out = [];
@@ -130,7 +130,7 @@ export const SOURCES = {
     request: (q) => ({ url: 'https://www.loc.gov/photos/?fo=json&c=10&fa=' + enc('online-format:image') + '&q=' + enc(q) }),
     parse(j) {
       const out = [];
-      for (const r of arr(j && j.results)) {
+      for (const r of (arr(j && j.results).length ? arr(j && j.results) : arr(j && j.content && j.content.results))) {
         const imgs = arr(r.image_url).map(httpsUrl).filter(Boolean), th = imgs[0] || '', id = httpsUrl(r.id || r.url || ''); if (!th || !id) continue;
         const rights = JSON.stringify([r.rights, r.rights_advisory, r.rights_information, r.item && r.item.rights_advisory, r.item && r.item.rights].filter(Boolean)).slice(0, 600);
         if (r.access_restricted === true || (r.item && r.item.access_restricted === true)) continue;
