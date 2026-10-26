@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:02:53Z",
+   "subject": "PDF and Kanban pages: a share link button and a share picture of their own on every page, page tools and images to PDF under the merge…"
+  },
+  {
+   "at": "2026-10-26T05:02:49Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:02:34Z",
    "subject": "Keep the art ratchet: the neutral portrait plate takes the family hue"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T04:49:37Z",
    "subject": "Tower gate: music: jasperbernaers.com,music: anotherproducer.com,music: chordchord.com,music: metronomeonline.com,music…"
-  },
-  {
-   "at": "2026-10-26T04:49:09Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-10-26T04:48:52Z",
-   "subject": "Coin pages draw a daily snapshot first, then live"
   }
  ],
  "builders": {
