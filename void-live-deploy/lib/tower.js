@@ -12,6 +12,8 @@
 // higher floors, but the marker only climbs past a floor whose gate passes. The best sites' detailed checklists come from passive study and
 // stay private; this public side names generic aspects only and counts. Pure.
 
+import { SELF_SITES } from './self-sites.js';
+
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
 const HAND_FLOORS = [
@@ -71,7 +73,7 @@ const HAND_FLOORS = [
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', page: '/flights/', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
-  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
+  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
   { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', label: 'Shopping', glyph: '⊡', extra: ['catalogue', 'checkout', 'delivery tracking'] },
   { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', extra: ['groups', 'media', 'calls'] },
   { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', extra: ['catalogue', 'streaming quality', 'recommendations'] },
@@ -98,7 +100,7 @@ const HAND_FLOORS = [
 // row is keyed 'leader: host'); the lane is wiped out when every one of them is beaten. Named in plain text only, as every floor is.
 // The climb goes up the lane from its bottom (owner, 2026-10-25: "let go to the bottom of the translate list and work up"): each lane is listed
 // least visited first, and its sites stand in front of the leader, so the leader is the lane's last fight.
-export const LANES = Object.freeze({
+const HAND_LANES = Object.freeze({
   translate: ['https://tradukka.com/', 'https://www.freetranslations.org/', 'https://imtranslator.net/', 'https://www.translator.eu/', 'https://www.onlinedoctranslator.com/', 'https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.translate.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
   // podcasts (owner, 2026-10-26: little fish first, Apple last): podcast directories and web players, smallest first. Not verified live when written (the builder's network was closed): the first gate run reads each one's reachability, and a parked or sign-in-walled site is a finding, not a loss
   podcasts: ['https://podcastindex.org/', 'https://player.fm/', 'https://www.listennotes.com/', 'https://www.podchaser.com/', 'https://www.podbean.com/', 'https://castbox.fm/'],
@@ -125,22 +127,36 @@ export const LANES = Object.freeze({
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
+  // jobs (owner, 2026-10-26: "we have to have everything all the sites have"): small job boards, smallest first by a guess (Tranco was out of reach from the builder's
+  // network; tower-rank.yml re-orders by the real list), LinkedIn Jobs (the floor itself) last. Each has a page of its own (LANE_PAGES) built on remote listings Verse may
+  // show (Remotive, Jobicy and Himalayas, lib/jobs-core.js); Verse uses three of them as sources as well as fighting them (owner, 2026-10-26: "dont forget Verse can use
+  // these sites as well as beat them")
+  jobs: ['https://jobicy.com/', 'https://www.workingnomads.com/jobs', 'https://www.arbeitnow.com/', 'https://himalayas.app/jobs', 'https://remotive.com/', 'https://remoteok.com/', 'https://weworkremotely.com/'],
   // learning (owner, 2026-10-26: "the objective is to literally go through every site"): small learning sites a page on the device can beat, smallest first by an estimate
   // (none of them is in the committed Tranco file yet: the monthly tools/tower-rank.mjs run ranks them), Khan Academy (the floor itself) last. Each found alive by a web
   // search on 2026-10-26, each usable without an account (studystack.com asks for one only to save a deck). Each gets a page of its own under /learn/ (LANE_PAGES)
   learning: ['https://ptable.com/', 'https://www.timestables.com/', 'https://freerice.com/', 'https://www.studystack.com/', 'https://www.keybr.com/', 'https://www.calculatorsoup.com/calculators/math/fractions.php'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
+// the sites Verse took on by itself (lib/self-sites.js, tools/tower-self.mjs): each joins its family's lane, in front of the leader, with its own page
+export const LANES = Object.freeze(selfLanes(HAND_LANES, SELF_SITES));
+/** the hand lanes with the self-built sites added at the end of their family's lane (a host already in a lane is not added twice). Pure. */
+export function selfLanes(lanes, rows) {
+  const out = { ...lanes };
+  for (const r of rows || []) { if (!r || !r.family || !r.url) continue; const h = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, ''), have = (out[r.family] || []).map(h); if (!have.includes(h(r.url))) out[r.family] = [...(out[r.family] || []), r.url]; }
+  return out;
+}
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
 // floor id of a lane site -> the Verse page built to have every feature that site has, which the gate measures it against instead of the leader's page.
 // A site not listed here is still measured against its leader's page until its own page is built.
-export const LANE_PAGES = Object.freeze({
+export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
   'sports: thesportsdb.com': '/sports/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
+  'jobs: jobicy.com': '/jobs/regions/', 'jobs: workingnomads.com': '/jobs/alerts/', 'jobs: arbeitnow.com': '/jobs/europe/', 'jobs: himalayas.app': '/jobs/salary/', 'jobs: remotive.com': '/jobs/categories/', 'jobs: remoteok.com': '/jobs/tags/', 'jobs: weworkremotely.com': '/jobs/companies/',
   'learning: ptable.com': '/learn/periodic/', 'learning: timestables.com': '/learn/times/', 'learning: freerice.com': '/learn/vocab/', 'learning: studystack.com': '/learn/cards/', 'learning: keybr.com': '/learn/typing/', 'learning: calculatorsoup.com': '/learn/fractions/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
 });
@@ -159,6 +175,13 @@ export const LANE_EXTRAS = Object.freeze({
   'travel: gcmap.com': ['route map', 'chained routes', 'great circle distance', 'airport info'],
   'travel: co2.myclimate.org': ['CO2 per passenger', 'cabin class', 'return trip', 'method named'],
   'travel: flightconnections.com': ['where can I go', 'filter by distance', 'airport finder', 'provider links'],
+  'jobs: jobicy.com': ['jobs by region', 'industry filter', 'job level', 'salary when given', 'RSS feed'],
+  'jobs: workingnomads.com': ['saved searches', 'new since last visit', 'no email needed', 'categories', 'RSS feed'],
+  'jobs: arbeitnow.com': ['jobs open in Germany', 'visa sponsorship filter', 'remote filter', 'German and English'],
+  'jobs: himalayas.app': ['salary filter', 'highest paid first', 'seniority', 'time zones'],
+  'jobs: remotive.com': ['categories with counts', 'keyword search', 'job type', 'source credited'],
+  'jobs: remoteok.com': ['tag cloud', 'salary', 'sort by pay or date', 'RSS feed'],
+  'jobs: weworkremotely.com': ['companies hiring', 'jobs of one company', 'categories', 'saved jobs'],
   'learning: ptable.com': ['element details', 'electron configuration', 'colour by property', 'search elements', 'element quiz', 'printable table'],
   'learning: timestables.com': ['tables 1 to 12', 'speed test', 'hints', 'facts grid', 'printable worksheet', 'certificate'],
   'learning: freerice.com': ['meaning from four choices', 'adaptive level', 'review missed words', 'words learned', 'translation mode'],

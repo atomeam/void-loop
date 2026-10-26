@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES, LEARN_SITES } from '../void-live-deploy/lib/tool-sites.js';
+import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES, JOB_SITES, LEARN_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -91,6 +91,22 @@ const LRCSS = `
   @media print { body { background: #fff; color: #000; } button, select, .tk-row, .tk-ask, footer, #related, input, textarea, label.btn { display: none !important; } .tablewrap { overflow: visible; }
     body[data-print] * { visibility: hidden; } body[data-print] .pr, body[data-print] .pr * { visibility: visible; } body[data-print] .pr { position: absolute; left: 0; top: 0; width: 100%; border: 0; }
     .cardsprint.pr { display: grid !important; grid-template-columns: 1fr 1fr; } .pc { border: 1px dashed #999; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; break-inside: avoid; } .pc span { color: #444; } }`;
+const JBCSS = `
+  .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; min-height: 4.6em; }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } h3 { margin: 12px 0 4px; font-size: 15px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; font-size: 14px; min-width: 0; } .field input, .field select, .field textarea { width: 100%; } .field label { color: var(--soft); font-size: 13px; display: flex; flex-direction: column; gap: 3px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 4px 10px; } .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 4px 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .chk { display: flex; gap: 8px; align-items: center; min-height: 40px; color: var(--ink) !important; flex-direction: row !important; } .chks { justify-content: flex-end; }
+  input[type=radio] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .soft { color: var(--soft); font-size: 13px; } [hidden] { display: none !important; } .btn { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 40px; line-height: 22px; background: var(--card); cursor: pointer; } a.btn.go { color: #fff; } @media (prefers-color-scheme: dark) { a.btn.go { color: #0b0a10; } }
+  .count { font-weight: 600; min-height: 1.5em; margin: 10px 0 4px; } .jobs { list-style: none; padding: 0; margin: 0; min-height: 70vh; } #jb-savedlist { min-height: 0; }
+  .job { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 8px 0; background: var(--bg); } .job.fresh { border-color: var(--accent); } .jh { display: flex; gap: 10px; align-items: flex-start; } .jt { min-width: 0; }
+  .av { flex: 0 0 36px; height: 36px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 20%, transparent); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .jl { font-weight: 600; color: var(--ink); display: inline-block; min-height: 24px; overflow-wrap: anywhere; } .pay { font-weight: 600; color: var(--ok); margin: 4px 0; } .visa { color: var(--ok); font-size: 13px; } .ex { margin: 6px 0; font-size: 14px; color: var(--soft); overflow-wrap: anywhere; } .new { background: var(--accent); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12px; } @media (prefers-color-scheme: dark) { .new { color: #0b0a10; } }
+  .src a, .plain a, .plist a { display: inline-block; min-height: 24px; padding: 2px 0; } .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; } .chip { min-height: 32px; padding: 2px 12px; font-size: 13px; } .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .facet { height: 132px; overflow: auto; align-content: flex-start; } .plain, .plist, .alist, .apps { list-style: none; padding: 0; margin: 6px 0; } .plain li, .plist li { padding: 4px 0; border-bottom: 1px solid var(--line); } .alist li, .apps li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .counts { font-size: 14px; } .pick { position: absolute; left: -9999px; } details summary { cursor: pointer; min-height: 32px; padding: 4px 0; }
+  @media print { button, footer, .tk-row, .tk-ask, #jb-form { display: none !important; } body { background: #fff; color: #000; } }`;
 const KBCSS = `
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
@@ -107,9 +123,9 @@ const KBCSS = `
 
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
-  const pdf = kind === 'pdf', fl = kind === 'flights', ln = kind === 'learn';
-  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : ln ? LRCSS : KBCSS)).replace('__MAX__', pdf || fl || ln ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl || ln ? '80vh' : '520px');
-  const foot = ln ? 'Every exercise is made on this device and checked here; your progress, decks and statistics stay in this browser, and the page works offline after one visit. Element weights are IUPAC\u2019s; the words and their meanings are Verse\u2019s own. Verse has no video library and no teacher or class accounts: where a video explains best, the page links to Khan Academy\u2019s free lessons. There is no account and there are no ads.' : fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
+  const pdf = kind === 'pdf', fl = kind === 'flights', jb = kind === 'jobs', ln = kind === 'learn';
+  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : jb ? JBCSS : ln ? LRCSS : KBCSS)).replace('__MAX__', pdf || fl || jb || ln ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl || jb || ln ? '80vh' : '520px');
+  const foot = ln ? 'Every exercise is made on this device and checked here; your progress, decks and statistics stay in this browser, and the page works offline after one visit. Element weights are IUPAC\u2019s; the words and their meanings are Verse\u2019s own. Verse has no video library and no teacher or class accounts: where a video explains best, the page links to Khan Academy\u2019s free lessons. There is no account and there are no ads.' : jb ? 'Remote job listings from Remotive, Jobicy and Himalayas, each credited and linked to its original posting, where you apply. Your saved jobs, alerts and applications stay in this browser: no account, no profile, no email, nothing about you on a server. The page works offline after one visit with the last listings it saw. No ads.' : fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
   return `<!doctype html>
@@ -134,6 +150,7 @@ export function pageOf(row, kind) {
 <meta name="twitter:image" content="https://a-to-mind.com/og/${slug(row.path)}.png">
 <style>${css}
 </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -151,11 +168,17 @@ export function pageOf(row, kind) {
 }
 /** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
 export function appOf(row, kind) {
-  const pdf = kind === 'pdf', fl = kind === 'flights', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
+  const pdf = kind === 'pdf', fl = kind === 'flights', jb = kind === 'jobs', cfg = jb ? { panels: row.panels, ...(row.preset ? { preset: row.preset } : {}), de: row.de } : pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
   const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
   if (kind === 'learn') return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
 // the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
 const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), ${JSON.stringify({ panels: row.panels, ...(row.skills ? { skills: row.skills } : {}), de: row.de })}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+`;
+  if (jb) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), ${JSON.stringify(cfg)}))
   .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
 if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 `;
@@ -177,7 +200,7 @@ const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
-  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights'], [LEARN_SITES, 'learn']]) for (const row of rows) {
+  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights'], [JOB_SITES, 'jobs'], [LEARN_SITES, 'learn']]) for (const row of rows) {
     const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
     if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
     const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);

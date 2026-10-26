@@ -1,0 +1,151 @@
+{
+ "note": "tools/tower-self.mjs: every site Verse took on by itself, what came of it, and one line per run. Written by the loop.",
+ "sites": {
+  "anycolorid.com": {
+   "at": "2026-10-26T07:10:49Z",
+   "outcome": "gone",
+   "why": "a sign-in wall"
+  },
+  "vcalc.com": {
+   "at": "2026-10-26T07:10:49Z",
+   "outcome": "gone",
+   "why": "robots.txt asks robots not to read it"
+  },
+  "colorcanon.com": {
+   "at": "2026-10-26T07:26:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "The Color Canon — Official Registry of Hex Color Names"
+  },
+  "heycolor.com": {
+   "at": "2026-10-26T07:16:04Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "emojitracker.com": {
+   "at": "2026-10-26T07:16:27Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "yunite.xyz": {
+   "at": "2026-10-26T07:16:52Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "thunit.com": {
+   "at": "2026-10-26T07:17:13Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "cpantesters.org": {
+   "at": "2026-10-26T07:17:34Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "nameunit.com": {
+   "at": "2026-10-26T07:17:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a web hosting and domain registration service, which Verse does not offer any pages for.)",
+   "title": "Name Unit: \"Webhotell og domene\""
+  },
+  "wheelofgold.com": {
+   "at": "2026-10-26T07:17:49Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a crypto rewards and gambling platform, which is a game/service that Verse does not provide a tool for.)",
+   "title": "Wheel of Gold"
+  },
+  "magicchecker.com": {
+   "at": "2026-10-26T07:17:59Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a B2B service for protecting digital marketing campaigns from bad traffic and spy tools, which is a niche professional servic)",
+   "title": "MagicChecker.com: Protect your digital campaigns"
+  },
+  "colornames.org": {
+   "at": "2026-10-26T07:26:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a collaborative project to name colors in the RGB space through community voting and proposals. While Verse has 'colour' and )",
+   "title": "Name all the colors @ colornames.org"
+  },
+  "convertlive.com": {
+   "at": "2026-10-26T07:26:26Z",
+   "outcome": "surpassed",
+   "family": "unit converter",
+   "id": "unit converter: convertlive.com",
+   "page": "/convert/unit-converter/",
+   "words": "the family page's own (the model's were refused: no ask is about its job)",
+   "rows": "11/11",
+   "gated": "2026-10-26T07:29:33Z"
+  },
+  "online-calculator.com": {
+   "at": "2026-10-26T07:26:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a multi-purpose collection of calculators (scientific, BMI, darts) and unit converters. While Verse has specific pages for 'c)",
+   "title": "Online Calculator"
+  },
+  "mycolor.space": {
+   "at": "2026-10-26T07:34:10Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (72 characters: a redirect stub, or a page that draws itself with no text)"
+  },
+  "colormind.io": {
+   "at": "2026-10-26T07:34:15Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an AI-powered color palette generator. The existing Verse page 'colour' provides color conversions, tints, shades, and scheme)",
+   "title": "Colormind - the AI powered color palette generator"
+  },
+  "brandcolors.net": {
+   "at": "2026-10-26T07:34:21Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "BrandColors - official brand color hex codes"
+  },
+  "convertunits.com": {
+   "at": "2026-10-26T07:34:33Z",
+   "outcome": "built",
+   "family": "unit converter",
+   "id": "unit converter: convertunits.com",
+   "page": "/convert/unit-converter-2/",
+   "words": "the family page's own (the model's were refused: says what the page does not do (measurement, across, physics, chemistry, daily); no ask is about its job)"
+  },
+  "tallycount.app": {
+   "at": "2026-10-26T07:34:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Tally Count App - The Best Online Tally Counter"
+  }
+ },
+ "runs": [
+  {
+   "at": "2026-10-26T07:10:56Z",
+   "line": "Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-26T07:18:05Z",
+   "line": "Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com",
+   "built": 0,
+   "queued": 3,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-26T07:21:40Z",
+   "line": "Versus: took on no site (also read: 4 not-judged); next heycolor.com",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-26T07:29:37Z",
+   "line": "Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com",
+   "built": 1,
+   "queued": 3,
+   "fixed": [],
+   "pages_per_day": 1
+  }
+ ]
+}

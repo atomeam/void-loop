@@ -277,6 +277,7 @@ export function pageHtml(key) {
 </style>
 <!-- seo -->
 <!-- /seo -->
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main id="app">

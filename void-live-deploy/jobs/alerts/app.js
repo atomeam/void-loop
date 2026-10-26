@@ -1,0 +1,5 @@
+// /jobs/alerts/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["alerts","search","saved","feed","sources"],"de":{"h1":"Jobalarme ohne Konto","intro":"Speichern Sie eine Suche und kommen Sie wieder: Jede gespeicherte Suche zeigt, wie viele Jobs seit Ihrem letzten Blick neu sind, und markiert sie. Fügen Sie ihren RSS-Feed einem Reader hinzu, um auch ohne die Seite benachrichtigt zu werden. Es wird keine E-Mail-Adresse verlangt und kein Konto angelegt; die Suchen bleiben in diesem Browser."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/alerts/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

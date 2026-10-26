@@ -98,8 +98,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "kind": "family",
    "count": {
-    "experiment": 5,
-    "tested": 2,
+    "experiment": 4,
+    "tested": 3,
     "checked": 1,
     "proven": 29
    },
@@ -2486,7 +2486,7 @@
    "chapter": "time",
    "name": "work",
    "title": "Work",
-   "line": "Remote jobs from Remotive: \"find me work as a designer\", \"remote jobs for python\", \"jobs as a writer\"",
+   "line": "Remote jobs: \"find me work as a designer\", \"remote jobs for python\", \"jobs as a writer\"",
    "examples": [
     "find me work as a designer",
     "remote jobs for python",
@@ -3223,8 +3223,8 @@
     "times tables",
     "typing practice"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 167
   },
   {
