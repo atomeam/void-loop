@@ -8,6 +8,7 @@
  */
 import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-53';
 import { faceSvg, verseFace } from '../lib/avatar.js';
+import { bySize, sizeOf, rankLabel, words } from '../lib/tower-rank.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
 // ask that said "tower" still does
@@ -89,13 +90,31 @@ export const matchupHtml = (f, esc, { enter = true, now = Date.now() } = {}) => 
 export function centerOnYou(root) { const stack = root && root.querySelector('.tw-stack'); if (stack) stack.scrollTop = 0; }
 /** the floors as Versus in 3D wants them (skills/mini/tower.js): id, site, state, n of m, Verse's page. Pure. */
 export const miniFloors = (t) => t.floors.map((f) => ({ id: f.id, site: f.site, state: f.state, n: f.n, m: f.m, page: f.page ? f.page.replace(/\?.*$/, '') : '' }));
-export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now() } = {}) {
+// Versus by size (owner, 2026-10-26): each row says how big the site is (its place among the million most visited, tools/tower-rank.mjs), and
+// "By size" lists every site smallest first (unranked, then the biggest rank number down to the leaders), the order a builder should take them in
+const SIZE_CSS = '<style>.tw-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px;min-height:44px}.tw-sortbtn{min-height:44px;padding:0 14px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer}.tw-sortbtn[aria-pressed=true]{border-color:#c9b6ff;background:#2a1a4a}'
+  + '.tw-sortnote{font-size:12px;opacity:.7;flex:1 1 200px}.tw-sizelist .tw-size,.tw-sizelist .tw-count{margin-left:0;white-space:nowrap}.tw-size{font-size:12px;opacity:.85;margin-left:6px;font-variant-numeric:tabular-nums;white-space:nowrap}.tw-sizelist{list-style:none;margin:0;padding:0}.tw-sizelist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:6px 8px;border-bottom:1px solid #221e30;overflow-wrap:anywhere}.tw-sizelist li[data-state=beaten] .tw-name{text-decoration:line-through;opacity:.75}.tw-sizelist li[data-state=current]{border-left:3px solid #c9b6ff}.tw-sizelist .tw-sidebyside{margin-left:8px;font-size:12px}</style>';
+const prefStore = () => { try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch (_) { return null; } };
+const SORT_KEY = 'a2m.void.tower.bysize';
+/** the remembered choice of the "By size" view (default off), never throwing. */
+export const readBySize = () => { try { const s = prefStore(); return !!s && s.getItem(SORT_KEY) === '1'; } catch (_) { return false; } };
+export const saveBySize = (on) => { try { const s = prefStore(); if (s) s.setItem(SORT_KEY, on ? '1' : '0'); } catch (_) { /* private window or blocked storage: the choice just is not kept */ } };
+const pageLang = () => { try { return (typeof document !== 'undefined' && document.documentElement.lang) || (typeof navigator !== 'undefined' && navigator.language) || 'en'; } catch (_) { return 'en'; } };
+/** the "By size" list: every site, smallest first, with its size and where it stands. Pure. */
+export function sizeListHtml(t, esc, lang = 'en') {
+  const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
+  return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
+    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span><a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
+}
+export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
+  const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
+  const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
   // the current site's row is the matchup: one line per aspect with the verdict in a word and the measured numbers, then when and what is next
   // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
   const row = (f) => (f.state === 'beaten' ? '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten">' : '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">')
     + (f.state === 'beaten' ? '<span class="tw-face">' + siteFace(f, 24) + '</span>' : '')
-    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>'
+    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + sizeTag(f)
     + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + (f.state === 'beaten' ? '</div>' : '</button>');
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
@@ -106,11 +125,12 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
-  return TW_CSS + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
-    + (cur ? vsHtml(cur, esc, { enter }) : '')
+  const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
+  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
+    + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (cur ? row(cur) + links(cur) : '') + (won.length ? '<p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' : '') + won.map((f) => row(f) + links(f)).join('') + '</div>'
+    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) + links(cur) : '') + (!on && won.length ? '<p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' : '') + (on ? '' : won.map((f) => row(f) + links(f)).join('')) + '</div>'
     // the host of Versus in 3D (owner, 2026-10-25: "some things are missing, like a 3d tower"): the card mounts skills/mini/tower.js into it after each draw
  + takeHtml(t, esc)
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
@@ -164,7 +184,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } return t; };
+const load = async () => { const [inv, ev, fr, rk] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -175,12 +195,12 @@ async function run(text, api) {
     el.classList.add('tower-card');
     el.innerHTML = '<div class="tw-root"></div><div class="tw-live" data-share-skip aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div><div class="tw-updated" style="text-align:center;font-size:11px;opacity:.55;margin-top:6px"></div>';
     const root = el.querySelector('.tw-root'), live = el.querySelector('.tw-live'), stamp = el.querySelector('.tw-updated');
-    let picked = 0, shown = false, mini = !!(api.stage && api.stage.miniature);
+    let bySizeOn = readBySize(), picked = 0, shown = false, mini = !!(api.stage && api.stage.miniature);
     const miniKey = 'tower:' + Date.now().toString(36);
     const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
     const draw = (flash) => {
       const keep = root.querySelector('.mk-stack'), was = keep ? keep.scrollTop : -1; // a redraw keeps where the person scrolled to; the first draw centres on the fight
-      root.innerHTML = towerHtml(t, esc, { mini, enter: !root.dataset.drawn }); root.dataset.drawn = '1'; stamp.textContent = 'updated ' + clock(); // the VS entrance plays on the first paint only
+      root.innerHTML = towerHtml(t, esc, { mini, enter: !root.dataset.drawn, bySize: bySizeOn }); root.dataset.drawn = '1'; stamp.textContent = 'updated ' + clock(); // the VS entrance plays on the first paint only
       if (was >= 0) root.querySelector('.mk-stack').scrollTop = was; else { centerOnYou(root); setTimeout(() => centerOnYou(root), 80); } // again once the card has its size
       if (picked) { const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); }
       // Versus in 3D (skills/mini/tower.js): the same key moves the live one into the fresh host and hands it the new floors; tapping a floor picks it
@@ -190,7 +210,7 @@ async function run(text, api) {
       (flash || []).forEach((id) => { const b = root.querySelector('[data-id="' + id + '"]'); if (b && b.animate) b.animate([{ background: '#6a3d9a' }, { background: '' }], 1800); });
     };
     el.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.tower-floor[role=button]')) { e.preventDefault(); e.target.closest('.tower-floor').click(); } });
-    el.addEventListener('click', (e) => { const b = e.target.closest('.tower-floor'); if (!b) return; picked = +b.dataset.floor; const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); });
+    el.addEventListener('click', (e) => { const sb = e.target.closest('.tw-sortbtn'); if (sb) { bySizeOn = !bySizeOn; saveBySize(bySizeOn); draw(); const nb = root.querySelector('.tw-sortbtn'); if (nb) nb.focus(); return; } const b = e.target.closest('.tower-floor'); if (!b) return; picked = +b.dataset.floor; const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); });
     draw();
     const stop = () => { if (timer) clearInterval(timer); timer = null; if (onVis) document.removeEventListener('visibilitychange', onVis); };
     const refresh = async () => {

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 870,
+ "counted": 865,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -623,7 +623,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 12
+   "tests": 13
   },
   {
    "file": "lib/chat-calendar.js",
@@ -686,7 +686,7 @@
    "skills": 3,
    "direct": 3,
    "dependants": 3,
-   "tests": 4
+   "tests": 3
   },
   {
    "file": "lib/stage-port.js",
@@ -836,13 +836,6 @@
    "tests": 2
   },
   {
-   "file": "lib/photo-ask.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 0
-  },
-  {
    "file": "lib/template-list.js",
    "skills": 2,
    "direct": 1,
@@ -857,14 +850,14 @@
    "tests": 1
   },
   {
-   "file": "lib/pay-share.js",
+   "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 24,
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
+   "file": "lib/pay-share.js",
    "skills": 1,
    "direct": 0,
    "dependants": 24,
@@ -1030,13 +1023,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 12
   },
   {
    "file": "lib/v01d-fixes.js",
@@ -1480,6 +1466,20 @@
    "tests": 1
   },
   {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 12
+  },
+  {
+   "file": "lib/tower-rank.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
@@ -1844,13 +1844,6 @@
    "tests": 3
   },
   {
-   "file": "lib/music-tools.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -1947,13 +1940,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/music-de.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 0
   },
   {
    "file": "lib/podcasts.js",
@@ -2194,20 +2180,6 @@
    "tests": 1
   },
   {
-   "file": "lib/music-audio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
-  },
-  {
-   "file": "lib/music-ui.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
-  },
-  {
    "file": "lib/page-picture.js",
    "skills": 0,
    "direct": 0,
@@ -2223,13 +2195,6 @@
   },
   {
    "file": "lib/password.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/photo-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2970,7 +2935,8 @@
   },
   "functions/api/sportsearch.js": {
    "imports": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/guard.js"
    ],
    "importedBy": []
   },
@@ -5012,6 +4978,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/rsvp.js",
+    "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
     "functions/api/support.js",
@@ -5042,7 +5009,6 @@
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
-    "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
@@ -5875,33 +5841,6 @@
     "skills/media-pick.js"
    ]
   },
-  "lib/music-audio.js": {
-   "imports": [
-    "lib/music-tools.js"
-   ],
-   "importedBy": []
-  },
-  "lib/music-de.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/music-ui.js"
-   ]
-  },
-  "lib/music-tools.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/music-audio.js",
-    "lib/music-ui.js"
-   ]
-  },
-  "lib/music-ui.js": {
-   "imports": [
-    "lib/toolkit.js",
-    "lib/music-tools.js",
-    "lib/music-de.js"
-   ],
-   "importedBy": []
-  },
   "lib/near-miss.js": {
    "imports": [],
    "importedBy": [
@@ -6262,7 +6201,6 @@
    "imports": [],
    "importedBy": [
     "functions/api/store/[[path]].js",
-    "lib/photo-edit.js",
     "lib/store.js"
    ],
    "reachedBy": [
@@ -6332,19 +6270,6 @@
     "lib/bench-asks.js",
     "lib/built-detail.js"
    ]
-  },
-  "lib/photo-ask.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/imgfit.js",
-    "skills/photo-tools.js"
-   ]
-  },
-  "lib/photo-edit.js": {
-   "imports": [
-    "lib/pay-share.js"
-   ],
-   "importedBy": []
   },
   "lib/photo-library.js": {
    "imports": [],
@@ -8138,8 +8063,13 @@
   "lib/toolkit.js": {
    "imports": [],
    "importedBy": [
-    "lib/music-ui.js",
     "skills/toolkit.js"
+   ]
+  },
+  "lib/tower-rank.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/tower.js"
    ]
   },
   "lib/tower.js": {
@@ -9800,8 +9730,7 @@
   },
   "skills/imgfit.js": {
    "imports": [
-    "lib/imgfit.js",
-    "lib/photo-ask.js"
+    "lib/imgfit.js"
    ],
    "importedBy": []
   },
@@ -10729,12 +10658,6 @@
    ],
    "importedBy": []
   },
-  "skills/photo-tools.js": {
-   "imports": [
-    "lib/photo-ask.js"
-   ],
-   "importedBy": []
-  },
   "skills/photos.js": {
    "imports": [
     "lib/photo-library.js",
@@ -11453,6 +11376,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/sports-browse.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/stage-arrange.js": {
    "imports": [
     "lib/stage-tools.js",
@@ -11834,7 +11761,8 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower.js",
-    "lib/avatar.js"
+    "lib/avatar.js",
+    "lib/tower-rank.js"
    ],
    "importedBy": []
   },

@@ -370,7 +370,7 @@ export const PROBES = Object.freeze({
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
-  // its own probe and aspects (LANE_EXTRA in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
+  // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
   // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
   music: {
     site: 'https://open.spotify.com/', verse: '/music/',
@@ -579,6 +579,22 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   'word count': { 'live counting': [['counts as you type', /\bas you (?:type|edit)\b/i]], 'characters and sentences': [['characters', /\bcharacters\b/i], ['characters without spaces', /without spaces/i], ['sentences', /\bsentences\b/i], ['paragraphs', /\bparagraphs\b/i]] },
   'random user': { 'output formats': [['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]], seed: [['a seed', /\bseed\b/i]], nationalities: [['United States', /united states|\bamerican\b/i], ['United Kingdom', /united kingdom|\bbritish\b/i], ['France', /\bfrance\b|\bfrench\b/i], ['Germany', /\bgermany\b|\bgerman\b/i], ['Spain', /\bspain\b|\bspanish\b/i], ['Brazil', /\bbrazil/i], ['India', /\bindia\b|\bindian\b/i], ['Japan', /\bjapan/i]] },
 });
+// a lane site with a page of its own may ask its own question (owner, 2026-10-26: every lane site gets its own page, gated against it): the keys it gives replace the leader's
+// (ask, truth, askParts, pageParts, parts, facts); what it leaves out is the leader's. thesportsdb.com is a sports database: its page browses by sport, searches across all of
+// them (teams, events, venues, players), lists who was born on this day and says its API is free; the question is a search for Arsenal, which any sports database answers
+// with the club, its league and its sport. Truth worked out by hand, judged on Verse alone.
+const LANE_PROBES = Object.freeze({
+  'sports: thesportsdb.com': {
+    ask: { verse: '/sports/?q=arsenal' },
+    truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
+    askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
+      'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],
+      'sport grid': [['click a sport to browse', /Click a sport to browse/i], ['soccer', /\bSoccer\b/], ['basketball', /\bBasketball\b/], ['tennis', /\bTennis\b/], ['cricket', /\bCricket\b/]],
+      'free api': [['a free API', /Free API/i], ['read only', /read only/i], ['its description', /openapi\.json/i]] },
+    pageParts: {}, parts: {},
+    facts: [['sports to browse', /Click a sport to browse/i], ['search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['events', /\bEvents\b/], ['venues', /\bVenues\b/], ['players', /\bPlayers\b/], ['born on this day', /Born on this day/i], ['a stats strip', /On this device/i], ['a free API', /Free API/i], ['the source named', /TheSportsDB/], ['no betting', /no betting/i]],
+  },
+});
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
@@ -586,8 +602,9 @@ export function probeFor(id) {
   const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
   if (lane) id = lane[1];
   // a lane site with a page of its own (LANE_PAGES) is measured against that page, not its leader's
-  const own = lane && LANE_PAGES[id0];
-  return { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  const own = lane && LANE_PAGES[id0], lp = lane && LANE_PROBES[id0]; // a lane page may bring its own question, parts and facts (LANE_PROBES)
+  const base = { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  return lp ? { ...base, ...lp, verse: own || base.verse, ask: lp.ask || base.ask, ownFacts: true } : base;
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {
@@ -638,7 +655,8 @@ export function featuresOf(id, dir = FEATURE_DIR) {
 }
 /** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */
 export function withFeatureFacts(probe, id, n = 6, dir = FEATURE_DIR) {
-  if (!probe) return probe; const file = featuresOf(id, dir); if (!file) return probe;
+  if (!probe || probe.ownFacts) return probe; // a lane page with its own facts is not asked for its leader's features
+  const file = featuresOf(id, dir); if (!file) return probe;
   const have = new Set((probe.facts || []).map(([l]) => String(l).toLowerCase())), extra = factsFromFile(file, n).filter(([l]) => !have.has(l.toLowerCase()));
   return extra.length ? { ...probe, facts: [...(probe.facts || []), ...extra] } : probe;
 }

@@ -1,0 +1,5 @@
+{
+ "about": "Hand overrides for the Versus size order (tools/tower-rank.mjs copies them into void-live-deploy/tower.rank.json). floor id -> a number that stands in for its Tranco rank, as if the site ranked there (a big number = a small site = earlier). Use it for an edge case such as a tiny but data-heavy site; give the reason in the 'why' map. Empty by default.",
+ "order": {},
+ "why": {}
+}

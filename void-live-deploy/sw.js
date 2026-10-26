@@ -4,14 +4,14 @@ const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
-const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/markets/', '/podcasts/', '/scores/', '/calendar/', '/notes/', '/generators/', '/boards/', '/news/', '/image/', '/g/', '/is-it/christmas', '/tools/'];
+const TOOLS = ['/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/markets/', '/podcasts/', '/scores/', '/sports/', '/calendar/', '/notes/', '/generators/', '/boards/', '/news/', '/image/', '/g/', '/is-it/christmas', '/tools/'];
 // any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
 // pages kept the first time they are opened, never at install (2026-10-25: four more pages at install made the worker miss the gate's 10 s wait,
 // and /generators/ read 0 offline again); their own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code
 // the six music pages (2026-10-26) are kept the first time each is opened, with their app.js, for the same reason
 const LATER = ['/music/', '/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
 const isTool = (p) => TOOLS.includes(p) || LATER.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|scores\/(?:more|sports|reports|gfx)|(?:music|metronome|piano|tuner|bpm|chords)\/app)\.js$/.test(p);
+const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|scores\/(?:app|more|sports|reports|gfx)|sports\/app|(?:music|metronome|piano|tuner|bpm|chords)\/app)\.js$/.test(p);
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML

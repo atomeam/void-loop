@@ -491,84 +491,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T03:20:04Z",
+   "at": "2026-10-26T03:35:38Z",
+   "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
+  },
+  {
+   "at": "2026-10-26T03:34:58Z",
+   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:33:37Z",
+   "subject": "Gate: a lane site with a page of its own can ask its own question (LANE_PROBES, LANE_EXTRAS); sports: thesportsdb.com is gated against…"
+  },
+  {
+   "at": "2026-10-26T03:31:35Z",
+   "subject": "Tower rank: every Versus site ranked by the Tranco top million"
+  },
+  {
+   "at": "2026-10-26T03:31:06Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T03:19:45Z",
-   "subject": "Podcasts: the page registers the service worker (it read 0 offline), keeps its two modules and the Verse show offline; Show pages names…"
+   "at": "2026-10-26T03:30:50Z",
+   "subject": "Incident: the browser suite failed on 92b0983f (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-26T03:18:30Z",
-   "subject": "Markets: the strip no longer starves the quote, a retry on a busy moment, and a bundled year-end record for the close on a day"
-  },
-  {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Fix three red checks: scores owns sports-score asks (calendar leaves them), /fix/ pages share one CSP splat rule (83 -> 66 rules), real…"
-  },
-  {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Versus: PDF tools and kanban floors with lanes, feature maps, probes, and a page of its own per lane site (LANE_PAGES)"
-  },
-  {
-   "at": "2026-10-26T03:18:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:17:38Z",
-   "subject": "Daily art helper for the reports: an illustration by Verse per league, section or wrap each day inside its own budget, a deterministic SVG…"
-  },
-  {
-   "at": "2026-10-26T03:17:08Z",
-   "subject": "News: a one-line headline link is a 26 px tap target"
-  },
-  {
-   "at": "2026-10-26T03:14:09Z",
-   "subject": "Tower gate: news: euronews.com,news: aljazeera.com,news: npr.org,news: apnews.com,news: theguardian.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:13:34Z",
-   "subject": "Tower gate: podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts: podbean.com,podcasts: castbox.fm measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:57Z",
-   "subject": "Tower gate: finance: macrotrends.net,finance: companiesmarketcap.com,finance: stockanalysis.com,finance: finviz.com,finance: barchart.com…"
-  },
-  {
-   "at": "2026-10-26T03:12:22Z",
-   "subject": "Tower gate: news: allsides.com,news: thelocal.com,news: rnz.co.nz,news: channelnewsasia.com,news: france24.com,news: dw.com measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:14Z",
-   "subject": "Rules: the objective is to go through every tower site (owner's words)"
-  },
-  {
-   "at": "2026-10-26T03:11:15Z",
-   "subject": "Tower gate: finance,news,podcasts,finance: stockq.org,finance: stooq.com,podcasts: podcastindex.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:34Z",
-   "subject": "Tower gate: finance: investing.com,finance: tradingview.com,finance: marketwatch.com,finance: google.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:29Z",
-   "subject": "Tower gate: finance: stockq.org,finance: companiesmarketcap.com,finance: stockanalysis.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:26Z",
+   "at": "2026-10-26T03:30:42Z",
    "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
   },
   {
-   "at": "2026-10-26T03:10:03Z",
+   "at": "2026-10-26T03:30:40Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com,finance: investing.com,news: allsides.com,news: apnews.com,news measured against their live…"
+  },
+  {
+   "at": "2026-10-26T03:30:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:30:06Z",
+   "subject": "Scores: the day's picture (lib/daily-art.js, photo when a licensed one is found, else Verse's illustration) with its credit on stories…"
+  },
+  {
+   "at": "2026-10-26T03:29:34Z",
+   "subject": "Versus by size: Tranco rank of every site, size column, By size view, next-10 tool and monthly workflow"
+  },
+  {
+   "at": "2026-10-26T03:29:23Z",
    "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
   },
   {
-   "at": "2026-10-26T03:08:43Z",
-   "subject": "Rules: every tower site gets its own page, even where we already stomp it (owner's words)"
+   "at": "2026-10-26T03:28:48Z",
+   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts measured against their live sites"
   },
   {
-   "at": "2026-10-26T03:07:56Z",
-   "subject": "Rules: always go after the easiest tower site first, giants last (owner's words)"
+   "at": "2026-10-26T03:28:42Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:28:02Z",
+   "subject": "Sports: common asks that each take a setting in the link"
+  },
+  {
+   "at": "2026-10-26T03:28:02Z",
+   "subject": "Sports: a page of its own (42-sport grid, one search across teams, events, venues and players, born on this day, the free API), its stage…"
+  },
+  {
+   "at": "2026-10-26T03:27:57Z",
+   "subject": "Incident: the browser suite failed on 086da994 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-26T03:26:30Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:25:06Z",
+   "subject": "tower-gate test: the finance floor has its own probe now"
+  },
+  {
+   "at": "2026-10-26T03:24:49Z",
+   "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
   }
  ],
  "builders": {
