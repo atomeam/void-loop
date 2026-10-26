@@ -2824,6 +2824,7 @@
     "lib/keeper.js",
     "lib/scores.js",
     "functions/api/scores.js",
+    "lib/daily-cap.js",
     "lib/reports.js"
    ],
    "importedBy": []
@@ -4326,7 +4327,8 @@
   "lib/daily-cap.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "functions/api/report.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -4341,7 +4343,6 @@
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
-    "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",

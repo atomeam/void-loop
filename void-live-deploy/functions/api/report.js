@@ -7,7 +7,7 @@
 //   - make Verse's server read one of the three fixed score feeds for an allowlisted league and day or a numeric id (the same bounds as /api/scores: no host, path or header chosen);
 //   - cause one model call per story KEY (league + kind + game id + state, or league + day): the result is kept on the edge (a final game's recap for 7 days, a preview 30 minutes,
 //     a brief an hour, a week 6 hours), so the same story is never written twice for anyone;
-//   - and not more than HOUR_CAP model calls an hour and DAY_CAP a day in all, from anyone together (a counter on the edge); past either cap the template draft is served and says so;
+//   - and not more than HOUR_CAP model calls an hour and DAY_CAP a day in all, from anyone together at every location (one D1 counter, lib/daily-cap.js; no D1 means no model call); past either cap the template draft is served and says so;
 //     the caller's own allowance is 20 uncached stories a minute (rateLimited(), its own bucket).
 //   Nothing the caller sends reaches the model; no database, no write besides the cache.
 import { rateLimited, noThink } from './answer.js';
@@ -15,6 +15,7 @@ import { models } from '../../lib/models.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leagueOf, dateOk, idOk, ymd, shiftDay, weekStart, readScoreboard, readStandings } from '../../lib/scores.js';
 import { lookScores } from './scores.js';
+import { capAll } from '../../lib/daily-cap.js';
 import { tableIndex, gameFacts, draftRecap, draftPreview, briefFacts, draftBrief, weekFacts, draftWeek, topStories, validate, polishMessages, LABEL } from '../../lib/reports.js';
 
 export const RL_MAX = 20, HOUR_CAP = 40, DAY_CAP = 600, MODEL = models('answer');
@@ -47,12 +48,9 @@ export async function build(ask, fetchFn, now = Date.now()) {
   const w = await look({ view: 'scores', day: ask.day, span: 7 }); if (!w.ok) return null;
   const facts = weekFacts(league.name, ask.day, w.games); return { facts, draft: draftWeek(facts), source: 'ESPN' };
 }
-// the shared ceiling on model calls: one counter per hour and per day on the edge, so a burst of visitors cannot spend more than the caps whoever asks
-async function spend(cache, now) {
-  const keys = [['h', Math.floor(now / 3600000), HOUR_CAP, 3700], ['d', Math.floor(now / 86400000), DAY_CAP, 87000]].map(([k, n, cap, ttl]) => [new Request('https://a-to-mind.com/__void-report/cap/' + k + n), cap, ttl]);
-  try { const ns = await Promise.all(keys.map(async ([r]) => parseInt((await (await cache.match(r))?.text()) || '0', 10))); if (ns.some((n, i) => n >= keys[i][1])) return false;
-    await Promise.all(keys.map(([r, , ttl], i) => cache.put(r, new Response(String(ns[i] + 1), { headers: { 'cache-control': 'max-age=' + ttl } })))); return true; } catch (_) { return false; }
-}
+// the shared ceiling on model calls: one global counter in D1 (lib/daily-cap.js), an hour key and a day key, so a burst of visitors at any location together cannot spend more than the
+// caps; no D1, or a full counter, is a refusal and the template draft is served
+const spend = (env, now) => capAll(env, [['sports-report:h' + Math.floor(now / 3600000), HOUR_CAP], ['sports-report', DAY_CAP]], now).then((r) => r.ok);
 export async function polish(env, facts, draft) {
   const r = await env.AI.run(MODEL, { messages: polishMessages(facts, draft), max_tokens: 220, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
   const text = scrubOut(noThink(pick(r)), env).replace(/\s+/g, ' ').trim(); return validate(text, facts).ok ? text : null;
@@ -70,7 +68,7 @@ export async function onRequestGet({ request, env, fetchFn = fetch }) {
   if (ask.kind === 'top') { const o = { ok: true, kind: 'top', stories: b.top, source: b.source, at }; if (cache) { try { await cache.put(key, new Response(JSON.stringify(o), { headers: { 'cache-control': 'max-age=' + TTL.top } })); } catch (_) {} } return json(o, 200, { 'cache-control': 'public, max-age=60' }); }
   let polished = null, capped = false;
   if (cache && env && env.AI && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off') {
-    if (await spend(cache, now)) { try { polished = await polish(env, b.facts, b.draft); } catch (_) { polished = null; } } else capped = true;
+    if (await spend(env, now)) { try { polished = await polish(env, b.facts, b.draft); } catch (_) { polished = null; } } else capped = true;
   }
   const o = { ok: true, kind: ask.kind, headline: b.draft.headline, body: polished || b.draft.body, polished: !!polished, capped, label: LABEL(b.source, at.slice(11, 16) + ' UTC'), source: b.source, at, state: b.state };
   const ttl = capped ? 120 : TTL[ask.kind]; // a draft served because the cap was hit is kept only briefly, so the polished story can replace it

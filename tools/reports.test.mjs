@@ -6,6 +6,8 @@ import { tableIndex, gameFacts, draftRecap, draftPreview, briefFacts, draftBrief
 import { askIn, build, onRequestGet, HOUR_CAP } from '../void-live-deploy/functions/api/report.js';
 import { SUMMARY, STANDINGS, SCOREBOARD, fakeFeeds } from './scores.fixtures.mjs';
 
+// a stand-in for D1's void_daily_cap: INSERT ... ON CONFLICT ... WHERE n < ? RETURNING n
+const fakeDb = () => { const rows = new Map(); return { prepare: (sql) => ({ run: async () => ({}), bind: (day, key, limit) => ({ all: async () => { const k = day + '|' + key, n = rows.get(k) || 0; if (n >= limit) return { results: [] }; rows.set(k, n + 1); return { results: [{ n: n + 1 }] }; } }) }) }; };
 const table = tableIndex(readStandings(STANDINGS, 'soccer').groups), sum = readSummary(SUMMARY);
 test('a recap is built from the data and says nothing the data does not', () => {
   const f = gameFacts('recap', 'Premier League', sum, table), d = draftRecap(f);
@@ -42,7 +44,7 @@ test('/api/report: the draft always; the model only when its wording validates; 
   const store = new Map(); globalThis.caches = { default: { match: async (r) => { const v = store.get(r.url); return v ? new Response(v) : undefined; }, put: async (r, res) => { store.set(r.url, await res.text()); } } };
   try {
     let calls = 0, say = 'Arsenal beat Southampton 2-1 at Test Ground, Test Striker scoring on 12 minutes before Test Keeper was sent off for Southampton.';
-    const env = { AI: { run: async () => { calls++; return { response: say }; } } }, get = (q, e = env) => onRequestGet({ request: new Request('https://a-to-mind.com/api/report?' + q), env: e, fetchFn: fakeFeeds() });
+    const env = { DB: fakeDb(), AI: { run: async () => { calls++; return { response: say }; } } }, get = (q, e = env) => onRequestGet({ request: new Request('https://a-to-mind.com/api/report?' + q), env: e, fetchFn: fakeFeeds() });
     assert.equal((await get('league=epl&kind=nope')).status, 400); assert.equal((await get('league=f1&kind=recap&id=5')).status, 400); assert.equal((await get('league=epl&kind=recap&id=x')).status, 400);
     const a = await (await get('league=epl&kind=recap&id=1001')).json(); assert.equal(a.polished, true); assert.equal(a.body, say); assert.match(a.label, /^Written by Verse from ESPN data · \d\d:\d\d UTC$/); assert.equal(calls, 1);
     const b = await (await get('league=epl&kind=recap&id=1001')).json(); assert.equal(b.cached, true); assert.equal(calls, 1, 'the same story is never written twice');
@@ -51,8 +53,9 @@ test('/api/report: the draft always; the model only when its wording validates; 
     const c = await onRequestGet({ request: new Request('https://a-to-mind.com/api/report?league=epl&kind=recap&id=1003'), env, fetchFn: preFeeds }); assert.equal(c.status, 409); assert.equal((await c.json()).kind, 'state');
     store.clear(); const d = await (await get('league=epl&kind=recap&id=1001')).json(); assert.equal(d.polished, false, 'an invented score or name is thrown away'); assert.equal(d.headline, 'Arsenal beat Southampton 2-1'); assert.match(d.body, /Test Striker Goal \(12'\)/);
     store.clear(); const off = await (await get('league=epl&kind=recap&id=1001', {})).json(); assert.equal(off.polished, false); assert.equal(off.capped, false);
-    store.clear(); say = 'Arsenal beat Southampton 2-1 at Test Ground.'; calls = 0; const cap = [];
-    for (let i = 0; i < HOUR_CAP + 3; i++) { store.forEach((v, k) => { if (!k.includes('/cap/')) store.delete(k); }); cap.push(await (await get('league=epl&kind=recap&id=1001')).json()); }
+    store.clear(); const noDb = await (await get('league=epl&kind=recap&id=1001', { AI: env.AI })).json(); assert.equal(noDb.polished, false); assert.equal(noDb.capped, true, 'no D1 counter: fail closed, the draft is served');
+    store.clear(); env.DB = fakeDb(); say = 'Arsenal beat Southampton 2-1 at Test Ground.'; calls = 0; const cap = [];
+    for (let i = 0; i < HOUR_CAP + 3; i++) { store.forEach((v, k) => { store.delete(k); }); cap.push(await (await get('league=epl&kind=recap&id=1001')).json()); }
     assert.equal(calls, HOUR_CAP, 'no more than the hour cap of model calls'); assert.equal(cap.at(-1).capped, true); assert.equal(cap.at(-1).polished, false); assert.equal(cap.at(-1).headline, 'Arsenal beat Southampton 2-1', 'past the cap the draft is served');
     store.clear(); const top = await (await get('league=epl&kind=top&date=2025-05-25')).json(); assert.equal(top.stories.length, 3); assert.equal(calls, HOUR_CAP, 'headlines never call the model');
     const br = await (await get('league=epl&kind=brief&date=2025-05-25')).json(); assert.match(br.headline, /brief for Sunday 25 May/);
