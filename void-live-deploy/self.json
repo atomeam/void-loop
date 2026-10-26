@@ -491,6 +491,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T07:30:52Z",
+   "subject": "seo-audit: duplicate titles are told every run, not held, so Verse's tower-self loop is never stopped by the check"
+  },
+  {
+   "at": "2026-10-26T07:29:37Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten…"
+  },
+  {
+   "at": "2026-10-26T07:27:52Z",
+   "subject": "seo.test: build() also reaches the pages it only writes links into; each must be up to date too"
+  },
+  {
+   "at": "2026-10-26T07:27:09Z",
+   "subject": "Tower gate: shopping,jobs: arbeitnow.com,jobs: himalayas.app measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T07:26:41Z",
+   "subject": "Versus by itself: unit converter: convertlive.com, the sites read recorded"
+  },
+  {
+   "at": "2026-10-26T07:23:58Z",
+   "subject": "Feature scan: shopping researched by Verse"
+  },
+  {
+   "at": "2026-10-26T07:23:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T07:23:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T07:22:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -537,38 +569,6 @@
   {
    "at": "2026-10-26T07:15:15Z",
    "subject": "Versus by itself: a site the model never judged is read again next run"
-  },
-  {
-   "at": "2026-10-26T07:12:59Z",
-   "subject": "Versus by itself: ask Verse's own model on the site's binding (/api/tower-self, owner only)"
-  },
-  {
-   "at": "2026-10-26T07:11:24Z",
-   "subject": "Tower gate: shopping,jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T07:10:56Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com"
-  },
-  {
-   "at": "2026-10-26T07:10:54Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-26T07:09:36Z",
-   "subject": "Versus by itself: the tower cycle with no builder and no Claude (tower-self)"
-  },
-  {
-   "at": "2026-10-26T07:07:58Z",
-   "subject": "Beacon: the new /jobs/ pages carry it from the tool-site template"
-  },
-  {
-   "at": "2026-10-26T07:07:26Z",
-   "subject": "Beacon: modulepreload blocks back in place after the tag, /api/visit marked Verse's own in the OpenAPI check"
-  },
-  {
-   "at": "2026-10-26T07:07:25Z",
-   "subject": "Every page counts its visits: /visit.js on every sitemap page, and a check that fails without it"
   }
  ],
  "builders": {
