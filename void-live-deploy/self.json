@@ -491,6 +491,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:14:26Z",
+   "subject": "Exact page title first, Food before Creature, the live record keeps what the route said"
+  },
+  {
+   "at": "2026-10-26T05:13:28Z",
+   "subject": "Tower gate: kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,finance…"
+  },
+  {
+   "at": "2026-10-26T05:12:42Z",
+   "subject": "Subject eval: 33 of 42 live"
+  },
+  {
+   "at": "2026-10-26T05:11:20Z",
+   "subject": "Tower gate: pdf,pdf: codeshack.io,pdf: 10015.io,pdf: pdfcandy.com,pdf: tools.pdf24.org,pdf: smallpdf.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:11:01Z",
+   "subject": "Tower gate: pdf: 10015.io,travel: gcmap.com,travel: co2.myclimate.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:10:48Z",
+   "subject": "Tower gate: finance: finviz.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:07:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:07:14Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -541,34 +569,6 @@
   {
    "at": "2026-10-26T04:56:44Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:56:33Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:56:28Z",
-   "subject": "Subject cards: licensed photos for real places and animals, a themed frame per kind, Not found cards, list-section lookup, 35-ask evaluation"
-  },
-  {
-   "at": "2026-10-26T04:56:18Z",
-   "subject": "Travel floor: a lane of seven small flight and trip sites in front of Google Flights, each with its page named (/flights/...) and its own…"
-  },
-  {
-   "at": "2026-10-26T04:55:12Z",
-   "subject": "Tower gate: music: anotherproducer.com,music: chordchord.com,music: metronomeonline.com,music: virtualpiano.net,music…"
-  },
-  {
-   "at": "2026-10-26T04:54:06Z",
-   "subject": "Tower gate: pdf: smallpdf.com,kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com measured…"
-  },
-  {
-   "at": "2026-10-26T04:53:42Z",
-   "subject": "Tower gate: pdf,pdf: codeshack.io,pdf: 10015.io,pdf: pdfcandy.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:52:57Z",
-   "subject": "Tower gate: finance: companiesmarketcap.com,finance: finviz.com measured against their live sites"
   }
  ],
  "builders": {
