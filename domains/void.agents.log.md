@@ -1076,3 +1076,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-26T07:10:56Z | verse | build | Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com
 2026-10-26T07:18:05Z | verse | build | Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com
 2026-10-26T07:21:40Z | verse | build | Versus: took on no site (also read: 4 not-judged); next heycolor.com
+2026-10-26T07:29:37Z | verse | build | Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com
