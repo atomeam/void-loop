@@ -80,7 +80,7 @@ Each tool is a page of its own, free, with nothing to sign up for and no ads; al
 - Great circle map: A great circle mapper on your device: chain airport codes, see each leg on a map, the distance of each leg and the total in km and miles, and the typical flight time. No account, works offline. https://a-to-mind.com/flights/map/
 - Flight CO2 calculator: A flight CO2 calculator on your device: kilograms of CO2 per ticket by route, cabin class, passengers and return trip, with a range, the high-altitude factor and the method written out. No account, nothing sent, works offline. https://a-to-mind.com/flights/co2/
 - Where can I fly: An airport explorer on your device: every airport within a flight time of the one you pick, filtered by country and size, each opening the route with the provider links. Range, not a timetable: no airline schedule is bundled. No account, works offline. https://a-to-mind.com/flights/routes/
-- Every Verse tool: Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit. https://a-to-mind.com/tools/
+- Everything Verse does: Every page and every skill Verse has, grouped by what you want to do and searchable as you type, with the sites each one beat. Free, private, no account, offline after one visit. https://a-to-mind.com/tools/
 <!-- /tools -->
 
 ## Linking to an answer

@@ -28,6 +28,7 @@ export const STEPS = [
   { name: 'self', script: 'self-context.mjs', write: [], check: ['--check'], volatile: true, why: "Verse's facts about itself (the self card, /api/answer), from everything above and the ledgers; it embeds the newest commits, so only the deploy keeps it current" },
   { name: 'bench-alarms', script: 'bench-alarms.mjs', write: [], check: ['--check'], volatile: true, why: "the Bench icon's count of checked false alarms; regenerated at deploy" },
   { name: 'sitemap', script: 'sitemap.mjs', write: [], check: ['--check'], volatile: true, why: 'sitemap.xml: the home page, every tool page, the tower, the /fix/ and /is-it/ pages, lastmod from git; the deploy sets the dates' },
+  { name: 'everything', script: 'everything.mjs', write: [], check: ['--check'], volatile: true, why: '/tools/, the index of everything Verse does: every sitemap page and skill, with the sites beaten (the tower moves, so the deploy regenerates it)' },
 ];
 
 /** the steps picked by name, in STEPS order; an unknown name is an error. Pure. */
