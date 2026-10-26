@@ -46,7 +46,7 @@ if (!only.length || only.includes('loc')) {
     await wait(3000);
     try { const r = await ctxl.http(url); const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (_) {}
       res.explore[name] = { status: r.status, json: !!j, topKeys: j ? Object.keys(j).slice(0, 40) : [], shape: j ? resultShape(j) : null, head: j ? undefined : t.slice(0, 120).replace(/\s+/g, ' '), contentKeys: j && j.content && typeof j.content === 'object' ? Object.keys(j.content).slice(0, 40) : undefined };
-      if (j && j.results && j.results[0]) res.explore[name].firstResult = JSON.stringify(j.results[0]).slice(0, 1500);
+      if (j && j.results && j.results[0]) { const f0 = j.results[0], it = f0.item || {}; res.explore[name].firstResult = JSON.stringify(f0).slice(0, 600); res.explore[name].rightsFields = Object.fromEntries([...Object.entries(f0), ...Object.entries(it).map(([k, v]) => ['item.' + k, v])].filter(([k]) => /right|restrict|licen|access/i.test(k)).map(([k, v]) => [k, JSON.stringify(v).slice(0, 240)])); res.explore[name].itemKeys = Object.keys(it).slice(0, 60); }
     } catch (e) { res.explore[name] = { error: redact(e && e.message) }; }
   }
 }

@@ -131,12 +131,13 @@ export const SOURCES = {
     parse(j) {
       const out = [];
       for (const r of (arr(j && j.results).length ? arr(j && j.results) : arr(j && j.content && j.content.results))) {
-        const imgs = arr(r.image_url).map(httpsUrl).filter(Boolean), th = imgs[0] || '', id = httpsUrl(r.id || r.url || ''); if (!th || !id) continue;
-        const rights = JSON.stringify([r.rights, r.rights_advisory, r.rights_information, r.item && r.item.rights_advisory, r.item && r.item.rights].filter(Boolean)).slice(0, 600);
+        const nohash = (u) => String(u).replace(/#.*$/, ''), up = (u) => httpsUrl(String(u || '').replace(/^http:/, 'https:')), dims = (u) => { const m = /#h=(\d+)&w=(\d+)/.exec(String(u)); return m ? { h: +m[1], w: +m[2] } : { h: 0, w: 0 }; };
+        const raw = arr(r.image_url).filter((u) => /\.(?:jpe?g|png)(?:#|$)/i.test(String(u))), imgs = raw.map((u) => up(nohash(u))).filter(Boolean), th = imgs[0] || '', id = up(r.id || r.url || ''); if (!th || !id) continue;
+        const rights = JSON.stringify([r.rights, r.rights_advisory, r.rights_information, r.item && r.item.rights_advisory, r.item && r.item.rights, r.item && r.item.rights_information].filter(Boolean)).slice(0, 800);
         if (r.access_restricted === true || (r.item && r.item.access_restricted === true)) continue;
         const open = /no known restrictions|no known copyright|public domain|free to use and reuse/i.test(rights + JSON.stringify(r.partof || ''));
         const by = arr(r.contributor_names || r.contributor || (r.item && r.item.contributor_names)).map((x) => stripHtml(x, 60)).filter(Boolean)[0] || '';
-        out.push(cand({ title: stripHtml(first(r.title), 120), thumb: th, url: imgs[Math.min(imgs.length - 1, 2)] || th, author: by, licRaw: open ? 'PUBLIC DOMAIN' : '', licUrl: open ? 'https://www.loc.gov/rr/print/res/rights.html' : '', sourcePage: id.replace(/\?.*$/, ''),
+        out.push(cand({ title: stripHtml(first(r.title), 120), thumb: th, url: imgs[Math.min(imgs.length - 1, 2)] || th, width: dims(raw[Math.min(raw.length - 1, 2)]).w, height: dims(raw[Math.min(raw.length - 1, 2)]).h, author: by.replace(/\b\w/g, (m) => m.toUpperCase()), licRaw: open ? 'PUBLIC DOMAIN' : '', licUrl: open ? 'https://www.loc.gov/rr/print/res/rights.html' : '', sourcePage: id.replace(/\?.*$/, ''),
           taken: dayIn(first(r.date) || ''), text: [r.title, r.description, arr(r.subject).join(' '), arr(r.subject_headings).join(' '), arr(r.original_format).join(' ')].map((x) => stripHtml(Array.isArray(x) ? x.join(' ') : x, 400)).join(' | '),
           rejected: open ? '' : 'no "no known restrictions" statement' }));
       }
