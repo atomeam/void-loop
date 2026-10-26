@@ -729,22 +729,29 @@ try {
     const t = await text();
     const probe = PROBES.paint;
     const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
-    check('paint: the template is drawn and counted — 155 cells, four numbered colours, a 16 by 16 grid — and every item the paint probe reads is on the page', /155 cells/.test(t) && /16 × 16/.test(t) && !miss.length, JSON.stringify({ miss }));
+    check('paint: the template is drawn and counted — 76 cells, four numbered colours, a 12 by 12 grid — and every item the paint probe reads is on the page', /76 cells/.test(t) && /12 × 12/.test(t) && !miss.length, JSON.stringify({ miss }));
     await P.p.click('#grid button[data-code="1"]'); await P.p.waitForTimeout(150);
     const afterOne = await text();
     await P.p.click('#grid button[data-code="2"]'); await P.p.waitForTimeout(150);
     const wrong = await P.p.$eval('#note', (e) => e.textContent);
-    check('paint: a tap fills a cell of the chosen colour and the count follows; the wrong colour says so instead of filling', /1 of 155 cells painted/.test(afterOne) && /1 · 1\/15/.test(afterOne) && /colour 2/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ cells painted/) || []), wrong }));
+    check('paint: a tap fills a cell of the chosen colour and the count follows; the wrong colour says so instead of filling', /1 of 76 cells painted/.test(afterOne) && /1 · 1\/10/.test(afterOne) && /colour 2/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ cells painted/) || []), wrong }));
     await P.p.click('#next'); await P.p.waitForTimeout(150);
     const hints = await P.p.evaluate(() => document.querySelectorAll('#grid button.hint').length);
     await P.p.click('#save'); await P.p.waitForTimeout(200);
     const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
     check('paint: next cell marks one to paint, and saving puts the painting in the gallery on this device', hints === 1 && gallery.length === 1 && /heart/.test(gallery[0]) && /1 painted/.test(gallery[0]), JSON.stringify({ hints, gallery }));
+    const lit = await P.p.evaluate(() => document.querySelectorAll('#grid button.same').length);
+    const pct = await P.p.evaluate(() => document.getElementById('bar').getAttribute('aria-valuenow'));
+    await P.p.click('#undo'); await P.p.waitForTimeout(150);
+    const afterUndo = await text();
+    check('paint: the active colour lights every one of its cells, the bar shows the share painted, and undo takes the last cell back', lit === 10 && +pct > 0 && /0 of 76 cells painted/.test(afterUndo), JSON.stringify({ lit, pct, afterUndo: (afterUndo.match(/\d+ of \d+ cells painted/) || []) }));
+    await P.p.click('#grid button[data-code="1"]'); await P.p.waitForTimeout(120);
+    await P.p.click('#save'); await P.p.waitForTimeout(150);
     await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 10000 });
     const kept = await P.p.evaluate(() => document.querySelectorAll('#gallery li').length);
-    check('paint: the gallery survives a reload (it is on this device, nothing uploaded)', kept === 1, JSON.stringify({ kept }));
-    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share').length);
-    check('paint: the upload, the palette, the PNG export and the share control are all there', inputs >= 7, JSON.stringify({ inputs }));
+    check('paint: the gallery survives a reload (it is on this device, nothing uploaded)', kept >= 1, JSON.stringify({ kept }));
+    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #bar').length);
+    check('paint: the upload, the palette, the PNG export and the share control are all there', inputs >= 9, JSON.stringify({ inputs }));
     await P.ctx.close();
   }
   // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the

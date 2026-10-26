@@ -413,12 +413,12 @@ export const PROBES = Object.freeze({
       ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   // paint (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint-by-number art, fought from Verse's own /paint/. The ask opens a
-  // known template, so the counts are checkable against the formula: the heart is 155 cells on a 16 by 16 grid in four numbered colours,
-  // 15 + 36 + 64 + 40. Judged on Verse alone (their side is an app store listing, not a page).
+  // known template, so the counts are checkable against the formula: the heart is 76 cells on a 12 by 12 grid in four numbered colours,
+  // 10 + 26 + 28 + 12. Judged on Verse alone (their side is an app store listing, not a page).
   paint: {
     site: 'https://heycolor.com/', verse: '/paint/',
     ask: { verse: '/paint/?t=heart' },
-    truth: [['the cells to paint, counted (155)', /\b155 cells/], ['colour 1 has 15 cells', /1 \u00b7 0\/15/], ['colour 2 has 36', /2 \u00b7 0\/36/], ['colour 3 has 64', /3 \u00b7 0\/64/], ['colour 4 has 40', /4 \u00b7 0\/40/], ['the grid is 16 by 16', /16 \u00d7 16/]],
+    truth: [['the cells to paint, counted (76)', /\b76 cells/], ['colour 1 has 10 cells', /1 \u00b7 0\/10/], ['colour 2 has 26', /2 \u00b7 0\/26/], ['colour 3 has 28', /3 \u00b7 0\/28/], ['colour 4 has 12', /4 \u00b7 0\/12/], ['the grid is 12 by 12', /12 \u00d7 12/]],
     facts: [
       ['paint by number', /paint by number/i], ['numbered cells', /\bnumbered cells\b/i], ['a numbered palette', /palette/i], ['the progress count', /cells painted/],
       ['next cell', /Next cell/], ['start over', /Start over/], ['download a PNG', /Download PNG/], ['a share link', /Share link/],
