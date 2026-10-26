@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:36:18Z",
+   "subject": "Scores: Next games on the day view, the stage card (skills/scores.js, PAGE_OF), Pick'em, Survivor and What-if tabs, NFL fantasy points…"
+  },
+  {
+   "at": "2026-10-26T02:36:14Z",
+   "subject": "Scores: week view, form dots, cut-line key, play by play, earlier meetings, the worker keeps the last scores JSON, stale-while-revalidate…"
+  },
+  {
+   "at": "2026-10-26T02:35:22Z",
+   "subject": "Podcasts: every common ask carries a setting (no bare page link)"
+  },
+  {
    "at": "2026-10-26T02:34:49Z",
    "subject": "News: eight common asks that each take a setting, and no ellipsis added when a summary is cut"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T02:22:34Z",
    "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T02:22:13Z",
-   "subject": "Site icons: 10 kept"
-  },
-  {
-   "at": "2026-10-26T02:19:54Z",
-   "subject": "Refresh Verse's facts about itself after the scores page"
-  },
-  {
-   "at": "2026-10-26T02:19:37Z",
-   "subject": "Scores page: /scores/, Versus' ESPN floor (tier 1)"
   }
  ],
  "builders": {

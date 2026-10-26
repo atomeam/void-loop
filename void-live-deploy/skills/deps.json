@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 848,
+ "counted": 849,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1011,6 +1011,13 @@
    "tests": 1
   },
   {
+   "file": "lib/scores.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/tally.js",
    "skills": 1,
    "direct": 1,
@@ -1919,13 +1926,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
-  },
-  {
-   "file": "lib/scores.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/translate-web.js",
@@ -6511,7 +6511,8 @@
   "lib/scores.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/scores.js"
+    "functions/api/scores.js",
+    "skills/scores.js"
    ]
   },
   "lib/self-blocks.js": {
@@ -10423,6 +10424,12 @@
     "skills/mini/ringer.js",
     "skills/ringer.js"
    ]
+  },
+  "skills/scores.js": {
+   "imports": [
+    "lib/scores.js"
+   ],
+   "importedBy": []
   },
   "skills/scripts.js": {
    "imports": [
