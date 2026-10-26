@@ -491,8 +491,68 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:46:55Z",
+   "subject": "Jobs: an excerpt ends at a whole sentence; the generated files"
+  },
+  {
+   "at": "2026-10-26T06:45:29Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:42:49Z",
+   "subject": "Traffic: one visit, not one visits"
+  },
+  {
+   "at": "2026-10-26T06:42:25Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
+  },
+  {
+   "at": "2026-10-26T06:37:45Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:35:09Z",
+   "subject": "RULES: Verse earns without Claude (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:34:27Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:34:02Z",
+   "subject": "RULES: Verse earns, on its own (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:31:35Z",
+   "subject": "Traffic: a placeholder domains/traffic.json until the first run, deps and guide regenerated"
+  },
+  {
+   "at": "2026-10-26T06:31:35Z",
+   "subject": "Who visits Verse: a cookie-less count, a daily traffic file and \"People this week\""
+  },
+  {
+   "at": "2026-10-26T06:30:54Z",
+   "subject": "RULES: Verse uses its own tools to become successful and profitable (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:29:57Z",
+   "subject": "Incident: the browser suite failed on 4a0e3f90 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-26T06:29:50Z",
+   "subject": "RULES: Verse uses its own tools (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:28:29Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
    "at": "2026-10-26T06:27:05Z",
    "subject": "Jobs: /jobs/ for Versus' LinkedIn Jobs floor and a page per lane site, on remote listings from Remotive, Jobicy and Himalayas (terms read…"
+  },
+  {
+   "at": "2026-10-26T06:25:43Z",
+   "subject": "RULES: function first, money later (owner, 2026-10-26)"
   },
   {
    "at": "2026-10-26T06:17:52Z",
@@ -509,70 +569,14 @@
   {
    "at": "2026-10-26T06:15:12Z",
    "subject": "Flights: five providers, not six (the page builds five fixed provider links, plus the airline site when known)"
-  },
-  {
-   "at": "2026-10-26T06:12:38Z",
-   "subject": "Tower gate: jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:10:52Z",
-   "subject": "Tower gate: jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:09:28Z",
-   "subject": "IndexNow on every main deploy: the sitemap pages it changed go to api.indexnow.org in one POST"
-  },
-  {
-   "at": "2026-10-26T06:07:54Z",
-   "subject": "RULES: an owner chore is worked around or gathered, never dropped (owner, 2026-10-26)"
-  },
-  {
-   "at": "2026-10-26T06:07:42Z",
-   "subject": "Launch drafts: AlternativeTo listings and community posts for review"
-  },
-  {
-   "at": "2026-10-26T06:07:27Z",
-   "subject": "RULES: Verse is autonomous (owner, 2026-10-26)"
-  },
-  {
-   "at": "2026-10-26T06:05:58Z",
-   "subject": "Tower gate: jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:05:51Z",
-   "subject": "Versus: every entry names its own Verse page, side by side opens it"
-  },
-  {
-   "at": "2026-10-26T06:03:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T06:03:00Z",
-   "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
-  },
-  {
-   "at": "2026-10-26T06:01:53Z",
-   "subject": "Tower gate: travel: aruljohn.com,travel: airmilescalculator.com,travel: co2.myclimate.org,travel: flightconnections.com measured against…"
-  },
-  {
-   "at": "2026-10-26T05:55:16Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:52:17Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:52:01Z",
-   "subject": "Flights card leaves distance asks to the distance skill; a test for the card"
-  },
-  {
-   "at": "2026-10-26T05:49:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,wheel,time zones,codebase,tildegit measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Who visits (claude, 2026-10-26)",
+    "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
+   },
    {
     "name": "IndexNow on every deploy (claude)",
     "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
@@ -592,10 +596,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 07:45)",
     "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
-   },
-   {
-    "name": "Claude (Versus rename, 2026-10-25, 08:00)",
-    "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
    }
   ],
   "ladders": [
@@ -797,5 +797,10 @@
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
+ },
+ "people": {
+  "line": "People this week: 1 (1 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-26T06:42Z",
+  "source": "verse"
  }
 }
