@@ -158,3 +158,33 @@ test('a page older than the evidence file knows it: the sites the file names tha
   assert.equal(staleOf({ floors: { 'translate: nope.example': {}, 'another: x.example': {}, 'calculator': {} } }, t), 2);
   assert.equal(staleOf(null, t), 0); assert.equal(staleOf({}, null), 0);
 });
+
+test('a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): even with the fewest aspects left it is never the current fight while a small site remains', () => {
+  const giant = FLOORS.find((f) => f.defer);
+  assert.ok(giant, 'some floors are marked defer');
+  const ev = { [giant.id]: Object.fromEntries(aspectsOf(giant).slice(0, 2).map((a) => [a, { verdict: 'better', evidence: 'x' }])) };
+  const t = tower([], ev);
+  const g = t.floors.find((f) => f.id === giant.id);
+  assert.equal(g.state, 'ahead', 'the giant stays in the queue, just not first');
+  assert.ok(g.floor > t.floors.find((f) => f.state === 'current').floor, 'it stands behind the current fight');
+  const cur = t.floors.find((f) => f.state === 'current');
+  assert.ok(!cur.defer, 'the current fight is never a deferred floor while small sites remain');
+  assert.equal(t.floors.filter((f) => f.state === 'current').length, 1);
+});
+test('the shopping floor fights from Verse\'s own store, and the store page exists with what the probes read', async () => {
+  const { readFileSync } = await import('node:fs');
+  const s = FLOORS.find((f) => f.id === 'shopping');
+  assert.equal(s.site, 'Amazon'); assert.equal(s.page, '/store/'); assert.ok(s.defer);
+  const html = readFileSync(new URL('../void-live-deploy/store/index.html', import.meta.url), 'utf8');
+  assert.ok(!/http-equiv="refresh"/.test(html), 'the store page is a page, not a redirect');
+  const redir = readFileSync(new URL('../void-live-deploy/_redirects', import.meta.url), 'utf8');
+  assert.match(redir, /\/shopping\/ \/store\/ 301/, '/shopping/ lands on the store, so the floor\'s own name never 404s');
+  assert.match(redir, /\/shopping \/store\/ 301/, 'the same without the slash');
+  const { PROBES } = await import('./tower-probes.mjs');
+  const probe = PROBES.shopping;
+  assert.ok(probe, 'the shopping floor has a probe');
+  assert.match(probe.ask.verse, /cart=void-monthly%2Ccode-review-pro%3A2|cart=void-monthly,code-review-pro:2/);
+  assert.ok(probe.truth.length >= 4, 'accuracy is judged against a worked-out answer');
+  for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
+  assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
+});

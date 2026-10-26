@@ -1,0 +1,3 @@
+# Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
+/shopping /store/ 301
+/shopping/ /store/ 301

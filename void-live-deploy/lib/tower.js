@@ -65,21 +65,21 @@ const HAND_FLOORS = [
   { id: 'image boards', site: '4chan', url: 'https://www.4chan.org/', ask: 'image boards', page: '/boards/', label: 'Image boards', glyph: '▧', noShot: true, extra: ['catalog', 'replies and quoting', 'image posts', 'archive'] },
   { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', page: '/scores/', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
   { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', page: '/markets/', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
-  { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
+  { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', defer: true, extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', page: '/news/', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
   { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', page: '/photos/', label: 'Photos', glyph: '◰', extra: ['editing', 'compress and convert', 'metadata and privacy'] },
-  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
-  { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', extra: ['courses', 'progress tracking', 'practice'] },
+  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', defer: true, extra: ['catalogue size', 'online play', 'ratings and ladders'] },
+  { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', defer: true, extra: ['courses', 'progress tracking', 'practice'] },
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', page: '/flights/', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
-  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
-  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', label: 'Shopping', glyph: '⊡', extra: ['catalogue', 'checkout', 'delivery tracking'] },
-  { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', extra: ['groups', 'media', 'calls'] },
-  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', extra: ['catalogue', 'streaming quality', 'recommendations'] },
-  { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', extra: ['feed', 'following', 'posting and replies'] },
-  { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', extra: ['sending and receiving', 'spam filtering', 'search'] },
-  { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', extra: ['web coverage', 'freshness', 'answer quality'] },
+  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', defer: true, extra: ['listing breadth', 'alerts', 'applications'] },
+  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, extra: ['catalogue', 'checkout', 'delivery tracking'] },
+  { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', defer: true, extra: ['groups', 'media', 'calls'] },
+  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, extra: ['catalogue', 'streaming quality', 'recommendations'] },
+  { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', defer: true, extra: ['feed', 'following', 'posting and replies'] },
+  { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', defer: true, extra: ['sending and receiving', 'spam filtering', 'search'] },
+  { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', defer: true, extra: ['web coverage', 'freshness', 'answer quality'] },
   // the code hosts from the least visited up (owner, 2026-10-24: "verse can eat github starting with the smallest"; the order is Tranco's,
   // tools/easiest-sites.mjs --rank). codebasehq.com's public side is one page that sells a paid product; its extra aspects are what that page lists
   { id: 'codebase', site: 'codebasehq.com', url: 'https://www.codebasehq.com/', ask: 'make a gist', page: '/g/', label: 'Code host (Codebase)', glyph: '⌥', fatality: 'a gist locked with a passphrase and a what-changed view, with no account and nothing stored', extra: ['code hosting', 'ticket tracking', 'time tracking', 'project files and docs'] },
@@ -87,11 +87,11 @@ const HAND_FLOORS = [
   // gate's fault, not a loss (owner, 2026-10-24), so it is a floor again and the gate, a full browser now, does the wall's work like a visitor
   { id: 'tildegit', site: 'tildegit.org', url: 'https://tildegit.org/', ask: 'make a gist', page: '/g/', label: 'Code host (tildegit)', glyph: '⌥', extra: ['code hosting', 'issues', 'pull requests', 'accounts'] },
   // the top of the tower (owner, 2026-10-23: "Github and claude ar on the tower too"): where Verse's own code lives, and the final boss
-  { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
+  { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', defer: true, extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
   // more opponents (owner, 2026-10-24: "you can use github and hugging face and perchance and anything you want as an opponent")
   { id: 'random generators', site: 'perchance.org', url: 'https://perchance.org/', ask: 'random name generator', label: 'Random generators', glyph: '⁇', page: '/generators/', extra: ['generator catalogue', 'make your own generator', 'image generation', 'list language', 'publish and remix'] },
-  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
-  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
+  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', defer: true, extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
+  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', defer: true, extra: ['answers anything', 'writes and runs code', 'builds itself'] },
 ];
 
 // Lanes (owner, 2026-10-25: "defeat every single translate site one by one before we move on . its ok to punch down we can just confirm we
@@ -260,7 +260,11 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const hard = (f) => (f.lost.length ? 1 : 0);
   // a lane site stands where its leader would and just in front of it, so the climb goes up the lane from its bottom and the leader is its last fight
   const lead = new Map(all.map((f) => [f.id, f])), key = (f) => (f.lane && lead.get(f.lane) && !lead.get(f.lane).beaten ? lead.get(f.lane) : f);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+    // a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): the giants keep their
+  // place in the queue but stand behind every small site, so the fight on the stage is always the easiest one left. The flag is read off the floor
+  // itself, never off key(), so a deferred leader's lane still climbs from its bottom; the giant comes back to the front once the small sites are done.
+  const waiting = (f) => (f.defer ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return waiting(a) - waiting(b) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

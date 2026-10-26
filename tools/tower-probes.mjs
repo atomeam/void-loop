@@ -412,6 +412,28 @@ export const PROBES = Object.freeze({
     facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
       ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
+  // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
+  // sites yet"): Amazon is the floor, fought from Verse's own /store/. The ask arrives carrying a cart, so the money on the page is checkable against the
+  // worked-out answer and the cart opens itself; the totals are the page's own, and the payment page (Gumroad or Stripe) is said to be the final word before
+  // anyone pays. Digital goods: delivery is told as steps, not tracking theatre. Judged on Verse alone (nobody buys from both sites).
+  shopping: {
+    site: 'https://www.amazon.com/', verse: '/store/',
+    ask: { verse: '/store/?cart=void-monthly,code-review-pro:2' },
+    truth: [['Verse Monthly at $49.00', /\$49\.00/], ['two Code Review Pro, $20.00 on that line', /Code Review Pro[\s\S]{0,80}Qty 2[\s\S]{0,40}\$20\.00/], ['the subtotal, $69.00', /Subtotal\s*\$69\.00/], ['the total, $69.00', /Total\s*\$69\.00/], ['the payment page is the final word before anyone pays', /before you confirm/]],
+    askParts: {
+      catalogue: [['keyword search', /Search products/], ['a kind filter', /Kind/], ['a sort control', /Sort/], ['how many are shown', /\d+ of \d+ products/], ['every product names its price', /\$\d/], ['availability on the card', /Available now/], ['the price list as CSV', /price list \(CSV\)/]],
+      checkout: [['quantities', /Qty/], ['what one costs', /each/], ['a subtotal', /Subtotal/], ['the total', /Total\s*\$\d/], ['the payment page is the final word', /before you confirm/], ['no account needed', /no account/i], ['checkout names its provider', /Gumroad/]],
+      'delivery tracking': [['digital goods, nothing ships', /nothing ships/i], ['an order code', /order code/i], ['the steps named', /Ordered[\s\S]{0,200}Support window/], ['signed downloads ready', /Signed downloads/], ['license keys', /License key/], ['links re-openable any time', /re-open them any time/]],
+    },
+    facts: [
+      ['keyword search', /Search products/], ['a kind filter', /Kind/], ['a sort control', /Sort/], ['a count of what is shown', /\d+ of \d+ products/],
+      ['prices on the products', /\$\d/], ['availability', /Available now/], ['a 3D preview', /Turn any model/], ['the changelog', /changelog/],
+      ['an order lookup', /Find my order/], ['order codes', /order code/i], ['license keys', /License key/], ['signed downloads', /Signed downloads/],
+      ['links that last 24 hours', /last 24 hours/], ['a receipt any time', /receipt/i], ['a cart shared as a link', /shared as a link/],
+      ['the cart kept on this device', /on this device/], ['works offline', /orks offline/], ['no account', /no account/i], ['no ads', /no ads/i],
+      ['no trackers', /no trackers/i], ['the payment provider credited', /Gumroad/], ['ask Verse from the page', /what can I buy/], ['support the crew', /Tip the crew/],
+    ],
+  },
   // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
   // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
   // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.

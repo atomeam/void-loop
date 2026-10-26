@@ -327,6 +327,7 @@ const SIGNAL_SPY = () => {
 // Plan item 12: Atom's Gumroad store. /api/catalog and /api/gumroad are the real Pages Functions, run against an in-memory D1,
 // with a stand-in store (storefront + product pages carry an HTML-escaped data-page JSON, like moonbeam846.gumroad.com).
 const catalogFn = await import(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url).href);
+const storeFn = await import(new URL('../void-live-deploy/functions/api/store/[[path]].js', import.meta.url).href); // the store's own api, for the shopping floor
 const pingFn = await import(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url).href);
 const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.meta.url).href);
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
@@ -471,6 +472,7 @@ async function fresh(...inits) {
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
+    if (u.includes('/api/store/')) { const rq = r.request(), path = u.split('/api/store/')[1].split('?')[0].replace(/\/$/, ''); const init = { method: rq.method(), headers: { 'content-type': rq.headers()['content-type'] || 'application/json' } }; if (rq.method() !== 'GET') init.body = rq.postData() || ''; return storeFn.onRequest({ request: new Request(u, init), env: { SALT: 'test-salt' }, params: { path: path ? path.split('/') : [] }, waitUntil() {} }).then((res) => res.text().then((body) => r.fulfill({ status: res.status, contentType: res.headers.get('content-type') || 'application/json', body }))); }
     if (u.includes('/api/figurescript')) {
       const body = r.request().method() === 'POST' ? JSON.parse(r.request().postData() || '{}') : Object.fromEntries(new URL(u).searchParams);
       return figurescriptFn.onRequestPost({ request: new Request('http://x/api/figurescript', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: {} })
@@ -1475,6 +1477,31 @@ try {
     await W.ctx.close(); }
   // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
   // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("store: the catalogue searched and sorted, a cart carried by its link, quantities and the totals worked out, and the delivery steps")) {
+    const S = await fresh({ base: base + 'store/?cart=void-monthly,code-review-pro:2' });
+    const text = async () => S.p.evaluate(() => document.body.innerText);
+    await until(async () => /Showing \d+ of \d+ products/.test(await text()), 8000);
+    const page = await text();
+    const count = page.match(/Showing (\d+) of (\d+) products/);
+    check('store: the catalogue counts what it shows, every product names its price and its availability', count && +count[2] >= 4 && /Available now/.test(page) && /\$49\.00/.test(page), JSON.stringify({ count: count && count[0], head: page.slice(0, 500), errs: S.logs }));
+    check('store: a link carries the cart — it opens itself, quantities and all, with the money worked out', /Qty 2/.test(page) && /\$20\.00/.test(page) && /Subtotal\s*\$69\.00/.test(page) && /Total\s*\$69\.00/.test(page) && /before you confirm/.test(page), (page.split('Your cart')[1] || '').slice(0, 300));
+    const link = await S.p.$eval('#cartlink', (e) => e.getAttribute('href'));
+    check('store: the share link carries exactly that cart', decodeURIComponent(link) === '/store/?cart=void-monthly,code-review-pro:2', link);
+    await S.p.fill('#q', 'review pro'); await S.p.waitForTimeout(300);
+    check('store: the search narrows the catalogue', /Showing 1 of \d+ products/.test(await text()), (await text()).match(/Showing \d+ of \d+ products/));
+    await S.p.fill('#q', ''); await S.p.selectOption('#sort', 'price-asc'); await S.p.waitForTimeout(300);
+    const prices = await S.p.evaluate(() => [...document.querySelectorAll('#grid .card .price')].map((e) => parseFloat(String(e.textContent).replace(/[^0-9.]/g, ''))).filter((n) => Number.isFinite(n)));
+    check('store: sorting by price orders the grid', prices.length > 2 && prices.every((v, i) => i === 0 || prices[i - 1] <= v), JSON.stringify(prices));
+    await S.p.selectOption('#sort', 'featured');
+    await S.p.click('#items [data-inc="code-review-pro"]'); await S.p.waitForTimeout(250);
+    const bumped = await text();
+    check('store: one more of a product raises its qty, its line and the total', /Qty 3/.test(bumped) && /\$30\.00/.test(bumped) && /Total\s*\$79\.00/.test(bumped), (bumped.match(/Qty 3[\s\S]{0,60}/) || [''])[0]);
+    await S.p.click('#items [data-dec="code-review-pro"]');
+    const csv = await S.p.$eval('#csv', (e) => e.getAttribute('href'));
+    check('store: the price list is a CSV anyone can take, no account and no api key', /^data:text\/csv/.test(csv) && decodeURIComponent(csv).includes('id,name,kind,cents,price,every,availability'), String(csv).slice(0, 80));
+    check('store: delivery is told as steps — nothing ships, signed downloads, license keys — and the honest lines stand', /nothing ships/i.test(page) && /Signed downloads/.test(page) && /License key/.test(page) && /last 24 hours/.test(page) && /no trackers/.test(page) && /works offline/.test(page) && /no ads/i.test(page), JSON.stringify({ ships: /nothing ships/i.test(page), dl: /Signed downloads/.test(page), key: /License key/.test(page), h24: /last 24 hours/.test(page), track: /no trackers/.test(page), off: /works offline/.test(page), ads: /no ads/i.test(page) }));
+    check('store: the offline note waits for a real offline visit', await S.p.$eval('#offlinenote', (e) => e.hidden));
+  }
   if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
     const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
     await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
