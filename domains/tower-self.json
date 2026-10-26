@@ -133,9 +133,51 @@
    "title": "Emoji Combos"
   },
   "supercolorapp.com": {
-   "at": "2026-10-26T16:56:10Z",
+   "at": "2026-10-26T22:52:46Z",
+   "outcome": "discarded",
+   "family": "paint",
+   "why": "failed tests"
+  },
+  "colorzilla.com": {
+   "at": "2026-10-26T22:52:46Z",
+   "outcome": "discarded",
+   "family": "colour",
+   "why": "failed tests"
+  },
+  "c-united.co.jp": {
+   "at": "2026-10-26T22:51:41Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a corporate site for a coffee company that manages various cafe brands and operates an online store. Verse does not have a pa)",
+   "title": "C-United株式会社"
+  },
+  "hexdb.io": {
+   "at": "2026-10-26T22:52:14Z",
    "outcome": "not-judged",
-   "why": "the model answered 401"
+   "why": "the answer was not JSON"
+  },
+  "notepad-plus-plus.org": {
+   "at": "2026-10-26T22:52:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a software download page for a specific desktop text editor, whereas Verse provides web-based tools. The closest functional t)",
+   "title": "Notepad++"
+  },
+  "font.im": {
+   "at": "2026-10-26T22:52:28Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a way to browse, preview, and get embed codes for Google Fonts, but Verse does not have a font library, typography tool)",
+   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts"
+  },
+  "processchecker.com": {
+   "at": "2026-10-26T22:52:33Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Processchecker.com"
+  },
+  "uptimer.dev": {
+   "at": "2026-10-26T22:52:43Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Uptimer.dev"
   }
  },
  "runs": [
