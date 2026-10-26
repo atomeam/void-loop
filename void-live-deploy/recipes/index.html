@@ -124,6 +124,8 @@
   <section class="pane" id="browse" hidden aria-labelledby="browseH" style="margin-top:8px;min-height:0">
     <h2 id="browseH" style="margin:0 0 4px">Browse</h2>
     <div class="row"><label class="vh" for="bArea" id="bAreaL">Cuisine</label><select class="box" id="bArea"></select><label class="vh" for="bCat" id="bCatL">Category</label><select class="box" id="bCat"></select></div>
+    <div class="row"><label class="vh" for="bOcc" id="bOccL">Occasion</label><select class="box" id="bOcc"></select><label class="vh" for="bTime" id="bTimeL">Time</label><select class="box" id="bTime"></select></div>
+    <p class="note" id="bNote"></p>
   </section>
   <section class="pane" id="planPane" hidden aria-labelledby="planH" style="margin-top:8px;min-height:0">
     <h2 id="planH" style="margin:0 0 4px">Meal plan</h2>
@@ -229,7 +231,7 @@
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, bOccL: KW.occasion, bTimeL: KW.time, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
       if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
@@ -440,7 +442,17 @@
     $('shopAll').addEventListener('click', () => { if (store.shop.length && !confirm(KW.clearAll + '?')) return; store.shop = []; keep(); drawShop(); });
     pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan); pane('browseBtn', 'browse', drawBrowse);
     // browsing TheMealDB by cuisine or by category (its own closed lists, lib/recipes.js): the meals as a list to open
-    function drawBrowse() { for (const [id, list, label] of [['bArea', R.AREAS, KW.cuisine], ['bCat', R.CATEGORIES, KW.category]]) { const sel = $(id); if (sel.options.length) continue; sel.append(Object.assign(el('option', '', label + ': ' + KW.pick), { value: '' })); for (const x of list) sel.append(Object.assign(el('option', '', x), { value: x })); } }
+    // time and occasion: a time works over the recipes whose time Verse knows; an occasion is a TheMealDB category (or the quick-weeknight time)
+    const known = () => [...R.BUILT_IN, ...store.saved.map((x) => x.recipe), ...store.mine.map((x) => x.recipe), ...store.hist.map((x) => x.recipe)].filter(Boolean);
+    const timeRows = (max, head) => { const rs = K.byTime(known(), max); results(rs.map((r) => ({ name: r.name, href: linkTo(r), small: r.time + ' ' + KW.min, recipe: r })), rs.length ? head : KW.timeNone); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+    $('bTime').addEventListener('change', () => { const v = +$('bTime').value; if (!v) return; $('bOcc').value = ''; $('bArea').value = ''; $('bCat').value = ''; timeRows(v, KW.timeUnder(v) + ': ' + K.byTime(known(), v).length); });
+    $('bOcc').addEventListener('change', async () => { const o = K.OCCASIONS.find((x) => x.id === $('bOcc').value); if (!o) return; $('bTime').value = ''; $('bArea').value = ''; $('bCat').value = '';
+      if (o.time) return timeRows(o.time, KW[o.word] + ': ' + K.byTime(known(), o.time).length);
+      if (!navigator.onLine) return say(W.offline, true); const j = await ask('c=' + encodeURIComponent(o.c)); if (!j || !j.list || !j.list.length) return say(W.none, true);
+      results(j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: KW[o.word] + ' · TheMealDB' })), KW[o.word] + ': ' + j.list.length + ' ' + KW.found); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+    function drawBrowse() {
+      if (!$('bOcc').options.length) { $('bOcc').append(Object.assign(el('option', '', KW.occasion + ': ' + KW.pick), { value: '' })); for (const o of K.OCCASIONS) $('bOcc').append(Object.assign(el('option', '', KW[o.word]), { value: o.id }));
+        $('bTime').append(Object.assign(el('option', '', KW.time + ': ' + KW.timeAny), { value: '' })); for (const t of K.TIMES) $('bTime').append(Object.assign(el('option', '', KW.timeUnder(t)), { value: String(t) })); $('bNote').textContent = KW.timeNote; } for (const [id, list, label] of [['bArea', R.AREAS, KW.cuisine], ['bCat', R.CATEGORIES, KW.category]]) { const sel = $(id); if (sel.options.length) continue; sel.append(Object.assign(el('option', '', label + ': ' + KW.pick), { value: '' })); for (const x of list) sel.append(Object.assign(el('option', '', x), { value: x })); } }
     for (const [id, k, other] of [['bArea', 'a', 'bCat'], ['bCat', 'c', 'bArea']]) $(id).addEventListener('change', async () => {
       const v = $(id).value; if (!v) return; $(other).value = ''; if (!navigator.onLine) return say(W.offline, true);
       const j = await ask(k + '=' + encodeURIComponent(v)); if (!j || !j.list || !j.list.length) return say(W.none, true);

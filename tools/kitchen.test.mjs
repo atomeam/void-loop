@@ -59,3 +59,9 @@ test('voice commands: next, back, repeat, timers, ingredients, close, in English
     ['weiter', 'next'], ['zurück', 'prev'], ['nochmal bitte', 'repeat'], ['Timer starten', 'timer'], ['Timer stopp', 'stopTimer'], ['Zutaten', 'ingredients'], ['schließen', 'close'], ['banana bread', null], ['', null], ['I am so hungry now', null], ['x'.repeat(200), null]];
   for (const [said, want] of cases) assert.equal(K.voiceCommand(said), want, JSON.stringify(said));
 });
+test('browsing by time and occasion: only recipes whose time is known, each once, quickest first; an occasion is a TheMealDB category or the quick-weeknight time', () => {
+  const rs = [{ id: 'a', name: 'Soup', time: 60 }, { id: 'b', name: 'Toast', time: 5 }, { id: 'b', name: 'Toast again', time: 5 }, { id: 'c', name: 'Unknown' }, { id: 'd', name: 'Eggs', time: 10 }, { id: 'e', name: 'Beans', time: 10 }, null];
+  assert.deepEqual(K.byTime(rs, 30).map((r) => r.id), ['b', 'e', 'd'], 'known, once each, quickest first, ties by name'); assert.deepEqual(K.byTime(rs, 4), []); assert.equal(K.byTime(BUILT_IN, 15).length, 6); assert.equal(K.byTime(BUILT_IN, 30).length, 10);
+  assert.deepEqual(K.TIMES, [15, 30, 45, 60]); assert.ok(K.OCCASIONS.every((o) => (o.c && !o.time) || (o.time && !o.c)) && new Set(K.OCCASIONS.map((o) => o.id)).size === K.OCCASIONS.length);
+  const cats = ['Beef', 'Breakfast', 'Chicken', 'Dessert', 'Goat', 'Lamb', 'Miscellaneous', 'Pasta', 'Pork', 'Seafood', 'Side', 'Starter', 'Vegan', 'Vegetarian']; assert.ok(K.OCCASIONS.filter((o) => o.c).every((o) => cats.includes(o.c)), 'only categories TheMealDB has');
+});
