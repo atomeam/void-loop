@@ -1,7 +1,18 @@
 {
-  "at": "2026-10-25T12:04:35.541Z",
+  "at": "2026-10-26T13:37:44.782Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261025-2044-2",
+      "ask": "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day.",
+      "target": "voice:ask-20261025-2044-2"
+    },
+    {
+      "id": "ask-20261025-2044-3",
+      "ask": "Move non-V01D workers off the shared namespace.",
+      "target": "voice:ask-20261025-2044-3"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
