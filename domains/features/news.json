@@ -1,6 +1,6 @@
 {
  "floor": "news",
- "verse_page": null,
+ "verse_page": "void-live-deploy/news/index.html",
  "researched": "2026-10-25",
  "sites": {
   "bbc.com/news": {
@@ -16,16 +16,18 @@
      "name": "Front page of top stories",
      "detail": "Ranked top stories with images, updated through the day",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/news.js: Wikipedia \"In the news\" headlines and the Hacker News front page, refreshed every 30/10 min while on stage"
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/news/index.html: Top stories, about 10 open feeds grouped by lib/news.js stories(), source and age on every row; links out, no images",
+     "shows": "Top stories"
     },
     {
      "group": "core",
      "name": "Sections",
      "detail": "World, UK, Business, Tech, Science, Health, Entertainment, regions (Africa, Asia, US & Canada...)",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "news.js: world headlines and tech only; other topics not claimed"
+     "verse": "has",
+     "verse_evidence": "news page section row: Top stories, World, UK, US, Business, Technology, Science, Sport, Culture, Africa, Asia, Europe, Middle East, Latin America",
+     "shows": "Business[\\s\\S]*Science[\\s\\S]*Sport"
     },
     {
      "group": "core",
@@ -64,8 +66,9 @@
      "name": "Search",
      "detail": "Search BBC News archive",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "news page search box over the loaded headlines and summaries (BBC archive search is not built: only what the feeds carry now)",
+     "shows": "Search the headlines"
     },
     {
      "group": "core",
@@ -73,15 +76,16 @@
      "detail": "Local stories by postcode (UK)",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/weather.js gives local weather; no local news"
+     "verse_evidence": "Weather has its own page /weather/; no local news by postcode"
     },
     {
      "group": "power",
      "name": "Follow topics (My News)",
      "detail": "Follow up to 25 topics; personalised feed",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "news page My news: topics and sources followed on the device (localStorage), no account, no cap below 30",
+     "shows": "My news"
     },
     {
      "group": "power",
@@ -113,23 +117,25 @@
      "detail": "News in 40+ languages",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/translate.js can translate a headline on request"
+     "verse_evidence": "news page: English, Spanish, French and German top stories from DW, France 24, BBC Mundo and others; not 40 languages"
     },
     {
      "group": "power",
      "name": "Live freshness timestamps",
      "detail": "Every story shows when it was published/updated",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "news cards re-fetch on a timer"
+     "verse": "has",
+     "verse_evidence": "news page: every row shows source and age from the feed time",
+     "shows": "\\d+ (?:min|h|d) ago"
     },
     {
      "group": "sharing",
      "name": "Share stories",
      "detail": "Share links to articles and live posts",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "news page: share per story (device share sheet or copy of headline, sources and link) and a link to the whole view",
+     "shows": "Copy link to this view"
     },
     {
      "group": "sharing",
@@ -144,16 +150,16 @@
      "name": "Apps and widgets",
      "detail": "iOS/Android app, home-screen widgets, offline reading of loaded stories",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "news page opens offline with the last headlines kept on the device (service worker); no app or widget"
     },
     {
      "group": "accessibility",
      "name": "Accessible pages",
      "detail": "Screen-reader friendly markup, captions on video, text-only \"lite\" pages",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "news page: labelled controls, 44 px targets, text size and a headlines-only view; not measured against BBC lite pages"
     },
     {
      "group": "paid",
@@ -167,18 +173,21 @@
   }
  },
  "gaps": [
-  "many sources ranked into one front page",
-  "sections beyond world and tech",
-  "follow topics kept on the device",
-  "live page for a developing story",
-  "reader view of an article",
-  "search across sources",
-  "freshness time on every item"
+  "original reporting, live pages and video (Verse links out to the source)",
+  "breaking news push alerts (no accounts or push on this page)",
+  "40+ languages (four: English, Spanish, French, German)",
+  "most-read lists (the feeds publish none; the multi-source lift is Verse's own)",
+  "fact-check and explainer desks",
+  "archive search beyond what the feeds carry now",
+  "plain-words summary per story (needs a model call per cluster; not built to stay on existing caps)"
  ],
  "verse_extra": [
-  "headlines refresh themselves on the stage",
-  "no ads, no account",
-  "tech front page in the same card"
+  "the same story from several outlets grouped into one with an 'N sources' list",
+  "a source filter and follow a source, not only a topic",
+  "a headlines-only reading mode and bigger text",
+  "a read-later list on the device",
+  "works offline with the last headlines",
+  "no ads, no account, no tracking"
  ],
  "first_page": "News page /news/ for readers who want a calm, ad-free front page. First: \"news\" opens top stories gathered from several open sources (Wikipedia In the news, public RSS from major outlets, Hacker News) with source and age on each, section tabs, topics followed on the device, and a link holding the chosen sections. Will not build: original reporting, comments, video streaming or push alerts."
 }

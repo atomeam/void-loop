@@ -251,6 +251,20 @@ export const PROBES = Object.freeze({
       ['a servings scaler', /\bservings\b[\s\S]{0,40}[−+-]|\bscale\b|\badjust\b/i], ['metric and US units', /\bmetric\b/i], ['a step mode', /step mode|cook mode|one step/i], ['timers', /\btimers?\b/i], ['a shopping list', /\bcopy list\b|\bshopping list\b|\btick\b/i],
       ['search by ingredient', /by ingredient|what can i make/i], ['a share link', /\bshare\b/i], ['a history', /\bhistory\b/i], ['print', /\bprint\b/i], ['works offline', /\boffline\b/i]],
   },
+  news: {
+    site: 'https://www.bbc.com/news', verse: '/news/?sec=world',
+    // the question: the world headlines, in the page's link. A right answer is a list of real headlines, each with its source and its age, from
+    // several outlets, and the page says how many of its sources answered: a page that is only loading, or that lists one outlet, shows none of it.
+    // Judged on Verse alone (the site is not asked); the same probe measures every site in the news lane (lib/tower.js LANES)
+    ask: { verse: '/news/?sec=world' },
+    truth: [['headline rows from at least three different sources', (t) => distinctRows(t) >= 3], ['at least ten headline rows, each with an age', (t) => rowsIn(t).length >= 10], ['the sources that answered, three or more', (t) => { const m = String(t).match(/Sources \((\d+) of \d+ answered\)/); return !!m && +m[1] >= 3; }]],
+    askParts: { 'breadth of sources': [['five or more sources in the rows', (t) => distinctRows(t) >= 5]], freshness: [['an age on a story', (t) => rowsIn(t).length > 0]], 'topic following': [['follow topics', /\bfollow\b/i], ['my news', /\bmy news\b/i]] },
+    // what the best news pages show (BBC News' top stories, sections, search, follow topics, timestamps, share, languages, offline); Verse adds
+    // the same story from several sources grouped, a source filter, a read-later list and a headlines-only view
+    facts: [['top stories', /\btop stories\b/i], ['world', /\bworld\b/i], ['business', /\bbusiness\b/i], ['technology', /\btechnology\b/i], ['science', /\bscience\b/i], ['sport', /\bsport\b/i], ['culture', /\bculture\b/i], ['regions', /\bafrica\b[\s\S]*\basia\b/i],
+      ['search', /\bsearch\b/i], ['follow topics', /\bfollow\b/i], ['my news', /\bmy news\b/i], ['saved for later', /\bsaved\b/i], ['several languages', /\bespañol\b[\s\S]*\bdeutsch\b|\bdeutsch\b/i], ['story ages', (t) => rowsIn(t).length > 0],
+      ['the same story from several sources', /\b\d+ sources\b/i], ['a share link', /\bcopy link\b/i], ['headlines only', /\bheadlines only\b/i], ['works offline', /\boffline\b/i]],
+  },
   'image boards': {
     site: 'https://www.4chan.org/', verse: '/boards/',
     // the boards start blank (owner, 2026-10-25: "leave the categories blank but user creatable"), so nothing here depends on a board or posts
@@ -408,7 +422,13 @@ const PALETTES = [['shades', /\bshades?\b/i], ['tints', /\btints?\b/i], ['tones'
   ['the 16 VGA colours', /\bvga\b/i], ['a random colour', /\brandom\b/i]];
 // contrast: the colour floor's own aspect (lib/tower.js extra), whether the page says if text on the colour can be read (WCAG); only floors that list it are scored
 const COLOUR_PARTS = Object.freeze({ 'every colour model': MODELS, 'shades and palettes': PALETTES, contrast: [['text contrast', /\bcontrast\b|\bwcag\b/i], ['AA and AAA', /\bAAA?\b/]] });
-export const PARTS = Object.freeze({ 'docs and notes': { 'rich formatting': [['bold', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i]], search: [['search across notes', /\bsearch\b/i]], 'version history': [['version history', /\bversion history\b/i]] }, colour: COLOUR_PARTS, 'colour codes': COLOUR_PARTS,
+// the news floor's rows: "<source> · <age>" lines as the news page prints them (lib/news.js SOURCES names), read off a page's visible text. Pure.
+const NEWS_SOURCES = 'BBC News|The Guardian|NPR|Al Jazeera|DW|France 24|CBC News|ABC News Australia|Sky News|Euronews|RNZ|Ars Technica|The Verge|Hacker News|Nature|NASA|ScienceDaily|Africanews|El País|Le Monde|Tagesschau|Der Spiegel|RFI';
+/** every "Source · 3 h ago" line in a text: [source, ...]. */
+export const rowsIn = (t) => [...String(t || '').matchAll(new RegExp('(' + NEWS_SOURCES + ') · (?:just now|\\d+ (?:min|h|d) ago)', 'g'))].map((m) => m[1]);
+/** how many different sources those rows name. */
+export const distinctRows = (t) => new Set(rowsIn(t)).size;
+export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several sources', /\bsources\b/i]], freshness: [['ages', /\b\d+\s?(?:min|minutes?|h|hours?) ago\b|\bjust now\b|\bupdated\b/i]], 'topic following': [['follow', /\bfollow(?:ing)?\b/i], ['my news', /\bmy news\b/i]] }, 'docs and notes': { 'rich formatting': [['bold', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i]], search: [['search across notes', /\bsearch\b/i]], 'version history': [['version history', /\bversion history\b/i]] }, colour: COLOUR_PARTS, 'colour codes': COLOUR_PARTS,
   gradient: { 'stops with opacity': [['colour stops', /\bstops?\b/i], ['opacity', /\bopacity\b/i]], 'import css': [['import', /\bimport\b|\bpaste\b/i]], presets: [['presets', /\bpresets?\b/i]] },
   'base converter': { 'signed reading': [['a signed reading', /\bsigned\b|two.?s complement/i]], 'all four bases': [['binary', /\bbinary\b/i], ['octal', /\boctal\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i]] },
   'coin flip': { 'flip history': [['a running count', /\b\d+\s+(?:flips?|heads|tails)\b|\bheads\s*:?\s*\d+|\btails\s*:?\s*\d+/i]] },
