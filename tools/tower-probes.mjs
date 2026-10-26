@@ -417,7 +417,8 @@ export const PROBES = Object.freeze({
   // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are
   // checkable: hello world is 11 characters on 1 line. Judged on Verse alone (Codebase's page is a sign-up wall, not a tool).
   codebase: {
-    site: 'https://www.codebasehq.com/', verse: '/g/?text=hello%20world&name=notes.txt',
+    site: 'https://www.codebasehq.com/', verse: '/g/',
+    ask: { verse: '/g/?text=hello%20world&name=notes.txt' },
     truth: [['the file it was asked to hold', /notes\.txt/], ['the text it was asked to hold', /hello world/], ['the count of characters, worked out (11)', /11 characters/], ['the line count, worked out (1)', /1 line\b/], ['where the gist lives', /whole gist in the link/i]],
     askParts: {
       'code hosting': [['a raw view', /\bRaw\b/], ['a download', /\bDownload\b/], ['a copy-link', /Copy link/], ['a share control', /Share link/], ['a GitHub file it can open', /GitHub/], ['a stated limit', /[\d,]+ characters is the limit/]],
