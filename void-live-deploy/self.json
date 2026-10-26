@@ -491,6 +491,54 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:16:40Z",
+   "subject": "Tower gate: finance: stockanalysis.com,finance: tradingview.com,finance: barchart.com,music: virtualpiano.net,music measured against their…"
+  },
+  {
+   "at": "2026-10-26T04:14:11Z",
+   "subject": "Tower gate: music: chordchord.com,music: metronomeonline.com,music: virtualpiano.net,music measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:11:42Z",
+   "subject": "Tower gate: sports: thesportsdb.com,music: chordchord.com,music: metronomeonline.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:09:41Z",
+   "subject": "Tower gate: sports: thesportsdb.com,music: jasperbernaers.com,music: anotherproducer.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:08:51Z",
+   "subject": "Site reverse engineering: kanban-abacktools.com,kanban-jasperbernaers.com,kanban-kanbanflow.com,music-anotherproducer.com,music-chordchord.…"
+  },
+  {
+   "at": "2026-10-26T04:08:49Z",
+   "subject": "Site reverse engineering: finance-barchart.com,finance-companiesmarketcap.com,finance-finviz.com,finance-investing.com,finance-macrotrends.…"
+  },
+  {
+   "at": "2026-10-26T04:08:09Z",
+   "subject": "Sports pictures: what Verse can actually do, source by source, with licence and limit (asked by the owner)"
+  },
+  {
+   "at": "2026-10-26T04:07:40Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com,photos: squoosh.app,photos: photopea.com,photos: iloveimg.com…"
+  },
+  {
+   "at": "2026-10-26T04:07:11Z",
+   "subject": "Site reverse engineering: codebase,pdf-codeshack.io,pdf-pdfcandy.com,pdf-sejda.com,photos-iloveimg.com,photos-photopea.com,photos-tinypng.c…"
+  },
+  {
+   "at": "2026-10-26T04:06:08Z",
+   "subject": "Tower gate: photos measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:06:01Z",
+   "subject": "Markets: the day move is never Yahoo's chartPreviousClose (a year ago), and the header names the symbol and its kind first"
+  },
+  {
+   "at": "2026-10-26T04:05:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:05:22Z",
    "subject": "Site reverse engineering: ad frames, ad and analytics storage keys and one-page sections are not candidates; the first six scans re-folded"
   },
@@ -521,54 +569,6 @@
   {
    "at": "2026-10-26T04:02:23Z",
    "subject": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\""
-  },
-  {
-   "at": "2026-10-26T04:02:15Z",
-   "subject": "Tower gate: photos: exifeditor.io,finance: companiesmarketcap.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
-  },
-  {
-   "at": "2026-10-26T04:01:46Z",
-   "subject": "Photos: the compress and convert result (formats, quality, size before and after, resize, compare) stays under every tab of every page, a…"
-  },
-  {
-   "at": "2026-10-26T04:00:33Z",
-   "subject": "Tower gate: photos: squoosh.app,photos: photopea.com,photos: iloveimg.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:59:30Z",
-   "subject": "Music floor: seo rows take a setting in the link (?bpm=, ?song=, ?tun=), the hub has no asks row"
-  },
-  {
-   "at": "2026-10-26T03:57:07Z",
-   "subject": "Sports page: what it has said in plain text before its code runs (browse, search across Teams, Events, Venues and Players, on this device…"
-  },
-  {
-   "at": "2026-10-26T03:53:20Z",
-   "subject": "Photos features: drop a contact address the scan read off exifeditor.io (privacy scan)"
-  },
-  {
-   "at": "2026-10-26T03:52:26Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:50:51Z",
-   "subject": "Tower gate: photos: exifeditor.io,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
-  },
-  {
-   "at": "2026-10-26T03:48:02Z",
-   "subject": "sw: keep the markets caps and screener pages offline after their first visit"
-  },
-  {
-   "at": "2026-10-26T03:47:48Z",
-   "subject": "Markets: crypto market-cap page, small-universe screener, the daily illustration on the wrap, a year-end record kept to confirmed figures"
-  },
-  {
-   "at": "2026-10-26T03:47:41Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:45:24Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
