@@ -248,5 +248,1480 @@
   "works with the last saved prices offline",
   "Verse reports: a daily wrap and a data-only 'why is it moving' line, validated so it never invents a number or a cause"
  ],
- "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades."
+ "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "stockq.org": {
+    "url": "https://www.stockq.org/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.stockq.org/",
+     "https://m.stockq.org/taiwan/gas-price.php"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "波羅的海指數 恐慌指數 邪惡指數 替代能源 羅傑斯指數 REITs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"reit\""
+     },
+     {
+      "name": "MSCI指數 農產品 全球匯率 債券指數 CDS信用違約交換 指數期貨",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"msci\", \"cds\""
+     },
+     {
+      "name": "AA級公司債指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "BBB級公司債指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"bbb\""
+     },
+     {
+      "name": "BC綜合公債券指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "吉利美GNMA債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gnma\""
+     },
+     {
+      "name": "房利美FNMA債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"fnma\""
+     },
+     {
+      "name": "房地美FHLMC債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"fhlmc\""
+     },
+     {
+      "name": "上海A股",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "上海B股",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "Wordle",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"wordle\""
+     },
+     {
+      "name": "BNT疫苗",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"bnt\""
+     },
+     {
+      "name": "StockQ 全球股市指數 © All rights reserved",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"stockq\", \"right\", \"reserv\""
+     }
+    ]
+   },
+   "stooq.com": {
+    "url": "https://stooq.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "robots.txt asks robots not to read it",
+    "features": []
+   },
+   "macrotrends.net": {
+    "url": "https://www.macrotrends.net/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "companiesmarketcap.com": {
+    "url": "https://companiesmarketcap.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://companiesmarketcap.com/",
+     "https://companiesmarketcap.com/companies-with-lowest-pb-ratio/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Largest Companies by Marketcap",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\"; not \"largest\", \"marketcap\""
+     },
+     {
+      "name": "DISCLAIMER",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"disclaimer\""
+     },
+     {
+      "name": "Links",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"link\""
+     },
+     {
+      "name": "Companies ranked by lowest P/B ratio",
+      "detail": "a heading on /companies-with-lowest-pb-ratio/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\"; not \"rank\", \"lowest\", \"ratio\""
+     },
+     {
+      "name": "Close Ad X",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"close\""
+     }
+    ]
+   },
+   "stockanalysis.com": {
+    "url": "https://stockanalysis.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://stockanalysis.com/",
+     "https://stockanalysis.com/news/amazon-16-billion-german-investment/",
+     "https://stockanalysis.com/help/",
+     "https://stockanalysis.com/support/",
+     "https://stockanalysis.com/about/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Search for a stock to start your analysis",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"search\", \"start\", \"analysi\""
+     },
+     {
+      "name": "The Complete Toolkit for Smarter Stock Research",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"complete\", \"toolkit\", \"smarter\""
+     },
+     {
+      "name": "Top Gainers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\"; not \"gainer\""
+     },
+     {
+      "name": "Top Losers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\"; not \"loser\""
+     },
+     {
+      "name": "Stock Market News",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\", \"market\", \"new\""
+     },
+     {
+      "name": "Consumer sentiment edges down in October, close to record lows",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"down\"; not \"consumer\", \"sentiment\", \"edge\""
+     },
+     {
+      "name": "National deficit balloons to $2T, up 12% YoY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"national\", \"deficit\", \"balloon\", \"12\""
+     },
+     {
+      "name": "Industrial production rose 0.7% in September, Federal Reserve reports",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"industrial\", \"production\", \"rose\", \"0\""
+     },
+     {
+      "name": "Partner News",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"new\"; not \"partner\""
+     },
+     {
+      "name": "Recent IPOs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"recent\", \"ipo\""
+     },
+     {
+      "name": "Upcoming IPOs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"upcom\", \"ipo\""
+     },
+     {
+      "name": "Sources & Further Reading",
+      "detail": "a heading on /news/amazon-16-billion-german-investment/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"source\", \"read\"; not \"further\""
+     },
+     {
+      "name": "Related News",
+      "detail": "a heading on /news/amazon-16-billion-german-investment/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"relat\", \"new\""
+     },
+     {
+      "name": "Help Center",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"help\", \"center\""
+     },
+     {
+      "name": "General",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"general\""
+     },
+     {
+      "name": "Stock Analysis Pro",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"analysi\", \"pro\""
+     },
+     {
+      "name": "Newsletter",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"newsletter\""
+     },
+     {
+      "name": "Get Support",
+      "detail": "a heading on /support/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"support\""
+     },
+     {
+      "name": "What sets us apart",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"what\", \"set\", \"apart\""
+     },
+     {
+      "name": "Our Team",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"our\", \"team\""
+     },
+     {
+      "name": "Kris Gunnars",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kri\", \"gunnar\""
+     },
+     {
+      "name": "Orn Orri Olafsson",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"orn\", \"orri\", \"olafsson\""
+     },
+     {
+      "name": "Aubrey Wood",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aubrey\", \"wood\""
+     },
+     {
+      "name": "Lincoln Olson",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"lincoln\", \"olson\""
+     },
+     {
+      "name": "Gabe Dunsmith",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gabe\", \"dunsmith\""
+     },
+     {
+      "name": "Kendal March",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kendal\", \"march\""
+     },
+     {
+      "name": "Kyle Vallans",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kyle\", \"vallan\""
+     },
+     {
+      "name": "John Fraser-LeBlanc",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"john\", \"fraser\", \"leblanc\""
+     },
+     {
+      "name": "Vyomesh Kumar",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"vyomesh\", \"kumar\""
+     },
+     {
+      "name": "Company",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\""
+     },
+     {
+      "name": "What to do next",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"what\", \"next\""
+     },
+     {
+      "name": "Accurate data on 130,000+ global stocks, ETFs and funds",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"accurate\", \"130\", \"000+\""
+     },
+     {
+      "name": "Powerful stock screener with hundreds of filters",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"powerful\", \"screener\", \"hundr\""
+     },
+     {
+      "name": "Decades of financials, statistics and interactive charts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\"; not \"decade\", \"statistic\", \"interactive\""
+     },
+     {
+      "name": "Analyst ratings, price targets and forecasts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"analyst\", \"rating\", \"target\""
+     },
+     {
+      "name": "Watchlists, portfolios and custom price alerts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"watchlist\", \"portfolio\", \"price\"; not \"custom\""
+     },
+     {
+      "name": "LinkedIn",
+      "detail": "a list item on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"linkedin\""
+     },
+     {
+      "name": "Send Message",
+      "detail": "a button on /support/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"send\", \"message\""
+     },
+     {
+      "name": "Symbol",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"symbol\""
+     },
+     {
+      "name": "AIOK",
+      "detail": "a pricing row on /",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aiok\""
+     }
+    ]
+   },
+   "finviz.com": {
+    "url": "https://finviz.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://finviz.com/",
+     "https://finviz.com/elite",
+     "https://finviz.com/index/SPX?p=d",
+     "https://finviz.com/index/COMP?p=d",
+     "https://finviz.com/index/DJI?p=d",
+     "https://finviz.com/stock?t=IWM&p=d"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Smarter, Faster Stock Research Starts with Elite",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"smarter\", \"faster\", \"research\""
+     },
+     {
+      "name": "Gain Clarity in Financial Markets",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\", \"market\"; not \"gain\", \"clarity\""
+     },
+     {
+      "name": "Interactive Multi-layout Charts",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"chart\"; not \"interactive\", \"multi\", \"layout\""
+     },
+     {
+      "name": "Award-Winning Screener with Unmatched Filtering, Charting, and Views",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"award\", \"winn\", \"screener\", \"unmatch\""
+     },
+     {
+      "name": "Real-time Data Included in Every Elite Plan",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"time\", \"data\"; not \"real\", \"includ\""
+     },
+     {
+      "name": "Deep Insights into Every ETF Including Holdings and More",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"every\", \"etf\"; not \"deep\", \"insight\""
+     },
+     {
+      "name": "Unlimited Email Alerts and Push Notifications",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"unlimit\", \"email\", \"alert\", \"push\""
+     },
+     {
+      "name": "Export Financial Data and Build Automated Workflow",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\", \"data\"; not \"export\", \"build\""
+     },
+     {
+      "name": "Become an Elite Investor",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"become\", \"elite\", \"investor\""
+     },
+     {
+      "name": "Subscribe to Elite",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"subscribe\", \"elite\""
+     },
+     {
+      "name": "Elite Yearly",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"elite\", \"yearly\""
+     },
+     {
+      "name": "Becoming a Subscriber",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"becom\", \"subscriber\""
+     },
+     {
+      "name": "Managing Your Subscription",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"manag\", \"subscription\""
+     },
+     {
+      "name": "Refund Policy",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"refund\", \"policy\""
+     },
+     {
+      "name": "Data and Tickers",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"ticker\""
+     },
+     {
+      "name": "$SPX",
+      "detail": "a heading on /index/SPX?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"spx\""
+     },
+     {
+      "name": "S&P 500",
+      "detail": "a heading on /index/SPX?p=d",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"500\""
+     },
+     {
+      "name": "$COMP",
+      "detail": "a heading on /index/COMP?p=d",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"comp\""
+     },
+     {
+      "name": "Nasdaq Composite Index",
+      "detail": "a heading on /index/COMP?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"nasdaq\"; not \"composite\", \"index\""
+     },
+     {
+      "name": "$DJI",
+      "detail": "a heading on /index/DJI?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"dji\""
+     },
+     {
+      "name": "Dow Jones Industrial Average",
+      "detail": "a heading on /index/DJI?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"dow\", \"jone\"; not \"industrial\", \"average\""
+     },
+     {
+      "name": "IWM",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"iwm\""
+     },
+     {
+      "name": "iShares Russell 2000 Index Fund",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"ishare\", \"russell\", \"2000\", \"index\""
+     },
+     {
+      "name": "Institutional Ownership",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"institutional\", \"ownership\""
+     },
+     {
+      "name": "Log in with your free Finviz account",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"account\"; not \"log\", \"finviz\""
+     },
+     {
+      "name": "Free Elite trial",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"elite\", \"trial\""
+     },
+     {
+      "name": "Monthly — $39.50 USD / month",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"usd\"; not \"monthly\", \"39\", \"50\""
+     },
+     {
+      "name": "Annual — $299.50 USD / year",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"usd\"; not \"annual\", \"299\", \"50\""
+     },
+     {
+      "name": "On the Pricing page, click “Try Elite for Free”",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"pric\"; not \"click\", \"try\", \"elite\""
+     },
+     {
+      "name": "Elite Account",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"account\"; not \"elite\""
+     },
+     {
+      "name": "Annual billing Save 37%",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"annual\", \"bill\", \"save\", \"37\""
+     },
+     {
+      "name": "Monthly billing",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"monthly\", \"bill\""
+     },
+     {
+      "name": "Candle - TA",
+      "detail": "a button on /index/SPX?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"candle\""
+     },
+     {
+      "name": "Full Chart",
+      "detail": "a button on /index/SPX?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"chart\"; not \"full\""
+     },
+     {
+      "name": "Show All",
+      "detail": "a button on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"show\""
+     },
+     {
+      "name": "Open in Screener",
+      "detail": "a button on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"open\"; not \"screener\""
+     },
+     {
+      "name": "Advancing 37.1% (2081) Declining (3255) 58.0%",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"1\"; not \"advanc\", \"37\", \"2081\""
+     },
+     {
+      "name": "market_sentiment - Market Sentiment Price Chart",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"price\", \"chart\"; not \"sentiment\""
+     },
+     {
+      "name": "Ticker",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"ticker\""
+     },
+     {
+      "name": "A AIOK",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aiok\""
+     }
+    ]
+   },
+   "barchart.com": {
+    "url": "https://www.barchart.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.barchart.com/",
+     "https://www.barchart.com/education/site-features",
+     "https://www.barchart.com/solutions/market-category/cash-commodities",
+     "https://www.barchart.com/solutions/data/agindex",
+     "https://www.barchart.com/stocks/price-surprises/bullish?orderBy=standardDeviation&orderDir=desc",
+     "https://www.barchart.com/stocks/performance/price-change/advances?orderBy=priceChange&orderDir=desc",
+     "https://www.barchart.com/stocks/most-active/price-volume-leaders?orderBy=priceVolume&orderDir=desc"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Markets Today",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"today\""
+     },
+     {
+      "name": "Major Markets Overview",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"major\", \"overview\""
+     },
+     {
+      "name": "Stock Market Leaders",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\", \"market\"; not \"leader\""
+     },
+     {
+      "name": "Most Popular ETF Funds",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"etf\"; not \"popular\", \"fund\""
+     },
+     {
+      "name": "My Watchlist",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"watchlist\""
+     },
+     {
+      "name": "BARCHART FREE NEWSLETTERS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"newsletter\""
+     },
+     {
+      "name": "The Barchart Brief",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"brief\""
+     },
+     {
+      "name": "Barchart Expert Deep Dives",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"expert\", \"deep\", \"dive\""
+     },
+     {
+      "name": "S&P Sectors Market Map",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"sector\", \"map\""
+     },
+     {
+      "name": "Top 100 Stocks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"100\", \"stock\""
+     },
+     {
+      "name": "Major Market Indices",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"indice\"; not \"major\""
+     },
+     {
+      "name": "Site Education",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"education\""
+     },
+     {
+      "name": "Barchart Trading Tip",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trad\"; not \"barchart\", \"tip\""
+     },
+     {
+      "name": "More Resources",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"resource\""
+     },
+     {
+      "name": "Physical Commodities",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"physical\", \"commodity\""
+     },
+     {
+      "name": "Explore our Global Market Data Coverage",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"explore\", \"our\", \"global\""
+     },
+     {
+      "name": "How We Work With You",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"work\"; not \"how\""
+     },
+     {
+      "name": "Benchmarking & Price Validation",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"benchmark\", \"validation\""
+     },
+     {
+      "name": "Smarter Procurement Timing",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"smarter\", \"procurement\", \"timing\""
+     },
+     {
+      "name": "Supply-Demand Awareness",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"supply\", \"demand\", \"aware\""
+     },
+     {
+      "name": "Barchart Grain Prices & Yield Forecasts",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"barchart\", \"grain\", \"yield\""
+     },
+     {
+      "name": "Empowering Your Decisions with Data Insights",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"empower\", \"decision\", \"insight\""
+     },
+     {
+      "name": "Software",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"software\""
+     },
+     {
+      "name": "Market Data",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"data\""
+     },
+     {
+      "name": "Bullish Price Surprises For All US Exchanges",
+      "detail": "a heading on /stocks/price-surprises/bullish?orderBy=standardDeviation&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"bullish\", \"surprise\", \"exchange\""
+     },
+     {
+      "name": "All US Exchanges Price Change Advances",
+      "detail": "a heading on /stocks/performance/price-change/advances?orderBy=priceChange&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"exchange\", \"change\", \"advance\""
+     },
+     {
+      "name": "All US Exchanges Price Volume Leaders",
+      "detail": "a heading on /stocks/most-active/price-volume-leaders?orderBy=priceVolume&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\", \"volume\"; not \"exchange\", \"leader\""
+     },
+     {
+      "name": "MSFT +3.43 (+0.66%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"msft\", \"3\", \"43\", \"0\""
+     },
+     {
+      "name": "GOOGL -4.01 (-1.24%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"1\"; not \"googl\", \"4\", \"01\""
+     },
+     {
+      "name": "CVX +6.53 (+2.88%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"6\"; not \"cvx\", \"53\", \"2\""
+     },
+     {
+      "name": "KO -2.63 (-2.76%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"2\", \"63\", \"76\""
+     },
+     {
+      "name": "How to Use Barchart Like a Pro (29:43)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"how\", \"barchart\", \"like\", \"pro\""
+     },
+     {
+      "name": "How to Navigate Barchart.com | Quick Start Guide (6:12)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"com\"; not \"how\", \"navigate\", \"barchart\""
+     },
+     {
+      "name": "Using Barchart Tools to Find Interesting Stocks (8:00)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"barchart\", \"find\", \"interest\""
+     },
+     {
+      "name": "Find Winning Trades In Pre-Market & Post-Market (7:08)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trade\", \"pre\"; not \"find\", \"winn\""
+     },
+     {
+      "name": "Top 5 Tools Every Trader & Investor Should Know (2:37)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"5\", \"every\"; not \"trader\""
+     },
+     {
+      "name": "A Beginner's Guide to ETFs (6:44)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"etf\", \"6\"; not \"beginner\", \"guide\""
+     },
+     {
+      "name": "Top 5 Best Indicators for Traders and Investors (4:36)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"5\"; not \"best\", \"indicator\""
+     },
+     {
+      "name": "Symbol Notes (8:43)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"symbol\"; not \"note\", \"8\", \"43\""
+     },
+     {
+      "name": "How to Find Gaps on Barchart (6:15)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"how\", \"find\", \"gap\", \"barchart\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "波羅的海指數 恐慌指數 邪惡指數 替代能源 羅傑斯指數 REITs",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "MSCI指數 農產品 全球匯率 債券指數 CDS信用違約交換 指數期貨",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "AA級公司債指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BBB級公司債指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BC綜合公債券指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "吉利美GNMA債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "房利美FNMA債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "房地美FHLMC債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "上海A股",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "上海B股",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "Wordle",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BNT疫苗",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "StockQ 全球股市指數 © All rights reserved",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "DISCLAIMER",
+    "sites": [
+     "companiesmarketcap.com"
+    ]
+   },
+   {
+    "name": "National deficit balloons to $2T, up 12% YoY",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Industrial production rose 0.7% in September, Federal Reserve reports",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Recent IPOs",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Upcoming IPOs",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Help Center",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "General",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Newsletter",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Get Support",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "What sets us apart",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Our Team",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kris Gunnars",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Orn Orri Olafsson",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Aubrey Wood",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Lincoln Olson",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Gabe Dunsmith",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kendal March",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kyle Vallans",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "John Fraser-LeBlanc",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Vyomesh Kumar",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "What to do next",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "LinkedIn",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Send Message",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "AIOK",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Award-Winning Screener with Unmatched Filtering, Charting, and Views",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Unlimited Email Alerts and Push Notifications",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Become an Elite Investor",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Subscribe to Elite",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Elite Yearly",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Becoming a Subscriber",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Managing Your Subscription",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Refund Policy",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "$SPX",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "$DJI",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "IWM",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "iShares Russell 2000 Index Fund",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Institutional Ownership",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Free Elite trial",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Annual billing Save 37%",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Monthly billing",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Candle - TA",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Show All",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Ticker",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "A AIOK",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "BARCHART FREE NEWSLETTERS",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "The Barchart Brief",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Barchart Expert Deep Dives",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Site Education",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "More Resources",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Physical Commodities",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Smarter Procurement Timing",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Supply-Demand Awareness",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Software",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "MSFT +3.43 (+0.66%)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "KO -2.63 (-2.76%)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "How to Use Barchart Like a Pro (29:43)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "How to Find Gaps on Barchart (6:15)",
+    "sites": [
+     "barchart.com"
+    ]
+   }
+  ],
+  "queued": []
+ }
 }
