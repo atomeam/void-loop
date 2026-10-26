@@ -491,12 +491,72 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:56:28Z",
+   "subject": "Subject cards: licensed photos for real places and animals, a themed frame per kind, Not found cards, list-section lookup, 35-ask evaluation"
+  },
+  {
+   "at": "2026-10-26T04:55:12Z",
+   "subject": "Tower gate: music: anotherproducer.com,music: chordchord.com,music: metronomeonline.com,music: virtualpiano.net,music…"
+  },
+  {
+   "at": "2026-10-26T04:54:06Z",
+   "subject": "Tower gate: pdf: smallpdf.com,kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com measured…"
+  },
+  {
+   "at": "2026-10-26T04:53:42Z",
+   "subject": "Tower gate: pdf,pdf: codeshack.io,pdf: 10015.io,pdf: pdfcandy.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:52:57Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com,finance: finviz.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:52:43Z",
+   "subject": "Tower gate: travel measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:52:12Z",
+   "subject": "Music: a polyrhythm layer, a strobe tuner display, scales and chords on a guitar neck with tap-to-hold chord naming"
+  },
+  {
+   "at": "2026-10-26T04:50:59Z",
+   "subject": "Tower gate: travel measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:49:57Z",
+   "subject": "toolkit test follows a page's external start file to the code it imports"
+  },
+  {
+   "at": "2026-10-26T04:49:56Z",
+   "subject": "Fantasy tools page: your own sheet on your device (compare players, start or sit, trade value, draft board, mock draft, stats from box…"
+  },
+  {
+   "at": "2026-10-26T04:49:37Z",
+   "subject": "Tower gate: music: jasperbernaers.com,music: anotherproducer.com,music: chordchord.com,music: metronomeonline.com,music…"
+  },
+  {
+   "at": "2026-10-26T04:49:09Z",
+   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+  },
+  {
+   "at": "2026-10-26T04:48:52Z",
+   "subject": "Coin pages draw a daily snapshot first, then live"
+  },
+  {
    "at": "2026-10-26T04:47:56Z",
    "subject": "Music pages: preload lists follow toolkit.js's new import; deps and self regenerated"
   },
   {
    "at": "2026-10-26T04:47:50Z",
    "subject": "Tower gate: kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,kanban,pdf: 10015.io measured…"
+  },
+  {
+   "at": "2026-10-26T04:47:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T04:47:27Z",
+   "subject": "A refusal is not an answer, and a name inside a list page is found: honest Not found card, section lookup, subject-kind themes"
   },
   {
    "at": "2026-10-26T04:47:24Z",
@@ -509,66 +569,6 @@
   {
    "at": "2026-10-26T04:46:29Z",
    "subject": "Site reverse engineering: no contact detail is ever stored (emails, phones, tel and mailto links, street addresses, contact lines…"
-  },
-  {
-   "at": "2026-10-26T04:45:44Z",
-   "subject": "Tower gate: music: jasperbernaers.com,pdf: smallpdf.com,pdf measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:44:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:44:36Z",
-   "subject": "Free pictures: first probe results in docs/free-pictures.md"
-  },
-  {
-   "at": "2026-10-26T04:44:23Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:44:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:43:55Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:43:45Z",
-   "subject": "Free pictures: a 403 from loc.gov rests the source; the probe asks loc.gov once (explore only by hand)"
-  },
-  {
-   "at": "2026-10-26T04:43:23Z",
-   "subject": "Free pictures probe: what each source answered"
-  },
-  {
-   "at": "2026-10-26T04:43:07Z",
-   "subject": "Tower gate: music: jasperbernaers.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:42:29Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:42:15Z",
-   "subject": "Free pictures: loc.gov ids come as http, image addresses carry size fragments; probe records rights fields"
-  },
-  {
-   "at": "2026-10-26T04:41:22Z",
-   "subject": "Free pictures probe: what each source answered"
-  },
-  {
-   "at": "2026-10-26T04:41:21Z",
-   "subject": "toolkit test: a page's code may also be a plain module import in its head (the music pages)"
-  },
-  {
-   "at": "2026-10-26T04:41:09Z",
-   "subject": "Music pages open offline: each registers /sw.js after load and preloads its modules, so the worker keeps the page and its code on the…"
-  },
-  {
-   "at": "2026-10-26T04:40:54Z",
-   "subject": "Tower gate: music: jasperbernaers.com,pdf: 10015.io,pdf: pdfcandy.com measured against their live sites"
   }
  ],
  "builders": {
