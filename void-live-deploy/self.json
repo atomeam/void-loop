@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:24:39Z",
+   "subject": "News: the feed list, a reader for RSS, RDF and Atom, story grouping across sources and the /api/news route"
+  },
+  {
+   "at": "2026-10-26T02:22:34Z",
+   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T02:22:13Z",
+   "subject": "Site icons: 10 kept"
+  },
+  {
+   "at": "2026-10-26T02:19:54Z",
+   "subject": "Refresh Verse's facts about itself after the scores page"
+  },
+  {
    "at": "2026-10-26T02:19:37Z",
    "subject": "Scores page: /scores/, Versus' ESPN floor (tier 1)"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-25T19:29:17Z",
    "subject": "Incident: the browser suite failed on 1307dbc9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:06:06Z",
-   "subject": "Tower gate: sports measured against their live sites"
-  },
-  {
-   "at": "2026-10-25T18:58:50Z",
-   "subject": "Handoff: the tool pages' rival gaps closed today"
-  },
-  {
-   "at": "2026-10-25T18:58:38Z",
-   "subject": "Weather card: an hour-by-hour graph to seven days, pressure, visibility and dew point"
-  },
-  {
-   "at": "2026-10-25T18:57:58Z",
-   "subject": "Tower gate: sports,base converter measured against their live sites"
   }
  ],
  "builders": {
