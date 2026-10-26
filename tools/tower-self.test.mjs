@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
+import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
@@ -115,4 +115,10 @@ test('the model\'s answer is found however it is wrapped', () => {
   assert.equal(parseAnswer('Thinking {about} it.\n```json\n{"family":"none","why":"a shop"}\n```').family, 'none');
   assert.equal(parseAnswer(JSON.stringify({ response: { family: 'calculator' } })).family, 'calculator');
   assert.equal(parseAnswer('no json here'), null);
+});
+
+test('words are cut at a sentence, and an ask meets its family by the stem of its words', () => {
+  assert.equal(sentences('One two three. Four five six seven eight nine ten eleven twelve.', 30), 'One two three.');
+  assert.ok(!/,$/.test(sentences('a, '.repeat(200), 50)));
+  const conv = familiesOf().find((f) => f.id === 'unit converter'); assert.ok(sharesWords(conv, 'convert km to miles'));
 });
