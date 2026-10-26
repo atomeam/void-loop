@@ -26,7 +26,7 @@
      "detail": "Live play-by-play for one game: field/court drawing, win probability, box score, team stats, drive/shot charts",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): game detail: score, goals and cards with minutes, team stats side by side, line-ups; no play-by-play, field drawing, win probability or shot charts"
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): game detail has score, goals and cards, team stats, line-ups, play by play where the feed has it (plays or commentary), earlier meetings and each side's last five, and Verse's own win chance from score and clock with a curve over the visit; no field drawing, shot charts or ESPN's win probability"
     },
     {
      "group": "core",
@@ -34,7 +34,7 @@
      "detail": "Per-player stat lines for a finished or live game",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): US leagues: per-player tables from the summary feed (up to 4 groups); soccer: events, stats and line-ups"
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): US leagues: per-player tables; NFL tables add an estimated FPTS column with PPR, half and standard scoring (no fumbles, kickers or defences); soccer: events, stats and line-ups"
     },
     {
      "group": "core",
@@ -50,7 +50,7 @@
      "detail": "League, conference and division tables, playoff picture and clinch markers",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a table per league and group with the columns of its sport (P W D L GD Pts; W L Pct GB Strk; NFL PF PA), sortable columns, a search box, the viewer's followed teams highlighted, and a check that the sums add up (P = W+D+L, Pts = 3W+D, Pct = W/(W+L)); no playoff cut-lines or last-5 form dots yet"
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): sortable columns, search, a self-check of the sums, last-five form dots and a Verse rating (soccer), cut-line colours and a key where ESPN marks them; no playoff-picture view"
     },
     {
      "group": "core",
@@ -145,8 +145,8 @@
      "name": "Power rankings and predictions",
      "detail": "Team rankings, Football Power Index, matchup predictor",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse's own Elo-style rating over the last six weeks of results, labelled as such; no playoff odds"
     },
     {
      "group": "power",
@@ -249,8 +249,8 @@
      "name": "Fantasy: live points and my fantasy team",
      "detail": "tier 2 of the owner's order (2026-10-26); not built",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse page does this yet"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): an NFL box-score FPTS estimate with PPR/half/standard; no roster, no add/drop, no player pool (no free player or projection feed read)"
     },
     {
      "group": "power",
@@ -273,16 +273,16 @@
      "name": "Pick'em, survivor and bracket challenge, on device",
      "detail": "tier 2 (no account, no wagering)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse page does this yet"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): weekly Pick'em (straight or confidence, tiebreaker, share link) and a Survivor tracker (no team twice); no bracket challenge"
     },
     {
      "group": "power",
      "name": "Playoff and standings simulator",
      "detail": "tier 3",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse page does this yet"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a What-if tab: tap upcoming games and the table recalculates and shows places moved; no playoff seeding or tiebreaker engine"
     },
     {
      "group": "power",
@@ -368,15 +368,15 @@
   }
  },
  "gaps": [
-  "play-by-play, win probability and shot charts",
-  "league stat leaders",
-  "head-to-head and form",
-  "playoff cut-lines and last-5 form dots",
+  "league stat leaders (no simple free feed read)",
+  "playoff cut-lines are only those ESPN notes",
   "tennis and cricket (no free feed read yet)",
   "team rosters, injuries and depth charts",
   "player pages and stats",
   "alerts",
-  "fantasy, simulators, polls, draft (tiers 2 to 4)"
+  "my fantasy team, start/sit and trade comparator, mock draft (no free player or projection source read)",
+  "playoff seeding simulator, trade and salary-cap checker, playoff odds",
+  "polls and brackets, recruiting, draft hubs, golf/UFC/tennis/NASCAR templates, historical archive (tier 4, not started)"
  ],
  "verse_extra": [
   "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",
