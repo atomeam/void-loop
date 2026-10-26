@@ -327,6 +327,22 @@ export const PROBES = Object.freeze({
     facts: [['rich formatting', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i], ['checklists', /\bchecklists?\b|\bcheckbox/i], ['links', /\blinks?\b/i], ['many documents', /\bnew note\b|\bnotes\b/i], ['search', /\bsearch\b/i],
       ['version history', /\bversion history\b/i], ['a word count', /\bwords\b/i], ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['markdown', /\.md\b/i], ['print', /\bprint\b/i], ['a share link', /\bshare\b/i], ['keyboard shortcuts', /\bCtrl\b|\bkeyboard\b/i], ['works offline', /\boffline\b/i], ['on this device', /\bon this device\b|\bthis browser\b/i]],
   },
+  podcasts: {
+    site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',
+    // the question: open Verse Out Loud's first episode from a link. A page that only loaded shows its title and a search box; a page that works shows
+    // a REAL episode row (title, length and notes read from the show's own episode file), and an audio element that has loaded its file and read the
+    // length from it ("Ready to play · 3:24" is written from the element's duration, never from the feed). Judged on Verse alone (the site is not
+    // asked); the same probe measures every site in the podcasts lane (lib/tower.js LANES). The fixture is Verse-hosted and stable (episode 1 is
+    // append-only, /podcast/episodes.json and its mp3), so a red row is the page's fault, not a feed's
+    ask: { verse: '/podcasts/?show=verse&ep=ep1' },
+    truth: [['the show', /Verse Out Loud/], ['a real episode row', /Episode 1: the week to October 22, 2026/], ['its length in the row', /\b3 min\b/], ['its notes', /Verse.s week from 2026-10-15 to 2026-10-22/], ['an audio element with its length read', /Ready to play · 3:2\d\b/]],
+    // the directory: a search at an address of its own must show real rows from Apple's free directory (a title line, then "author · genre"), not "Searching…"
+    pageParts: { catalogue: { verse: '/podcasts/?q=history', items: [['real results from the directory', /Results for "history"\s*\n[^\n]{3,}\n[^\n]+ · [^\n]+/], ['paste any RSS link', /\bRSS link\b/i]] } },
+    // what the best podcast apps show: search, a feed link, episodes with their lengths and notes, follow and a list of new episodes, a queue, speed, skip,
+    // a sleep timer, a transcript, saved episodes for offline, share. Chapters need a feed that has them, so they are not claimed from this page
+    facts: [['search any show', /\bsearch podcasts\b/i], ['paste an RSS link', /\bRSS link\b/i], ['episode lengths', /\b\d+ min\b/], ['show notes', /\bnotes\b/i], ['follow a show', /\bFollow\b/], ['a new-episodes list', /\bNew episodes\b/], ['a queue', /\bqueue\b/i], ['playback speed', /\bSpeed\b/],
+      ['skip back and forward', /15[\s\S]{0,80}30/], ['a sleep timer', /\bSleep timer\b/], ['a transcript', /\bTranscript\b/], ['saved for offline', /\bDownload\b/], ['share', /\bShare\b/], ['works offline', /\boffline\b/i]],
+  },
   weather: {
     site: 'https://www.weather.gov/', verse: '/weather/?q=Boston',
     // the question: the weather in Boston, in the page's link. The truth needs no second forecast: a right answer names the place, shows every
@@ -437,6 +453,7 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   'image boards': { catalog: [['a catalog', /\bcatalog\b/i]], 'replies and quoting': [['replies', /\brepl(?:y|ies)\b/i], ['quotes', /\bquot(?:e|es|ing)\b|>>\d/i]], 'image posts': [['pictures', /\bpictures?\b|\bimages?\b/i]], archive: [['an archive', /\barchive\b/i]] },
   'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]] }, // 'image generation', 'list language' and 'publish and remix' are pageParts: a real picture, a working engine
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
+  podcasts: { subscriptions: [['follow a show', /\bFollow\b/], ['the shows you follow', /\bFollowing\b/], ['new episodes of those shows', /\bNew episodes\b/]], 'playback controls': [['speed', /\bSpeed\b/], ['skip back and forward', /15[\s\S]{0,80}30/], ['a sleep timer', /\bSleep timer\b/], ['a queue', /\bqueue\b/i], ['an audio element that read its length', /Ready to play · \d+:\d{2}/]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,

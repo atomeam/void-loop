@@ -491,16 +491,40 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T02:25:12Z",
+   "at": "2026-10-26T02:30:46Z",
+   "subject": "Calendar: tasks beside events, with a due day"
+  },
+  {
+   "at": "2026-10-26T02:26:54Z",
+   "subject": "toolkit test: a page's code may be imported after the load event (/boards/)"
+  },
+  {
+   "at": "2026-10-26T02:26:49Z",
+   "subject": "openapi-check: the calendar page's three routes are Verse's own"
+  },
+  {
+   "at": "2026-10-26T02:25:49Z",
+   "subject": "News: keep the e2e screenshot out of the repository"
+  },
+  {
+   "at": "2026-10-26T02:25:48Z",
+   "subject": "News: regenerate cards after the merge"
+  },
+  {
+   "at": "2026-10-26T02:25:48Z",
    "subject": "News: the Versus probe, the news lane and the BBC feature map"
   },
   {
-   "at": "2026-10-26T02:25:01Z",
+   "at": "2026-10-26T02:25:48Z",
    "subject": "News: the /news/ page, registered as a tool page"
   },
   {
-   "at": "2026-10-26T02:24:39Z",
+   "at": "2026-10-26T02:25:47Z",
    "subject": "News: the feed list, a reader for RSS, RDF and Atom, story grouping across sources and the /api/news route"
+  },
+  {
+   "at": "2026-10-26T02:25:33Z",
+   "subject": "Tower gate: sports: thesportsdb.com,sports: onefootball.com,sports: 365scores.com measured against their live sites"
   },
   {
    "at": "2026-10-26T02:22:34Z",
@@ -545,30 +569,6 @@
   {
    "at": "2026-10-25T20:18:28Z",
    "subject": "Incident: the browser suite failed on defcc4b0 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T20:16:40Z",
-   "subject": "Incident: the browser suite failed on a53b1f17 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T20:08:43Z",
-   "subject": "Incident: the browser suite failed on 18af836f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T20:01:10Z",
-   "subject": "Incident: the browser suite failed on 34b0bcc9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:59:51Z",
-   "subject": "Incident: the browser suite failed on 9f3b72fc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:58:18Z",
-   "subject": "Incident: the browser suite failed on e89dc826 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-25T19:51:25Z",
-   "subject": "Incident: the browser suite failed on 789036e8 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

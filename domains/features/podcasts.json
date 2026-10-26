@@ -1,6 +1,6 @@
 {
  "floor": "podcasts",
- "verse_page": null,
+ "verse_page": "/podcasts/",
  "researched": "2026-10-25",
  "sites": {
   "podcasts.apple.com": {
@@ -17,56 +17,56 @@
      "name": "Search and browse directory",
      "detail": "Millions of shows by name, topic, person; categories and charts",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "Verse plays only its own show"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ searches Apple's free iTunes directory (no key) and lists charts by country and category; any RSS link can be pasted"
     },
     {
      "group": "core",
      "name": "Show pages",
      "detail": "Description, episodes, ratings and reviews, related shows",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ show page: cover, author, description, episodes with dates, lengths and notes, follow, share, play latest, unplayed filter and sort. No ratings, reviews or related shows"
     },
     {
      "group": "core",
      "name": "Play episodes",
      "detail": "Stream with seek, skip back 15 / forward 30",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ player: play/pause, seek, back 15, forward 30, streaming straight from the publisher"
     },
     {
      "group": "core",
      "name": "Follow shows",
      "detail": "Follow; new episodes appear and can auto-download",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ follows kept on the device (60 at most), a New episodes list refreshed after load, OPML import and export. No auto-download"
     },
     {
      "group": "core",
      "name": "Up Next queue",
      "detail": "Queue, reorder, continue where you left off",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ queue: add, move up and down, remove, plays on when an episode ends"
     },
     {
      "group": "core",
      "name": "Playback speed",
      "detail": "0.5x to 2x",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ speed 0.5x to 3x kept between visits"
     },
     {
      "group": "core",
      "name": "Resume position",
      "detail": "Remembers where you stopped across devices",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ the place in every episode kept on this device and resumed; not synced across devices"
     },
     {
      "group": "core",
@@ -74,47 +74,47 @@
      "detail": "Read-along transcripts, search in transcript, tap a line to jump",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "skills/podcast.js and the /podcast/ page: Verse Out Loud, Verse's own weekly show, with player, whole transcript (a line jumps the player), download, share and RSS feed"
+     "verse_evidence": "/podcasts/ transcripts named by a feed (WebVTT, SubRip, JSON, HTML, text) with search and tap-a-line to jump; Verse Out Loud's own whole transcript"
     },
     {
      "group": "core",
      "name": "Charts",
      "detail": "Top shows and episodes by country and category",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ top podcasts by country (18) and category (19), Apple's public chart feeds"
     },
     {
      "group": "power",
      "name": "Chapters",
      "detail": "Chapter markers with art",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ chapters from the feed (Podcast Namespace JSON or Podlove inline), tap to jump, current one highlighted. No chapter art"
     },
     {
      "group": "power",
      "name": "Sleep timer",
      "detail": "Stop after time or end of episode",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ sleep timer: 5 to 60 minutes or end of episode"
     },
     {
      "group": "power",
      "name": "Played/unplayed and filters",
      "detail": "Mark played, hide played, sort",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ played and started marks, mark played or unplayed, unplayed-only filter, newest or oldest first"
     },
     {
      "group": "power",
      "name": "Downloads management",
      "detail": "Auto-download, storage limits, remove after play",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/podcasts/ Downloads: save episodes for offline in the Cache API (150 MB an episode, 1 GB in all, only where the publisher allows a web page to read its audio), list and remove. No auto-download, no remove-after-play"
     },
     {
      "group": "power",
@@ -129,8 +129,8 @@
      "name": "Add by RSS URL",
      "detail": "Follow any show by feed URL (desktop/app)",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "Verse publishes its own RSS (/podcast/rss.xml) but cannot read others"
+     "verse": "has",
+     "verse_evidence": "/podcasts/ paste any https RSS link; read once by /api/podcasts (SSRF-safe, size and time capped)"
     },
     {
      "group": "power",
@@ -154,7 +154,7 @@
      "detail": "Share an episode or a moment",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "podcast.js Share (this moment too)"
+     "verse_evidence": "/podcasts/ share link to a show, an episode and a moment (?show= ?feed= &ep= &t=), word-only share text"
     },
     {
      "group": "sharing",
@@ -170,7 +170,7 @@
      "detail": "Listen offline",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "podcast.js Download saves the episode file"
+     "verse_evidence": "/podcasts/ saved episodes play offline from this device; the page itself opens offline"
     },
     {
      "group": "offline-mobile",
@@ -200,17 +200,21 @@
   }
  },
  "gaps": [
-  "search any podcast (public directory, keyless)",
-  "play any RSS feed",
-  "follow shows kept on the device",
-  "resume position and speed",
-  "queue",
-  "chapters",
-  "sleep timer"
+  "video podcasts",
+  "enhance dialogue (voice boost)",
+  "auto-download and remove after play",
+  "transcript quote sharing",
+  "ratings and reviews",
+  "CarPlay, Watch, HomePod, Siri",
+  "cross-device sync of follows and places (export OPML instead)",
+  "a live look at Apple's directory shapes (built against fixtures)"
  ],
  "verse_extra": [
   "Verse makes its own podcast with a full transcript",
-  "jump to a moment from a line of the transcript"
+  "jump to a moment from a line of the transcript",
+  "follows, places, queue and speed kept on the device with no account",
+  "OPML import and export of follows",
+  "Verse Out Loud pinned first, with its whole transcript"
  ],
  "first_page": "Podcast player page /podcasts/ for listeners who want any show without an account. First: search shows (iTunes Search, keyless) or paste an RSS link, episode list read from the feed through a small edge proxy, a player with speed, skip 15/30, resume position and a follow list kept on the device; Verse Out Loud pinned first. Will not build: paid subscriptions, recommendations, ratings or cross-device sync."
 }
