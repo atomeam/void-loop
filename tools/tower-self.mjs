@@ -156,7 +156,13 @@ export function messagesOf(site, fams) {
   ];
 }
 /** the model's answer as an object, or null. Pure. */
-export function parseAnswer(text) { const s = String(text || ''), a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a < 0 || b <= a) return null; try { return JSON.parse(s.slice(a, b + 1)); } catch (_) { return null; } }
+export function parseAnswer(text) {
+  const s = String(text || '').replace(/```(?:json)?/gi, ''), ok = (j) => j && typeof j === 'object' && !Array.isArray(j) && typeof j.family === 'string';
+  try { const j = JSON.parse(s); if (ok(j)) return j; if (j && typeof j.response === 'object' && ok(j.response)) return j.response; if (j && typeof j.response === 'string') return parseAnswer(j.response); } catch (_) {}
+  // the object that holds "family", wherever it starts and ends (a model may think aloud around it, or repeat it)
+  for (let a = s.indexOf('{'); a >= 0; a = s.indexOf('{', a + 1)) for (let b = s.lastIndexOf('}'); b > a; b = s.lastIndexOf('}', b - 1)) { try { const j = JSON.parse(s.slice(a, b + 1)); if (ok(j)) return j; } catch (_) {} }
+  return null;
+}
 /** one question to Verse's own model: the site's binding through the owner-only /api/tower-self (VOID_OWNER_TOKEN), else the Workers AI REST API
  *  (CLOUDFLARE_API_TOKEN with Workers AI scope); the answer's text, or { error } */
 export async function modelText(messages, schema, max = 900) {
@@ -176,7 +182,7 @@ export async function modelText(messages, schema, max = 900) {
     return { text: typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '') };
   } catch (e) { return { error: 'the model did not answer (' + clip(e && e.message || e, 80) + ')' }; }
 }
-async function askModel(messages) { const r = await modelText(messages, SCHEMA); return r.error ? r : parseAnswer(r.text) || { error: 'the answer was not JSON' }; }
+async function askModel(messages) { const r = await modelText(messages, SCHEMA, 1400); if (r.error) return r; const j = parseAnswer(r.text); if (!j) console.log('  the model said (not the JSON asked for): ' + clip(r.text, 300)); return j || { error: 'the answer was not JSON' + (r.text ? '' : ' (empty)') }; }
 const FEATURES_SCHEMA = { name: 'features', schema: { type: 'object', properties: { features: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, detail: { type: 'string' }, paid: { type: 'boolean' } }, required: ['name', 'detail', 'paid'] } } }, required: ['features'] } };
 /** feature-scan's feature list, asked of Verse's own model (its messages and its parser) */
 async function featuresByModel(host, pages) { const { messagesOf: fm, parseModelFeatures } = await import('./feature-scan.mjs'); const r = await modelText(fm(host, pages), FEATURES_SCHEMA, 2000); return r.error ? null : parseModelFeatures(r.text); }
