@@ -491,6 +491,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:31:35Z",
+   "subject": "Tower rank: every Versus site ranked by the Tranco top million"
+  },
+  {
+   "at": "2026-10-26T03:31:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:30:50Z",
+   "subject": "Incident: the browser suite failed on 92b0983f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-26T03:30:42Z",
+   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
+  },
+  {
+   "at": "2026-10-26T03:30:40Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com,finance: investing.com,news: allsides.com,news: apnews.com,news measured against their live…"
+  },
+  {
    "at": "2026-10-26T03:30:27Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -549,26 +569,6 @@
   {
    "at": "2026-10-26T03:23:01Z",
    "subject": "Scores: Next games on every team page and day view, the page's code in scores/app.js after the load event (16 KB of HTML), words that…"
-  },
-  {
-   "at": "2026-10-26T03:20:33Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:20:04Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:19:45Z",
-   "subject": "Podcasts: the page registers the service worker (it read 0 offline), keeps its two modules and the Verse show offline; Show pages names…"
-  },
-  {
-   "at": "2026-10-26T03:18:30Z",
-   "subject": "Markets: the strip no longer starves the quote, a retry on a busy moment, and a bundled year-end record for the close on a day"
-  },
-  {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Fix three red checks: scores owns sports-score asks (calendar leaves them), /fix/ pages share one CSP splat rule (83 -> 66 rules), real…"
   }
  ],
  "builders": {

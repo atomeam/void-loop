@@ -126,13 +126,17 @@ export const LANES = Object.freeze({
 // A site not listed here is still measured against its leader's page until its own page is built.
 export const LANE_PAGES = Object.freeze({
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
+  'sports: thesportsdb.com': '/sports/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
 });
+// the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
+// that browses by sport and searches across all of them, is not asked about live scores
+export const LANE_EXTRAS = Object.freeze({ 'sports: thesportsdb.com': ['sport search', 'born on this day', 'sport grid', 'free api'] });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
 export function withLanes(floors, lanes = LANES) {
   const out = [];
-  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: LANE_PAGES[f.id + ': ' + h] || f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
+  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: LANE_PAGES[f.id + ': ' + h] || f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: LANE_EXTRAS[f.id + ': ' + h] || f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
   return out;
 }
 export const FLOORS = withLanes(HAND_FLOORS);

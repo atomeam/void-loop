@@ -374,3 +374,16 @@ test('the random generators floor: image generation, list language and publish a
   assert.equal(score(out, p.pageParts['list language'].items).n, 2, 'a working engine passes');
   assert.equal(score('Cat x #7\nOwl x #7', p.pageParts['list language'].items).n, 0, 'a page that ignores odds or shows too few fails');
 });
+
+test('a lane site with a page of its own asks its own question; the others keep their leader\'s', async () => {
+  const { probeFor, score, withFeatureFacts } = await import('./tower-probes.mjs'), { FLOORS } = await import('../void-live-deploy/lib/tower.js');
+  const own = probeFor('sports: thesportsdb.com'), lead = probeFor('sports'), other = probeFor('sports: besoccer.com');
+  assert.equal(own.verse, '/sports/'); assert.equal(own.ask.verse, '/sports/?q=arsenal'); assert.deepEqual(Object.keys(own.askParts), ['sport search', 'born on this day', 'sport grid', 'free api']); assert.deepEqual(own.pageParts, {});
+  assert.match(lead.verse, /^\/scores\//); assert.equal(other.verse, lead.verse, 'a lane site with no page of its own is measured against its leader\'s'); assert.deepEqual(Object.keys(other.pageParts), ['live scores', 'schedules', 'standings']);
+  assert.equal(withFeatureFacts(own, 'sports: thesportsdb.com').facts.length, own.facts.length, 'its own facts are not topped up with its leader\'s features');
+  assert.deepEqual(FLOORS.find((f) => f.id === 'sports: thesportsdb.com').extra, ['sport search', 'born on this day', 'sport grid', 'free api']); assert.deepEqual(FLOORS.find((f) => f.id === 'sports: besoccer.com').extra, ['live scores', 'schedules', 'standings']);
+  const page = 'Click a sport to browse Soccer Basketball Tennis Cricket Search every sport Teams Arsenal English Premier League Soccer Venues Players Born on this day 1984 Test Footballer — English footballer Free API read only openapi.json TheSportsDB On this device no betting';
+  for (const [a, items] of Object.entries(own.askParts)) assert.equal(score(page, items).n, items.length, a);
+  assert.equal(score(page, own.truth).n, own.truth.length); assert.ok(score('Loading', own.truth).n === 0, 'a page that shows only a loading state fails');
+  assert.equal(score('Click a sport to browse Born on this day', own.askParts['born on this day']).n, 1, 'the title alone, without a person born that day, is half');
+});
