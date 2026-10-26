@@ -1,0 +1,53 @@
+{
+ "floor": "paint",
+ "verse_page": "/paint/",
+ "researched": "2026-10-26",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "heycolor.com": {
+   "url": "https://heycolor.com/",
+   "scanned": "2026-10-26",
+   "leader": true,
+   "pages": [
+    "https://heycolor.com/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Hey Color",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/paint/ shows none of its words; not \"hey\", \"color\""
+    },
+    {
+     "name": "Play Free",
+     "detail": "a button on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/paint/ shows none of its words; not \"play\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Hey Color",
+   "sites": [
+    "heycolor.com"
+   ]
+  },
+  {
+   "name": "Play Free",
+   "sites": [
+    "heycolor.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-26",
+  "queued": []
+ }
+}
