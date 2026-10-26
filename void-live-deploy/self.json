@@ -491,6 +491,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:57:46Z",
+   "subject": "Verse reports on /markets/: a daily market wrap and a data-only why-is-it-moving line"
+  },
+  {
+   "at": "2026-10-26T02:57:02Z",
+   "subject": "News reports: count the hour and the day once in D1 for every location, fail closed to the draft"
+  },
+  {
+   "at": "2026-10-26T02:56:43Z",
+   "subject": "Daily cap: one global counter in D1 for anything that spends the free allowance (cap(env, key, limit)), fail closed"
+  },
+  {
+   "at": "2026-10-26T02:56:37Z",
+   "subject": "Recipes: import a recipe from a link, from pasted text, or from a photo"
+  },
+  {
+   "at": "2026-10-26T02:55:31Z",
+   "subject": "News: Verse reports, a checked write-up from the feeds' own words (a summary per multi-source story, a daily brief, what changed on…"
+  },
+  {
    "at": "2026-10-26T02:54:34Z",
    "subject": "Money: Verse spends what it has earned on the most needed area; wishlist rows for game photos, fantasy data and more pictures"
   },
@@ -549,26 +569,6 @@
   {
    "at": "2026-10-26T02:36:57Z",
    "subject": "Sports features: what the scores page now covers, and what is still a gap"
-  },
-  {
-   "at": "2026-10-26T02:36:42Z",
-   "subject": "Refresh generated files after the scores card"
-  },
-  {
-   "at": "2026-10-26T02:36:18Z",
-   "subject": "Scores: Next games on the day view, the stage card (skills/scores.js, PAGE_OF), Pick'em, Survivor and What-if tabs, NFL fantasy points…"
-  },
-  {
-   "at": "2026-10-26T02:36:14Z",
-   "subject": "Scores: week view, form dots, cut-line key, play by play, earlier meetings, the worker keeps the last scores JSON, stale-while-revalidate…"
-  },
-  {
-   "at": "2026-10-26T02:35:22Z",
-   "subject": "Podcasts: every common ask carries a setting (no bare page link)"
-  },
-  {
-   "at": "2026-10-26T02:34:49Z",
-   "subject": "News: eight common asks that each take a setting, and no ellipsis added when a summary is cut"
   }
  ],
  "builders": {
