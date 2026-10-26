@@ -28,6 +28,7 @@ export async function view(c) {
   const find = async () => { const q = inp.value.trim(); if (q.length < 2) return; res.replaceChildren(h('p', { class: 'note', style: 'min-height:0', text: c.W.loading + '…' }));
     try { const j = await (await fetch('/api/sportsearch?q=' + encodeURIComponent(q))).json(); if (!j.ok) throw 0; const parts = groups.filter(([k]) => j[k].length).map(([k, t, f]) => h('div', null, h('h2', { text: t }), h('ul', { class: 'ev' }, j[k].map((x) => h('li', null, h('span', { text: f(x) })))))); res.replaceChildren(...(parts.length ? parts : [h('p', { class: 'empty', text: T.none })]), h('p', { class: 'srcs' }, 'Source: ', h('a', { href: 'https://www.thesportsdb.com/', rel: 'noopener', text: 'TheSportsDB' }), ' (free public API, community data, may be incomplete).')); }
     catch (_) { res.replaceChildren(h('p', { class: 'empty', text: T.away })); } };
+  if (c.q && /^[\p{L}\p{N} .'’&-]{2,40}$/u.test(c.q)) { inp.value = c.q; find(); } // a link that carries a search (/sports/?q=arsenal) runs it
   inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') find(); });
   // 3. born on this day, from Wikipedia, kept on the device for the day
   const born = h('ul', { class: 'ev' }), now = new Date(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0'), BK = 'a2m.void.scores.born.v1';

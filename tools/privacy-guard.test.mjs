@@ -40,5 +40,6 @@ test('csp-hashes: hashes only inline scripts that run, one rule per page, inside
   assert.deepEqual(pathsOf('index.html'), ['/']); assert.deepEqual(pathsOf('films/index.html'), ['/films/']);
   const r = rules(); assert.ok(r.length > 0 && r.length <= 90 - 10, r.length + ' rules');
   assert.ok(r.every((x) => !/unsafe-inline/.test(x)));
+  assert.ok(r.some((x) => x.startsWith('/fix/*\n')), 'the /fix/ pages share one splat rule, not one rule each');
   assert.ok(!readFileSync(at('void-live-deploy/_headers'), 'utf8').includes('sha256-'), 'hashes are made at deploy, never committed');
 });

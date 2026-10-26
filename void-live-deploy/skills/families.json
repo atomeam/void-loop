@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 4,
-  "tested": 28,
+  "experiment": 5,
+  "tested": 26,
   "checked": 17,
-  "proven": 295
+  "proven": 297
  },
  "families": [
   {
@@ -151,9 +151,9 @@
     {
      "name": "part",
      "tier": "proven",
-     "why": "1 browser-suite mention, 4 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 8
     },
@@ -487,9 +487,9 @@
     {
      "name": "wheel",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-25",
      "streak": 1
@@ -853,9 +853,9 @@
     {
      "name": "pollen",
      "tier": "proven",
-     "why": "1 browser-suite mention, 9 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -934,9 +934,9 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 2,
     "checked": 0,
-    "proven": 17
+    "proven": 18
    },
    "skills": [
     {
@@ -1024,9 +1024,9 @@
     {
      "name": "today",
      "tier": "proven",
-     "why": "9 browser-suite mentions, 28 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 9 browser-suite mentions, 28 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1039,14 +1039,15 @@
     },
     {
      "name": "holidays",
-     "tier": "tested",
-     "why": "19 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 19 real asks in the benchmark",
      "failing": [
       "how many days until summer"
      ],
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 0.947
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
+     "success_rate": 0.947,
+     "promoted": "2026-10-26"
     },
     {
      "name": "work",
@@ -1176,9 +1177,9 @@
     {
      "name": "loan",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 15 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 5 browser-suite mentions, 15 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 8
     },
@@ -1374,9 +1375,9 @@
     {
      "name": "eat",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-24",
      "streak": 2
@@ -1424,7 +1425,7 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 2,
     "checked": 1,
     "proven": 29
@@ -1888,6 +1889,14 @@
       "next": "live",
       "words": "source 2 of 3: espn.com, jolpi.ca, openligadb.de; named on the card; a second source; no kept live answer yet. One kept live answer from espn.com would make it proven"
      }
+    },
+    {
+     "name": "sports-browse",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
     },
     {
      "name": "pdf-card",
@@ -2994,9 +3003,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 2,
-    "proven": 43
+    "proven": 44
    },
    "skills": [
     {
@@ -3169,11 +3178,12 @@
     },
     {
      "name": "automations",
-     "tier": "tested",
-     "why": "7 real asks in the benchmark",
-     "last_tested": "2026-10-25",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 7 real asks in the benchmark",
+     "last_tested": "2026-10-26",
+     "last_tested_by": "its tests",
      "success_rate": 1,
+     "promoted": "2026-10-26",
      "streak": 8
     },
     {

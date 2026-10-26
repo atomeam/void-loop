@@ -491,6 +491,70 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:27:06Z",
+   "subject": "Sports: a page of its own (42-sport grid, one search across teams, events, venues and players, born on this day, the free API), its stage…"
+  },
+  {
+   "at": "2026-10-26T03:26:30Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:25:06Z",
+   "subject": "tower-gate test: the finance floor has its own probe now"
+  },
+  {
+   "at": "2026-10-26T03:24:49Z",
+   "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
+  },
+  {
+   "at": "2026-10-26T03:24:33Z",
+   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts…"
+  },
+  {
+   "at": "2026-10-26T03:24:25Z",
+   "subject": "Feature scan: finance,photos,podcasts,sports researched by Verse"
+  },
+  {
+   "at": "2026-10-26T03:23:01Z",
+   "subject": "Scores: Next games on every team page and day view, the page's code in scores/app.js after the load event (16 KB of HTML), words that…"
+  },
+  {
+   "at": "2026-10-26T03:20:33Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:20:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:19:45Z",
+   "subject": "Podcasts: the page registers the service worker (it read 0 offline), keeps its two modules and the Verse show offline; Show pages names…"
+  },
+  {
+   "at": "2026-10-26T03:18:30Z",
+   "subject": "Markets: the strip no longer starves the quote, a retry on a busy moment, and a bundled year-end record for the close on a day"
+  },
+  {
+   "at": "2026-10-26T03:18:08Z",
+   "subject": "Fix three red checks: scores owns sports-score asks (calendar leaves them), /fix/ pages share one CSP splat rule (83 -> 66 rules), real…"
+  },
+  {
+   "at": "2026-10-26T03:18:08Z",
+   "subject": "Versus: PDF tools and kanban floors with lanes, feature maps, probes, and a page of its own per lane site (LANE_PAGES)"
+  },
+  {
+   "at": "2026-10-26T03:18:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:17:38Z",
+   "subject": "Daily art helper for the reports: an illustration by Verse per league, section or wrap each day inside its own budget, a deterministic SVG…"
+  },
+  {
+   "at": "2026-10-26T03:17:08Z",
+   "subject": "News: a one-line headline link is a 26 px tap target"
+  },
+  {
    "at": "2026-10-26T03:14:09Z",
    "subject": "Tower gate: news: euronews.com,news: aljazeera.com,news: npr.org,news: apnews.com,news: theguardian.com measured against their live sites"
   },
@@ -505,70 +569,6 @@
   {
    "at": "2026-10-26T03:12:22Z",
    "subject": "Tower gate: news: allsides.com,news: thelocal.com,news: rnz.co.nz,news: channelnewsasia.com,news: france24.com,news: dw.com measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:14Z",
-   "subject": "Rules: the objective is to go through every tower site (owner's words)"
-  },
-  {
-   "at": "2026-10-26T03:11:15Z",
-   "subject": "Tower gate: finance,news,podcasts,finance: stockq.org,finance: stooq.com,podcasts: podcastindex.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:34Z",
-   "subject": "Tower gate: finance: investing.com,finance: tradingview.com,finance: marketwatch.com,finance: google.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:29Z",
-   "subject": "Tower gate: finance: stockq.org,finance: companiesmarketcap.com,finance: stockanalysis.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:26Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
-  },
-  {
-   "at": "2026-10-26T03:10:03Z",
-   "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
-  },
-  {
-   "at": "2026-10-26T03:08:43Z",
-   "subject": "Rules: every tower site gets its own page, even where we already stomp it (owner's words)"
-  },
-  {
-   "at": "2026-10-26T03:07:56Z",
-   "subject": "Rules: always go after the easiest tower site first, giants last (owner's words)"
-  },
-  {
-   "at": "2026-10-26T03:07:43Z",
-   "subject": "Tower gate: finance: stockq.org,finance: stooq.com,finance: macrotrends.net measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:05:17Z",
-   "subject": "Chat calendar: a sticky is not an event"
-  },
-  {
-   "at": "2026-10-26T03:04:42Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports,finance: stockq.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:01:26Z",
-   "subject": "Incident: the browser suite failed on b50bb145 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T03:00:51Z",
-   "subject": "Incident: the browser suite failed on 0bd33cd6 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T02:59:51Z",
-   "subject": "Verse reports: the model-call caps count in the shared D1 counter (lib/daily-cap.js), failing closed to the template draft"
-  },
-  {
-   "at": "2026-10-26T02:59:11Z",
-   "subject": "Scores: Verse reports (recaps, previews, brief, weekly roundup written from the feeds' data, the model's wording kept only if it checks…"
-  },
-  {
-   "at": "2026-10-26T02:58:04Z",
-   "subject": "Verse reports: market-report mode name, the shared D1 daily cap (10 an hour, 60 a day for the whole site)"
   }
  ],
  "builders": {

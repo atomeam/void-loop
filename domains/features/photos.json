@@ -243,5 +243,2004 @@
   "location stripped from any copy you share",
   "exact-size resizer with KB limit (/resize-image/)"
  ],
- "first_page": "Photos page /photos/ for people who want their pictures private. First: the existing device library as a full page: timeline by day, albums, favourites, trash with undo, crop/rotate/light editor that saves a new copy, a places map from EXIF, and export without location. Will not build: cloud backup, face recognition, AI edits or prints."
+ "first_page": "Photos page /photos/ for people who want their pictures private. First: the existing device library as a full page: timeline by day, albums, favourites, trash with undo, crop/rotate/light editor that saves a new copy, a places map from EXIF, and export without location. Will not build: cloud backup, face recognition, AI edits or prints.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "exifeditor.io": {
+    "url": "https://exifeditor.io/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://exifeditor.io/",
+     "https://exifeditor.io/faq",
+     "https://exifeditor.io/guides",
+     "https://exifeditor.io/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Choose a photo metadata tool",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"choose\", \"metadata\""
+     },
+     {
+      "name": "photo_camera Upload Image(s)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"camera\", \"upload\", \"image\""
+     },
+     {
+      "name": "map Location(s)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"map\", \"location\""
+     },
+     {
+      "name": "tag Metadata",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"tag\", \"metadata\""
+     },
+     {
+      "name": "Common questions about EXIF metadata",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"common\", \"question\", \"about\", \"exif\""
+     },
+     {
+      "name": "EXIFEditor.io vs Alternatives",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exifeditor\", \"alternative\""
+     },
+     {
+      "name": "Keep exploring",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"keep\", \"explor\""
+     },
+     {
+      "name": "The Complete EXIF Guide",
+      "detail": "a heading on /guides",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"complete\", \"exif\", \"guide\""
+     },
+     {
+      "name": "How to Use EXIFEditor.io",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"how\", \"exifeditor\""
+     },
+     {
+      "name": "Learn About EXIF & Image Metadata",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"learn\", \"about\", \"exif\", \"image\""
+     },
+     {
+      "name": "Popular next steps",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"popular\", \"next\", \"step\""
+     },
+     {
+      "name": "Our Commitment to Privacy",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"our\", \"commitment\""
+     },
+     {
+      "name": "Contact: For privacy questions, contact us at exifeditorio@gmail.com",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"contact\", \"question\", \"exifeditorio\""
+     },
+     {
+      "name": "EXIFEditor.io – Fast, private, no uploads, works in your browser",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exifeditor\", \"fast\", \"private\", \"upload\""
+     },
+     {
+      "name": "Metadata2Go – Online metadata viewer and analyzer",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"metadata2go\", \"metadata\", \"viewer\", \"analyzer\""
+     },
+     {
+      "name": "ExifTool – Powerful command-line EXIF tool for advanced users",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exiftool\", \"powerful\", \"command\", \"line\""
+     },
+     {
+      "name": "Jimpl – Simple online EXIF viewer and editor",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"jimpl\", \"simple\", \"exif\", \"viewer\""
+     },
+     {
+      "name": "Exif.tools – Free online EXIF data viewer",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exif\", \"data\", \"viewer\""
+     },
+     {
+      "name": "100% free and no registration required",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"100\", \"registration\", \"requir\""
+     },
+     {
+      "name": "Modern, easy-to-use interface for both desktop and mobile",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"modern\", \"easy\", \"interface\", \"both\""
+     },
+     {
+      "name": "Open to feedback and suggestions from our users",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"open\", \"feedback\", \"suggestion\", \"our\""
+     },
+     {
+      "name": "Download your updated image instantly—no data ever leaves your browser",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"download\", \"updat\", \"image\", \"instantly\""
+     },
+     {
+      "name": "Read our step-by-step guides for beginners and professionals",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"read\", \"our\", \"step\", \"guide\""
+     },
+     {
+      "name": "See our Further Reading for authoritative resources and standards",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"see\", \"our\", \"further\", \"read\""
+     },
+     {
+      "name": "info File Information expand_more",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"info\", \"file\", \"information\", \"expand\""
+     },
+     {
+      "name": "MakeImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"makeimage\", \"text\""
+     },
+     {
+      "name": "ModelImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"modelimage\", \"text\""
+     },
+     {
+      "name": "SoftwareImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"softwareimage\", \"text\""
+     },
+     {
+      "name": "Focal LengthCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"focal\", \"lengthcamera\", \"exposure\", \"fraction\""
+     },
+     {
+      "name": "Exposure TimeCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exposure\", \"timecamera\", \"fraction\""
+     },
+     {
+      "name": "F-NumberCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"numbercamera\", \"exposure\", \"fraction\""
+     },
+     {
+      "name": "ISO SpeedCamera & exposure · Number",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"iso\", \"speedcamera\", \"exposure\", \"number\""
+     },
+     {
+      "name": "Shutter SpeedCamera & exposure · 10",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"shutter\", \"speedcamera\", \"exposure\", \"10\""
+     },
+     {
+      "name": "Date TakenCamera & exposure · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"date\", \"takencamera\", \"exposure\", \"text\""
+     },
+     {
+      "name": "Date ModifiedImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"date\", \"modifiedimage\", \"text\""
+     },
+     {
+      "name": "LatitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"latitudelocation\", \"fraction\""
+     },
+     {
+      "name": "LongitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"longitudelocation\", \"fraction\""
+     },
+     {
+      "name": "AltitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"altitudelocation\", \"fraction\""
+     },
+     {
+      "name": "Image DescriptionImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"descriptionimage\", \"text\""
+     },
+     {
+      "name": "ArtistImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"artistimage\", \"text\""
+     }
+    ]
+   },
+   "exif.tools": {
+    "url": "https://exif.tools/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://exif.tools/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Take a closer look",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"take\", \"closer\", \"look\""
+     },
+     {
+      "name": "Behind the lens",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"behind\", \"len\""
+     },
+     {
+      "name": "Put it on the map",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"put\", \"map\""
+     },
+     {
+      "name": "Know your image",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"know\", \"image\""
+     },
+     {
+      "name": "Choose a file ↗",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"file\""
+     },
+     {
+      "name": "Paste a link",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"paste\", \"link\""
+     }
+    ]
+   },
+   "tinypng.com": {
+    "url": "https://tinypng.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://tinypng.com/",
+     "https://tinypng.com/cdn/documentation",
+     "https://tinypng.com/pricing/web",
+     "https://tinypng.com/developers/how-it-works",
+     "https://tinypng.com/pricing/api",
+     "https://tinypng.com/cdn/how-it-works",
+     "https://tinypng.com/pricing/cdn"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "OUR PRODUCTS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"our\", \"product\""
+     },
+     {
+      "name": "Smart AVIF, WebP, PNG and JPEG Compression for Faster Websites",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"smart\", \"avif\", \"webp\", \"png\""
+     },
+     {
+      "name": "IMAGE COMPRESSION AND CONVERSION WITHOUT VISIBLE QUALITY LOSS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"compression\", \"conversion\", \"visible\""
+     },
+     {
+      "name": "TESTIMONIALS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"testimonial\""
+     },
+     {
+      "name": "What our customers say",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"what\", \"our\", \"customer\", \"say\""
+     },
+     {
+      "name": "Speed up your website with Tinify",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"speed\", \"website\", \"tinify\""
+     },
+     {
+      "name": "General",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"general\""
+     },
+     {
+      "name": "Tinify CDN documentation",
+      "detail": "a heading on /cdn/documentation",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"tinify\", \"cdn\", \"documentation\""
+     },
+     {
+      "name": "Most relevant articles",
+      "detail": "a heading on /cdn/documentation",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"relevant\", \"article\""
+     },
+     {
+      "name": "Choose the right plan for the online optimizer",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"right\", \"plan\", \"optimizer\""
+     },
+     {
+      "name": "Web Free",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words"
+     },
+     {
+      "name": "Web Pro",
+      "detail": "a heading on /pricing/web",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pro\""
+     },
+     {
+      "name": "Web Ultra",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"ultra\""
+     },
+     {
+      "name": "Discover More About Tinify's Online Tool",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"discover\", \"about\", \"tinify\""
+     },
+     {
+      "name": "Compress, resize and convert your images with Tinify's Developer API",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"compress\", \"resize\", \"convert\", \"image\""
+     },
+     {
+      "name": "Same API for all image formats",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"same\", \"api\", \"image\", \"format\""
+     },
+     {
+      "name": "Convert to AVIF, WebP, JPEG or PNG",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"avif\", \"webp\", \"jpeg\""
+     },
+     {
+      "name": "Perfect image resizing",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"perfect\", \"image\", \"resiz\""
+     },
+     {
+      "name": "Area of interest detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"area\", \"interest\", \"detection\""
+     },
+     {
+      "name": "Freestanding image detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"freestand\", \"image\", \"detection\""
+     },
+     {
+      "name": "Upload directly or provide a URL to the image",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upload\", \"directly\", \"provide\", \"url\""
+     },
+     {
+      "name": "Preserve metadata",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"preserve\", \"metadata\""
+     },
+     {
+      "name": "Amazon S3 and Google Cloud Storage",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"amazon\", \"google\", \"cloud\", \"storage\""
+     },
+     {
+      "name": "Smart area of interest detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"smart\", \"area\", \"interest\", \"detection\""
+     },
+     {
+      "name": "Freestanding object detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"freestand\", \"object\", \"detection\""
+     },
+     {
+      "name": "Get your API key now",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"api\", \"key\", \"now\""
+     },
+     {
+      "name": "Developer API pricing that scales with you",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"developer\", \"api\", \"pric\", \"scale\""
+     },
+     {
+      "name": "Pricing Calculator",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pric\", \"calculator\""
+     },
+     {
+      "name": "Pricing explained",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pric\", \"explain\""
+     },
+     {
+      "name": "Pay per compression",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pay\", \"compression\""
+     },
+     {
+      "name": "First 500 images per month",
+      "detail": "a heading on /pricing/api",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"first\", \"500\", \"image\", \"month\""
+     },
+     {
+      "name": "Next 9 500 compressions",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"next\", \"9\", \"500\", \"compression\""
+     },
+     {
+      "name": "Next 10 000 compression per month",
+      "detail": "a heading on /pricing/api",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"next\", \"10\", \"000\", \"compression\""
+     },
+     {
+      "name": "WordPress plugin",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"wordpress\", \"plugin\""
+     },
+     {
+      "name": "Discover what Tinify's Developer API can do",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"discover\", \"what\", \"tinify\", \"developer\""
+     },
+     {
+      "name": "Faster content delivery with our Multi-CDN network",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"faster\", \"content\", \"delivery\", \"our\""
+     },
+     {
+      "name": "3 global distribution networks",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"3\", \"global\", \"distribution\", \"network\""
+     },
+     {
+      "name": "Great coverage on all continents",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"great\", \"coverage\", \"continent\""
+     },
+     {
+      "name": "128 server locations",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"128\", \"server\", \"location\""
+     },
+     {
+      "name": "Automatic image optimization",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"automatic\", \"image\", \"optimization\""
+     }
+    ]
+   },
+   "squoosh.app": {
+    "url": "https://squoosh.app/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://squoosh.app/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Small",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"small\""
+     },
+     {
+      "name": "Simple",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"simple\""
+     },
+     {
+      "name": "Secure",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"secure\""
+     },
+     {
+      "name": "2.8MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"2\", \"8mb\""
+     },
+     {
+      "name": "2.9MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"2\", \"9mb\""
+     },
+     {
+      "name": "1.6MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"1\", \"6mb\""
+     },
+     {
+      "name": "13KB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"13kb\""
+     }
+    ]
+   },
+   "photopea.com": {
+    "url": "https://www.photopea.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.photopea.com/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Free Online Photo Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\""
+     },
+     {
+      "name": "Unlock your creativity with the best free photo editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"unlock\", \"creativity\", \"best\""
+     },
+     {
+      "name": "Fully Local",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"fully\", \"local\""
+     },
+     {
+      "name": "Cost-Effective",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"cost\", \"effective\""
+     },
+     {
+      "name": "Convenient Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convenient\", \"editor\""
+     },
+     {
+      "name": "Runs Everywhere",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"run\", \"everywhere\""
+     },
+     {
+      "name": "Professional Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"professional\", \"editor\""
+     },
+     {
+      "name": "Full PSD support",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"full\", \"psd\", \"support\""
+     },
+     {
+      "name": "Swiss knife for graphics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"swiss\", \"knife\", \"graphic\""
+     },
+     {
+      "name": "Perfect RAW support",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"perfect\", \"raw\", \"support\""
+     },
+     {
+      "name": "State-of-the-art AI",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"state\", \"art\""
+     },
+     {
+      "name": "All Essential Features",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"essential\", \"feature\""
+     },
+     {
+      "name": "Adjustments and Filters",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"adjustment\", \"filter\""
+     },
+     {
+      "name": "Vector Graphics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"vector\", \"graphic\""
+     },
+     {
+      "name": "Social Media Enthusiasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"social\", \"media\", \"enthusiast\""
+     },
+     {
+      "name": "Students and Educators",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"student\", \"educator\""
+     },
+     {
+      "name": "Small Business Owners",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"small\", \"busi\", \"owner\""
+     },
+     {
+      "name": "Graphic Designers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"graphic\", \"designer\""
+     },
+     {
+      "name": "Start using Photopea",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"start\", \"photopea\""
+     }
+    ]
+   },
+   "iloveimg.com": {
+    "url": "https://www.iloveimg.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.iloveimg.com/",
+     "https://www.iloveimg.com/features",
+     "https://www.iloveimg.com/pricing",
+     "https://www.iloveimg.com/user/premium",
+     "https://www.iloveimg.com/help/faq",
+     "https://www.iloveimg.com/help/security",
+     "https://www.iloveimg.com/help/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Every tool you could want to edit images in bulk",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"every\", \"could\", \"want\", \"edit\""
+     },
+     {
+      "name": "Your online photo editor is here and forever free",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\", \"here\", \"forever\""
+     },
+     {
+      "name": "Compress IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"compress\", \"image\""
+     },
+     {
+      "name": "Resize IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"resize\", \"image\""
+     },
+     {
+      "name": "Crop IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"crop\", \"image\""
+     },
+     {
+      "name": "Convert to JPG",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"jpg\""
+     },
+     {
+      "name": "Convert from JPG",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"jpg\""
+     },
+     {
+      "name": "Photo editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\""
+     },
+     {
+      "name": "Upscale Image",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upscale\", \"image\""
+     },
+     {
+      "name": "Remove background",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"remove\", \"background\""
+     },
+     {
+      "name": "Watermark IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"watermark\", \"image\""
+     },
+     {
+      "name": "Meme generator",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"meme\", \"generator\""
+     },
+     {
+      "name": "Rotate IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"rotate\", \"image\""
+     },
+     {
+      "name": "HTML to IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"html\", \"image\""
+     },
+     {
+      "name": "Blur face",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"blur\", \"face\""
+     },
+     {
+      "name": "Get more with Premium",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"premium\""
+     },
+     {
+      "name": "Simple solutions with user-friendly tools",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"simple\", \"solution\", \"user\", \"friendly\""
+     },
+     {
+      "name": "What matters to you, matters to us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"what\", \"matter\""
+     },
+     {
+      "name": "Profit from time well spent",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"profit\", \"time\", \"well\", \"spent\""
+     },
+     {
+      "name": "We'll help you save time and effort",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"help\", \"save\", \"time\", \"effort\""
+     },
+     {
+      "name": "Manage your images with freedom",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"manage\", \"image\", \"freedom\""
+     },
+     {
+      "name": "Don’t worry, you’re safe with us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"don\", \"worry\", \"safe\""
+     },
+     {
+      "name": "Save data working straight from the cloud",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"save\", \"data\", \"work\", \"straight\""
+     },
+     {
+      "name": "Your artwork is safe with us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"artwork\", \"safe\""
+     },
+     {
+      "name": "Get even more with Premium",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"even\", \"premium\""
+     },
+     {
+      "name": "Create a team",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"create\", \"team\""
+     },
+     {
+      "name": "Power up your tools",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"power\""
+     },
+     {
+      "name": "Choose the plan that suits you",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"plan\", \"suit\""
+     },
+     {
+      "name": "Free",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words"
+     },
+     {
+      "name": "Let's talk",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"let\", \"talk\""
+     },
+     {
+      "name": "Automate document processes with iLoveIMG API",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"automate\", \"document\", \"processe\", \"iloveimg\""
+     },
+     {
+      "name": "Your images are in good hands",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"good\", \"hand\""
+     },
+     {
+      "name": "Trusted by well known companies",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"trust\", \"well\", \"known\", \"company\""
+     },
+     {
+      "name": "Upgrade to Premium",
+      "detail": "a heading on /user/premium",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upgrade\", \"premium\""
+     },
+     {
+      "name": "We get asked a lot of questions",
+      "detail": "a heading on /help/faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"asked\", \"lot\", \"question\""
+     },
+     {
+      "name": "Security and data protection",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"security\", \"data\", \"protection\""
+     },
+     {
+      "name": "Data Privacy and Security",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"data\", \"security\""
+     },
+     {
+      "name": "iLoveIMG's Privacy Policy",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"iloveimg\", \"policy\""
+     },
+     {
+      "name": "Security Policy Overview",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"security\", \"policy\", \"overview\""
+     },
+     {
+      "name": "Ongoing Evaluation and Improvement",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"ongo\", \"evaluation\", \"improvement\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "map Location(s)",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "tag Metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Common questions about EXIF metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "EXIFEditor.io vs Alternatives",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Keep exploring",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "The Complete EXIF Guide",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "How to Use EXIFEditor.io",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Learn About EXIF & Image Metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Popular next steps",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "EXIFEditor.io – Fast, private, no uploads, works in your browser",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Metadata2Go – Online metadata viewer and analyzer",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ExifTool – Powerful command-line EXIF tool for advanced users",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Jimpl – Simple online EXIF viewer and editor",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Exif.tools – Free online EXIF data viewer",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "100% free and no registration required",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Modern, easy-to-use interface for both desktop and mobile",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Open to feedback and suggestions from our users",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Download your updated image instantly—no data ever leaves your browser",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Read our step-by-step guides for beginners and professionals",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "See our Further Reading for authoritative resources and standards",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "info File Information expand_more",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "MakeImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ModelImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "SoftwareImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Focal LengthCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Exposure TimeCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "F-NumberCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ISO SpeedCamera & exposure · Number",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Shutter SpeedCamera & exposure · 10",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Date TakenCamera & exposure · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Date ModifiedImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "LatitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "LongitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "AltitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Image DescriptionImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ArtistImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Take a closer look",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Behind the lens",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Put it on the map",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Know your image",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Choose a file ↗",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Paste a link",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "OUR PRODUCTS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Smart AVIF, WebP, PNG and JPEG Compression for Faster Websites",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "IMAGE COMPRESSION AND CONVERSION WITHOUT VISIBLE QUALITY LOSS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "TESTIMONIALS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "What our customers say",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Speed up your website with Tinify",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "General",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Tinify CDN documentation",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Most relevant articles",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Choose the right plan for the online optimizer",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Free",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Pro",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Ultra",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Discover More About Tinify's Online Tool",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Compress, resize and convert your images with Tinify's Developer API",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Same API for all image formats",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Convert to AVIF, WebP, JPEG or PNG",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Perfect image resizing",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Area of interest detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Freestanding image detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Upload directly or provide a URL to the image",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Preserve metadata",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Amazon S3 and Google Cloud Storage",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Smart area of interest detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Freestanding object detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Get your API key now",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Developer API pricing that scales with you",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pricing Calculator",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pricing explained",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pay per compression",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "First 500 images per month",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Next 9 500 compressions",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Next 10 000 compression per month",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "WordPress plugin",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Discover what Tinify's Developer API can do",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Faster content delivery with our Multi-CDN network",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "3 global distribution networks",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Great coverage on all continents",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "128 server locations",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Automatic image optimization",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Small",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Simple",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Secure",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "2.8MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "2.9MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "1.6MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "13KB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Fully Local",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Cost-Effective",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Convenient Editor",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Runs Everywhere",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Professional Editor",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Full PSD support",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Swiss knife for graphics",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Perfect RAW support",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "State-of-the-art AI",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "All Essential Features",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Adjustments and Filters",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Vector Graphics",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Social Media Enthusiasts",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Students and Educators",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Small Business Owners",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Graphic Designers",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Start using Photopea",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Every tool you could want to edit images in bulk",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Compress IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Resize IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Crop IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Convert to JPG",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Convert from JPG",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Upscale Image",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Remove background",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Watermark IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Meme generator",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Rotate IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "HTML to IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Blur face",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Get more with Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Simple solutions with user-friendly tools",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "What matters to you, matters to us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Profit from time well spent",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "We'll help you save time and effort",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Manage your images with freedom",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Don’t worry, you’re safe with us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Save data working straight from the cloud",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Your artwork is safe with us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Get even more with Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Create a team",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Power up your tools",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Choose the plan that suits you",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Free",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Let's talk",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Automate document processes with iLoveIMG API",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Your images are in good hands",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Trusted by well known companies",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Upgrade to Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "We get asked a lot of questions",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Security and data protection",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Security Policy Overview",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Ongoing Evaluation and Improvement",
+    "sites": [
+     "iloveimg.com"
+    ]
+   }
+  ],
+  "queued": []
+ }
 }

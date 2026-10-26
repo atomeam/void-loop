@@ -183,7 +183,10 @@
       if (ctl) ctl.abort(); ctl = new AbortController(); const mine = ctl, sym = state.sym, range = state.range;
       for (const b of $('ranges').children) b.setAttribute('aria-pressed', String(b.dataset.r === range));
       say('note', ''); $('chNone').hidden = false; $('chNone').textContent = 'Loading the chart';
-      const j = await api('s=' + encodeURIComponent(sym) + '&r=' + range + (state.on ? '&on=' + state.on : ''), mine.signal).catch(() => null); if (!j || mine !== ctl) return;
+      const ask = () => api('s=' + encodeURIComponent(sym) + '&r=' + range + (state.on ? '&on=' + state.on : ''), mine.signal).catch(() => null);
+      let j = await ask(); if (j && !j.ok && (j.kind === 'limited' || j.kind === 'away')) { await new Promise((r) => setTimeout(r, 2000)); if (mine === ctl) j = await ask(); } // a busy moment: once more
+      if (!j || mine !== ctl) return;
+      if (j.ok && j.partial) { state.q = j; draw(); return; } // the sources did not answer: only the close on the day asked, from Verse's record
       if (j.ok) { state.q = j; store.last = j.sym; store.q[j.sym] = { price: j.price, pct: j.pct, change: j.change, name: j.name, currency: j.currency, t: Date.now(), full: j }; for (const k of Object.keys(store.q)) if (k !== j.sym) delete store.q[k].full; keep(); draw(); if (state.cmp) loadCmp(); return; }
       const saved = store.q[sym] && store.q[sym].full;
       if (saved && j.kind === 'offline') { state.q = { ...saved, offline: true, saved: store.q[sym].t }; state.range = saved.range; for (const b of $('ranges').children) b.setAttribute('aria-pressed', String(b.dataset.r === saved.range)); draw(); return; }
@@ -197,8 +200,8 @@
       if (!$('rep').hidden && rep.kind === 'why') report();
       const q = state.q, c = cur(q), money = (v) => (v == null ? '–' : M.fmtPrice(v) + (c ? ' ' : ''));
       $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + (c ? ' · ' + c : '') + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || '');
-      $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change);
-      $('qa').textContent = (q.offline ? 'Offline: the last price saved on this device, ' + new Date(q.saved).toLocaleString() + '. ' : 'Source: ' + q.source + '. ') + 'Data may be delayed' + (q.offline ? '' : '; as of ' + M.fmtDay(q.asOf) + '.');
+      $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change); if (q.partial) $('qm').textContent = '';
+      $('qa').textContent = (q.offline ? 'Offline: the last price saved on this device, ' + new Date(q.saved).toLocaleString() + '. ' : 'Source: ' + q.source + '. ') + 'Data may be delayed' + (q.offline || !q.asOf ? '.' : '; as of ' + M.fmtDay(q.asOf) + '.');
       $('sPrev').textContent = money(q.prev); $('sOpen').textContent = money(q.open);
       $('sDay').textContent = q.dayLow != null && q.dayHigh != null ? M.fmtPrice(q.dayLow) + ' – ' + M.fmtPrice(q.dayHigh) : '–';
       $('s52').textContent = q.lo52 != null && q.hi52 != null ? M.fmtPrice(q.lo52) + ' – ' + M.fmtPrice(q.hi52) : '–';
@@ -214,7 +217,7 @@
     function drawChart() {
       const q = state.q, pts = q.points || [], p = M.chartPath(pts), cmp = state.cmp && state.cq && state.cq.points ? M.comparePaths(pts, state.cq.points) : null;
       $('cmpOff').hidden = !state.cmp; state.idx = -1; hideHover();
-      if (!p.d) { $('chNone').hidden = false; $('chNone').textContent = 'No chart for this range.'; $('line').setAttribute('d', ''); $('area').setAttribute('d', ''); $('line2').setAttribute('d', ''); return; }
+      if (!p.d) { $('chNone').hidden = false; $('chNone').textContent = 'No chart for this range.'; for (const a of ['ax0', 'axm', 'ax1']) $(a).textContent = ''; $('line').setAttribute('d', ''); $('area').setAttribute('d', ''); $('line2').setAttribute('d', ''); return; }
       $('chNone').hidden = true;
       const up = (q.rangeChange == null ? q.change : q.rangeChange) >= 0, col = up ? 'var(--up)' : 'var(--down)';
       if (cmp) { $('line').setAttribute('d', cmp.a); $('line').style.stroke = 'var(--accent)'; $('line2').setAttribute('d', cmp.b); $('area').setAttribute('d', ''); }

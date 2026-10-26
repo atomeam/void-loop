@@ -13,11 +13,14 @@ const base = 'http://127.0.0.1:' + server.address().port; let bad = 0; const err
 const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) bad++; };
 let hits = 0; const reqs = []; page.on('request', (q) => reqs.push(q.url()));
 await ctx.route(/\/api\/news/, async (r) => { hits++; const out = await lookNews(askIn(r.request().url()), async (u) => new Response(fixtureFor(String(u)), { status: 200 })); await r.fulfill({ status: out.ok ? 200 : 502, contentType: 'application/json', body: JSON.stringify({ ...out, ...askIn(r.request().url()) }) }); });
+await ctx.route(/\/api\/daily-art/, (r) => (/json=1/.test(r.request().url()) ? r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ok: true, source: 'ai', label: 'Illustration by Verse', credit: [{ t: 'Illustration by Verse' }] }) }) : r.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"><rect width="16" height="9" fill="#468"/></svg>' })));
 await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
 await page.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); });
 const t0 = Date.now(); await page.goto(base + '/news/?sec=world', { waitUntil: 'load' }); const loadMs = Date.now() - t0;
 await page.waitForFunction(() => !document.getElementById('app').hasAttribute('aria-busy') && document.querySelectorAll('#list .story').length > 0, null, { timeout: 8000 });
 ok(loadMs < 1500, 'load event in ' + loadMs + ' ms on localhost');
+await page.waitForFunction(() => document.querySelector('#artBox img'), null, { timeout: 5000 }).catch(() => {});
+ok(await page.evaluate(() => { const i = document.querySelector('#artBox img'); return !!i && i.alt === 'Illustration by Verse: ' + i.alt.split(': ')[1] && /kind=news&key=world/.test(i.src); }), 'the day\'s illustration for the section loads after the first draw, with its alt'); ok(/Illustration by Verse/.test(await page.locator('#artCredit').innerText()), 'and its credit line');
 const rows = await page.locator('#list .story').count(); ok(rows >= 8, rows + ' headline rows');
 const text = await page.locator('main').innerText();
 const names = new Set([...text.matchAll(/(BBC News|The Guardian|NPR|DW|Al Jazeera|CBC News) · (?:just now|\d+ (?:min|h|d) ago)/g)].map((m) => m[1])); ok(names.size >= 3, 'source and age on rows from ' + names.size + ' sources: ' + [...names].join(', '));

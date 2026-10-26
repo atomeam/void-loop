@@ -6,6 +6,7 @@
 // completeness unverified (never counted as beaten); a probe with truth null leaves accuracy unverified (only a site whose own address carries the
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 import { readFileSync } from 'node:fs';
+import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -344,6 +345,30 @@ export const PROBES = Object.freeze({
     facts: [['rich formatting', /\bbold\b/i], ['headings', /\bheadings?\b/i], ['lists', /\blists?\b/i], ['checklists', /\bchecklists?\b|\bcheckbox/i], ['links', /\blinks?\b/i], ['many documents', /\bnew note\b|\bnotes\b/i], ['search', /\bsearch\b/i],
       ['version history', /\bversion history\b/i], ['a word count', /\bwords\b/i], ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['markdown', /\.md\b/i], ['print', /\bprint\b/i], ['a share link', /\bshare\b/i], ['keyboard shortcuts', /\bCtrl\b|\bkeyboard\b/i], ['works offline', /\boffline\b/i], ['on this device', /\bon this device\b|\bthis browser\b/i]],
   },
+  pdf: {
+    site: 'https://www.ilovepdf.com/', verse: '/pdf/',
+    // the question: open the merge tool from a link. A right page names the tool, takes PDFs (choose or drop) and says the file stays on the device. Judged on
+    // Verse alone (the site is not asked); the same probe measures every site in the PDF lane (lib/tower.js LANES)
+    ask: { verse: '/pdf/?tool=merge' },
+    truth: [['the merge tool', /\bmerge\b/i], ['PDFs chosen or dropped', /\b(?:choose|drop|add)\b[\s\S]{0,40}\bPDFs?\b/i], ['files stay on the device', /\bon (?:this|your) device\b|\bnever leaves?\b|\bnothing (?:is )?(?:uploaded|sent)\b/i]],
+    askParts: { 'merge and split': [['merge', /\bmerge\b/i], ['split', /\bsplit\b/i]], 'page tools': [['rotate', /\brotate\b/i], ['delete pages', /\bdelete\b|\bremove\b/i], ['reorder', /\breorder\b|\bmove\b|\bdrag\b/i]], 'images to pdf': [['images to PDF', /\bimages?\b[\s\S]{0,20}\bPDF\b/i]], compress: [['compress', /\bcompress/i]] },
+    // what the best PDF sites list: merge, split, remove, organize and rotate pages, compress, images to PDF and PDF to images, page numbers, watermark, protect and
+    // unlock, edit and sign; the best add files kept on the device, no account, and offline
+    facts: [['merge', /\bmerge\b/i], ['split', /\bsplit\b/i], ['delete pages', /\bdelete pages?\b|\bremove pages?\b/i], ['reorder pages', /\breorder\b/i], ['rotate', /\brotate\b/i], ['compress', /\bcompress/i], ['images to PDF', /\bimages? to pdf\b|\bpictures? to pdf\b/i], ['PDF to images', /\bpdf to (?:images?|jpg|png)\b/i],
+      ['page numbers', /\bpage numbers?\b/i], ['watermark', /\bwatermark/i], ['on this device', /\bon (?:this|your) device\b/i], ['no account', /\bno (?:account|sign.?up)\b/i], ['works offline', /\boffline\b/i], ['ask questions about a PDF', /\bask\b[\s\S]{0,40}\bPDF\b/i]],
+  },
+  kanban: {
+    site: 'https://trello.com/', verse: '/kanban/',
+    // the question: open the page. A right page opens a board with its stages named (a fresh board starts To do, Doing, Done), a way to add a card, and says the
+    // board stays on the device. Judged on Verse alone; the same probe measures every site in the kanban lane (lib/tower.js LANES)
+    ask: { verse: '/kanban/' },
+    truth: [['a To do column', /\bto do\b/i], ['a Doing column', /\bdoing\b/i], ['a Done column', /\bdone\b/i], ['a way to add a card', /\badd (?:a )?card\b/i]],
+    askParts: { 'boards and columns': [['boards', /\bboards?\b/i], ['add a column', /\badd (?:a )?(?:column|list)\b/i]], 'card details': [['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i]], 'drag and drop': [['drag', /\bdrag\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i]], 'import and export': [['export', /\bexport\b/i], ['import', /\bimport\b/i]] },
+    // what the best boards show: boards, columns, cards, labels, due dates, checklists, drag and drop, search and filter, archive, WIP limits, and import and export; the best
+    // add keyboard moves, boards kept on the device with no account, and offline
+    facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
+      ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
+  },
   podcasts: {
     site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',
     // the question: open Verse Out Loud's first episode from a link. A page that only loaded shows its title and a search box; a page that works shows
@@ -375,6 +400,24 @@ export const PROBES = Object.freeze({
     // humidity, wind, the chance of rain, sunrise and sunset, and a link to share)
     facts: [['conditions now', /\bnow\b/i], ['°F', /°\s?F\b/], ['°C', /°\s?C\b/], ['feels like', /feels like/i], ['humidity', /\bhumidity\b/i], ['wind', /\bwind\b/i], ['the chance of rain', /chance of rain|\bprecipitation\b|\bprobab/i],
       ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['an hourly forecast', /\bhourly\b|next 24 hours/i], ['a daily forecast', /\bdaily\b|days ahead|7.day|extended forecast/i], ['alerts', /\balerts?\b/i], ['radar', /\bradar\b/i], ['a share link', /\bshare\b|copy link/i]],
+  },
+  photos: {
+    site: 'https://photos.google.com/', verse: '/photos/',
+    // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL), as the photo resizer's does. The truth by
+    // arithmetic: it is one pixel by one pixel, the page names its size before and after in bytes, and (the format being kept) says PNG. Judged on Verse alone
+    // (a photo sites' own pages are not asked); the same probe measures every site in the photos lane (lib/tower.js LANES: squoosh.app, photopea.com,
+    // tinypng.com, exif.tools, exifeditor.io, iloveimg.com)
+    ask: { site: 'https://squoosh.app/', verse: '/photos/', verseFile: true },
+    truth: [['the picture is 1 by 1 pixel', /\b1 [×x] 1 px\b/], ['its size before and after, in bytes', /\b\d+ B → \d+ B\b/], ['the format named', /\bPNG\b/]],
+    askParts: {
+      editing: [['crop', /\bcrop\b/i], ['rotate', /\brotate\b/i], ['adjust', /\badjust\b/i], ['filters', /\bfilters?\b/i], ['draw', /\bdraw\b/i], ['text', /\btext\b/i], ['undo', /\bundo\b/i]],
+      'compress and convert': [['a quality choice', /\bquality\b/i], ['JPEG', /\bjpeg\b/i], ['WebP', /\bwebp\b/i], ['PNG', /\bpng\b/i], ['the size saved', /\b\d+% (?:saved|bigger)\b|\bthe same size\b/i], ['a resize', /\bwidth\b/i], ['before and after', /\boriginal\b[\s\S]{0,80}\bresult\b/i]],
+      'metadata and privacy': [['EXIF', /\bexif\b/i], ['strip metadata', /\bstrip metadata\b/i]],
+    },
+    // what the lane's sites show between them (squoosh: formats, a quality slider, a compare slider, resize, offline; tinypng: PNG colours, batch, the saving; exif.tools and
+    // exifeditor.io: EXIF and GPS viewer, strip, nothing uploaded; iloveimg: crop, rotate, convert, filters, text; photopea: adjustments, filters, text, drawing, history)
+    facts: [['JPEG', /\bjpeg\b/i], ['PNG', /\bpng\b/i], ['WebP', /\bwebp\b/i], ['AVIF', /\bavif\b/i], ['a quality slider', /\bquality\b/i], ['a before and after slider', /\bbefore and after\b/i], ['the size saved', /\bsize saved\b|\bsaved\b/i], ['resize', /\bresize\b/i], ['crop with shapes', /\bcrop\b/i], ['rotate and flip', /\brotate\b[\s\S]{0,12}\bflip\b/i],
+      ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
   },
   'photo resizer': {
     site: 'https://pancardresizer.com/', verse: '/resize-image/',
@@ -472,6 +515,8 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   'random generators': { 'generator catalogue': [['a count of generators', /\b\d{2,} generators\b|catalogue/i]], 'make your own generator': [['make your own', /make your own/i]] }, // 'image generation', 'list language' and 'publish and remix' are pageParts: a real picture, a working engine
   calendar: { reminders: [['reminders', /\bremind/i], ['notifications on the device', /\bnotification/i]], invites: [['invites', /\binvite/i], ['the .ics', /\.ics\b/i]], 'recurring events': [['repeats', /\brepeat|\brecurr|\bevery (?:day|week|month|year)\b/i]] },
   podcasts: { subscriptions: [['follow a show', /\bFollow\b/], ['the shows you follow', /\bFollowing\b/], ['new episodes of those shows', /\bNew episodes\b/]], 'playback controls': [['speed', /\bSpeed\b/], ['skip back and forward', /15[\s\S]{0,80}30/], ['a sleep timer', /\bSleep timer\b/], ['a queue', /\bqueue\b/i], ['an audio element that read its length', /Ready to play · \d+:\d{2}/]] },
+  pdf: { 'merge and split': [['merge', /\bmerge\b/i], ['split', /\bsplit\b/i]], 'page tools': [['rotate', /\brotate\b/i], ['delete pages', /\bdelete\b|\bremove\b/i], ['reorder', /\breorder\b|\bdrag\b/i]], 'images to pdf': [['images to PDF', /\bimages?\b[\s\S]{0,20}\bPDF\b/i]], compress: [['compress', /\bcompress/i]] },
+  kanban: { 'boards and columns': [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b|\blists?\b/i]], 'card details': [['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i]], 'drag and drop': [['drag', /\bdrag\b/i]], 'import and export': [['export', /\bexport\b/i], ['import', /\bimport\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,
@@ -492,10 +537,12 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
-  const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i);
+  const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i), id0 = id;
   const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
   if (lane) id = lane[1];
-  return { site: p.site, verse: p.verse, ask: p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  // a lane site with a page of its own (LANE_PAGES) is measured against that page, not its leader's
+  const own = lane && LANE_PAGES[id0];
+  return { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {

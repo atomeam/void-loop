@@ -98,6 +98,24 @@ test('the endpoint: bounds, closed lists, a rate limit, and the old crypto list 
   assert.equal(cleanIds('bitcoin,Ethereum,bad id!'), 'bitcoin,ethereum', 'the crypto card keeps its list');
   assert.equal(wantFrom('max', NOW), 0); assert.ok(NOW - wantFrom('1m', NOW) >= 400 * DAYMS, 'at least a year of rows for the 52 weeks'); assert.ok(RANGES.includes('ytd'));
 });
+test('every source down: a day in the bundled record still has its close, said to be from the record; any other day is honestly nothing', async () => {
+  const down = fake({ down: ['stooq.com', 'query1.finance.yahoo.com', 'api.coingecko.com', 'api.frankfurter.dev'] });
+  const q = await lookQuote(resolve('aapl'), '5y', '2024-12-31', down, NOW);
+  assert.equal(q.ok, true); assert.equal(q.partial, true); assert.deepEqual(q.closeOn, { date: '2024-12-31', close: 250.42 }); assert.equal(q.source, 'Verse year-end record'); assert.equal(q.currency, 'USD'); assert.equal(q.price, null); assert.match(q.note, /did not answer/);
+  assert.equal((await lookQuote(resolve('aapl'), '5y', '2024-12-30', down, NOW)).ok, false, 'a day that is not in the record'); assert.equal((await lookQuote(resolve('aapl'), '5y', null, down, NOW)).ok, false, 'no day asked, no record used');
+});
+test('the strip and the watchlist cannot starve the quote: each counts against its own bucket, once per fresh lookup, and a repeat from the edge cache counts nothing', async () => {
+  const kept = new Map(); const had = globalThis.caches;
+  globalThis.caches = { default: { match: async (r) => { const v = kept.get(r.url); return v ? new Response(v.body, v.init) : undefined; }, put: async (r, res) => { kept.set(r.url, { body: await res.text(), init: { headers: [...res.headers] } }); } } };
+  try {
+    const ask = (qs) => onRequestGet({ request: new Request('https://a-to-mind.com/api/markets' + qs, { headers: { 'cf-connecting-ip': '1.2.3.4' } }), env: { SALT: 'x' }, fetchFn: fake() });
+    const bucketsUsed = () => new Set([...kept.keys()].filter((k) => /\/__void-[a-z-]+\/rl\//.test(k)).map((k) => k.match(/\/__void-([a-z-]+)\/rl\//)[1]));
+    await ask('?strip=1'); assert.deepEqual([...bucketsUsed()], ['markets-batch']); const n = Number(await (await globalThis.caches.default.match(new Request([...kept.keys()].find((k) => k.includes('markets-batch/rl/'))))).text());
+    assert.equal(n, STRIP.length, 'one place per fresh symbol, in the batch bucket');
+    assert.equal((await ask('?s=aapl&r=1y')).status, 200); assert.deepEqual([...bucketsUsed()].sort(), ['markets', 'markets-batch']);
+    const before = kept.size; await ask('?strip=1'); await ask('?s=aapl&r=1y'); assert.equal(kept.size, before, 'repeats are answered from the cache and count nothing');
+  } finally { globalThis.caches = had; }
+});
 test('registered everywhere a page must be: the ask bar, the service worker, the SEO list, the page itself', () => {
   assert.ok(TOOLS['/markets/']); assert.ok(RELATED['/markets/'] && RELATED['/markets/'].includes('/convert/'));
   for (const a of ['aapl stock price', 'stock price of apple', 'tesla stock', 'stock market']) { const r = routeAsk(a); assert.ok(r && /^\/markets\//.test(r.path || r), a + ' -> ' + JSON.stringify(r)); }
