@@ -27,7 +27,7 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
   const h = Number.isFinite(+hue) ? ((+hue % 360) + 360) % 360 : Math.floor(r() * 360);
   const [sides, rays] = CORE[kind] || CORE.Idea;
   // the subject's motif: the card's own short name first ("black hole", "cat": the subject), else the answer's words, else nothing (the burning iris)
-  const keyWords = String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean), motif = (keyWords.length <= 4 && motifsFor(keyWords)[0]) || (motifsFor(nouns || [])[0]) || motifsFor(keyWords)[0] || '';
+  const keyWords = String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean), motif = kind === 'Person' ? 'person' : (keyWords.length <= 4 && motifsFor(keyWords)[0]) || (motifsFor(nouns || [])[0]) || motifsFor(keyWords)[0] || '';
   const mh = motifHue(motif), main = mh == null ? h : mh; // a dragon burns red and the sea is blue; the family's hue still tints the nebula and the counter-light
   return {
     seed, hue: h, kind, light: L,
@@ -139,7 +139,7 @@ export function drawSeal(ctx, w, h, p) {
     ctx.save(); ctx.translate(cx - sz / 2, cy - sz / 2); ctx.scale(sz / 100, sz / 100);
     const shapes = paths.map(([d, f]) => [new Path2D(d), f]);
     ctx.globalCompositeOperation = 'source-over';
-    for (const [P, f] of shapes) if (f !== 'N') { ctx.fillStyle = f === 'I' ? 'rgba(2,2,8,0.92)' : f === 'G' ? 'hsla(44,90%,55%,0.85)' : hsl(p.palette[0], 60, f === 'L' ? 30 : 16, 0.92); ctx.fill(P); }
+    for (const [P, f] of shapes) if (f !== 'N') { ctx.fillStyle = f === 'I' ? 'rgba(2,2,8,0.92)' : f === 'G' ? 'hsla(44,90%,55%,0.85)' : f === 'R' ? 'hsla(5,75%,48%,0.95)' : hsl(p.palette[0], 60, f === 'L' ? 30 : 16, 0.92); ctx.fill(P); }
     ctx.globalCompositeOperation = 'lighter';
     for (const [lw, li, al, bl] of [[5, 60, 0.35, 16], [1.6, 78, 0.9, 6], [0.6, 95, 0.9, 0]]) {
       ctx.lineJoin = 'round'; ctx.lineWidth = lw; ctx.shadowBlur = bl; ctx.shadowColor = hsl(p.palette[0], 100, 60, 1); ctx.strokeStyle = hsl(p.palette[0], 100, li, al);

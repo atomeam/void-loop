@@ -33,7 +33,7 @@ export function rarityKey(r) {
 }
 /** the kinds that have a plate of their own */
 export const KINDS = ['Film', 'Show', 'Album', 'Song', 'Band', 'Game', 'Book', 'Person', 'Place', 'Creature', 'Organisation', 'Event', 'Idea', 'Answer', 'Skill', 'Miniature'];
-const KIND_WORD = { organization: 'Organisation', movie: 'Film', series: 'Show', concept: 'Idea' };
+const KIND_WORD = { organization: 'Organisation', movie: 'Film', series: 'Show', concept: 'Idea', character: 'Idea', episode: 'Show', myth: 'Idea', food: 'Creature', vehicle: 'Idea', team: 'Organisation' };
 /** the first kind a type line names ("Film · Song — 1965" is Film); unknown words are an Idea */
 export function kindWord(s) {
   const w = String(s || '').split(/\s*[·—]\s*/)[0].trim().toLowerCase();

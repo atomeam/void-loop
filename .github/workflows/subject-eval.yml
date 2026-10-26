@@ -1,0 +1,62 @@
+# The subject evaluation against the LIVE sites (tools/subject-eval.mjs --live). The session container cannot reach Wikipedia, Wikidata or a picture source;
+# this runner can. The real /api/answer route runs here with real Wikipedia replies (a model stand-in repeats source [1] or says it has no information),
+# and the real page draws each card in headless Chrome. The screenshots are workflow artifacts, never committed; only domains/subject-eval.json (pass or fail,
+# the card's kind and title per ask) is committed. By hand or once a night; the commit says "Subject eval:" and the deploy is not started (nothing it
+# commits is served), so nothing here starts another run.
+name: Subject eval
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'words of the asks to run, separated by | (empty runs all)'
+        default: ''
+  schedule:
+    - cron: '41 5 * * *'
+
+permissions:
+  contents: write # commit domains/subject-eval.json
+
+concurrency:
+  group: subject-eval
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Run the asks against the live sites
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          ONLY: ${{ inputs.only }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/shots"
+          node tools/subject-eval.mjs --live --shots "$RUNNER_TEMP/shots" --out domains/subject-eval.json ${ONLY:+--only "$ONLY"} || echo "::warning::some asks failed: see domains/subject-eval.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: subject-eval-screenshots
+          path: ${{ runner.temp }}/shots
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Commit the record
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp domains/subject-eval.json "$RUNNER_TEMP/record.json"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp "$RUNNER_TEMP/record.json" domains/subject-eval.json
+            git add domains/subject-eval.json
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Subject eval: $(node -e "const r=require('./domains/subject-eval.json');console.log(r.pass+' of '+r.total+' live')")"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done

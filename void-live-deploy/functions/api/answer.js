@@ -33,11 +33,15 @@ import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
-import { capAll } from '../../lib/daily-cap.js';
+import { capAll, cap as dayCap } from '../../lib/daily-cap.js';
 import { prepare as prepareReport, settle as settleReport, REPORT_SYSTEM } from '../../lib/news-report.js';
 import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
 import { reportAnswer as marketReportRun, d1Store } from '../../lib/report-run.js';
 import { quoteBody, batch } from './markets.js';
+import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
+import { kindOf as subjectKind } from '../../lib/card-kinds.js';
+import * as FP from '../../lib/free-pics.js';
+import { grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -59,9 +63,39 @@ async function sources(ask) {
   const out = [];
   hits.slice(0, 3).forEach((h, i) => {
     const j = pages[i], page = j && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
-    if (j && j.extract) out.push({ title: String(j.title || h.title).slice(0, 200), url: /^https:\/\/en\.wikipedia\.org\//.test(page || '') ? page : 'https://en.wikipedia.org/wiki/' + encodeURIComponent(h.title), text: j.extract.slice(0, 1200), edited: j.timestamp || null });
+    if (j && j.extract) out.push({ title: String(j.title || h.title).slice(0, 200), url: /^https:\/\/en\.wikipedia\.org\//.test(page || '') ? page : 'https://en.wikipedia.org/wiki/' + encodeURIComponent(h.title), text: j.extract.slice(0, 1200), edited: j.timestamp || null, desc: String(j.description || '').slice(0, 160), name: String(j.title || h.title).slice(0, 120) });
   });
+  // a name that lives in a section of a "List of ..." page (Happy Time Harry is a section of the Aqua Teen Hunger Force characters list) has no article of
+  // its own: the summaries above hold only fuzzy neighbours (Happy Harry's). When none holds every word of the ask, read the redirect's section, or the
+  // full-text search's section hit, and put that first (lib/no-answer.js)
+  if (isNameAsk(q) && !sourcesMatch(q, out)) { const sec = await sectionSource(q); if (sec) out.unshift(sec); }
   return out;
+}
+const WIKI = 'https://en.wikipedia.org/w/api.php?format=json&origin=*';
+async function picFor(env, lead) {
+  const kind = photoKindOf(subjectKind(lead.desc, lead.text).kind); if (!kind) return null;
+  try {
+    const got = await Promise.race([FP.findPictures(lead.name, { kind, fromAnswer: true, max: 1, env, fetch: (u, o) => fetch(u, o), cap: (k, l) => dayCap(env, k, l), timeoutMs: 3000, deadlineMs: 3500 }), new Promise((r) => setTimeout(() => r([]), 3800))]);
+    const p = got && got[0]; if (!p || !/^https:\/\//.test(p.thumb || p.url || '')) return null;
+    return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
+  } catch (_) { return null; }
+}
+async function sectionSource(q) {
+  try {
+    const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+    const red = await fetch(WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title), { headers: UA }).then((r) => r.json()).catch(() => null);
+    let hit = listRedirect(red);
+    if (!hit) {
+      const fts = await fetch(WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"'), { headers: UA }).then((r) => r.json()).catch(() => null);
+      hit = sectionHit(fts && fts.query && fts.query.search, q);
+    }
+    if (!hit) return null;
+    const page = await fetch(WIKI + '&action=query&prop=extracts|info&explaintext=1&exsectionformat=wiki&inprop=url&titles=' + encodeURIComponent(hit.page), { headers: UA }).then((r) => r.json()).catch(() => null);
+    const pg = page && page.query && Object.values(page.query.pages || {})[0];
+    const text = sectionText(pg && pg.extract, hit.section, q);
+    if (!text) return null;
+    return { title: (hit.page + (hit.section ? ' \u00a7 ' + hit.section : '')).slice(0, 200), url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.page.replace(/ /g, '_')) + (hit.section ? '#' + encodeURIComponent(hit.section.replace(/ /g, '_')) : ''), text, edited: pg.touched || null, name: hit.section || hit.page, desc: describeSection(hit.page), series: seriesOfList(hit.page) };
+  } catch (_) { return null; }
 }
 function fromWeb(src) {
   if (!src.length) return '';
@@ -362,7 +396,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
-    if (hit) { const c = keepCited(hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: c.sources, at: hit.at, cached: true }); }
+    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
@@ -444,11 +478,14 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const facts = self ? selfFacts(await selfP) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
+  const lead = !self && !told && src.length && isNameAsk(ask) && sourcesMatch(ask, [src[0]]) ? src[0] : null; // the first source holds the ask itself: its description types the card (lib/subject-kinds.js)
+  const sectioned = !self && src.length && /\u00a7/.test(src[0].title || '');
+  const SECTION_RULE = 'Source [1] is the section of a list page that is about the thing asked: answer from it, say only what its text says (no episode, price, date or actor it does not name), and cite [1].';
   const messages = self ? [
     { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
     { role: 'user', content: `Question: ${ask}\n\nFacts about Verse:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
-    { role: 'system', content: ANSWER_SYSTEM + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
+    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;
@@ -509,6 +546,9 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   log({ model });
   // only the sources the answer cited go on the card (lib/cite.js); its [n] markers are renumbered to match
   ({ answer, sources: pub } = keepCited(answer, pub));
+  // a refusal ("I do not have information ...") is not an answer: nothing is cached or labelled as one, and the page gets the closest guess to offer as a question
+  if (!self && !told && isNoAnswer(answer)) return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, ...(guessOf(src) ? { guess: guessOf(src) } : {}), route: route.kind, ...nearOut });
+  if (sectioned && src[0] && answer) answer = grounded(answer, src[0].text); // a list-page section: only what its text says
   answer = scrubOut(answer, env); // no env value or key shape leaves in a model's words, whatever the model was told (lib/keeper.js)
   const at = new Date().toISOString();
   // the cache write finishes after the answer has gone out (waitUntil), not before: nobody waits on D1 for an answer they already have
@@ -516,5 +556,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     later(env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
       .bind(key, ask, answer, JSON.stringify(pub), at).run().catch(() => {}));
   } catch (_) {}
-  return Response.json({ answer, sources: pub, at, route: route.kind, ...nearOut, ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+  // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
+  // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
+  const pic = lead && lead.desc ? await picFor(env, lead) : null;
+  return Response.json({ answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(pic ? { pic } : {}), ...(!self && !told && src.length && isNameAsk(ask) && !sourcesMatch(ask, src) ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
 }

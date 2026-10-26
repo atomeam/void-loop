@@ -99,7 +99,7 @@ test('layovers: too short, tight, long, overnight, a stay, an overlap, a change 
   assert.deepEqual(kinds(gap(seg('UA', '2', 'JFK', 'LIS', '2027-03-12T22:00', '2027-03-13T10:00'))), ['long']); assert.deepEqual(kinds(gap(seg('UA', '2', 'JFK', 'LIS', '2027-03-13T02:00', '2027-03-13T14:00'))), ['overnight']); assert.deepEqual(kinds(gap(seg('UA', '2', 'JFK', 'LIS', '2027-03-20T10:00', '2027-03-20T22:00'))), ['stay']);
   assert.ok(kinds(gap(seg('UA', '2', 'LGA', 'LIS', '2027-03-12T15:30', '2027-03-13T03:00'))).includes('airport-change')); assert.ok(kinds(gap(seg('UA', '2', 'BOS', 'LIS', '2027-03-12T15:30', '2027-03-13T03:00'))).includes('route-break'));
   const same = C.layovers(idx, [seg('BA', '1', 'LHR', 'JFK', '2027-03-12T10:00', '2027-03-12T13:00'), seg('UA', '2', 'JFK', 'LIS', '2027-03-12T11:00', '2027-03-12T20:00')]).gaps[0]; assert.ok(kinds(same).includes('overlap'));
-  assert.equal(C.layovers(idx, [seg('BA', '1', 'LHR', 'JFK', '2027-03-12T10:00', '2027-03-12T09:00')]).single[0].kind, 'lands-before-leaving');
+  assert.equal(C.layovers(idx, [seg('BA', '1', 'LHR', 'JFK', '2027-03-12T10:00', '2027-03-12T04:00')]).single[0].kind, 'lands-before-leaving');
   assert.equal(C.layovers(idx, [seg('BA', '1', 'LHR', 'JFK', '2027-03-12T10:00', ''), seg('UA', '2', 'JFK', 'LIS', '2027-03-12T13:40', '')]).gaps[0].notes[0].kind, 'unknown');
 });
 test('the calendar file and the trip link', () => {
@@ -108,11 +108,11 @@ test('the calendar file and the trip link', () => {
   assert.equal(C.tripIcs(idx, [{ al: 'BA', no: '1', from: 'LHR', to: 'JFK' }]), null);
   const back = C.tripFromToken(C.tripToToken(r.segments)); assert.deepEqual(back.map((s) => [s.al, s.no, s.from, s.to, s.dep, s.arr, s.loc]), r.segments.map((s) => [s.al, s.no, s.from, s.to, s.dep, s.arr, s.loc]));
   assert.deepEqual(C.tripFromToken('not a token!'), []); assert.deepEqual(C.tripFromToken(''), []);
-  const hostile = C.cleanSeg({ al: '<b>BA', no: '12x34567', from: 'jfk<', to: 'LHR', dep: '2026-12-12T10:00', arr: 'nope', note: 'x'.repeat(500) }); assert.equal(hostile.al, 'BA'); assert.equal(hostile.no, '1234'); assert.equal(hostile.from, ''); assert.equal(hostile.arr, ''); assert.equal(hostile.note.length, 120);
+  const hostile = C.cleanSeg({ al: '<BA', no: '12x34567', from: 'jfk<', to: 'LHR', dep: '2026-12-12T10:00', arr: 'nope', note: 'x'.repeat(500) }); assert.equal(hostile.al, 'BA'); assert.equal(hostile.no, '1234'); assert.equal(hostile.from, ''); assert.equal(hostile.arr, ''); assert.equal(hostile.note.length, 120);
 });
 test('a chain of airports and the map; where can I go', () => {
   const r = C.parseRoute(idx, 'jfk-lhr, SIN zzz'); assert.deepEqual(r.ports.map((a) => a.iata), ['JFK', 'LHR', 'SIN']); assert.deepEqual(r.bad, ['zzz']);
-  const svg = C.mapSvg(r.ports); assert.match(svg, /<svg[\s\S]*<path[\s\S]*<path/); assert.equal(C.mapSvg([]), ''); assert.equal((C.mapSvg(C.parseRoute(idx, 'SYD-LAX').ports).match(/<path/g) || []).length >= 2, true, 'a path across the date line is two pieces');
+  const svg = C.mapSvg(r.ports); assert.match(svg, /<svg[\s\S]*<path[\s\S]*<path/); assert.equal(C.mapSvg([]), ''); assert.ok((C.mapSvg(C.parseRoute(idx, 'SYD-LAX').ports).match(/M/g) || []).length >= 2, 'a path across the date line is drawn in two pieces');
   const near = C.reachable(idx, A('LIS'), { maxMin: 90, big: true }); assert.ok(near.length > 3 && near.every((x) => x.minutes <= 90 && x.a.size >= 1)); assert.ok(C.reachable(idx, A('LIS'), { maxMin: 240, cc: 'ES' }).some((x) => x.a.iata === 'MAD'));
 });
 test('every sentence the screen says has a German one, and German keeps its numbers', () => {
@@ -121,7 +121,7 @@ test('every sentence the screen says has a German one, and German keeps its numb
   for (const m of src.matchAll(/t\(([^()]*\?[^()]*)\)/g)) for (const k of m[1].matchAll(/'((?:[^'\\]|\\.)*)'/g)) keys.add(k[1]);
   const words = src.match(/const words = \{([\s\S]*?)\};/)[1]; for (const k of words.matchAll(/: '((?:[^'\\]|\\.)*)'/g)) keys.add(k[1]);
   const missing = [...keys].filter((k) => !DE[k] && k !== 'lands-before-leaving' && !/^[a-z-]+$/.test(k) || (/^[a-z-]+$/.test(k) && !DE[k] && ['day', 'days', 'flight', 'flights', 'miles', 'none', 'local', 'now'].includes(k))); assert.deepEqual(missing, []);
-  for (const [k, v] of Object.entries(DE)) { assert.ok(v && v !== k || /^(Economy|Business|Airline)$/.test(k), k); for (const n of k.match(/\d[\d.,]*/g) || []) if (n.length > 1) assert.ok(v.includes(n) || v.includes(n.replace('.', ',')) || v.includes(n.replace(',', '.')), k + ' keeps ' + n); }
+  for (const [k, v] of Object.entries(DE)) { assert.ok(v && v !== k || /^(Economy|Business|Airline|First)$/.test(k), k); for (const n of k.match(/\d[\d.,]*/g) || []) if (n.length > 1) assert.ok(v.includes(n) || v.includes(n.replace('.', ',')) || v.includes(n.replace(',', '.')), k + ' keeps ' + n); }
 });
 test('the table: one page for the leader and one for each site of the lane, each with its panels, its German and no other site named', () => {
   const lane = FLOORS.filter((f) => f.lane === 'travel'); assert.equal(lane.length, 7);

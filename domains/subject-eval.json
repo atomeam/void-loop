@@ -1,0 +1,380 @@
+{
+ "at": "2026-10-26T05:12:38.685Z",
+ "mode": "live",
+ "pass": 33,
+ "total": 42,
+ "results": [
+  {
+   "ask": "albert einstein",
+   "ok": true,
+   "kind": "Person — 1879",
+   "title": "Albert Einstein",
+   "theme": "portrait",
+   "photo": true
+  },
+  {
+   "ask": "ada lovelace",
+   "ok": true,
+   "kind": "Person — 1815",
+   "title": "Ada Lovelace",
+   "theme": "portrait",
+   "photo": true
+  },
+  {
+   "ask": "serena williams",
+   "ok": true,
+   "kind": "Person — 1981",
+   "title": "Serena Williams",
+   "theme": "portrait",
+   "photo": true
+  },
+  {
+   "ask": "the beatles",
+   "ok": true,
+   "kind": "Band · Album — 1960",
+   "title": "The Beatles",
+   "theme": "sleeve",
+   "photo": true
+  },
+  {
+   "ask": "bohemian rhapsody",
+   "ok": true,
+   "kind": "Song · Film · Album — 1975 · Queen",
+   "title": "Bohemian Rhapsody",
+   "theme": "sleeve",
+   "photo": true
+  },
+  {
+   "ask": "abbey road",
+   "ok": true,
+   "kind": "Album — 1969",
+   "title": "Abbey Road",
+   "theme": "sleeve",
+   "photo": true
+  },
+  {
+   "ask": "the godfather",
+   "ok": true,
+   "kind": "Film · Book · Game · Album — 1972 · Francis Ford Coppola",
+   "title": "The Godfather",
+   "theme": "cinema",
+   "photo": true
+  },
+  {
+   "ask": "pride and prejudice",
+   "ok": true,
+   "kind": "Book — 1813 · Jane Austen",
+   "title": "Pride and Prejudice",
+   "theme": "plain",
+   "photo": false
+  },
+  {
+   "ask": "tetris",
+   "ok": true,
+   "kind": "Game · Film",
+   "title": "Tetris",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "paris",
+   "ok": true,
+   "kind": "Place",
+   "title": "Paris",
+   "theme": "postcard",
+   "photo": true
+  },
+  {
+   "ask": "mount everest",
+   "ok": true,
+   "kind": "Place",
+   "title": "Mount Everest",
+   "theme": "postcard",
+   "photo": true
+  },
+  {
+   "ask": "snow leopard",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Snow leopard",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "okapi",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Okapi",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "komodo dragon",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Komodo dragon",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "pizza",
+   "ok": true,
+   "kind": "Food",
+   "title": "Pizza",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "boeing 747",
+   "ok": true,
+   "kind": "Vehicle",
+   "title": "Boeing 747",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "zeus",
+   "ok": false,
+   "kind": "Answer — from Verse",
+   "title": "zeus",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "type line \"Answer — from Verse\" does not match /Myth/",
+    "is missing its \"Adds to Verse\" line",
+    "theme \"\", wanted collectible"
+   ]
+  },
+  {
+   "ask": "pythagorean theorem",
+   "ok": true,
+   "kind": "Concept",
+   "title": "Pythagorean theorem",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "world war ii",
+   "ok": true,
+   "kind": "Event — 1939",
+   "title": "World War II",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "apple inc",
+   "ok": true,
+   "kind": "Organisation",
+   "title": "Apple Inc.",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "manchester united",
+   "ok": true,
+   "kind": "Team",
+   "title": "Manchester United F.C.",
+   "theme": "plain",
+   "photo": true
+  },
+  {
+   "ask": "happy time harry",
+   "ok": true,
+   "kind": "Character",
+   "title": "Happy Time Harry",
+   "theme": "collectible",
+   "photo": false
+  },
+  {
+   "ask": "sideshow raheem",
+   "ok": false,
+   "kind": "Answer — from a source",
+   "title": "sideshow raheem",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "type line \"Answer — from a source\" does not match /Character/",
+    "theme \"\", wanted collectible",
+    "missing the \"not affiliated\" line"
+   ]
+  },
+  {
+   "ask": "orangutan opening",
+   "ok": false,
+   "kind": "Concept",
+   "title": "Sokolsky Opening",
+   "theme": "plain",
+   "photo": false,
+   "problems": [
+    "title is \"Sokolsky Opening\", wanted \"Orangutan Opening\""
+   ]
+  },
+  {
+   "ask": "champagne supernova track",
+   "ok": true,
+   "kind": "Song — 1996 · Oasis",
+   "title": "Champagne Supernova",
+   "theme": "sleeve",
+   "photo": false
+  },
+  {
+   "ask": "ignignokt",
+   "ok": true,
+   "kind": "Character",
+   "title": "ignignokt",
+   "theme": "collectible",
+   "photo": false
+  },
+  {
+   "ask": "albert eintsein",
+   "ok": true,
+   "kind": "Person — 1879",
+   "title": "Albert Einstein",
+   "theme": "portrait",
+   "photo": true
+  },
+  {
+   "ask": "the great wall of chinna",
+   "ok": false,
+   "kind": "Answer — from a source",
+   "title": "the great wall of chinna",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "a fuzzy match is not marked as a guess"
+   ]
+  },
+  {
+   "ask": "blorptastic quibble frobnitz",
+   "ok": true,
+   "kind": "Not found",
+   "title": "blorptastic quibble frobnitz",
+   "theme": "",
+   "photo": false
+  },
+  {
+   "ask": "harry's happy hour",
+   "ok": false,
+   "kind": "Answer — from a source",
+   "title": "harry's happy hour",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "type line \"Answer — from a source\" does not match /Not found/",
+    "has an \"Adds to Verse\" line on a card that should not",
+    "no \"Did you mean Happy Harry's?\""
+   ]
+  },
+  {
+   "ask": "jon f kenedy",
+   "ok": false,
+   "kind": "Answer — from a source",
+   "title": "jon f kenedy",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "type line \"Answer — from a source\" does not match /Not found/",
+    "has an \"Adds to Verse\" line on a card that should not",
+    "no \"Did you mean John F. Kennedy?\""
+   ]
+  },
+  {
+   "ask": "great barrier reef australia",
+   "ok": false,
+   "kind": "Idea",
+   "title": "Great Barrier Reef",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "type line \"Idea\" does not match /Place/"
+   ]
+  },
+  {
+   "ask": "african forest elephant species",
+   "ok": true,
+   "kind": "Creature",
+   "title": "African forest elephant",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "marie curie physicist chemist",
+   "ok": false,
+   "kind": "Answer — from a source",
+   "title": "marie curie physicist chemist",
+   "theme": "",
+   "photo": false,
+   "problems": [
+    "title is \"marie curie physicist chemist\", wanted \"Marie Curie\"",
+    "type line \"Answer — from a source\" does not match /Person/"
+   ]
+  },
+  {
+   "ask": "red panda",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Red panda",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "blue whale",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Blue whale",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "green turtle",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Green sea turtle",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "black widow",
+   "ok": true,
+   "kind": "Creature",
+   "title": "Badumna",
+   "theme": "specimen",
+   "photo": true
+  },
+  {
+   "ask": "golden gate bridge",
+   "ok": true,
+   "kind": "Place",
+   "title": "Golden Gate Bridge",
+   "theme": "postcard",
+   "photo": true
+  },
+  {
+   "ask": "white house",
+   "ok": true,
+   "kind": "Place",
+   "title": "White House",
+   "theme": "postcard",
+   "photo": true
+  },
+  {
+   "ask": "orange juice",
+   "ok": false,
+   "kind": "Creature · Band",
+   "title": "Orange juice",
+   "theme": "specimen",
+   "photo": true,
+   "problems": [
+    "type line \"Creature · Band\" does not match /Food/"
+   ]
+  },
+  {
+   "ask": "how to bake bread",
+   "ok": true,
+   "kind": "Skill — Words and the world",
+   "title": "Rye bread",
+   "theme": "",
+   "photo": true
+  }
+ ]
+}

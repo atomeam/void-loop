@@ -4,7 +4,7 @@
  * and offered as a download here, and nothing is sent anywhere. Each tool: files in (choose, drop or paste), a few choices, one button, the result
  * with its size. The pages tool is the visual one: thumbnails of every page of every file, each turned, deleted or moved by pointer, drag or keyboard.
  */
-import { tools, loadJs, renderPage, sizeText, zip, compressByPictures, pagesToImages, toPdfImage, imageKind } from './pdf-tools.js';
+import { tools, loadJs, renderPage, parsePages, sizeText, zip, compressByPictures, pagesToImages, toPdfImage, imageKind } from './pdf-tools.js';
 
 const h = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);
@@ -29,6 +29,7 @@ export const TOOL_INFO = Object.freeze({
   numbers: ['Page numbers', 'Number the pages: where, from which number, in which style.'],
   watermark: ['Watermark', 'Stamp a word across the pages, with the opacity and angle you choose.'],
   crop: ['Crop', 'Trim the margins off every page or the pages you name.'],
+  order: ['Reorder by number', 'Type the new order of the pages, like 3,1,2, or reverse them all; pages you leave out stay after, in their old order.'],
   info: ['Document info', 'Read and change a PDF\'s title, author, subject and keywords.'],
 });
 
@@ -38,7 +39,8 @@ export function mountPdf(root, cfg) {
   let current = ids.includes(q.get('tool')) ? q.get('tool') : ids[0];
   const tabs = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'PDF tools' }), body = h('div', { class: 'panel' });
   const say = h('p', { class: 'status', role: 'status', 'aria-live': 'polite' });
-  root.append(tabs, body);
+  const share = h('button', { type: 'button', class: 'share', onclick: async () => { const u = location.origin + location.pathname + (current ? '?tool=' + current : ''); try { await navigator.clipboard.writeText(u); status('Link copied: it opens this tool.'); } catch (_) { prompt('Share link', u); } } }, 'Share link');
+  root.append(h('div', { class: 'row' }, share), tabs, body);
   const status = (t, bad) => { say.textContent = t; say.classList.toggle('bad', !!bad); };
   const results = h('div', { class: 'results' });
   const downloads = new Set();
@@ -76,14 +78,15 @@ export function mountPdf(root, cfg) {
     for (const ev of ['dragleave', 'drop']) drop.addEventListener(ev, () => drop.classList.remove('over'));
     drop.addEventListener('drop', (e) => { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files.length) add(e.dataTransfer.files); });
     const paste = (e) => { const fs = [...((e.clipboardData && e.clipboardData.files) || [])]; if (fs.length) add(fs); };
-    document.addEventListener('paste', paste);
+    if (!alsoMode) document.addEventListener('paste', paste); // only the tool on top takes a pasted file
     return { files, el: h('div', { class: 'picker' }, drop, input, list), add, destroy: () => document.removeEventListener('paste', paste) };
   }
   const field = (label, ctl, hint) => h('label', { class: 'field' }, h('span', {}, label), ctl, hint ? h('span', { class: 'note' }, hint) : null);
   const num = (v, min, max, step = 1) => h('input', { type: 'number', value: v, min, max, step, inputmode: 'decimal' });
   const sel = (opts, v) => { const s = h('select', {}, opts.map(([val, text]) => h('option', { value: val }, text))); s.value = v; return s; };
   const busy = async (btn, fn) => { btn.disabled = true; reset(); try { await fn(); } catch (e) { status(String(e && e.message || e), true); } finally { btn.disabled = false; } };
-  let cleanup = () => {};
+  let cleanup = () => {}, alsoMode = false, cleanups = [];
+  const build = (id) => { cleanup = () => {}; const nodes = PANELS[id](); cleanups.push(cleanup); return nodes; };
 
   const PANELS = {
     merge() {
@@ -169,6 +172,16 @@ export function mountPdf(root, cfg) {
       const go = h('button', { type: 'button', class: 'go', disabled: true, onclick: () => busy(go, async () => { const t = await tools(), x = p.files[0]; offer(baseOf(x.name) + '-info.pdf', await t.info(x.bytes, { title: f.title.value, author: f.author.value, subject: f.subject.value, keywords: f.keywords.value }), 'application/pdf'); status('Done.'); }) }, 'Save the changes');
       cleanup = p.destroy; return [p.el, facts, field('Title', f.title), field('Author', f.author), field('Subject', f.subject), field('Keywords', f.keywords, 'separated by commas'), go];
     },
+    order() {
+      const p = picker({ accept: 'application/pdf,.pdf', label: 'Choose a PDF to reorder', onChange: () => { go.disabled = !p.files.length; } });
+      const spec = h('input', { type: 'text', placeholder: '3,1,2', 'aria-label': 'The new order of the pages, for example 3,1,2' }), rev = h('input', { type: 'checkbox' });
+      const go = h('button', { type: 'button', class: 'go', disabled: true, onclick: () => busy(go, async () => {
+        const t = await tools(), f = p.files[0], n = f.n; let order = rev.checked ? Array.from({ length: n }, (_, i) => n - 1 - i) : [...new Set(parsePages(spec.value, n))];
+        if (!order.length) throw new Error('Type the pages in their new order, like 3,1,2'); const seen = new Set(order); for (let i = 0; i < n; i++) if (!seen.has(i)) order.push(i);
+        offer(baseOf(f.name) + '-reordered.pdf', await t.assemble([f.bytes], order.map((page) => ({ doc: 0, page }))), 'application/pdf', n + ' pages'); status('Done.');
+      }) }, 'Reorder pages');
+      cleanup = p.destroy; return [p.el, field('New order', spec, 'like 3,1,2 (pages left out follow in their old order)'), h('label', { class: 'field row' }, rev, h('span', {}, 'Or reverse every page')), go];
+    },
     pages() { return pagesPanel(); },
   };
 
@@ -227,9 +240,13 @@ export function mountPdf(root, cfg) {
   }
 
   function show(id) {
-    cleanup(); cleanup = () => {}; reset(); current = id;
+    for (const c of cleanups) c(); cleanups = []; cleanup = () => {}; reset(); current = id;
     for (const b of tabs.children) { const on = b.dataset.tool === id; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; }
-    body.replaceChildren(h('h2', { id: 'tool-h' }, TOOL_INFO[id][0]), h('p', { class: 'note' }, TOOL_INFO[id][1]), ...PANELS[id](), say, results);
+    alsoMode = false; const main = build(id); alsoMode = true;
+    // more tools under the one that is open, each with its own real controls (a page that is built for one job still turns, deletes and reorders pages)
+    const more = (cfg.also || []).filter((x) => TOOL_INFO[x] && x !== id).map((x) => h('section', { class: 'also' }, h('h2', {}, TOOL_INFO[x][0]), h('p', { class: 'note' }, TOOL_INFO[x][1]), ...build(x)));
+    alsoMode = false;
+    body.replaceChildren(h('h2', { id: 'tool-h' }, TOOL_INFO[id][0]), h('p', { class: 'note' }, TOOL_INFO[id][1]), ...main, say, results, ...more);
     try { const u = new URL(location.href); u.searchParams.set('tool', id); history.replaceState(null, '', u); } catch (_) {}
   }
   for (const id of ids) tabs.append(h('button', { type: 'button', role: 'tab', 'data-tool': id, 'aria-selected': 'false', onclick: () => show(id), onkeydown: (e) => {
@@ -238,7 +255,7 @@ export function mountPdf(root, cfg) {
   } }, TOOL_INFO[id][0]));
   show(current);
   // keep the libraries for offline use: fetched once while the page is idle, so the service worker has them before the first tool is pressed
-  setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.4.299/build/pdf.min.js', '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 1500);
+  setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.4.299/build/pdf.min.js', '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 4000);
   return { show };
 }
 export { imageKind };

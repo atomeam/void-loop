@@ -11874,77 +11874,76 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 107,
-    "best": 906,
-    "evidence": "Verse (/markets/caps/) 107 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 906 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "verse": 140,
+    "best": 994,
+    "evidence": "Verse (/markets/caps/) 140 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 994 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/caps/) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/caps/) 1 of 4 right against the worked-out answer (missed: Bitcoin is rank 1, a price in dollars on its row, a market cap in trillions or billions); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Crypto market caps The 50 largest coins by market cap, in US dollars. Prices may be delayed. No ads, no account. Find a coin Total market cap of these 50: – Coins by market cap # Coin Price 24h Mkt ca\"",
-    "at": "2026-10-26T04:49:52.636Z",
-    "was": "equal-and-better",
+    "evidence": "Verse (/markets/caps/) 4 of 4 right against the worked-out answer; judged against the standard, not companiesmarketcap.com (the site is not asked)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 50,
     "best": 66,
-    "evidence": "Verse (/markets/caps/) 0 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
-    "at": "2026-10-26T04:49:52.636Z"
+    "evidence": "Verse (/markets/caps/) 50 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 50 small tap targets, layout shift 0.02), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
+    "at": "2026-10-26T05:11:14.373Z"
    },
    "live quotes": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/caps/) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price in dollars, a 24 hour move in percent; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 3 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 3,
     "part": true
    },
    "charts": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 2,
     "best": 0,
-    "evidence": "Verse (/markets/caps/) 1 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: the 7 day move; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 2,
     "part": true
    },
@@ -11953,16 +11952,16 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 8,
+    "verse": 14,
     "best": 4,
-    "evidence": "Verse (/markets/caps/) 8 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: price, 24 hour change, 7 day change, 24 hour volume, a total market cap, Compare symbols, Links, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
-    "at": "2026-10-26T04:49:52.636Z",
+    "evidence": "Verse (/markets/caps/) 14 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: Compare symbols, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
+    "at": "2026-10-26T05:11:14.373Z",
     "of": 17
    }
   },
@@ -13097,68 +13096,68 @@
   "finance: finviz.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 106,
-    "best": 5814,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 106 ms to the load event (median of 3, phone width) vs finviz.com 5814 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:51:24.562Z"
+    "verse": 95,
+    "best": 3779,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 95 ms to the load event (median of 3, phone width) vs finviz.com 3779 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 2 of 3 loads answered",
-    "at": "2026-10-26T04:51:24.562Z"
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 815,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:51:24.562Z"
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:51:24.562Z"
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:51:24.562Z"
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:51:24.562Z"
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 right against the worked-out answer (missed: a coin row); judged against the standard, not finviz.com (the site is not asked). The page showed: \"Screener Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account. Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, \"",
-    "at": "2026-10-26T04:51:24.562Z",
+    "at": "2026-10-26T05:09:31.631Z",
     "was": "equal-and-better",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 16,
-    "best": 252,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 252 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (3 low-contrast texts, 249 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T04:51:24.562Z"
+    "best": 253,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 253 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (4 low-contrast texts, 249 small tap targets, layout shift 0.08)",
+    "at": "2026-10-26T05:09:31.631Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T04:51:24.562Z",
+    "at": "2026-10-26T05:09:31.631Z",
     "of": 2,
     "part": true
    },
@@ -13167,7 +13166,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T04:51:24.562Z",
+    "at": "2026-10-26T05:09:31.631Z",
     "of": 2,
     "part": true
    },
@@ -13176,7 +13175,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T04:51:24.562Z",
+    "at": "2026-10-26T05:09:31.631Z",
     "of": 2,
     "part": true
    },
@@ -13185,7 +13184,7 @@
     "verse": 12,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 12 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: Compare symbols, Links, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
-    "at": "2026-10-26T04:51:24.562Z",
+    "at": "2026-10-26T05:09:31.631Z",
     "of": 15
    }
   },
@@ -14790,104 +14789,103 @@
   "pdf: codeshack.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 141,
-    "best": 214,
-    "evidence": "Verse (/pdf/merge/) 141 ms to the load event (median of 3, phone width) vs codeshack.io 214 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:03.282Z"
+    "verse": 167,
+    "best": 281,
+    "evidence": "Verse (/pdf/merge/) 167 ms to the load event (median of 3, phone width) vs codeshack.io 281 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 3 of 3 loads answered vs codeshack.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:03.282Z"
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 px sideways overflow at 390 px vs codeshack.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:03.282Z"
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 unnamed controls or images vs codeshack.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:52:03.282Z"
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 1 (1: the page shows itself again with the network cut) vs codeshack.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:03.282Z"
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/pdf/merge/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:03.282Z"
+    "evidence": "Verse (/pdf/merge/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 3 of 3 right against the worked-out answer; judged against the standard, not codeshack.io (the site is not asked)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 3
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/pdf/merge/) 1 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.12), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:52:03.282Z",
-    "was": "equal-and-better"
+    "evidence": "Verse (/pdf/merge/) 0 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:09:46.425Z"
    },
    "merge and split": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 2,
     "best": 1,
-    "evidence": "Verse (/pdf/merge/) 1 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: split; site lacks: split)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "evidence": "Verse (/pdf/merge/) 2 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: none; site lacks: split)",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/merge/) 0 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "evidence": "Verse (/pdf/merge/) 3 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 3,
     "part": true
    },
    "images to pdf": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "evidence": "Verse (/pdf/merge/) 1 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 1,
     "part": true
    },
    "compress": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "evidence": "Verse (/pdf/merge/) 1 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: none; site lacks: compress)",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 5,
+    "verdict": "better",
+    "verse": 15,
     "best": 5,
-    "evidence": "Verse (/pdf/merge/) 5 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, no account, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
-    "at": "2026-10-26T04:52:03.282Z",
+    "evidence": "Verse (/pdf/merge/) 15 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: PDF to images, page numbers, watermark, no account; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T05:09:46.425Z",
     "of": 19
    }
   },
@@ -15445,67 +15443,67 @@
   "pdf: 10015.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 131,
-    "best": 1135,
-    "evidence": "Verse (/pdf/organize/) 131 ms to the load event (median of 3, phone width) vs 10015.io 1135 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "verse": 134,
+    "best": 1459,
+    "evidence": "Verse (/pdf/organize/) 134 ms to the load event (median of 3, phone width) vs 10015.io 1459 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/organize/) 3 of 3 loads answered vs 10015.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 px sideways overflow at 390 px vs 10015.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 unnamed controls or images vs 10015.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 1 (1: the page shows itself again with the network cut) vs 10015.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/pdf/organize/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "evidence": "Verse (/pdf/organize/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/organize/) 3 of 3 right against the worked-out answer; judged against the standard, not 10015.io (the site is not asked)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 8,
-    "evidence": "Verse (/pdf/organize/) 1 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.12), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "evidence": "Verse (/pdf/organize/) 0 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:10:05.054Z"
    },
    "merge and split": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/pdf/organize/) 1 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: split; site lacks: none)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 2 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 2,
     "part": true
    },
@@ -15514,110 +15512,110 @@
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/pdf/organize/) 3 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 3,
     "part": true
    },
    "images to pdf": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: images to PDF; site lacks: images to PDF)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: none; site lacks: images to PDF)",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 1,
     "part": true
    },
    "compress": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: none; site lacks: compress)",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 9,
+    "verse": 15,
     "best": 7,
-    "evidence": "Verse (/pdf/organize/) 9 of 19 things a full answer shows vs 10015.io 7 of 19 things a full answer shows (Verse lacks: split, delete pages, compress, images to PDF, PDF to images, page numbers, watermark, no account, Split by range, every N pages, or extract, Compress PDF; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages, Compress PDF)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 15 of 19 things a full answer shows vs 10015.io 7 of 19 things a full answer shows (Verse lacks: PDF to images, page numbers, watermark, no account; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T05:10:05.054Z",
     "of": 19
    }
   },
   "pdf: pdfcandy.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 194,
-    "best": 594,
-    "evidence": "Verse (/pdf/toolbox/) 194 ms to the load event (median of 3, phone width) vs pdfcandy.com 594 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:50.678Z"
+    "verse": 188,
+    "best": 527,
+    "evidence": "Verse (/pdf/toolbox/) 188 ms to the load event (median of 3, phone width) vs pdfcandy.com 527 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/toolbox/) 3 of 3 loads answered vs pdfcandy.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:50.678Z"
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/toolbox/) 0 px sideways overflow at 390 px vs pdfcandy.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:50.678Z"
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/pdf/toolbox/) 0 unnamed controls or images vs pdfcandy.com 2 unnamed controls or images",
-    "at": "2026-10-26T04:52:50.678Z"
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/toolbox/) 1 (1: the page shows itself again with the network cut) vs pdfcandy.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:50.678Z"
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/pdf/toolbox/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs pdfcandy.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:50.678Z"
+    "evidence": "Verse (/pdf/toolbox/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs pdfcandy.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/toolbox/) 3 of 3 right against the worked-out answer; judged against the standard, not pdfcandy.com (the site is not asked)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 17,
-    "evidence": "Verse (/pdf/toolbox/) 1 design defects vs pdfcandy.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.14), pdfcandy.com (3 low-contrast texts, 14 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:52:50.678Z"
+    "evidence": "Verse (/pdf/toolbox/) 0 design defects vs pdfcandy.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), pdfcandy.com (3 low-contrast texts, 14 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:10:29.710Z"
    },
    "merge and split": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/pdf/toolbox/) 2 of 2 shown vs pdfcandy.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "equal",
-    "verse": 2,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/toolbox/) 2 of 3 shown vs pdfcandy.com 2 of 3 shown (Verse lacks: reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "evidence": "Verse (/pdf/toolbox/) 3 of 3 shown vs pdfcandy.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 3,
     "part": true
    },
@@ -15626,7 +15624,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/toolbox/) 1 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 1,
     "part": true
    },
@@ -15635,16 +15633,16 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/toolbox/) 1 of 1 shown vs pdfcandy.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
+    "verse": 19,
     "best": 13,
-    "evidence": "Verse (/pdf/toolbox/) 17 of 19 things a full answer shows vs pdfcandy.com 13 of 19 things a full answer shows (Verse lacks: reorder pages, Reorder pages with thumbnails; site lacks: reorder pages, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:52:50.678Z",
+    "evidence": "Verse (/pdf/toolbox/) 19 of 19 things a full answer shows vs pdfcandy.com 13 of 19 things a full answer shows (Verse lacks: none; site lacks: reorder pages, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
+    "at": "2026-10-26T05:10:29.710Z",
     "of": 19
    }
   },
@@ -15754,67 +15752,67 @@
   "pdf: tools.pdf24.org": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 131,
-    "best": 97,
-    "evidence": "Verse (/pdf/suite/) 131 ms to the load event (median of 3, phone width) vs tools.pdf24.org 97 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T04:53:28.203Z"
+    "verse": 162,
+    "best": 153,
+    "evidence": "Verse (/pdf/suite/) 162 ms to the load event (median of 3, phone width) vs tools.pdf24.org 153 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 3 of 3 loads answered vs tools.pdf24.org 3 of 3 loads answered",
-    "at": "2026-10-26T04:53:28.203Z"
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/suite/) 0 px sideways overflow at 390 px vs tools.pdf24.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:53:28.203Z"
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 0 unnamed controls or images vs tools.pdf24.org 3 unnamed controls or images",
-    "at": "2026-10-26T04:53:28.203Z"
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/suite/) 1 (1: the page shows itself again with the network cut) vs tools.pdf24.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:53:28.203Z"
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/pdf/suite/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs tools.pdf24.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:53:28.203Z"
+    "evidence": "Verse (/pdf/suite/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tools.pdf24.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/suite/) 3 of 3 right against the worked-out answer; judged against the standard, not tools.pdf24.org (the site is not asked)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 3
    },
    "design polish": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 0,
     "best": 1,
-    "evidence": "Verse (/pdf/suite/) 1 design defects vs tools.pdf24.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.14), tools.pdf24.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:53:28.203Z"
+    "evidence": "Verse (/pdf/suite/) 0 design defects vs tools.pdf24.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tools.pdf24.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:10:49.933Z"
    },
    "merge and split": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/pdf/suite/) 2 of 2 shown vs tools.pdf24.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 2,
     "part": true
    },
@@ -15823,7 +15821,7 @@
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/pdf/suite/) 3 of 3 shown vs tools.pdf24.org 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 3,
     "part": true
    },
@@ -15832,7 +15830,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/suite/) 1 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 1,
     "part": true
    },
@@ -15841,93 +15839,92 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/suite/) 1 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
+    "verse": 19,
     "best": 13,
-    "evidence": "Verse (/pdf/suite/) 17 of 19 things a full answer shows vs tools.pdf24.org 13 of 19 things a full answer shows (Verse lacks: reorder pages, Reorder pages with thumbnails; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:53:28.203Z",
+    "evidence": "Verse (/pdf/suite/) 19 of 19 things a full answer shows vs tools.pdf24.org 13 of 19 things a full answer shows (Verse lacks: none; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
+    "at": "2026-10-26T05:10:49.933Z",
     "of": 19
    }
   },
   "pdf: smallpdf.com": {
    "speed": {
-    "verdict": "worse",
-    "verse": 306,
-    "best": 178,
-    "evidence": "Verse (/pdf/studio/) 306 ms to the load event (median of 3, phone width) vs smallpdf.com 178 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:51:49.531Z",
-    "was": "equal-and-better"
+    "verdict": "equal-and-better",
+    "verse": 168,
+    "best": 175,
+    "evidence": "Verse (/pdf/studio/) 168 ms to the load event (median of 3, phone width) vs smallpdf.com 175 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/studio/) 3 of 3 loads answered vs smallpdf.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:51:49.531Z"
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/studio/) 0 px sideways overflow at 390 px vs smallpdf.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:51:49.531Z"
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
     "evidence": "Verse (/pdf/studio/) 0 unnamed controls or images vs smallpdf.com 6 unnamed controls or images",
-    "at": "2026-10-26T04:51:49.531Z"
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/studio/) 1 (1: the page shows itself again with the network cut) vs smallpdf.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:51:49.531Z"
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/pdf/studio/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs smallpdf.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:51:49.531Z"
+    "evidence": "Verse (/pdf/studio/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs smallpdf.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/studio/) 3 of 3 right against the worked-out answer; judged against the standard, not smallpdf.com (the site is not asked)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 5,
-    "evidence": "Verse (/pdf/studio/) 1 design defects vs smallpdf.com 5 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.14), smallpdf.com (0 low-contrast texts, 4 small tap targets, layout shift 0.10)",
-    "at": "2026-10-26T04:51:49.531Z"
+    "evidence": "Verse (/pdf/studio/) 0 design defects vs smallpdf.com 5 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), smallpdf.com (0 low-contrast texts, 4 small tap targets, layout shift 0.10)",
+    "at": "2026-10-26T05:10:59.357Z"
    },
    "merge and split": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/pdf/studio/) 2 of 2 shown vs smallpdf.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "equal",
-    "verse": 2,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/studio/) 2 of 3 shown vs smallpdf.com 2 of 3 shown (Verse lacks: reorder; site lacks: reorder)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "evidence": "Verse (/pdf/studio/) 3 of 3 shown vs smallpdf.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 3,
     "part": true
    },
@@ -15936,7 +15933,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/studio/) 1 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 1,
     "part": true
    },
@@ -15945,83 +15942,83 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/studio/) 1 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 16,
+    "verse": 18,
     "best": 11,
-    "evidence": "Verse (/pdf/studio/) 16 of 19 things a full answer shows vs smallpdf.com 11 of 19 things a full answer shows (Verse lacks: reorder pages, no account, Reorder pages with thumbnails; site lacks: delete pages, reorder pages, page numbers, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:51:49.531Z",
+    "evidence": "Verse (/pdf/studio/) 18 of 19 things a full answer shows vs smallpdf.com 11 of 19 things a full answer shows (Verse lacks: no account; site lacks: delete pages, reorder pages, page numbers, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
+    "at": "2026-10-26T05:10:59.357Z",
     "of": 19
    }
   },
   "pdf": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 183,
-    "best": 236,
-    "evidence": "Verse (/pdf/) 183 ms to the load event (median of 3, phone width) vs ilovepdf.com 236 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:51:42.956Z"
+    "verse": 158,
+    "best": 284,
+    "evidence": "Verse (/pdf/) 158 ms to the load event (median of 3, phone width) vs ilovepdf.com 284 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/) 3 of 3 loads answered vs ilovepdf.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:51:42.956Z"
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/) 0 px sideways overflow at 390 px vs ilovepdf.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:51:42.956Z"
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/) 0 unnamed controls or images vs ilovepdf.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:51:42.956Z"
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/) 1 (1: the page shows itself again with the network cut) vs ilovepdf.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:51:42.956Z"
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/pdf/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs ilovepdf.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:51:42.956Z"
+    "evidence": "Verse (/pdf/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ilovepdf.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/) 3 of 3 right against the worked-out answer; judged against the standard, not ilovepdf.com (the site is not asked)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 25,
-    "evidence": "Verse (/pdf/) 1 design defects vs ilovepdf.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.27), ilovepdf.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:51:42.956Z"
+    "evidence": "Verse (/pdf/) 0 design defects vs ilovepdf.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), ilovepdf.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:09:25.119Z"
    },
    "merge and split": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/pdf/) 2 of 2 shown vs ilovepdf.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 2,
     "part": true
    },
@@ -16030,7 +16027,7 @@
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/pdf/) 3 of 3 shown vs ilovepdf.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 3,
     "part": true
    },
@@ -16039,7 +16036,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/) 1 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 1,
     "part": true
    },
@@ -16048,7 +16045,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/pdf/) 1 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 1,
     "part": true
    },
@@ -16057,74 +16054,74 @@
     "verse": 19,
     "best": 13,
     "evidence": "Verse (/pdf/) 19 of 19 things a full answer shows vs ilovepdf.com 13 of 19 things a full answer shows (Verse lacks: none; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
-    "at": "2026-10-26T04:51:42.956Z",
+    "at": "2026-10-26T05:09:25.119Z",
     "of": 19
    }
   },
   "kanban: jasperbernaers.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 199,
-    "best": 285,
-    "evidence": "Verse (/kanban/simple/) 199 ms to the load event (median of 3, phone width) vs jasperbernaers.com 285 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "verse": 189,
+    "best": 531,
+    "evidence": "Verse (/kanban/simple/) 189 ms to the load event (median of 3, phone width) vs jasperbernaers.com 531 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/simple/) 3 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/simple/) 1 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/kanban/simple/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "evidence": "Verse (/kanban/simple/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/simple/) 4 of 4 right against the worked-out answer; judged against the standard, not jasperbernaers.com (the site is not asked)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 41,
-    "evidence": "Verse (/kanban/simple/) 0 design defects vs jasperbernaers.com 41 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), jasperbernaers.com (27 low-contrast texts, 14 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T04:52:39.973Z"
+    "best": 42,
+    "evidence": "Verse (/kanban/simple/) 0 design defects vs jasperbernaers.com 42 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (28 low-contrast texts, 14 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T05:09:50.398Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/simple/) 1 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
@@ -16133,7 +16130,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/simple/) 3 of 3 shown vs jasperbernaers.com 3 of 3 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 3,
     "part": true
    },
@@ -16142,7 +16139,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
@@ -16151,83 +16148,83 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/simple/) 2 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 2,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 18,
+    "verdict": "better",
+    "verse": 21,
     "best": 19,
-    "evidence": "Verse (/kanban/simple/) 18 of 21 things a full answer shows vs jasperbernaers.com 19 of 21 things a full answer shows (Verse lacks: Several boards, Cards with title and description, Drag and drop cards between columns; site lacks: archive, Coloured labels)",
-    "at": "2026-10-26T04:52:39.973Z",
+    "evidence": "Verse (/kanban/simple/) 21 of 21 things a full answer shows vs jasperbernaers.com 19 of 21 things a full answer shows (Verse lacks: none; site lacks: archive, Coloured labels)",
+    "at": "2026-10-26T05:09:50.398Z",
     "of": 21
    }
   },
   "kanban: abacktools.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 179,
-    "best": 483,
-    "evidence": "Verse (/kanban/quick/) 179 ms to the load event (median of 3, phone width) vs abacktools.com 483 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "verse": 164,
+    "best": 539,
+    "evidence": "Verse (/kanban/quick/) 164 ms to the load event (median of 3, phone width) vs abacktools.com 539 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/quick/) 3 of 3 loads answered vs abacktools.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 0 px sideways overflow at 390 px vs abacktools.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 0 unnamed controls or images vs abacktools.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 1 (1: the page shows itself again with the network cut) vs abacktools.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/kanban/quick/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "evidence": "Verse (/kanban/quick/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/quick/) 4 of 4 right against the worked-out answer; judged against the standard, not abacktools.com (the site is not asked)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 25,
-    "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T04:52:59.141Z"
+    "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T05:10:11.381Z"
    },
    "boards and columns": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
@@ -16236,7 +16233,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/quick/) 2 of 3 shown vs abacktools.com 2 of 3 shown (Verse lacks: checklists; site lacks: due dates)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 3,
     "part": true
    },
@@ -16245,7 +16242,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
@@ -16254,16 +16251,16 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: import)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 16,
+    "verse": 18,
     "best": 14,
-    "evidence": "Verse (/kanban/quick/) 16 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: checklists, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
-    "at": "2026-10-26T04:52:59.141Z",
+    "evidence": "Verse (/kanban/quick/) 18 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: checklists, Several boards, Columns (lists) you name, add, move and delete; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
+    "at": "2026-10-26T05:10:11.381Z",
     "of": 21
    }
   },
@@ -16271,66 +16268,66 @@
    "speed": {
     "verdict": "equal-and-better",
     "verse": 198,
-    "best": 40,
-    "evidence": "Verse (/kanban/teams/) 198 ms to the load event (median of 3, phone width) vs wekan.fi 40 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "best": 48,
+    "evidence": "Verse (/kanban/teams/) 198 ms to the load event (median of 3, phone width) vs wekan.fi 48 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/teams/) 3 of 3 loads answered vs wekan.fi 3 of 3 loads answered",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 0 px sideways overflow at 390 px vs wekan.fi 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/teams/) 0 unnamed controls or images vs wekan.fi 1 unnamed controls or images",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 1 (1: the page shows itself again with the network cut) vs wekan.fi 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wekan.fi 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/teams/) 4 of 4 right against the worked-out answer; judged against the standard, not wekan.fi (the site is not asked)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
-    "evidence": "Verse (/kanban/teams/) 0 design defects vs wekan.fi 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), wekan.fi (2 low-contrast texts, 1 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T04:53:20.069Z"
+    "evidence": "Verse (/kanban/teams/) 0 design defects vs wekan.fi 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wekan.fi (2 low-contrast texts, 1 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T05:10:32.831Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/teams/) 1 of 2 shown vs wekan.fi 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
@@ -16339,7 +16336,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/teams/) 3 of 3 shown vs wekan.fi 3 of 3 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 3,
     "part": true
    },
@@ -16348,7 +16345,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 0 of 2 shown (Verse lacks: none; site lacks: drag)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
@@ -16357,83 +16354,83 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/teams/) 2 of 2 shown vs wekan.fi 1 of 2 shown (Verse lacks: none; site lacks: export)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 12,
-    "evidence": "Verse (/kanban/teams/) 18 of 21 things a full answer shows vs wekan.fi 12 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: drag and drop, search, archive, export, keyboard moves, on this device, works offline, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:53:20.069Z",
+    "evidence": "Verse (/kanban/teams/) 20 of 21 things a full answer shows vs wekan.fi 12 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: drag and drop, search, archive, export, keyboard moves, on this device, works offline, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:10:32.831Z",
     "of": 21
    }
   },
   "kanban: kanbanflow.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 142,
-    "best": 235,
-    "evidence": "Verse (/kanban/flow/) 142 ms to the load event (median of 3, phone width) vs kanbanflow.com 235 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "verdict": "better",
+    "verse": 224,
+    "best": 276,
+    "evidence": "Verse (/kanban/flow/) 224 ms to the load event (median of 3, phone width) vs kanbanflow.com 276 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/flow/) 3 of 3 loads answered vs kanbanflow.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 0 px sideways overflow at 390 px vs kanbanflow.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/flow/) 0 unnamed controls or images vs kanbanflow.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 1 (1: the page shows itself again with the network cut) vs kanbanflow.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/kanban/flow/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs kanbanflow.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/flow/) 4 of 4 right against the worked-out answer; judged against the standard, not kanbanflow.com (the site is not asked)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 12,
-    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:53:38.202Z"
+    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:10:52.190Z"
    },
    "boards and columns": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 2,
     "best": 1,
-    "evidence": "Verse (/kanban/flow/) 1 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: add a column; site lacks: columns)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: none; site lacks: columns)",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
@@ -16442,7 +16439,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 3 of 3 shown vs kanbanflow.com 0 of 3 shown (Verse lacks: none; site lacks: labels, due dates, checklists)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 3,
     "part": true
    },
@@ -16451,7 +16448,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 0 of 2 shown (Verse lacks: none; site lacks: drag)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
@@ -16460,83 +16457,83 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 5,
-    "evidence": "Verse (/kanban/flow/) 18 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:53:38.202Z",
+    "evidence": "Verse (/kanban/flow/) 20 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:10:52.190Z",
     "of": 21
    }
   },
   "kanban": {
    "speed": {
     "verdict": "better",
-    "verse": 205,
-    "best": 1383,
-    "evidence": "Verse (/kanban/) 205 ms to the load event (median of 3, phone width) vs Trello 1383 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "verse": 284,
+    "best": 1492,
+    "evidence": "Verse (/kanban/) 284 ms to the load event (median of 3, phone width) vs Trello 1492 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/) 3 of 3 loads answered vs Trello 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/) 0 px sideways overflow at 390 px vs Trello 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/) 0 unnamed controls or images vs Trello 1 unnamed controls or images",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/) 1 (1: the page shows itself again with the network cut) vs Trello 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/kanban/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Trello 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/) 4 of 4 right against the worked-out answer; judged against the standard, not Trello (the site is not asked)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 13,
-    "evidence": "Verse (/kanban/) 0 design defects vs Trello 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.08), Trello (0 low-contrast texts, 13 small tap targets, layout shift 0.05)",
-    "at": "2026-10-26T04:52:13.251Z"
+    "evidence": "Verse (/kanban/) 0 design defects vs Trello 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Trello (0 low-contrast texts, 13 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:09:23.204Z"
    },
    "boards and columns": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/kanban/) 1 of 2 shown vs Trello 2 of 2 shown (Verse lacks: add a column; site lacks: none)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
@@ -16545,7 +16542,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/kanban/) 3 of 3 shown vs Trello 0 of 3 shown (Verse lacks: none; site lacks: labels, due dates, checklists)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 3,
     "part": true
    },
@@ -16554,7 +16551,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
@@ -16563,17 +16560,323 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/kanban/) 2 of 2 shown vs Trello 0 of 2 shown (Verse lacks: none; site lacks: export, import)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 20,
     "best": 5,
-    "evidence": "Verse (/kanban/) 18 of 21 things a full answer shows vs Trello 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns; site lacks: columns, labels, due dates, checklists, search, archive, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Keyboard shortcuts and keyboard moves, Coloured labels)",
-    "at": "2026-10-26T04:52:13.251Z",
+    "evidence": "Verse (/kanban/) 20 of 21 things a full answer shows vs Trello 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: columns, labels, due dates, checklists, search, archive, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T05:09:23.204Z",
     "of": 21
+   }
+  },
+  "travel: tripwaffle.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 177,
+    "best": 225,
+    "evidence": "Verse (/flights/trip/) 177 ms to the load event (median of 3, phone width) vs tripwaffle.com 225 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/trip/) 0 of 3 loads answered vs tripwaffle.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/trip/) 0 px sideways overflow at 390 px vs tripwaffle.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/flights/trip/) 0 unnamed controls or images vs tripwaffle.com 2 unnamed controls or images",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/trip/) 0 (1: the page shows itself again with the network cut) vs tripwaffle.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/trip/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs tripwaffle.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:59:02.518Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 18,
+    "evidence": "Verse (/flights/trip/) 0 design defects vs tripwaffle.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tripwaffle.com (5 low-contrast texts, 13 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T04:59:02.518Z"
+   }
+  },
+  "travel: aruljohn.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 163,
+    "best": 549,
+    "evidence": "Verse (/flights/airports/) 163 ms to the load event (median of 3, phone width) vs aruljohn.com 549 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/airports/) 0 of 3 loads answered vs aruljohn.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/airports/) 0 px sideways overflow at 390 px vs aruljohn.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/airports/) 0 unnamed controls or images vs aruljohn.com 3 unnamed controls or images",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/airports/) 0 (1: the page shows itself again with the network cut) vs aruljohn.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/airports/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs aruljohn.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:59:29.384Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 9531,
+    "evidence": "Verse (/flights/airports/) 0 design defects vs aruljohn.com 9531 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), aruljohn.com (0 low-contrast texts, 9531 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:59:29.384Z"
+   }
+  },
+  "travel: clock7.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 178,
+    "best": 403,
+    "evidence": "Verse (/flights/time/) 178 ms to the load event (median of 3, phone width) vs clock7.com 403 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/time/) 0 of 3 loads answered vs clock7.com 3 of 3 loads answered",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 80,
+    "evidence": "Verse (/flights/time/) 0 px sideways overflow at 390 px vs clock7.com 80 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/time/) 0 unnamed controls or images vs clock7.com 0 unnamed controls or images",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/time/) 0 (1: the page shows itself again with the network cut) vs clock7.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/time/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs clock7.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 26,
+    "evidence": "Verse (/flights/time/) 0 design defects vs clock7.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), clock7.com (10 low-contrast texts, 15 small tap targets, layout shift 0.20)",
+    "at": "2026-10-26T05:05:43.861Z"
+   }
+  },
+  "travel: airmilescalculator.com": {
+   "reliability": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 of 3 loads answered vs airmilescalculator.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 148,
+    "best": 200,
+    "evidence": "Verse (/flights/distance/) 148 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 px sideways overflow at 390 px vs the bar (airmilescalculator.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 unnamed controls or images vs the bar (airmilescalculator.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/distance/) 0 (1: the page shows itself again with the network cut) vs the bar (airmilescalculator.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/distance/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (airmilescalculator.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 design defects vs the bar (airmilescalculator.com unreachable) 0 design defects",
+    "at": "2026-10-26T05:06:13.870Z"
+   }
+  },
+  "travel: gcmap.com": {
+   "reliability": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 of 3 loads answered vs gcmap.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 143,
+    "best": 200,
+    "evidence": "Verse (/flights/map/) 143 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 px sideways overflow at 390 px vs the bar (gcmap.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 unnamed controls or images vs the bar (gcmap.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/map/) 0 (1: the page shows itself again with the network cut) vs the bar (gcmap.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/map/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (gcmap.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 design defects vs the bar (gcmap.com unreachable) 0 design defects",
+    "at": "2026-10-26T05:10:13.817Z"
+   }
+  },
+  "travel: co2.myclimate.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 141,
+    "best": 762,
+    "evidence": "Verse (/flights/co2/) 141 ms to the load event (median of 3, phone width) vs co2.myclimate.org 762 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 of 3 loads answered vs co2.myclimate.org 3 of 3 loads answered",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/co2/) 0 px sideways overflow at 390 px vs co2.myclimate.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 unnamed controls or images vs co2.myclimate.org 3 unnamed controls or images",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/co2/) 0 (1: the page shows itself again with the network cut) vs co2.myclimate.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs co2.myclimate.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/co2/) 0 design defects vs co2.myclimate.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), co2.myclimate.org (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:10:28.671Z"
    }
   }
  },
@@ -16743,6 +17046,11 @@
   "ilovepdf.com": "tower.icons/ilovepdf.com.png",
   "wekan.fi": "tower.icons/wekan.fi.png",
   "kanbanflow.com": "tower.icons/kanbanflow.com.png",
-  "trello.com": "tower.icons/trello.com.ico"
+  "trello.com": "tower.icons/trello.com.ico",
+  "tripwaffle.com": "tower.icons/tripwaffle.com.png",
+  "aruljohn.com": "tower.icons/aruljohn.com.ico",
+  "clock7.com": "tower.icons/clock7.com.png",
+  "co2.myclimate.org": "tower.icons/co2.myclimate.org.png",
+  "abacktools.com": "tower.icons/abacktools.com.png"
  }
 }
