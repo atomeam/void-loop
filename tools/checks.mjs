@@ -94,6 +94,7 @@ for (const [name, file] of [
   ['matchgfx', 'matchgfx.test.mjs'],
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
+  ['music-tools', 'music-tools.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
   ['generators', 'generators.test.mjs'],
   ['listgen', 'listgen.test.mjs'],

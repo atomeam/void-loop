@@ -68,7 +68,7 @@ const HAND_FLOORS = [
   { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', page: '/photos/', label: 'Photos', glyph: '◰', extra: ['editing', 'compress and convert', 'metadata and privacy'] },
   { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
   { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', extra: ['courses', 'progress tracking', 'practice'] },
-  { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
+  { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
   { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
@@ -119,6 +119,8 @@ export const LANES = Object.freeze({
   kanban: ['https://jasperbernaers.com/kanban-board/', 'https://abacktools.com/tools/productivity/planning/kanban-board', 'https://wekan.fi/', 'https://kanbanflow.com/'],
   // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
+  // music (owner, 2026-10-26: "we have to have everything all the sites have"): small music tools, smallest first, Spotify (the floor itself) last. metronomeonline.com and virtualpiano.net are the owner's; the others were found by search as live, real, no-sign-in pages (a tuner, a BPM counter, a chord finder). Each has a page of its own (LANE_PAGES) and aspects named for what that site does (LANE_EXTRA)
+  music: ['https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', 'https://chordchord.com/chord-finder', 'https://metronomeonline.com/', 'https://virtualpiano.net/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
@@ -127,12 +129,22 @@ export const LANES = Object.freeze({
 export const LANE_PAGES = Object.freeze({
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
+  'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
 });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
+// The aspects a lane site is measured on when they are not its leader's (a metronome is not judged on a catalogue and playlists): the floor id of a lane site -> the
+// aspects named for what that site does, each answered by an `askParts` entry of the site's own probe in tools/tower-probes.mjs.
+export const LANE_EXTRA = Object.freeze({
+  'music: jasperbernaers.com': ['microphone tuning', 'instrument presets', 'reference tones', 'adjustable A4'],
+  'music: anotherproducer.com': ['tap tempo counter', 'half and double time', 'note lengths', 'tempo of a file'],
+  'music: chordchord.com': ['chord finder', 'scale finder', 'guitar and piano shapes', 'chords in a key'],
+  'music: metronomeonline.com': ['tap tempo', 'accents', 'subdivisions', 'practice timer', 'light and dark mode', 'sounds'],
+  'music: virtualpiano.net': ['computer keyboard play', 'touch and mouse play', 'sustain', 'instruments', 'sheet music', 'MIDI input'],
+});
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
 export function withLanes(floors, lanes = LANES) {
   const out = [];
-  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: LANE_PAGES[f.id + ': ' + h] || f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
+  for (const f of floors) { for (const url of lanes[f.id] || []) { const h = laneHost(url); out.push({ id: f.id + ': ' + h, lane: f.id, site: h, url, ask: f.ask, page: LANE_PAGES[f.id + ': ' + h] || f.page, label: f.label + ': ' + h, glyph: f.glyph, extra: LANE_EXTRA[f.id + ': ' + h] || f.extra, ...(f.noShot ? { noShot: true } : {}) }); } out.push(f); }
   return out;
 }
 export const FLOORS = withLanes(HAND_FLOORS);

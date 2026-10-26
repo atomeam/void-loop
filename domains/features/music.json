@@ -1,7 +1,7 @@
 {
  "floor": "music",
- "verse_page": null,
- "researched": "2026-10-25",
+ "verse_page": "/music/",
+ "researched": "2026-10-26",
  "sites": {
   "open.spotify.com": {
    "sources": [
@@ -18,7 +18,7 @@
      "detail": "100M+ tracks, albums, artists, playlists, podcasts, audiobooks",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "media-pick.js looks up real songs via /api/media (iTunes Search)"
+     "verse_evidence": "/music/ catalogue lists tempo words, 22 scales, 28 chord types, tunings and songs to play; no song search"
     },
     {
      "group": "core",
@@ -41,8 +41,9 @@
      "name": "Playlists",
      "detail": "Create, edit, reorder, folders, cover image, description",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/music/ keeps setlists (saved tempos) on the device and shares them by link; every music page links to it",
+     "shows": "setlists?"
     },
     {
      "group": "core",
@@ -66,7 +67,7 @@
      "detail": "Made For You mixes, Daily Mix, Discover Weekly, Release Radar",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "media-pick.js picks songs for a mood or day"
+     "verse_evidence": "/music/ recommends a practice tempo ladder, the chords that follow a chord and scales for a chord; no songs"
     },
     {
      "group": "core",
@@ -138,7 +139,8 @@
      "detail": "Spotify does not make music",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "music.js composes an original piece from a mood, saves WAV"
+     "verse_evidence": "music.js composes an original piece from a mood, saves WAV",
+     "shows": "make me a song"
     },
     {
      "group": "sharing",
@@ -161,8 +163,9 @@
      "name": "Share links, cards and codes",
      "detail": "Share to socials with card art, Spotify Codes",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "every music page has a Share this page button; a setlist is a link",
+     "shows": "share"
     },
     {
      "group": "sharing",
@@ -177,8 +180,9 @@
      "name": "Downloads",
      "detail": "Offline listening (Premium)",
      "paid": true,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "all six music pages open offline after one visit (sw.js) and nothing needs a download",
+     "shows": "works offline"
     },
     {
      "group": "offline-mobile",
@@ -220,20 +224,441 @@
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
     }
+   ],
+   "leader": true
+  },
+  "metronomeonline.com": {
+   "sources": [
+    "https://emastered.com/blog/best-online-metronome",
+    "https://metronome-online.com/ (a similar site found by search: light/dark, stress first beat, timer, subdivisions, tap BPM)",
+    "https://douglasniedt.com/metronomeonline.html (polyrhythm, voice count)"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Free, nothing to pay",
+     "detail": "No subscription for the tool itself",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says free, no account, no ads",
+     "shows": "\\bfree\\b"
+    },
+    {
+     "group": "core",
+     "name": "No account",
+     "detail": "Opens and plays with no sign-in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says no account",
+     "shows": "no account"
+    },
+    {
+     "group": "core",
+     "name": "Runs in the browser, nothing to install",
+     "detail": "Sound is made by the page",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says it is made in your browser",
+     "shows": "in your browser"
+    },
+    {
+     "group": "core",
+     "name": "BPM field and tempo control",
+     "detail": "Set the tempo by typing or sliding",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ BPM slider, number box, +/- and +/-10 (20 to 400)"
+    },
+    {
+     "group": "core",
+     "name": "Tap BPM",
+     "detail": "A button to tap the tempo in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Tap tempo and the T key; /bpm/ is a full counter"
+    },
+    {
+     "group": "core",
+     "name": "Stress (accent) the first beat",
+     "detail": "Louder first beat",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Accent the first beat, and every beat settable strong, medium, soft or silent"
+    },
+    {
+     "group": "core",
+     "name": "Beats per bar counter",
+     "detail": "Choose how many beats a bar has",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ 13 time signatures from 2/4 to 12/8 with their groupings"
+    },
+    {
+     "group": "core",
+     "name": "Subdivided beats",
+     "detail": "Eighths, triplets, sixteenths",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ eight subdivisions including swing, quintuplets, sextuplets and off-beat"
+    },
+    {
+     "group": "core",
+     "name": "Timer",
+     "detail": "Stop after a set time",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ practice timer in minutes"
+    },
+    {
+     "group": "core",
+     "name": "Light and dark mode",
+     "detail": "A quick toggle",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Light or dark button (kept on the device)"
+    },
+    {
+     "group": "core",
+     "name": "Sound choice",
+     "detail": "Pick the click",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ nine synthesised sounds and a spoken count"
+    },
+    {
+     "group": "extra",
+     "name": "Visual beat and pendulum",
+     "detail": "The beat shown as well as heard",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ flashing beat circles and a pendulum"
+    },
+    {
+     "group": "extra",
+     "name": "Polyrhythm (two beats against each other)",
+     "detail": "A second pulse in another subdivision",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built: a second layer of ticks is the next step on /metronome/"
+    },
+    {
+     "group": "extra",
+     "name": "Tempo ramp (speed trainer)",
+     "detail": "Raise the tempo every few bars",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ speed trainer and silent bars"
+    }
+   ]
+  },
+  "virtualpiano.net": {
+   "sources": [
+    "https://urlscan.io/result/2100e68d-36b5-499a-ae60-594fca3bd59e/content",
+    "https://www.educationalappstore.com/website/virtual-piano",
+    "https://portal.yandex.com.tr/yaozet/how_to/virtual-piano-guide-id1-uQgm5aeI"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Play with the computer keyboard",
+     "detail": "Letters and numbers map to piano keys",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ the virtualpiano key layout: 1-0, q-p, a-l, z-m, Shift for sharps"
+    },
+    {
+     "group": "core",
+     "name": "Mouse and touch play",
+     "detail": "Press the on-screen keys",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ pointer and touch, sliding from key to key with the mouse"
+    },
+    {
+     "group": "core",
+     "name": "MIDI keyboard input",
+     "detail": "Plug in a MIDI keyboard",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ Web MIDI note on/off and the sustain pedal (needs a browser with Web MIDI)"
+    },
+    {
+     "group": "core",
+     "name": "Sustain pedal",
+     "detail": "Hold notes on",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ space bar or button"
+    },
+    {
+     "group": "core",
+     "name": "Several instruments",
+     "detail": "A choice of sounds",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ twelve synthesised instruments (no sample files)"
+    },
+    {
+     "group": "core",
+     "name": "Sheets in letters",
+     "detail": "Play songs by reading letters",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ sheets in plain letters (note names, durations, chords) with public-domain songs, played with the keys lit"
+    },
+    {
+     "group": "extra",
+     "name": "Record and edit your playing as a sheet",
+     "detail": "A sheet producer that records, edits and plays back",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ Record, Play it back, Copy as sheet, and an editable sheet box"
+    },
+    {
+     "group": "extra",
+     "name": "Key labels on the keys",
+     "detail": "Show which key to press",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ the computer key on every note"
+    },
+    {
+     "group": "extra",
+     "name": "Transpose, octave shift and reverb",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ transpose, octave and reverb"
+    },
+    {
+     "group": "extra",
+     "name": "Large library of popular song sheets",
+     "detail": "Thousands of sheets for current songs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: the songs are copyrighted; /piano/ ships public-domain sheets and lets you write your own"
+    },
+    {
+     "group": "paid",
+     "name": "Premium membership",
+     "detail": "Ad-free, more features, paid per year",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: money; Verse has no subscription and no ads"
+    }
+   ]
+  },
+  "jasperbernaers.com": {
+   "sources": [
+    "https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/",
+    "https://metronautapp.com/tuner",
+    "https://guitar.com/tuner/",
+    "https://wavespeed.ai/free-tools/tuner"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chromatic tuner with the microphone",
+     "detail": "Names the note you play and how many cents off",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ McLeod pitch detection, needle in cents, in tune within 5 cents"
+    },
+    {
+     "group": "core",
+     "name": "Instrument presets",
+     "detail": "Guitar, bass, ukulele, violin, cello",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ 15 tunings including drop D, DADGAD, open G, 7-string, viola, mandolin, banjo"
+    },
+    {
+     "group": "core",
+     "name": "Adjustable A4 reference",
+     "detail": "410 to 470 Hz",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ A4 box"
+    },
+    {
+     "group": "core",
+     "name": "Reference tones",
+     "detail": "Hear the target note",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ string buttons and a pitch pipe for any note"
+    },
+    {
+     "group": "core",
+     "name": "Audio stays on the device",
+     "detail": "Processed locally",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ says nothing is recorded or sent"
+    },
+    {
+     "group": "extra",
+     "name": "Strobe display",
+     "detail": "A strobe instead of a needle for fine tuning",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built: the needle shows cents; a strobe is a next step"
+    }
+   ]
+  },
+  "anotherproducer.com": {
+   "sources": [
+    "https://anotherproducer.com/online-tools-for-musicians/bpm-counter/",
+    "https://www.tunepocket.com/?p=32323",
+    "https://sengpielaudio.com/calculator-bpm.htm"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Tap any key or the button",
+     "detail": "Tap tempo",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ any key or the big button"
+    },
+    {
+     "group": "core",
+     "name": "Half and double time",
+     "detail": "x2 and /2 buttons",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ Half time and Double time"
+    },
+    {
+     "group": "core",
+     "name": "Average over several taps with a reset after a pause",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ average of the last 4 to 24 taps, reset after 1.5 to 4 s"
+    },
+    {
+     "group": "core",
+     "name": "Click on each tap",
+     "detail": "An optional metronome click",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ Click on each tap"
+    },
+    {
+     "group": "extra",
+     "name": "Note lengths in milliseconds",
+     "detail": "A table of beat lengths",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ whole to thirty-second notes, dotted, triplet, in ms and Hz"
+    },
+    {
+     "group": "extra",
+     "name": "Song length in bars",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ bars to minutes and seconds"
+    },
+    {
+     "group": "extra",
+     "name": "Tempo of an audio file",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ onset autocorrelation on the device; nothing uploaded"
+    }
+   ]
+  },
+  "chordchord.com": {
+   "sources": [
+    "https://chordchord.com/chord-finder",
+    "https://chordchord.com/scale-finder",
+    "https://chordchord.com/guitar-scales"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chord finder for piano and guitar",
+     "detail": "Pick a root and a chord type",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ 28 chord types, notes, piano keys, inversions"
+    },
+    {
+     "group": "core",
+     "name": "Guitar fingerings",
+     "detail": "Click a chord to see its fingering",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ up to four shapes drawn as diagrams, found by search"
+    },
+    {
+     "group": "core",
+     "name": "Scale finder",
+     "detail": "Pick a root, see the scale",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ 22 scales with steps and the keys lit"
+    },
+    {
+     "group": "core",
+     "name": "Chords that fit a scale",
+     "detail": "Lists chords in the key",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ chords of a major or minor key with roman numerals, sevenths and what each leads to"
+    },
+    {
+     "group": "extra",
+     "name": "Name a chord from notes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ pick notes: the chord, and every scale that holds them"
+    },
+    {
+     "group": "extra",
+     "name": "Scale on a fretboard",
+     "detail": "Show a scale on a virtual guitar neck",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built: scales are shown on a piano keyboard; a fretboard view is a next step"
+    },
+    {
+     "group": "extra",
+     "name": "Choose a chord by clicking the fretboard",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built"
+    },
+    {
+     "group": "extra",
+     "name": "Circle of fifths, progressions, transposer",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ all three"
+    }
    ]
   }
  },
  "gaps": [
-  "a player with a queue for songs Verse finds",
-  "playlists kept on the device and shared by link",
-  "search across songs, artists and albums",
-  "artist page",
-  "lyrics",
-  "radio of similar songs"
+  "polyrhythm on the metronome",
+  "a strobe display on the tuner",
+  "scales and chords on a guitar fretboard (and choosing a chord by clicking the neck)",
+  "a song library with licensed sheets (skipped: copyright)",
+  "a catalogue of songs to search and a player for them (skipped: licences)"
  ],
  "verse_extra": [
   "Verse composes original songs, no licence needed",
-  "one ask plays a song preview, its video or a new piece"
+  "one ask plays a song preview, its video or a new piece",
+  "six pages tied together (metronome, piano, tuner, BPM counter, chord and scale finder, setlists) with every sound made in the browser",
+  "a BPM found from an audio file on the device",
+  "a recording turned into a sheet in plain letters",
+  "German and English, offline, no account"
  ],
- "first_page": "Music page /music/ for listeners who want to find and play songs without an account. First: search songs/artists (iTunes Search, keyless), play the 30 s preview or the full official video embed, a queue with shuffle/repeat, playlists kept on the device and shared as a link, and \"make me a song\" beside it. Will not build: full-track licensed streaming, downloads, Connect, social feeds or AI DJ."
+ "first_page": "Music tools: /metronome/, /piano/, /tuner/, /bpm/, /chords/ and the hub /music/, one page per lane site (LANE_PAGES). Will not build: licensed song sheets, full-track streaming, accounts, anything that sends audio off the device."
 }
