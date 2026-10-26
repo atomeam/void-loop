@@ -9,6 +9,7 @@ await new Promise((r) => server.once('listening', r));
 globalThis.self ??= globalThis; vm.runInThisContext(fs.readFileSync(path.join(root, 'vendor/pdf-lib-1.17.1/pdf-lib.min.js'), 'utf8')); const L = globalThis.PDFLib;
 const mk = async (n, w = 300, h = 400, label = 'Page') => { const d = await L.PDFDocument.create(); const f = await d.embedFont(L.StandardFonts.Helvetica); for (let i = 1; i <= n; i++) { const p = d.addPage([w, h]); p.drawText(label + ' ' + i, { x: 40, y: h / 2, size: 36, font: f }); } return Buffer.from(await d.save()); };
 const tmp = fs.mkdtempSync('/tmp/pdfk-'); const A = path.join(tmp, 'alpha.pdf'), B = path.join(tmp, 'beta.pdf'), PNG = path.join(tmp, 'pic.png');
+const mkW = async () => { const d = await L.PDFDocument.create(); for (let i = 1; i <= 3; i++) d.addPage([200 + i, 300]); return Buffer.from(await d.save()); }; const C = path.join(tmp, 'gamma.pdf'); fs.writeFileSync(C, await mkW());
 fs.writeFileSync(A, await mk(3, 300, 400, 'Alpha')); fs.writeFileSync(B, await mk(2, 500, 300, 'Beta'));
 fs.writeFileSync(PNG, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAAD0lEQVR4nGP4z8Dwn4EBAAkEAgCG0d3sAAAAAElFTkSuQmCC', 'base64'));
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || (fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined), headless: true });
@@ -47,6 +48,17 @@ const d = await L.PDFDocument.load(fs.readFileSync(out)); ok(d.getPageCount() ==
 for (const p of ['/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/']) { await page.goto(base + p); await page.waitForSelector('.tabs button'); const w = await page.evaluate(() => document.documentElement.scrollWidth); ok(w <= 391, p + ' has no horizontal scroll at 390 px (' + w + ')'); }
 await page.goto(base + '/pdf/'); await shot('pdf-home');
 
+// a page built for one job still turns, deletes and reorders pages, and shares a link
+await page.goto(base + '/pdf/merge/'); await page.waitForSelector('.also');
+const mtxt = await page.locator('main').innerText(); ok(/Rotate/.test(mtxt) && /Extract or delete pages/.test(mtxt) && /Reorder by number/.test(mtxt) && /Images to PDF/.test(mtxt) && /Split/.test(mtxt), '/pdf/merge/ shows page tools, split and images to PDF under the merge panel');
+ok((await page.locator('button.share').count()) === 1 && /Share link/.test(await page.locator('button.share').innerText()), 'a visible Share link button');
+const orderSection = page.locator('.also', { has: page.locator('h2', { hasText: 'Reorder by number' }) }); await orderSection.locator('input.pick').setInputFiles(C); await orderSection.locator('.files li').waitFor();
+await orderSection.locator('input[type=text]').fill('3,1'); out = await download(async () => { await orderSection.locator('button.go').click(); await page.waitForSelector('a.dl'); await page.click('a.dl'); });
+{ const dd = await L.PDFDocument.load(fs.readFileSync(out)); ok(dd.getPages().map((x) => Math.round(x.getWidth())).join() === '203,201,202', 'reorder 3,1 gives pages 3,1,2'); }
+await page.goto(base + '/pdf/organize/'); await page.waitForSelector('.tabs'); ok(/Split/.test(await page.locator('.tabs').innerText()), '/pdf/organize/ has a Split tab');
+const metas = await page.evaluate(() => ({ img: document.querySelector('meta[property="og:image"]').content, w: document.querySelector('meta[property="og:image:width"]').content }));
+ok(/\/og\/pdf-organize\.png$/.test(metas.img) && fs.existsSync(path.join(root, 'og', 'pdf-organize.png')), 'its own share picture: ' + metas.img);
+
 // ---- Kanban ----
 await page.evaluate(() => localStorage.clear()); await page.goto(base + '/kanban/'); await page.waitForSelector('.col'); await shot('kanban-empty');
 ok((await page.locator('.col h3').allInnerTexts()).join() === 'To do,Doing,Done', 'a fresh board starts To do, Doing, Done');
@@ -70,6 +82,8 @@ await page.waitForTimeout(200); ok((await page.locator('.col').nth(2).locator('.
 await page.locator('.col').nth(1).locator('.cmenu summary').click(); await page.locator('.col').nth(1).locator('.wipl input').fill('1'); await page.locator('.col').nth(1).locator('.wipl input').dispatchEvent('change'); await page.waitForTimeout(150);
 ok(/\/ 1/.test(await page.locator('.col').nth(1).locator('.count').innerText()) && (await page.locator('.col.wipover').count()) === 1, 'a WIP limit of 1 marks the column over its limit');
 // search, export
+ok(/Add column/.test(await page.locator('.bar').first().innerText()) && /Add a board/.test(await page.locator('.bar').first().innerText()), 'Add column and Add a board show on the first screen');
+page.once('dialog', (d) => d.accept('Review')); await page.click('button.addcolbtn'); await page.waitForTimeout(150); ok((await page.locator('.col h3').allInnerTexts()).includes('Review'), 'Add column adds a column');
 await page.fill('input[type=search]', 'plan'); await page.waitForTimeout(100); ok((await page.locator('.card:visible').count()) === 1, 'search narrows to one card');
 await page.fill('input[type=search]', '');
 const exp = await download(() => page.click('button:has-text("Export JSON")')); const j = JSON.parse(fs.readFileSync(exp, 'utf8')); ok(j.boards[0].columns.flatMap((c) => c.cards).length === 3, 'Export JSON holds the 3 cards');
@@ -77,6 +91,7 @@ await page.setInputFiles('input[type=file][accept*=json]', exp); await page.wait
 await page.click('button.lang'); ok(/Karte hinzufügen|Exportieren|Importieren/.test(await page.locator('main').innerText()), 'German on a tap'); await shot('kanban-de');
 await page.click('button.lang');
 for (const p of ['/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/']) { await page.goto(base + p); await page.waitForSelector('.col'); const w = await page.evaluate(() => document.documentElement.scrollWidth); ok(w <= 391, p + ' has no horizontal scroll at 390 px (' + w + ')'); }
+await page.goto(base + '/kanban/simple/'); await page.waitForSelector('.col'); const st2 = await page.locator('main').innerText(); ok(/Add a board/.test(st2) && /several boards/.test(st2) && /Drag and drop cards between columns/.test(st2) && /cards with a title and description/.test(st2) && /Share link/.test(st2), 'the simple page says and has several boards, cards with a title and description, drag and drop, a share link');
 await page.goto(base + '/kanban/'); await shot('kanban-home');
 ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
 await browser.close(); server.close(); console.log(bad ? bad + ' FAILED' : 'all ok'); process.exit(bad ? 1 : 0);

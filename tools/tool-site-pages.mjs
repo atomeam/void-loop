@@ -9,6 +9,8 @@ import { PDF_SITES, KANBAN_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/** the share picture's name: /pdf/merge/ -> pdf-merge */
+export const slug = (path) => path.replace(/^\/|\/$/g, '').replace(/\//g, '-');
 const CSS = `
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
   @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
@@ -22,13 +24,15 @@ const CSS = `
   input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
   textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: __APPMIN__; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
   .sr { position: absolute; left: -9999px; }`;
 const PDFCSS = `
   .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; } .tabs button[aria-selected=true] { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .tabs button[aria-selected=true] { color: #0b0a10; } }
   .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); }
   .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px 12px; text-align: center; cursor: pointer; } .drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-  .pick { position: absolute; left: -9999px; } .files { list-style: none; padding: 0; margin: 8px 0; } .files li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); } .fname { font-weight: 600; word-break: break-all; } .files button { min-width: 40px; padding: 4px 10px; } .pg { width: 9em; }
+  .pick { position: absolute; left: -9999px; opacity: 0; pointer-events: none; } .files { list-style: none; padding: 0; margin: 8px 0; } .files li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); } .fname { font-weight: 600; word-break: break-all; } .files button { min-width: 40px; padding: 4px 10px; } .pg { width: 9em; }
   .field { display: flex; flex-direction: column; gap: 3px; margin: 10px 0; font-size: 14px; } .field.row { flex-direction: row; align-items: center; gap: 8px; } .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; } .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
   .results .result { margin: 6px 0; } .dl { display: inline-block; padding: 8px 16px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; min-height: 40px; line-height: 24px; } @media (prefers-color-scheme: dark) { .dl { color: #0b0a10; } }
   .thumbs { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; } .thumb { border: 1px solid var(--line); border-radius: 10px; padding: 6px; background: var(--bg); text-align: center; } .thumb.dragging { opacity: .4; } .thumb.over { outline: 3px dashed var(--accent); }
@@ -50,7 +54,7 @@ const KBCSS = `
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
   const pdf = kind === 'pdf';
-  const css = (CSS + (pdf ? PDFCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : '1180px');
+  const css = (CSS + (pdf ? PDFCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : '520px');
   const foot = pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
@@ -66,8 +70,14 @@ export function pageOf(row, kind) {
 <meta property="og:title" content="${esc(row.name)} · Verse">
 <meta property="og:description" content="${esc(row.does)}">
 <meta property="og:url" content="https://a-to-mind.com${row.path}">
-<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta property="og:image" content="https://a-to-mind.com/og/${slug(row.path)}.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(row.name)} on Verse">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(row.name)} · Verse">
+<meta name="twitter:description" content="${esc(row.does)}">
+<meta name="twitter:image" content="https://a-to-mind.com/og/${slug(row.path)}.png">
 <style>${css}
 </style>
 </head>
@@ -87,12 +97,12 @@ export function pageOf(row, kind) {
 }
 /** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
 export function appOf(row, kind) {
-  const pdf = kind === 'pdf', cfg = pdf ? { tools: row.tools } : { features: row.features };
+  const pdf = kind === 'pdf', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : { features: row.features };
   return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
-import { mountRelated } from '/lib/toolkit.js';
 import { ${pdf ? 'mountPdf' : 'mountKanban'} } from '/lib/${pdf ? 'pdf-ui' : 'kanban-ui'}.js';
 ${pdf ? 'mountPdf' : 'mountKanban'}(document.getElementById('app'), ${JSON.stringify(cfg)});
-mountRelated(document.getElementById('related'), '${row.path}');
+// the related row and the ask bar come after the first paint, so the page itself loads first
+import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}'));
 `;
 }
 const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/asks -->\n?|<!-- modulepreload: tools\/preload\.mjs -->[\s\S]*?<!-- \/modulepreload -->\n?/g;
