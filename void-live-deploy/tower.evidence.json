@@ -14139,178 +14139,283 @@
   "photos: exifeditor.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 185,
-    "best": 1951,
-    "evidence": "Verse (/photos/) 185 ms to the load event (median of 3, phone width) vs exifeditor.io 1951 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:43:22.913Z"
+    "verse": 200,
+    "best": 1647,
+    "evidence": "Verse (/photos/exifeditor/) 200 ms to the load event (median of 3, phone width) vs exifeditor.io 1647 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "reliability": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/photos/) 0 of 3 loads answered vs exifeditor.io 3 of 3 loads answered",
-    "at": "2026-10-26T03:43:22.913Z"
+    "evidence": "Verse (/photos/exifeditor/) 3 of 3 loads answered vs exifeditor.io 3 of 3 loads answered",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
-    "best": 205,
-    "evidence": "Verse (/photos/) 0 px sideways overflow at 390 px vs exifeditor.io 205 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:43:22.913Z"
+    "best": 17,
+    "evidence": "Verse (/photos/exifeditor/) 0 px sideways overflow at 390 px vs exifeditor.io 17 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 unnamed controls or images vs exifeditor.io 0 unnamed controls or images",
-    "at": "2026-10-26T03:43:22.913Z"
+    "evidence": "Verse (/photos/exifeditor/) 0 unnamed controls or images vs exifeditor.io 0 unnamed controls or images",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 (1: the page shows itself again with the network cut) vs exifeditor.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:43:22.913Z"
+    "evidence": "Verse (/photos/exifeditor/) 1 (1: the page shows itself again with the network cut) vs exifeditor.io 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "sharing": {
     "verdict": "worse",
-    "verse": 0,
-    "best": 3,
-    "evidence": "Verse (/photos/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs exifeditor.io 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:43:22.913Z"
+    "verse": 3,
+    "best": 4,
+    "evidence": "Verse (/photos/exifeditor/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs exifeditor.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 1,
     "best": 51,
-    "evidence": "Verse (/photos/) 0 design defects vs exifeditor.io 51 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), exifeditor.io (40 low-contrast texts, 10 small tap targets, layout shift 0.60)",
-    "at": "2026-10-26T03:43:22.913Z"
+    "evidence": "Verse (/photos/exifeditor/) 1 design defects vs exifeditor.io 51 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), exifeditor.io (40 low-contrast texts, 10 small tap targets, layout shift 0.63)",
+    "at": "2026-10-26T03:51:15.826Z"
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 27,
     "best": 5,
-    "evidence": "Verse (/photos/) 0 of 27 things a full answer shows vs exifeditor.io 5 of 27 things a full answer shows (Verse lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share; site lacks: PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, strip metadata, batch to a zip, paste or drop, works offline, Timeline by date, Duplicate handling)",
-    "at": "2026-10-26T03:43:22.913Z",
-    "of": 27
+    "evidence": "Verse (/photos/exifeditor/) 27 of 30 things a full answer shows vs exifeditor.io 5 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, strip metadata, batch to a zip, paste or drop, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider, Size saved readout)",
+    "at": "2026-10-26T03:51:15.826Z",
+    "of": 30
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/photos/exifeditor/) 2 of 3 right against the worked-out answer (missed: its size before and after, in bytes); judged against the standard, not exifeditor.io (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all No camera, place or editing data found in this file. Strip metadata only (same pixels) Save the metad\"",
+    "at": "2026-10-26T03:51:15.826Z",
+    "of": 3
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/exifeditor/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:15.826Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 7,
+    "evidence": "Verse (/photos/exifeditor/) 1 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:15.826Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/photos/exifeditor/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:15.826Z",
+    "of": 2,
+    "part": true
    }
   },
   "photos: exif.tools": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 151,
-    "best": 124,
-    "evidence": "Verse (/photos/) 151 ms to the load event (median of 3, phone width) vs exif.tools 124 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T03:39:27.027Z"
+    "verse": 159,
+    "best": 169,
+    "evidence": "Verse (/photos/exif/) 159 ms to the load event (median of 3, phone width) vs exif.tools 169 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "reliability": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/photos/) 0 of 3 loads answered vs exif.tools 3 of 3 loads answered",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 3 of 3 loads answered vs exif.tools 3 of 3 loads answered",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 px sideways overflow at 390 px vs exif.tools 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 0 px sideways overflow at 390 px vs exif.tools 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 unnamed controls or images vs exif.tools 0 unnamed controls or images",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 0 unnamed controls or images vs exif.tools 0 unnamed controls or images",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "offline": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/photos/) 0 (1: the page shows itself again with the network cut) vs exif.tools 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 1 (1: the page shows itself again with the network cut) vs exif.tools 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/photos/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs exif.tools 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs exif.tools 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 1,
     "best": 4,
-    "evidence": "Verse (/photos/) 0 design defects vs exif.tools 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), exif.tools (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:39:27.027Z"
+    "evidence": "Verse (/photos/exif/) 1 design defects vs exif.tools 4 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.02), exif.tools (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:51:50.131Z"
    },
    "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 7,
+    "evidence": "Verse (/photos/exif/) 27 of 30 things a full answer shows vs exif.tools 7 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider)",
+    "at": "2026-10-26T03:51:50.131Z",
+    "of": 30
+   },
+   "accuracy": {
     "verdict": "worse",
-    "verse": 0,
-    "best": 6,
-    "evidence": "Verse (/photos/) 0 of 27 things a full answer shows vs exif.tools 6 of 27 things a full answer shows (Verse lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling)",
-    "at": "2026-10-26T03:39:27.027Z",
-    "of": 27
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/photos/exif/) 2 of 3 right against the worked-out answer (missed: its size before and after, in bytes); judged against the standard, not exif.tools (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all No camera, place or editing data found in this file. Strip metadata only (same pixels) Save the metad\"",
+    "at": "2026-10-26T03:51:50.131Z",
+    "of": 3
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/exif/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:50.131Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 7,
+    "evidence": "Verse (/photos/exif/) 1 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:50.131Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/photos/exif/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:51:50.131Z",
+    "of": 2,
+    "part": true
    }
   },
   "photos: tinypng.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 125,
-    "best": 785,
-    "evidence": "Verse (/photos/) 125 ms to the load event (median of 3, phone width) vs tinypng.com 785 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:39:43.951Z"
+    "verse": 192,
+    "best": 1073,
+    "evidence": "Verse (/photos/tinypng/) 192 ms to the load event (median of 3, phone width) vs tinypng.com 1073 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "reliability": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/photos/) 0 of 3 loads answered vs tinypng.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 3 of 3 loads answered vs tinypng.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 px sideways overflow at 390 px vs tinypng.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 0 px sideways overflow at 390 px vs tinypng.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 6,
-    "evidence": "Verse (/photos/) 0 unnamed controls or images vs tinypng.com 6 unnamed controls or images",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 0 unnamed controls or images vs tinypng.com 6 unnamed controls or images",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/photos/) 0 (1: the page shows itself again with the network cut) vs tinypng.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 1 (1: the page shows itself again with the network cut) vs tinypng.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/photos/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs tinypng.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs tinypng.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 0,
+    "verse": 1,
     "best": 14,
-    "evidence": "Verse (/photos/) 0 design defects vs tinypng.com 14 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tinypng.com (13 low-contrast texts, 1 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T03:39:43.951Z"
+    "evidence": "Verse (/photos/tinypng/) 1 design defects vs tinypng.com 14 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), tinypng.com (13 low-contrast texts, 1 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T03:52:00.362Z"
    },
    "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 7,
+    "evidence": "Verse (/photos/tinypng/) 27 of 30 things a full answer shows vs tinypng.com 7 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share, Size saved readout)",
+    "at": "2026-10-26T03:52:00.362Z",
+    "of": 30
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/tinypng/) 3 of 3 right against the worked-out answer; judged against the standard, not tinypng.com (the site is not asked)",
+    "at": "2026-10-26T03:52:00.362Z",
+    "of": 3
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/tinypng/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:52:00.362Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
     "verdict": "worse",
-    "verse": 0,
-    "best": 5,
-    "evidence": "Verse (/photos/) 0 of 27 things a full answer shows vs tinypng.com 5 of 27 things a full answer shows (Verse lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share; site lacks: a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share)",
-    "at": "2026-10-26T03:39:43.951Z",
-    "of": 27
+    "verse": 6,
+    "best": 7,
+    "evidence": "Verse (/photos/tinypng/) 6 of 7 shown for the question (Verse lacks: a quality choice); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:52:00.362Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/photos/tinypng/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:52:00.362Z",
+    "of": 2,
+    "part": true
    }
   }
  },
