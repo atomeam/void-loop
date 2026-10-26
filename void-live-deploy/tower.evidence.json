@@ -946,52 +946,52 @@
   "codebase": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 88,
-    "best": 286,
-    "evidence": "Verse (/g/) 88 ms to the load event (median of 3, phone width) vs codebasehq.com 286 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T13:27:10.311Z"
+    "verse": 140,
+    "best": 316,
+    "evidence": "Verse (/g/) 140 ms to the load event (median of 3, phone width) vs codebasehq.com 316 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 3 loads answered vs codebasehq.com 3 of 3 loads answered",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs codebasehq.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/g/) 0 unnamed controls or images vs codebasehq.com 8 unnamed controls or images",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs codebasehq.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/g/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs codebasehq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 20,
     "evidence": "Verse (/g/) 1 design defects vs codebasehq.com 20 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.25), codebasehq.com (9 low-contrast texts, 10 small tap targets, layout shift 0.30)",
-    "at": "2026-10-26T13:27:10.311Z"
+    "at": "2026-10-26T19:04:41.317Z"
    }
   },
   "password strength": {
