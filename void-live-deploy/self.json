@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:07:14Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T05:06:59Z",
+   "subject": "Tower gate: pdf: codeshack.io,travel: clock7.com,travel: airmilescalculator.com measured against their live sites"
+  },
+  {
    "at": "2026-10-26T05:06:59Z",
    "subject": "Subject eval workflow: the 42 asks against the live sites, screenshots as artifacts, a small record committed"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T04:52:57Z",
    "subject": "Tower gate: finance: companiesmarketcap.com,finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:52:43Z",
-   "subject": "Tower gate: travel measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:52:12Z",
-   "subject": "Music: a polyrhythm layer, a strobe tuner display, scales and chords on a guitar neck with tap-to-hold chord naming"
   }
  ],
  "builders": {
