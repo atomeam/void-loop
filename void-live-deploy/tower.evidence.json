@@ -16572,60 +16572,61 @@
   },
   "travel: tripwaffle.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 141,
-    "best": 196,
-    "evidence": "Verse (/flights/trip/) 141 ms to the load event (median of 3, phone width) vs tripwaffle.com 196 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:34:26.807Z"
+    "verdict": "worse",
+    "verse": 329,
+    "best": 165,
+    "evidence": "Verse (/flights/trip/) 329 ms to the load event (median of 3, phone width) vs tripwaffle.com 165 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:36:13.330Z",
+    "was": "equal-and-better"
    },
    "reliability": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/flights/trip/) 0 of 3 loads answered vs tripwaffle.com 3 of 3 loads answered",
-    "at": "2026-10-26T05:34:26.807Z"
+    "evidence": "Verse (/flights/trip/) 3 of 3 loads answered vs tripwaffle.com 3 of 3 loads answered",
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/trip/) 0 px sideways overflow at 390 px vs tripwaffle.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:34:26.807Z"
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 0 unnamed controls or images vs tripwaffle.com 2 unnamed controls or images",
-    "at": "2026-10-26T05:34:26.807Z"
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/flights/trip/) 0 (1: the page shows itself again with the network cut) vs tripwaffle.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:34:26.807Z"
+    "evidence": "Verse (/flights/trip/) 1 (1: the page shows itself again with the network cut) vs tripwaffle.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/flights/trip/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs tripwaffle.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:34:26.807Z"
+    "evidence": "Verse (/flights/trip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tripwaffle.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/flights/trip/) 0 design defects vs tripwaffle.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tripwaffle.com (5 low-contrast texts, 13 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T05:34:26.807Z"
+    "at": "2026-10-26T05:36:13.330Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/trip/) 4 of 4 right against the worked-out answer; judged against the standard, not tripwaffle.com (the site is not asked)",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 4
    },
    "paste a confirmation": {
@@ -16633,7 +16634,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 2,
     "part": true
    },
@@ -16642,7 +16643,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 3,
     "part": true
    },
@@ -16651,7 +16652,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 3,
     "part": true
    },
@@ -16660,7 +16661,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 2,
     "part": true
    },
@@ -16669,7 +16670,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/trip/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 1,
     "part": true
    },
@@ -16678,16 +16679,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T05:34:26.807Z",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 2,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 11,
     "best": 1,
-    "evidence": "Verse (/flights/trip/) 0 of 13 things a full answer shows vs tripwaffle.com 1 of 13 things a full answer shows (Verse lacks: paste a confirmation, flights read from text, add a flight by hand, a booking reference, local times, layovers, layover warnings, airport changes, a calendar file, a share link, on this device, works offline, no account; site lacks: paste a confirmation, flights read from text, add a flight by hand, a booking reference, local times, layovers, layover warnings, airport changes, a calendar file, a share link, on this device, no account)",
-    "at": "2026-10-26T05:34:26.807Z",
+    "evidence": "Verse (/flights/trip/) 11 of 13 things a full answer shows vs tripwaffle.com 1 of 13 things a full answer shows (Verse lacks: local times, layovers; site lacks: paste a confirmation, flights read from text, add a flight by hand, a booking reference, local times, layovers, layover warnings, airport changes, a calendar file, a share link, on this device, no account)",
+    "at": "2026-10-26T05:36:13.330Z",
     "of": 13
    }
   },
@@ -16908,104 +16909,218 @@
   },
   "travel: airmilescalculator.com": {
    "reliability": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/flights/distance/) 0 of 3 loads answered vs airmilescalculator.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T05:06:13.870Z"
+    "evidence": "Verse (/flights/distance/) 3 of 3 loads answered vs airmilescalculator.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:36:37.025Z"
    },
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 148,
+    "verdict": "worse",
+    "verse": 506,
     "best": 200,
-    "evidence": "Verse (/flights/distance/) 148 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:06:13.870Z"
+    "evidence": "Verse (/flights/distance/) 506 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "was": "equal-and-better"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 px sideways overflow at 390 px vs the bar (airmilescalculator.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:06:13.870Z"
+    "at": "2026-10-26T05:36:37.025Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 unnamed controls or images vs the bar (airmilescalculator.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T05:06:13.870Z"
+    "at": "2026-10-26T05:36:37.025Z"
    },
    "offline": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/flights/distance/) 0 (1: the page shows itself again with the network cut) vs the bar (airmilescalculator.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:06:13.870Z"
+    "evidence": "Verse (/flights/distance/) 1 (1: the page shows itself again with the network cut) vs the bar (airmilescalculator.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:36:37.025Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/flights/distance/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (airmilescalculator.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:06:13.870Z"
+    "evidence": "Verse (/flights/distance/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (airmilescalculator.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:36:37.025Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 design defects vs the bar (airmilescalculator.com unreachable) 0 design defects",
-    "at": "2026-10-26T05:06:13.870Z"
+    "at": "2026-10-26T05:36:37.025Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/flights/distance/) 4 of 4 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 4
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 10,
+    "best": 13,
+    "evidence": "Verse (/flights/distance/) 10 of 13 things a full answer shows vs the bar (airmilescalculator.com unreachable) 13 of 13 things a full answer shows (Verse lacks: nautical miles, the direction, nearby airports)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 13
+   },
+   "distance in miles and km": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/flights/distance/) 3 of 3 shown vs the bar (airmilescalculator.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 3,
+    "part": true
+   },
+   "flight time": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 1,
+    "part": true
+   },
+   "time difference": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 1,
+    "part": true
+   },
+   "flown distance": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 1,
+    "part": true
+   },
+   "multi leg trips": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/flights/distance/) 2 of 2 shown vs the bar (airmilescalculator.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:36:37.025Z",
+    "of": 2,
+    "part": true
    }
   },
   "travel: gcmap.com": {
    "reliability": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/flights/map/) 0 of 3 loads answered vs gcmap.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T05:10:13.817Z"
+    "evidence": "Verse (/flights/map/) 3 of 3 loads answered vs gcmap.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 143,
+    "verse": 193,
     "best": 200,
-    "evidence": "Verse (/flights/map/) 143 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:10:13.817Z"
+    "evidence": "Verse (/flights/map/) 193 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 px sideways overflow at 390 px vs the bar (gcmap.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:10:13.817Z"
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 unnamed controls or images vs the bar (gcmap.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T05:10:13.817Z"
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "offline": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/flights/map/) 0 (1: the page shows itself again with the network cut) vs the bar (gcmap.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:10:13.817Z"
+    "evidence": "Verse (/flights/map/) 1 (1: the page shows itself again with the network cut) vs the bar (gcmap.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/flights/map/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (gcmap.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:10:13.817Z"
+    "evidence": "Verse (/flights/map/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (gcmap.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:37:07.653Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 design defects vs the bar (gcmap.com unreachable) 0 design defects",
-    "at": "2026-10-26T05:10:13.817Z"
+    "at": "2026-10-26T05:37:07.653Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/flights/map/) 4 of 4 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 4
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 10,
+    "best": 10,
+    "evidence": "Verse (/flights/map/) 10 of 10 things a full answer shows vs the bar (gcmap.com unreachable) 10 of 10 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 10
+   },
+   "route map": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 2,
+    "part": true
+   },
+   "chained routes": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 2,
+    "part": true
+   },
+   "great circle distance": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/flights/map/) 3 of 3 shown vs the bar (gcmap.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 3,
+    "part": true
+   },
+   "airport info": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T05:37:07.653Z",
+    "of": 2,
+    "part": true
    }
   },
   "travel: co2.myclimate.org": {
