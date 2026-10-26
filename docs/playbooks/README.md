@@ -38,3 +38,4 @@ Each playbook is one kind of work a builder did by hand, written so Verse's own 
 | [open-endpoint-closed-list.md](open-endpoint-closed-list.md) | an open POST endpoint strangers can use safely: closed list of ids, salted per-day client key, layered limits, fail closed (spectator reactions) | not yet |
 | [page-part-probe.md](page-part-probe.md) | a tower floor's aspect the gate must see on a page of its own: a real generated picture, a working engine (pageParts, pictureOf) | not yet |
 | [daily-art.md](daily-art.md) | a report page that wants a picture that changes each day: an illustration inside its own budget, or an openly licensed photo or an official embed with its true credit (dailyArt, dailyArtInfo, mountCredit) | not yet |
+| [indexnow.md](indexnow.md) | search engines told within minutes which listed pages a deploy changed (IndexNow: Bing, Yandex and the rest) | every main deploy runs it (`deploy.yml`, `tools/indexnow.mjs`) |

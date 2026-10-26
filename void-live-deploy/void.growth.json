@@ -5843,5 +5843,6 @@
   {"at": "2026-10-25T22:09:39Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"create a vector of a leaf\"", "try": "create a vector of a leaf"},
   {"at": "2026-10-25T23:10:20Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gears skill: learn to handle \"make a gear assembly\"", "try": "make a gear assembly"},
   {"at": "2026-10-26T04:02:10Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\"", "try": "give me a svg of a star"},
-  {"at": "2026-10-26T04:13:06Z", "by": "claude", "kind": "build", "what": "PDF tools and Kanban pages: /pdf/ works on PDFs and /kanban/ keeps boards, both on the device with nothing sent, plus a page for each site of their lanes", "show": "PDF tools and a kanban board that stay on your device", "try": "merge pdf"}
+  {"at": "2026-10-26T04:13:06Z", "by": "claude", "kind": "build", "what": "PDF tools and Kanban pages: /pdf/ works on PDFs and /kanban/ keeps boards, both on the device with nothing sent, plus a page for each site of their lanes", "show": "PDF tools and a kanban board that stay on your device", "try": "merge pdf"},
+  {"at": "2026-10-26T06:04:11Z", "by": "claude", "kind": "build", "what": "IndexNow on every deploy: once a-to-mind.com serves a main deploy, the sitemap pages it changed go to Bing, Yandex and every IndexNow engine in one request, so a new utility page is known within minutes"}
 ]
