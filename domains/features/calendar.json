@@ -178,8 +178,8 @@
      "name": "Share a calendar with people (see / edit permissions), public link, embed",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "2026-10-25: a calendar you add can be shared by a view link or an edit link, no account (functions/api/calshare.js, tools/calshare.test.mjs); New links and Stop sharing; no embed on another site"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: view link and edit link per calendar (no account), New links to revoke, Stop sharing, and a read-only embed code (functions/api/calshare.js, calendar/embed/)"
     },
     {
      "name": "Print",
@@ -661,8 +661,8 @@
      "name": "Embed a calendar on a website / private URL",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: \"Copy embed code\" on a shared calendar gives an iframe of /calendar/embed/ (a read-only list of the next 60 days, view key only, no inline script or form; its own CSP lets any site frame it and nothing else on the site; tools/embed.test.mjs); a link that is reset shows \"no longer opens\""
     },
     {
      "name": "Secondary time zone, events in any zone",
@@ -886,7 +886,6 @@
   "Event chat, comments and sign-up: timetreeapp.com, teamup.com",
   "Shared shopping lists and meal planner beside the calendar: cozi.com, any.do (paid)",
   "Email reminders and agenda emails: calendar.google.com, cozi.com, calendar.zoho.com, calendar.online (paid)",
-  "Embed on a website: calendar.zoho.com, calendar.google.com",
   "Weather on the calendar: outlook.live.com",
   "Events detected in email: outlook.live.com",
   "Video meeting links: calendar.google.com, outlook.live.com",

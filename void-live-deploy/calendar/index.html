@@ -549,6 +549,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     // moving about
     const move = (n) => { const c = state.cursor; state.cursor = state.view === 'year' ? new Date(c.getFullYear() + n, c.getMonth(), 1) : state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : state.view === 'list' ? 60 * n : n); render(); holidays(); };
     // the calendars: a switch, a colour and (holidays) a country each; a calendar of your own can be added and removed
+    const attr = (x) => String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const embedOf = (c, key) => '<iframe src="' + location.origin + '/calendar/embed/#share=' + c.share.id + '.' + key + '" title="' + attr(c.name) + '" width="100%" height="480" style="border:1px solid #d9d6e4;border-radius:8px" loading="lazy"></iframe>';
     function drawCals() {
       const ul = $('calList'); ul.replaceChildren();
       for (const c of cals()) {
@@ -557,10 +559,13 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
         col.type = 'color'; col.value = c.color; col.setAttribute('aria-label', W.colour + ': ' + c.name); col.addEventListener('change', () => setCal(c.id, { color: col.value })); li.append(lb, col);
         if (c.kind === 'holidays') { const sel = el('select'); sel.setAttribute('aria-label', W.country); for (const k of [...new Set([c.cc, ...COUNTRIES])]) { const o = el('option', '', k); o.value = k; sel.append(o); } sel.value = c.cc; sel.addEventListener('change', () => { setCal(c.id, { cc: sel.value }); holidays(); }); li.append(sel); }
         if (c.kind === 'url') lb.append(el('span', 'note', ' · ' + W.feedNote));
+        // an embed code for a web page: the calendar's view link in a frame (calendar/embed/), read only; whoever holds the view link can make one
+        const viewKey = c.kind === 'shared' && c.share && !c.gone ? (c.share.role === 'owner' ? c.share.view : c.share.role === 'view' ? c.share.key : '') : '';
+        if (viewKey && c.share.role !== 'owner') { const row = el('div', 'row'); row.style.flexBasis = '100%'; const b = el('button', '', W.embedCode); b.type = 'button'; b.addEventListener('click', () => copy(b, embedOf(c, viewKey))); row.append(b); li.style.flexWrap = 'wrap'; li.append(row); }
         if (c.kind === 'shared') { // a shared calendar: what this browser may do with it, and the owner's links
           lb.append(el('span', 'note', ' · ' + (c.gone ? W.sharedGone : c.share.role === 'owner' ? W.yours : c.share.role === 'edit' ? W.canEdit : W.viewOnly)));
           if (c.share.role === 'owner' && !c.gone) { const row = el('div', 'row'); row.style.flexBasis = '100%';
-            const b1 = el('button', '', W.copyView), b2 = el('button', '', W.copyEdit), b3 = el('button', '', W.newLinks), b4 = el('button', 'bad', W.stopShare); [b1, b2, b3, b4].forEach((b) => { b.type = 'button'; row.append(b); });
+            const b1 = el('button', '', W.copyView), b2 = el('button', '', W.copyEdit), b3 = el('button', '', W.newLinks), b4 = el('button', 'bad', W.stopShare), b5 = el('button', '', W.embedCode); [b1, b2, b5, b3, b4].forEach((b) => { b.type = 'button'; row.append(b); }); b5.addEventListener('click', () => copy(b5, embedOf(c, c.share.view)));
             b1.addEventListener('click', () => copy(b1, SH.linkOf(location.origin, c.share.id, c.share.view))); b2.addEventListener('click', () => copy(b2, SH.linkOf(location.origin, c.share.id, c.share.edit)));
             b3.addEventListener('click', async () => { const r = await callShare('POST', c.share, { op: 'reset' }); if (!r.j.ok) return say(W.shareFail, true); store.calendars = cals().map((k) => (k.id === c.id ? { ...k, share: { ...k.share, edit: r.j.edit, view: r.j.view } } : k)); keep(); drawCals(); say(W.linksNew); });
             b4.addEventListener('click', async () => { const r = await callShare('DELETE', c.share); if (!r.j.ok && r.status !== 404) return say(W.shareFail, true); const local = 'c-' + c.share.id.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -576,7 +581,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
         if (!['main', 'birthdays', 'holidays'].includes(c.id) && !(c.share && c.share.role === 'owner' && !c.gone)) { const x = el('button', 'bad', W.removeCal); x.type = 'button'; x.setAttribute('aria-label', W.removeCal + ': ' + c.name); x.addEventListener('click', () => { const n = store.events.filter((e) => e.cal === c.id).length; if (n && !confirm(W.removeCal + ' "' + c.name + '" (' + n + ' ' + W.events + ')?')) return; store.events = store.events.filter((e) => e.cal !== c.id); if (c.share && store.shared) delete store.shared[c.share.id]; if (store.feeds) delete store.feeds[c.id]; store.calendars = cals().filter((k) => k.id !== c.id); keep(); drawCals(); render(); }); li.append(x); }
         ul.append(li);
       }
-      $('calNote').textContent = W.shareHint + (holCal() && holCal().on ? ' ' + W.fromNet + '.' : '');
+      $('calNote').textContent = W.shareHint + (cals().some((c) => c.kind === 'shared') ? ' ' + W.embedHint + '.' : '') + (holCal() && holCal().on ? ' ' + W.fromNet + '.' : '');
     }
     const setCal = (id, patch) => { store.calendars = cals().map((c) => (c.id === id ? { ...c, ...patch } : c)); keep(); drawCals(); render(); };
     $('tz2').value = store.tz2 || ''; $('tz2').addEventListener('focus', zones); $('tz2').addEventListener('change', () => { const v = $('tz2').value.trim(); if (v && !C.isTz(v)) { $('tz2').value = ''; store.tz2 = ''; keep(); say(W.tzBad, true); return; } store.tz2 = v; keep(); render(); });
