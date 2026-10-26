@@ -801,8 +801,8 @@
      "name": "Cost per recipe and per serving",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a cost per serving and for the recipe on every recipe the table can read (#cost): a rough estimate from typical US supermarket prices per kilogram, said as one and from how many ingredients (lib/kitchen.js costOf, pricePerKg; tools/kitchen.test.mjs); not the recipe author's own costing, not in other currencies"
     },
     {
      "name": "Meal prep collections",
@@ -892,7 +892,7 @@
   "Public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
   "Browse by time and occasion (cuisine, category and diet are built, 2026-10-25): allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
   "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
-  "Cost per serving: budgetbytes.com",
+  "Cost per serving in your currency and from your own prices (a rough US estimate is built, 2026-10-25): budgetbytes.com",
   "Post your own recipe, cooksnaps: cookpad.com, allrecipes.com, food52.com",
   "Import a recipe from a link, social video or photo of a handwritten card: cookpad.com",
   "Voice / hands-free cook mode: epicurious.com, delish.com",

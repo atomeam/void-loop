@@ -40,3 +40,8 @@ test('the meal plan: the next 7 days; a recipe once a day, past days dropped, ke
   plan = K.withPlanned(plan, '2026-10-30', by('pancakes'), 4, '2026-10-30'); plan = K.withPlanned(plan, '2026-10-30', by('pancakes'), 8, '2026-10-30');
   assert.deepEqual(plan.map((x) => x.day + ':' + x.id + ':' + x.servings), ['2026-10-30:pancakes:8', '2026-10-31:omelette:2']);
 });
+test('cost: a rough estimate from typical US prices per kilogram, said as one; unreadable lines are counted out', () => {
+  const c = K.costOf(by('pancakes').ingredients, 4); assert.ok(c.perServing > 0.2 && c.perServing < 0.8, String(c.perServing)); assert.equal(c.counted, 7); assert.equal(c.of, 7); assert.ok(Math.abs(c.total / 4 - c.perServing) < 0.01);
+  const d = K.costOf(['1 cup mystery powder', '2 eggs'], 1); assert.equal(d.counted, 1); assert.equal(d.total, 0.5, '100 g of egg at about 5 dollars a kilogram'); assert.equal(K.costOf([], 4).total, 0);
+  assert.equal(K.pricePerKg(K.entryOf('salmon fillets')), 22); assert.equal(K.pricePerKg(null), null); assert.equal(K.pricePerKg(K.entryOf('mace')), K.pricePerKg(K.entryOf('mace')));
+});

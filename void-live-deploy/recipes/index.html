@@ -158,6 +158,7 @@
       </div>
       <p class="tags" id="tags"></p>
       <p class="nutri" id="nutri"></p>
+      <p class="nutri" id="cost"></p>
       <h2 id="ingH">Ingredients</h2>
       <ul class="ings" id="ings"></ul>
       <p class="note" id="shopNote">Tick what you already have; Copy list takes the rest.</p>
@@ -202,7 +203,7 @@
 <!-- /asks -->
 <nav id="related" aria-label="Related tools"></nav>
 
-  <p class="srcs" id="srcs">A dozen classics are built into the page and need no network. Every other recipe comes from <a href="https://www.themealdb.com/" rel="noopener">TheMealDB</a>, a free public recipe catalogue; its recipes carry no servings, so 4 is assumed and said. Nutrition per serving is an estimate from the ingredients (kcal, protein, fat, carbs). Diets and allergies (vegetarian, vegan, gluten-free, dairy-free, egg-free, nut-free) and "without" any ingredient filter what you find. A shopping list collects from several recipes; save recipes into collections, with your own rating and notes. Only the words you search go to Verse; your history, list, saved recipes, ratings and ticks stay on this device.</p>
+  <p class="srcs" id="srcs">A dozen classics are built into the page and need no network. Every other recipe comes from <a href="https://www.themealdb.com/" rel="noopener">TheMealDB</a>, a free public recipe catalogue; its recipes carry no servings, so 4 is assumed and said. Nutrition per serving is an estimate from the ingredients (kcal, protein, fat, carbs), and so is the cost (typical US supermarket prices, a rough guide). Diets and allergies (vegetarian, vegan, gluten-free, dairy-free, egg-free, nut-free) and "without" any ingredient filter what you find. A shopping list collects from several recipes; save recipes into collections, with your own rating and notes. Only the words you search go to Verse; your history, list, saved recipes, ratings and ticks stay on this device.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 
@@ -229,7 +230,7 @@
       $('byName').textContent = W.byName; $('byIng').textContent = W.byIngredient; $('servL').textContent = W.servings; $('ingH').textContent = W.ingredients; $('stepsH').textContent = W.steps;
       $('shopNote').textContent = W.shopping; $('uMetric').textContent = W.metric; $('copy').textContent = W.copyList; $('share').textContent = W.share; $('print').textContent = W.print; $('cookBtn').textContent = W.stepMode;
       $('histH').textContent = W.history; histEmpty.textContent = W.histEmpty; $('cookClose').textContent = W.close; $('cookPrev').textContent = W.prev; $('cookNext').textContent = W.next;
-      $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nährwerte pro Portion sind eine Schätzung aus den Zutaten (kcal, Eiweiß, Fett, Kohlenhydrate). Ernährung und Allergien (vegetarisch, vegan, glutenfrei, ohne Milchprodukte, ohne Ei, ohne Nüsse) und „ohne“ jede Zutat filtern, was du findest. Eine Einkaufsliste sammelt aus mehreren Rezepten; Rezepte in Sammlungen speichern, mit eigener Bewertung und Notizen. Nur die Suchwörter gehen an Verse; Verlauf, Liste, gespeicherte Rezepte, Bewertungen und Häkchen bleiben auf diesem Gerät.';
+      $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nährwerte pro Portion sind eine Schätzung aus den Zutaten (kcal, Eiweiß, Fett, Kohlenhydrate), ebenso die Kosten (typische US-Supermarktpreise, ein grober Anhalt). Ernährung und Allergien (vegetarisch, vegan, glutenfrei, ohne Milchprodukte, ohne Ei, ohne Nüsse) und „ohne“ jede Zutat filtern, was du findest. Eine Einkaufsliste sammelt aus mehreren Rezepten; Rezepte in Sammlungen speichern, mit eigener Bewertung und Notizen. Nur die Suchwörter gehen an Verse; Verlauf, Liste, gespeicherte Rezepte, Bewertungen und Häkchen bleiben auf diesem Gerät.';
     }
     const q = new URLSearchParams(location.search);
     let store = { hist: [], ticks: {}, units: '', mine: [] };
@@ -272,6 +273,8 @@
       $('tags').textContent = K.dietsOf(r).map((d) => KW[d]).join(' · ');
       const nu = K.nutritionOf(r.ingredients, r.servings), nb = $('nutri'); nb.replaceChildren();
       if (nu.kcal > 0 && nu.counted >= Math.ceil(nu.of * 0.6)) { nb.append(KW.perServing + ': '); nb.append(el('b', '', nu.kcal + ' ' + KW.kcal)); nb.append(' · ' + nu.protein + ' g ' + KW.protein + ' · ' + nu.fat + ' g ' + KW.fat + ' · ' + nu.carbs + ' g ' + KW.carbs + ' '); nb.append(el('small', '', '(' + KW.fromN(nu.counted, nu.of) + ')')); }
+      const co = K.costOf(r.ingredients, r.servings), cb2 = $('cost'); cb2.replaceChildren();
+      if (co.total > 0 && co.counted >= Math.ceil(co.of * 0.6)) { cb2.append(KW.costL + ': '); cb2.append(el('b', '', '$' + co.perServing.toFixed(2) + ' ' + KW.perServ)); cb2.append(' · $' + co.total.toFixed(2) + ' ' + KW.forAll + ' '); cb2.append(el('small', '', '(' + KW.priceNote + '; ' + KW.fromN(co.counted, co.of) + ')')); }
       drawMine(r);
       const ticks = store.ticks[r.id] || [], ul = $('ings'); ul.replaceChildren();
       r.ingredients.forEach((s, k) => {

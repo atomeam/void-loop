@@ -161,13 +161,13 @@ export function wordsFor(lang) {
     perServing: 'Pro Portion (geschätzt)', kcal: 'kcal', protein: 'Eiweiß', fat: 'Fett', carbs: 'Kohlenhydrate', fromN: (n, m) => 'aus ' + n + ' von ' + m + ' Zutaten', save: 'Speichern', savedOn: 'Gespeichert', noColl: 'Keine Sammlung', newColl: 'Neue Sammlung …', collName: 'Name der Sammlung',
     toList: 'Auf die Einkaufsliste', added: 'Auf der Einkaufsliste', copyAll: 'Liste kopieren', clearDone: 'Abgehakte entfernen', clearAll: 'Alles leeren', listEmpty: 'Die Liste ist leer: „Auf die Einkaufsliste“ bei einem Rezept füllt sie.', items: 'Dinge',
     savedEmpty: 'Noch nichts gespeichert: „Speichern“ bei einem Rezept legt es hier ab.', all: 'Alle', rating: 'Deine Bewertung', stars: (n) => n + (n === 1 ? ' Stern' : ' Sterne'), notes: 'Deine Notizen', notesPh: 'Was du nächstes Mal anders machst', fitNone: 'Keines passt zu', showing: 'Nur Rezepte', remove: 'Entfernen', unchecked: 'nicht geprüft',
-    plan: 'Essensplan', planFor: 'Für einen Tag planen …', today: 'Heute', tomorrow: 'Morgen', planned: 'Geplant', weekToList: 'Die Woche auf die Einkaufsliste', weekToCal: 'Die Woche in meinen Kalender', planEmpty: 'Nichts geplant: „Für einen Tag planen“ bei einem Rezept legt es hier ab.', onCal: 'Im Kalender', meal: 'Essen', browse: 'Stöbern', cuisine: 'Küche', category: 'Kategorie', pick: 'Wählen …', found: 'Rezepte',
+    plan: 'Essensplan', planFor: 'Für einen Tag planen …', today: 'Heute', tomorrow: 'Morgen', planned: 'Geplant', weekToList: 'Die Woche auf die Einkaufsliste', weekToCal: 'Die Woche in meinen Kalender', planEmpty: 'Nichts geplant: „Für einen Tag planen“ bei einem Rezept legt es hier ab.', costL: 'Kosten (grob geschätzt)', perServ: 'pro Portion', forAll: 'für das Rezept', priceNote: 'typische US-Supermarktpreise', onCal: 'Im Kalender', meal: 'Essen', browse: 'Stöbern', cuisine: 'Küche', category: 'Kategorie', pick: 'Wählen …', found: 'Rezepte',
   } : {
     saved: 'Saved', list: 'Shopping list', diets: 'Diets', dietsH: 'Diet and allergies', withoutL: 'Without (e.g. onion, nuts)', vegetarian: 'Vegetarian', vegan: 'Vegan', 'gluten-free': 'Gluten-free', 'dairy-free': 'Dairy-free', 'egg-free': 'Egg-free', 'nut-free': 'Nut-free',
     perServing: 'Per serving (estimate)', kcal: 'kcal', protein: 'protein', fat: 'fat', carbs: 'carbs', fromN: (n, m) => 'from ' + n + ' of ' + m + ' ingredients', save: 'Save', savedOn: 'Saved', noColl: 'No collection', newColl: 'New collection…', collName: 'Collection name',
     toList: 'Add to shopping list', added: 'On the shopping list', copyAll: 'Copy list', clearDone: 'Clear ticked', clearAll: 'Clear all', listEmpty: 'The list is empty: "Add to shopping list" on a recipe fills it.', items: 'items',
     savedEmpty: 'Nothing saved yet: "Save" on a recipe keeps it here.', all: 'All', rating: 'Your rating', stars: (n) => n + (n === 1 ? ' star' : ' stars'), notes: 'Your notes', notesPh: 'What you would change next time', fitNone: 'None fits', showing: 'Only recipes', remove: 'Remove', unchecked: 'not checked',
-    plan: 'Meal plan', planFor: 'Plan for a day…', today: 'Today', tomorrow: 'Tomorrow', planned: 'Planned', weekToList: 'Add the week to the shopping list', weekToCal: 'Put the week on my calendar', planEmpty: 'Nothing planned: "Plan for a day" on a recipe puts it here.', onCal: 'On your calendar', meal: 'Meal', browse: 'Browse', cuisine: 'Cuisine', category: 'Category', pick: 'Choose…', found: 'recipes',
+    plan: 'Meal plan', planFor: 'Plan for a day…', today: 'Today', tomorrow: 'Tomorrow', planned: 'Planned', weekToList: 'Add the week to the shopping list', weekToCal: 'Put the week on my calendar', planEmpty: 'Nothing planned: "Plan for a day" on a recipe puts it here.', costL: 'Cost (rough estimate)', perServ: 'per serving', forAll: 'for the recipe', priceNote: 'typical US supermarket prices', onCal: 'On your calendar', meal: 'Meal', browse: 'Browse', cuisine: 'Cuisine', category: 'Category', pick: 'Choose…', found: 'recipes',
   };
 }
 
@@ -180,4 +180,20 @@ export function nextDays(now = new Date(), n = 7) {
 export function withPlanned(plan, day, recipe, servings, today = '') {
   const keep = (Array.isArray(plan) ? plan : []).filter((x) => x && (!today || x.day >= today) && !(x.day === day && x.id === recipe.id));
   return [...keep, { day, id: recipe.id, name: recipe.name, recipe, servings: Math.max(1, +servings || recipe.servings || 1) }].sort((a, b) => a.day.localeCompare(b.day)).slice(0, 200);
+}
+
+// cost per serving (Budget Bytes): an ESTIMATE from rough typical US supermarket prices per kilogram (2026, mid-range, rounded), by the same ingredient table as the
+// nutrition; an ingredient the table reads but has no price for counts at 6 dollars a kilogram; one it cannot read is left out and counted out loud. Pure.
+const PRICE_PER_KG = Object.fromEntries(('flour:1.6,wholemeal flour:2.4,cornstarch:3.5,cornmeal:2.2,sugar:1.8,brown sugar:2.8,icing sugar:3,honey:11,maple syrup:14,jam:6,butter:11,oil:5.5,milk:1.1,buttermilk:2.2,cream:7,single cream:6,sour cream:5,yogurt:3.5,greek yogurt:6,condensed milk:5,evaporated milk:4,'
+  + 'cheese:12,parmesan:24,mozzarella:10,cream cheese:9,feta:14,ricotta:8,egg:5,egg yolk:5,egg white:5,rice:2.2,brown rice:2.8,pasta:2.5,noodles:4,oats:3.2,bread:4.5,breadcrumbs:6,tortilla:6,quinoa:9,couscous:4.5,chicken:5,chicken breast:8,chicken thigh:5.5,beef:11,steak:20,pork:8,bacon:14,ham:12,sausage:9,lamb:16,turkey:7,'
+  + 'salmon:22,tuna:15,cod:18,prawns:22,tofu:6,onion:1.8,garlic:9,shallot:6,tomato:4.5,chopped tomatoes:2.2,tomato paste:6,potato:1.6,sweet potato:2.6,carrot:1.6,celery:2.5,pepper:5,chilli:10,mushroom:7,spinach:8,lettuce:6,broccoli:4,cauliflower:3.5,zucchini:3,aubergine:4,cucumber:3.5,peas:3.5,sweetcorn:3.5,green beans:5,cabbage:1.6,'
+  + 'avocado:6,lemon:4.5,lime:5,lemon juice:5,apple:3.5,banana:1.6,orange:3,orange juice:3,berries:12,raisins:8,chocolate:12,cocoa:14,almonds:16,walnuts:18,peanuts:7,peanut butter:6,cashews:20,coconut milk:4,desiccated coconut:9,stock:1.5,stock cube:25,baking powder:8,bicarbonate of soda:3,yeast:25,vanilla:90,soy sauce:6,vinegar:3,mustard:7,mayonnaise:5,ketchup:4,beans:3,chickpeas:3,lentils:3.5,ginger:8,herbs:25,cumin:40,wine:10,beer:3,water:0').split(',').map((x) => { const i = x.lastIndexOf(':'); return [x.slice(0, i), +x.slice(i + 1)]; }));
+/** the rough price of an ingredient per kilogram, in US dollars (by the first name its table row has). Pure. */
+export const pricePerKg = (entry) => (entry ? (PRICE_PER_KG[entry.words[0]] ?? 6) : null);
+/** an estimate of what a recipe costs: { total, perServing, counted, of } in US dollars from the lines the table can read. Pure. */
+export function costOf(lines, servings = 1) {
+  let total = 0, counted = 0; const list = Array.isArray(lines) ? lines : [];
+  for (const l of list) { const g = gramsOf(l); if (g.entry && g.grams != null) { counted++; total += pricePerKg(g.entry) * g.grams / 1000; } }
+  const per = Math.max(1, +servings || 1);
+  return { total: Math.round(total * 100) / 100, perServing: Math.round(total / per * 100) / 100, counted, of: list.length };
 }
