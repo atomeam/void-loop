@@ -34,7 +34,7 @@
      "detail": "Indices, top gainers/losers, most active, trending tickers, sectors",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending"
+     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending; plus the Verse reports daily wrap"
     },
     {
      "group": "core",
@@ -57,8 +57,8 @@
      "name": "Financial news",
      "detail": "News per ticker and market, Yahoo Finance originals and partner feeds",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/markets/ Verse reports: a daily market wrap and a 'why is X moving' line written from the price data (a validated draft, polished by the free model, no cause claimed, labelled with its sources and time); no headlines or partner feeds (no free feed is permitted for this use)"
     },
     {
      "group": "core",
@@ -234,7 +234,7 @@
  "gaps": [
   "historical data table with CSV download",
   "portfolio with cost basis and gain",
-  "per-ticker news (no free feed is permitted for this use)",
+  "per-ticker headlines and partner news (no free feed is permitted for this use; Verse reports covers what the data shows)",
   "screener",
   "price alerts",
   "financial statements, P/E and other fundamentals (no free, reliable, permitted source)"
@@ -245,7 +245,8 @@
   "no ads",
   "data source and delay said on every quote",
   "close on any chosen day",
-  "works with the last saved prices offline"
+  "works with the last saved prices offline",
+  "Verse reports: a daily wrap and a data-only 'why is it moving' line, validated so it never invents a number or a cause"
  ],
  "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades."
 }

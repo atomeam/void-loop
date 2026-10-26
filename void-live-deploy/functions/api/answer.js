@@ -36,6 +36,8 @@ import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
 import { capAll } from '../../lib/daily-cap.js';
 import { prepare as prepareReport, settle as settleReport, REPORT_SYSTEM } from '../../lib/news-report.js';
 import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
+import { reportAnswer as marketReportRun, d1Store } from '../../lib/report-run.js';
+import { quoteBody, batch } from './markets.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -231,6 +233,14 @@ async function reportAnswer(request, env, body) {
   return Response.json(out);
 }
 
+// "Verse reports" (lib/report-run.js): a plain draft from the price data, polished by the same free model under a site-wide hourly allowance, kept only when
+// the polish adds no number, symbol, cause or advice. Without a model, or past the allowance, the draft is the report.
+async function marketReport(request, env, body) {
+  const model = modelsOn(env) ? async (messages, max_tokens) => { const r = await env.AI.run(MODEL, { messages, max_tokens, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }); return scrubOut(redact(noThink(pick(r))), env); } : null;
+  const cache = typeof caches !== 'undefined' ? caches.default : null;
+  return marketReportRun(request, env, body, { markets: { quoteBody, batch, fetchFn: fetch }, rateLimited, model, cap: (pairs) => capAll(env, pairs), store: env.DB ? d1Store(env.DB) : null, cache });
+}
+
 // Draft from a tab (the Verse extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
 // selected text; the page asks here. Masked before the model sees it, never cached, never written to D1 (page text is the
 // visitor's). No model, or a model that fails: the rules draft, so the panel always gets something it can use.
@@ -335,6 +345,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'character') return characterAnswer(request, env, body);
   if (body && body.mode === 'report') return reportAnswer(request, env, body);
   if (body && (body.mode === 'story' || body.mode === 'aitext')) return storyAnswer(request, env, body);
+  if (body && body.mode === 'market-report') return marketReport(request, env, body); // the /markets/ page's "Verse reports" (lib/report-run.js): one per window for everyone, validated, capped
   const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)

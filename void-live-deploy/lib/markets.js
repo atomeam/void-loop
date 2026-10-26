@@ -116,8 +116,12 @@ export function summarize(rows, range, meta = {}, daily = true) {
   const price = meta.price != null ? meta.price : last.c, prev = meta.prev != null ? meta.prev : prevRow ? prevRow.c : daily ? null : rows[0].c;
   const yr = rows.filter((r) => r.t > last.t - 366 * DAY), spans = daily && yr.length > 1 && last.t - yr[0].t > 330 * DAY; // 52 weeks only when a year of rows is really there
   const from = rangeStart(range, last.t), shown = rows.filter((r) => r.t >= from), pts = thin((shown.length > 1 ? shown : rows.slice(-2)).map((r) => [r.t, +r.c.toPrecision(7)]));
+  // for the reports: the average volume of the 30 sessions before the last, and the usual daily move (the standard deviation of the last 60 daily percent changes)
+  const vols = rows.slice(-31, -1).map((r) => r.v).filter((v) => v != null && v > 0), avgVol = daily && vols.length >= 10 ? vols.reduce((a, b) => a + b, 0) / vols.length : null;
+  const rets = []; if (daily) for (let i = Math.max(1, rows.length - 60); i < rows.length; i++) if (rows[i - 1].c) rets.push((rows[i].c / rows[i - 1].c - 1) * 100);
+  const mean = rets.reduce((a, b) => a + b, 0) / (rets.length || 1), sd = rets.length >= 30 ? Math.sqrt(rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length - 1)) : null;
   return {
-    price, prev, change: prev != null ? price - prev : null, pct: prev ? (price - prev) / prev * 100 : null,
+    avgVol, sd, price, prev, change: prev != null ? price - prev : null, pct: prev ? (price - prev) / prev * 100 : null,
     open: last.o, dayHigh: meta.dayHigh != null ? meta.dayHigh : last.h, dayLow: meta.dayLow != null ? meta.dayLow : last.l, volume: meta.volume != null ? meta.volume : last.v,
     hi52: meta.hi52 != null ? meta.hi52 : spans ? Math.max(...yr.map((r) => (r.h != null ? r.h : r.c))) : null, lo52: meta.lo52 != null ? meta.lo52 : spans ? Math.min(...yr.map((r) => (r.l != null ? r.l : r.c))) : null,
     asOf: last.t, points: pts,

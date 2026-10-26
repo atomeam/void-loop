@@ -133,6 +133,13 @@
     </div>
   </section>
 
+  <div class="row" style="margin-top:14px"><button type="button" id="repBtn" aria-expanded="false" aria-controls="rep">Verse reports</button><span class="note" style="margin:0">A daily wrap and a “why is it moving” line, written from the data.</span></div>
+  <section id="rep" hidden aria-label="Verse reports" style="border:1px solid var(--line);border-radius:14px;background:var(--box);padding:14px;margin-top:8px">
+    <div class="seg" role="group" aria-label="Which report" style="margin-top:0"><button type="button" id="repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-pressed="false">Why is <span id="repSym">AAPL</span> moving</button></div>
+    <p id="repText" role="status" style="font-size:16px;line-height:1.55;min-height:9em;margin:10px 0 0">Loading the report</p>
+    <p class="note" id="repLabel" style="margin:6px 0 0"></p>
+  </section>
+
   <h2 id="wlH">Watchlist</h2>
   <ul class="list" id="wl"><li class="empty" id="wlEmpty">Press “Add to watchlist” on a quote. The list stays on this device, refreshes while this page is open, and works with the last prices offline.</li></ul>
   <div class="row"><button type="button" id="wlRefresh">Refresh</button><button type="button" id="wlShare">Copy watchlist link</button><button type="button" id="wlKeep" hidden>Keep this shared list</button><span class="note" id="wlNote" style="margin:0" role="status"></span></div>
@@ -187,6 +194,7 @@
       say('note', j.kind === 'offline' ? '' : j.say || '', true); setWatch();
     }
     function draw() {
+      if (!$('rep').hidden && rep.kind === 'why') report();
       const q = state.q, c = cur(q), money = (v) => (v == null ? '–' : M.fmtPrice(v) + (c ? ' ' : ''));
       $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + (c ? ' · ' + c : '') + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || '');
       $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change);
@@ -283,6 +291,23 @@
       const fill = (ul, rows) => ul.replaceChildren(...rows.map((q) => row(q.sym, q)).map((li) => { const b = li.querySelector('button'); if (b) b.remove(); return li; }));
       fill($('mvUp'), j.up); fill($('mvDown'), j.down); $('mvNote').textContent = 'Among ' + j.of + ' large US stocks, over the last session. Prices may be delayed.';
     }
+
+
+    // ---- Verse reports: fetched only when opened (after the load event, never before); one per window for everyone on the server (lib/report-run.js)
+    const rep = { kind: 'wrap', got: {} };
+    async function report() {
+      const kind = rep.kind, sym = state.sym, id = kind === 'wrap' ? 'wrap' : sym; $('repSym').textContent = sym;
+      for (const [b, k] of [['repWrap', 'wrap'], ['repWhy', 'why']]) $(b).setAttribute('aria-pressed', String(k === kind));
+      if (rep.got[id]) { paintRep(rep.got[id]); return; }
+      $('repText').textContent = 'Loading the report'; $('repLabel').textContent = '';
+      let j; try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'market-report', kind, s: sym }) }); j = await r.json(); } catch (_) { j = { ok: false, say: 'You are offline: reports need the network.' }; }
+      if (rep.kind !== kind || (kind === 'why' && state.sym !== sym)) return;
+      if (j.ok) rep.got[id] = j; paintRep(j);
+    }
+    function paintRep(j) { $('repText').textContent = j.ok ? j.text : j.say || 'No report just now.'; $('repLabel').textContent = j.ok ? j.label + (j.polished ? '' : ' Plain template text.') : ''; }
+    $('repBtn').addEventListener('click', () => { const open = $('rep').hidden; $('rep').hidden = !open; $('repBtn').setAttribute('aria-expanded', String(open)); if (open) report(); });
+    $('repWrap').addEventListener('click', () => { rep.kind = 'wrap'; report(); });
+    $('repWhy').addEventListener('click', () => { rep.kind = 'why'; report(); });
 
     // ---- controls
     $('f').addEventListener('submit', (ev) => {

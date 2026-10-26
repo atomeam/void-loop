@@ -280,7 +280,7 @@ export const PROBES = Object.freeze({
     // what the best quote pages show (Yahoo Finance's price and change, previous close, day range, 52-week range, volume, market cap, a chart with ranges, a watchlist, indices,
     // movers, comparing, history); news, financial statements, options and portfolios are not here and not claimed
     facts: [['the price and its change in percent', /[+−]\d+\.\d{2}%/], ['the previous close', /previous close/i], ['the day range', /day range/i], ['the 52-week range', /52-week range/i], ['volume', /\bvolume\b/i], ['market cap', /market cap/i],
-      ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['the source and the delay said', /may be delayed/i]],
+      ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['a written market wrap', /verse reports/i], ['the source and the delay said', /may be delayed/i]],
   },
   'image boards': {
     site: 'https://www.4chan.org/', verse: '/boards/',

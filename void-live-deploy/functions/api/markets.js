@@ -10,7 +10,8 @@
 // SOURCES AND THEIR RISK: Stooq's CSV (free, no key, the first choice for shares and indices) can start asking for a key or change; Yahoo's chart endpoint is
 // unofficial and has no published terms for this use, so it is only the fallback and the source of the one-day chart; CoinGecko's public API (no key, about 30 calls a
 // minute, one year of history); frankfurter.dev (ECB reference rates, once a day). Data may be delayed up to 15 minutes or more; every answer says its source.
-import { rateLimited } from './answer.js';
+// answer.js is loaded when first needed, not at import: the report code (lib/report-run.js) reaches this file from answer.js, and a static import back would be a cycle
+const rateLimited = async (...a) => (await import('./answer.js')).rateLimited(...a);
 import { resolve, RANGES, parseStooqDaily, parseYahoo, summarize, closeOn, rowsFromPrices, rowsFromFx } from '../../lib/markets.js';
 
 export const ID_RE = /^[a-z0-9-]{2,40}$/;
@@ -96,7 +97,7 @@ export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now())
 }
 const validDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && iso(Date.parse(s + 'T00:00:00Z')) === s && Date.parse(s + 'T00:00:00Z') <= Date.now() && Date.parse(s + 'T00:00:00Z') >= Date.UTC(1970, 0, 1);
 const json = (o, status = 200, cc = 'no-store') => Response.json(o, { status, headers: { 'cache-control': cc } });
-const slimQ = (q) => (q && q.ok ? { ok: true, sym: q.sym, name: q.name, price: q.price, change: q.change, pct: q.pct, currency: q.currency, kind: q.kind, asOf: q.asOf } : null);
+const slimQ = (q) => (q && q.ok ? { ok: true, sym: q.sym, name: q.name, price: q.price, change: q.change, pct: q.pct, currency: q.currency, kind: q.kind, asOf: q.asOf, source: q.source } : null);
 /** a body from the edge cache, or made (one to three upstream calls, counted against the caller's own bucket) and kept; a failure is never kept. */
 async function cachedBody(request, env, key, ttl, make) {
   const cache = typeof caches !== 'undefined' ? caches.default : null, ck = new Request(new URL(request.url).origin + '/__markets/' + key);
@@ -106,10 +107,10 @@ async function cachedBody(request, env, key, ttl, make) {
   if (cache && body && body.ok) { try { await cache.put(ck, new Response(JSON.stringify(body), { headers: { 'cache-control': 'max-age=' + ttl } })); } catch (_) {} }
   return body;
 }
-const quoteBody = (request, env, r, range, on, f) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f));
+export const quoteBody = (request, env, r, range, on, f) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f));
 const reply = (body, ttl) => json(body, body.ok ? 200 : body.kind === 'none' ? 404 : body.kind === 'limited' ? 429 : 503, body.ok ? 'public, max-age=' + ttl : 'no-store'); // 503, not 502: Cloudflare swaps a Function's 502 for its own page
 /** at most 12 symbols in one call, each from the same cache as a single quote */
-async function batch(request, env, list, f) {
+export async function batch(request, env, list, f) {
   const rs = []; for (const s of String(list || '').split(',').slice(0, 12)) { const r = resolve(s); if (r && !rs.some((x) => x.sym === r.sym)) rs.push(r); }
   return Promise.all(rs.map((r) => quoteBody(request, env, r, '5d', '', f).then((q) => slimQ(q) || { ok: false, sym: r.sym, kind: q && q.kind })));
 }
