@@ -169,68 +169,69 @@
   },
   "coin flip": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 177,
-    "best": 286,
-    "evidence": "Verse (/flip/) 177 ms to the load event (median of 3, phone width) vs justflipacoin.com 286 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T13:08:24.982Z"
+    "verdict": "worse",
+    "verse": 391,
+    "best": 328,
+    "evidence": "Verse (/flip/) 391 ms to the load event (median of 3, phone width) vs justflipacoin.com 328 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T18:16:04.214Z",
+    "was": "equal-and-better"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:08:24.982Z"
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-26T13:08:24.982Z"
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-26T13:08:24.982Z"
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:08:24.982Z"
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:08:24.982Z"
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 4,
+    "verdict": "better",
+    "verse": 7,
     "best": 4,
-    "evidence": "Verse (/flip/) 4 of 7 things a full answer shows vs justflipacoin.com 4 of 7 things a full answer shows (Verse lacks: One-tap flip with animation, Heads / tails result shown, Flip counter; site lacks: a running count, Flip counter, Flip sound)",
-    "at": "2026-10-26T13:08:24.982Z",
+    "evidence": "Verse (/flip/) 7 of 7 things a full answer shows vs justflipacoin.com 4 of 7 things a full answer shows (Verse lacks: none; site lacks: a running count, Flip counter, Flip sound)",
+    "at": "2026-10-26T18:16:04.214Z",
     "of": 7
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
     "best": 12,
-    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.23), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T13:08:24.982Z"
+    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.24), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T18:16:04.214Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-26T13:08:24.982Z",
+    "at": "2026-10-26T18:16:04.214Z",
     "of": 1,
     "part": true
    },
@@ -239,7 +240,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 right against the worked-out answer; judged against the standard, not justflipacoin.com (the site is not asked)",
-    "at": "2026-10-26T13:08:24.982Z",
+    "at": "2026-10-26T18:16:04.214Z",
     "of": 3
    },
    "flip animation": {
@@ -247,7 +248,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:08:24.982Z",
+    "at": "2026-10-26T18:16:04.214Z",
     "of": 1,
     "part": true
    }
@@ -3071,53 +3072,96 @@
   },
   "shopping": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 153,
-    "best": 630,
-    "evidence": "Verse 153 ms to the load event (median of 3, phone width) vs Amazon 630 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T13:26:55.314Z"
+    "verdict": "better",
+    "verse": 317,
+    "best": 585,
+    "evidence": "Verse (/store/) 317 ms to the load event (median of 3, phone width) vs Amazon 585 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
-    "at": "2026-10-26T13:26:55.314Z"
+    "evidence": "Verse (/store/) 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:26:55.314Z"
+    "evidence": "Verse (/store/) 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 14,
-    "evidence": "Verse 0 unnamed controls or images vs Amazon 14 unnamed controls or images",
-    "at": "2026-10-26T13:26:55.314Z"
+    "best": 13,
+    "evidence": "Verse (/store/) 0 unnamed controls or images vs Amazon 13 unnamed controls or images",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:26:55.314Z"
+    "evidence": "Verse (/store/) 1 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:26:55.314Z"
+    "evidence": "Verse (/store/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T18:16:53.890Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 4,
-    "best": 47,
-    "evidence": "Verse 4 design defects vs Amazon 47 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (5 low-contrast texts, 42 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T13:26:55.314Z"
+    "verse": 31,
+    "best": 59,
+    "evidence": "Verse (/store/) 31 design defects vs Amazon 59 design defects: Verse (15 low-contrast texts, 15 small tap targets, layout shift 0.40), Amazon (17 low-contrast texts, 42 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T18:16:53.890Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/store/) 5 of 5 right against the worked-out answer; judged against the standard, not Amazon (the site is not asked)",
+    "at": "2026-10-26T18:16:53.890Z",
+    "of": 5
+   },
+   "catalogue": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/store/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T18:16:53.890Z",
+    "of": 7,
+    "part": true
+   },
+   "checkout": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/store/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T18:16:53.890Z",
+    "of": 7,
+    "part": true
+   },
+   "delivery tracking": {
+    "verdict": "equal-and-better",
+    "verse": 6,
+    "best": 6,
+    "evidence": "Verse (/store/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T18:16:53.890Z",
+    "of": 6,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 23,
+    "best": 1,
+    "evidence": "Verse (/store/) 23 of 23 things a full answer shows vs Amazon 1 of 23 things a full answer shows (Verse lacks: none; site lacks: keyword search, a kind filter, a sort control, a count of what is shown, availability, a 3D preview, the changelog, an order lookup, order codes, license keys, signed downloads, links that last 24 hours, a receipt any time, a cart shared as a link, the cart kept on this device, works offline, no account, no ads, no trackers, the payment provider credited, ask Verse from the page, support the crew)",
+    "at": "2026-10-26T18:16:53.890Z",
+    "of": 23
    }
   },
   "chat": {
