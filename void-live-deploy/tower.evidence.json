@@ -14790,104 +14790,103 @@
   "pdf: codeshack.io": {
    "speed": {
     "verdict": "better",
-    "verse": 239,
-    "best": 359,
-    "evidence": "Verse (/pdf/merge/) 239 ms to the load event (median of 3, phone width) vs codeshack.io 359 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:58:41.869Z"
+    "verse": 214,
+    "best": 249,
+    "evidence": "Verse (/pdf/merge/) 214 ms to the load event (median of 3, phone width) vs codeshack.io 249 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 3 of 3 loads answered vs codeshack.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:58:41.869Z"
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 px sideways overflow at 390 px vs codeshack.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:58:41.869Z"
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 0 unnamed controls or images vs codeshack.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:58:41.869Z"
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/merge/) 1 (1: the page shows itself again with the network cut) vs codeshack.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:58:41.869Z"
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/pdf/merge/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:58:41.869Z"
+    "evidence": "Verse (/pdf/merge/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/merge/) 3 of 3 right against the worked-out answer; judged against the standard, not codeshack.io (the site is not asked)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 3
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/pdf/merge/) 1 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.12), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T04:58:41.869Z",
-    "was": "equal-and-better"
+    "evidence": "Verse (/pdf/merge/) 0 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:05:24.181Z"
    },
    "merge and split": {
-    "verdict": "equal",
-    "verse": 1,
+    "verdict": "better",
+    "verse": 2,
     "best": 1,
-    "evidence": "Verse (/pdf/merge/) 1 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: split; site lacks: split)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "evidence": "Verse (/pdf/merge/) 2 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: none; site lacks: split)",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/merge/) 0 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "evidence": "Verse (/pdf/merge/) 3 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 3,
     "part": true
    },
    "images to pdf": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "evidence": "Verse (/pdf/merge/) 1 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 1,
     "part": true
    },
    "compress": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "evidence": "Verse (/pdf/merge/) 1 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: none; site lacks: compress)",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "equal",
-    "verse": 5,
+    "verdict": "better",
+    "verse": 15,
     "best": 5,
-    "evidence": "Verse (/pdf/merge/) 5 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, no account, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
-    "at": "2026-10-26T04:58:41.869Z",
+    "evidence": "Verse (/pdf/merge/) 15 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: PDF to images, page numbers, watermark, no account; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T05:05:24.181Z",
     "of": 19
    }
   },
@@ -16677,6 +16676,108 @@
     "evidence": "Verse (/flights/airports/) 0 design defects vs aruljohn.com 9531 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), aruljohn.com (0 low-contrast texts, 9531 small tap targets, layout shift 0.00)",
     "at": "2026-10-26T04:59:29.384Z"
    }
+  },
+  "travel: clock7.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 178,
+    "best": 403,
+    "evidence": "Verse (/flights/time/) 178 ms to the load event (median of 3, phone width) vs clock7.com 403 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/time/) 0 of 3 loads answered vs clock7.com 3 of 3 loads answered",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 80,
+    "evidence": "Verse (/flights/time/) 0 px sideways overflow at 390 px vs clock7.com 80 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/time/) 0 unnamed controls or images vs clock7.com 0 unnamed controls or images",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/time/) 0 (1: the page shows itself again with the network cut) vs clock7.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/time/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs clock7.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:05:43.861Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 26,
+    "evidence": "Verse (/flights/time/) 0 design defects vs clock7.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), clock7.com (10 low-contrast texts, 15 small tap targets, layout shift 0.20)",
+    "at": "2026-10-26T05:05:43.861Z"
+   }
+  },
+  "travel: airmilescalculator.com": {
+   "reliability": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 of 3 loads answered vs airmilescalculator.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 148,
+    "best": 200,
+    "evidence": "Verse (/flights/distance/) 148 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 px sideways overflow at 390 px vs the bar (airmilescalculator.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 unnamed controls or images vs the bar (airmilescalculator.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/distance/) 0 (1: the page shows itself again with the network cut) vs the bar (airmilescalculator.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/distance/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (airmilescalculator.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:06:13.870Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/distance/) 0 design defects vs the bar (airmilescalculator.com unreachable) 0 design defects",
+    "at": "2026-10-26T05:06:13.870Z"
+   }
   }
  },
  "icons": {
@@ -16847,6 +16948,7 @@
   "kanbanflow.com": "tower.icons/kanbanflow.com.png",
   "trello.com": "tower.icons/trello.com.ico",
   "tripwaffle.com": "tower.icons/tripwaffle.com.png",
-  "aruljohn.com": "tower.icons/aruljohn.com.ico"
+  "aruljohn.com": "tower.icons/aruljohn.com.ico",
+  "clock7.com": "tower.icons/clock7.com.png"
  }
 }
