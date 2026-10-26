@@ -24,5 +24,6 @@ const html = (r) => `<html><body style="margin:0;width:1200px;height:630px;backg
 const exe = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x));
 const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] }), p = await b.newPage({ viewport: { width: 1200, height: 630 } });
 fs.mkdirSync(root, { recursive: true });
-for (const r of SITE_PAGES) { if (process.argv[2] && !r.path.startsWith(process.argv[2])) continue; await p.setContent(html(r)); await p.screenshot({ path: path.join(root, slug(r.path) + '.png') }); console.log('wrote og/' + slug(r.path) + '.png'); }
+// a page Verse built from its family's page (lib/self-sites.js) keeps that page's picture
+for (const r of SITE_PAGES.filter((x) => !x.base)) { if (process.argv[2] && !r.path.startsWith(process.argv[2])) continue; await p.setContent(html(r)); await p.screenshot({ path: path.join(root, slug(r.path) + '.png') }); console.log('wrote og/' + slug(r.path) + '.png'); }
 await b.close();
