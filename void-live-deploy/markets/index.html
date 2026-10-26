@@ -202,7 +202,7 @@
     function draw() {
       if (!$('rep').hidden && rep.kind === 'why') report();
       const q = state.q, c = cur(q), money = (v) => (v == null ? '–' : M.fmtPrice(v) + (c ? ' ' : ''));
-      $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + (c ? ' · ' + c : '') + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || '');
+      $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || 'Symbol') + (c ? ' · ' + c : '');
       $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change); if (q.partial) $('qm').textContent = '';
       $('qa').textContent = (q.offline ? 'Offline: the last price saved on this device, ' + new Date(q.saved).toLocaleString() + '. ' : 'Source: ' + q.source + '. ') + 'Data may be delayed' + (q.offline || !q.asOf ? '.' : '; as of ' + M.fmtDay(q.asOf) + '.');
       $('sPrev').textContent = money(q.prev); $('sOpen').textContent = money(q.open);

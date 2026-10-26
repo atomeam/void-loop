@@ -76,5 +76,5 @@ test('bounds: nothing but a kind and a resolvable symbol is read; no price means
   assert.equal((await post({ mode: 'market-report', kind: 'x' }, deps())).status, 400); assert.equal((await post({ mode: 'market-report', kind: 'why', s: 'http://evil.example' }, deps())).status, 400); assert.equal((await post({ mode: 'market-report', kind: 'why', data: { price: 1 } }, deps())).status, 400);
   const d = deps({ markets: { fetchFn: null, quoteBody: async () => ({ ok: false }), batch: async () => [] } }); const none = await post({ mode: 'market-report', kind: 'why', s: 'ZZZZ' }, d); assert.equal(none.j.ok, false); assert.equal(d.calls.model, 0);
   const busy = await post({ mode: 'market-report', kind: 'wrap' }, deps({ rateLimited: async () => true })); assert.equal(busy.status, 429);
-  const lie = deps(); await post({ mode: 'market-report', kind: 'why', s: 'AAPL', price: 1, pct: 99, text: 'buy' }, lie); assert.equal(lie.store.m.get('report:2026-10-23:why:AAPL:18').includes('99'), false, 'a number sent by a caller is never read');
+  const lie = deps(); await post({ mode: 'market-report', kind: 'why', s: 'AAPL', price: 1, pct: 99, text: 'buy' }, lie); assert.equal(lie.store.m.get('report:2026-10-23:v2:why:AAPL:18').includes('99'), false, 'a number sent by a caller is never read');
 });

@@ -77,6 +77,12 @@ test('Stooq down or behind a key wall: Yahoo answers (and says so); one day is Y
   assert.equal(none.ok, false); assert.equal(none.kind, 'none'); assert.match(none.say, /AAPL/);
   const intraday = await lookQuote(resolve('aapl'), '1d', null, fake({ down: ['query1.finance.yahoo.com'] }), NOW); assert.equal(intraday.ok, true); assert.match(intraday.note, /five days/);
 });
+test('the day move is the last two daily rows, never Yahoo\'s chartPreviousClose (a year ago on a one-year chart)', async () => {
+  const n = 250, rowsT = Array.from({ length: n }, (_, i) => Math.floor((NOW - (n - i) * DAYMS) / 1000)), closes = Array.from({ length: n }, (_, i) => 6700 + i * 3.5); closes[n - 1] = 7600; closes[n - 2] = 7590; // 0.13% today
+  const y = { chart: { result: [{ meta: { currency: 'USD', regularMarketPrice: 7600, chartPreviousClose: 6700, fiftyTwoWeekHigh: 7700, fiftyTwoWeekLow: 6600 }, timestamp: rowsT, indicators: { quote: [{ close: closes }] } }] } };
+  const q = await lookQuote(resolve('spx'), '1y', null, fake({ stooq: 'No data', yahoo: y }), NOW);
+  assert.match(q.source, /Yahoo/); assert.ok(Math.abs(q.pct - 0.1318) < 0.01, 'a day move of about 0.13%, not the 13% since a year ago: ' + q.pct); assert.equal(q.prev, 7590);
+});
 test('a coin: price, 24 hour range, volume and market cap from CoinGecko, a year of daily history, and the 1D chart from the fine series', async () => {
   const q = await lookQuote(resolve('btc'), '1d', null, fake(), NOW);
   assert.equal(q.source, 'CoinGecko'); assert.equal(q.price, 70000); assert.equal(q.prev, 68600); assert.equal(q.dayHigh, 71000); assert.equal(q.cap, 1.4e12); assert.equal(q.volume, 3e10); assert.equal(q.points.length, 48); assert.ok(q.hi52 > q.lo52);
@@ -132,5 +138,5 @@ test('registered everywhere a page must be: the ask bar, the service worker, the
   for (const a of ['aapl stock price', 'stock price of apple', 'tesla stock', 'stock market']) { const r = routeAsk(a); assert.ok(r && /^\/markets\//.test(r.path || r), a + ' -> ' + JSON.stringify(r)); }
   assert.ok(PAGES.some((p) => p.path === '/markets/')); assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /'\/markets\/'/);
   const html = fs.readFileSync(path.join(root, 'markets', 'index.html'), 'utf8');
-  assert.match(html, /not financial advice/i); assert.match(html, /delayed/i); assert.equal((html.match(/not financial advice/gi) || []).length, 1, 'said once');
+  assert.match(html, /\$\('qs'\)\.textContent = q\.sym \+ ' · ' \+ \(\{ stock: 'Stock or ETF', index: 'Index'/, 'the header says the symbol and its kind before anything else'); assert.match(html, /not financial advice/i); assert.match(html, /delayed/i); assert.equal((html.match(/not financial advice/gi) || []).length, 1, 'said once');
 });

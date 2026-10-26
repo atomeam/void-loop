@@ -86,7 +86,7 @@ export function parseYahoo(json) {
   const q = (r.indicators && r.indicators.quote && r.indicators.quote[0]) || {}, rows = [], at = (k, i) => num(q[k] && q[k][i]);
   r.timestamp.forEach((ts, i) => { const c = at('close', i); if (c != null) rows.push({ t: ts * 1000, o: at('open', i), h: at('high', i), l: at('low', i), c, v: at('volume', i) }); });
   const m = r.meta || {};
-  return { rows, meta: { currency: m.currency || null, name: m.longName || m.shortName || null, price: num(m.regularMarketPrice), prev: num(m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose), hi52: num(m.fiftyTwoWeekHigh), lo52: num(m.fiftyTwoWeekLow), dayHigh: num(m.regularMarketDayHigh), dayLow: num(m.regularMarketDayLow), volume: num(m.regularMarketVolume) } };
+  return { rows, meta: { currency: m.currency || null, name: m.longName || m.shortName || null, price: num(m.regularMarketPrice), prev: null, /* never chartPreviousClose: on a one-year chart it is the close a YEAR ago (a 13% 'day move' on the strip, 2026-10-26); the day's move comes from the last two daily rows */ hi52: num(m.fiftyTwoWeekHigh), lo52: num(m.fiftyTwoWeekLow), dayHigh: num(m.regularMarketDayHigh), dayLow: num(m.regularMarketDayLow), volume: num(m.regularMarketVolume) } };
 }
 
 /** Where a range starts, given the last row's time. Pure. */
