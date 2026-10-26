@@ -244,6 +244,14 @@
    "queued": 0,
    "fixed": [],
    "pages_per_day": 2
+  },
+  {
+   "at": "2026-10-26T22:52:52Z",
+   "line": "Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io",
+   "built": 0,
+   "queued": 5,
+   "fixed": [],
+   "pages_per_day": 2
   }
  ]
 }

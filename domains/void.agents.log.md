@@ -1082,3 +1082,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-26T07:42:05Z | verse | build | Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten; next heycolor.com
 2026-10-26T16:56:18Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com
 2026-10-26T16:58:53Z | verse | build | Versus: took on no site; next supercolorapp.com
+2026-10-26T22:52:52Z | verse | build | Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io
