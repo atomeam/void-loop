@@ -101,11 +101,13 @@
   },
   "convertunits.com": {
    "at": "2026-10-26T07:34:33Z",
-   "outcome": "built",
+   "outcome": "surpassed",
    "family": "unit converter",
    "id": "unit converter: convertunits.com",
    "page": "/convert/unit-converter-2/",
-   "words": "the family page's own (the model's were refused: says what the page does not do (measurement, across, physics, chemistry, daily); no ask is about its job)"
+   "words": "the family page's own (the model's were refused: says what the page does not do (measurement, across, physics, chemistry, daily); no ask is about its job)",
+   "rows": "11/11",
+   "gated": "2026-10-26T07:38:12Z"
   },
   "tallycount.app": {
    "at": "2026-10-26T07:34:52Z",
@@ -146,6 +148,14 @@
    "queued": 3,
    "fixed": [],
    "pages_per_day": 1
+  },
+  {
+   "at": "2026-10-26T07:38:13Z",
+   "line": "Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten (also read: 1 walled, 3 no-family); next heycolor.com",
+   "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2
   }
  ]
 }
