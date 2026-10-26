@@ -11,6 +11,10 @@ export const SITE = 'https://a-to-mind.com';
 /** one row per tool page: path (as lib/toolkit.js TOOLS names it), name, what it does (true of the page), the phrases people search, the setting
  *  the link takes (an EntryPoint urlTemplate with one placeholder, or none) and the common asks shown as links on the page */
 export const PAGES = Object.freeze([
+  { path: '/photos/', name: 'Photo tools: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
+    asks: ['compress image online', 'convert png to webp', 'photo editor online', 'crop photo online', 'remove exif data from photo', 'image compressor no upload', 'compress images in bulk to zip'],
+    action: { template: '/photos/?tab={tab}', input: 'tab' },
+    links: [['Compress and convert', '/photos/?tab=out'], ['Crop and rotate', '/photos/?tab=crop'], ['Adjust and filters', '/photos/?tab=adj'], ['EXIF and privacy', '/photos/?tab=info'], ['Deutsch', '/photos/?lang=de']] },
   { path: '/color/', name: 'Colour codes, shades and schemes', does: 'Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.',
     asks: ['hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour shades and tints', 'colour scheme generator'],
     action: { template: '/color/?c={color}', input: 'color' },

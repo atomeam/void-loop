@@ -205,6 +205,7 @@
  "pdf-card": "\"ask questions about a pdf\", \"read this pdf\", \"chat with a pdf\"",
  "period": "A period log kept in your own Verse (this browser only), and the predictions it unlocks",
  "photo-scrub": "\"strip the exif from a photo\" / \"remove the location from a picture\" puts a card on the stage: choose a",
+ "photo-tools": "\"edit a photo\", \"compress an image\", \"convert png to webp\", \"crop a photo\", \"view the exif of a photo\"…",
  "photos": "\"my photos\", \"add photos\", \"my photos from june\": Verse Photos, a photo library that lives on this device",
  "pick-for-me": "\"pick for me\", \"surprise me\"",
  "place": "Street map of any place",

@@ -419,6 +419,24 @@ export const PROBES = Object.freeze({
     facts: [['JPEG', /\bjpeg\b/i], ['PNG', /\bpng\b/i], ['WebP', /\bwebp\b/i], ['AVIF', /\bavif\b/i], ['a quality slider', /\bquality\b/i], ['a before and after slider', /\bbefore and after\b/i], ['the size saved', /\bsize saved\b|\bsaved\b/i], ['resize', /\bresize\b/i], ['crop with shapes', /\bcrop\b/i], ['rotate and flip', /\brotate\b[\s\S]{0,12}\bflip\b/i],
       ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
   },
+  photos: {
+    site: 'https://photos.google.com/', verse: '/photos/',
+    // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL), as the photo resizer's does. The truth by
+    // arithmetic: it is one pixel by one pixel, the page names its size before and after in bytes, and (the format being kept) says PNG. Judged on Verse alone
+    // (a photo sites' own pages are not asked); the same probe measures every site in the photos lane (lib/tower.js LANES: squoosh.app, photopea.com,
+    // tinypng.com, exif.tools, exifeditor.io, iloveimg.com)
+    ask: { site: 'https://squoosh.app/', verse: '/photos/', verseFile: true },
+    truth: [['the picture is 1 by 1 pixel', /\b1 [×x] 1 px\b/], ['its size before and after, in bytes', /\b\d+ B → \d+ B\b/], ['the format named', /\bPNG\b/]],
+    askParts: {
+      editing: [['crop', /\bcrop\b/i], ['rotate', /\brotate\b/i], ['adjust', /\badjust\b/i], ['filters', /\bfilters?\b/i], ['draw', /\bdraw\b/i], ['text', /\btext\b/i], ['undo', /\bundo\b/i]],
+      'compress and convert': [['a quality choice', /\bquality\b/i], ['JPEG', /\bjpeg\b/i], ['WebP', /\bwebp\b/i], ['PNG', /\bpng\b/i], ['the size saved', /\b\d+% (?:saved|bigger)\b|\bthe same size\b/i], ['a resize', /\bwidth\b/i], ['before and after', /\boriginal\b[\s\S]{0,80}\bresult\b/i]],
+      'metadata and privacy': [['EXIF', /\bexif\b/i], ['strip metadata', /\bstrip metadata\b/i]],
+    },
+    // what the lane's sites show between them (squoosh: formats, a quality slider, a compare slider, resize, offline; tinypng: PNG colours, batch, the saving; exif.tools and
+    // exifeditor.io: EXIF and GPS viewer, strip, nothing uploaded; iloveimg: crop, rotate, convert, filters, text; photopea: adjustments, filters, text, drawing, history)
+    facts: [['JPEG', /\bjpeg\b/i], ['PNG', /\bpng\b/i], ['WebP', /\bwebp\b/i], ['AVIF', /\bavif\b/i], ['a quality slider', /\bquality\b/i], ['a before and after slider', /\bbefore and after\b/i], ['the size saved', /\bsize saved\b|\bsaved\b/i], ['resize', /\bresize\b/i], ['crop with shapes', /\bcrop\b/i], ['rotate and flip', /\brotate\b[\s\S]{0,12}\bflip\b/i],
+      ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
+  },
   'photo resizer': {
     site: 'https://pancardresizer.com/', verse: '/resize-image/',
     // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL) with the size in the link: the

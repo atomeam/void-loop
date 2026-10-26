@@ -119,12 +119,15 @@ export const LANES = Object.freeze({
   kanban: ['https://jasperbernaers.com/kanban-board/', 'https://abacktools.com/tools/productivity/planning/kanban-board', 'https://wekan.fi/', 'https://kanbanflow.com/'],
   // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
+  // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
+  photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
 // floor id of a lane site -> the Verse page built to have every feature that site has, which the gate measures it against instead of the leader's page.
 // A site not listed here is still measured against its leader's page until its own page is built.
 export const LANE_PAGES = Object.freeze({
+  'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
   'sports: thesportsdb.com': '/sports/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
