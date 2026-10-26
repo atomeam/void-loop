@@ -1,7 +1,7 @@
 // Writes the pages of the PDF and Kanban floors from lib/tool-sites.js (one row per page): the leader's page and the page built for each site of its lane.
 //   node tools/tool-site-pages.mjs          write every page
 //   node tools/tool-site-pages.mjs --check  exit 1 when a page differs from what its row makes (the head's seo block, asks row and modulepreload block belong to
-//                                           tools/seo-pages.mjs and tools/preload.mjs and are left as they are)
+//                                           tools/seo-pages.mjs and tools/preload.mjs and are left as they are; so do the "Use with" links seo-pages writes in <nav id="related">)
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -152,7 +152,7 @@ ${fn}(document.getElementById('app'), ${JSON.stringify(cfg)});
 import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}'));
 `;
 }
-const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/asks -->\n?|<!-- modulepreload: tools\/preload\.mjs -->[\s\S]*?<!-- \/modulepreload -->\n?/g;
+const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/asks -->\n?|<!-- related -->[\s\S]*?<!-- \/related -->|<!-- modulepreload: tools\/preload\.mjs -->[\s\S]*?<!-- \/modulepreload -->\n?/g;
 /** a page without the blocks other generators own */
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

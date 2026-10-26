@@ -57,6 +57,7 @@
 <link rel="modulepreload" href="/lib/tool-sites.js">
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/password.js">
 <!-- /modulepreload -->
 </head>
@@ -112,7 +113,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/password/?len=16">16 characters</a><a href="/password/?len=12">12 characters</a><a href="/password/?len=20">20 characters</a><a href="/password/?len=32">32 characters</a><a href="/password/?len=16&amp;symbols=0">Letters and numbers only</a><a href="/password/?mode=phrase&amp;words=4">A passphrase of 4 words</a><a href="/password/?len=16&amp;n=5">5 passwords at once</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password-strength/">Password strength</a> <a href="/random/">Random number</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password-strength/">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">

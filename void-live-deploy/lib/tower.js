@@ -127,6 +127,11 @@ const HAND_LANES = Object.freeze({
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
+  // jobs (owner, 2026-10-26: "we have to have everything all the sites have"): small job boards, smallest first by a guess (Tranco was out of reach from the builder's
+  // network; tower-rank.yml re-orders by the real list), LinkedIn Jobs (the floor itself) last. Each has a page of its own (LANE_PAGES) built on remote listings Verse may
+  // show (Remotive, Jobicy and Himalayas, lib/jobs-core.js); Verse uses three of them as sources as well as fighting them (owner, 2026-10-26: "dont forget Verse can use
+  // these sites as well as beat them")
+  jobs: ['https://jobicy.com/', 'https://www.workingnomads.com/jobs', 'https://www.arbeitnow.com/', 'https://himalayas.app/jobs', 'https://remotive.com/', 'https://remoteok.com/', 'https://weworkremotely.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // the sites Verse took on by itself (lib/self-sites.js, tools/tower-self.mjs): each joins its family's lane, in front of the leader, with its own page
@@ -147,6 +152,7 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
+  'jobs: jobicy.com': '/jobs/regions/', 'jobs: workingnomads.com': '/jobs/alerts/', 'jobs: arbeitnow.com': '/jobs/europe/', 'jobs: himalayas.app': '/jobs/salary/', 'jobs: remotive.com': '/jobs/categories/', 'jobs: remoteok.com': '/jobs/tags/', 'jobs: weworkremotely.com': '/jobs/companies/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
@@ -164,6 +170,13 @@ export const LANE_EXTRAS = Object.freeze({
   'travel: gcmap.com': ['route map', 'chained routes', 'great circle distance', 'airport info'],
   'travel: co2.myclimate.org': ['CO2 per passenger', 'cabin class', 'return trip', 'method named'],
   'travel: flightconnections.com': ['where can I go', 'filter by distance', 'airport finder', 'provider links'],
+  'jobs: jobicy.com': ['jobs by region', 'industry filter', 'job level', 'salary when given', 'RSS feed'],
+  'jobs: workingnomads.com': ['saved searches', 'new since last visit', 'no email needed', 'categories', 'RSS feed'],
+  'jobs: arbeitnow.com': ['jobs open in Germany', 'visa sponsorship filter', 'remote filter', 'German and English'],
+  'jobs: himalayas.app': ['salary filter', 'highest paid first', 'seniority', 'time zones'],
+  'jobs: remotive.com': ['categories with counts', 'keyword search', 'job type', 'source credited'],
+  'jobs: remoteok.com': ['tag cloud', 'salary', 'sort by pay or date', 'RSS feed'],
+  'jobs: weworkremotely.com': ['companies hiring', 'jobs of one company', 'categories', 'saved jobs'],
   'sports: thesportsdb.com': ['sport search', 'born on this day', 'sport grid', 'free api'] });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */

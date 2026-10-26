@@ -46,6 +46,7 @@
 <link rel="modulepreload" href="/lib/tool-sites.js">
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/pwcheck.js">
 <!-- /modulepreload -->
 </head>
@@ -62,7 +63,7 @@
   </div>
   <ul id="why"></ul><ul id="tips"></ul>
   <div class="opt"><label><input type="checkbox" id="show"> show it</label><button type="button" id="leak" class="go">Has it leaked?</button><button type="button" id="link" title="Copies the link to this checker; the password is never in it">Copy link</button><span id="leakmsg" role="status"></span></div>
-  <nav id="related" aria-label="Related tools"></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/">Password generator</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Worked out on this device; the password is never sent anywhere, stored, or put in the address. It is an estimate: words and patterns are priced the way a guesser would try them, and what we do not recognise is priced as random. "Has it leaked?" sends only the first 5 characters of a fingerprint of the password to the Have I Been Pwned list, which answers with every fingerprint that starts the same; the match is made here. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">

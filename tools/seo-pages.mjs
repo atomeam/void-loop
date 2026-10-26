@@ -10,6 +10,8 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PAGES, headTags, asksRow, llmsLines } from '../void-live-deploy/lib/seo.js';
+import { TOOLS, relatedOf } from '../void-live-deploy/lib/toolkit.js';
+import { PRODUCTS } from '../void-live-deploy/lib/products.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** pages left alone for now, with why (handoff.md: who is on it) */
@@ -20,6 +22,40 @@ export const SKIP = Object.freeze({
 export const HEAD = ['<!-- seo -->', '<!-- /seo -->'];
 export const ASKS = ['<!-- asks -->', '<!-- /asks -->'];
 export const LLMS = ['<!-- tools -->', '<!-- /tools -->'];
+// what Verse's own SEO audit found (tools/seo-audit.mjs, 2026-10-26): 44 pages nothing linked to in the HTML a crawler reads, because each page's
+// "Use with" row is drawn by script, and the four services and Code Review Pro reached by no free page but the One-Time Fix. So: the same links,
+// written into the page (the script still replaces them with its own row, ask bar and hand-offs), every tool on /tools/, and the services
+// linked to each other.
+export const RELATED = ['<!-- related -->', '<!-- /related -->'];
+export const MORE = ['<!-- more-tools -->', '<!-- /more-tools -->'];
+export const OFFERS = ['<!-- offers -->', '<!-- /offers -->'];
+const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const pathOf = (url) => new URL(url).pathname;
+
+/** the "Use with" links of a page as plain HTML (what mountRelated draws, without the script's hand-offs): null for a page with none. Pure. */
+export function relatedLinks(path) {
+  const list = relatedOf(path); if (!list.length) return null;
+  return '<span class="tk-label">Use with</span> ' + [...list, ...(path !== '/tools/' ? [{ href: '/tools/', label: 'All tools' }] : [])].map((r) => '<a href="' + esc(r.href) + '">' + esc(r.label) + '</a>').join(' ');
+}
+/** the html with the related row's links written inside <nav id="related">, between the markers; null when the page has no such nav. Pure. */
+export function withRelated(html, path) {
+  const links = relatedLinks(path), at = html.indexOf('<nav id="related"'); if (!links || at < 0) return null;
+  const open = html.indexOf('>', at) + 1, close = html.indexOf('</nav>', open); if (close < 0) return null;
+  return html.slice(0, open) + RELATED[0] + links + RELATED[1] + html.slice(close);
+}
+/** the tools /tools/ does not list by hand yet, as one more section of real links (from lib/toolkit.js TOOLS, which every page's row uses). Pure. */
+export function moreTools(html) {
+  const listed = new Set([...withoutBlock(html, MORE).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1].split('?')[0]));
+  const extra = [...Object.entries(TOOLS).filter(([p]) => p !== '/tools/' && !listed.has(p)), ['/code-review/', 'Code review'], ['/g/', 'Gists'], ['/fix/', 'Fix a broken automation']].filter(([p], i, a) => !listed.has(p) && a.findIndex((x) => x[0] === p) === i);
+  return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li><a href="' + esc(p) + '">' + esc(name) + '</a></li>').join('') + '</ul></section>';
+}
+/** on each paid page: the other things Verse does for people, each with its one plain line (lib/products.js), and the free fixes. Pure. */
+export function offersRow(path) {
+  const others = PRODUCTS.filter((p) => pathOf(p.page) !== path);
+  return '<p class="muted offers">More ways Verse helps: ' + others.map((p) => '<a href="' + esc(pathOf(p.page)) + '">' + esc(p.name) + '</a> (' + esc(p.adds) + ')').join('; ')
+    + '; or <a href="/fix/">look your error up free</a>.</p>';
+}
+export const OFFER_PAGES = Object.freeze(PRODUCTS.map((p) => pathOf(p.page)));
 
 /** the html with `block` between the markers [open, close]: replaced when they are there, else inserted on its own line before `before`;
  *  unchanged (and `null` returned) when `before` is missing too. Pure. */
@@ -56,6 +92,23 @@ export function build(cwd = root) {
     if (!existsSync(file)) continue;
     const html = readFileSync(file, 'utf8');
     out.push({ path: p.path, file, html, want: seoOf(html, p.path) });
+  }
+  const seen = new Set(out.map((o) => o.path));
+  // every tool page's "Use with" row in its HTML (the pages in the seo table got theirs above)
+  for (const path of Object.keys(TOOLS)) {
+    if (SKIP[path]) continue;
+    const file = resolve(cwd, 'void-live-deploy' + path + 'index.html'); if (!existsSync(file)) continue;
+    const prev = seen.has(path) ? out.find((o) => o.path === path) : null, html = prev ? prev.want : readFileSync(file, 'utf8');
+    const want = withRelated(html ?? '', path); if (want === null) continue;
+    if (prev) prev.want = want; else { out.push({ path, file, html, want }); seen.add(path); }
+  }
+  { const path = '/tools/', file = resolve(cwd, 'void-live-deploy/tools/index.html'), prev = out.find((o) => o.path === path);
+    const html = prev ? prev.want : readFileSync(file, 'utf8'), want = withBlock(html, MORE, moreTools(html), '  <p class="tie">');
+    if (want !== null) { if (prev) prev.want = want; else out.push({ path, file, html, want }); } }
+  for (const path of OFFER_PAGES) {
+    const file = resolve(cwd, 'void-live-deploy' + path + 'index.html'); if (!existsSync(file)) continue;
+    const prev = out.find((o) => o.path === path), html = prev ? prev.want : readFileSync(file, 'utf8'), want = withBlock(html, OFFERS, offersRow(path), '</main>');
+    if (want !== null) { if (prev) prev.want = want; else out.push({ path, file, html, want }); }
   }
   const llms = resolve(cwd, 'void-live-deploy/llms.txt'), text = readFileSync(llms, 'utf8');
   out.push({ path: '/llms.txt', file: llms, html: text, want: llmsOf(text) });

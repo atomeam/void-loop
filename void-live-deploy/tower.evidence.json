@@ -510,52 +510,52 @@
   "unit converter": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 103,
-    "best": 88,
-    "evidence": "Verse (/convert/) 103 ms to the load event (median of 3, phone width) vs unitconverters.net 88 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-25T17:46:00.051Z"
+    "verse": 81,
+    "best": 98,
+    "evidence": "Verse (/convert/) 81 ms to the load event (median of 3, phone width) vs unitconverters.net 98 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/) 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/convert/) 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/) 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/) 1 (1: the page shows itself again with the network cut) vs unitconverters.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/convert/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs unitconverters.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/) 1 of 1 right against the worked-out answer; judged against the standard, not unitconverters.net (the site is not asked)",
-    "at": "2026-10-25T17:46:00.051Z",
+    "at": "2026-10-26T07:37:22.654Z",
     "of": 1
    },
    "design polish": {
@@ -563,14 +563,14 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/convert/) 0 design defects vs unitconverters.net 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), unitconverters.net (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T17:46:00.051Z"
+    "at": "2026-10-26T07:37:22.654Z"
    },
    "unit breadth": {
     "verdict": "equal-and-better",
     "verse": 21,
     "best": 21,
     "evidence": "Verse (/convert/) 21 of 21 shown vs unitconverters.net 21 of 21 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T17:46:00.051Z",
+    "at": "2026-10-26T07:37:22.654Z",
     "of": 21,
     "part": true
    },
@@ -579,7 +579,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/convert/) 2 of 2 shown vs unitconverters.net 1 of 2 shown (Verse lacks: none; site lacks: swap)",
-    "at": "2026-10-25T17:46:00.051Z",
+    "at": "2026-10-26T07:37:22.654Z",
     "of": 2,
     "part": true
    },
@@ -588,7 +588,7 @@
     "verse": 31,
     "best": 27,
     "evidence": "Verse (/convert/) 31 of 31 things a full answer shows vs unitconverters.net 27 of 31 things a full answer shows (Verse lacks: none; site lacks: a swap or reverse control, the formula, precision, Many units per kind)",
-    "at": "2026-10-25T17:46:00.051Z",
+    "at": "2026-10-26T07:37:22.654Z",
     "of": 31
    }
   },
@@ -3070,154 +3070,154 @@
   "shopping": {
    "speed": {
     "verdict": "better",
-    "verse": 225,
-    "best": 812,
-    "evidence": "Verse 225 ms to the load event (median of 3, phone width) vs Amazon 812 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T07:15:20.956Z"
+    "verse": 215,
+    "best": 713,
+    "evidence": "Verse 215 ms to the load event (median of 3, phone width) vs Amazon 713 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
-    "at": "2026-10-26T07:15:20.956Z"
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T07:15:20.956Z"
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 9,
     "evidence": "Verse 0 unnamed controls or images vs Amazon 9 unnamed controls or images",
-    "at": "2026-10-26T07:15:20.956Z"
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T07:15:20.956Z"
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T07:15:20.956Z"
+    "at": "2026-10-26T07:35:47.653Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 49,
-    "evidence": "Verse 4 design defects vs Amazon 49 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), Amazon (7 low-contrast texts, 42 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T07:15:20.956Z"
+    "best": 48,
+    "evidence": "Verse 4 design defects vs Amazon 48 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.02), Amazon (7 low-contrast texts, 41 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:35:47.653Z"
    }
   },
   "chat": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 193,
-    "best": 236,
-    "evidence": "Verse 193 ms to the load event (median of 3, phone width) vs WhatsApp Web 236 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:41:05.082Z"
+    "verse": 195,
+    "best": 311,
+    "evidence": "Verse 195 ms to the load event (median of 3, phone width) vs WhatsApp Web 311 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs WhatsApp Web 3 of 3 loads answered",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs WhatsApp Web 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs WhatsApp Web 0 unnamed controls or images",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs WhatsApp Web 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs WhatsApp Web 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs WhatsApp Web 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), WhatsApp Web (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:41:05.082Z"
+    "at": "2026-10-26T07:37:43.777Z"
    }
   },
   "video": {
    "speed": {
     "verdict": "better",
-    "verse": 234,
-    "best": 512,
-    "evidence": "Verse 234 ms to the load event (median of 3, phone width) vs YouTube 512 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:43:48.013Z"
+    "verse": 260,
+    "best": 432,
+    "evidence": "Verse 260 ms to the load event (median of 3, phone width) vs YouTube 432 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs YouTube 3 of 3 loads answered",
-    "at": "2026-10-25T11:43:48.013Z"
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs YouTube 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:43:48.013Z"
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs YouTube 0 unnamed controls or images",
-    "at": "2026-10-25T11:43:48.013Z"
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs YouTube 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:43:48.013Z"
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs YouTube 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:43:48.013Z"
+    "at": "2026-10-26T07:38:22.044Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 design defects vs YouTube 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), YouTube (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:43:48.013Z"
+    "evidence": "Verse 0 design defects vs YouTube 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), YouTube (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:38:22.044Z"
    }
   },
   "social": {
@@ -3275,103 +3275,103 @@
   "email": {
    "speed": {
     "verdict": "better",
-    "verse": 333,
-    "best": 1107,
-    "evidence": "Verse 333 ms to the load event (median of 3, phone width) vs Gmail 1107 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:42:01.528Z"
+    "verse": 263,
+    "best": 950,
+    "evidence": "Verse 263 ms to the load event (median of 3, phone width) vs Gmail 950 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Gmail 3 of 3 loads answered",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Gmail 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Gmail 0 unnamed controls or images",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Gmail 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Gmail 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 design defects vs Gmail 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Gmail (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:42:01.528Z"
+    "at": "2026-10-26T07:38:47.480Z"
    }
   },
   "search": {
    "speed": {
     "verdict": "better",
-    "verse": 316,
-    "best": 369,
-    "evidence": "Verse 316 ms to the load event (median of 3, phone width) vs Google Search 369 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:40:36.604Z"
+    "verse": 237,
+    "best": 305,
+    "evidence": "Verse 237 ms to the load event (median of 3, phone width) vs Google Search 305 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Search 3 of 3 loads answered",
-    "at": "2026-10-25T11:40:36.604Z"
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Search 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:40:36.604Z"
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 8,
-    "evidence": "Verse 0 unnamed controls or images vs Google Search 8 unnamed controls or images",
-    "at": "2026-10-25T11:40:36.604Z"
+    "best": 1,
+    "evidence": "Verse 0 unnamed controls or images vs Google Search 1 unnamed controls or images",
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Search 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:40:36.604Z"
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Search 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:40:36.604Z"
+    "at": "2026-10-26T07:39:25.470Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 design defects vs Google Search 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Search (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:40:36.604Z"
+    "at": "2026-10-26T07:39:25.470Z"
    }
   },
   "random generators": {
@@ -3591,52 +3591,52 @@
   "code hosting": {
    "speed": {
     "verdict": "better",
-    "verse": 245,
-    "best": 790,
-    "evidence": "Verse 245 ms to the load event (median of 3, phone width) vs GitHub 790 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:44:15.483Z"
+    "verse": 235,
+    "best": 667,
+    "evidence": "Verse 235 ms to the load event (median of 3, phone width) vs GitHub 667 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs GitHub 3 of 3 loads answered",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs GitHub 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs GitHub 0 unnamed controls or images",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs GitHub 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs GitHub 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 45,
     "evidence": "Verse 0 design defects vs GitHub 45 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), GitHub (0 low-contrast texts, 44 small tap targets, layout shift 0.23)",
-    "at": "2026-10-25T11:44:15.483Z"
+    "at": "2026-10-26T07:40:03.429Z"
    }
   },
   "translate: tradukka.com": {
@@ -17410,6 +17410,485 @@
     "at": "2026-10-26T06:16:35.423Z",
     "of": 12
    }
+  },
+  "jobs: arbeitnow.com": {
+   "speed": {
+    "verdict": "better",
+    "verse": 274,
+    "best": 296,
+    "evidence": "Verse (/jobs/europe/) 274 ms to the load event (median of 3, phone width) vs arbeitnow.com 296 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 3 of 3 loads answered vs arbeitnow.com 3 of 3 loads answered",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 0 px sideways overflow at 390 px vs arbeitnow.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 0 unnamed controls or images vs arbeitnow.com 0 unnamed controls or images",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/jobs/europe/) 1 (1: the page shows itself again with the network cut) vs arbeitnow.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs arbeitnow.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/europe/) 4 of 4 right against the worked-out answer; judged against the standard, not arbeitnow.com (the site is not asked)",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 30,
+    "best": 104,
+    "evidence": "Verse (/jobs/europe/) 30 design defects vs arbeitnow.com 104 design defects: Verse (30 low-contrast texts, 0 small tap targets, layout shift 0.01), arbeitnow.com (1 low-contrast texts, 103 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:26:17.178Z"
+   },
+   "jobs open in Germany": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "visa sponsorship filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "remote filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "German and English": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/europe/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 12,
+    "best": 3,
+    "evidence": "Verse (/jobs/europe/) 12 of 12 things a full answer shows vs arbeitnow.com 3 of 12 things a full answer shows (Verse lacks: none; site lacks: Europe, place, keyword, salary, job type, saved jobs, alerts, no account, works offline)",
+    "at": "2026-10-26T07:26:17.178Z",
+    "of": 12
+   }
+  },
+  "jobs: himalayas.app": {
+   "reliability": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 3 of 3 loads answered vs himalayas.app 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 150,
+    "best": 200,
+    "evidence": "Verse (/jobs/salary/) 150 ms to the load event (median of 3, phone width) vs the bar (himalayas.app unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 0 px sideways overflow at 390 px vs the bar (himalayas.app unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 0 unnamed controls or images vs the bar (himalayas.app unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 (1: the page shows itself again with the network cut) vs the bar (himalayas.app unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/salary/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (himalayas.app unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 30,
+    "best": 0,
+    "evidence": "Verse (/jobs/salary/) 30 design defects vs the bar (himalayas.app unreachable) 0 design defects",
+    "at": "2026-10-26T07:26:38.931Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/jobs/salary/) 5 of 5 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 5
+   },
+   "completeness": {
+    "verdict": "equal-and-better",
+    "verse": 11,
+    "best": 11,
+    "evidence": "Verse (/jobs/salary/) 11 of 11 things a full answer shows vs the bar (himalayas.app unreachable) 11 of 11 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 11
+   },
+   "salary filter": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "highest paid first": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "seniority": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   },
+   "time zones": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/salary/) 1 of 1 shown vs the bar (himalayas.app unreachable) 1 of 1 shown (Verse lacks: none)",
+    "at": "2026-10-26T07:26:38.931Z",
+    "of": 1,
+    "part": true
+   }
+  },
+  "unit converter: convertlive.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 75,
+    "best": 548,
+    "evidence": "Verse (/convert/unit-converter/) 75 ms to the load event (median of 3, phone width) vs convertlive.com 548 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/convert/unit-converter/) 3 of 3 loads answered vs convertlive.com 3 of 3 loads answered",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter/) 0 px sideways overflow at 390 px vs convertlive.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter/) 0 unnamed controls or images vs convertlive.com 0 unnamed controls or images",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter/) 1 (1: the page shows itself again with the network cut) vs convertlive.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse (/convert/unit-converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertlive.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/convert/unit-converter/) 1 of 1 right against the worked-out answer; judged against the standard, not convertlive.com (the site is not asked)",
+    "at": "2026-10-26T07:36:51.974Z",
+    "of": 1
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 180,
+    "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.09)",
+    "at": "2026-10-26T07:36:51.974Z"
+   },
+   "unit breadth": {
+    "verdict": "better",
+    "verse": 21,
+    "best": 13,
+    "evidence": "Verse (/convert/unit-converter/) 21 of 21 shown vs convertlive.com 13 of 21 shown (Verse lacks: none; site lacks: temperature, fuel consumption, frequency, heat, light, electricity, magnetism, radiology)",
+    "at": "2026-10-26T07:36:51.974Z",
+    "of": 21,
+    "part": true
+   },
+   "both directions": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter/) 2 of 2 shown vs convertlive.com 0 of 2 shown (Verse lacks: none; site lacks: swap, from and to)",
+    "at": "2026-10-26T07:36:51.974Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 31,
+    "best": 15,
+    "evidence": "Verse (/convert/unit-converter/) 31 of 31 things a full answer shows vs convertlive.com 15 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, temperature, fuel consumption, frequency, engineering, heat, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Many units per kind, Engineering converters, Heat converters)",
+    "at": "2026-10-26T07:36:51.974Z",
+    "of": 31
+   }
+  },
+  "unit converter: convertunits.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 123,
+    "best": 1018,
+    "evidence": "Verse (/convert/unit-converter-2/) 123 ms to the load event (median of 3, phone width) vs convertunits.com 1018 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/convert/unit-converter-2/) 3 of 3 loads answered vs convertunits.com 3 of 3 loads answered",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter-2/) 0 px sideways overflow at 390 px vs convertunits.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter-2/) 0 unnamed controls or images vs convertunits.com 0 unnamed controls or images",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/convert/unit-converter-2/) 1 (1: the page shows itself again with the network cut) vs convertunits.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 2,
+    "evidence": "Verse (/convert/unit-converter-2/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertunits.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/convert/unit-converter-2/) 1 of 1 right against the worked-out answer; judged against the standard, not convertunits.com (the site is not asked)",
+    "at": "2026-10-26T07:40:46.485Z",
+    "of": 1
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 169,
+    "evidence": "Verse (/convert/unit-converter-2/) 0 design defects vs convertunits.com 169 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertunits.com (95 low-contrast texts, 74 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:40:46.485Z"
+   },
+   "unit breadth": {
+    "verdict": "better",
+    "verse": 21,
+    "best": 16,
+    "evidence": "Verse (/convert/unit-converter-2/) 21 of 21 shown vs convertunits.com 16 of 21 shown (Verse lacks: none; site lacks: fuel consumption, heat, light, magnetism, radiology)",
+    "at": "2026-10-26T07:40:46.485Z",
+    "of": 21,
+    "part": true
+   },
+   "both directions": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 1,
+    "evidence": "Verse (/convert/unit-converter-2/) 2 of 2 shown vs convertunits.com 1 of 2 shown (Verse lacks: none; site lacks: swap)",
+    "at": "2026-10-26T07:40:46.485Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 31,
+    "best": 19,
+    "evidence": "Verse (/convert/unit-converter-2/) 31 of 31 things a full answer shows vs convertunits.com 19 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, fuel consumption, engineering, heat, light, magnetism, radiology, a swap or reverse control, the formula, precision, Engineering converters, Heat converters)",
+    "at": "2026-10-26T07:40:46.485Z",
+    "of": 31
+   }
+  },
+  "jobs: remotive.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 96,
+    "best": 175,
+    "evidence": "Verse (/jobs/categories/) 96 ms to the load event (median of 3, phone width) vs remotive.com 175 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/jobs/categories/) 3 of 3 loads answered vs remotive.com 3 of 3 loads answered",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/categories/) 0 px sideways overflow at 390 px vs remotive.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/jobs/categories/) 0 unnamed controls or images vs remotive.com 0 unnamed controls or images",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/jobs/categories/) 1 (1: the page shows itself again with the network cut) vs remotive.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/jobs/categories/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs remotive.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/jobs/categories/) 4 of 4 right against the worked-out answer; judged against the standard, not remotive.com (the site is not asked)",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 21,
+    "best": 108,
+    "evidence": "Verse (/jobs/categories/) 21 design defects vs remotive.com 108 design defects: Verse (21 low-contrast texts, 0 small tap targets, layout shift 0.01), remotive.com (12 low-contrast texts, 96 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:40:26.894Z"
+   },
+   "categories with counts": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/categories/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 1,
+    "part": true
+   },
+   "keyword search": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/categories/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 1,
+    "part": true
+   },
+   "job type": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/categories/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 1,
+    "part": true
+   },
+   "source credited": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/jobs/categories/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 11,
+    "best": 2,
+    "evidence": "Verse (/jobs/categories/) 11 of 11 things a full answer shows vs remotive.com 2 of 11 things a full answer shows (Verse lacks: none; site lacks: categories, keyword, place, job type, date posted, saved jobs, source credited, no account, works offline)",
+    "at": "2026-10-26T07:40:26.894Z",
+    "of": 11
+   }
   }
  },
  "icons": {
@@ -17584,6 +18063,11 @@
   "clock7.com": "tower.icons/clock7.com.png",
   "co2.myclimate.org": "tower.icons/co2.myclimate.org.png",
   "abacktools.com": "tower.icons/abacktools.com.png",
-  "flightconnections.com": "tower.icons/flightconnections.com.png"
+  "flightconnections.com": "tower.icons/flightconnections.com.png",
+  "arbeitnow.com": "tower.icons/arbeitnow.com.png",
+  "himalayas.app": "tower.icons/himalayas.app.ico",
+  "convertlive.com": "tower.icons/convertlive.com.png",
+  "convertunits.com": "tower.icons/convertunits.com.ico",
+  "remotive.com": "tower.icons/remotive.com.png"
  }
 }

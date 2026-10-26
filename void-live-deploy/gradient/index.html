@@ -54,6 +54,7 @@
 <link rel="modulepreload" href="/lib/tool-sites.js">
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/gradient.js">
 <link rel="modulepreload" href="/lib/colour.js">
 <!-- /modulepreload -->
@@ -89,7 +90,7 @@
   <textarea id="paste" spellcheck="false" aria-label="Paste a CSS gradient" placeholder="Paste a gradient: linear-gradient(to right, #ff5f6d, #ffc371)"></textarea>
   <div class="row"><button type="button" id="import">Read it</button><label for="pic">or take the colours from a picture</label><input id="pic" type="file" accept="image/*"></div>
   <div id="note" role="status" aria-live="polite"></div>
-  <nav id="related" aria-label="Related tools"></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/wheel/">Wheel of names</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Click the bar to add a stop; drag a stop's slider to move it. A picture is read on this device, along its middle from left to right, and never sent. The fallback colour is the stops' average, for browsers without gradients. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
