@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 873,
+ "counted": 874,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1687,7 +1687,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 20,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/near-miss.js",
@@ -1926,6 +1926,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/free-pics.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/honest.js",
@@ -2543,7 +2550,9 @@
     "functions/api/card-art.js",
     "functions/api/image.js",
     "lib/daily-art.js",
-    "lib/daily-photo.js"
+    "lib/daily-photo.js",
+    "lib/free-pics.js",
+    "lib/daily-cap.js"
    ],
    "importedBy": []
   },
@@ -4438,12 +4447,12 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/daily-art.js",
     "functions/api/report.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
-    "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/markets.js",
@@ -4905,6 +4914,12 @@
    "imports": [],
    "importedBy": [
     "skills/forge.js"
+   ]
+  },
+  "lib/free-pics.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/daily-art.js"
    ]
   },
   "lib/fuzzy.js": {

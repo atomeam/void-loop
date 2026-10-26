@@ -491,6 +491,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:34:02Z",
+   "subject": "Tower gate: finance,finance: stockq.org,finance: stooq.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:33:00Z",
+   "subject": "Tower gate: finance: macrotrends.net,finance: investing.com,finance: finviz.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:32:08Z",
+   "subject": "Free pictures: one registry of open-licensed picture sources, a probe, docs and tests"
+  },
+  {
+   "at": "2026-10-26T04:25:39Z",
+   "subject": "Markets: the quote answers a burst without the limiter, the record first, a stale copy on a bad moment, and says so when it cannot load"
+  },
+  {
+   "at": "2026-10-26T04:21:56Z",
+   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:19:51Z",
+   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:19:32Z",
+   "subject": "Tower gate: finance,finance: investing.com,finance: finviz.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net measured…"
+  },
+  {
+   "at": "2026-10-26T04:18:47Z",
+   "subject": "Sports and scores pages: a real share picture each (og/scores.png, og/sports.png, drawn by tools/og-sports.mjs) and a Share link button on…"
+  },
+  {
    "at": "2026-10-26T04:16:40Z",
    "subject": "Tower gate: finance: stockanalysis.com,finance: tradingview.com,finance: barchart.com,music: virtualpiano.net,music measured against their…"
   },
@@ -537,38 +569,6 @@
   {
    "at": "2026-10-26T04:05:35Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:05:22Z",
-   "subject": "Site reverse engineering: ad frames, ad and analytics storage keys and one-page sections are not candidates; the first six scans re-folded"
-  },
-  {
-   "at": "2026-10-26T04:04:33Z",
-   "subject": "Site reverse engineering: kanban-wekan.fi,pdf-10015.io,photos-exif.tools,photos-exifeditor.io,photos-squoosh.app,sports-thesportsdb.com…"
-  },
-  {
-   "at": "2026-10-26T04:03:57Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos,pdf: codeshack.io measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:03:19Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:03:03Z",
-   "subject": "Site reverse engineering: every tower site's client code read once for hidden features (URL parameters, shortcuts, API paths, flags…"
-  },
-  {
-   "at": "2026-10-26T04:02:47Z",
-   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance: finviz.com,finance: investing.com,finance measured against…"
-  },
-  {
-   "at": "2026-10-26T04:02:30Z",
-   "subject": "photos e2e: give the WebP re-encode longer on a busy machine"
-  },
-  {
-   "at": "2026-10-26T04:02:23Z",
-   "subject": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\""
   }
  ],
  "builders": {
