@@ -2407,59 +2407,59 @@
   "news": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 101,
-    "best": 1122,
-    "evidence": "Verse (/news/?sec=world) 101 ms to the load event (median of 3, phone width) vs BBC News 1122 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:08:39.745Z"
+    "verse": 117,
+    "best": 1050,
+    "evidence": "Verse (/news/?sec=world) 117 ms to the load event (median of 3, phone width) vs BBC News 1050 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs BBC News 3 of 3 loads answered",
-    "at": "2026-10-26T03:08:39.745Z"
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs BBC News 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:08:39.745Z"
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 16,
-    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs BBC News 16 unnamed controls or images",
-    "at": "2026-10-26T03:08:39.745Z"
+    "best": 15,
+    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs BBC News 15 unnamed controls or images",
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs BBC News 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:08:39.745Z"
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs BBC News 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:08:39.745Z"
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 2,
+    "verse": 0,
     "best": 30,
-    "evidence": "Verse (/news/?sec=world) 2 design defects vs BBC News 30 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), BBC News (0 low-contrast texts, 30 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T03:08:39.745Z"
+    "evidence": "Verse (/news/?sec=world) 0 design defects vs BBC News 30 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), BBC News (0 low-contrast texts, 30 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T03:30:15.487Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not BBC News (the site is not asked)",
-    "at": "2026-10-26T03:08:39.745Z",
+    "at": "2026-10-26T03:30:15.487Z",
     "of": 3
    },
    "breadth of sources": {
@@ -2467,16 +2467,16 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs BBC News 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
-    "at": "2026-10-26T03:08:39.745Z",
+    "at": "2026-10-26T03:30:15.487Z",
     "of": 1,
     "part": true
    },
    "freshness": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 1,
-    "best": 1,
-    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs BBC News 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T03:08:39.745Z",
+    "best": 0,
+    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs BBC News 0 of 1 shown (Verse lacks: none; site lacks: ages)",
+    "at": "2026-10-26T03:30:15.487Z",
     "of": 1,
     "part": true
    },
@@ -2485,7 +2485,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs BBC News 1 of 2 shown (Verse lacks: none; site lacks: my news)",
-    "at": "2026-10-26T03:08:39.745Z",
+    "at": "2026-10-26T03:30:15.487Z",
     "of": 2,
     "part": true
    },
@@ -2494,7 +2494,7 @@
     "verse": 23,
     "best": 6,
     "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs BBC News 6 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, science, regions, search, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
-    "at": "2026-10-26T03:08:39.745Z",
+    "at": "2026-10-26T03:30:15.487Z",
     "of": 23
    }
   },
@@ -11754,52 +11754,52 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 129,
-    "best": 848,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 129 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 848 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:09:29.328Z"
+    "verse": 90,
+    "best": 964,
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 90 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 964 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:09:29.328Z"
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:09:29.328Z"
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T03:09:29.328Z"
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "offline": {
-    "verdict": "better",
+    "verdict": "unverified",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:09:29.328Z"
+    "best": null,
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com null (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "unverified",
     "verse": 4,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:09:29.328Z"
+    "best": null,
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com null of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:26:39.456Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 of 3 right against the worked-out answer (missed: the close on 31 Dec 2024 is 250.42, the symbol and its currency, from the answer, a price with cents); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 – Dow Jones – Nasdaq 100 – Bitc\"",
-    "at": "2026-10-26T03:09:29.328Z",
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not companiesmarketcap.com (the site is not asked)",
+    "at": "2026-10-26T03:26:39.456Z",
     "of": 3
    },
    "design polish": {
@@ -11810,20 +11810,20 @@
     "at": "2026-10-26T03:09:29.328Z"
    },
    "live quotes": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price with its move in percent, the source named, a 52-week range of two prices; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:09:29.328Z",
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:26:39.456Z",
     "of": 3,
     "part": true
    },
    "charts": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: the move over the range, from the drawn series, a hover readout; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:09:29.328Z",
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:26:39.456Z",
     "of": 3,
     "part": true
    },
@@ -11832,17 +11832,17 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T03:09:29.328Z",
+    "at": "2026-10-26T03:26:39.456Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
-    "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs companiesmarketcap.com 1 of 18 things a full answer shows (Verse lacks: none; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article)",
-    "at": "2026-10-26T03:09:29.328Z",
-    "of": 18
+    "verse": 21,
+    "best": 0,
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs companiesmarketcap.com 0 of 21 things a full answer shows (Verse lacks: none; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Links, Stock Market News, Sources & Further Reading)",
+    "at": "2026-10-26T03:26:39.456Z",
+    "of": 21
    }
   },
   "finance: stockanalysis.com": {
@@ -11945,72 +11945,72 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs investing.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 90,
+    "verse": 104,
     "best": 200,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 90 ms to the load event (median of 3, phone width) vs the bar (investing.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:08:44.643Z"
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 104 ms to the load event (median of 3, phone width) vs the bar (investing.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (investing.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (investing.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (investing.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (investing.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs the bar (investing.com unreachable) 0 design defects",
-    "at": "2026-10-26T03:08:44.643Z"
+    "at": "2026-10-26T03:27:39.975Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:08:44.643Z",
+    "at": "2026-10-26T03:27:39.975Z",
     "of": 3
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 17,
-    "best": 18,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 17 of 18 things a full answer shows vs the bar (investing.com unreachable) 18 of 18 things a full answer shows (Verse lacks: the price and its change in percent)",
-    "at": "2026-10-26T03:08:44.643Z",
-    "of": 18
+    "verdict": "equal-and-better",
+    "verse": 21,
+    "best": 21,
+    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs the bar (investing.com unreachable) 21 of 21 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:27:39.975Z",
+    "of": 21
    },
    "live quotes": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:44.643Z",
+    "at": "2026-10-26T03:27:39.975Z",
     "of": 3,
     "part": true
    },
@@ -12019,7 +12019,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:44.643Z",
+    "at": "2026-10-26T03:27:39.975Z",
     "of": 3,
     "part": true
    },
@@ -12028,7 +12028,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (investing.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:44.643Z",
+    "at": "2026-10-26T03:27:39.975Z",
     "of": 2,
     "part": true
    }
@@ -12415,56 +12415,56 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs allsides.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:09:24.147Z"
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 132,
+    "verse": 118,
     "best": 200,
-    "evidence": "Verse (/news/?sec=world) 132 ms to the load event (median of 3, phone width) vs the bar (allsides.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:09:24.147Z"
+    "evidence": "Verse (/news/?sec=world) 118 ms to the load event (median of 3, phone width) vs the bar (allsides.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs the bar (allsides.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:09:24.147Z"
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs the bar (allsides.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:09:24.147Z"
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs the bar (allsides.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:09:24.147Z"
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (allsides.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:09:24.147Z"
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/news/?sec=world) 2 design defects vs the bar (allsides.com unreachable) 0 design defects",
-    "at": "2026-10-26T03:09:24.147Z"
+    "evidence": "Verse (/news/?sec=world) 0 design defects vs the bar (allsides.com unreachable) 0 design defects",
+    "at": "2026-10-26T03:27:56.882Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:09:24.147Z",
+    "at": "2026-10-26T03:27:56.882Z",
     "of": 3
    },
    "completeness": {
@@ -12472,7 +12472,7 @@
     "verse": 23,
     "best": 23,
     "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs the bar (allsides.com unreachable) 23 of 23 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-26T03:09:24.147Z",
+    "at": "2026-10-26T03:27:56.882Z",
     "of": 23
    },
    "breadth of sources": {
@@ -12480,7 +12480,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (allsides.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:09:24.147Z",
+    "at": "2026-10-26T03:27:56.882Z",
     "of": 1,
     "part": true
    },
@@ -12489,7 +12489,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (allsides.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:09:24.147Z",
+    "at": "2026-10-26T03:27:56.882Z",
     "of": 1,
     "part": true
    },
@@ -12498,7 +12498,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs the bar (allsides.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:09:24.147Z",
+    "at": "2026-10-26T03:27:56.882Z",
     "of": 2,
     "part": true
    }
@@ -13919,56 +13919,56 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs apnews.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:12:12.121Z"
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 100,
+    "verse": 128,
     "best": 200,
-    "evidence": "Verse (/news/?sec=world) 100 ms to the load event (median of 3, phone width) vs the bar (apnews.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:12:12.121Z"
+    "evidence": "Verse (/news/?sec=world) 128 ms to the load event (median of 3, phone width) vs the bar (apnews.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs the bar (apnews.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:12:12.121Z"
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs the bar (apnews.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:12:12.121Z"
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs the bar (apnews.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:12:12.121Z"
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (apnews.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:12:12.121Z"
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "design polish": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/news/?sec=world) 2 design defects vs the bar (apnews.com unreachable) 0 design defects",
-    "at": "2026-10-26T03:12:12.121Z"
+    "evidence": "Verse (/news/?sec=world) 0 design defects vs the bar (apnews.com unreachable) 0 design defects",
+    "at": "2026-10-26T03:28:33.468Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:12:12.121Z",
+    "at": "2026-10-26T03:28:33.468Z",
     "of": 3
    },
    "completeness": {
@@ -13976,7 +13976,7 @@
     "verse": 23,
     "best": 23,
     "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs the bar (apnews.com unreachable) 23 of 23 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-26T03:12:12.121Z",
+    "at": "2026-10-26T03:28:33.468Z",
     "of": 23
    },
    "breadth of sources": {
@@ -13984,7 +13984,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (apnews.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:12:12.121Z",
+    "at": "2026-10-26T03:28:33.468Z",
     "of": 1,
     "part": true
    },
@@ -13993,7 +13993,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs the bar (apnews.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:12:12.121Z",
+    "at": "2026-10-26T03:28:33.468Z",
     "of": 1,
     "part": true
    },
@@ -14002,7 +14002,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs the bar (apnews.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:12:12.121Z",
+    "at": "2026-10-26T03:28:33.468Z",
     "of": 2,
     "part": true
    }
