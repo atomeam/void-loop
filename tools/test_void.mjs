@@ -5882,9 +5882,10 @@ try {
     await Z.p.fill('#text', '😀'); await Z.p.selectOption('#alpha', 'url'); await Z.p.uncheck('#pad'); const url = await Z.p.$eval('#b64', (e) => e.value);
     await Z.p.setInputFiles('#file', { name: 'x.png', mimeType: 'image/png', buffer: Buffer.from([137, 80, 78, 71]) }); await Z.p.waitForTimeout(200);
     const file = await Z.p.$eval('#fileout', (e) => e.value);
+    const body = await Z.p.evaluate(() => document.body.innerText);
     check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
       linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
-      && file === 'data:image/png;base64,iVBORw==' && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, errors: Z.errors }));
+      && file === 'data:image/png;base64,iVBORw==' && /sister site base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /sister site base64decode\.org/.test(body), errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
