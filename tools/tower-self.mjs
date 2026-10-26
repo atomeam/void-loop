@@ -70,7 +70,7 @@ const norm = (s) => String(s || '').toLowerCase().replace(/colour/g, 'color');
 /** the words that tie a site to a family: its label, its aspects and its page's description, as stems. Pure. */
 export const familyWords = (fam) => [...new Set([fam.id, fam.label, ...(fam.extra || []), fam.title].flatMap((x) => keywordsOf(norm(x))))].filter((w) => w.length >= 4);
 /** whether a site's text shares a family's words (the model's choice is checked against what the site says). Pure. */
-export const sharesWords = (fam, text) => { const t = norm(text); return familyWords(fam).some((w) => new RegExp('(?<![a-z])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i').test(t)); };
+export const sharesWords = (fam, text) => { const t = norm(text); return familyWords(fam).some((w) => new RegExp('(?<![a-z])' + w.slice(0, Math.max(4, Math.min(w.length, 6))).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i').test(t)); }; // 'converter' meets 'convert'
 
 // ---- pick ----
 /** the next sites to read: the frontier easiest first, never a site that is already a floor, a site blocked by its own wall, or one tried lately
@@ -95,7 +95,7 @@ const SLUG = /^[a-z][a-z0-9-]{1,30}[a-z0-9]$/;
  *  of what the page does must stand on the family's page (nothing it does not do), no site is named, no key, no markup. Pure. */
 export function validTexts(t, { host, baseText, fam }) {
   const x = t || {}, brands = brandTokens(host), bad = [];
-  const out = { name: clip(x.name, 60), h1: clip(x.h1 || x.name, 70), intro: clip(x.intro, 320), does: clip(x.does, 320), asks: [...new Set((Array.isArray(x.asks) ? x.asks : []).map((a) => clip(a, 60).toLowerCase()).filter((a) => a.length >= 3))].slice(0, 8), slug: String(x.slug || '').toLowerCase().trim() };
+  const out = { name: clip(x.name, 60), h1: clip(x.h1 || x.name, 70), intro: sentences(x.intro, 320), does: sentences(x.does, 320), asks: [...new Set((Array.isArray(x.asks) ? x.asks : []).map((a) => clip(a, 60).toLowerCase()).filter((a) => a.length >= 3))].slice(0, 8), slug: String(x.slug || '').toLowerCase().trim() };
   if (out.name.length < 3 || out.intro.length < 30 || out.does.length < 41 || out.asks.length < 3) bad.push('too short');
   if (fam && out.asks.length < 5) out.asks = [...new Set([...out.asks, ...(fam.asks || [])])].slice(0, 6);
   if (out.asks.length < 5) bad.push('fewer than five asks');
@@ -113,7 +113,9 @@ export function validTexts(t, { host, baseText, fam }) {
   return bad.length ? { problem: bad.join('; ') } : out;
 }
 /** the words a page gets when the model's are refused: its family page's own, so nothing is said that the page does not do. Pure. */
-export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60), h1: clip(fam.title || fam.label, 70), intro: clip(fam.does, 320), does: clip(fam.does, 320), asks: (fam.asks || []).slice(0, 6), slug: '' });
+/** text cut to `n` characters at the end of a sentence, never mid-sentence. Pure. */
+export const sentences = (t, n) => { const c = clip(t, 2000); if (c.length <= n) return c; const cut = c.slice(0, n), at = cut.lastIndexOf('. '); return at > n / 3 ? cut.slice(0, at + 1) : cut.replace(/[,;:]?\s+\S*$/, '') + '.'; };
+export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60), h1: clip(fam.title || fam.label, 70), intro: sentences(fam.does, 320), does: sentences(fam.does, 320), asks: (fam.asks || []).slice(0, 6), slug: '' });
 /** a free folder under the family's page for the row: the model's slug, else the family's own words, never one taken. Pure. */
 export function slugFor(want, fam, taken) {
   const base = SLUG.test(want || '') ? want : (keywordsOf(fam.label).join('-') || 'more').replace(/[^a-z0-9-]/g, '') + '-tool';
@@ -241,7 +243,7 @@ export function writePages(rows = SELF_SITES) {
 }
 async function apply(decisionFile) {
   const d = readJson(decisionFile, null); if (!d) { console.error('no decision'); process.exit(2); }
-  const have = new Set(SELF_SITES.map((r) => r.lane)), rows = [...SELF_SITES, ...(d.rows || []).filter((r) => !have.has(r.lane))];
+  const have = new Set(SELF_SITES.map((r) => r.lane)), rows = [...SELF_SITES, ...(d.rows || []).filter((r) => !have.has(r.lane))].map((r) => ({ ...r, intro: sentences(r.intro, 320), does: sentences(r.does, 320) }));
   fs.writeFileSync(ROWS, rowsModule(rows));
   const wrote = writePages(rows); let sw = fs.readFileSync(SW, 'utf8'); for (const r of rows) sw = swWith(sw, r.path); fs.writeFileSync(SW, sw);
   if (Object.keys(d.features || {}).length) {
