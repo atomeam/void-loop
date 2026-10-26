@@ -26,7 +26,8 @@
      "detail": "Description, episodes, ratings and reviews, related shows",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "/podcasts/ show page: cover, author, description, episodes with dates, lengths and notes, follow, share, play latest, unplayed filter and sort. No ratings, reviews or related shows"
+     "verse_evidence": "/podcasts/ show page: cover, author, description, episodes with dates, lengths and notes, follow, share, play latest, unplayed filter and sort. No ratings, reviews or related shows",
+     "shows": "Play latest"
     },
     {
      "group": "core",

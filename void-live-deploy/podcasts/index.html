@@ -72,6 +72,9 @@
   /* a link that carries a show draws it after load; until that first draw only the title, its line and the search stay visible, so nothing jumps */
   html.pre main > :not(h1):not(.sub):not(#f) { visibility: hidden; }
 </style>
+<!-- the two modules the page loads after load, named so the service worker keeps them with the page and it opens offline (they are dynamic imports, so tools/preload.mjs does not list them) -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/podcasts.js">
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/podcasts/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Podcasts","url":"https://a-to-mind.com/podcasts/","description":"Search millions of podcasts or paste any RSS link. Play with speed from 0.5x to 3x, skip back 15 and forward 30, a sleep timer, chapters, transcripts, a queue and your place saved per episode. Follow shows and see new episodes, save episodes for offline, import and export OPML. All kept on your device, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"podcasts, search podcasts, podcast player, podcast app without an account, play a podcast rss feed, top podcasts, podcast sleep timer and speed, import opml podcasts","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/podcasts/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Podcasts","item":"https://a-to-mind.com/podcasts/"}]}]}</script>
@@ -135,8 +138,9 @@
 <script type="module">
   // everything after the first paint: the page shows its box, its words and the pinned show at once; the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, P] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js')]);
-    const $ = (id) => document.getElementById(id), au = $('au');
+    const $ = (id) => document.getElementById(id);
+    let mountRelated, P; try { [{ mountRelated }, P] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
+    const au = $('au');
     const KEY = 'a2m.void.podcasts.v1', CACHE = 'a2m-podcast-audio-v1', MAX_EP = 150 * 1048576, MAX_ALL = 1024 * 1048576, SELF = 'https://a-to-mind.com/podcast/rss.xml';
     const h = (t, a, ...k) => { const e = document.createElement(t); for (const [n, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (n === 'class') e.className = v; else if (n === 'text') e.textContent = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else e.setAttribute(n, v === true ? '' : v); } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); } return e; };
     const okImg = (u) => /^https:\/\//.test(u || '') || /^\/(?!\/)/.test(u || '');
@@ -159,7 +163,7 @@
       return { ok: false, kind: 'away', say: 'The directory did not answer just now.' };
     }
     async function getShow(spec) {
-      if (spec.verse || spec.feed === SELF) { try { const r = await fetch('/podcast/episodes.json'); return P.verseShow(await r.json()); } catch (_) {} }
+      if (spec.verse || spec.feed === SELF) { try { const r = await fetch('/podcast/episodes.json'); const v = P.verseShow(await r.json()); cacheShow({ ...v, episodes: v.episodes.map(({ transcriptLines, ...e }) => e) }); return v; } catch (_) { const c = S.cache[SELF]; if (c) return { ...c, offline: true }; } }
       const r = await api(spec.id ? 'id=' + encodeURIComponent(spec.id) : 'feed=' + encodeURIComponent(spec.feed));
       if (r.ok && r.show) { const sh = r.show; if (spec.id) sh.id = spec.id; cacheShow(sh); return sh; }
       const c = S.cache[spec.feed || ''] || Object.values(S.cache).find((x) => spec.id && x.id === spec.id); if (c) return { ...c, offline: true };
@@ -405,5 +409,6 @@
     setTimeout(refreshFollows, 1500); // new episodes of followed shows, after the page is up
   });
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
