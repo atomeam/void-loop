@@ -10264,52 +10264,52 @@
   "sports: thesportsdb.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 186,
-    "best": 382,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 186 ms to the load event (median of 3, phone width) vs thesportsdb.com 382 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T02:20:57.880Z"
+    "verse": 133,
+    "best": 418,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 133 ms to the load event (median of 3, phone width) vs thesportsdb.com 418 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "reliability": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
-    "at": "2026-10-26T02:20:57.880Z"
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs thesportsdb.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T02:20:57.880Z"
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 146,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs thesportsdb.com 146 unnamed controls or images",
-    "at": "2026-10-26T02:20:57.880Z"
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T02:20:57.880Z"
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T02:20:57.880Z"
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 of 3 right against the worked-out answer (missed: Arsenal against Southampton, all ten games of the day finished (FT), a score beside Arsenal); judged against the standard, not thesportsdb.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /scores/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T02:20:57.880Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not thesportsdb.com (the site is not asked)",
+    "at": "2026-10-26T02:22:53.321Z",
     "of": 3
    },
    "design polish": {
@@ -10317,14 +10317,14 @@
     "verse": 0,
     "best": 59,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs thesportsdb.com 59 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 59 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T02:20:57.880Z"
+    "at": "2026-10-26T02:22:53.321Z"
    },
    "live scores": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T02:20:57.880Z",
+    "at": "2026-10-26T02:22:53.321Z",
     "of": 3,
     "part": true
    },
@@ -10333,7 +10333,7 @@
     "verse": 2,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 2 of 3 shown for the question (Verse lacks: next games); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T02:20:57.880Z",
+    "at": "2026-10-26T02:22:53.321Z",
     "of": 3,
     "part": true
    },
@@ -10342,16 +10342,16 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T02:20:57.880Z",
+    "at": "2026-10-26T02:22:53.321Z",
     "of": 3,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 15,
     "best": 1,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 of 18 things a full answer shows vs thesportsdb.com 1 of 18 things a full answer shows (Verse lacks: the day's games, a day picker, standings, leagues, match details, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, NBA, works offline, Live scoreboard, Box scores, Schedules, Favourites; site lacks: the day's games, a day picker, standings, leagues, match details, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, NBA, works offline, Live scoreboard, Box scores, Favourites)",
-    "at": "2026-10-26T02:20:57.880Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 15 of 18 things a full answer shows vs thesportsdb.com 1 of 18 things a full answer shows (Verse lacks: Live scoreboard, Box scores, Favourites; site lacks: the day's games, a day picker, standings, leagues, match details, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, NBA, works offline, Live scoreboard, Box scores, Favourites)",
+    "at": "2026-10-26T02:22:53.321Z",
     "of": 18
    }
   },
@@ -10542,6 +10542,194 @@
     "at": "2026-10-26T02:22:02.616Z",
     "of": 18
    }
+  },
+  "sports: onefootball.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 98,
+    "best": 2029,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 98 ms to the load event (median of 3, phone width) vs onefootball.com 2029 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs onefootball.com 3 of 3 loads answered",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs onefootball.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 28,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs onefootball.com 28 unnamed controls or images",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs onefootball.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onefootball.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not onefootball.com (the site is not asked)",
+    "at": "2026-10-26T02:23:24.694Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 37,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs onefootball.com 37 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), onefootball.com (0 low-contrast texts, 37 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T02:23:24.694Z"
+   },
+   "live scores": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:24.694Z",
+    "of": 3,
+    "part": true
+   },
+   "schedules": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 2 of 3 shown for the question (Verse lacks: next games); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:24.694Z",
+    "of": 3,
+    "part": true
+   },
+   "standings": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:24.694Z",
+    "of": 3,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 15,
+    "best": 4,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 15 of 18 things a full answer shows vs onefootball.com 4 of 18 things a full answer shows (Verse lacks: Live scoreboard, Box scores, Favourites; site lacks: the day's games, a day picker, standings, my teams, the source named, delayed data said, no betting, Formula 1, NBA, works offline, Live scoreboard, Box scores, Schedules, Favourites)",
+    "at": "2026-10-26T02:23:24.694Z",
+    "of": 18
+   }
+  },
+  "sports: 365scores.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 104,
+    "best": 486,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 104 ms to the load event (median of 3, phone width) vs 365scores.com 486 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs 365scores.com 3 of 3 loads answered",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs 365scores.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 20,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs 365scores.com 20 unnamed controls or images",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs 365scores.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs 365scores.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not 365scores.com (the site is not asked)",
+    "at": "2026-10-26T02:23:59.998Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 50,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs 365scores.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 365scores.com (15 low-contrast texts, 34 small tap targets, layout shift 0.11)",
+    "at": "2026-10-26T02:23:59.998Z"
+   },
+   "live scores": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:59.998Z",
+    "of": 3,
+    "part": true
+   },
+   "schedules": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 2 of 3 shown for the question (Verse lacks: next games); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:59.998Z",
+    "of": 3,
+    "part": true
+   },
+   "standings": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T02:23:59.998Z",
+    "of": 3,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 15,
+    "best": 3,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 15 of 18 things a full answer shows vs 365scores.com 3 of 18 things a full answer shows (Verse lacks: Live scoreboard, Box scores, Favourites; site lacks: the day's games, a day picker, match details, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, works offline, Live scoreboard, Box scores, Schedules, Favourites)",
+    "at": "2026-10-26T02:23:59.998Z",
+    "of": 18
+   }
   }
  },
  "icons": {
@@ -10660,7 +10848,7 @@
   "4chan.org": "tower.icons/4chan.org.ico",
   "besoccer.com": "tower.icons/besoccer.com.ico",
   "thesportsdb.com": "tower.icons/thesportsdb.com.png",
-  "365scores.com": "tower.icons/365scores.com.svg",
+  "365scores.com": "tower.icons/365scores.com.png",
   "fotmob.com": "tower.icons/fotmob.com.svg",
   "int.soccerway.com": "tower.icons/int.soccerway.com.png",
   "onefootball.com": "tower.icons/onefootball.com.png",
