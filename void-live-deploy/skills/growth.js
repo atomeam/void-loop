@@ -182,6 +182,11 @@ export function growthHead(esc, list, now = Date.now()) {
     + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
+/** the visitors line (self.json people, from domains/traffic.json); '' without one. Pure. */
+export function peopleHtml(esc, p) {
+  return p && typeof p.line === 'string' && p.line ? '<div class="sub growth-people">' + esc(p.line) + '</div>' : '';
+}
+
 /** What Verse asked for that this entry built (GET /api/reflect follow.asked: each built ask with the time of the ledger entry that
  *  built it, on evidence only, lib/voice.js followThrough). Verse asked: "link the growth card branches to the growth inbox so I can
  *  diagnose my own progress". Pure. */
@@ -248,6 +253,11 @@ async function run(text, api) {
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
     if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: probeHtml escapes every value (lib/probe-log.js, tested with markup in a skill name)
+  }).catch(() => {});
+  // who visits (asked of the owner, gathered by Verse itself: tools/traffic.mjs into self.json): "People this week: N (...)", under the velocity
+  fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+    const html = peopleHtml(esc, j && j.people), v = el.querySelector('[data-velocity]');
+    if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html); // void-review: ok: peopleHtml escapes the line
   }).catch(() => {});
   // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
   fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {

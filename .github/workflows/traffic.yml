@@ -1,0 +1,43 @@
+# Does anyone outside us visit Verse? Daily, tools/traffic.mjs reads Cloudflare's analytics for a-to-mind.com when a token can (none can as of
+# 2026-10-26), else Verse's own cookie-less count (/api/visit), and commits domains/traffic.json: counts only, our own runs and bots taken out.
+# The commit is pushed with the workflow's own token, so it starts no deploy; the next deploy puts the line on the growth card (self.json).
+# Playbook: docs/playbooks/traffic.md. Test: tools/traffic.test.mjs.
+name: Traffic
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: traffic
+  cancel-in-progress: false
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Count the visits
+        env:
+          CLOUDFLARE_ANALYTICS_TOKEN: ${{ secrets.CLOUDFLARE_ANALYTICS_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          node tools/traffic.mjs --write | tee traffic.txt
+          { echo '### Traffic'; echo '```'; cat traffic.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit domains/traffic.json
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp domains/traffic.json "$RUNNER_TEMP/traffic.json"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp "$RUNNER_TEMP/traffic.json" domains/traffic.json
+            git add domains/traffic.json
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Traffic: who visited a-to-mind.com, counts only"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done

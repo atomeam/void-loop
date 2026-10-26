@@ -65,6 +65,7 @@ export const LIMITS = {
   comments: { rpm: 60, body: 4000 }, // comments under a published generator and /image/ (functions/api/comments.js): 500 characters, a signed sum, 2 a minute and 15 a day per hashed connection in the route itself
   gallery: { rpm: 60, body: 2000 }, // the public image gallery (functions/api/gallery.js): a share names a picture /api/image made today (no bytes in), votes and reports; limits per hashed connection in the route itself
   generators: { rpm: 60, body: 64000 }, // the generators hub (functions/api/generators.js): a published generator of up to 20,000 characters; 3 publishes a minute, 10 a day per hashed connection in the route itself
+  visit: { rpm: 60, body: 300 }, // who visits Verse (functions/api/visit.js): one beacon per page load, a page path and a referrer host in, counts out; 20 a minute and 300 a day per hashed connection in the route itself, no model
   tally: { rpm: 60, body: 200 }, // everyone's tally (functions/api/tally.js): a closed list (coin: heads, tails) and a count up to 20 in; integers out; 30 a minute and 600 a day per hashed connection in the route itself, no model
   react: { rpm: 60, body: 300 }, // spectator reactions (functions/api/react.js): a closed list of 6 ids and a ledger slug in; integer counts out; 20 a minute and 200 a day per hashed connection in the route itself, no model
   digest: { rpm: 6, body: 70000 }, // Verse reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 896,
+ "counted": 893,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -97,7 +97,7 @@
    "file": "lib/reactions.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 1
   },
   {
@@ -290,13 +290,6 @@
    "tests": 1
   },
   {
-   "file": "lib/job-sites.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/tool-sites.js",
    "skills": 7,
    "direct": 2,
@@ -451,13 +444,6 @@
    "tests": 1
   },
   {
-   "file": "lib/telemetry.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 71,
-   "tests": 1
-  },
-  {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
@@ -577,17 +563,10 @@
    "tests": 2
   },
   {
-   "file": "lib/automation-fix.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 69,
-   "tests": 8
-  },
-  {
-   "file": "lib/ics.js",
+   "file": "lib/telemetry.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 67,
    "tests": 1
   },
   {
@@ -766,6 +745,13 @@
    "tests": 1
   },
   {
+   "file": "lib/automation-fix.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 65,
+   "tests": 8
+  },
+  {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
@@ -774,6 +760,13 @@
   },
   {
    "file": "lib/date-math.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/ics.js",
    "skills": 2,
    "direct": 1,
    "dependants": 5,
@@ -899,13 +892,6 @@
    "tests": 1
   },
   {
-   "file": "lib/privacy.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 25,
-   "tests": 2
-  },
-  {
    "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
@@ -1009,13 +995,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/jobs-core.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/learn.js",
@@ -1567,8 +1546,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
-   "tests": 24
+   "dependants": 66,
+   "tests": 25
   },
   {
    "file": "lib/models.js",
@@ -1674,6 +1653,13 @@
    "direct": 0,
    "dependants": 21,
    "tests": 1
+  },
+  {
+   "file": "lib/privacy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 2
   },
   {
    "file": "lib/report.js",
@@ -2012,13 +1998,6 @@
    "tests": 2
   },
   {
-   "file": "lib/jobs-de.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/kanban.js",
    "skills": 0,
    "direct": 0,
@@ -2118,6 +2097,13 @@
   },
   {
    "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2283,13 +2269,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
-  },
-  {
-   "file": "lib/jobs-ui.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
   },
   {
    "file": "lib/kanban-ui.js",
@@ -2825,12 +2804,6 @@
     "functions/api/image.js"
    ]
   },
-  "functions/api/jobs.js": {
-   "imports": [
-    "lib/jobs-core.js"
-   ],
-   "importedBy": []
-  },
   "functions/api/markets.js": {
    "imports": [
     "functions/api/answer.js",
@@ -3184,6 +3157,14 @@
   "functions/api/video.js": {
    "imports": [
     "lib/video.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/visit.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js",
+    "lib/visits.js"
    ],
    "importedBy": []
   },
@@ -3657,7 +3638,6 @@
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
-    "functions/api/jobs.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -3683,16 +3663,13 @@
     "functions/tools.json.js",
     "lib/built-detail.js",
     "lib/clef.js",
-    "lib/jobs-core.js",
-    "lib/jobs-ui.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
     "skills/repo.js",
-    "skills/routine.js",
-    "skills/work.js"
+    "skills/routine.js"
    ]
   },
   "lib/automations-run.js": {
@@ -5272,6 +5249,7 @@
     "functions/api/support.js",
     "functions/api/tally.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/will.js",
@@ -5425,16 +5403,12 @@
    "imports": [],
    "importedBy": [
     "lib/flights-core.js",
-    "lib/jobs-core.js",
     "lib/ritual.js",
     "skills/calendar-file.js"
    ],
    "reachedBy": [
-    "functions/api/jobs.js",
     "lib/flights-ui.js",
-    "lib/jobs-ui.js",
-    "skills/ritual-template.js",
-    "skills/work.js"
+    "skills/ritual-template.js"
    ]
   },
   "lib/icsfeed.js": {
@@ -5518,49 +5492,6 @@
    "importedBy": [
     "functions/api/queue.js"
    ]
-  },
-  "lib/job-sites.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/tool-sites.js",
-    "lib/toolkit.js"
-   ],
-   "reachedBy": [
-    "lib/card-frame.js",
-    "lib/duel-rules.js",
-    "lib/seo.js",
-    "skills/about-skill.js",
-    "skills/duel.js",
-    "skills/forge-table.js",
-    "skills/kanban-board.js",
-    "skills/merge.js",
-    "skills/pdf-tools.js",
-    "skills/toolkit.js"
-   ]
-  },
-  "lib/jobs-core.js": {
-   "imports": [
-    "lib/privacy.js",
-    "lib/ics.js"
-   ],
-   "importedBy": [
-    "functions/api/jobs.js",
-    "lib/jobs-ui.js",
-    "skills/work.js"
-   ]
-  },
-  "lib/jobs-de.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/jobs-ui.js"
-   ]
-  },
-  "lib/jobs-ui.js": {
-   "imports": [
-    "lib/jobs-core.js",
-    "lib/jobs-de.js"
-   ],
-   "importedBy": []
   },
   "lib/kanban-ui.js": {
    "imports": [
@@ -6845,8 +6776,7 @@
    ],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/miss.js",
-    "lib/jobs-core.js"
+    "functions/api/miss.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -6854,7 +6784,6 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
-    "functions/api/jobs.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -6868,9 +6797,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js",
-    "lib/jobs-ui.js",
-    "skills/work.js"
+    "lib/bench-asks.js"
    ]
   },
   "lib/probe-asks.js": {
@@ -7100,6 +7027,7 @@
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/rsvp.js",
+    "functions/api/visit.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
     "lib/tally.js",
@@ -8377,7 +8305,6 @@
     "functions/api/generators.js",
     "functions/api/handoff.js",
     "functions/api/image.js",
-    "functions/api/jobs.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -8412,8 +8339,6 @@
     "lib/code-review.js",
     "lib/correction-fix.js",
     "lib/job-draft.js",
-    "lib/jobs-core.js",
-    "lib/jobs-ui.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
@@ -8428,8 +8353,7 @@
     "lib/shared-routines.js",
     "lib/voice.js",
     "skills/repo.js",
-    "skills/routine.js",
-    "skills/work.js"
+    "skills/routine.js"
    ]
   },
   "lib/template-list.js": {
@@ -8543,8 +8467,7 @@
   },
   "lib/tool-sites.js": {
    "imports": [
-    "lib/flight-sites.js",
-    "lib/job-sites.js"
+    "lib/flight-sites.js"
    ],
    "external": [
     ", "
@@ -8568,8 +8491,7 @@
   "lib/toolkit.js": {
    "imports": [
     "lib/tool-sites.js",
-    "lib/flight-sites.js",
-    "lib/job-sites.js"
+    "lib/flight-sites.js"
    ],
    "importedBy": [
     "skills/toolkit.js"
@@ -8644,6 +8566,12 @@
     "functions/api/video.js",
     "skills/video-play.js",
     "skills/video.js"
+   ]
+  },
+  "lib/visits.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/visit.js"
    ]
   },
   "lib/voice.js": {
@@ -12490,9 +12418,7 @@
    "importedBy": []
   },
   "skills/work.js": {
-   "imports": [
-    "lib/jobs-core.js"
-   ],
+   "imports": [],
    "importedBy": []
   },
   "skills/worldtime.js": {
