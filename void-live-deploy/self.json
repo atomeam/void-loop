@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:33:02Z",
+   "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
+  },
+  {
+   "at": "2026-10-26T05:32:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:31:57Z",
    "subject": "A redirect into a list section leads the sources; the page hands such names to the answer route"
   },
@@ -559,16 +567,8 @@
    "subject": "Tower gate: kanban: abacktools.com,travel: flightconnections.com measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:14:42Z",
+   "at": "2026-10-26T05:17:47Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:14:26Z",
-   "subject": "Exact page title first, Food before Creature, the live record keeps what the route said"
-  },
-  {
-   "at": "2026-10-26T05:13:28Z",
-   "subject": "Tower gate: kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,finance…"
   }
  ],
  "builders": {
