@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:35:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T04:35:32Z",
+   "subject": "Tower gate: music: jasperbernaers.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
+  },
+  {
    "at": "2026-10-26T04:34:02Z",
    "subject": "Tower gate: finance,finance: stockq.org,finance: stooq.com measured against their live sites"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T04:06:08Z",
    "subject": "Tower gate: photos measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:06:01Z",
-   "subject": "Markets: the day move is never Yahoo's chartPreviousClose (a year ago), and the header names the symbol and its kind first"
-  },
-  {
-   "at": "2026-10-26T04:05:35Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
