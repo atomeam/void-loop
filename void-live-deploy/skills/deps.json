@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 891,
+ "counted": 901,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -237,7 +237,14 @@
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
+   "file": "lib/game-sites.js",
+   "skills": 8,
+   "direct": 1,
+   "dependants": 14,
    "tests": 1
   },
   {
@@ -293,7 +300,7 @@
    "file": "lib/tool-sites.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 2
   },
   {
@@ -1060,6 +1067,13 @@
    "tests": 1
   },
   {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 12
+  },
+  {
    "file": "lib/v01d-fixes.js",
    "skills": 1,
    "direct": 1,
@@ -1501,13 +1515,6 @@
    "tests": 1
   },
   {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 12
-  },
-  {
    "file": "lib/tower-rank.js",
    "skills": 1,
    "direct": 1,
@@ -1935,6 +1942,13 @@
    "tests": 1
   },
   {
+   "file": "lib/chess-engine.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/daily-photo.js",
    "skills": 0,
    "direct": 0,
@@ -2194,6 +2208,27 @@
    "tests": 1
   },
   {
+   "file": "lib/chess-openings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
+   "file": "lib/chess-play.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/chess-worker.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
    "file": "lib/comments-ui.js",
    "skills": 0,
    "direct": 0,
@@ -2255,6 +2290,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/games-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/ground.js",
@@ -2390,6 +2432,13 @@
    "tests": 10
   },
   {
+   "file": "lib/solitaire.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/speak.js",
    "skills": 0,
    "direct": 0,
@@ -2418,6 +2467,13 @@
    "tests": 1
   },
   {
+   "file": "lib/sudoku.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/sun-day.js",
    "skills": 0,
    "direct": 0,
@@ -2440,6 +2496,13 @@
   },
   {
    "file": "lib/wordcount.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/wordguess.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4295,11 +4358,33 @@
     "skills/recipes-fill.js"
    ]
   },
+  "lib/chess-engine.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/chess-worker.js"
+   ]
+  },
+  "lib/chess-openings.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/chess-play.js": {
+   "imports": [
+    "skills/chess-rules.js"
+   ],
+   "importedBy": []
+  },
   "lib/chess-replay.js": {
    "imports": [],
    "importedBy": [
     "skills/about-skill.js"
    ]
+  },
+  "lib/chess-worker.js": {
+   "imports": [
+    "lib/chess-engine.js"
+   ],
+   "importedBy": []
   },
   "lib/churn.js": {
    "imports": [],
@@ -5038,6 +5123,7 @@
    "reachedBy": [
     "lib/card-frame.js",
     "lib/duel-rules.js",
+    "lib/games-ui.js",
     "lib/seo.js",
     "skills/about-skill.js",
     "skills/duel.js",
@@ -5155,6 +5241,33 @@
     "skills/monopoly.js",
     "skills/oracle.js"
    ]
+  },
+  "lib/game-sites.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tool-sites.js",
+    "lib/toolkit.js",
+    "skills/game-pages.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/games-ui.js",
+    "lib/seo.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/kanban-board.js",
+    "skills/merge.js",
+    "skills/pdf-tools.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/games-ui.js": {
+   "imports": [
+    "lib/toolkit.js"
+   ],
+   "importedBy": []
   },
   "lib/generators.js": {
    "imports": [],
@@ -7674,6 +7787,10 @@
     "skills/time.js"
    ]
   },
+  "lib/solitaire.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/spark.js": {
    "imports": [],
    "importedBy": [
@@ -8211,6 +8328,10 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/sudoku.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/sun-day.js": {
    "imports": [
     "lib/astro.js",
@@ -8450,7 +8571,8 @@
   },
   "lib/tool-sites.js": {
    "imports": [
-    "lib/flight-sites.js"
+    "lib/flight-sites.js",
+    "lib/game-sites.js"
    ],
    "external": [
     ", "
@@ -8464,6 +8586,7 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
+    "lib/games-ui.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -8474,9 +8597,11 @@
   "lib/toolkit.js": {
    "imports": [
     "lib/tool-sites.js",
-    "lib/flight-sites.js"
+    "lib/flight-sites.js",
+    "lib/game-sites.js"
    ],
    "importedBy": [
+    "lib/games-ui.js",
     "skills/toolkit.js"
    ]
   },
@@ -8778,6 +8903,10 @@
    "imports": [
     "skills/util.js"
    ],
+   "importedBy": []
+  },
+  "lib/wordguess.js": {
+   "imports": [],
    "importedBy": []
   },
   "lib/writing-aids.js": {
@@ -9143,6 +9272,7 @@
   "skills/chess-rules.js": {
    "imports": [],
    "importedBy": [
+    "lib/chess-play.js",
     "skills/chess-worker.js",
     "skills/chess.js"
    ],
@@ -9767,6 +9897,12 @@
     "skills/games.js",
     "skills/rebuild-map.js"
    ]
+  },
+  "skills/game-pages.js": {
+   "imports": [
+    "lib/game-sites.js"
+   ],
+   "importedBy": []
   },
   "skills/game-rules-line.js": {
    "imports": [],

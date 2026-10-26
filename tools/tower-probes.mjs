@@ -408,6 +408,21 @@ export const PROBES = Object.freeze({
     },
     facts: [['airport search', /City, airport or code|From[\s\S]{0,40}To/i], ['nearby airports', /Nearby airports/i], ['one way or return', /One way[\s\S]{0,40}Return|Return[\s\S]{0,40}One way/i], ['passengers', /\bAdults\b/], ['cabin class', /\bCabin\b/], ['search on several providers', /Search across providers/i], ['distance', /\bDistance\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['CO2', /CO2/], ['price tracking', /Price tracker/i], ['a price target', /Watch a route/i], ['an itinerary', /Trip and layovers/i], ['layover warnings', /layover/i], ['a calendar file', /\.ics/], ['on your device', /on (?:this|your) device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
   },
+  // games (owner, 2026-10-26: the games floor, Lichess): Verse's page is /chess/. The question is the Ruy Lopez put in by its link: an analysis board that works shows
+  // the five moves in SAN, names the opening, says whose move it is and offers the position to Lichess. Truth worked out by hand (1. e4 e5 2. Nf3 Nc6 3. Bb5 is the
+  // Ruy Lopez, ECO C60; Black is to move). Judged on Verse alone: Lichess's own board is drawn on a canvas the gate cannot read the same way.
+  games: {
+    site: 'https://lichess.org/', verse: '/chess/',
+    ask: { verse: '/chess/?mode=analysis&m=e2e4.e7e5.g1f3.b8c6.f1b5' },
+    truth: [['the moves 1. e4 e5 2. Nf3 Nc6 3. Bb5', /e4\s+e5[\s\S]{0,30}Nf3\s+Nc6[\s\S]{0,30}Bb5/], ['named the Ruy Lopez (C60)', /Ruy Lopez \(C60\)/], ['Black to move', /Black to move/], ['the position offered to Lichess', /Open this position on Lichess/]],
+    askParts: {
+      'catalogue size': [['four ways to play', /Play the computer[\s\S]{0,40}Two players[\s\S]{0,40}Puzzles[\s\S]{0,40}Analysis/], ['more games', /All games/], ['checkers, solitaire, mines, sudoku', /Checkers[\s\S]{0,80}Solitaire[\s\S]{0,80}Mines[\s\S]{0,80}Sudoku/]],
+      'online play': [['a friend by link', /Play a friend by link/], ['a share link', /Share link/], ['what it lacks said plainly', /no online games against strangers/]],
+      'ratings and ladders': [['a rating against Verse on this device', /Your rating against Verse/], ['eight levels', /eight levels/i]],
+    },
+    facts: [['a computer opponent', /Play the computer/], ['levels', /level/i], ['two players', /Two players/], ['puzzles', /Puzzles/], ['an analysis board', /Analysis/], ['engine analysis', /Engine analysis/], ['a hint', /\bHint\b/], ['arrows', /arrows?/i], ['takeback', /Takeback/], ['flip the board', /Flip board/],
+      ['a move list', /\bMoves\b/], ['opening names', /Opening: /], ['PGN import and export', /PGN/], ['FEN', /\bFEN\b/], ['clocks', /\bClocks?\b/], ['a share link', /Share link/], ['open on Lichess', /Open this position on Lichess/], ['cloud analysis', /cloud analysis/i], ['a 3D board', /3D board/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
   // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
   // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
@@ -691,6 +706,50 @@ const LANE_PROBES = Object.freeze({
     askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable|may be out of date/i]] },
     pageParts: {}, parts: {},
     facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable|may be out of date/i], ['nonstop routes', /nonstop/i], ['the routes\' date and source', /June 2014[\s\S]{0,200}OpenFlights|OpenFlights[\s\S]{0,200}June 2014/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  // the games lane (owner, 2026-10-26): each small game site has a page of its own under /games/ and the question that page answers. Truths worked out by hand (an
+  // expert field is 30 by 16 with 99 mines; a new deal shows 0 moves and 0 points; a sliding game starts at a score of 0; the word of the day is numbered by the day).
+  'games: 247checkers.com': {
+    ask: { verse: '/games/checkers/?level=hard' },
+    truth: [['American checkers', /American checkers/], ['captures are forced', /forced captures|captures are forced|capture must be taken/i], ['an 8x8 board', /8x8/], ['your move first', /Your move/]],
+    askParts: { 'computer levels': [['easy', /\bEasy\b/], ['hard', /\bHard\b/]], 'two players': [['a friend on this device', /A friend on this device|two players/i]], 'forced captures and multi-jumps': [['forced captures', /forced/i], ['multi-jumps', /multi-jumps/i]], undo: [['undo', /\bUndo\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['levels', /\bLevel\b/], ['the computer', /computer/i], ['two players', /friend/i], ['kings', /kings?/i], ['forced captures', /forced/i], ['multi-jumps', /multi-jumps/i], ['undo', /\bUndo\b/], ['a hint', /\bHint\b/], ['your record', /Your wins/], ['a share link', /Share link/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'games: solitaires.com': {
+    ask: { verse: '/games/solitaire/?deal=7&draw=3' },
+    truth: [['deal 7', /Deal 7\b/], ['no moves yet', /Moves 0/], ['no points yet', /Score 0/], ['Klondike named', /Klondike/]],
+    askParts: { 'draw one or three': [['draw one', /draw one/i], ['draw three', /draw three/i]], undo: [['undo', /\bUndo\b/]], hints: [['a hint', /\bHint\b/]], 'timer and score': [['a timer', /\d:\d\d/], ['a score', /\bScore\b/]], 'auto-finish': [['auto-finish', /auto-finish/i]] },
+    pageParts: {}, parts: {},
+    facts: [['draw one or three', /draw three/i], ['tap to move', /\btap\b/i], ['drag', /\bdrag\b/i], ['undo', /\bUndo\b/], ['a hint', /\bHint\b/], ['auto-finish', /auto-finish/i], ['a timer', /\d:\d\d/], ['moves', /\bMoves\b/], ['a score', /\bScore\b/], ['restart the deal', /Restart this deal/], ['wins kept', /Wins on this device/], ['a share link', /Share link/], ['works offline', /\boffline\b/i]],
+  },
+  'games: minesweeperonline.com': {
+    ask: { verse: '/games/mines/?level=expert&board=3' },
+    truth: [['a field 30 by 16', /30 × 16/], ['99 mines left', /Mines left\s*99/], ['the first square safe', /first (?:square|click|one) is always safe/i]],
+    askParts: { 'three levels and custom': [['beginner', /Beginner/], ['intermediate', /intermediate/i], ['expert', /expert/i], ['custom', /custom/i]], 'flags and chording': [['flags', /flag/i], ['chording', /chord/i]], 'safe first click': [['first square safe', /always safe/i]], 'best times': [['best time', /\bBest\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['levels', /\bLevel\b/], ['a custom field', /custom/i], ['mines left', /Mines left/], ['a timer', /\bTime\b/], ['flags', /flag/i], ['question marks', /Question marks/i], ['chording', /chord|opened number/i], ['first square safe', /always safe/i], ['best times', /\bBest\b/], ['a share link', /Share link/], ['works offline', /\boffline\b/i]],
+  },
+  'games: wordleunlimited.org': {
+    ask: { verse: '/games/word/?daily=1' },
+    truth: (() => { const d = Math.floor((Date.now() - Date.UTC(2026, 0, 1)) / 864e5); return [['today\'s word numbered (#' + d + ', a day either side for the time zone)', new RegExp('Word of the day #(?:' + (d - 1) + '|' + d + '|' + (d + 1) + ')\\b')], ['six tries', /six tries/i], ['five letters', /five-letter/i]]; })(),
+    askParts: { 'unlimited games': [['unlimited', /Unlimited/], ['a new word', /New word/]], 'colour feedback': [['green', /green/i], ['gold', /gold/i], ['grey', /grey/i]], 'on-screen keyboard': [['the keys', /Enter/], ['a delete key', /Delete a letter|⌫/]], 'streaks and stats': [['played', /Played/], ['streak', /Streak/]], 'share result': [['share', /Share result/]] },
+    pageParts: {}, parts: {},
+    facts: [['unlimited', /Unlimited/], ['word of the day', /Word of the day/], ['hard mode', /Hard mode/], ['colour-blind colours', /Colour-blind/i], ['a keyboard', /Enter/], ['streaks', /Streak/], ['guess spread', /record/i], ['share', /Share result/], ['its own words', /Verse's own list|own list/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'games: websudoku.com': {
+    ask: { verse: '/games/sudoku/?level=evil&puzzle=5' },
+    truth: [['puzzle 5', /Puzzle 5\b/], ['an evil level', /\bEvil\b/], ['fewer than 30 clues', /\b2\d clues\b/], ['one solution said', /exactly one solution/i]],
+    askParts: { 'four levels': [['easy', /\bEasy\b/], ['medium', /\bMedium\b/], ['hard', /\bHard\b/], ['evil', /\bEvil\b/]], 'pencil notes': [['notes', /\bNotes\b/]], hints: [['a hint', /\bHint\b/]], timer: [['time', /\bTime\b/]], print: [['print', /\bPrint\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['levels', /\bLevel\b/], ['notes', /\bNotes\b/], ['erase', /\bErase\b/], ['undo', /\bUndo\b/], ['redo', /\bRedo\b/], ['a hint', /\bHint\b/], ['show mistakes', /Show mistakes/], ['a timer', /\bTime\b/], ['print', /\bPrint\b/], ['best times', /\bBest\b/], ['a share link', /Share link/], ['works offline', /\boffline\b/i]],
+  },
+  'games: play2048.co': {
+    ask: { verse: '/games/merge/?seed=7' },
+    truth: [['a score of 0 to start', /Score\s*0/], ['2048 named as the goal', /2048/], ['equal tiles join and double', /join and double/i]],
+    askParts: { 'swipe and arrow keys': [['swipe', /Swipe/i], ['arrow keys', /arrow keys/i]], 'score and best': [['score', /\bScore\b/], ['best', /\bBest\b/]], undo: [['undo', /\bUndo\b/]], 'keep going': [['keep going', /keep going/i]] },
+    pageParts: {}, parts: {},
+    facts: [['swipe', /Swipe/i], ['arrow keys', /arrow keys/i], ['W A S D', /W A S D/], ['a score', /\bScore\b/], ['a best score', /\bBest\b/], ['moves', /\bMoves\b/], ['undo', /\bUndo\b/], ['a new game', /New game/], ['a share link', /Share link/], ['works offline', /\boffline\b/i]],
   },
   'sports: thesportsdb.com': {
     ask: { verse: '/sports/?q=arsenal' },

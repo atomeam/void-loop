@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Klondike solitaire: draw one or three · Verse</title>
+<meta name="description" content="Free Klondike solitaire: draw one or draw three, tap or drag cards, double-tap to send a card to the foundation, unlimited undo, a hint, auto-finish, a timer, moves and standard scoring, a numbered deal you can replay or share, and your wins and best times on this device. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Klondike solitaire · Verse">
+<meta property="og:description" content="Free Klondike solitaire: draw one or draw three, tap or drag cards, double-tap to send a card to the foundation, unlimited undo, a hint, auto-finish, a timer, moves and standard scoring, a numbered deal you can replay or share, and your wins and best times on this device. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/games/solitaire/">
+<meta property="og:image" content="https://a-to-mind.com/og/games-solitaire.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Klondike solitaire on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Klondike solitaire · Verse">
+<meta name="twitter:description" content="Free Klondike solitaire: draw one or draw three, tap or drag cards, double-tap to send a card to the foundation, unlimited undo, a hint, auto-finish, a timer, moves and standard scoring, a numbered deal you can replay or share, and your wins and best times on this device. No account, no ads, works offline.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/games-solitaire.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --warn: #a15c00;
+    --lt: #ecdcbf; --dk: #a7774f; --sel: #f4d34a; --last: #c9d86a; --tile: #e7e2f4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --warn: #ffb44f; --lt: #c9b591; --dk: #8a6342; --tile: #262236; } }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --warn: #ffb44f; --lt: #c9b591; --dk: #8a6342; --tile: #262236; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 14px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; text-align: center; font-weight: 650; } h2 { font-size: 16px; margin: 0 0 8px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 40px; }
+  #gnav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 10px; min-height: 84px; align-content: flex-start; }
+  #gnav a { font-size: 14px; padding: 6px 12px; min-height: 24px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #gnav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  textarea { width: 100%; min-height: 96px; font-family: ui-monospace, monospace; font-size: 13px; }
+  button, a.btn { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row.c { justify-content: center; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 120px; min-width: 0; } .row > label select, .row > label input { width: 100%; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0 4px; }
+  [hidden] { display: none !important; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; } .status { min-height: 48px; text-align: center; font-size: 16px; margin: 6px 0; } .bad { color: var(--bad); } .ok { color: var(--good); }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); } footer a, .note a, .lacks a { display: inline-block; min-height: 24px; line-height: 24px; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); display: inline-block; min-height: 24px; padding: 2px 0; }
+  .lacks { font-size: 13px; color: var(--soft); border-left: 3px solid var(--line); padding: 2px 0 2px 10px; margin: 10px 0; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 14px; min-height: 24px; font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  .sol { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: min(100%, 640px); margin: 8px auto; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+  .slot { position: relative; aspect-ratio: 5 / 7; border-radius: 6px; border: 1px dashed var(--line); min-height: 0; padding: 0; background: transparent; }
+  .col { position: relative; min-height: 260px; } .cardx { position: absolute; left: 0; right: 0; aspect-ratio: 5 / 7; border-radius: 6px; border: 1px solid #0003; background: #fffdf8; color: #15131c; font: 700 clamp(12px, 3.6vw, 18px)/1 system-ui; padding: 3px 4px; text-align: left; min-height: 0; min-width: 0; display: block; box-sizing: border-box; }
+  .cardx.rd { color: #c8102e; } .cardx.back { background: repeating-linear-gradient(45deg, #5b36f0 0 6px, #7a5cff 6px 12px); border-color: #3a2a99; } .cardx.selc { outline: 3px solid var(--sel); outline-offset: -1px; } .cardx .big { position: absolute; right: 4px; bottom: 3px; font-size: clamp(16px, 5vw, 26px); }
+  .slot .cardx { top: 0; } .gap { visibility: hidden; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/games/solitaire/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Klondike solitaire","url":"https://a-to-mind.com/games/solitaire/","description":"Free Klondike solitaire: draw one or draw three, tap or drag cards, double-tap to send a card to the foundation, unlimited undo, a hint, auto-finish, a timer, moves and standard scoring, a numbered deal you can replay or share, and your wins and best times on this device. No account, no ads, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"solitaire, klondike solitaire, solitaire draw 3, free solitaire no ads, patience card game","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/games/solitaire/?tool={tool}"},"tool-input":"required name=tool"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Klondike solitaire","item":"https://a-to-mind.com/games/solitaire/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main id="app">
+  <h1>Klondike solitaire</h1>
+  <p class="sub" id="lede">Klondike patience: draw one or three, tap a card to send it where it goes, drag it, or double-tap it home. Undo, hints, auto-finish, a timer, moves and a score. A numbered deal can be restarted or shared.</p>
+  <nav id="gnav" aria-label="Games"><a href="/chess/">Chess</a><a href="/games/">All games</a><a href="/games/checkers/">Checkers</a><a href="/games/solitaire/" aria-current="page">Solitaire</a><a href="/games/mines/">Mines</a><a href="/games/word/">Word guess</a><a href="/games/sudoku/">Sudoku</a><a href="/games/merge/">Slide and merge</a></nav>
+  <div class="row c"><label style="flex:0 1 150px">Draw<select id="draw"><option value="1">One card</option><option value="3">Three cards</option></select></label><span class="stats" id="stats">Moves 0 · Score 0 · <span id="clock">0:00</span></span></div>
+  <div class="sol" id="sol"><button type="button" class="slot" id="stock" aria-label="Stock: turn cards"></button><div class="slot" id="waste" aria-label="Waste"></div><div class="slot gap"></div><div class="slot" id="found0" aria-label="Foundation 1"></div><div class="slot" id="found1" aria-label="Foundation 2"></div><div class="slot" id="found2" aria-label="Foundation 3"></div><div class="slot" id="found3" aria-label="Foundation 4"></div><div class="col" id="tab0" aria-label="Column 1"></div><div class="col" id="tab1" aria-label="Column 2"></div><div class="col" id="tab2" aria-label="Column 3"></div><div class="col" id="tab3" aria-label="Column 4"></div><div class="col" id="tab4" aria-label="Column 5"></div><div class="col" id="tab5" aria-label="Column 6"></div><div class="col" id="tab6" aria-label="Column 7"></div></div>
+  <p class="status" id="status" role="status" aria-live="polite">Tap a card to send it where it goes, or tap a card and then where to put it. Tap the stock to turn cards.</p>
+  <div class="row c"><button type="button" class="go" id="new">New game</button><button type="button" id="restart">Restart this deal</button><button type="button" id="undo">Undo</button><button type="button" id="hint">Hint</button><button type="button" id="finish">Finish</button><button type="button" id="share">Share link</button></div>
+  <p class="stats" id="record">Wins on this device: 0 of 0</p>
+  <p class="lacks">What Verse does not have: Spider, FreeCell and the other patience games are not here yet; this page is Klondike. Some deals cannot be won; a numbered deal can be played again.</p>
+<!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/solitaire/?draw=1">Draw one</a><a href="/games/solitaire/?draw=3">Draw three</a><a href="/games/solitaire/?deal=1">Deal 1</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+  <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
+  <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
+  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
+  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)])) fetch(u).catch(() => {}); };
+  const go = () => import('/games/solitaire/app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

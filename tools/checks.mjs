@@ -96,6 +96,7 @@ for (const [name, file] of [
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
+  ['chess-games', 'chess.test.mjs'],
   ['flights', 'flights.test.mjs'],
   ['lane-pages', 'lane-pages.test.mjs'],
   ['calendar', 'calendar.test.mjs'],

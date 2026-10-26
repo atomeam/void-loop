@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 10,
+  "experiment": 11,
   "tested": 26,
   "checked": 18,
   "proven": 297
@@ -494,7 +494,7 @@
    "name": "Games",
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 1,
     "checked": 1,
     "proven": 30
@@ -772,6 +772,14 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 7
+    },
+    {
+     "name": "game-pages",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
     }
    ]
   },

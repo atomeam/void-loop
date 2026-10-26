@@ -9,6 +9,7 @@
  */
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
+import { gameAskOf } from './game-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -73,6 +74,15 @@ export const RELATED = Object.freeze({
   '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
   '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
   '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
+  // the games pages (2026-10-26): the hub reaches each game; each game its closest sisters and the clock
+  '/chess/': ['/games/', '/games/checkers/', '/stopwatch/'],
+  '/games/': ['/chess/', '/games/sudoku/', '/games/solitaire/', '/games/word/'],
+  '/games/checkers/': ['/chess/', '/games/', '/games/solitaire/'],
+  '/games/solitaire/': ['/games/', '/games/mines/', '/games/sudoku/'],
+  '/games/mines/': ['/games/', '/games/sudoku/', '/games/merge/'],
+  '/games/word/': ['/games/', '/games/sudoku/', '/word-count/'],
+  '/games/sudoku/': ['/games/', '/games/mines/', '/games/word/'],
+  '/games/merge/': ['/games/', '/games/mines/', '/games/word/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
@@ -154,6 +164,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
+  // games: 'chess puzzles', 'analysis board', 'sudoku', 'solitaire', 'minesweeper', '2048', 'word guess game', 'games' open the page that plays it (lib/game-sites.js)
+  [{ exec: (t) => (gameAskOf(t) ? [t] : null) }, (m, t) => gameAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

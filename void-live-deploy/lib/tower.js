@@ -66,7 +66,7 @@ const HAND_FLOORS = [
   { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', page: '/news/', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
   { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', page: '/photos/', label: 'Photos', glyph: '◰', extra: ['editing', 'compress and convert', 'metadata and privacy'] },
-  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
+  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', page: '/chess/', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
   { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', extra: ['courses', 'progress tracking', 'practice'] },
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
@@ -125,6 +125,8 @@ export const LANES = Object.freeze({
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
+  // games (owner, 2026-10-26: the games floor, Lichess; "every site gets its own dedicated page"): small game sites, smallest first by the builder's best guess (none is in tower.rank.json yet: the next tower-rank.yml run ranks them and --next reorders), Lichess (the floor itself) last. The builder's network could not open them; a web search on 2026-10-26 named websudoku.com, minesweeperonline.com, solitaires.com and 247checkers.com as live free pages; play2048.co (the original sliding-merge game) and wordleunlimited.org (an unlimited five-letter word guess) were not confirmed: the gate's first run reads each one's reachability, and a parked or walled site is a finding, not a loss. Each has a page of its own (LANE_PAGES) under /games/
+  games: ['https://www.247checkers.com/', 'https://solitaires.com/klondike-solitaire/', 'https://minesweeperonline.com/', 'https://wordleunlimited.org/', 'https://www.websudoku.com/', 'https://play2048.co/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
@@ -137,6 +139,7 @@ export const LANE_PAGES = Object.freeze({
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
+  'games: 247checkers.com': '/games/checkers/', 'games: solitaires.com': '/games/solitaire/', 'games: minesweeperonline.com': '/games/mines/', 'games: wordleunlimited.org': '/games/word/', 'games: websudoku.com': '/games/sudoku/', 'games: play2048.co': '/games/merge/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
@@ -154,6 +157,12 @@ export const LANE_EXTRAS = Object.freeze({
   'travel: gcmap.com': ['route map', 'chained routes', 'great circle distance', 'airport info'],
   'travel: co2.myclimate.org': ['CO2 per passenger', 'cabin class', 'return trip', 'method named'],
   'travel: flightconnections.com': ['where can I go', 'filter by distance', 'airport finder', 'provider links'],
+  'games: 247checkers.com': ['computer levels', 'two players', 'forced captures and multi-jumps', 'undo'],
+  'games: solitaires.com': ['draw one or three', 'undo', 'hints', 'timer and score', 'auto-finish'],
+  'games: minesweeperonline.com': ['three levels and custom', 'flags and chording', 'safe first click', 'best times'],
+  'games: wordleunlimited.org': ['unlimited games', 'colour feedback', 'on-screen keyboard', 'streaks and stats', 'share result'],
+  'games: websudoku.com': ['four levels', 'pencil notes', 'hints', 'timer', 'print'],
+  'games: play2048.co': ['swipe and arrow keys', 'score and best', 'undo', 'keep going'],
   'sports: thesportsdb.com': ['sport search', 'born on this day', 'sport grid', 'free api'] });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */

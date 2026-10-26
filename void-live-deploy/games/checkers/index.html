@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkers against the computer or a friend · Verse</title>
+<meta name="description" content="Free checkers (American rules, English draughts): play the computer at easy, normal or hard, or two players on one device; captures are forced and multi-jumps shown, kings crowned on the far row, undo, a hint, a move count and your wins kept on this device. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Checkers · Verse">
+<meta property="og:description" content="Free checkers (American rules, English draughts): play the computer at easy, normal or hard, or two players on one device; captures are forced and multi-jumps shown, kings crowned on the far row, undo, a hint, a move count and your wins kept on this device. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/games/checkers/">
+<meta property="og:image" content="https://a-to-mind.com/og/games-checkers.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Checkers on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Checkers · Verse">
+<meta name="twitter:description" content="Free checkers (American rules, English draughts): play the computer at easy, normal or hard, or two players on one device; captures are forced and multi-jumps shown, kings crowned on the far row, undo, a hint, a move count and your wins kept on this device. No account, no ads, works offline.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/games-checkers.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --warn: #a15c00;
+    --lt: #ecdcbf; --dk: #a7774f; --sel: #f4d34a; --last: #c9d86a; --tile: #e7e2f4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --warn: #ffb44f; --lt: #c9b591; --dk: #8a6342; --tile: #262236; } }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --warn: #ffb44f; --lt: #c9b591; --dk: #8a6342; --tile: #262236; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 14px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; text-align: center; font-weight: 650; } h2 { font-size: 16px; margin: 0 0 8px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 40px; }
+  #gnav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 10px; min-height: 84px; align-content: flex-start; }
+  #gnav a { font-size: 14px; padding: 6px 12px; min-height: 24px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #gnav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  textarea { width: 100%; min-height: 96px; font-family: ui-monospace, monospace; font-size: 13px; }
+  button, a.btn { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row.c { justify-content: center; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 120px; min-width: 0; } .row > label select, .row > label input { width: 100%; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0 4px; }
+  [hidden] { display: none !important; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; } .status { min-height: 48px; text-align: center; font-size: 16px; margin: 6px 0; } .bad { color: var(--bad); } .ok { color: var(--good); }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); } footer a, .note a, .lacks a { display: inline-block; min-height: 24px; line-height: 24px; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); display: inline-block; min-height: 24px; padding: 2px 0; }
+  .lacks { font-size: 13px; color: var(--soft); border-left: 3px solid var(--line); padding: 2px 0 2px 10px; margin: 10px 0; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 14px; min-height: 24px; font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  .cboard { display: grid; grid-template-columns: repeat(8, 1fr); width: min(100%, 520px); aspect-ratio: 1; margin: 8px auto; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 10px #0003; }
+  .cboard button { border: 0; border-radius: 0; padding: 0; min-height: 0; min-width: 0; aspect-ratio: 1; position: relative; display: block; } .cboard .l { background: var(--lt); } .cboard .d { background: #6b4a33; }
+  .cboard .sel { box-shadow: inset 0 0 0 4px var(--sel); } .cboard .tgt::after { content: ''; position: absolute; inset: 36%; border-radius: 50%; background: #f4d34acc; } .cboard .last { box-shadow: inset 0 0 0 3px #e6e04a99; }
+  .man { position: absolute; inset: 12%; border-radius: 50%; box-shadow: inset 0 -4px 0 #0005, 0 2px 4px #0006; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; } .man.me { background: #c8312f; color: #ffe9a8; } .man.cpu { background: #f2ead8; color: #6b4a33; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/games/checkers/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Checkers","url":"https://a-to-mind.com/games/checkers/","description":"Free checkers (American rules, English draughts): play the computer at easy, normal or hard, or two players on one device; captures are forced and multi-jumps shown, kings crowned on the far row, undo, a hint, a move count and your wins kept on this device. No account, no ads, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"checkers, play checkers, checkers against computer, draughts online, two player checkers","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/games/checkers/?tool={tool}"},"tool-input":"required name=tool"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Checkers","item":"https://a-to-mind.com/games/checkers/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main id="app">
+  <h1>Checkers</h1>
+  <p class="sub" id="lede">American checkers against the computer at three levels or a friend on this device: forced captures, multi-jumps, kings, undo and hints. On your device, no account.</p>
+  <nav id="gnav" aria-label="Games"><a href="/chess/">Chess</a><a href="/games/">All games</a><a href="/games/checkers/" aria-current="page">Checkers</a><a href="/games/solitaire/">Solitaire</a><a href="/games/mines/">Mines</a><a href="/games/word/">Word guess</a><a href="/games/sudoku/">Sudoku</a><a href="/games/merge/">Slide and merge</a></nav>
+  <div class="row c"><label style="flex:0 1 160px">Level<select id="level"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></label><label style="flex:0 1 180px">Opponent<select id="mode"><option value="ai">The computer</option><option value="two">A friend on this device</option></select></label></div>
+  <div class="stats" id="stats">Your wins on this device: 0 · losses: 0 · draws: 0</div>
+  <div class="cboard" id="cb" role="grid" aria-label="Checkers board"><button type="button" class="l" aria-label="a8"></button><button type="button" class="d" aria-label="b8 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="c8"></button><button type="button" class="d" aria-label="d8 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="e8"></button><button type="button" class="d" aria-label="f8 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="g8"></button><button type="button" class="d" aria-label="h8 computer man"><span class="man cpu"></span></button><button type="button" class="d" aria-label="a7 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="b7"></button><button type="button" class="d" aria-label="c7 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="d7"></button><button type="button" class="d" aria-label="e7 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="f7"></button><button type="button" class="d" aria-label="g7 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="h7"></button><button type="button" class="l" aria-label="a6"></button><button type="button" class="d" aria-label="b6 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="c6"></button><button type="button" class="d" aria-label="d6 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="e6"></button><button type="button" class="d" aria-label="f6 computer man"><span class="man cpu"></span></button><button type="button" class="l" aria-label="g6"></button><button type="button" class="d" aria-label="h6 computer man"><span class="man cpu"></span></button><button type="button" class="d" aria-label="a5"></button><button type="button" class="l" aria-label="b5"></button><button type="button" class="d" aria-label="c5"></button><button type="button" class="l" aria-label="d5"></button><button type="button" class="d" aria-label="e5"></button><button type="button" class="l" aria-label="f5"></button><button type="button" class="d" aria-label="g5"></button><button type="button" class="l" aria-label="h5"></button><button type="button" class="l" aria-label="a4"></button><button type="button" class="d" aria-label="b4"></button><button type="button" class="l" aria-label="c4"></button><button type="button" class="d" aria-label="d4"></button><button type="button" class="l" aria-label="e4"></button><button type="button" class="d" aria-label="f4"></button><button type="button" class="l" aria-label="g4"></button><button type="button" class="d" aria-label="h4"></button><button type="button" class="d" aria-label="a3 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="b3"></button><button type="button" class="d" aria-label="c3 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="d3"></button><button type="button" class="d" aria-label="e3 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="f3"></button><button type="button" class="d" aria-label="g3 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="h3"></button><button type="button" class="l" aria-label="a2"></button><button type="button" class="d" aria-label="b2 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="c2"></button><button type="button" class="d" aria-label="d2 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="e2"></button><button type="button" class="d" aria-label="f2 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="g2"></button><button type="button" class="d" aria-label="h2 your man"><span class="man me"></span></button><button type="button" class="d" aria-label="a1 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="b1"></button><button type="button" class="d" aria-label="c1 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="d1"></button><button type="button" class="d" aria-label="e1 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="f1"></button><button type="button" class="d" aria-label="g1 your man"><span class="man me"></span></button><button type="button" class="l" aria-label="h1"></button></div>
+  <p class="status" id="status" role="status" aria-live="polite">Your move: red moves up the board. Tap a man, then where it goes. A capture must be taken.</p>
+  <div class="row c"><button type="button" class="go" id="new">New game</button><button type="button" id="undo">Undo</button><button type="button" id="hint">Hint</button><button type="button" id="share">Share link</button></div>
+  <p class="lacks">What Verse does not have: no games against strangers online and no shared rankings (Verse keeps no accounts). The rules are American checkers (English draughts) on an 8x8 board; international 10x10 draughts is not here yet.</p>
+<!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/checkers/?level=easy">Easy</a><a href="/games/checkers/?level=hard">Hard</a><a href="/games/checkers/?mode=two">Two players</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+  <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
+  <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
+  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
+  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)])) fetch(u).catch(() => {}); };
+  const go = () => import('/games/checkers/app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>
