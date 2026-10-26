@@ -12,6 +12,8 @@
 // higher floors, but the marker only climbs past a floor whose gate passes. The best sites' detailed checklists come from passive study and
 // stay private; this public side names generic aspects only and counts. Pure.
 
+import { SELF_SITES } from './self-sites.js';
+
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
 const HAND_FLOORS = [
@@ -71,7 +73,7 @@ const HAND_FLOORS = [
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', page: '/flights/', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
-  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
+  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
   // shopping (2026-10-26): Verse does not stock or ship goods and /shop/ says so; its catalogue is the open product databases and the stores' own searches, its checkout a
   // list and cart totalled on the device with hand-offs to each store, its delivery tracking the carrier named from the number and its own page opened (nothing scraped)
   { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/shop/', label: 'Shopping', glyph: '⊡', extra: ['catalogue', 'checkout', 'delivery tracking'] },
@@ -100,7 +102,7 @@ const HAND_FLOORS = [
 // row is keyed 'leader: host'); the lane is wiped out when every one of them is beaten. Named in plain text only, as every floor is.
 // The climb goes up the lane from its bottom (owner, 2026-10-25: "let go to the bottom of the translate list and work up"): each lane is listed
 // least visited first, and its sites stand in front of the leader, so the leader is the lane's last fight.
-export const LANES = Object.freeze({
+const HAND_LANES = Object.freeze({
   translate: ['https://tradukka.com/', 'https://www.freetranslations.org/', 'https://imtranslator.net/', 'https://www.translator.eu/', 'https://www.onlinedoctranslator.com/', 'https://www.translatedict.com/', 'https://randomtranslator.com/', 'https://www.translate.com/', 'https://www.systransoft.com/translate/', 'https://lingvanex.com/translate/', 'https://itranslate.com/translate', 'https://mymemory.translated.net/', 'https://papago.naver.com/', 'https://www.linguee.com/', 'https://translate.yandex.com/', 'https://www.reverso.net/text-translation', 'https://www.bing.com/translator', 'https://www.deepl.com/translator'],
   // podcasts (owner, 2026-10-26: little fish first, Apple last): podcast directories and web players, smallest first. Not verified live when written (the builder's network was closed): the first gate run reads each one's reachability, and a parked or sign-in-walled site is a finding, not a loss
   podcasts: ['https://podcastindex.org/', 'https://player.fm/', 'https://www.listennotes.com/', 'https://www.podchaser.com/', 'https://www.podbean.com/', 'https://castbox.fm/'],
@@ -129,10 +131,18 @@ export const LANES = Object.freeze({
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
+// the sites Verse took on by itself (lib/self-sites.js, tools/tower-self.mjs): each joins its family's lane, in front of the leader, with its own page
+export const LANES = Object.freeze(selfLanes(HAND_LANES, SELF_SITES));
+/** the hand lanes with the self-built sites added at the end of their family's lane (a host already in a lane is not added twice). Pure. */
+export function selfLanes(lanes, rows) {
+  const out = { ...lanes };
+  for (const r of rows || []) { if (!r || !r.family || !r.url) continue; const h = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, ''), have = (out[r.family] || []).map(h); if (!have.includes(h(r.url))) out[r.family] = [...(out[r.family] || []), r.url]; }
+  return out;
+}
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
 // floor id of a lane site -> the Verse page built to have every feature that site has, which the gate measures it against instead of the leader's page.
 // A site not listed here is still measured against its leader's page until its own page is built.
-export const LANE_PAGES = Object.freeze({
+export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
   'sports: thesportsdb.com': '/sports/',

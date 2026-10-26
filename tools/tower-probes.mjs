@@ -7,6 +7,9 @@
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 import { readFileSync } from 'node:fs';
 import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
+import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
+// a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
+const SELF_ASK = new Map(SELF_SITES.filter((r) => r && r.lane && r.ask).map((r) => [r.lane, r.ask]));
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
 import { listToToken } from '../void-live-deploy/lib/shop-core.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
@@ -395,6 +398,21 @@ export const PROBES = Object.freeze({
     facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
+  // jobs (owner, 2026-10-26: "we have to have everything all the sites have"): LinkedIn Jobs is the floor; Verse's /jobs/ lists remote jobs from three free feeds whose
+  // terms allow showing them (Remotive, Jobicy, Himalayas; lib/jobs-core.js), each credited and linked to its original posting. The question is a keyword search; a right
+  // answer counts its jobs, shows ones that match, names each listing's source and sends Apply to the original posting. Judged on Verse alone (the listings are live).
+  jobs: {
+    site: 'https://www.linkedin.com/jobs/', verse: '/jobs/',
+    ask: { verse: '/jobs/?q=developer' },
+    truth: [['the jobs counted', /\b\d[\d,.]* jobs? · /], ['developer jobs listed', /developer/i], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: {
+      'listing breadth': [['several sources', /Remotive[\s\S]*Jobicy[\s\S]*Himalayas/], ['the same search on other sites', /Open this search on other job sites/i], ['filters', /Job type[\s\S]{0,400}Level/]],
+      alerts: [['save a search as an alert', /Save this search as an alert/i], ['new since the last visit', /new since/i], ['a feed', /RSS/]],
+      applications: [['an application tracker', /Applications/], ['stages', /Interview[\s\S]{0,80}Offer|Offer[\s\S]{0,80}Interview/], ['notes', /Notes|your notes/i], ['CSV export', /Export CSV/i]],
+    },
+    facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
+      ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
   // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
   // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
   // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.
@@ -726,7 +744,7 @@ export function probeFor(id) {
   if (lane) id = lane[1];
   // a lane site with a page of its own (LANE_PAGES) is measured against that page, not its leader's
   const own = lane && LANE_PAGES[id0], lp = lane && LANE_PROBES[id0]; // a lane page may bring its own question, parts and facts (LANE_PROBES)
-  const base = { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  const base = { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: SELF_ASK.get(id0) || own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
   return lp ? { ...base, ...lp, verse: own || base.verse, ask: lp.ask || base.ask, ownFacts: true } : base;
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
