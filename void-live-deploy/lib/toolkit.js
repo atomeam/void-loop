@@ -8,6 +8,7 @@
  * Nothing leaves the device. Pure except accent(), setAccent() and mountRelated(). Tests: tools/toolkit.test.mjs.
  */
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
+import { flightAskOf } from './flight-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -63,6 +64,15 @@ export const RELATED = Object.freeze({
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
   '/chords/': ['/piano/', '/tuner/', '/metronome/'],
+  // the flights pages (owner, 2026-10-26): the hub reaches each tool; each tool its closest sisters, the weather and the clocks
+  '/flights/': ['/flights/time/', '/flights/trip/', '/flights/co2/', '/weather/', '/time/'],
+  '/flights/trip/': ['/flights/', '/calendar/', '/flights/time/', '/time/'],
+  '/flights/airports/': ['/flights/', '/flights/distance/', '/flights/routes/', '/time/'],
+  '/flights/time/': ['/flights/distance/', '/time/', '/flights/trip/', '/flights/'],
+  '/flights/distance/': ['/flights/map/', '/flights/time/', '/flights/co2/', '/convert/'],
+  '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
+  '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
+  '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
@@ -142,6 +152,8 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
+  [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

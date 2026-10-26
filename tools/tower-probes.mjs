@@ -7,6 +7,7 @@
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 import { readFileSync } from 'node:fs';
 import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
+import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -74,6 +75,10 @@ export function tokyoNow(now = new Date()) { const t = new Date(now.getTime() + 
 // or "Crow x #7" (or y) when nested lists, ^0 odds, an inline choice, titleCase and a kept value all work; "Cat" never shows (its odds are 0)
 export const LIST_PROBE_TEXT = 'output\n  [n = num, ""][animal.titleCase] {x|y} #[n]\nanimal\n  cat ^0\n  bird\n    owl\n    crow\nnum\n  7\n';
 export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('base64url');
+/** the date n days from today as YYYY-MM-DD (UTC): a question with a date that is always still ahead. Pure but for today's date. */
+export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+// the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
+const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -389,6 +394,20 @@ export const PROBES = Object.freeze({
     facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
+  // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
+  // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
+  // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.
+  travel: {
+    site: 'https://www.google.com/travel/flights', verse: '/flights/',
+    ask: { verse: '/flights/?from=JFK&to=LIS&d=' + inDays(30) + '&r=' + inDays(37) },
+    truth: [['about 5,400 km (JFK to LIS)', /\b5,4\d\d km\b/], ['about 3,360 miles', /\b3,3\d\d miles\b/], ['a flight of about 7 hours', /Typical flight time\s*\n?\s*[67] h/], ['Lisbon 5 hours ahead', /\+5 h 00 min ahead/], ['links to the providers', /Search on Google Flights/]],
+    askParts: {
+      'search across providers': [['Google Flights', /Search on Google Flights/], ['Skyscanner', /Search on Skyscanner/], ['Kayak', /Search on Kayak/], ['Momondo', /Search on Momondo/], ['Expedia', /Search on Expedia/], ['an airline\'s own site', /airline.s own site/i], ['no live fares said', /no live fares/i]],
+      'price tracking': [['a price tracker', /Price tracker/], ['the lowest seen', /Lowest seen|lowest you saw/i], ['a watch with a target', /Watch a route/], ['CSV export and import', /Export CSV[\s\S]*Import CSV/]],
+      itineraries: [['paste a confirmation', /Paste a confirmation text/i], ['layovers', /layover/i], ['a calendar file', /\.ics/], ['a link to the trip', /link to this trip/i]],
+    },
+    facts: [['airport search', /City, airport or code|From[\s\S]{0,40}To/i], ['nearby airports', /Nearby airports/i], ['one way or return', /One way[\s\S]{0,40}Return|Return[\s\S]{0,40}One way/i], ['passengers', /\bAdults\b/], ['cabin class', /\bCabin\b/], ['search on several providers', /Search across providers/i], ['distance', /\bDistance\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['CO2', /CO2/], ['price tracking', /Price tracker/i], ['a price target', /Watch a route/i], ['an itinerary', /Trip and layovers/i], ['layover warnings', /layover/i], ['a calendar file', /\.ics/], ['on your device', /on (?:this|your) device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
+  },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
   // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
   // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
@@ -622,6 +641,57 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
 // them (teams, events, venues, players), lists who was born on this day and says its API is free; the question is a search for Arsenal, which any sports database answers
 // with the club, its league and its sport. Truth worked out by hand, judged on Verse alone.
 const LANE_PROBES = Object.freeze({
+  // the travel lane (owner, 2026-10-26: "need a flights page"): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand
+  // (London to New York is 5,540 km and 3,442 miles; London to Singapore 10,880 km; a 40 minute wait is under 45 minutes; Lisbon's ICAO code is LPPT).
+  'travel: tripwaffle.com': {
+    ask: { verse: '/flights/trip/#trip=' + ASK_TRIP },
+    truth: [['both flights listed', /BA 117[\s\S]{0,400}UA 904/], ['the wait of 40 minutes at New York', /Wait: 40 min/], ['a warning for a wait under 45 minutes', /Under 45 minutes/], ['the whole trip time', /from the first departure to the last arrival/]],
+    askParts: { 'paste a confirmation': [['a box to paste', /Paste a confirmation text/i], ['a button to read the flights', /Read the flights/i]], 'day by day timeline': [['your flights in order', /Your flights in order/i], ['times', /\d\d:\d\d/], ['dates', /20\d\d-\d\d-\d\d/]], 'layover warnings': [['a wait', /Wait: \d/], ['tight or too short', /Under 45 minutes|Under an hour/], ['an overnight or long wait', /overnight|long wait/i]], 'calendar export': [['a calendar file', /\.ics/], ['for my calendar', /calendar/i]], 'share a trip': [['a link to this trip', /link to this trip/i]], 'works offline': [['offline', /\boffline\b/i], ['on this device', /on this device/i]] },
+    pageParts: {}, parts: {},
+    facts: [['paste a confirmation', /Paste a confirmation/i], ['flights read from text', /Read the flights/i], ['add a flight by hand', /Add a flight by hand/i], ['a booking reference', /Booking reference/i], ['local times', /Departs \(local\)/i], ['layovers', /Wait: /], ['layover warnings', /Under 45 minutes|Under an hour|overnight/i], ['airport changes', /airport/i], ['a calendar file', /\.ics/], ['a share link', /link to this trip/i], ['on this device', /on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: aruljohn.com': {
+    ask: { verse: '/flights/airports/?code=LIS' },
+    truth: [['LIS is Lisbon', /Lisbon/], ['its ICAO code LPPT', /LPPT/], ['its IATA code', /\bIATA\b/], ['its time zone Europe/Lisbon', /Europe\/Lisbon/]],
+    askParts: { 'code lookup': [['IATA codes', /\bIATA\b/], ['ICAO codes', /\bICAO\b/]], 'search by city or country': [['a search for a city, name, country or code', /City, airport name, country or code/i]], 'airport details': [['a position', /Position/], ['a time zone', /Time zone/], ['a size', /large airport|medium airport|small airport/]], 'nearby airports': [['nearby airports', /Nearby airports:/]] },
+    pageParts: {}, parts: {},
+    facts: [['IATA codes', /\bIATA\b/], ['ICAO codes', /\bICAO\b/], ['search by city', /\bcity\b/i], ['search by country', /\bcountry\b/i], ['the position', /Position/], ['the time zone', /Time zone/], ['the time there now', /\bnow\b/i], ['nearby airports', /Nearby airports/i], ['other airports of the city', /same city/i], ['fly from or to here', /Fly from here/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: clock7.com': {
+    ask: { verse: '/flights/time/?from=JFK&to=LHR&d=' + inDays(30) },
+    truth: [['JFK to LHR', /JFK → LHR/], ['a flight of about 7 hours', /\b7 h \d{2} min/], ['London 5 hours ahead', /\+5 h 00 min ahead/], ['arrives the next day', /\+1 day/]],
+    askParts: { 'flight duration': [['a typical flight time', /Typical|\b\d h \d{2} min/i], ['the distance', /\bkm\b/]], 'local arrival time': [['arrives in local time', /Arrives[\s\S]{0,60}local/i], ['a time at the destination', /\d\d:\d\d local/]], 'time zone difference': [['a time difference', /Time difference/i], ['ahead of the departure city', /ahead of the departure city|behind the departure city/]], 'date line': [['the date line', /date line/i]], layover: [['a stop on the way', /Stop on the way/i], ['the wait at the stop', /Wait at the stop/i]] },
+    pageParts: {}, parts: {},
+    facts: [['from and to', /From[\s\S]{0,60}To/], ['a departure date', /Depart/], ['a departure time', /Departure time/i], ['flight duration', /Typical flight time|\b\d h \d{2} min/], ['local arrival time', /Arrives/], ['the time difference', /Time difference/i], ['the date line', /date line/i], ['a layover', /Wait at the stop/i], ['the whole journey', /door to door|whole journey/i], ['daylight saving on the date', /UTC[+−]\d/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: airmilescalculator.com': {
+    ask: { verse: '/flights/distance/?from=LHR&to=JFK' },
+    truth: [['about 5,540 km', /\b5,5\d\d km\b/], ['about 3,440 miles', /\b3,4\d\d miles\b/], ['nautical miles', /\bnm\b/], ['a flight of about 7 hours', /\b7 h \d{2} min/]],
+    askParts: { 'distance in miles and km': [['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['nautical miles', /\bnm\b/]], 'flight time': [['a typical flight time', /Typical flight time/i]], 'time difference': [['a time difference', /Time difference/i]], 'flown distance': [['the distance actually flown', /Distance actually flown/i]], 'multi leg trips': [['airports in order', /Airports in order/i], ['a total', /Total/]] },
+    pageParts: {}, parts: {},
+    facts: [['distance in km', /\bkm\b/], ['distance in miles', /\bmiles\b/], ['nautical miles', /\bnm\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['the direction', /Direction/], ['the distance actually flown', /actually flown/i], ['a map', /Chain of airports|map/i], ['several legs and a total', /Total/], ['nearby airports', /Nearby airports/i], ['CO2', /CO2/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: gcmap.com': {
+    ask: { verse: '/flights/map/?route=JFK-LHR-SIN' },
+    truth: [['the leg JFK to LHR', /JFK → LHR/], ['the leg LHR to SIN', /LHR → SIN/], ['about 10,880 km for London to Singapore', /\b10,8\d\d km\b/], ['a total', /Total/]],
+    askParts: { 'route map': [['a map of the route', /Chain of airports/i], ['great-circle paths', /great-circle paths/i]], 'chained routes': [['airports in order', /Airports in order/i], ['a dash between codes', /JFK-LHR-SIN/]], 'great circle distance': [['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['a total', /Total/]], 'airport info': [['airport names', /Kennedy/], ['their countries', /United States/]] },
+    pageParts: {}, parts: {},
+    facts: [['chained airports', /Airports in order/i], ['each leg', /Leg/], ['a total', /Total/], ['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['flight time', /\bTime\b/], ['a map', /great-circle paths/i], ['codes by dash or space', /dash or a space/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: co2.myclimate.org': {
+    ask: { verse: '/flights/co2/?from=LHR&to=JFK' },
+    truth: [['about 530 kg of CO2 for one economy seat', /\b5\d\d kg CO2/], ['the method written out', /How this is worked out/i], ['0.09 kg for each kilometre', /0\.09 kg/], ['the high-altitude factor 1.9', /×1[.,]9/]],
+    askParts: { 'CO2 per passenger': [['kg of CO2', /kg CO2/], ['a range', /\bRange\b/], ['per passenger-kilometre', /Per passenger-kilometre/i]], 'cabin class': [['a cabin choice', /\bCabin\b/], ['business', /\bBusiness\b/], ['first', /\bFirst\b/]], 'return trip': [['return or one way', /Return[\s\S]{0,60}One way|One way[\s\S]{0,60}Return/i]], 'method named': [['the method', /How this is worked out/i], ['an average, not an airline\'s figure', /average/i]] },
+    pageParts: {}, parts: {},
+    facts: [['kg of CO2', /kg CO2/], ['a range', /\bRange\b/], ['high-altitude effects', /high-altitude/i], ['cabin class', /\bCabin\b/], ['passengers', /\bAdults\b|passengers?/i], ['return trip', /\bReturn\b/], ['the method', /How this is worked out/i], ['per passenger-kilometre', /passenger-kilometre/i], ['nothing sent', /nothing is sent|on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'travel: flightconnections.com': {
+    ask: { verse: '/flights/routes/?from=LIS' },
+    truth: [['from Lisbon', /Airports a flight from Lisbon/], ['Madrid within reach', /\bMAD\b/], ['Porto within reach', /\bOPO\b/], ['a flight time for each', /\b\d h \d{2} min|\b\d{2} min/]],
+    askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable/i]] },
+    pageParts: {}, parts: {},
+    facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
   'sports: thesportsdb.com': {
     ask: { verse: '/sports/?q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],

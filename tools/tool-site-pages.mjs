@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PDF_SITES, KANBAN_SITES } from '../void-live-deploy/lib/tool-sites.js';
+import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -33,6 +33,23 @@ const PDFCSS = `
   .results .result { margin: 6px 0; } .dl { display: inline-block; padding: 8px 16px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; min-height: 40px; line-height: 24px; } @media (prefers-color-scheme: dark) { .dl { color: #0b0a10; } }
   .thumbs { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; } .thumb { border: 1px solid var(--line); border-radius: 10px; padding: 6px; background: var(--bg); text-align: center; } .thumb.dragging { opacity: .4; } .thumb.over { outline: 3px dashed var(--accent); }
   .thumb .cv { display: flex; align-items: center; justify-content: center; min-height: 130px; overflow: hidden; } .thumb canvas { max-width: 100%; max-height: 130px; transition: transform .15s; box-shadow: 0 1px 4px #0003; background: #fff; } .cap { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; margin-top: 4px; } .cap button { min-width: 40px; min-height: 40px; padding: 2px 6px; }`;
+const FLCSS = `
+  main #app { min-height: 80vh; } .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } h3 { margin: 12px 0 4px; font-size: 15px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 14px; position: relative; min-width: 0; } .field input, .field select { width: 100%; } .field label { color: var(--soft); font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; } .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; } .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .chk { display: flex; gap: 8px; align-items: center; min-height: 40px; } .chk input { min-height: 0; width: 20px; height: 20px; }
+  .sug { position: absolute; top: 100%; left: 0; width: max(100%, min(300px, 90vw)); z-index: 6; list-style: none; margin: 2px 0 0; padding: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 20px #0003; max-height: 320px; overflow: auto; } .grid2 > .apk:nth-child(2) .sug { left: auto; right: 0; } .sug li { margin: 0; } .sug button { width: 100%; text-align: left; border: 0; border-radius: 8px; padding: 6px 10px; min-height: 44px; } .sug button:hover, .sug button:focus-visible { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .soft { color: var(--soft); font-size: 13px; } .swap { align-self: flex-start; min-width: 44px; } [hidden] { display: none !important; } .btn { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 24px; line-height: 24px; background: var(--card); cursor: pointer; } a.btn:hover { border-color: var(--accent); }
+  .plist, .plain, .alist { list-style: none; padding: 0; margin: 6px 0; } .plist li { margin: 6px 0; } .alist li { margin: 2px 0; } .alist a, .dl a, .plist a { display: inline-block; padding: 5px 0; min-height: 24px; } .alist button { width: 100%; text-align: left; border-radius: 10px; min-height: 44px; } .plain li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .dl { margin: 8px 0; } .dl > div { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 5px 0; border-bottom: 1px solid var(--line); } .dl dt { color: var(--soft); flex: 0 0 11em; font-size: 14px; } .dl dd { margin: 0; flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+  .big { font-size: 40px; font-weight: 700; margin: 8px 0 2px; font-variant-numeric: tabular-nums; } .big small { font-size: 16px; font-weight: 500; color: var(--soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; } .chip { min-height: 36px; padding: 2px 12px; font-size: 14px; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; } .tbl th, .tbl td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; } .tablewrap { overflow-x: auto; }
+  .chart svg, .map svg { width: 100%; height: auto; display: block; color: var(--accent); } .map { margin: 10px 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .seg { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 8px 0; } .warn { color: #b45309; font-size: 13px; margin: 2px 0; } @media (prefers-color-scheme: dark) { .warn { color: #fbbf24; } } .gap { list-style: none; color: var(--soft); font-size: 14px; } .leg { margin: 8px 0; } .stay { color: var(--soft); margin: 4px 0; } .ok { color: var(--ok); } .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; }
+  .pick { position: absolute; left: -9999px; } input[type=range] { width: 100%; min-height: 40px; accent-color: var(--accent); } output { font-weight: 600; }
+  @media print { button, .sug, footer, .tk-row, .tk-ask { display: none !important; } body { background: #fff; color: #000; } }`;
 const KBCSS = `
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
@@ -49,9 +66,9 @@ const KBCSS = `
 
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
-  const pdf = kind === 'pdf';
-  const css = (CSS + (pdf ? PDFCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : '1180px');
-  const foot = pdf
+  const pdf = kind === 'pdf', fl = kind === 'flights';
+  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : fl ? '860px' : '1180px');
+  const foot = fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
   return `<!doctype html>
@@ -66,7 +83,7 @@ export function pageOf(row, kind) {
 <meta property="og:title" content="${esc(row.name)} · Verse">
 <meta property="og:description" content="${esc(row.does)}">
 <meta property="og:url" content="https://a-to-mind.com${row.path}">
-<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta property="og:image" content="https://a-to-mind.com/${fl ? 'flights/og.png' : 'og.png'}">
 <meta name="twitter:card" content="summary_large_image">
 <style>${css}
 </style>
@@ -79,7 +96,7 @@ export function pageOf(row, kind) {
   <nav id="related" aria-label="Related tools"></nav>
   <footer>${foot}</footer>
 </main>
-<script type="module" src="${row.path}app.js"></script>
+${fl ? `<script type="module">import '${row.path}app.js'; // the page's code, whose modules the head preloads (tools/preload.mjs) so it opens offline</script>` : `<script type="module" src="${row.path}app.js"></script>`}
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
@@ -87,11 +104,12 @@ export function pageOf(row, kind) {
 }
 /** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
 export function appOf(row, kind) {
-  const pdf = kind === 'pdf', cfg = pdf ? { tools: row.tools } : { features: row.features };
+  const pdf = kind === 'pdf', fl = kind === 'flights', cfg = pdf ? { tools: row.tools } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
+  const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
   return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
 import { mountRelated } from '/lib/toolkit.js';
-import { ${pdf ? 'mountPdf' : 'mountKanban'} } from '/lib/${pdf ? 'pdf-ui' : 'kanban-ui'}.js';
-${pdf ? 'mountPdf' : 'mountKanban'}(document.getElementById('app'), ${JSON.stringify(cfg)});
+import { ${fn} } from '/lib/${lib}.js';
+${fn}(document.getElementById('app'), ${JSON.stringify(cfg)});
 mountRelated(document.getElementById('related'), '${row.path}');
 `;
 }
@@ -100,7 +118,7 @@ const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
-  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban']]) for (const row of rows) {
+  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights']]) for (const row of rows) {
     const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
     if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
     const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);

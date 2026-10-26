@@ -62,7 +62,9 @@ export const KANBAN_SITES = Object.freeze([
     does: 'A personal kanban board with a card timer and Pomodoro, repeating cards, WIP limits, swimlanes, subtask checklists, colours, filters and print. Kept on your device: no account, works offline.',
     asks: ['kanban board with timer', 'kanban pomodoro', 'personal kanban', 'kanban recurring tasks', 'kanban board with wip limit', 'kanban board print'], links: [] },
 ]);
-export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES]);
+import { FLIGHT_SITES } from './flight-sites.js'; // the travel floor's pages (owner, 2026-10-26: "need a flights page")
+export { FLIGHT_SITES };
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES]);
 
 // ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
 const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;

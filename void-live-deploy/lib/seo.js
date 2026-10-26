@@ -144,7 +144,7 @@ export const PAGES = Object.freeze([
     asks: ['weather', 'weather forecast', 'weather tomorrow', 'hourly weather', '7 day forecast', 'weather radar', 'sunrise and sunset times'],
     action: { template: '/weather/?q={search_term_string}', input: 'search_term_string', search: true } },
   // the PDF and Kanban floors (lib/tool-sites.js): the leader's page and one for each site of its lane
-  ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
+  ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: p.action || { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
   { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
 ]);
