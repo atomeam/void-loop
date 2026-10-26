@@ -2704,60 +2704,60 @@
   },
   "podcasts": {
    "speed": {
-    "verdict": "better",
-    "verse": 233,
-    "best": 950,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 233 ms to the load event (median of 3, phone width) vs Apple Podcasts 950 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:09:03.562Z"
+    "verdict": "equal-and-better",
+    "verse": 100,
+    "best": 720,
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 100 ms to the load event (median of 3, phone width) vs Apple Podcasts 720 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs Apple Podcasts 3 of 3 loads answered",
-    "at": "2026-10-26T03:09:03.562Z"
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs Apple Podcasts 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:09:03.562Z"
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs Apple Podcasts 5 unnamed controls or images",
-    "at": "2026-10-26T03:09:03.562Z"
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs Apple Podcasts 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:09:03.562Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs Apple Podcasts 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Apple Podcasts 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:09:03.562Z"
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 31,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs Apple Podcasts 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Apple Podcasts (0 low-contrast texts, 31 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:09:03.562Z"
+    "at": "2026-10-26T03:24:04.475Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not Apple Podcasts (the site is not asked)",
-    "at": "2026-10-26T03:09:03.562Z",
+    "at": "2026-10-26T03:24:04.475Z",
     "of": 5
    },
    "subscriptions": {
@@ -2765,7 +2765,7 @@
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs Apple Podcasts 2 of 3 shown (Verse lacks: none; site lacks: the shows you follow)",
-    "at": "2026-10-26T03:09:03.562Z",
+    "at": "2026-10-26T03:24:04.475Z",
     "of": 3,
     "part": true
    },
@@ -2774,7 +2774,7 @@
     "verse": 5,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs Apple Podcasts 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
-    "at": "2026-10-26T03:09:03.562Z",
+    "at": "2026-10-26T03:24:04.475Z",
     "of": 5,
     "part": true
    },
@@ -2783,16 +2783,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:09:03.562Z",
+    "at": "2026-10-26T03:24:04.475Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
-    "best": 9,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs Apple Podcasts 9 of 19 things a full answer shows (Verse lacks: Show pages; site lacks: search any show, paste an RSS link, episode lengths, a queue, playback speed, skip back and forward, a sleep timer, share, Search and browse directory, Up Next queue)",
-    "at": "2026-10-26T03:09:03.562Z",
+    "verse": 19,
+    "best": 8,
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs Apple Podcasts 8 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, a queue, playback speed, skip back and forward, a sleep timer, share, Search and browse directory, Show pages, Up Next queue)",
+    "at": "2026-10-26T03:24:04.475Z",
     "of": 19
    }
   },
@@ -12321,64 +12321,64 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs podcastindex.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 159,
+    "verse": 167,
     "best": 200,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 159 ms to the load event (median of 3, phone width) vs the bar (podcastindex.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:10:42.107Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 167 ms to the load event (median of 3, phone width) vs the bar (podcastindex.org unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs the bar (podcastindex.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs the bar (podcastindex.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "offline": {
     "verdict": "worse",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs the bar (podcastindex.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (podcastindex.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs the bar (podcastindex.org unreachable) 0 design defects",
-    "at": "2026-10-26T03:10:42.107Z"
+    "at": "2026-10-26T03:20:46.349Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:10:42.107Z",
+    "at": "2026-10-26T03:20:46.349Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 18,
+    "verdict": "equal-and-better",
+    "verse": 19,
     "best": 19,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs the bar (podcastindex.org unreachable) 19 of 19 things a full answer shows (Verse lacks: Show pages)",
-    "at": "2026-10-26T03:10:42.107Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs the bar (podcastindex.org unreachable) 19 of 19 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:20:46.349Z",
     "of": 19
    },
    "subscriptions": {
@@ -12386,7 +12386,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs the bar (podcastindex.org unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:42.107Z",
+    "at": "2026-10-26T03:20:46.349Z",
     "of": 3,
     "part": true
    },
@@ -12395,7 +12395,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs the bar (podcastindex.org unreachable) 5 of 5 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:42.107Z",
+    "at": "2026-10-26T03:20:46.349Z",
     "of": 5,
     "part": true
    },
@@ -12404,7 +12404,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown vs the bar (podcastindex.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:42.107Z",
+    "at": "2026-10-26T03:20:46.349Z",
     "of": 2,
     "part": true
    }
@@ -13167,64 +13167,64 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs player.fm 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 117,
+    "verse": 152,
     "best": 200,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 117 ms to the load event (median of 3, phone width) vs the bar (player.fm unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:10:23.965Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 152 ms to the load event (median of 3, phone width) vs the bar (player.fm unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs the bar (player.fm unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs the bar (player.fm unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "offline": {
     "verdict": "worse",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs the bar (player.fm unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (player.fm unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs the bar (player.fm unreachable) 0 design defects",
-    "at": "2026-10-26T03:10:23.965Z"
+    "at": "2026-10-26T03:21:28.881Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:10:23.965Z",
+    "at": "2026-10-26T03:21:28.881Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 18,
+    "verdict": "equal-and-better",
+    "verse": 19,
     "best": 19,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs the bar (player.fm unreachable) 19 of 19 things a full answer shows (Verse lacks: Show pages)",
-    "at": "2026-10-26T03:10:23.965Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs the bar (player.fm unreachable) 19 of 19 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:21:28.881Z",
     "of": 19
    },
    "subscriptions": {
@@ -13232,7 +13232,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs the bar (player.fm unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:23.965Z",
+    "at": "2026-10-26T03:21:28.881Z",
     "of": 3,
     "part": true
    },
@@ -13241,7 +13241,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs the bar (player.fm unreachable) 5 of 5 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:23.965Z",
+    "at": "2026-10-26T03:21:28.881Z",
     "of": 5,
     "part": true
    },
@@ -13250,7 +13250,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown vs the bar (player.fm unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:10:23.965Z",
+    "at": "2026-10-26T03:21:28.881Z",
     "of": 2,
     "part": true
    }
@@ -13261,64 +13261,64 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs listennotes.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:11:11.397Z"
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 148,
+    "verse": 110,
     "best": 200,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 148 ms to the load event (median of 3, phone width) vs the bar (listennotes.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:11:11.397Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 110 ms to the load event (median of 3, phone width) vs the bar (listennotes.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs the bar (listennotes.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:11:11.397Z"
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs the bar (listennotes.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:11:11.397Z"
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "offline": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 1,
     "best": 1,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs the bar (listennotes.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:11:11.397Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs the bar (listennotes.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (listennotes.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:11:11.397Z"
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs the bar (listennotes.com unreachable) 0 design defects",
-    "at": "2026-10-26T03:11:11.397Z"
+    "at": "2026-10-26T03:22:15.301Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:11:11.397Z",
+    "at": "2026-10-26T03:22:15.301Z",
     "of": 5
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 18,
+    "verdict": "equal-and-better",
+    "verse": 19,
     "best": 19,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs the bar (listennotes.com unreachable) 19 of 19 things a full answer shows (Verse lacks: Show pages)",
-    "at": "2026-10-26T03:11:11.397Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs the bar (listennotes.com unreachable) 19 of 19 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:22:15.301Z",
     "of": 19
    },
    "subscriptions": {
@@ -13326,7 +13326,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs the bar (listennotes.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:11:11.397Z",
+    "at": "2026-10-26T03:22:15.301Z",
     "of": 3,
     "part": true
    },
@@ -13335,7 +13335,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs the bar (listennotes.com unreachable) 5 of 5 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:11:11.397Z",
+    "at": "2026-10-26T03:22:15.301Z",
     "of": 5,
     "part": true
    },
@@ -13344,7 +13344,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown vs the bar (listennotes.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:11:11.397Z",
+    "at": "2026-10-26T03:22:15.301Z",
     "of": 2,
     "part": true
    }
@@ -13352,52 +13352,52 @@
   "podcasts: podchaser.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 135,
-    "best": 840,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 135 ms to the load event (median of 3, phone width) vs podchaser.com 840 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:11:56.452Z"
+    "verse": 128,
+    "best": 1231,
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 128 ms to the load event (median of 3, phone width) vs podchaser.com 1231 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs podchaser.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:11:56.452Z"
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs podchaser.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:11:56.452Z"
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs podchaser.com 0 unnamed controls or images",
-    "at": "2026-10-26T03:11:56.452Z"
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs podchaser.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:11:56.452Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs podchaser.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs podchaser.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:11:56.452Z"
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not podchaser.com (the site is not asked)",
-    "at": "2026-10-26T03:11:56.452Z",
+    "at": "2026-10-26T03:22:51.429Z",
     "of": 5
    },
    "design polish": {
@@ -13405,14 +13405,14 @@
     "verse": 0,
     "best": 43,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs podchaser.com 43 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), podchaser.com (10 low-contrast texts, 33 small tap targets, layout shift 0.01)",
-    "at": "2026-10-26T03:11:56.452Z"
+    "at": "2026-10-26T03:22:51.429Z"
    },
    "subscriptions": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs podchaser.com 0 of 3 shown (Verse lacks: none; site lacks: follow a show, the shows you follow, new episodes of those shows)",
-    "at": "2026-10-26T03:11:56.452Z",
+    "at": "2026-10-26T03:22:51.429Z",
     "of": 3,
     "part": true
    },
@@ -13421,7 +13421,7 @@
     "verse": 5,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs podchaser.com 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
-    "at": "2026-10-26T03:11:56.452Z",
+    "at": "2026-10-26T03:22:51.429Z",
     "of": 5,
     "part": true
    },
@@ -13430,68 +13430,68 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:11:56.452Z",
+    "at": "2026-10-26T03:22:51.429Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 19,
     "best": 4,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs podchaser.com 4 of 19 things a full answer shows (Verse lacks: Show pages; site lacks: search any show, paste an RSS link, episode lengths, show notes, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, saved for offline, share, works offline, Show pages, Up Next queue)",
-    "at": "2026-10-26T03:11:56.452Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs podchaser.com 4 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, show notes, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, saved for offline, share, works offline, Show pages, Up Next queue)",
+    "at": "2026-10-26T03:22:51.429Z",
     "of": 19
    }
   },
   "podcasts: podbean.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 124,
-    "best": 551,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 124 ms to the load event (median of 3, phone width) vs podbean.com 551 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:12:33.844Z"
+    "verse": 112,
+    "best": 730,
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 112 ms to the load event (median of 3, phone width) vs podbean.com 730 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs podbean.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:12:33.844Z"
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs podbean.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:12:33.844Z"
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs podbean.com 3 unnamed controls or images",
-    "at": "2026-10-26T03:12:33.844Z"
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs podbean.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:12:33.844Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs podbean.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs podbean.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:12:33.844Z"
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not podbean.com (the site is not asked)",
-    "at": "2026-10-26T03:12:33.844Z",
+    "at": "2026-10-26T03:23:21.290Z",
     "of": 5
    },
    "design polish": {
@@ -13499,14 +13499,14 @@
     "verse": 0,
     "best": 85,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs podbean.com 85 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), podbean.com (7 low-contrast texts, 78 small tap targets, layout shift 0.06)",
-    "at": "2026-10-26T03:12:33.844Z"
+    "at": "2026-10-26T03:23:21.290Z"
    },
    "subscriptions": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs podbean.com 0 of 3 shown (Verse lacks: none; site lacks: follow a show, the shows you follow, new episodes of those shows)",
-    "at": "2026-10-26T03:12:33.844Z",
+    "at": "2026-10-26T03:23:21.290Z",
     "of": 3,
     "part": true
    },
@@ -13515,7 +13515,7 @@
     "verse": 5,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs podbean.com 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
-    "at": "2026-10-26T03:12:33.844Z",
+    "at": "2026-10-26T03:23:21.290Z",
     "of": 5,
     "part": true
    },
@@ -13524,16 +13524,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:12:33.844Z",
+    "at": "2026-10-26T03:23:21.290Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 19,
     "best": 2,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs podbean.com 2 of 19 things a full answer shows (Verse lacks: Show pages; site lacks: search any show, paste an RSS link, episode lengths, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, a transcript, share, works offline, Search and browse directory, Show pages, Play episodes, Follow shows, Up Next queue)",
-    "at": "2026-10-26T03:12:33.844Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs podbean.com 2 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, a transcript, share, works offline, Search and browse directory, Show pages, Play episodes, Follow shows, Up Next queue)",
+    "at": "2026-10-26T03:23:21.290Z",
     "of": 19
    }
   },
@@ -13541,51 +13541,51 @@
    "speed": {
     "verdict": "equal-and-better",
     "verse": 115,
-    "best": 439,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 115 ms to the load event (median of 3, phone width) vs castbox.fm 439 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:13:08.270Z"
+    "best": 511,
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 115 ms to the load event (median of 3, phone width) vs castbox.fm 511 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs castbox.fm 3 of 3 loads answered",
-    "at": "2026-10-26T03:13:08.270Z"
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs castbox.fm 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:13:08.270Z"
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 23,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs castbox.fm 23 unnamed controls or images",
-    "at": "2026-10-26T03:13:08.270Z"
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 (1: the page shows itself again with the network cut) vs castbox.fm 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:13:08.270Z"
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs castbox.fm 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs castbox.fm 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:13:08.270Z"
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not castbox.fm (the site is not asked)",
-    "at": "2026-10-26T03:13:08.270Z",
+    "at": "2026-10-26T03:23:48.055Z",
     "of": 5
    },
    "design polish": {
@@ -13593,14 +13593,14 @@
     "verse": 0,
     "best": 47,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs castbox.fm 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), castbox.fm (5 low-contrast texts, 41 small tap targets, layout shift 0.26)",
-    "at": "2026-10-26T03:13:08.270Z"
+    "at": "2026-10-26T03:23:48.055Z"
    },
    "subscriptions": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs castbox.fm 0 of 3 shown (Verse lacks: none; site lacks: follow a show, the shows you follow, new episodes of those shows)",
-    "at": "2026-10-26T03:13:08.270Z",
+    "at": "2026-10-26T03:23:48.055Z",
     "of": 3,
     "part": true
    },
@@ -13609,7 +13609,7 @@
     "verse": 5,
     "best": 0,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs castbox.fm 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
-    "at": "2026-10-26T03:13:08.270Z",
+    "at": "2026-10-26T03:23:48.055Z",
     "of": 5,
     "part": true
    },
@@ -13618,16 +13618,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:13:08.270Z",
+    "at": "2026-10-26T03:23:48.055Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 19,
     "best": 1,
-    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 18 of 19 things a full answer shows vs castbox.fm 1 of 19 things a full answer shows (Verse lacks: Show pages; site lacks: search any show, paste an RSS link, episode lengths, show notes, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, a transcript, share, works offline, Search and browse directory, Show pages, Play episodes, Follow shows, Up Next queue)",
-    "at": "2026-10-26T03:13:08.270Z",
+    "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs castbox.fm 1 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, show notes, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, a transcript, share, works offline, Search and browse directory, Show pages, Play episodes, Follow shows, Up Next queue)",
+    "at": "2026-10-26T03:23:48.055Z",
     "of": 19
    }
   },
