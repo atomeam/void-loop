@@ -250,23 +250,23 @@
      "detail": "tier 2 of the owner's order (2026-10-26); not built",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): an NFL box-score FPTS estimate with PPR/half/standard; no roster, no add/drop, no player pool (no free player or projection feed read)"
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): compare, start or sit and trade from a pasted or opened sheet, plus box-score averages and an NFL FPTS estimate; no league sync, no live projections, no roster slots"
     },
     {
      "group": "power",
      "name": "Start/sit and trade comparator",
      "detail": "tier 2; only where a free projection source exists",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse page does this yet"
+     "verse": "has",
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): start or sit with margin, floor and ceiling and a trade in the visitor's own value column; the numbers are the visitor's, not Verse's projections"
     },
     {
      "group": "power",
      "name": "Mock draft simulator",
      "detail": "tier 2",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a snake mock draft on the device against bots, from a ranked list you paste (no free ADP feed read, so none is claimed); no built-in ADP, positions or roster rules"
+     "verse": "has",
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): a snake mock draft from the sheet ranked by any column, on the scores Sports tab from a pasted list as well"
     },
     {
      "group": "power",
@@ -448,8 +448,8 @@
   "alerts",
   "playoff seeding simulator, trade and salary-cap checker, playoff odds",
   "polls and brackets, recruiting, draft hubs, golf/UFC/tennis/NASCAR templates, historical archive (tier 4, not started)",
-  "my fantasy team, start/sit and trade comparator (no free player or projection feed read; building them from box scores alone would invent numbers)",
-  "league stat leaders (ESPN's leaders endpoint shape not verified from here; computing from box scores needs one fetch per game)"
+  "league stat leaders (ESPN's leaders endpoint shape not verified from here; computing from box scores needs one fetch per game)",
+  "fantasy league sync (ESPN, Yahoo, Sleeper) and live projections: not bundled; Sleeper, OpenF1 and Jolpica terms and fields could not be verified from the build sandbox"
  ],
  "verse_extra": [
   "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",

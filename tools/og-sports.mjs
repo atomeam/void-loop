@@ -6,6 +6,7 @@ import { chromium } from 'playwright-core';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'og');
 const CARDS = {
+  fantasy: { title: 'Fantasy tools', line: 'Your own sheet in, answers out, on your device', chips: ['Compare players', 'Start or sit', 'Trade value', 'Draft board', 'Mock draft', 'Box-score stats'], foot: 'No projections sold, nothing leaves your device.' },
   scores: { title: 'Scores', line: 'Live scores, schedules and standings', chips: ['Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'NBA', 'NFL', 'MLB', 'NHL', 'Formula 1'], foot: 'No ads, no betting. Stories and pictures by Verse.' },
   sports: { title: 'Sports', line: 'Browse 42 sports and search teams, events, venues and players', chips: ['Soccer', 'Basketball', 'Tennis', 'Cricket', 'Golf', 'Rugby', 'Boxing', 'Cycling', 'Born on this day'], foot: 'One search across every sport. A free read-only API.' },
 };

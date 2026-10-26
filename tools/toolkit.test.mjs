@@ -9,7 +9,8 @@ test('every tool page is linked to at least one other, only to tools that exist,
     assert.ok(TOOLS[p], p); assert.ok(rel.length >= 1, p); assert.ok(!rel.includes(p), p);
     for (const r of rel) assert.ok(TOOLS[r], p + ' -> ' + r);
     let html = fs.readFileSync(new URL('../void-live-deploy' + p + 'index.html', import.meta.url), 'utf8');
-    for (const m of html.matchAll(/<script type="module" src="(\/[^"]+)"|\bimport\('(\/[a-z0-9-]+\/[a-z0-9-]+\.js)'\)|\bimport '(\/[a-z0-9-]+\/[a-z0-9-]+\.js)'/g)) html += fs.readFileSync(new URL('../void-live-deploy' + (m[1] || m[2] || m[3]), import.meta.url), 'utf8'); // a page whose code is in a file of its own, loaded as a module script or imported after the load event (/boards/)
+    // a page whose code is in files of its own: a module script, an import() after load, or a plain script file (an external start file, no inline script, so the page needs no content-security rule) that imports the page's code; followed two files deep
+    const seen = new Set(); let scan = html; for (let depth = 0; depth < 2; depth++) { let more = ''; for (const m of scan.matchAll(/<script (?:type="module" )?src="(\/[^"]+)"|\bimport\('(\/[a-z0-9-]+\/[a-z0-9-]+\.js)'\)|\bimport '(\/[a-z0-9-]+\/[a-z0-9-]+\.js)'/g)) { const f = m[1] || m[2] || m[3]; if (seen.has(f)) continue; seen.add(f); more += fs.readFileSync(new URL('../void-live-deploy' + f, import.meta.url), 'utf8'); } html += more; scan = more; }
     assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '(?:\/[a-z0-9-]+)+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');

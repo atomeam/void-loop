@@ -2697,59 +2697,59 @@
   "music": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 115,
-    "best": 525,
-    "evidence": "Verse (/music/) 115 ms to the load event (median of 3, phone width) vs Spotify 525 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:16:09.128Z"
+    "verse": 136,
+    "best": 549,
+    "evidence": "Verse (/music/) 136 ms to the load event (median of 3, phone width) vs Spotify 549 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 loads answered vs Spotify 3 of 3 loads answered",
-    "at": "2026-10-26T04:16:09.128Z"
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/music/) 0 px sideways overflow at 390 px vs Spotify 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:16:09.128Z"
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/music/) 0 unnamed controls or images vs Spotify 0 unnamed controls or images",
-    "at": "2026-10-26T04:16:09.128Z"
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/music/) 0 (1: the page shows itself again with the network cut) vs Spotify 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:16:09.128Z"
+    "evidence": "Verse (/music/) 1 (1: the page shows itself again with the network cut) vs Spotify 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/music/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Spotify 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:16:09.128Z"
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 98,
     "evidence": "Verse (/music/) 1 design defects vs Spotify 98 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Spotify (0 low-contrast texts, 97 small tap targets, layout shift 0.30)",
-    "at": "2026-10-26T04:16:09.128Z"
+    "at": "2026-10-26T04:49:08.577Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 right against the worked-out answer; judged against the standard, not Spotify (the site is not asked)",
-    "at": "2026-10-26T04:16:09.128Z",
+    "at": "2026-10-26T04:49:08.577Z",
     "of": 3
    },
    "catalogue": {
@@ -2757,7 +2757,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/music/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:16:09.128Z",
+    "at": "2026-10-26T04:49:08.577Z",
     "of": 4,
     "part": true
    },
@@ -2766,7 +2766,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:16:09.128Z",
+    "at": "2026-10-26T04:49:08.577Z",
     "of": 3,
     "part": true
    },
@@ -2775,7 +2775,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:16:09.128Z",
+    "at": "2026-10-26T04:49:08.577Z",
     "of": 3,
     "part": true
    },
@@ -2784,7 +2784,7 @@
     "verse": 16,
     "best": 1,
     "evidence": "Verse (/music/) 16 of 16 things a full answer shows vs Spotify 1 of 16 things a full answer shows (Verse lacks: none; site lacks: a metronome, a piano, a tuner, a BPM counter, chords and scales, setlists, a catalogue, recommendations, no account, on your device, songs in the public domain, Playlists, Original music creation, Share links, cards and codes, Downloads)",
-    "at": "2026-10-26T04:16:09.128Z",
+    "at": "2026-10-26T04:49:08.577Z",
     "of": 16
    }
   },
@@ -2885,52 +2885,52 @@
   "travel": {
    "speed": {
     "verdict": "better",
-    "verse": 262,
-    "best": 771,
-    "evidence": "Verse 262 ms to the load event (median of 3, phone width) vs Google Flights 771 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:41:28.684Z"
+    "verse": 283,
+    "best": 794,
+    "evidence": "Verse 283 ms to the load event (median of 3, phone width) vs Google Flights 794 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Flights 3 of 3 loads answered",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Flights 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Google Flights 0 unnamed controls or images",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Flights 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Flights 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 12,
     "evidence": "Verse 0 design defects vs Google Flights 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Flights (0 low-contrast texts, 12 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:41:28.684Z"
+    "at": "2026-10-26T04:50:15.918Z"
    }
   },
   "jobs": {
@@ -14892,53 +14892,53 @@
   },
   "music: jasperbernaers.com": {
    "speed": {
-    "verdict": "better",
-    "verse": 389,
-    "best": 624,
-    "evidence": "Verse (/tuner/) 389 ms to the load event (median of 3, phone width) vs jasperbernaers.com 624 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:44:10.575Z"
+    "verdict": "equal-and-better",
+    "verse": 132,
+    "best": 309,
+    "evidence": "Verse (/tuner/) 132 ms to the load event (median of 3, phone width) vs jasperbernaers.com 309 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tuner/) 3 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tuner/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tuner/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/tuner/) 1 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/tuner/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tuner/) 4 of 4 right against the worked-out answer; judged against the standard, not jasperbernaers.com (the site is not asked)",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 4
    },
    "design polish": {
@@ -14946,14 +14946,14 @@
     "verse": 0,
     "best": 50,
     "evidence": "Verse (/tuner/) 0 design defects vs jasperbernaers.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (44 low-contrast texts, 6 small tap targets, layout shift 0.03)",
-    "at": "2026-10-26T04:44:10.575Z"
+    "at": "2026-10-26T04:46:43.072Z"
    },
    "microphone tuning": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tuner/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 3,
     "part": true
    },
@@ -14962,7 +14962,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tuner/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 4,
     "part": true
    },
@@ -14971,7 +14971,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 2,
     "part": true
    },
@@ -14980,7 +14980,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/tuner/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 2,
     "part": true
    },
@@ -14989,59 +14989,59 @@
     "verse": 18,
     "best": 10,
     "evidence": "Verse (/tuner/) 18 of 18 things a full answer shows vs jasperbernaers.com 10 of 18 things a full answer shows (Verse lacks: none; site lacks: reference tones, a pitch pipe, nothing recorded or sent, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads)",
-    "at": "2026-10-26T04:44:10.575Z",
+    "at": "2026-10-26T04:46:43.072Z",
     "of": 18
    }
   },
   "music: anotherproducer.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 192,
-    "best": 281,
-    "evidence": "Verse (/bpm/) 192 ms to the load event (median of 3, phone width) vs anotherproducer.com 281 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:09:07.776Z"
+    "verse": 117,
+    "best": 266,
+    "evidence": "Verse (/bpm/) 117 ms to the load event (median of 3, phone width) vs anotherproducer.com 266 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/bpm/) 3 of 3 loads answered vs anotherproducer.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:09:07.776Z"
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
     "evidence": "Verse (/bpm/) 0 px sideways overflow at 390 px vs anotherproducer.com 7 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:09:07.776Z"
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/bpm/) 0 unnamed controls or images vs anotherproducer.com 2 unnamed controls or images",
-    "at": "2026-10-26T04:09:07.776Z"
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/bpm/) 0 (1: the page shows itself again with the network cut) vs anotherproducer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:09:07.776Z"
+    "evidence": "Verse (/bpm/) 1 (1: the page shows itself again with the network cut) vs anotherproducer.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/bpm/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotherproducer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:09:07.776Z"
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/bpm/) 4 of 4 right against the worked-out answer; judged against the standard, not anotherproducer.com (the site is not asked)",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 4
    },
    "design polish": {
@@ -15049,14 +15049,14 @@
     "verse": 1,
     "best": 31,
     "evidence": "Verse (/bpm/) 1 design defects vs anotherproducer.com 31 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), anotherproducer.com (12 low-contrast texts, 19 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:09:07.776Z"
+    "at": "2026-10-26T04:47:02.445Z"
    },
    "tap tempo counter": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/bpm/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 3,
     "part": true
    },
@@ -15065,7 +15065,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 2,
     "part": true
    },
@@ -15074,7 +15074,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/bpm/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 4,
     "part": true
    },
@@ -15083,7 +15083,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 2,
     "part": true
    },
@@ -15092,59 +15092,59 @@
     "verse": 16,
     "best": 8,
     "evidence": "Verse (/bpm/) 16 of 16 things a full answer shows vs anotherproducer.com 8 of 16 things a full answer shows (Verse lacks: none; site lacks: half and double, average of the last taps, a click on each tap, nothing uploaded, Playlists, Original music creation, Share links, cards and codes, No account)",
-    "at": "2026-10-26T04:09:07.776Z",
+    "at": "2026-10-26T04:47:02.445Z",
     "of": 16
    }
   },
   "music: chordchord.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 193,
-    "best": 365,
-    "evidence": "Verse (/chords/) 193 ms to the load event (median of 3, phone width) vs chordchord.com 365 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:11:20.546Z"
+    "verse": 155,
+    "best": 267,
+    "evidence": "Verse (/chords/) 155 ms to the load event (median of 3, phone width) vs chordchord.com 267 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/chords/) 3 of 3 loads answered vs chordchord.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:11:20.546Z"
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/chords/) 0 px sideways overflow at 390 px vs chordchord.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:11:20.546Z"
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/chords/) 0 unnamed controls or images vs chordchord.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:11:20.546Z"
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/chords/) 0 (1: the page shows itself again with the network cut) vs chordchord.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:11:20.546Z"
+    "evidence": "Verse (/chords/) 1 (1: the page shows itself again with the network cut) vs chordchord.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/chords/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chordchord.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:11:20.546Z"
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/chords/) 4 of 4 right against the worked-out answer; judged against the standard, not chordchord.com (the site is not asked)",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 4
    },
    "design polish": {
@@ -15152,14 +15152,14 @@
     "verse": 1,
     "best": 46,
     "evidence": "Verse (/chords/) 1 design defects vs chordchord.com 46 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), chordchord.com (28 low-contrast texts, 17 small tap targets, layout shift 0.24)",
-    "at": "2026-10-26T04:11:20.546Z"
+    "at": "2026-10-26T04:47:23.137Z"
    },
    "chord finder": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 3,
     "part": true
    },
@@ -15168,7 +15168,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 3,
     "part": true
    },
@@ -15177,7 +15177,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 3,
     "part": true
    },
@@ -15186,7 +15186,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 3,
     "part": true
    },
@@ -15195,59 +15195,59 @@
     "verse": 18,
     "best": 5,
     "evidence": "Verse (/chords/) 18 of 18 things a full answer shows vs chordchord.com 5 of 18 things a full answer shows (Verse lacks: none; site lacks: guitar fingerings, a piano keyboard, inversions, a chord named from notes, chords in a key, seventh chords, a transposer, plays the chord, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
-    "at": "2026-10-26T04:11:20.546Z",
+    "at": "2026-10-26T04:47:23.137Z",
     "of": 18
    }
   },
   "music: metronomeonline.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 190,
-    "best": 176,
-    "evidence": "Verse (/metronome/) 190 ms to the load event (median of 3, phone width) vs metronomeonline.com 176 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T04:11:54.391Z"
+    "verse": 142,
+    "best": 138,
+    "evidence": "Verse (/metronome/) 142 ms to the load event (median of 3, phone width) vs metronomeonline.com 138 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 loads answered vs metronomeonline.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:11:54.391Z"
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/metronome/) 0 px sideways overflow at 390 px vs metronomeonline.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:11:54.391Z"
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/metronome/) 0 unnamed controls or images vs metronomeonline.com 5 unnamed controls or images",
-    "at": "2026-10-26T04:11:54.391Z"
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/metronome/) 0 (1: the page shows itself again with the network cut) vs metronomeonline.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:11:54.391Z"
+    "evidence": "Verse (/metronome/) 1 (1: the page shows itself again with the network cut) vs metronomeonline.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/metronome/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs metronomeonline.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:11:54.391Z"
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/metronome/) 4 of 4 right against the worked-out answer; judged against the standard, not metronomeonline.com (the site is not asked)",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 4
    },
    "design polish": {
@@ -15255,14 +15255,14 @@
     "verse": 3,
     "best": 19,
     "evidence": "Verse (/metronome/) 3 design defects vs metronomeonline.com 19 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), metronomeonline.com (17 low-contrast texts, 1 small tap targets, layout shift 0.19)",
-    "at": "2026-10-26T04:11:54.391Z"
+    "at": "2026-10-26T04:47:42.206Z"
    },
    "tap tempo": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 2,
     "part": true
    },
@@ -15271,7 +15271,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 3,
     "part": true
    },
@@ -15280,7 +15280,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 3,
     "part": true
    },
@@ -15289,7 +15289,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 2,
     "part": true
    },
@@ -15298,7 +15298,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/metronome/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 1,
     "part": true
    },
@@ -15307,7 +15307,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/metronome/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 4,
     "part": true
    },
@@ -15316,74 +15316,74 @@
     "verse": 21,
     "best": 5,
     "evidence": "Verse (/metronome/) 21 of 21 things a full answer shows vs metronomeonline.com 5 of 21 things a full answer shows (Verse lacks: none; site lacks: tap tempo, accents, a visual beat, a practice timer, a speed trainer, silent bars, tempo presets, setlists, volume, nothing leaves your device, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
-    "at": "2026-10-26T04:11:54.391Z",
+    "at": "2026-10-26T04:47:42.206Z",
     "of": 21
    }
   },
   "music: virtualpiano.net": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 102,
-    "best": 469,
-    "evidence": "Verse (/piano/) 102 ms to the load event (median of 3, phone width) vs virtualpiano.net 469 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:15:15.858Z"
+    "verdict": "better",
+    "verse": 283,
+    "best": 773,
+    "evidence": "Verse (/piano/) 283 ms to the load event (median of 3, phone width) vs virtualpiano.net 773 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/piano/) 3 of 3 loads answered vs virtualpiano.net 3 of 3 loads answered",
-    "at": "2026-10-26T04:15:15.858Z"
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/piano/) 0 px sideways overflow at 390 px vs virtualpiano.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:15:15.858Z"
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
     "evidence": "Verse (/piano/) 0 unnamed controls or images vs virtualpiano.net 7 unnamed controls or images",
-    "at": "2026-10-26T04:15:15.858Z"
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/piano/) 0 (1: the page shows itself again with the network cut) vs virtualpiano.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:15:15.858Z"
+    "evidence": "Verse (/piano/) 1 (1: the page shows itself again with the network cut) vs virtualpiano.net 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/piano/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs virtualpiano.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:15:15.858Z"
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/piano/) 3 of 3 right against the worked-out answer; judged against the standard, not virtualpiano.net (the site is not asked)",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 3,
-    "best": 46,
-    "evidence": "Verse (/piano/) 3 design defects vs virtualpiano.net 46 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), virtualpiano.net (34 low-contrast texts, 12 small tap targets, layout shift 0.06)",
-    "at": "2026-10-26T04:15:15.858Z"
+    "best": 45,
+    "evidence": "Verse (/piano/) 3 design defects vs virtualpiano.net 45 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), virtualpiano.net (34 low-contrast texts, 11 small tap targets, layout shift 0.09)",
+    "at": "2026-10-26T04:48:11.513Z"
    },
    "computer keyboard play": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/piano/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 2,
     "part": true
    },
@@ -15392,7 +15392,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/piano/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 2,
     "part": true
    },
@@ -15401,7 +15401,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/piano/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 2,
     "part": true
    },
@@ -15410,7 +15410,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/piano/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 3,
     "part": true
    },
@@ -15419,7 +15419,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/piano/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 3,
     "part": true
    },
@@ -15428,7 +15428,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/piano/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 1,
     "part": true
    },
@@ -15437,7 +15437,7 @@
     "verse": 18,
     "best": 5,
     "evidence": "Verse (/piano/) 18 of 18 things a full answer shows vs virtualpiano.net 5 of 18 things a full answer shows (Verse lacks: none; site lacks: touch, a sustain pedal, instruments, reverb, transpose, MIDI, key labels, an octave shift, works offline, Playlists, Original music creation, Downloads, No account)",
-    "at": "2026-10-26T04:15:15.858Z",
+    "at": "2026-10-26T04:48:11.513Z",
     "of": 18
    }
   },

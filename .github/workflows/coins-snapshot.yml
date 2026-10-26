@@ -1,0 +1,42 @@
+# The coin snapshot (tools/coins-snapshot.mjs), daily: the top 50 coins by market cap and the screener's 30 coins from CoinGecko's free public API, fetched once from a
+# runner and committed to main as void-live-deploy/data/coins.json. /markets/caps/ and /markets/screener/ draw it first (labelled a snapshot of its day, never live) and
+# replace it with live data when /api/markets answers, so a visitor never waits on CoinGecko for the first screen. No key, no secret. When CoinGecko does not answer the step
+# says so and the file is left as it was.
+name: Coin snapshot
+
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: coins-snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the snapshot on main
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch the coins and write the snapshot
+        run: |
+          node tools/coins-snapshot.mjs || { echo "::warning title=Coin snapshot not refreshed::CoinGecko did not answer, or answered short (the reason is the line above)"; exit 0; }
+          git diff --quiet void-live-deploy/data/coins.json && { echo "snapshot unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/data/coins.json
+          git commit -m "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

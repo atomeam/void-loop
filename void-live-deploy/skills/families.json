@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 9,
+  "experiment": 10,
   "tested": 26,
   "checked": 17,
   "proven": 297
@@ -1441,7 +1441,7 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 3,
+    "experiment": 4,
     "tested": 2,
     "checked": 1,
     "proven": 29
@@ -1908,6 +1908,14 @@
     },
     {
      "name": "sports-browse",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
+    },
+    {
+     "name": "fantasy",
      "tier": "experiment",
      "why": "nothing checks it yet",
      "last_tested": "2026-10-25",
