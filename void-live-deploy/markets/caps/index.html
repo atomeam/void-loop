@@ -79,9 +79,14 @@
     }
     $('q').addEventListener('input', draw);
     document.querySelector('thead').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (!b) return; if (key === b.dataset.k) dir = -dir; else { key = b.dataset.k; dir = 1; } draw(); });
+    // the daily snapshot first (committed by .github/workflows/coins-snapshot.yml, labelled as a snapshot and never as live), then the live list when it answers
+    const label = (t, extra) => { $('total').textContent = 'Total market cap of these ' + rows.length + ': $' + M.fmtBig(rows.reduce((a, r) => a + (r.cap || 0), 0)) + ' · ' + t + (extra ? ' ' + extra : ''); };
+    const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.caps) && snap.caps.length >= 10;
+    if (have) { rows = snap.caps; label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices are loading.'); draw(); }
     let j; try { j = await (await fetch('/api/markets?caps=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2000)); j = await (await fetch('/api/markets?caps=1')).json(); } } catch (_) { j = { ok: false }; }
-    if (!j.ok) { $('note').textContent = j.say || 'The coin list is not available just now. Try again in a minute.'; return; }
-    rows = j.coins; $('total').textContent = 'Total market cap of these ' + rows.length + ': $' + M.fmtBig(j.total) + ' · as of ' + new Date(j.at).toISOString().slice(0, 16).replace('T', ' ') + ' UTC'; draw();
+    if (j.ok) { rows = j.coins; label('Live, as of ' + new Date(j.at).toISOString().slice(0, 16).replace('T', ' ') + ' UTC.'); draw(); return; }
+    if (have) { label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices did not answer just now.'); return; }
+    $('note').textContent = 'The coin list could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>

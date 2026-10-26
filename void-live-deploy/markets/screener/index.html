@@ -72,22 +72,28 @@
   addEventListener('load', async () => {
     const M = await import('/lib/markets.js'), $ = (id) => document.getElementById(id), qs = new URLSearchParams(location.search);
     for (const [id, k] of [['group', 'group'], ['min', 'min'], ['max', 'max'], ['near', 'near'], ['vol', 'vol'], ['sort', 'sort']]) if (qs.has(k)) $(id).value = qs.get(k);
-    let all = [], total = 0;
+    let all = [], total = 0, lastTag = '';
     const KEY = 'a2m.void.markets.v1', mine = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'); return Array.isArray(v.list) ? v.list : []; } catch (_) { return []; } };
     const toggle = (sym) => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'), l = Array.isArray(v.list) ? v.list : []; v.list = l.includes(sym) ? l.filter((x) => x !== sym) : l.concat(sym).slice(0, 20); localStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
     const spark = (vals, up) => { const td = document.createElement('td'); td.className = 'wide'; const d = M.sparkD(vals); if (!d) return td; const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), p = document.createElementNS(NS, 'path'); svg.setAttribute('viewBox', '0 0 80 24'); svg.setAttribute('width', '80'); svg.setAttribute('height', '24'); svg.setAttribute('aria-hidden', 'true'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.6'); p.style.stroke = up ? 'var(--up)' : 'var(--down)'; svg.append(p); td.append(svg); return td; };
     const pct = (v) => (v >= 0 ? '▲ +' : '▼ −') + Math.abs(v).toFixed(2) + '%';
-    function draw() {
+    function draw(tag = '') {
       const f = { group: $('group').value, minPct: $('min').value, maxPct: $('max').value, nearHigh: $('near').value, minVolX: $('vol').value, sort: $('sort').value }, rows = M.screen(all, f);
-      $('count').textContent = rows.length + ' of ' + all.length + ' symbols match' + (total ? ' · as of ' + new Date(total).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '');
+      $('count').textContent = rows.length + ' of ' + all.length + ' symbols match' + (total ? ' · live, as of ' + new Date(total).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '') + (tag || lastTag);
+      lastTag = tag || lastTag;
       $('tb').replaceChildren(...rows.map((r) => { const tr = document.createElement('tr'), c = () => document.createElement('td'), a = document.createElement('a'), s = document.createElement('small'), t0 = c(), t1 = c(), t2 = c(), t3 = c(), t4 = c();
         const star = document.createElement('button'), on = mine().includes(r.sym); star.type = 'button'; star.textContent = on ? '★' : '☆'; star.setAttribute('aria-pressed', String(on)); star.setAttribute('aria-label', (on ? 'Remove ' : 'Add ') + r.sym + (on ? ' from' : ' to') + ' the watchlist'); star.style.cssText = 'border:0;padding:0;min-width:40px'; star.addEventListener('click', () => { toggle(r.sym); draw(); }); t0.className = 'l'; a.href = '/markets/?s=' + encodeURIComponent(r.sym); a.textContent = r.sym; s.textContent = r.name; const hd = document.createElement('div'); hd.append(star, a, ' '); t0.append(hd, s); t1.textContent = M.fmtPrice(r.price); t2.textContent = pct(r.pct); t2.className = r.pct >= 0 ? 'up' : 'down'; { const sp = document.createElement('div'); const q = spark(r.spark, r.pct >= 0); sp.append(...q.childNodes); t2.append(sp); }
         t3.textContent = r.below == null ? '–' : r.below.toFixed(1) + '%'; t3.title = 'below the ' + r.basis; t4.textContent = r.volX == null ? '–' : r.volX.toFixed(1) + '×'; tr.append(t0, t1, t2, t3, t4); return tr; }));
     }
     $('f').addEventListener('submit', (ev) => { ev.preventDefault(); const p = new URLSearchParams(); for (const id of ['group', 'min', 'max', 'near', 'vol', 'sort']) if ($(id).value) p.set(id, $(id).value); history.replaceState(null, '', '/markets/screener/' + (p.toString() ? '?' + p : '')); draw(); });
+    // the coins first from the daily snapshot (labelled, never live), so a coin row is always there; shares and indices need the live sources
+    const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.scan) && snap.scan.length >= 10;
+    let tag = '';
+    if (have) { all = M.scanRows([], snap.scan); total = 0; tag = ' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices are loading'; draw(tag); }
     let j; try { j = await (await fetch('/api/markets?scan=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2500)); j = await (await fetch('/api/markets?scan=1')).json(); } } catch (_) { j = { ok: false }; }
-    if (!j.ok) { $('count').textContent = j.say || 'The universe is not available just now. Try again in a minute.'; return; }
-    all = j.rows; total = Date.parse(j.at); draw();
+    if (j.ok) { all = j.rows; total = Date.parse(j.at); lastTag = ''; draw(''); return; }
+    if (have) { draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices could not be loaded just now'); return; }
+    $('count').textContent = j.say || 'The universe could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
