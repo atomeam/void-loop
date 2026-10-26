@@ -73,8 +73,58 @@ export const RELATED = Object.freeze({
   '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
   '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
   '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
-  '/tools/': ['/color/', '/wheel/', '/calculator/'],
+  '/tools/': ['/flights/', '/pdf/', '/kanban/', '/photos/', '/music/', '/calendar/', '/notes/'],
+  // the pages of the sitemap that are not tools (owner, 2026-10-26: "and link them all if they are usable together"): each leads to the ones it goes with
+  '/conquered/': ['/compare/', '/tools/', '/store/'],
+  '/compare/': ['/conquered/', '/tools/'],
+  '/cheat-codes/': ['/code-review/', '/fix/', '/store/'],
+  '/store/': ['/code-review/', '/one-time-fix/', '/keep-it-running/', '/tools/'],
+  '/code-review/': ['/store/', '/fix/', '/cheat-codes/'],
+  '/one-time-fix/': ['/fix/', '/keep-it-running/', '/full-stack-audit/', '/store/'],
+  '/keep-it-running/': ['/one-time-fix/', '/full-stack-audit/', '/fix/'],
+  '/full-stack-audit/': ['/one-time-fix/', '/keep-it-running/', '/code-review/'],
+  '/first-automation-setup/': ['/one-time-fix/', '/keep-it-running/', '/fix/'],
+  '/fix/': ['/one-time-fix/', '/keep-it-running/', '/code-review/'],
+  '/is-it/': ['/calendar/', '/time/', '/stopwatch/'],
 });
+// "Send to" (lib/handoff.js carries it; owner, 2026-10-26: "and link them all if they are usable together"): which page takes which kinds of
+// thing (and which file types), and which page makes what. Kept here, plain data, so the related row links the pages that work together without
+// loading the hand-off code; the kinds and their checks are lib/handoff.js's (docs/playbooks/link-pages.md)
+export const RECEIVES = Object.freeze({
+  '/calendar/': { name: 'Calendar', kinds: ['event', 'job', 'parcel', 'file'], files: ['text/calendar'] },
+  '/notes/': { name: 'Notes', kinds: ['text', 'list', 'event', 'place', 'route', 'job', 'parcel'] },
+  '/kanban/': { name: 'Kanban board', kinds: ['text', 'list', 'event', 'job', 'parcel'] },
+  '/word-count/': { name: 'Word counter', kinds: ['text', 'list'] },
+  '/translate/': { name: 'Translate', kinds: ['text'] },
+  '/time/': { name: 'Time zones', kinds: ['event', 'place', 'job'] },
+  '/weather/': { name: 'Weather', kinds: ['place'] },
+  '/flights/map/': { name: 'Flight map', kinds: ['route', 'place'] },
+  '/photos/': { name: 'Photo tools', kinds: ['file'], files: ['image/*'] },
+  '/pdf/': { name: 'PDF tools', kinds: ['file'], files: ['image/*', 'application/pdf'] },
+});
+export const MAKES = Object.freeze({
+  '/flights/trip/': ['event', 'route'], '/flights/map/': ['route'], '/flights/airports/': ['place'],
+  '/calendar/': ['event'], '/notes/': ['text'], '/kanban/': ['list'], '/word-count/': ['text'], '/markets/': ['text'],
+  '/pdf/': ['file'], '/photos/': ['file'], '/translate/': ['text'], '/recipes/': ['list'],
+});
+// the types of the files a maker makes, so its targets are only the pages that take them
+export const MAKES_FILES = Object.freeze({ '/pdf/': ['image/*'], '/photos/': ['image/*'] });
+/** the pages a kind can go to from a page, as [{ path, name }]: never the page itself nor its floor's leader (/pdf/ from /pdf/merge/); for a file,
+ *  only pages whose types meet the maker's (mime: ['image/*']). Pure. */
+export function targetsFor(kind, from = '', mime = null) {
+  return Object.entries(RECEIVES).filter(([path, r]) => !String(from).startsWith(path) && r.kinds.includes(kind) && (kind !== 'file' || !mime || mime.some((m) => (r.files || []).some((f) => f === m || (f.endsWith('/*') && m.startsWith(f.slice(0, -1)))))))
+    .map(([path, r]) => ({ path, name: r.name }));
+}
+// the pages that are not tools but are linked to: what Verse sells, the tower, the fixes, the days (each the sitemap's)
+export const PAGES = Object.freeze({ '/conquered/': 'Versus: sites surpassed', '/compare/': 'Side by side', '/cheat-codes/': 'Cheat codes', '/store/': 'Store', '/code-review/': 'Code review',
+  '/one-time-fix/': 'One-time fix', '/keep-it-running/': 'Keep it running', '/full-stack-audit/': 'Full-stack audit', '/first-automation-setup/': 'First automation setup', '/fix/': 'Fix an automation error', '/is-it/christmas': 'Is it…?' });
+// the hubs, each leading to the others where natural
+export const HUBS = Object.freeze(['/tools/', '/flights/', '/pdf/', '/kanban/', '/photos/', '/music/', '/sports/', '/generators/']);
+/** the pages a page works with by kind of data (lib/handoff.js): where what it makes can be sent, and the pages that send it what it takes. Pure. */
+export function partnersOf(path) {
+  const to = (from) => (MAKES[from] || []).flatMap((k) => targetsFor(k, from, k === 'file' ? MAKES_FILES[from] || null : null).map((t) => t.path));
+  return [...new Set([...to(path), ...Object.keys(MAKES).filter((p) => p !== path && to(p).includes(path))])];
+}
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 export const CARD_ASK = Object.freeze({
@@ -88,8 +138,10 @@ export const CARD_ASK = Object.freeze({
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
-/** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */
-export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p]).map((href) => ({ href, label: TOOLS[href] }));
+/** the related pages of a page as [{ href, label }]: its own list first, then the pages it works with by kind of data, then the other hubs
+ *  (for a hub); unknown pages get none. Pure. */
+export const relatedOf = (path) => { const own = RELATED[path] || [], hub = HUBS.includes(path) ? HUBS.filter((h) => h !== path && h !== '/tools/') : [];
+  return [...new Set([...own, ...partnersOf(path), ...hub])].filter((p) => p !== path && (TOOLS[p] || PAGES[p])).slice(0, Math.max(own.length, 9)).map((href) => ({ href, label: TOOLS[href] || PAGES[href] })); };
 
 /** a colour written as #rrggbb (3 or 6 hex digits, with or without #), or null. Pure. */
 export function hexOf(text) {
@@ -245,9 +297,12 @@ export function mountRelated(el, path, handoffs = []) {
     const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);
   }
   for (const r of relatedOf(path)) row.append(a(r.href, r.label));
-  if (path !== '/tools/') row.append(a('/tools/', 'All tools')); // the kit's own page (owner, 2026-10-25: "link them all so they are all usable together")
+  if (path !== '/tools/') row.append(a('/tools/', 'Everything Verse does')); // the kit's own page (owner, 2026-10-25: "link them all so they are all usable together")
   const h = accent(); const sw = a('/color/' + (h ? '?c=' + h.slice(1) : ''), h ? 'Accent ' + h : 'Pick an accent colour', 'tk-accent');
   sw.title = 'The colour every Verse tool wears on this device: pick it on the colour page'; row.append(sw);
+  // "Send to": what this page offers (lib/handoff.js offer()) goes to the pages that take it, on the device (owner, 2026-10-26: "and link them all if they are usable together")
+  const sends = d.createElement('div'); sends.className = 'tk-row tk-sends'; sends.hidden = true;
+  if (Object.keys(MAKES).some((p) => path.startsWith(p) || p.startsWith(path))) import('./handoff.js').then((H) => H.mountSend(sends, path, TOOLS[path] || '')).catch(() => {}); // loaded only where a page makes something
   const label = d.createElement('span'); label.className = 'tk-label'; label.textContent = 'Use with';
   // the ask bar: any ask, to the tool that does it
   const form = d.createElement('form'); form.className = 'tk-ask'; const inp = d.createElement('input'); inp.type = 'search'; inp.placeholder = 'Ask any tool: 100 c to f, flip a coin, weather in boston'; inp.setAttribute('aria-label', 'Ask any tool'); inp.autocomplete = 'off';
@@ -256,6 +311,6 @@ export function mountRelated(el, path, handoffs = []) {
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'
     + '.tk-ask{margin:14px 0 0}.tk-ask input{font:inherit;width:100%;box-sizing:border-box;min-height:40px;padding:6px 12px;border:1px solid var(--line,#8884);border-radius:999px;background:transparent;color:inherit}.tk-ask input:focus{outline:2px solid var(--accent,#6d4aff);outline-offset:1px}'
-    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
-  row.prepend(label); el.replaceChildren(style, form, row);
+    + '.tk-sends[hidden]{display:none}.tk-row .tk-send{border-color:var(--accent,#6d4aff);font-weight:600}.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
+  row.prepend(label); el.replaceChildren(style, form, sends, row);
 }
