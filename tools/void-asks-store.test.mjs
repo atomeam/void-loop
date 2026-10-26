@@ -82,7 +82,8 @@ test('parody games in the rack: the 30-game matrix, searchable, with Verse\'s ow
   assert.ok(parodyOf('parody games').all && parodyOf('parody-forge').all);
   assert.equal(parodyOf('parody of the zorkball board game').unknown, 'zorkball');
   for (const a of ['is water wet', 'play chess', 'what is a parody', 'parody of a song by weird al', 'is the moon public domain']) assert.equal(parodyOf(a), null, a);
-  assert.ok(rack.match('', 'parody games') && rack.match('', 'games'));
+  assert.ok(rack.match('', 'parody games'), 'the parody list is the rack\'s');
+  assert.ok(!rack.match('', 'games'), 'a bare "games" is the Game Box\'s (skills/gamebox.js), whose own examples list it; the rack stays out of it');
 });
 
 import films, { wantsNewFilms, newSince } from '../void-live-deploy/skills/films.js';
