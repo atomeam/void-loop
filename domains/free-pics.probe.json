@@ -1,5 +1,5 @@
 {
- "at": "2026-10-26T04:37:11.995Z",
+ "at": "2026-10-26T04:39:22.560Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 739,
+   "ms": 521,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -16,10 +16,10 @@
     "continue",
     "query"
    ],
+   "resultShape": null,
    "found": 10,
-   "accepted": 1,
+   "accepted": 9,
    "refused": {
-    "no picture on the source's own image host": 8,
     "marked non-free or with personality rights": 1
    },
    "licenceShapes": [
@@ -61,7 +61,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 3792,
+   "ms": 3550,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -71,6 +71,42 @@
     "page",
     "results"
    ],
+   "resultShape": {
+    "path": "$.results",
+    "n": 10,
+    "keys": [
+     "id",
+     "title",
+     "indexed_on",
+     "foreign_landing_url",
+     "url",
+     "creator",
+     "creator_url",
+     "license",
+     "license_version",
+     "license_url",
+     "provider",
+     "source",
+     "category",
+     "filesize",
+     "filetype",
+     "tags",
+     "attribution",
+     "fields_matched",
+     "mature",
+     "height",
+     "width",
+     "thumbnail",
+     "detail_url",
+     "related_url",
+     "unstable__sensitivity"
+    ],
+    "rights": {
+     "license": "\"by\"",
+     "license_version": "\"2.0\"",
+     "license_url": "\"https://creativecommons.org/licenses/by/2.0/\""
+    }
+   },
    "found": 10,
    "accepted": 10,
    "refused": {},
@@ -113,12 +149,22 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 414,
+   "ms": 302,
    "via": "primary",
    "rate": {},
    "topKeys": [
     "collection"
    ],
+   "resultShape": {
+    "path": "$.collection.items",
+    "n": 10,
+    "keys": [
+     "href",
+     "data",
+     "links"
+    ],
+    "rights": {}
+   },
    "found": 10,
    "accepted": 10,
    "refused": {},
@@ -161,7 +207,7 @@
    "why": "",
    "query": "baseball",
    "status": 200,
-   "ms": 1649,
+   "ms": 99,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -172,8 +218,37 @@
     "expert_resources",
     "facet_trail",
     "facet_views",
-    "facets"
+    "facets",
+    "featured_items",
+    "form_facets",
+    "image_url",
+    "manifest",
+    "next",
+    "next_sibling",
+    "options",
+    "pages",
+    "pagination",
+    "portal",
+    "portal_label",
+    "previous",
+    "previous_sibling",
+    "results",
+    "search",
+    "shards",
+    "site_type",
+    "timestamp",
+    "title",
+    "type",
+    "views"
    ],
+   "resultShape": {
+    "path": "$.breadcrumbs",
+    "n": 3,
+    "keys": [
+     "Library of Congress"
+    ],
+    "rights": {}
+   },
    "found": 0,
    "accepted": 0,
    "refused": {},
@@ -185,13 +260,14 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 318,
+   "ms": 176,
    "via": "primary",
    "rate": {},
    "topKeys": [
     "total",
     "objectIDs"
    ],
+   "resultShape": null,
    "found": 3,
    "accepted": 3,
    "refused": {},
@@ -234,7 +310,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 432,
+   "ms": 289,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -244,6 +320,25 @@
     "info",
     "config"
    ],
+   "resultShape": {
+    "path": "$.data",
+    "n": 10,
+    "keys": [
+     "_score",
+     "id",
+     "title",
+     "thumbnail",
+     "date_display",
+     "artist_display",
+     "is_public_domain",
+     "artist_title",
+     "image_id"
+    ],
+    "rights": {
+     "date_display": "\"340-330 BCE\"",
+     "image_id": "\"d8fab7c6-8cc9-1c02-18db-0f198775ccc9\""
+    }
+   },
    "found": 10,
    "accepted": 10,
    "refused": {},
@@ -286,13 +381,75 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 1030,
+   "ms": 191,
    "via": "primary",
    "rate": {},
    "topKeys": [
     "info",
     "data"
    ],
+   "resultShape": {
+    "path": "$.data",
+    "n": 10,
+    "keys": [
+     "id",
+     "accession_number",
+     "share_license_status",
+     "tombstone",
+     "current_location",
+     "title",
+     "creation_date",
+     "creation_date_earliest",
+     "creation_date_latest",
+     "artists_tags",
+     "culture",
+     "technique",
+     "support_materials",
+     "department",
+     "collection",
+     "type",
+     "measurements",
+     "dimensions",
+     "state_of_the_work",
+     "edition_of_the_work",
+     "copyright",
+     "inscriptions",
+     "exhibitions",
+     "provenance",
+     "find_spot",
+     "related_works",
+     "former_accession_numbers",
+     "did_you_know",
+     "early_education_description",
+     "artlens_description",
+     "description",
+     "external_resources",
+     "citations",
+     "url",
+     "images",
+     "alternate_images",
+     "creditline",
+     "image_credit",
+     "sketchfab_id",
+     "sketchfab_url"
+    ],
+    "rights": {
+     "share_license_status": "\"CC0\"",
+     "creation_date": "\"c. 1896–1908\"",
+     "creation_date_earliest": "1896",
+     "creation_date_latest": "1908",
+     "copyright": "null",
+     "images": "{\"annotation\":null,\"web\":{\"url\":\"https://openaccess-cdn.clevelandart.org/1928.8/1928.8_web.jpg\",\"width\":\"900\",\"height\":\"711\",\"filesize\":\"190928\",\"filename\":\"192",
+     "alternate_images": "[{\"web\":{\"url\":\"https://openaccess-cdn.clevelandart.org/1928.8/1928.8_alt0_web.jpg\",\"width\":\"900\",\"height\":\"743\",\"filesize\":\"202756\"},\"print\":{\"url\":\"https://op",
+     "image_credit": "null",
+     "accession_date": "\"1928-01-06T00:00:00\"",
+     "sortable_date": "1896",
+     "date_added_to_oa": "null",
+     "date_text": "\"c. 1896–1908\"",
+     "has_conservation_images": "false",
+     "updated_at": "\"2026-10-16 18:36:03.057000\""
+    }
+   },
    "found": 10,
    "accepted": 10,
    "refused": {},
@@ -365,13 +522,28 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 452,
+   "ms": 244,
    "via": "primary",
    "rate": {},
    "topKeys": [
     "responseHeader",
     "response"
    ],
+   "resultShape": {
+    "path": "$.response.docs",
+    "n": 10,
+    "keys": [
+     "date",
+     "identifier",
+     "licenseurl",
+     "subject",
+     "title"
+    ],
+    "rights": {
+     "date": "\"2010-12-04T00:00:00Z\"",
+     "licenseurl": "\"https://creativecommons.org/publicdomain/zero/1.0/\""
+    }
+   },
    "found": 10,
    "accepted": 10,
    "refused": {},
@@ -414,6 +586,11 @@
    "accepted": [
     {
      "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    },
+    {
+     "source": "commons",
      "licence": "pd",
      "archive": true
     },
@@ -426,41 +603,35 @@
      "source": "commons",
      "licence": "by-sa",
      "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by",
+     "archive": true
     }
    ],
    "report": [
     {
      "source": "commons",
      "found": 10,
-     "kept": 3,
+     "kept": 9,
      "refused": {
-      "no picture on the source's own image host": 6,
       "a logo, sponsor or advertising category": 1
      }
-    },
-    {
-     "source": "pexels",
-     "skipped": "needs PEXELS_API_KEY"
-    },
-    {
-     "source": "pixabay",
-     "skipped": "needs PIXABAY_API_KEY"
-    },
-    {
-     "source": "unsplash",
-     "skipped": "needs UNSPLASH_ACCESS_KEY"
     }
    ]
   },
   "stadium": {
-   "accepted": 0,
+   "accepted": 3,
    "report": [
     {
      "source": "commons",
      "found": 10,
-     "kept": 0,
+     "kept": 5,
      "refused": {
-      "no picture on the source's own image host": 8
+      "its words are not about sport": 2,
+      "nothing in its words matches the search": 1,
+      "not an open licence": 2
      }
     }
    ]
@@ -471,10 +642,8 @@
     {
      "source": "commons",
      "found": 10,
-     "kept": 3,
-     "refused": {
-      "no picture on the source's own image host": 7
-     }
+     "kept": 10,
+     "refused": {}
     }
    ]
   }
