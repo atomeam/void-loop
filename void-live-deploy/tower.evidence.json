@@ -17705,67 +17705,67 @@
   "unit converter: convertunits.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 130,
-    "best": 1474,
-    "evidence": "Verse (/convert/unit-converter-2/) 130 ms to the load event (median of 3, phone width) vs convertunits.com 1474 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T07:36:44.162Z"
+    "verse": 123,
+    "best": 1018,
+    "evidence": "Verse (/convert/unit-converter-2/) 123 ms to the load event (median of 3, phone width) vs convertunits.com 1018 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/unit-converter-2/) 3 of 3 loads answered vs convertunits.com 3 of 3 loads answered",
-    "at": "2026-10-26T07:36:44.162Z"
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 0 px sideways overflow at 390 px vs convertunits.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T07:36:44.162Z"
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 0 unnamed controls or images vs convertunits.com 0 unnamed controls or images",
-    "at": "2026-10-26T07:36:44.162Z"
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 1 (1: the page shows itself again with the network cut) vs convertunits.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T07:36:44.162Z"
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/convert/unit-converter-2/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertunits.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T07:36:44.162Z"
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter-2/) 1 of 1 right against the worked-out answer; judged against the standard, not convertunits.com (the site is not asked)",
-    "at": "2026-10-26T07:36:44.162Z",
+    "at": "2026-10-26T07:40:46.485Z",
     "of": 1
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 170,
-    "evidence": "Verse (/convert/unit-converter-2/) 0 design defects vs convertunits.com 170 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertunits.com (94 low-contrast texts, 76 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T07:36:44.162Z"
+    "best": 169,
+    "evidence": "Verse (/convert/unit-converter-2/) 0 design defects vs convertunits.com 169 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertunits.com (95 low-contrast texts, 74 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T07:40:46.485Z"
    },
    "unit breadth": {
     "verdict": "better",
     "verse": 21,
     "best": 16,
     "evidence": "Verse (/convert/unit-converter-2/) 21 of 21 shown vs convertunits.com 16 of 21 shown (Verse lacks: none; site lacks: fuel consumption, heat, light, magnetism, radiology)",
-    "at": "2026-10-26T07:36:44.162Z",
+    "at": "2026-10-26T07:40:46.485Z",
     "of": 21,
     "part": true
    },
@@ -17774,7 +17774,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter-2/) 2 of 2 shown vs convertunits.com 1 of 2 shown (Verse lacks: none; site lacks: swap)",
-    "at": "2026-10-26T07:36:44.162Z",
+    "at": "2026-10-26T07:40:46.485Z",
     "of": 2,
     "part": true
    },
@@ -17783,7 +17783,7 @@
     "verse": 31,
     "best": 19,
     "evidence": "Verse (/convert/unit-converter-2/) 31 of 31 things a full answer shows vs convertunits.com 19 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, fuel consumption, engineering, heat, light, magnetism, radiology, a swap or reverse control, the formula, precision, Engineering converters, Heat converters)",
-    "at": "2026-10-26T07:36:44.162Z",
+    "at": "2026-10-26T07:40:46.485Z",
     "of": 31
    }
   },
@@ -17965,12 +17965,12 @@
   "open.spotify.com": "tower.icons/open.spotify.com.png",
   "podcasts.apple.com": "tower.icons/podcasts.apple.com.png",
   "amazon.com": "tower.icons/amazon.com.ico",
-  "web.whatsapp.com": "tower.icons/web.whatsapp.com.webp",
+  "web.whatsapp.com": "tower.icons/web.whatsapp.com.ico",
   "reddit.com": "tower.icons/reddit.com.png",
-  "youtube.com": "tower.icons/youtube.com.ico",
+  "youtube.com": "tower.icons/youtube.com.png",
   "linkedin.com": "tower.icons/linkedin.com.ico",
   "mail.google.com": "tower.icons/mail.google.com.ico",
-  "github.com": "tower.icons/github.com.png",
+  "github.com": "tower.icons/github.com.svg",
   "perchance.org": "tower.icons/perchance.org.png",
   "huggingface.co": "tower.icons/huggingface.co.png",
   "claude.ai": "tower.icons/claude.ai.svg",
