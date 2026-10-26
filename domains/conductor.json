@@ -1,0 +1,4 @@
+{
+ "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
+ "updated": null, "last24h": {}, "broken": [], "held": [], "handed": {}, "ticks": []
+}
