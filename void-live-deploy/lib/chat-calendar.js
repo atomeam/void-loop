@@ -23,7 +23,7 @@ export function parseIntent(raw) {
   if (/^remind me at\b/i.test(t)) return null;
   if (((m = /^remind me (?:to |about |of )?(.+)$/i.exec(t)) || (m = /^erinnere mich (?:an |daran,? )?(.+)$/i.exec(t))) && (HAS_DAY.test(m[1]) || HAS_TIME.test(m[1])) && !NOT_CAL.test(t)) return { op: 'add', text: m[1].trim(), remind: true };
   if ((m = /^(?:add|put|schedule|create|new|set up|book|trage|plane)\s+(.+?)\s+(?:to|on|in|into|im|in den|ins)\s+(?:my |the |our |den |das )?(?:calendar|agenda|kalender)(?:\s+ein)?$/i.exec(t))) return { op: 'add', text: m[1].trim(), explicit: true };
-  if ((m = /^(?:put|schedule|book|add|create|plan|set up)\s+(?:in |a |an |my |the )?(.+)$/i.exec(t)) && HAS_DAY.test(m[1]) && !NOT_CAL.test(t) && !/\b(?:note|list|recipe|generator|table|column|row|tag)\b/i.test(m[1]) && !/^(?:meeting|call) with\b/i.test(t.replace(/^(?:schedule|book)\s+(?:a |an )?/i, '') ) ) return { op: 'add', text: m[1].trim() };
+  if ((m = /^(?:put|schedule|book|add|create|plan|set up)\s+(?:in |a |an |my |the )?(.+)$/i.exec(t)) && HAS_DAY.test(m[1]) && !NOT_CAL.test(t) && !/\b(?:note|sticky|stickies|list|recipe|generator|table|column|row|tag)\b/i.test(m[1]) && !/^(?:meeting|call) with\b/i.test(t.replace(/^(?:schedule|book)\s+(?:a |an )?/i, '') ) ) return { op: 'add', text: m[1].trim() };
   if ((m = /^(?:an? )?(.+)$/i.exec(t)) && EVENTY.test(m[1]) && HAS_DAY.test(m[1]) && !NOT_CAL.test(t) && t.length <= 90 && !/\?$/.test(String(raw).trim()) && !/^(?:what|when|where|who|how|is|are|do|does|can|why)\b/i.test(m[1])) return { op: 'add', text: m[1].trim() };
   return null;
 }
