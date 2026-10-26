@@ -114,8 +114,9 @@
   function drawGrid() {
     const g = $('grid'); g.textContent = ''; g.style.gridTemplateColumns = 'repeat(' + N + ', 1fr)';
     for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-      const code = state.cells[y][x], k = key(x, y), b = el('button');
-      b.type = 'button'; b.dataset.k = k; b.dataset.code = code;
+      const code = state.cells[y][x], k = key(x, y), b = el(code ? 'button' : 'span');
+      if (code) b.type = 'button';
+      b.dataset.k = k; b.dataset.code = code;
       b.style.aspectRatio = '1'; b.style.background = code ? WASH[code - 1] : '#0b0b10'; b.style.color = code ? NUMBER[code - 1] : 'transparent';
       if (!code) b.dataset.blank = '1';
       if (state.painted.has(k)) { b.classList.add('done'); b.style.background = COLORS[code - 1]; }
