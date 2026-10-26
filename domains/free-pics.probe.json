@@ -1,5 +1,5 @@
 {
- "at": "2026-10-26T04:42:44.031Z",
+ "at": "2026-10-26T11:02:54.174Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 759,
+   "ms": 553,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -61,7 +61,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 5970,
+   "ms": 273,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -149,7 +149,7 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 463,
+   "ms": 334,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -203,11 +203,140 @@
   },
   "loc": {
    "name": "Library of Congress",
-   "state": "blocked or failed",
+   "state": "works",
    "why": "",
-   "status": 403,
+   "query": "baseball",
+   "status": 200,
+   "ms": 352,
+   "via": "primary",
    "rate": {},
-   "error": "loc answered 403"
+   "topKeys": [
+    "breadcrumbs",
+    "content",
+    "context",
+    "description",
+    "expert_resources",
+    "facet_trail",
+    "facet_views",
+    "facets",
+    "featured_items",
+    "form_facets",
+    "image_url",
+    "manifest",
+    "next",
+    "next_sibling",
+    "options",
+    "pages",
+    "pagination",
+    "portal",
+    "portal_label",
+    "previous",
+    "previous_sibling",
+    "results",
+    "search",
+    "shards",
+    "site_type",
+    "timestamp",
+    "title",
+    "type",
+    "views"
+   ],
+   "resultShape": {
+    "path": "$.breadcrumbs",
+    "n": 3,
+    "keys": [
+     "Library of Congress"
+    ],
+    "rights": {}
+   },
+   "found": 7,
+   "accepted": 4,
+   "refused": {
+    "a logo, sponsor or advertising category": 1,
+    "no \"no known restrictions\" statement": 1,
+    "its words suggest children, a school or something unsuitable": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1911-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1915-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1913-01-01"
+    }
+   ],
+   "rightsFields": {
+    "access_restricted": "false",
+    "unrestricted": "true",
+    "item.rights_advisory": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\"",
+    "item.rights_information": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\""
+   },
+   "itemKeys": [
+    "call_number",
+    "contributors",
+    "control_number",
+    "created",
+    "created_published",
+    "created_published_date",
+    "creators",
+    "date",
+    "digital_id",
+    "display_offsite",
+    "format",
+    "formats",
+    "genre",
+    "id",
+    "language",
+    "link",
+    "marc",
+    "medium",
+    "medium_brief",
+    "mediums",
+    "modified",
+    "notes",
+    "number_former_id",
+    "other_control_numbers",
+    "part_of",
+    "repository",
+    "reproduction_number",
+    "resource_links",
+    "rights_advisory",
+    "rights_information",
+    "service_low",
+    "service_medium",
+    "sort_date",
+    "source_collection",
+    "source_created",
+    "source_modified",
+    "subject_headings",
+    "subjects",
+    "summary",
+    "thumb_gallery",
+    "title"
+   ]
   },
   "met": {
    "name": "The Met Collection",
@@ -215,7 +344,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 402,
+   "ms": 391,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -265,7 +394,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 366,
+   "ms": 271,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -336,7 +465,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 364,
+   "ms": 1011,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -477,7 +606,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 839,
+   "ms": 550,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -488,7 +617,6 @@
     "path": "$.response.docs",
     "n": 10,
     "keys": [
-     "creator",
      "date",
      "identifier",
      "licenseurl",
@@ -496,43 +624,45 @@
      "title"
     ],
     "rights": {
-     "date": "\"2019-01-01T00:00:00Z\"",
-     "licenseurl": "\"https://creativecommons.org/licenses/by/4.0/\""
+     "date": "\"2010-12-04T00:00:00Z\"",
+     "licenseurl": "\"https://creativecommons.org/publicdomain/zero/1.0/\""
     }
    },
    "found": 10,
-   "accepted": 10,
-   "refused": {},
+   "accepted": 9,
+   "refused": {
+    "a logo, sponsor or advertising category": 1
+   },
    "licenceShapes": [
     {
      "licRaw": "",
      "licVersion": "",
-     "licUrl": "https://creativecommons.org/licenses/by/4.0/",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
      "own": false,
-     "hasAuthor": true,
+     "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2019-01-01"
+     "taken": "2010-12-04"
     },
     {
      "licRaw": "",
      "licVersion": "",
-     "licUrl": "https://creativecommons.org/licenses/by/4.0/",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
      "own": false,
-     "hasAuthor": true,
+     "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2019-01-01"
+     "taken": "2009-09-16"
     },
     {
      "licRaw": "",
      "licVersion": "",
-     "licUrl": "https://creativecommons.org/licenses/by/4.0/",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
      "own": false,
-     "hasAuthor": true,
+     "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2018-01-01"
+     "taken": "2009-08-19"
     }
    ]
   }
@@ -601,76 +731,6 @@
      "kept": 10,
      "refused": {}
     }
-   ]
-  }
- },
- "explore": {
-  "photos": {
-   "status": 403,
-   "json": false,
-   "topKeys": [],
-   "shape": null,
-   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
-  },
-  "search": {
-   "status": 403,
-   "json": false,
-   "topKeys": [],
-   "shape": null,
-   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
-  },
-  "pictures": {
-   "status": 403,
-   "json": false,
-   "topKeys": [],
-   "shape": null,
-   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
-  },
-  "freeToUse": {
-   "status": 200,
-   "json": true,
-   "topKeys": [
-    "breadcrumbs",
-    "content",
-    "description",
-    "disable_max_line_length",
-    "disable_navigation",
-    "expert_resources",
-    "manifest",
-    "next",
-    "next_sibling",
-    "options",
-    "pages",
-    "portal",
-    "portal_label",
-    "previous",
-    "previous_sibling",
-    "site_type",
-    "timestamp",
-    "title",
-    "type",
-    "ui2"
-   ],
-   "shape": {
-    "path": "$.breadcrumbs",
-    "n": 2,
-    "keys": [
-     "Library of Congress"
-    ],
-    "rights": {}
-   },
-   "contentKeys": [
-    "active",
-    "components",
-    "description",
-    "image_url",
-    "link",
-    "pagination",
-    "partof",
-    "short_title",
-    "slug",
-    "title",
-    "url"
    ]
   }
  }
