@@ -263,6 +263,128 @@
       "verse_evidence": "/convert/ shows none of its words; not \"dark\", \"color\", \"theme\""
      }
     ]
+   },
+   "convertunits.com": {
+    "url": "https://convertunits.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.convertunits.com/"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "measurement unit converter",
+      "detail": "ConvertUnits.com provides an online conversion calculator for all types of measurement units.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"unit\", \"converter\"; not \"measurement\""
+     },
+     {
+      "name": "metric conversion tables",
+      "detail": "You can find metric conversion tables for SI units, as well as English units, currency, and other data.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"metric\", \"conversion\"; not \"table\""
+     },
+     {
+      "name": "convert length units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"length\", \"unit\""
+     },
+     {
+      "name": "convert area units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"area\", \"unit\""
+     },
+     {
+      "name": "convert mass units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"mass\", \"unit\""
+     },
+     {
+      "name": "convert pressure units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"pressure\", \"unit\""
+     },
+     {
+      "name": "convert currency",
+      "detail": "You can find metric conversion tables for SI units, as well as English units, currency, and other data.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"convert\"; not \"currency\""
+     },
+     {
+      "name": "convert time units",
+      "detail": "Metric System length weight time electric current temperature amount of substance luminous intensity acceleration angle area capacitance density dynamic viscosity electric charge electric conductance ",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"time\", \"unit\""
+     },
+     {
+      "name": "convert salary",
+      "detail": "convert salary to hourly convert hourly to annual",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"convert\"; not \"salary\""
+     },
+     {
+      "name": "convert chemistry units",
+      "detail": "Examples include moles, grams Ni3S2 to moles, grams Gadolinium to moles, grams Acridine to moles, moles Mg3N2 to grams, moles Tellurium to grams moles, Calcium Silicate to grams",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"unit\"; not \"chemistry\""
+     },
+     {
+      "name": "calculate date difference",
+      "detail": "number of days between April 24th, 1982 and October 26th, 2026",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"calculate\", \"date\", \"difference\""
+     },
+     {
+      "name": "calculate days in year",
+      "detail": "how many days in a year",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"year\"; not \"calculate\", \"day\""
+     },
+     {
+      "name": "calculate days in month",
+      "detail": "how many days in October",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"calculate\", \"day\", \"month\""
+     },
+     {
+      "name": "count specific weekdays",
+      "detail": "how many Mondays in 2026 how many Tuesdays in 2026 how many Wednesdays in 2026 how many Thursdays in 2026 how many Fridays in 2026 how many Saturdays in 2026 how many Sundays in 2026",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"specific\"; not \"count\", \"weekday\""
+     },
+     {
+      "name": "Sag Calculator",
+      "detail": "Sag Calculator cc/rev to gpm Calculator Aviation Fuel Weight Calculator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"calculator\"; not \"sag\""
+     },
+     {
+      "name": "Aviation Fuel Weight Calculator",
+      "detail": "Sag Calculator cc/rev to gpm Calculator Aviation Fuel Weight Calculator",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"fuel\", \"weight\", \"calculator\"; not \"aviation\""
+     }
+    ]
    }
   },
   "gaps": [
@@ -276,6 +398,18 @@
     "name": "Dark color theme",
     "sites": [
      "convertlive.com"
+    ]
+   },
+   {
+    "name": "calculate date difference",
+    "sites": [
+     "convertunits.com"
+    ]
+   },
+   {
+    "name": "calculate days in month",
+    "sites": [
+     "convertunits.com"
     ]
    }
   ],
