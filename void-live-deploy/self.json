@@ -491,88 +491,96 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T06:03:00Z",
-   "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
-  },
-  {
-   "at": "2026-10-26T06:01:53Z",
-   "subject": "Tower gate: travel: aruljohn.com,travel: airmilescalculator.com,travel: co2.myclimate.org,travel: flightconnections.com measured against…"
-  },
-  {
-   "at": "2026-10-26T05:55:16Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:52:17Z",
+   "at": "2026-10-26T07:22:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T05:52:01Z",
-   "subject": "Flights card leaves distance asks to the distance skill; a test for the card"
+   "at": "2026-10-26T07:22:36Z",
+   "subject": "Versus by itself: the model answers without thinking first (its thinking spent the whole budget and left the answer empty)"
   },
   {
-   "at": "2026-10-26T05:49:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,wheel,time zones,codebase,tildegit measured against their live sites"
+   "at": "2026-10-26T07:22:36Z",
+   "subject": "Verse fixes its print-file skill: learn to handle \"get the stl for the motor\""
   },
   {
-   "at": "2026-10-26T05:46:11Z",
-   "subject": "Flights skill in the Sky and earth family; generated files"
+   "at": "2026-10-26T07:22:03Z",
+   "subject": "Jobs: /api/jobs in the OpenAPI check (Verse's own) and its rate in lib/guard.js; one visit beacon on the jobs pages (the shared template…"
   },
   {
-   "at": "2026-10-26T05:45:40Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-26T07:21:45Z",
+   "subject": "Tower gate: shopping measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:45:24Z",
-   "subject": "Flights: coastlines under the great-circle map (Natural Earth, 11 KB), nonstop routes on /flights/routes/ (OpenFlights ODbL, June 2014…"
+   "at": "2026-10-26T07:21:40Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 4 not-judged); next heycolor.com"
   },
   {
-   "at": "2026-10-26T05:44:48Z",
-   "subject": "Tower floors: wheel advanced-mode weights, time zones skeleton (no layout shift), gist Share link"
+   "at": "2026-10-26T07:21:38Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
-   "at": "2026-10-26T05:44:00Z",
-   "subject": "Site reverse engineering: travel-airmilescalculator.com,travel-aruljohn.com,travel-clock7.com,travel-co2.myclimate.org,travel-flightconnect…"
+   "at": "2026-10-26T07:19:02Z",
+   "subject": "Versus by itself: the model's answer found however it is wrapped, and what it said logged when it is not"
   },
   {
-   "at": "2026-10-26T05:41:27Z",
-   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
+   "at": "2026-10-26T07:18:05Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com"
   },
   {
-   "at": "2026-10-26T05:38:54Z",
-   "subject": "Subject eval: 54 of 54 live"
+   "at": "2026-10-26T07:18:01Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
-   "at": "2026-10-26T05:37:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
+   "at": "2026-10-26T07:15:46Z",
+   "subject": "Tower gate: shopping measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:35:51Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: aruljohn.com,travel: clock7.com measured against their live sites"
+   "at": "2026-10-26T07:15:15Z",
+   "subject": "Versus by itself: a site the model never judged is read again next run"
   },
   {
-   "at": "2026-10-26T05:35:03Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-26T07:12:59Z",
+   "subject": "Versus by itself: ask Verse's own model on the site's binding (/api/tower-self, owner only)"
   },
   {
-   "at": "2026-10-26T05:34:47Z",
-   "subject": "Flights: the stage card skill, the map above its table so the page does not jump"
+   "at": "2026-10-26T07:11:24Z",
+   "subject": "Tower gate: shopping,jobs measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:34:44Z",
-   "subject": "Tower gate: finance: finviz.com measured against their live sites"
+   "at": "2026-10-26T07:10:56Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com"
   },
   {
-   "at": "2026-10-26T05:33:20Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-26T07:10:54Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
-   "at": "2026-10-26T05:33:02Z",
-   "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
+   "at": "2026-10-26T07:09:36Z",
+   "subject": "Versus by itself: the tower cycle with no builder and no Claude (tower-self)"
+  },
+  {
+   "at": "2026-10-26T07:07:58Z",
+   "subject": "Beacon: the new /jobs/ pages carry it from the tool-site template"
+  },
+  {
+   "at": "2026-10-26T07:07:26Z",
+   "subject": "Beacon: modulepreload blocks back in place after the tag, /api/visit marked Verse's own in the OpenAPI check"
+  },
+  {
+   "at": "2026-10-26T07:07:25Z",
+   "subject": "Every page counts its visits: /visit.js on every sitemap page, and a check that fails without it"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Who visits (claude, 2026-10-26)",
+    "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
+   },
+   {
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
+   },
    {
     "name": "Claude (pdf and kanban floors, 2026-10-26)",
     "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
@@ -588,14 +596,6 @@
    {
     "name": "Claude (tower session, 2026-10-25, 07:45)",
     "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
-   },
-   {
-    "name": "Claude (Versus rename, 2026-10-25, 08:00)",
-    "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 07:05)",
-    "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
    }
   ],
   "ladders": [
@@ -797,5 +797,10 @@
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
+ },
+ "people": {
+  "line": "People this week: 1 (1 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-26T06:42Z",
+  "source": "verse"
  }
 }
