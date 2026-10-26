@@ -14417,6 +14417,288 @@
     "of": 2,
     "part": true
    }
+  },
+  "photos: squoosh.app": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 196,
+    "best": 95,
+    "evidence": "Verse (/photos/squoosh/) 196 ms to the load event (median of 3, phone width) vs squoosh.app 95 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/squoosh/) 3 of 3 loads answered vs squoosh.app 3 of 3 loads answered",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/photos/squoosh/) 0 px sideways overflow at 390 px vs squoosh.app 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/photos/squoosh/) 0 unnamed controls or images vs squoosh.app 1 unnamed controls or images",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/photos/squoosh/) 1 (1: the page shows itself again with the network cut) vs squoosh.app 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/squoosh/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs squoosh.app 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/squoosh/) 3 of 3 right against the worked-out answer; judged against the standard, not squoosh.app (the site is not asked)",
+    "at": "2026-10-26T03:59:45.997Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 8,
+    "evidence": "Verse (/photos/squoosh/) 1 design defects vs squoosh.app 8 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), squoosh.app (6 low-contrast texts, 2 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:59:45.997Z"
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/squoosh/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:45.997Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 6,
+    "best": 7,
+    "evidence": "Verse (/photos/squoosh/) 6 of 7 shown for the question (Verse lacks: a quality choice); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:45.997Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/photos/squoosh/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:45.997Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 2,
+    "evidence": "Verse (/photos/squoosh/) 27 of 30 things a full answer shows vs squoosh.app 2 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, Timeline by date, Duplicate handling, Location privacy on share, Compress with a quality slider, Before and after compare slider, Size saved readout)",
+    "at": "2026-10-26T03:59:45.997Z",
+    "of": 30
+   }
+  },
+  "photos: photopea.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 122,
+    "best": 74,
+    "evidence": "Verse (/photos/photopea/) 122 ms to the load event (median of 3, phone width) vs photopea.com 74 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/photopea/) 3 of 3 loads answered vs photopea.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/photos/photopea/) 0 px sideways overflow at 390 px vs photopea.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/photos/photopea/) 0 unnamed controls or images vs photopea.com 0 unnamed controls or images",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/photos/photopea/) 1 (1: the page shows itself again with the network cut) vs photopea.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse (/photos/photopea/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs photopea.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/photos/photopea/) 0 of 3 right against the worked-out answer (missed: the picture is 1 by 1 pixel, its size before and after, in bytes, the format named); judged against the standard, not photopea.com (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all Brightness 0 Contrast 0 Saturation 0 Blur 0 Sharpen 0 50 80 80 0 0 0 0 0 0 0 0 0 0 #ff3366 8 8 Hello \"",
+    "at": "2026-10-26T03:59:54.879Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 4,
+    "evidence": "Verse (/photos/photopea/) 1 design defects vs photopea.com 4 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), photopea.com (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:59:54.879Z"
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/photopea/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:54.879Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse (/photos/photopea/) 0 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, PNG, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:54.879Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 2,
+    "evidence": "Verse (/photos/photopea/) 1 of 2 shown for the question (Verse lacks: strip metadata); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T03:59:54.879Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 6,
+    "evidence": "Verse (/photos/photopea/) 27 of 30 things a full answer shows vs photopea.com 6 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share, Compress with a quality slider, Before and after compare slider, Size saved readout)",
+    "at": "2026-10-26T03:59:54.879Z",
+    "of": 30
+   }
+  },
+  "photos: iloveimg.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 149,
+    "best": 300,
+    "evidence": "Verse (/photos/iloveimg/) 149 ms to the load event (median of 3, phone width) vs iloveimg.com 300 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/iloveimg/) 3 of 3 loads answered vs iloveimg.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/photos/iloveimg/) 0 px sideways overflow at 390 px vs iloveimg.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/photos/iloveimg/) 0 unnamed controls or images vs iloveimg.com 0 unnamed controls or images",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/photos/iloveimg/) 1 (1: the page shows itself again with the network cut) vs iloveimg.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/iloveimg/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs iloveimg.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/photos/iloveimg/) 0 of 3 right against the worked-out answer (missed: the picture is 1 by 1 pixel, its size before and after, in bytes, the format named); judged against the standard, not iloveimg.com (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all Drag the box; the corner at the bottom right resizes it. 1 × 1 Free 1:1 4:3 3:2 16:9 3:4 2:3 4:5 9:16\"",
+    "at": "2026-10-26T04:00:13.566Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 17,
+    "evidence": "Verse (/photos/iloveimg/) 1 design defects vs iloveimg.com 17 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.02), iloveimg.com (0 low-contrast texts, 17 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:00:13.566Z"
+   },
+   "editing": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/photos/iloveimg/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:00:13.566Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 7,
+    "evidence": "Verse (/photos/iloveimg/) 0 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, PNG, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:00:13.566Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 2,
+    "evidence": "Verse (/photos/iloveimg/) 1 of 2 shown for the question (Verse lacks: strip metadata); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:00:13.566Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 7,
+    "evidence": "Verse (/photos/iloveimg/) 27 of 30 things a full answer shows vs iloveimg.com 7 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, AVIF, a before and after slider, the size saved, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share, Before and after compare slider, Size saved readout)",
+    "at": "2026-10-26T04:00:13.566Z",
+    "of": 30
+   }
   }
  },
  "icons": {
@@ -14567,6 +14849,9 @@
   "theguardian.com": "tower.icons/theguardian.com.png",
   "exifeditor.io": "tower.icons/exifeditor.io.png",
   "exif.tools": "tower.icons/exif.tools.png",
-  "tinypng.com": "tower.icons/tinypng.com.png"
+  "tinypng.com": "tower.icons/tinypng.com.png",
+  "squoosh.app": "tower.icons/squoosh.app.png",
+  "photopea.com": "tower.icons/photopea.com.png",
+  "iloveimg.com": "tower.icons/iloveimg.com.png"
  }
 }
