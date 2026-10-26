@@ -113,6 +113,7 @@ export function pageOf(row, kind) {
 <meta name="twitter:image" content="https://a-to-mind.com/og/${slug(row.path)}.png">
 <style>${css}
 </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
