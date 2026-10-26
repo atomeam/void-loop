@@ -22,7 +22,7 @@ export function render(src, p) {
   s = s.replace(/<title>[^<]*<\/title>/, '<title>' + p.tab + ' · Verse</title>');
   s = s.replace(/(<meta name="description" content=")[^"]*/, '$1' + esc(p.sub + ' Compress, convert, resize, crop, edit and strip EXIF.'));
   s = s.replace(/(<meta property="og:title" content=")[^"]*/, '$1' + esc(p.title) + ' · Verse').replace(/(<meta property="og:description" content=")[^"]*/, '$1' + esc(p.sub)).replace(/(<meta property="og:url" content=")[^"]*/, '$1https://a-to-mind.com/photos/' + p.slug + '/');
-  s = s.replace(/<h1 id="h1" data-i="title">[^<]*/, '<h1 id="h1" data-i="title_' + p.slug + '">' + p.title).replace(/<p class="sub" data-i="sub">[^<]*/, '<p class="sub" data-i="sub_' + p.slug + '">' + p.sub);
+  s = s.replace(/<h1 id="h1" data-i="title">[^<]*/, '<h1 id="h1" data-i="title_' + p.slug + '">' + p.title).replace(/<p class="sub" id="sub" data-i="sub">[^<]*/, '<p class="sub" id="sub" data-i="sub_' + p.slug + '">' + p.sub);
   return s;
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

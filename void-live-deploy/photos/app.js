@@ -4,6 +4,7 @@
   const $ = (id) => document.getElementById(id), qa = (s, r = document) => [...r.querySelectorAll(s)];
   // ---- EN and DE ----
   const DE = {
+    share: 'Dieses Werkzeug teilen', ba: 'Original → Ergebnis', linkcopied: 'Link kopiert',
     title_squoosh: 'Bilder komprimieren und umwandeln', sub_squoosh: 'Wähle Qualität, Format und Größe und ziehe den Regler, um Original und Ergebnis zu vergleichen. JPEG, PNG, WebP und AVIF; die Datei verlässt dieses Gerät nie.',
     title_tinypng: 'PNG, JPEG und WebP verkleinern', sub_tinypng: 'Viele Fotos hineinziehen, kleiner machen (PNGs bekommen eine Palette mit bis zu 256 Farben) und alle als ein Zip laden. Keine Grenze für Größe oder Anzahl, nichts wird hochgeladen.',
     title_exif: 'EXIF-Betrachter und Metadaten-Entferner', sub_exif: 'Sieh, was ein Foto über dich verrät: Kamera, Seriennummer, Zeit und GPS. Entferne es oder speichere es als JSON. Nichts wird hochgeladen.',
@@ -18,7 +19,7 @@
     full: 'Voll (verlustfrei)', saved: 'gespart', bigger: 'größer', same: 'wie das Original', of: 'von', files: 'Fotos', noexif: 'Keine Kamera-, Orts- oder Bearbeitungsdaten in dieser Datei.', carries: 'Diese Datei enthält', none: 'Ohne', loading: 'Wird geladen …', bad: 'Dieses Bild konnte nicht gelesen werden.', cropHint: 'Ziehe den Rahmen; die Ecke unten rechts ändert die Größe.', big: 'Das Foto war sehr groß und wurde verkleinert, um es bearbeiten zu können.', copied: 'Kopie gespeichert', histn: 'Schritte', lossless: 'verlustfrei', stripped: 'Metadaten entfernt', stripnone: 'Für diesen Dateityp geht das nur über „Komprimieren“.', place: 'den Aufnahmeort', time: 'die Aufnahmezeit', cam: 'die Kamera', sn: 'eine Seriennummer', xmp: 'Bearbeitungshinweise (XMP)', iptc: 'Bildunterschrift und Urheber (IPTC)', cmt: 'Textkommentare' };
   const lang = (new URLSearchParams(location.search).get('lang') || (navigator.language || 'en')).toLowerCase().startsWith('de') ? 'de' : 'en'; let L = lang;
   const EN = {}; qa('[data-i]').forEach((e) => { EN[e.dataset.i] = e.textContent; });
-  Object.assign(EN, { none: 'None', full: 'Full (lossless)', saved: 'saved', bigger: 'bigger', same: 'the same size as the original', of: 'of', files: 'photos', noexif: 'No camera, place or editing data found in this file.', carries: 'This file carries', loading: 'Loading…', bad: 'This picture could not be read.', cropHint: 'Drag the box; the corner at the bottom right resizes it.', big: 'The photo was very large and was scaled down to edit it.', copied: 'Saved', histn: 'steps', stripped: 'Metadata removed', stripnone: 'This file type can only be cleaned through Compress and convert.', place: 'the place it was taken', time: 'when it was taken', cam: 'the camera', sn: 'a serial number', xmp: 'editing notes (XMP)', iptc: 'caption and credit (IPTC)', cmt: 'text comments' });
+  Object.assign(EN, { ba: 'Original → result', linkcopied: 'Link copied', none: 'None', full: 'Full (lossless)', saved: 'saved', bigger: 'bigger', same: 'the same size as the original', of: 'of', files: 'photos', noexif: 'No camera, place or editing data found in this file.', carries: 'This file carries', loading: 'Loading…', bad: 'This picture could not be read.', cropHint: 'Drag the box; the corner at the bottom right resizes it.', big: 'The photo was very large and was scaled down to edit it.', copied: 'Saved', histn: 'steps', stripped: 'Metadata removed', stripnone: 'This file type can only be cleaned through Compress and convert.', place: 'the place it was taken', time: 'when it was taken', cam: 'the camera', sn: 'a serial number', xmp: 'editing notes (XMP)', iptc: 'caption and credit (IPTC)', cmt: 'text comments' });
   const say = (k) => (L === 'de' && DE[k]) || EN[k] || k;
   const T0 = document.title, tr = () => { document.documentElement.lang = L; qa('[data-i]').forEach((e) => { e.textContent = say(e.dataset.i); }); $('lang').textContent = L === 'de' ? 'EN' : 'DE'; $('cols').options[0].textContent = say('full'); $('file').title = say('choose'); document.title = L === 'de' ? $('h1').textContent + ' · Verse' : T0; };
   // ---- state: one entry per photo ----
@@ -72,14 +73,14 @@
   function outReq(it) { if (sc.pct === 1080 || sc.pct === 2048) { const long = Math.max(it.base.width, it.base.height); return it.base.width >= it.base.height ? { w: Math.min(sc.pct, long) } : { h: Math.min(sc.pct, long) }; } if (sc.last === 'w' && sc.w > 0) return { w: sc.w }; if (sc.last === 'h' && sc.h > 0) return { h: sc.h }; return { pct: sc.pct || 100 }; }
   let later = 0; function dirty() { clearTimeout(later); later = setTimeout(refresh, 220); }
   async function refresh() {
-    if (!cur || tab !== 'out') return; const mine = ++token, it = cur;
-    $('qrow').hidden = !(mimeOut() === 'image/jpeg' || mimeOut() === 'image/webp' || mimeOut() === 'image/avif'); $('cols').disabled = mimeOut() !== 'image/png'; $('cols').closest('label').hidden = mimeOut() !== 'image/png';
+    if (!cur) return; const mine = ++token, it = cur;
+    $('q').disabled = !(mimeOut() === 'image/jpeg' || mimeOut() === 'image/webp' || mimeOut() === 'image/avif'); $('qrow').style.opacity = $('q').disabled ? '.55' : ''; $('cols').disabled = mimeOut() !== 'image/png'; $('cols').closest('label').hidden = mimeOut() !== 'image/png';
     let r; try { r = await encode(it, false); } catch (_) { $('line').textContent = say('bad'); return; } if (mine !== token) return;
     it.out = r; for (const u of urls) URL.revokeObjectURL(u); urls = []; const url = URL.createObjectURL(new Blob([r.bytes], { type: r.mime })); urls.push(url);
     const a = $('dl'); a.href = url; a.download = E.outName(it.name, r.mime); a.hidden = false; a.textContent = say('save') + ' ' + E.EXT[r.mime].toUpperCase();
     $('w').placeholder = String(r.w); $('h').placeholder = String(r.h);
     const pct = E.savedPct(it.size, r.bytes.length);
-    $('line').textContent = E.sizeLabel(it.size) + ' → ' + E.sizeLabel(r.bytes.length) + ' · ' + (pct > 0 ? pct + '% ' + say('saved') : pct < 0 ? -pct + '% ' + say('bigger') : say('same')); $('line').className = pct > 0 ? 'ok' : '';
+    $('line').textContent = say('ba') + ': ' + E.sizeLabel(it.size) + ' → ' + E.sizeLabel(r.bytes.length) + ' · ' + (pct > 0 ? pct + '% ' + say('saved') : pct < 0 ? -pct + '% ' + say('bigger') : say('same')); $('line').className = pct > 0 ? 'ok' : '';
     $('note').textContent = r.w + ' × ' + r.h + ' px · ' + r.mime.replace('image/', '').toUpperCase() + (it.scaled ? ' · ' + say('big') : ''); $('batchnote').textContent = items.length > 1 ? items.length + ' ' + say('files') + ' · ' + say('zip') : '';
     // before and after: the original file against the result, side by side with a slider
     const geo = Math.abs(it.base.width / it.base.height - (it.meta.width || it.base.width) / (it.meta.height || it.base.height)) > 0.01; $('cb').src = geo ? it.base.toDataURL('image/jpeg', 0.9) : it.url; $('ca').src = url; it.out.ready = true; setCmp($('cmpr').value); layout();
@@ -146,10 +147,10 @@
   // on the Compress tab the before and after slider stands in for the editing canvas once a result exists
   function layout() { const cmp = tab === 'out' && !!cur && !!cur.out; $('cmp').hidden = !cmp; $('cmpr').hidden = !cmp; pv.hidden = cmp; ov.hidden = cmp; }
   function show(t) {
-    tab = t; for (const b of qa('#tabs button')) b.setAttribute('aria-pressed', String(b.dataset.t === t)); for (const p of qa('.panel')) p.hidden = p.id !== 'p-' + t;
+    tab = t; for (const b of qa('#tabs button')) b.setAttribute('aria-pressed', String(b.dataset.t === t)); for (const p of qa('.panel')) p.hidden = p.id !== 'p-' + t && p.id !== 'p-out'; // the compress and convert result stays under every tab
     $('stage').hidden = t === 'info'; layout(); ov.style.pointerEvents = t === 'draw' || t === 'text' ? 'auto' : 'none'; ov.style.cursor = t === 'draw' ? 'crosshair' : t === 'text' ? 'text' : '';
     $('stage').style.touchAction = t === 'draw' || t === 'text' || t === 'crop' ? 'none' : 'pan-y'; $('stagehint').textContent = STAGE_HINT[t] ? say(STAGE_HINT[t]) : '';
-    if (t === 'out') dirty(); else draw(); if (t === 'info') infoPanel();
+    if (t !== 'out') draw(); dirty(); if (t === 'info') infoPanel();
   }
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) show(b.dataset.t); });
   // ---- getting photos in: choose, drop, paste ----
@@ -158,6 +159,7 @@
   for (const t of ['dragleave', 'drop']) addEventListener(t, (e) => { if (t === 'drop') { e.preventDefault(); add(e.dataTransfer.files); } dz.classList.remove('over'); });
   addEventListener('paste', (e) => { const fs = [...(e.clipboardData ? e.clipboardData.files : [])]; if (fs.length) { e.preventDefault(); add(fs); } });
   addEventListener('resize', () => { if (cur) { placeOverlay(); showCrop(); } });
+  $('share').addEventListener('click', async () => { const u = location.origin + location.pathname + (cur ? '?tab=' + tab : ''); try { if (navigator.share) await navigator.share({ title: document.title, text: $('sub').textContent, url: u }); else { await navigator.clipboard.writeText(u); $('share').textContent = say('linkcopied'); setTimeout(() => { $('share').textContent = say('share'); }, 1600); } } catch (_) {} });
   $('lang').addEventListener('click', () => { L = L === 'de' ? 'en' : 'de'; tr(); fbox.firstChild.textContent = say('none'); if (cur) { refresh(); infoPanel(); } });
   tr(); fbox.firstChild.textContent = say('none');
   window.__photos = { items: () => items, show };

@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:57:07Z",
+   "subject": "Sports page: what it has said in plain text before its code runs (browse, search across Teams, Events, Venues and Players, on this device…"
+  },
+  {
    "at": "2026-10-26T03:53:20Z",
    "subject": "Photos features: drop a contact address the scan read off exifeditor.io (privacy scan)"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T03:30:50Z",
    "subject": "Incident: the browser suite failed on 92b0983f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T03:30:42Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
   }
  ],
  "builders": {
