@@ -12,6 +12,7 @@
 // minute, one year of history); frankfurter.dev (ECB reference rates, once a day). Data may be delayed up to 15 minutes or more; every answer says its source.
 // answer.js is loaded when first needed, not at import: the report code (lib/report-run.js) reaches this file from answer.js, and a static import back would be a cycle
 const rateLimited = async (...a) => (await import('./answer.js')).rateLimited(...a);
+import { recordClose, RECORD_NAME } from '../../lib/markets-record.js';
 import { resolve, RANGES, parseStooqDaily, parseYahoo, summarize, closeOn, rowsFromPrices, rowsFromFx } from '../../lib/markets.js';
 
 export const ID_RE = /^[a-z0-9-]{2,40}$/;
@@ -29,7 +30,7 @@ export function slim(row) {
     change24h: row.price_change_percentage_24h, cap: row.market_cap, rank: row.market_cap_rank,
     spark: sp.filter((_, i) => i % step === 0).map((v) => +Number(v).toPrecision(6)), updated: row.last_updated };
 }
-export const RL_MAX = 40, UA = 'Verse (a-to-mind.com)';
+export const RL_MAX = 60, RL_BATCH = 240, UA = 'Verse (a-to-mind.com)';
 const DAY = 86400000, iso = (ms) => new Date(ms).toISOString().slice(0, 10), compact = (ms) => iso(ms).replace(/-/g, '');
 const DAYS = { '1d': 1, '5d': 5, '1m': 31, '6m': 183, '1y': 366, '5y': 5 * 366 };
 const YAHOO = { '1d': ['1d', '5m'], '5d': ['5d', '15m'], '1m': ['1mo', '1d'], '6m': ['6mo', '1d'], ytd: ['ytd', '1d'], '1y': ['1y', '1d'], '5y': ['5y', '1wk'], max: ['max', '1mo'] };
@@ -77,6 +78,9 @@ async function fxQuote(r, range, f, now) {
 }
 /** the close on or before a day, from the source that has it: { date, close } or null */
 async function dayClose(r, rows, on, f) {
+  const rec = recordClose(r.sym, on), live = await dayCloseLive(r, rows, on, f); return live || rec;
+}
+async function dayCloseLive(r, rows, on, f) {
   try {
     if (r.kind === 'fx') { const j = await get(f, 'https://api.frankfurter.dev/v1/' + on + '?base=' + r.from + '&symbols=' + r.to); return j && j.rates && Number.isFinite(j.rates[r.to]) ? { date: j.date || on, close: j.rates[r.to] } : null; }
     const t = Date.parse(on + 'T00:00:00Z');
@@ -88,7 +92,12 @@ async function dayClose(r, rows, on, f) {
 export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now()) {
   let q = null;
   try { q = r.kind === 'crypto' ? await coinQuote(r, range, fetchFn, now) : r.kind === 'fx' ? await fxQuote(r, range, fetchFn, now) : await stockQuote(r, range, fetchFn, now); } catch (_) { q = null; }
-  if (!q) return { ok: false, kind: 'none', sym: r.sym, say: 'No price for ' + r.sym + ' from the free sources just now. Check the symbol, or try again in a minute.' };
+  if (!q) {
+    // the sources did not answer: a day inside the bundled record still has its close (lib/markets-record.js), said to be from it
+    const rec = on ? recordClose(r.sym, on) : null;
+    if (rec) return { ok: true, partial: true, sym: r.sym, kind: r.kind, name: r.name || r.sym, currency: r.currency, range: range, price: null, change: null, pct: null, points: [], closeOn: rec, on, source: RECORD_NAME, delayed: true, at: new Date(now).toISOString(), note: 'The live price sources did not answer; this is the close from Verse\'s year-end record.' };
+    return { ok: false, kind: 'none', sym: r.sym, say: 'No price for ' + r.sym + ' from the free sources just now. Check the symbol, or try again in a minute.' };
+  }
   const { rows, ...rest } = q, out = { ok: true, sym: r.sym, kind: r.kind, name: rest.name || r.name || r.sym, currency: rest.currency || r.currency, range: r.kind === 'fx' && range === '1d' ? '5d' : range, ...rest, delayed: true, at: new Date(now).toISOString() };
   if (r.kind === 'fx') { out.volume = null; }
   if (on) out.closeOn = await dayClose(r, rows, on, fetchFn);
@@ -99,20 +108,20 @@ const validDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && iso(Date.parse(s + 'T00
 const json = (o, status = 200, cc = 'no-store') => Response.json(o, { status, headers: { 'cache-control': cc } });
 const slimQ = (q) => (q && q.ok ? { ok: true, sym: q.sym, name: q.name, price: q.price, change: q.change, pct: q.pct, currency: q.currency, kind: q.kind, asOf: q.asOf, source: q.source } : null);
 /** a body from the edge cache, or made (one to three upstream calls, counted against the caller's own bucket) and kept; a failure is never kept. */
-async function cachedBody(request, env, key, ttl, make) {
+async function cachedBody(request, env, key, ttl, make, bucket = 'markets', max = RL_MAX) {
   const cache = typeof caches !== 'undefined' ? caches.default : null, ck = new Request(new URL(request.url).origin + '/__markets/' + key);
   if (cache) { try { const hit = await cache.match(ck); if (hit) return await hit.json(); } catch (_) {} }
-  if (await rateLimited(request, env || {}, 'markets', RL_MAX)) return { ok: false, kind: 'limited', say: 'That is a lot of price lookups in a minute. Give it a moment.' };
+  if (await rateLimited(request, env || {}, bucket, max)) return { ok: false, kind: 'limited', say: 'That is a lot of price lookups in a minute. Give it a moment.' };
   const body = await make();
   if (cache && body && body.ok) { try { await cache.put(ck, new Response(JSON.stringify(body), { headers: { 'cache-control': 'max-age=' + ttl } })); } catch (_) {} }
   return body;
 }
-export const quoteBody = (request, env, r, range, on, f) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f));
+export const quoteBody = (request, env, r, range, on, f, many = false) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f), many ? 'markets-batch' : 'markets', many ? RL_BATCH : RL_MAX);
 const reply = (body, ttl) => json(body, body.ok ? 200 : body.kind === 'none' ? 404 : body.kind === 'limited' ? 429 : 503, body.ok ? 'public, max-age=' + ttl : 'no-store'); // 503, not 502: Cloudflare swaps a Function's 502 for its own page
 /** at most 12 symbols in one call, each from the same cache as a single quote */
 export async function batch(request, env, list, f) {
   const rs = []; for (const s of String(list || '').split(',').slice(0, 12)) { const r = resolve(s); if (r && !rs.some((x) => x.sym === r.sym)) rs.push(r); }
-  return Promise.all(rs.map((r) => quoteBody(request, env, r, '5d', '', f).then((q) => slimQ(q) || { ok: false, sym: r.sym, kind: q && q.kind })));
+  return Promise.all(rs.map((r) => quoteBody(request, env, r, '5d', '', f, true).then((q) => slimQ(q) || { ok: false, sym: r.sym, kind: q && q.kind })));
 }
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const u = new URL(request.url), p = u.searchParams, stamp = () => new Date().toISOString();
