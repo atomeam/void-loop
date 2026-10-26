@@ -563,13 +563,6 @@
    "tests": 1
   },
   {
-   "file": "lib/photo-ask.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 5,
-   "tests": 0
-  },
-  {
    "file": "lib/pwcheck.js",
    "skills": 3,
    "direct": 2,
@@ -841,6 +834,13 @@
    "direct": 2,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/photo-ask.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 0
   },
   {
    "file": "lib/template-list.js",
@@ -6336,13 +6336,8 @@
   "lib/photo-ask.js": {
    "imports": [],
    "importedBy": [
-    "lib/toolkit.js",
     "skills/imgfit.js",
     "skills/photo-tools.js"
-   ],
-   "reachedBy": [
-    "lib/music-ui.js",
-    "skills/toolkit.js"
    ]
   },
   "lib/photo-edit.js": {
@@ -8141,9 +8136,7 @@
    ]
   },
   "lib/toolkit.js": {
-   "imports": [
-    "lib/photo-ask.js"
-   ],
+   "imports": [],
    "importedBy": [
     "lib/music-ui.js",
     "skills/toolkit.js"
