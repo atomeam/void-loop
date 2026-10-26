@@ -10,19 +10,19 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-25. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-26. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Fix the weather page so the aria-busy state clears once the gate returns a result. (daily, 2026-10-25) `ask-20261025-2044-1`
-- Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day. *(small)* (daily, 2026-10-25) `ask-20261025-2044-2`
-- Move non-V01D workers off the shared namespace. *(small)* (daily, 2026-10-25) `ask-20261025-2044-3`
+- Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day (daily, 2026-10-26) `ask-20261026-2235-1`
+- Move the two non-V01D workers off the shared namespace (daily, 2026-10-26) `ask-20261026-2235-2`
+- Fix the weather page aria-busy state so it clears once the gate returns a result *(small)* (daily, 2026-10-26) `ask-20261026-2235-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261025-2044-1` queued, not decided yet
-- `ask-20261025-2044-2` queued, not decided yet
-- `ask-20261025-2044-3` queued, not decided yet
+- `ask-20261026-2235-1` queued, not decided yet
+- `ask-20261026-2235-2` queued, not decided yet
+- `ask-20261026-2235-3` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -5263,6 +5263,354 @@ Asks: "Fix the weather page so the aria-busy state clears once the gate returns 
 > **Next video trick:** A video skill that performs a glitch-style color separation during playback for clips [not in library].
 
 Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result."; "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T18:45:31.825Z -->
+### 2026-10-26 18:45 UTC · after a build
+
+**Asked:** This just shipped: "The markets caps page and the metronome are kept at install, not on first open: a LATER page's offline verdict depends on the worker controlling the visit, and the gate's fresh context kept losing that race — 0 vs 0 twice measured while the page passes offline on this machine every time". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries across 12 families, with 297 skills currently proven [S1, S3]. The markets caps page and metronome are now kept at install to prevent race conditions during offline verdict checks [Just shipped]. The system currently faces high KV write volume and a need to migrate answer generation to stay within the 10k neurons/day Workers AI limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma [wishlist].
+>
+> **Next video trick:** Learn to use the forge to generate a 3D model of a 'night-ritual' object [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T18:48:51.783Z -->
+### 2026-10-26 18:48 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: music: metronomeonline.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills currently proven across 12 families [S1, S3]. The system recently added the Tower gate for music, measuring metronomeonline.com against live sites [Just shipped]. Current growth efforts focus on expanding floors, such as the recently completed PDF, Kanban, and Perchance-parity random generators [Claude].
+>
+> **How I would make it better:** The system must reduce KV writes below 1k/day by implementing edge cache (caches.default) for counters and caches [wishlist]. Transitioning answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace will further optimize architecture and stay within the 10k neurons/day Workers AI limit [wishlist].
+>
+> **Next video trick:** A video skill effect that overlays a real-time countdown timer on top of any playing YouTube or Twitch video [video skill, show-countdown].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:04:23.406Z -->
+### 2026-10-26 19:04 UTC · after a build
+
+**Asked:** This just shipped: "A naming audit runs the gate's own completeness checklist over every floor's page: a feature the page has but never names is found here, not by a gate run days later — the deployed site reads 0 of 49 floors unnamed, and the check fails when that drifts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills currently proven across 12 families [S1, S3]. The recently shipped naming audit now ensures 0 of 49 floors are unnamed by running a completeness checklist during deployment [Just shipped]. Growth efforts include expanded floors for PDF, Kanban, and random generators [Claude].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace to reduce KV writes [wishlist]. Transition answer generation from gpt-oss-120b to gemma and implement edge cache (caches.default) to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]."; "Move the two non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist]."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:06:54.915Z -->
+### 2026-10-26 19:06 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: codebase measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills proven across 12 families [S1, S3]. Recent deployment includes a Tower gate that measures the codebase against live sites [Just shipped], alongside expanded floors for PDF, Kanban, and random generators [Claude]. The system is actively working to transition from gpt-oss-120b to gemma and implement edge caching to maintain the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** The 'Making things' family is the least proven with only 36 of 51 skills proven [S3]. Reducing KV writes below 1k/day by moving non-V01D workers off the shared namespace and implementing caches.default is required to address live operational pressure [wishlist, S2].
+>
+> **Next video trick:** Learn a new 3D mesh effect for the forge to enhance the inspection of printable objects [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace to reduce KV writes"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:10:54.083Z -->
+### 2026-10-26 19:10 UTC · after a build
+
+**Asked:** This just shipped: "The gist page carries the work beside the code: a task list, a timer and notes on this device, the count and the limit and where the gist lives said plainly, and a seeded ask so the codebase floor can be measured — the probe reads all 25 items off the page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipments include the gist page which carries work alongside code, featuring a task list, timer, notes, and a seeded probe that reads 25 items [Just shipped]. The system is currently managing high KV write pressure and aiming to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Transition from gpt-oss-120b to gemma and implement edge caching (caches.default) to maintain the 10k neurons/day limit [wishlist]. Move non-V01D workers off the shared namespace to reduce KV writes below 1k/day [wishlist].
+>
+> **Next video trick:** A transition from a standard text-based rotation to a 3D spin effect for a miniature card on the stage [stage-style].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace to reduce KV writes."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:13:52.940Z -->
+### 2026-10-26 19:13 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: codebase,tildegit measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipments include the 'Tower gate' which measures codebase/tildegit against live sites [Just shipped]. The system is managing high KV write pressure and aims to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]. Move non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist]. Transition from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Learn to use the official Rumble oEmbed API (/api/video?url=) to embed videos instead of guessing embed IDs [What my builders learned].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:20:27.221Z -->
+### 2026-10-26 19:20 UTC · after a build
+
+**Asked:** This just shipped: "The codebase probe asks its question: the seeded gist URL belongs in ask, not verse — without ask the gate never scores a floor's askParts aspects, which is why code hosting, ticket tracking, time tracking and project files and docs had no rows at all". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries with 297 proven skills across 12 families [S1, S3]. Recent deployments include the codebase probe, which identifies that seeded gist URLs belong in 'ask' rather than 'verse' to ensure the gate scores floor aspects like code hosting and project files [Just shipped]. The system is currently managing high KV write pressure and aims to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]. Transition from gpt-oss-120b to gemma to maintain the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Implement a real-time video effect for the films skill using official embeds [wishlist].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace to reduce KV writes."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:23:24.819Z -->
+### 2026-10-26 19:23 UTC · after a build
+
+**Asked:** This just shipped: "A second floor on the same page reads it the same way: tildegit inherits the codebase probe on its own site, so code hosting, accuracy and completeness are measured honestly — and it waits, because a full forge (issues, pull requests, accounts) is not the job /g/ does and Verse never asks for an acc". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 351 entries with 297 proven skills across 12 families [S1, S3]. The codebase probe has shipped to tildegit, ensuring code hosting and completeness are measured honestly [Just shipped]. High KV write pressure persists, and the system is attempting to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to maintain neuron limits [wishlist].
+>
+> **Next video trick:** A new video effect for the films skill to demonstrate inline playback versatility [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:27:13.457Z -->
+### 2026-10-26 19:27 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: coin flip,tildegit measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 351 entries with 297 proven skills across 12 families [S1, S3]. The recent deployment of 'Tower gate: coin flip, tildegit measured against their live sites' adds new measurement capabilities for live site parity [Just shipped]. High KV write pressure remains a priority, as do neuron limit management [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) to reduce KV writes below 1k/day [wishlist, S2]. Transition from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Learn to use the Art Forge's painter to generate new 3D mesh styles for printable objects [forge].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:34:08.444Z -->
+### 2026-10-26 19:34 UTC · after a build
+
+**Asked:** This just shipped: "The rack's own comment says a bare games ask is the Game Box's, whose examples list it; the test still asked the rack for it — the assertion now documents the split and void-asks-store is green (9 of 9), one pre-existing red off the baseline". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent deployment successfully addressed a testing error by documenting the split between the rack and Game Box for bare games asks, ensuring void-asks-store is green for 9 of 9 assertions [Just shipped]. High KV write pressure and the 10k neuron/day limit remain primary operational constraints [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to render a 3D model of a 'sky-card' using the forge's mesh blending logic for a new stage-fx [forge, stage-fx].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:37:28.457Z -->
+### 2026-10-26 19:37 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: coin flip measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. The recent deployment of the Tower gate enables coin flip measurement against live sites [Just shipped]. Operational constraints remain high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to generate a custom 3D mesh 'splat' effect for the forge to enhance stage-fx [S1, S3].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:39:01.968Z -->
+### 2026-10-26 19:39 UTC · after a build
+
+**Asked:** This just shipped: "Paint by number, and a floor to measure it: /paint/ draws a numbered grid, a numbered palette that counts down, next cell, a gallery on this device, a PNG export, a link that carries the painting and an offline shell — heycolor.com now fights from a page of its own instead of a frontier row with not". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. The addition of the /paint/ floor introduces a new numbered grid and palette system with PNG export and device gallery capabilities [Just shipped]. Operational constraints remain high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Create a video clip demonstrating a new 3D miniature card effect using the recently shipped rendered state signal [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:40:09.235Z -->
+### 2026-10-26 19:40 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its make skill: learn to handle "make a low poly tree"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes the /paint/ floor with grid/palette systems and a fix for the 'make' skill to handle "make a low poly tree" [Just shipped]. Current operational constraints are high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Create a 3D miniature of a 'low poly tree' using the improved make skill to showcase the recent fix [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace to improve efficiency."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:42:01.908Z -->
+### 2026-10-26 19:42 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: paint measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. The recent deployment of the 'Tower gate' enables painting measured against live sites [Just shipped]. Current operations face high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to improve stability [wishlist]. Transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to use the 'forge' skill to generate a 3D model of a new object for a clip [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:42:15.075Z -->
+### 2026-10-26 19:42 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes 88 new capabilities, 30 improvements, 47 fixes, and 16 findings over the last 7 days [S2]. High KV write pressure and the 10k neuron/day limit remain active constraints [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Weakest operational area:** Making things is the least proven family with 51 skills and only 36 proven [S4]. Specifically, photo-tools, fakeuser, textgen, music-tools, image, echo-field, tilt-arena-mode, and tilt-mode are among the least-checked skills [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into Verse to ensure every useful piece is rewritten in Verse's own code [wishlist].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:46:14.754Z -->
+### 2026-10-26 19:46 UTC · after a build
+
+**Asked:** This just shipped: "A blank cell is not a control: the empty cells of the grid were buttons with no name, 101 unnamed controls and 257 design defects against heycolor's 4 and 11 — as spans they are neither, and the page now measures 0 unnamed and 0 defects with the gate's own tools". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes the removal of 101 unnamed controls and 257 design defects from the grid cells [newly shipped]. High KV write pressure and the 10k neuron/day limit remain active constraints [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to create a 3D miniature of a complex mechanical gear system for the forge [forge].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:50:37.335Z -->
+### 2026-10-26 19:50 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: password,paint measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the tower gate for password and paint measurement, the PDF and kanban floors, and the random generators floor for perchance parity [claude, 2026-10-26]. System constraints include high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to stay within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** Learn to render a video skill that handles Rumble embeds by using the oEmbed API instead of guessing the ID [builders learned: mistakes and the fix].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:57:01.339Z -->
+### 2026-10-26 19:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its cartoon skill: learn to handle "render a cartoon dragon"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the PDF and kanban floors, the random generators floor for perchance parity, and a fix for the cartoon skill to handle "render a cartoon dragon" [claude, 2026-10-26]. System constraints include high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to stay within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** Learn to render a cartoon dragon to improve the cartoon skill [just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T21:37:07.911Z -->
+### 2026-10-26 21:37 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its vector-field-mind skill: learn to handle "vector logo of a tree"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the PDF and kanban floors, the random generators floor for perchance parity, and a fix for the cartoon skill to handle 'render a cartoon dragon' [S1]. The vector-field-mind skill was fixed to handle 'vector logo of a tree' [S1]. System constraints include high KV write pressure and a 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to secure operations within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** A 3D printed miniature of a spinning gear [S1]
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T22:35:37.065Z -->
+### 2026-10-26 22:35 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Growth in the last 7 days includes 174 changes: 82 new capabilities, 30 improvements, 45 fixes, 1 retirement, and 16 findings [S2]. System constraints persist regarding high KV write pressure and a 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure operations within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Weakest operational area:** The Making things family is the least proven, with only 36 of 51 skills rated as proven [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account to turn fragmented code into a single, cohesive intelligence [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
 
 *Verse flagged this one for Adam.*
 
