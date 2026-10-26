@@ -1,7 +1,7 @@
 {
  "floor": "travel",
- "verse_page": null,
- "researched": "2026-10-25",
+ "verse_page": "/flights/",
+ "researched": "2026-10-26",
  "sites": {
   "google.com/travel/flights": {
    "sources": [
@@ -16,168 +16,536 @@
      "name": "Flight search",
      "detail": "One-way, round trip, multi-city; passengers, cabin class; airports or cities",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/flights/ takes the airports (city, name, code, city codes), dates, one way or return, passengers and cabin and opens the same search on Google Flights, Skyscanner, Kayak, Momondo and Expedia; no fares of its own: Verse has no paid fare feed"
     },
     {
      "group": "core",
      "name": "Results across airlines and agencies",
      "detail": "Best and cheapest flights, price, duration, stops, emissions",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "no fare feed: the results are the providers' (said on the first screen)"
     },
     {
      "group": "core",
      "name": "Filters",
      "detail": "Stops, airlines, bags, price, times, connecting airports, duration",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "needs fare results"
     },
     {
      "group": "core",
      "name": "Sort",
      "detail": "By price, departure, arrival, duration, emissions",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "needs fare results"
     },
     {
      "group": "core",
      "name": "Booking options",
      "detail": "List of airlines/agencies to book with; links out",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "links out to six providers and an airline's own site"
     },
     {
      "group": "core",
      "name": "Fare details",
      "detail": "Fare class, baggage, legroom, wifi, aircraft",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
     },
     {
      "group": "power",
      "name": "Date grid",
      "detail": "Cheapest fare for each departure/return date pair",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
     },
     {
      "group": "power",
      "name": "Price graph",
      "detail": "Fares across months",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "a chart of the fares the visitor recorded, not market prices"
     },
     {
      "group": "power",
      "name": "Price insights",
      "detail": "Low/typical/high vs history, cheapest time to book",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "the lowest seen and the change since the last fare, from the visitor's own log"
     },
     {
      "group": "power",
      "name": "Track prices",
      "detail": "Email alerts for a route or exact itinerary (any dates or set dates)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/flights/ price tracker: fares recorded on the device, lowest seen, a watch target with a notification while the tab is open, CSV export and import"
     },
     {
      "group": "power",
      "name": "Explore map",
      "detail": "Cheapest destinations from an airport on a map, flexible trips (\"a weekend in November\")",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/: airports within a flight time (range, not a timetable) and /flights/map/"
     },
     {
      "group": "power",
      "name": "Price guarantee (select US)",
      "detail": "Refund the difference if price drops after booking",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "a booking promise; Verse sells nothing"
     },
     {
      "group": "power",
      "name": "Emissions estimates",
      "detail": "CO2 per flight vs typical",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/flights/co2/ and the route facts: CO2 per seat by cabin, return and passengers, with the method written out"
     },
     {
      "group": "power",
      "name": "Nearby airports",
      "detail": "Include airports within a radius",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "chips under the route and /flights/airports/: airports within 150 km, other airports of a city (NYC, LON ...)"
     },
     {
      "group": "power",
      "name": "Hotels and vacation rentals",
      "detail": "Google Hotels in the same travel product",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "a different floor; no hotel feed"
     },
     {
      "group": "power",
      "name": "Trip context",
      "detail": "Destination time, weather, currency",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/time.js, weather.js, country.js answer time, forecast and country facts for the destination"
+     "verse": "has",
+     "verse_evidence": "distance, flight time, time difference and local arrival on the route"
     },
     {
      "group": "sharing",
      "name": "Share itinerary",
      "detail": "Share a flight result link",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/flights/trip/ share link that carries the trip, and a calendar file"
     },
     {
      "group": "offline-mobile",
      "name": "Mobile web",
      "detail": "Responsive web; no separate app",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "built at 390 px"
     },
     {
      "group": "accessibility",
      "name": "Keyboard and screen reader",
      "detail": "Accessible results list",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "labelled controls, a combobox for airports, 44 px targets"
+    }
+   ]
+  },
+  "tripwaffle.com": {
+   "sources": [
+    "https://tripwaffle.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Turn forwarded booking emails into an itinerary",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/trip/ reads a pasted confirmation (flight numbers, airports, dates, times, booking reference); no inbox, no forwarding address"
+    },
+    {
+     "group": "core",
+     "name": "Day-by-day timeline",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/trip/ your flights in order with waits"
+    },
+    {
+     "group": "core",
+     "name": "Layover and connection checks",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "too short, tight, long, overnight, airport change, break in the route"
+    },
+    {
+     "group": "core",
+     "name": "Calendar export",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": ".ics with UTC times"
+    },
+    {
+     "group": "core",
+     "name": "Share a trip",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a link that carries the trip"
+    },
+    {
+     "group": "core",
+     "name": "Works offline",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "kept on the device"
+    },
+    {
+     "group": "core",
+     "name": "Accounts and shared editing",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs accounts and a server; Verse keeps no accounts"
+    },
+    {
+     "group": "core",
+     "name": "Flight alerts and delay notices",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a live flight-status feed"
+    }
+   ]
+  },
+  "aruljohn.com": {
+   "sources": [
+    "https://aruljohn.com/airport-codes/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search by airport code, city or country",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/airports/"
+    },
+    {
+     "group": "core",
+     "name": "IATA and ICAO codes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "both searched and shown"
+    },
+    {
+     "group": "core",
+     "name": "Airport details",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "position, time zone and local time, size"
+    },
+    {
+     "group": "core",
+     "name": "Nearby airports",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "within 200 km"
+    },
+    {
+     "group": "core",
+     "name": "Whole list of the world's airports",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "about 4,000 airports with scheduled service, not heliports and small fields"
+    }
+   ]
+  },
+  "clock7.com": {
+   "sources": [
+    "https://www.clock7.com/flight-calculator/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Flight duration between two cities",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/time/"
+    },
+    {
+     "group": "core",
+     "name": "Local arrival time",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "in the destination's zone, with daylight saving on the date"
+    },
+    {
+     "group": "core",
+     "name": "Time zone difference",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/time/"
+    },
+    {
+     "group": "core",
+     "name": "Date line crossing",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "from the great-circle path"
+    },
+    {
+     "group": "core",
+     "name": "Layover and total journey",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a stop and a wait, whole journey"
+    }
+   ]
+  },
+  "airmilescalculator.com": {
+   "sources": [
+    "https://www.airmilescalculator.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Distance in miles, km and nautical miles",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/distance/"
+    },
+    {
+     "group": "core",
+     "name": "Estimated flight time",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "typical time, method named"
+    },
+    {
+     "group": "core",
+     "name": "Time difference",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "with daylight saving"
+    },
+    {
+     "group": "core",
+     "name": "Flown distance versus great circle",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a routing allowance (50, 100 or 125 km), not historical flights"
+    },
+    {
+     "group": "core",
+     "name": "Multi-leg trips",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a chain of airports with a total"
+    },
+    {
+     "group": "core",
+     "name": "Per-route pages for every pair",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "the pair is chosen in the page; no page per pair"
+    }
+   ]
+  },
+  "gcmap.com": {
+   "sources": [
+    "https://www.gcmap.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Great circle map of a route",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/map/ draws the paths on a plain 30-degree grid; no coastlines (the file stays small and offline)"
+    },
+    {
+     "group": "core",
+     "name": "Chained routes written as a line of codes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JFK-LHR-SIN, dash or space"
+    },
+    {
+     "group": "core",
+     "name": "Distance of each leg and the total",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "km and miles and flight time"
+    },
+    {
+     "group": "core",
+     "name": "Airport information",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "name, city, country and zone for each airport on the route"
+    },
+    {
+     "group": "core",
+     "name": "Map image or embed export",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "no image export yet"
+    }
+   ]
+  },
+  "co2.myclimate.org": {
+   "sources": [
+    "https://co2.myclimate.org/en/flight_calculators/new",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "CO2 per passenger for a route",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/co2/"
+    },
+    {
+     "group": "core",
+     "name": "Cabin class",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "economy, premium economy, business, first"
+    },
+    {
+     "group": "core",
+     "name": "Return trip and passengers",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "both"
+    },
+    {
+     "group": "core",
+     "name": "Method explained",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "written out with its range"
+    },
+    {
+     "group": "core",
+     "name": "Offsetting and payment",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "Verse sells nothing and takes no payment"
+    }
+   ]
+  },
+  "flightconnections.com": {
+   "sources": [
+    "https://www.flightconnections.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Direct flights from an airport",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs an airline schedule feed; Verse bundles none and does not guess which airlines fly a route"
+    },
+    {
+     "group": "core",
+     "name": "Destinations within a flight time",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/ shows what a flight of that length could reach, labelled range, not a timetable"
+    },
+    {
+     "group": "core",
+     "name": "Route map",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/map/ for chains the visitor types"
+    },
+    {
+     "group": "core",
+     "name": "Filter by country and airport size",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/routes/"
+    },
+    {
+     "group": "core",
+     "name": "Prices on the map (premium)",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
     }
    ]
   }
  },
  "gaps": [
-  "flight search with prices",
-  "date grid of cheapest days",
-  "price tracking",
-  "explore cheapest destinations",
-  "trip page that gathers time, weather, currency and a packing list"
+  "live fares (no feed)",
+  "nonstop route data (no schedule feed)",
+  "flight status and live map (OpenSky terms unverified)",
+  "coastlines on the great circle map",
+  "destination photos with credit (lib/free-pics.js, server side; not wired)"
  ],
  "verse_extra": [
   "the destination's local time, forecast, currency and country facts by asking",
   "ride and food deep links once you land (skills/rides.js)"
  ],
- "first_page": "Trip page /trip/ for someone planning a journey. First: \"flights to paris\" opens a page with the search handed to Google Flights, Kayak and Skyscanner as prefilled links (no scraping), beside what Verse already knows: local time, a 10-day forecast, currency at a typed rate, distance, and a packing checklist kept on the device, all in one link. Will not build: fare search, price tracking or booking (no keyless fare source, and money stays out).",
+ "first_page": "Flights: /flights/ (search across providers, route facts, price log, itineraries) and one page per lane site under /flights/ (trip, airports, time, distance, map, co2, routes). All on the device from an OurAirports list (public domain). Will not build: live fares or a fare scrape (no keyless fare source; money stays out), booking, accounts, hotels. Flight status and a live map are a later step through OpenSky: its terms and limits were not verified in this session (the sandbox cannot reach it), so it is not built.",
  "auto": {
   "scanned": "2026-10-26",
   "sites": {

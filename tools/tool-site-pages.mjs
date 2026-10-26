@@ -106,7 +106,7 @@ export function pageOf(row, kind) {
   <nav id="related" aria-label="Related tools"></nav>
   <footer>${foot}</footer>
 </main>
-${fl ? `<script type="module">import '${row.path}app.js'; // the page's code, whose modules the head preloads (tools/preload.mjs) so it opens offline</script>` : `<script type="module" src="${row.path}app.js"></script>`}
+<script type="module" src="${row.path}app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

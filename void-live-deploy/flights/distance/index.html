@@ -10,8 +10,14 @@
 <meta property="og:title" content="Flight distance calculator · Verse">
 <meta property="og:description" content="A flight distance calculator on your device: great-circle distance in km, miles and nautical miles, the typical flight time, the time difference, the bearing, the distance actually flown, and trips with several stops. No account, works offline.">
 <meta property="og:url" content="https://a-to-mind.com/flights/distance/">
-<meta property="og:image" content="https://a-to-mind.com/flights/og.png">
+<meta property="og:image" content="https://a-to-mind.com/og/flights-distance.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Flight distance calculator on Verse">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flight distance calculator · Verse">
+<meta name="twitter:description" content="A flight distance calculator on your device: great-circle distance in km, miles and nautical miles, the typical flight time, the time difference, the bearing, the distance actually flown, and trips with several stops. No account, works offline.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/flights-distance.png">
 <style>
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
   @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
@@ -25,6 +31,8 @@
   input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
   textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
   .sr { position: absolute; left: -9999px; }
   main #app { min-height: 80vh; } .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; }
@@ -55,12 +63,12 @@
   <p class="intro">The distance between two airports in kilometres, miles and nautical miles along the great circle, with a typical flight time, the time difference, the direction and the distance actually flown. Chain several airports for a trip with stops and see every leg and the total.</p>
   <div id="app"></div>
   <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/flights/distance/?from=LHR&amp;to=JFK">London to New York</a><a href="/flights/distance/?from=CDG&amp;to=FCO">Paris to Rome</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/flights/distance/?from=LHR&amp;to=JFK">London to New York</a><a href="/flights/distance/?from=CDG&amp;to=FCO">Paris to Rome</a><a href="/flights/distance/?from=BER&amp;to=MAD">Berlin to Madrid</a><a href="/flights/distance/?from=SYD&amp;to=SIN">Sydney to Singapore</a><a href="/flights/distance/?from=DXB&amp;to=HND">Dubai to Tokyo</a></nav>
 <!-- /asks -->
 <nav id="related" aria-label="Related tools"></nav>
   <footer>Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.</footer>
 </main>
-<script type="module">import '/flights/distance/app.js'; // the page's code, whose modules the head preloads (tools/preload.mjs) so it opens offline</script>
+<script type="module" src="/flights/distance/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

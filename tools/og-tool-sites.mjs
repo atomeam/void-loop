@@ -10,8 +10,9 @@ import { slug } from './tool-site-pages.mjs';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'og');
 const KB = { boards: 'Several boards', wip: 'WIP limits', lanes: 'Swimlanes', labels: 'Labels', due: 'Due dates', checklist: 'Checklists', comments: 'Comments', assignee: 'Assignees', archive: 'Archive', filter: 'Search and filter', trello: 'Trello import', timer: 'Timer and Pomodoro', recur: 'Repeating cards', print: 'Print', csv: 'CSV export', share: 'Share link', colour: 'Card colours', templates: 'Templates' };
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-const line = (r) => r.does.split(/\. /)[0].replace(/\.$/, '');
-const chipsOf = (r) => (r.tools ? [...r.tools, ...(r.also || [])].filter((t, i, a) => a.indexOf(t) === i).map((t) => TOOL_INFO[t][0]) : ['To do', 'Doing', 'Done', ...Object.keys(r.features).map((k) => KB[k]).filter(Boolean)]).slice(0, 10);
+const line = (r) => r.tag || r.does.split(/\. /)[0].replace(/\.$/, '');
+const FL = { controls: 'Airport search', providers: 'Six providers', facts: 'Route facts', tracker: 'Price tracker', trip: 'Itineraries', airports: 'Airport codes', time: 'Flight time', route: 'Great circle map', co2: 'CO2', routes: 'Where to fly' };
+const chipsOf = (r) => (r.panels ? [...r.panels.map((k) => FL[k]), 'Distance', 'Time zones'].filter((x, i, a) => x && a.indexOf(x) === i) : r.tools ? [...r.tools, ...(r.also || [])].filter((t, i, a) => a.indexOf(t) === i).map((t) => TOOL_INFO[t][0]) : ['To do', 'Doing', 'Done', ...Object.keys(r.features).map((k) => KB[k]).filter(Boolean)]).slice(0, 10);
 const html = (r) => `<html><body style="margin:0;width:1200px;height:630px;background:linear-gradient(135deg,#14121c 0%,#2a2150 100%);color:#ecebf5;font-family:system-ui,Segoe UI,Arial,sans-serif;position:relative;overflow:hidden">
 <div style="position:absolute;left:64px;top:56px;font-size:30px;color:#a58bff;font-weight:700;letter-spacing:.04em">VERSE</div>
 <div style="position:absolute;left:64px;top:120px;width:1070px;font-size:${r.name.length > 22 ? 84 : 112}px;font-weight:800;line-height:1.02">${esc(r.name)}</div>
@@ -22,5 +23,5 @@ const html = (r) => `<html><body style="margin:0;width:1200px;height:630px;backg
 const exe = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x));
 const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] }), p = await b.newPage({ viewport: { width: 1200, height: 630 } });
 fs.mkdirSync(root, { recursive: true });
-for (const r of SITE_PAGES) { await p.setContent(html(r)); await p.screenshot({ path: path.join(root, slug(r.path) + '.png') }); console.log('wrote og/' + slug(r.path) + '.png'); }
+for (const r of SITE_PAGES) { if (process.argv[2] && !r.path.startsWith(process.argv[2])) continue; await p.setContent(html(r)); await p.screenshot({ path: path.join(root, slug(r.path) + '.png') }); console.log('wrote og/' + slug(r.path) + '.png'); }
 await b.close();
