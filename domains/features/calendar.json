@@ -23,7 +23,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "2026-10-25: a Schedule view, the next 60 days day by day (#vList, key L); no year or custom N-day view"
+     "verse_evidence": "2026-10-25: Year view (twelve months, days with something underlined; #vYear, key Y) and a Schedule view (60 days); no custom N-day view"
     },
     {
      "name": "Multiple calendars shown together, each with a colour",
@@ -483,7 +483,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "2026-10-25: a Schedule list view beside month, week and day"
+     "verse_evidence": "2026-10-25: month, week, day, year and a Schedule list; no table, timeline or scheduler"
     },
     {
      "name": "Event sign-up",
@@ -774,8 +774,8 @@
      "name": "Day, week, month, year and event-list views",
      "detail": "",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "2026-10-25: day, week, month and a Schedule list (#vList); no year view"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Month, Week, Day, Year and a Schedule list (#vMonth, #vWeek, #vDay, #vYear, #vList)"
     },
     {
      "name": "Share by invitation or view-only link, reset links",

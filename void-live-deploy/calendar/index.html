@@ -31,7 +31,13 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   button.bad { color: var(--bad); }
   button:disabled { opacity: .5; cursor: default; }
   .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
-  .seg { display: inline-flex; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; } .seg button + button { margin-left: -1px; }
+  .seg { display: inline-flex; } .seg.views button { padding-left: 11px; padding-right: 11px; }
+  /* the year: twelve small months; a day with something on it is underlined, a tap opens it */
+  .year { display: grid; grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 14px 12px; }
+  .ym h3 { margin: 0 0 2px; font-size: 14px; font-weight: 600; } .ym h3 button { min-height: 32px; min-width: 0; padding: 2px 8px; border: 0; background: none; font-weight: 600; font-size: 14px; border-radius: 8px; }
+  .yg { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center; font-size: 11px; color: var(--soft); }
+  .yd { min-width: 24px; min-height: 24px; width: 100%; padding: 0; border: 0; border-radius: 12px; background: none; font-size: 12px; color: var(--ink); line-height: 24px; }
+  .yd.has { font-weight: 700; box-shadow: inset 0 -3px 0 var(--accent); border-radius: 4px; } .yd.today { background: var(--accent); color: var(--on-accent, #fff); border-radius: 12px; box-shadow: none; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; } .seg button + button { margin-left: -1px; }
   .bar { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; justify-content: space-between; margin: 12px 0 6px; }
   .bar h2 { margin: 0; font-size: 18px; color: var(--ink); flex: 1 1 auto; min-width: 140px; }
   .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 10px 12px; }
@@ -165,11 +171,12 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       <button type="button" id="next" aria-label="Next">›</button>
     </div>
     <h2 id="period" aria-live="polite">&nbsp;</h2>
-    <div class="seg" role="group" aria-label="View">
+    <div class="seg views" role="group" aria-label="View">
       <button type="button" id="vMonth" aria-pressed="true">Month</button>
       <button type="button" id="vWeek" aria-pressed="false">Week</button>
       <button type="button" id="vDay" aria-pressed="false">Day</button>
       <button type="button" id="vList" aria-pressed="false">Schedule</button>
+      <button type="button" id="vYear" aria-pressed="false">Year</button>
     </div>
   </div>
 
@@ -196,7 +203,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     <button type="button" id="exportBtn">Export all as .ics</button>
     <span class="note" id="count" style="margin:0"></span>
   </div>
-  <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D L switch the view, N is a new event, / searches</p>
+  <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D L Y switch the view, N is a new event, / searches</p>
 
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calendar/?q=dentist%20tomorrow%203pm%2C%20remind%20me%2030%20minutes%20before">Dentist tomorrow at 3pm, remind me 30 minutes before</a><a href="/calendar/?q=lunch%20with%20Sam%20tomorrow%201pm">Lunch with Sam tomorrow 1pm</a><a href="/calendar/?q=team%20call%20every%20monday%2010%3A00">Team call every Monday 10:00</a><a href="/calendar/?q=rent%20on%20the%201st%20every%20month">Rent on the 1st, every month</a><a href="/calendar/?show=today">Today</a><a href="/calendar/?show=this-week">This week</a></nav>
@@ -249,7 +256,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
       $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
@@ -321,7 +328,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     }
     const dotOf = (o) => { const d = el('span', 'dot'); d.style.setProperty('--c', C.calendarOf(cals(), o).color); d.setAttribute('aria-hidden', 'true'); return d; };
     const q = new URLSearchParams(location.search), now = () => new Date();
-    const state = { view: ['month', 'week', 'day', 'list'].includes(q.get('view')) ? q.get('view') : store.view || 'month', cursor: C.startOfDay(now()), sel: null, editing: null };
+    const state = { view: ['month', 'week', 'day', 'list', 'year'].includes(q.get('view')) ? q.get('view') : store.view || 'month', cursor: C.startOfDay(now()), sel: null, editing: null };
     if (q.get('d') && C.parseLocal(q.get('d'))) state.cursor = C.startOfDay(C.parseLocal(q.get('d')));
     if (q.get('show')) { const s = q.get('show'); if (s === 'tomorrow') { state.cursor = C.addDays(state.cursor, 1); state.view = 'day'; } else if (s === 'today') state.view = 'day'; else if (/week/.test(s)) { state.view = 'week'; if (/next/.test(s)) state.cursor = C.addDays(state.cursor, 7); } }
     const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
@@ -337,7 +344,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     function render() {
       document.documentElement.classList.remove('pre');
       const v = $('view'); v.replaceChildren(); const c = state.cursor, td = C.startOfDay(now());
-      for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list']]) $(id).setAttribute('aria-pressed', String(state.view === name));
+      for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list'], ['vYear', 'year']]) $(id).setAttribute('aria-pressed', String(state.view === name));
       if (state.view === 'month') {
         $('period').textContent = C.fmtMonth(c, lang);
         const dow = el('div', 'dow'); dow.append(el('span', 'w0', ' ')); for (const n of C.dayNames(lang, ws())) dow.append(el('span', '', n)); v.append(dow);
@@ -356,6 +363,13 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
         const a = C.startOfWeek(c, ws()), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false }) + (store.weekNumbers ? ' · ' + wkLabel(a) : '');
         const g = el('div', 'week');
         for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang, ws())[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); const tl = taskList(C.dayKey(d)); if (tl) sec.append(tl); g.append(sec); }
+        v.append(g);
+      } else if (state.view === 'year') {
+        const y = c.getFullYear(); $('period').textContent = String(y); const busy = C.busyDays(shown(), tasks(), y), g = el('div', 'year'), names = C.dayNames(lang, ws());
+        for (let m = 0; m < 12; m++) { const box = el('div', 'ym'), h = el('h3'), hb = el('button', '', C.fmtMonth(new Date(y, m, 1), lang).replace(/\s*\d{4}$/, '')); hb.type = 'button'; hb.addEventListener('click', () => { state.cursor = new Date(y, m, 1); state.view = 'month'; render(); }); h.append(hb); box.append(h);
+          const grid = el('div', 'yg'); for (const n of names) grid.append(el('span', '', n.slice(0, 1))); const first = new Date(y, m, 1), lead = (first.getDay() - ws() + 7) % 7, days = new Date(y, m + 1, 0).getDate();
+          for (let i = 0; i < lead; i++) grid.append(el('span')); for (let dd = 1; dd <= days; dd++) { const d = new Date(y, m, dd), k = C.dayKey(d), b = el('button', 'yd' + (busy.has(k) ? ' has' : '') + (sameDay(d, td) ? ' today' : ''), String(dd)); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (busy.has(k) ? ', ' + W.events : '')); b.addEventListener('click', () => { state.cursor = d; state.view = 'day'; render(); }); grid.append(b); }
+          box.append(grid); g.append(box); }
         v.append(g);
       } else if (state.view === 'list') { // the schedule: the next 60 days from the day shown, day by day, only the days with something on them
         const z = C.addDays(c, 59); $('period').textContent = C.fmtDay(c, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
@@ -472,7 +486,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     const doSearch = () => { const t = $('sq').value.trim(), ul = $('results'); ul.replaceChildren(); if (!t) { ul.hidden = true; return; } const hits = C.search(shown(), t); ul.hidden = false; if (!hits.length) ul.append(el('li', 'empty', W.nothing)); for (const e of hits.slice(0, 30)) { const li = el('li'), o = C.occurrences(e, C.fmtLocal(now()), C.fmtLocal(C.addDays(now(), 400)))[0] || e; li.append(occBtn(o, true)); ul.append(li); } };
     $('sq').addEventListener('input', doSearch); $('sf').addEventListener('submit', (e) => { e.preventDefault(); doSearch(); });
     // moving about
-    const move = (n) => { const c = state.cursor; state.cursor = state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : state.view === 'list' ? 60 * n : n); render(); holidays(); };
+    const move = (n) => { const c = state.cursor; state.cursor = state.view === 'year' ? new Date(c.getFullYear() + n, c.getMonth(), 1) : state.view === 'month' ? C.addMonths(new Date(c.getFullYear(), c.getMonth(), 1), n) : C.addDays(c, state.view === 'week' ? 7 * n : state.view === 'list' ? 60 * n : n); render(); holidays(); };
     // the calendars: a switch, a colour and (holidays) a country each; a calendar of your own can be added and removed
     function drawCals() {
       const ul = $('calList'); ul.replaceChildren();
@@ -524,9 +538,9 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       if (got) { keep(); render(); }
     }
     $('prev').addEventListener('click', () => move(-1)); $('next').addEventListener('click', () => move(1)); $('today').addEventListener('click', () => { state.cursor = C.startOfDay(now()); render(); });
-    for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list']]) $(id).addEventListener('click', () => { state.view = name; render(); });
+    for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list'], ['vYear', 'year']]) $(id).addEventListener('click', () => { state.view = name; render(); });
     addEventListener('keydown', (e) => { if ($('ed').open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { if (e.key === 'Escape' && !$('ed').open) e.target.blur(); return; }
-      if (e.key === 'ArrowLeft') move(-1); else if (e.key === 'ArrowRight') move(1); else if (e.key === 't' || e.key === 'T') $('today').click(); else if (e.key === 'm' || e.key === 'M') $('vMonth').click(); else if (e.key === 'w' || e.key === 'W') $('vWeek').click(); else if (e.key === 'd' || e.key === 'D') $('vDay').click(); else if (e.key === 'l' || e.key === 'L') $('vList').click();
+      if (e.key === 'ArrowLeft') move(-1); else if (e.key === 'ArrowRight') move(1); else if (e.key === 't' || e.key === 'T') $('today').click(); else if (e.key === 'm' || e.key === 'M') $('vMonth').click(); else if (e.key === 'w' || e.key === 'W') $('vWeek').click(); else if (e.key === 'd' || e.key === 'D') $('vDay').click(); else if (e.key === 'l' || e.key === 'L') $('vList').click(); else if (e.key === 'y' || e.key === 'Y') $('vYear').click();
       else if (e.key === 'n' || e.key === 'N') openEditor(null); else if (e.key === '/') { e.preventDefault(); if ($('sf').hidden) $('searchBtn').click(); else $('sq').focus(); } else if (e.key === 'Escape') { if (!$('detail').hidden) $('detClose').click(); } });
     // reminders: a timer while the page is open; the system's notification when allowed, the banner on the page always
     const beep = () => { try { const ac = new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < 2; i++) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + i * .35); o.stop(ac.currentTime + i * .35 + .2); } } catch (_) {} try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (_) {} };

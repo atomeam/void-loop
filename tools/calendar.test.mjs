@@ -145,3 +145,10 @@ test('week start by country, and week numbers: ISO for Monday weeks, "the week w
   assert.deepEqual([d(2026, 0, 1), d(2026, 0, 4), d(2026, 9, 25), d(2026, 11, 31), d(2027, 0, 2)].map((x) => C.weekNumber(x, 0)), [1, 2, 44, 1, 1], 'the week holding 1 January is week 1, also at the year end');
   assert.equal(C.monthGrid(2026, 9, 0)[0].getDay(), 0); assert.equal(C.monthGrid(2026, 9, 6)[0].getDay(), 6); assert.equal(C.dayNames('en', 0)[0], 'Sun');
 });
+
+test('busyDays: the days of a year with something on them (a multi-day event marks each day, a repeat each of its days, an open task its day, a done one not)', () => {
+  const ev = [{ title: 'trip', start: '2026-11-02', end: '2026-11-04', allDay: true }, { title: 'yoga', start: '2026-10-26T18:00', end: '2026-10-26T19:00', rrule: { freq: 'WEEKLY', interval: 1, count: 3 } }, { title: 'next year', start: '2027-01-05T10:00' }];
+  const b = C.busyDays(ev, [{ due: '2026-12-24', done: false }, { due: '2026-12-25', done: true }], 2026);
+  assert.deepEqual([...b].sort(), ['2026-10-26', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-02', '2026-11-09', '2026-12-24'].filter((x, i, a) => a.indexOf(x) === i).sort());
+  assert.ok(!b.has('2027-01-05') && !b.has('2026-12-25'));
+});
