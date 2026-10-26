@@ -93,5 +93,5 @@ export function peopleLine(t) {
   if (!t || !t.week || !Number.isFinite(t.week.people)) return '';
   const w = t.week, src = t.source === 'cloudflare' ? "from Cloudflare's counts, our own runs taken out" : 'counted by Verse itself, no cookies, our own runs and bots taken out';
   if (w.unique === false) return 'Visits by people this week: ' + w.people.toLocaleString('en') + ' (' + src + ')'; // no unique count from this source: visits, said as visits
-  return 'People this week: ' + w.people.toLocaleString('en') + ' (' + (Number.isFinite(w.views) ? w.views.toLocaleString('en') + ' visits; ' : '') + src + ')';
+  return 'People this week: ' + w.people.toLocaleString('en') + ' (' + (Number.isFinite(w.views) ? w.views.toLocaleString('en') + (w.views === 1 ? ' visit; ' : ' visits; ') : '') + src + ')';
 }
