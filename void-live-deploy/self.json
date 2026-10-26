@@ -491,6 +491,62 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:27:05Z",
+   "subject": "Jobs: /jobs/ for Versus' LinkedIn Jobs floor and a page per lane site, on remote listings from Remotive, Jobicy and Himalayas (terms read…"
+  },
+  {
+   "at": "2026-10-26T06:17:52Z",
+   "subject": "Tower gate: jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:17:07Z",
+   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:15:12Z",
+   "subject": "RULES: use the sites as well as beat them (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:15:12Z",
+   "subject": "Flights: five providers, not six (the page builds five fixed provider links, plus the airline site when known)"
+  },
+  {
+   "at": "2026-10-26T06:12:38Z",
+   "subject": "Tower gate: jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:10:52Z",
+   "subject": "Tower gate: jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:09:28Z",
+   "subject": "IndexNow on every main deploy: the sitemap pages it changed go to api.indexnow.org in one POST"
+  },
+  {
+   "at": "2026-10-26T06:07:54Z",
+   "subject": "RULES: an owner chore is worked around or gathered, never dropped (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:07:42Z",
+   "subject": "Launch drafts: AlternativeTo listings and community posts for review"
+  },
+  {
+   "at": "2026-10-26T06:07:27Z",
+   "subject": "RULES: Verse is autonomous (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:05:58Z",
+   "subject": "Tower gate: jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:05:51Z",
+   "subject": "Versus: every entry names its own Verse page, side by side opens it"
+  },
+  {
+   "at": "2026-10-26T06:03:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T06:03:00Z",
    "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
   },
@@ -513,66 +569,14 @@
   {
    "at": "2026-10-26T05:49:15Z",
    "subject": "Tower gate: travel: tripwaffle.com,wheel,time zones,codebase,tildegit measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:46:11Z",
-   "subject": "Flights skill in the Sky and earth family; generated files"
-  },
-  {
-   "at": "2026-10-26T05:45:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:45:24Z",
-   "subject": "Flights: coastlines under the great-circle map (Natural Earth, 11 KB), nonstop routes on /flights/routes/ (OpenFlights ODbL, June 2014…"
-  },
-  {
-   "at": "2026-10-26T05:44:48Z",
-   "subject": "Tower floors: wheel advanced-mode weights, time zones skeleton (no layout shift), gist Share link"
-  },
-  {
-   "at": "2026-10-26T05:44:00Z",
-   "subject": "Site reverse engineering: travel-airmilescalculator.com,travel-aruljohn.com,travel-clock7.com,travel-co2.myclimate.org,travel-flightconnect…"
-  },
-  {
-   "at": "2026-10-26T05:41:27Z",
-   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:38:54Z",
-   "subject": "Subject eval: 54 of 54 live"
-  },
-  {
-   "at": "2026-10-26T05:37:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:35:51Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: aruljohn.com,travel: clock7.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:35:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:34:47Z",
-   "subject": "Flights: the stage card skill, the map above its table so the page does not jump"
-  },
-  {
-   "at": "2026-10-26T05:34:44Z",
-   "subject": "Tower gate: finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:33:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:33:02Z",
-   "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
+   },
    {
     "name": "Claude (pdf and kanban floors, 2026-10-26)",
     "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
@@ -592,10 +596,6 @@
    {
     "name": "Claude (Versus rename, 2026-10-25, 08:00)",
     "line": "the ladder a person sees is Versus: the card's head, its spoken line, /conquered/, the /compare/ link, the 3D miniature's label, the book line, the playbooks and MAP; the identifiers keep…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 07:05)",
-    "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
    }
   ],
   "ladders": [

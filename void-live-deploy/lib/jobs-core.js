@@ -44,8 +44,8 @@ export function scrub(s) {
   t = redactPersonal(t).replace(/\[(?:email|phone|ip|number|redacted)\]/g, '');
   return t.replace(/\s+([,.;:])/g, '$1').replace(/\s+/g, ' ').trim();
 }
-/** a short excerpt: the first sentences up to n characters, cut at a word. Pure. */
-export function excerpt(text, n = 240) { const t = String(text || ''); if (t.length <= n) return t; const cut = t.slice(0, n); const at = cut.lastIndexOf(' '); return cut.slice(0, at > n * 0.6 ? at : n).replace(/[,;:\s]+$/, '') + '…'; }
+/** a short excerpt: whole sentences up to n characters (else whole words); the listing's own page has the rest. Pure. */
+export function excerpt(text, n = 240) { const t = String(text || ''); if (t.length <= n) return t; const cut = t.slice(0, n + 1), end = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? ')); if (end > n * 0.4) return cut.slice(0, end + 1); const at = cut.lastIndexOf(' '); return cut.slice(0, at > 0 ? at : n).replace(/[,;:\s]+$/, ''); }
 const clean = (s, n = 140) => scrub(plain(s)).slice(0, n);
 const okUrl = (u, host) => { try { const x = new URL(String(u)); return x.protocol === 'https:' && (x.hostname === host || x.hostname.endsWith('.' + host)) ? x.href : ''; } catch (_) { return ''; } };
 const iso = (v) => { if (v == null || v === '') return ''; const n = typeof v === 'number' || /^\d+$/.test(String(v)) ? +v : NaN; const d = Number.isFinite(n) ? new Date(n < 1e12 ? n * 1000 : n) : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(String(v)) ? String(v) : String(v).replace(' ', 'T') + 'Z'); return isNaN(d) ? '' : d.toISOString(); };
