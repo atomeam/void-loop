@@ -1,7 +1,7 @@
 {
  "floor": "shopping",
- "verse_page": null,
- "researched": "2026-10-25",
+ "verse_page": "/shop/",
+ "researched": "2026-10-26",
  "sites": {
   "amazon.com": {
    "sources": [
@@ -16,8 +16,8 @@
      "name": "Product search",
      "detail": "Search hundreds of millions of products with autocomplete and spelling fixes",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "store.js shows only Verse's own products"
+     "verse": "partial",
+     "verse_evidence": "/shop/ and /shop/product/: search by name or barcode in Open Food Facts, Open Products Facts and Open Beauty Facts (food, household, cosmetics; ODbL), then the same search opened on 12 stores; no catalogue of everything Amazon sells"
     },
     {
      "group": "core",
@@ -33,7 +33,7 @@
      "detail": "Images, video, price, variants, specs, bullets, Q&A",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/store.js and the /store page: Verse's own store from lib/store.js, buy links to live Gumroad listings only"
+     "verse_evidence": "/shop/: picture, brand, size, category and Nutri-Score from the open databases, with a link to the product's own page there; no seller offers"
     },
     {
      "group": "core",
@@ -49,23 +49,23 @@
      "detail": "Cart, saved for later, one-click buy, addresses, payment methods",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "store.js hands checkout to Gumroad"
+     "verse_evidence": "/shop/ and /shop/list/: a list and cart on the device with quantities, prices, totals, an estimated tax and shipping per store (free over a threshold), CSV and a share link; checkout is handed to each store by a search link per item, and Verse's own things to /store/. No payment taken here"
     },
     {
      "group": "core",
      "name": "Orders and tracking",
      "detail": "Order history, live delivery tracking with map",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/shop/track/ and /shop/parcels/: the carrier named from the tracking number (UPS 1Z, USPS IMpb, FedEx, DHL Express, UPU S10 posts, Amazon TBA and others) by format and check digit, its own tracking page opened, parcels kept with an expected date and an .ics reminder; no order history and no live status (nothing scraped)"
     },
     {
      "group": "core",
      "name": "Returns and refunds",
      "detail": "Online returns with drop-off options",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/shop/ and /shop/parcels/: return windows counted down to the last day, ticked when sent, with an .ics reminder; the return itself is the store's"
     },
     {
      "group": "core",
@@ -80,8 +80,9 @@
      "name": "Wish lists and registries",
      "detail": "Multiple lists, shared lists, baby and wedding registries",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/list.js shopping list on the stage"
+     "verse": "has",
+     "verse_evidence": "/shop/wishlist/: several lists, each wish with a link, a price, a note and a priority, shared by link, marked as bought by whoever opens it, print",
+     "shows": "Wish lists"
     },
     {
      "group": "power",
@@ -97,7 +98,7 @@
      "detail": "Rufus 30/90/365-day price history, price alerts (app)",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/watch.js \"alert me when the price on <url> drops below 50\""
+     "verse_evidence": "/shop/: a price log per product with the lowest, the latest, the change, a target and a chart, and a day to check again as an .ics reminder; Verse does not read store prices itself (skills/watch.js still alerts on a link)"
     },
     {
      "group": "power",
@@ -112,8 +113,8 @@
      "name": "Compare products",
      "detail": "Compare similar items table",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "/compare/ compares Verse with rival sites, not products"
+     "verse": "partial",
+     "verse_evidence": "/shop/ unit price comparer: packs compared by price per 100 g, per 100 ml or each, the best buy marked; no spec table"
     },
     {
      "group": "power",
@@ -152,24 +153,25 @@
      "name": "Share product and list",
      "detail": "Share links, shared lists",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/shop/: a list, a wish list and every page shared by link (#list=, #wish=, Share link)",
+     "shows": "Share this list|Share link"
     },
     {
      "group": "offline-mobile",
      "name": "Mobile app and Alexa ordering",
      "detail": "App, voice reorder, delivery notifications",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "the /shop/ pages work at phone width and offline after one visit; no voice ordering"
     },
     {
      "group": "accessibility",
      "name": "Accessible site",
      "detail": "Screen reader support, accessibility help line",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "every control at least 24 px, labelled fields, no layout shift, the gate's design look clean (tools/shop-page.mjs)"
     },
     {
      "group": "paid",
@@ -186,20 +188,364 @@
      "paid": true,
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Barcode scanner",
+     "detail": "Scan a product's barcode in the app to find it",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/barcode/ and /shop/: the camera reads EAN, UPC and ITF with the browser's BarcodeDetector where it has one (Chrome, Edge), a typed box everywhere else; the check digit is checked",
+     "shows": "Scan with the camera|no barcode reader"
+    }
+   ],
+   "leader": true
+  },
+  "packagetrackr.com": {
+   "sources": [
+    "https://www.packagetrackr.com/",
+    "https://alternativeto.net/software/delivery-status"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Carrier recognition",
+     "detail": "Paste a number, the carrier is found",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/track/: by format and check digit, other carriers it could be listed",
+     "shows": "Find the carrier|Track on"
+    },
+    {
+     "group": "core",
+     "name": "Many carriers",
+     "detail": "Local and global carriers",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "UPS, USPS, FedEx, DHL Express, DHL Paket, Royal Mail, Canada Post, Amazon Logistics, OnTrac, DPD, GLS, Evri, PostNL, Australia Post, China Post, La Poste",
+     "shows": "UPS, USPS, FedEx, DHL"
+    },
+    {
+     "group": "core",
+     "name": "Batch tracking dashboard",
+     "detail": "Several parcels at once",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/track/: many numbers, one a line; Your parcels list on the device",
+     "shows": "Your parcels"
+    },
+    {
+     "group": "core",
+     "name": "Delivery notifications",
+     "detail": "Status emails and pushes",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "an .ics reminder on the expected day; no status pushes (no carrier status is read)"
+    },
+    {
+     "group": "core",
+     "name": "Live status and history",
+     "detail": "Scan events from the carrier",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "not built: the carriers' own pages show it; scraping them is not allowed here"
+    }
+   ]
+  },
+  "giftster.com": {
+   "sources": [
+    "https://www.giftster.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Wish lists",
+     "detail": "Several lists per person",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/wishlist/",
+     "shows": "Wish lists"
+    },
+    {
+     "group": "core",
+     "name": "Share with family",
+     "detail": "A group sees the lists",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a list shared by link; no groups or accounts",
+     "shows": "Share this list"
+    },
+    {
+     "group": "core",
+     "name": "Reserve or mark purchased",
+     "detail": "Givers mark what they buy",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "whoever opens the link marks a wish bought on their copy",
+     "shows": "\\bbought\\b"
+    },
+    {
+     "group": "core",
+     "name": "Add from any store",
+     "detail": "Link, price, note",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "link (http or https only), price, note, priority",
+     "shows": "Link \\(optional\\)"
+    },
+    {
+     "group": "core",
+     "name": "Secret from the list owner",
+     "detail": "The owner does not see what is bought",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the giver's marks stay on the giver's device; nothing is synced"
+    },
+    {
+     "group": "core",
+     "name": "Accounts and groups",
+     "detail": "Sign in, family groups",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "no accounts by design"
+    }
+   ]
+  },
+  "upcitemdb.com": {
+   "sources": [
+    "https://www.upcitemdb.com/",
+    "https://workspace.google.com/marketplace/app/upcitemdb/415786814254",
+    "https://www.dynamsoft.com/tools/upc-barcode-lookup/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "UPC and EAN lookup",
+     "detail": "Find a product by its code",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/barcode/: UPC-A, EAN-8, EAN-13, GTIN-14, ISBN-10 and -13 in the open databases",
+     "shows": "Barcode or product name"
+    },
+    {
+     "group": "core",
+     "name": "Check digit",
+     "detail": "Validate a code",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the right check digit named when it is wrong",
+     "shows": "check digit"
+    },
+    {
+     "group": "core",
+     "name": "Offers from stores",
+     "detail": "Prices from many sellers",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the code searched on 12 stores; no prices of Verse's own"
+    },
+    {
+     "group": "core",
+     "name": "API, 100 lookups a day free",
+     "detail": "A developer API",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "Verse uses the open databases instead (no key, no daily cap of its own)"
+    }
+   ]
+  },
+  "listonic.com": {
+   "sources": [
+    "https://listonic.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Shopping list",
+     "detail": "Items with quantities",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/list/",
+     "shows": "List and cart|Shopping list"
+    },
+    {
+     "group": "core",
+     "name": "Tick off",
+     "detail": "Check items as you shop",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "ticked items struck out, Clear ticked",
+     "shows": "Clear ticked"
+    },
+    {
+     "group": "core",
+     "name": "Share and sync a list",
+     "detail": "Several people on one list",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "shared by link; not synced live"
+    },
+    {
+     "group": "core",
+     "name": "Prices and totals",
+     "detail": "A price per item, a sum",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "totals by store with tax and shipping",
+     "shows": "in all|totals with tax"
+    },
+    {
+     "group": "core",
+     "name": "Categories by aisle",
+     "detail": "Items sorted into aisles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "items are grouped by store, not aisle"
+    },
+    {
+     "group": "core",
+     "name": "Suggestions",
+     "detail": "Common items suggested",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built"
+    }
+   ]
+  },
+  "barcodelookup.com": {
+   "sources": [
+    "https://www.barcodelookup.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search by name or barcode",
+     "detail": "Find a product",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/product/",
+     "shows": "Barcode or product name"
+    },
+    {
+     "group": "core",
+     "name": "Product details",
+     "detail": "Picture, brand, category, attributes",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "from the open databases",
+     "shows": "Open Food Facts"
+    },
+    {
+     "group": "core",
+     "name": "Online stores",
+     "detail": "Where to buy",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "12 store searches, labelled by how sure each address is",
+     "shows": "Search on"
+    },
+    {
+     "group": "core",
+     "name": "Scanner app",
+     "detail": "Scan with a phone",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the camera where the browser has a barcode reader",
+     "shows": "Scan with the camera|no barcode reader"
+    }
+   ]
+  },
+  "parcelsapp.com": {
+   "sources": [
+    "https://parcelsapp.com/en/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Universal tracking",
+     "detail": "Any carrier, international post",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/shop/parcels/: UPU S10 numbers matched to the post of the country in them",
+     "shows": "Track on|UPU S10"
+    },
+    {
+     "group": "core",
+     "name": "Many numbers",
+     "detail": "Track a list",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "many numbers, one a line",
+     "shows": "numbers? read|one a line"
+    },
+    {
+     "group": "core",
+     "name": "Route and status timeline",
+     "detail": "Events across carriers",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "no status is read; the carrier's own page opens"
+    },
+    {
+     "group": "core",
+     "name": "Return windows",
+     "detail": "(Verse extra)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "return windows counted down with .ics reminders",
+     "shows": "Return windows"
     }
    ]
   }
  },
  "gaps": [
-  "product search across open catalogues with links to sellers",
-  "a price watch on any product link (watch.js already does the alert)",
-  "wish list kept on the device",
-  "compare two products side by side",
-  "Verse store page"
+  "live parcel status (needs carrier API keys; no scraping)",
+  "prices from stores (no keyless source; Verse logs the prices a person sees)",
+  "ratings and reviews",
+  "departments and filters across stores",
+  "aisle categories on the list",
+  "live list sync between people (links only)"
  ],
  "verse_extra": [
-  "the store sells only what is live, no dark patterns",
-  "price alert on any shop's link, not just one store"
+  "the carrier named from the number with its check digit, a typo caught before the carrier says not found",
+  "tax and shipping by store with a free-shipping threshold",
+  "return windows counted down",
+  "unit prices across packs",
+  "everything works offline after one visit, no account",
+  "the store links carry no affiliate code"
  ],
- "first_page": "Shopping list and price watch page /shop/ for people who buy across many stores. First: paste product links from any shop into a list kept on the device (title, image and price read from the page's public metadata), set a price to wait for (existing watch), compare two side by side, share the list by link. Will not build: a catalogue, checkout, payments, reviews or delivery tracking (money stays out)."
+ "first_page": "Shopping: /shop/ (product lookup by name or barcode from the open product databases with a camera scanner, the same search on 12 stores, a list and cart with tax and shipping by store, CSV and a share link, parcel tracking by carrier format and check digit, a price log with targets, unit prices, wish lists, return windows) and one page per lane site: /shop/track/, /shop/wishlist/, /shop/barcode/, /shop/list/, /shop/product/, /shop/parcels/. Verse does not stock or ship goods and says so. Will not build: a catalogue of its own, payments, reviews, scraped prices or scraped carrier status, affiliate links (money rule).",
+ "uses": {
+  "about": "What Verse uses from each site as well as matching it (owner: \"use the sites as well as beat them\"): the links a person follows, never a scrape.",
+  "amazon.com": "the search address https://www.amazon.com/s?k=... (and amazon.co.uk, amazon.de) opened from the list, the product lookup and the wish list; track.amazon.com for TBA numbers",
+  "packagetrackr.com": "nothing: the carriers' own pages are linked instead",
+  "giftster.com": "nothing",
+  "upcitemdb.com": "nothing yet: its API needs a key and has a daily cap (a candidate, below)",
+  "listonic.com": "nothing",
+  "barcodelookup.com": "nothing: its API is paid",
+  "parcelsapp.com": "nothing: the carriers' own pages are linked instead",
+  "openfoodfacts.org": "the product API (v2 product by code, cgi/search.pl by name) from the visitor's browser; ODbL database, Database Contents License rows, CC BY-SA images, credited on every page; rate limits 15 product reads and 10 searches a minute per address"
+ },
+ "candidates": [
+  {
+   "what": "affiliate links (Amazon Associates, eBay Partner Network)",
+   "why_not_now": "touches money: STANDING.md's money rule; links carry no tag today",
+   "status": "candidate, owner decision"
+  },
+  {
+   "what": "UPCitemdb trial API for codes the open databases lack",
+   "why_not_now": "a key and a daily cap; terms not read from this network",
+   "status": "candidate"
+  },
+  {
+   "what": "carrier status by official carrier APIs (UPS, USPS, FedEx, DHL developer APIs)",
+   "why_not_now": "each needs an account and a key held as a secret, and a server route; terms not read",
+   "status": "candidate"
+  },
+  {
+   "what": "a camera scanner for browsers without BarcodeDetector (a vendored decoder such as ZXing, Apache-2.0)",
+   "why_not_now": "size; the typed box covers it today",
+   "status": "candidate"
+  }
+ ]
 }

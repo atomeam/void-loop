@@ -9,6 +9,7 @@
  */
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
+import { shopAskOf } from './shop-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -73,6 +74,14 @@ export const RELATED = Object.freeze({
   '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
   '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
   '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
+  // the shopping pages (2026-10-26): the hub reaches each tool; each tool its closest sisters, the calendar for reminders, the converter for sizes
+  '/shop/': ['/shop/track/', '/shop/list/', '/shop/barcode/', '/shop/wishlist/', '/calendar/'],
+  '/shop/track/': ['/shop/parcels/', '/shop/', '/calendar/'],
+  '/shop/parcels/': ['/shop/track/', '/shop/', '/calendar/'],
+  '/shop/wishlist/': ['/shop/', '/shop/list/', '/calendar/'],
+  '/shop/barcode/': ['/shop/product/', '/shop/list/', '/shop/'],
+  '/shop/list/': ['/shop/', '/shop/product/', '/convert/', '/calculator/'],
+  '/shop/product/': ['/shop/barcode/', '/shop/list/', '/convert/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
@@ -154,6 +163,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
+  // shopping (2026-10-26): 'track 1Z999AA10123456784', 'barcode 3017624010701', 'compare prices of oat milk', 'shopping list', 'wish list', 'unit price' open the shopping page that does it (lib/shop-sites.js)
+  [{ exec: (t) => (shopAskOf(t) ? [t] : null) }, (m, t) => shopAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

@@ -1,4 +1,4 @@
-// Draws the share pictures of the PDF and Kanban pages (1200 x 630 PNG, text and colour only, no logos) into void-live-deploy/og/, one per page of lib/tool-sites.js,
+// Draws the share pictures of the PDF, Kanban, flights and shopping pages (1200 x 630 PNG, text and colour only, no logos) into void-live-deploy/og/, one per page of lib/tool-sites.js,
 // with the browser already used for tests. Run by hand when a row's words change:  node tools/og-tool-sites.mjs     (CHROME_PATH or /opt/pw-browsers/...)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,9 @@ const KB = { boards: 'Several boards', wip: 'WIP limits', lanes: 'Swimlanes', la
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const line = (r) => r.tag || r.does.split(/\. /)[0].replace(/\.$/, '');
 const FL = { controls: 'Airport search', providers: 'Six providers', facts: 'Route facts', tracker: 'Price tracker', trip: 'Itineraries', airports: 'Airport codes', time: 'Flight time', route: 'Great circle map', co2: 'CO2', routes: 'Where to fly' };
-const chipsOf = (r) => (r.panels ? [...r.panels.map((k) => FL[k]), 'Distance', 'Time zones'].filter((x, i, a) => x && a.indexOf(x) === i) : r.tools ? [...r.tools, ...(r.also || [])].filter((t, i, a) => a.indexOf(t) === i).map((t) => TOOL_INFO[t][0]) : ['To do', 'Doing', 'Done', ...Object.keys(r.features).map((k) => KB[k]).filter(Boolean)]).slice(0, 10);
+const SH = { lookup: 'Product lookup', stores: 'Store searches', cart: 'List and cart', track: 'Parcel tracking', prices: 'Price log', unit: 'Unit prices', wish: 'Wish lists', returns: 'Return windows' };
+const SHX = { '/shop/track/': ['Carrier from the number', 'Calendar reminders'], '/shop/parcels/': ['International post', 'Many numbers'], '/shop/wishlist/': ['Share by link', 'Mark as bought'], '/shop/barcode/': ['UPC, EAN, ISBN', 'Check digits', 'Camera scanner'], '/shop/list/': ['Totals by store', 'CSV and share link'], '/shop/product/': ['Open product data', 'Camera scanner'] };
+const chipsOf = (r) => (r.path.startsWith('/shop/') ? [...r.panels.map((k) => SH[k]), ...(SHX[r.path] || ['Barcode scanner', 'No account'])].slice(0, 10) : r.panels ? [...r.panels.map((k) => FL[k]), 'Distance', 'Time zones'].filter((x, i, a) => x && a.indexOf(x) === i) : r.tools ? [...r.tools, ...(r.also || [])].filter((t, i, a) => a.indexOf(t) === i).map((t) => TOOL_INFO[t][0]) : ['To do', 'Doing', 'Done', ...Object.keys(r.features).map((k) => KB[k]).filter(Boolean)]).slice(0, 10);
 const html = (r) => `<html><body style="margin:0;width:1200px;height:630px;background:linear-gradient(135deg,#14121c 0%,#2a2150 100%);color:#ecebf5;font-family:system-ui,Segoe UI,Arial,sans-serif;position:relative;overflow:hidden">
 <div style="position:absolute;left:64px;top:56px;font-size:30px;color:#a58bff;font-weight:700;letter-spacing:.04em">VERSE</div>
 <div style="position:absolute;left:64px;top:120px;width:1070px;font-size:${r.name.length > 22 ? 84 : 112}px;font-weight:800;line-height:1.02">${esc(r.name)}</div>

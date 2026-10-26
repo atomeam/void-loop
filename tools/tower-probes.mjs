@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { listToToken } from '../void-live-deploy/lib/shop-core.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -407,6 +408,20 @@ export const PROBES = Object.freeze({
       itineraries: [['paste a confirmation', /Paste a confirmation text/i], ['layovers', /layover/i], ['a calendar file', /\.ics/], ['a link to the trip', /link to this trip/i]],
     },
     facts: [['airport search', /City, airport or code|From[\s\S]{0,40}To/i], ['nearby airports', /Nearby airports/i], ['one way or return', /One way[\s\S]{0,40}Return|Return[\s\S]{0,40}One way/i], ['passengers', /\bAdults\b/], ['cabin class', /\bCabin\b/], ['search on several providers', /Search across providers/i], ['distance', /\bDistance\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['CO2', /CO2/], ['price tracking', /Price tracker/i], ['a price target', /Watch a route/i], ['an itinerary', /Trip and layovers/i], ['layover warnings', /layover/i], ['a calendar file', /\.ics/], ['on your device', /on (?:this|your) device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
+  },
+  // shopping (2026-10-26): Amazon is the floor. Verse does not stock or ship goods and says so on the first screen; the question is a parcel number and a barcode, both
+  // answered on the device: 1Z999AA10123456784 is UPS's own published sample (its check digit 4 is right), 4006381333931 the GS1 sample EAN-13 (check digit 1 is right).
+  // Truth worked out by hand, judged on Verse alone (the product found in the open databases is not part of the truth: it needs their network).
+  shopping: {
+    site: 'https://www.amazon.com/', verse: '/shop/',
+    ask: { verse: '/shop/?track=1Z999AA10123456784&code=4006381333931' },
+    truth: [['UPS named for 1Z999AA10123456784', /1Z999AA10123456784\s*\n?\s*UPS/], ['its check digit right', /check digit right/], ['a link to UPS tracking', /Track on UPS/], ['EAN-13 4006381333931 with a right check digit', /EAN-13 4006381333931: the check digit is right/], ['the code searched on the stores', /Search on Amazon/], ['no stock or shipping said', /does not stock or ship/]],
+    askParts: {
+      catalogue: [['a lookup by name or barcode', /Barcode or product name/], ['the open product databases', /Open Food Facts/], ['searches on several stores', /Search on eBay[\s\S]*Search on Walmart/], ['a camera scanner or a typed fallback', /Scan with the camera|no barcode reader/]],
+      checkout: [['a list and cart', /List and cart/], ['tax and shipping', /Currency, tax and shipping/], ['a CSV export', /Export CSV/], ['a link to the list', /Share this list/], ['checking out at each store', /check out at each store/i]],
+      'delivery tracking': [['the carrier from the number', /Find the carrier/], ['the carrier\'s own page', /Track on UPS/], ['saved parcels', /Your parcels/], ['calendar reminders', /\.ics/]],
+    },
+    facts: [['product lookup', /Find a product/], ['barcode check digit', /check digit/], ['a camera scanner', /Scan with the camera|no barcode reader/], ['store searches', /Search the stores/], ['how sure each address is', /address (?:partly )?(?:un)?confirmed/], ['a list and cart', /List and cart/], ['totals by store', /totals with tax and shipping for each store|in all/], ['tax and shipping', /tax and shipping/i], ['CSV', /CSV/], ['parcel tracking', /Track a parcel/], ['saved parcels', /Your parcels/], ['a price log with targets', /Price log and targets/], ['unit prices', /Unit price/], ['wish lists', /Wish lists/], ['return windows', /Return windows/], ['calendar reminders', /\.ics/], ['on this device', /on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/]],
   },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
   // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out

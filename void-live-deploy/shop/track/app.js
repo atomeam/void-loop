@@ -1,0 +1,5 @@
+// /shop/track/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the shopping screen comes after the load event (only this small file stands before it), then the related row
+const go = () => import('/lib/shop-ui.js').then(({ mountShop }) => mountShop(document.getElementById('app'), {"panels":["track"],"de":{"h1":"Paketverfolgung","intro":"Fügen Sie eine oder viele Sendungsnummern ein. Verse erkennt den Zusteller am Format und an der Prüfziffer der Nummer (UPS, USPS, FedEx, DHL, Royal Mail, Canada Post, Amazon, DPD, GLS, Evri, OnTrac, PostNL und andere) und öffnet seine eigene Verfolgungsseite. Behalten Sie Ihre Pakete mit Namen und erwartetem Datum auf diesem Gerät und holen Sie sich eine Kalendererinnerung. Verse liest den Status beim Zusteller nicht aus; kein Konto."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/shop/track/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

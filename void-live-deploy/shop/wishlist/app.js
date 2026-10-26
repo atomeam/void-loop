@@ -1,0 +1,5 @@
+// /shop/wishlist/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the shopping screen comes after the load event (only this small file stands before it), then the related row
+const go = () => import('/lib/shop-ui.js').then(({ mountShop }) => mountShop(document.getElementById('app'), {"panels":["wish","prices"],"de":{"h1":"Wunschlisten","intro":"Legen Sie eine Wunschliste für einen Geburtstag, eine Hochzeit oder die Feiertage an: jeder Wunsch mit Link, Preis, Hinweis zu Größe oder Farbe und wie sehr Sie ihn wollen. Teilen Sie die Liste als Link; wer sie öffnet, kann einen Wunsch als gekauft markieren, damit niemand dasselbe kauft. Führen Sie ein Preisprotokoll mit Ziel für das, worauf Sie warten. Auf diesem Gerät gespeichert, kein Konto."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/shop/wishlist/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

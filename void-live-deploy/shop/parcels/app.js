@@ -1,0 +1,5 @@
+// /shop/parcels/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the shopping screen comes after the load event (only this small file stands before it), then the related row
+const go = () => import('/lib/shop-ui.js').then(({ mountShop }) => mountShop(document.getElementById('app'), {"panels":["track","returns"],"de":{"h1":"Sendungsverfolgung","intro":"Fügen Sie eine ganze Liste von Sendungsnummern ein: Jede wird ihrem Zusteller zugeordnet (internationale Post auch über ihr Ländercode) und öffnet sich auf dessen eigener Seite. Behalten Sie die Pakete mit erwartetem Datum und die Rückgabefrist dessen, was ankam, damit Sie den letzten Tag für die Rücksendung kennen. Verse liest den Status der Zusteller nicht aus; nichts wird gesendet."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/shop/parcels/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

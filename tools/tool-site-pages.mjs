@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES } from '../void-live-deploy/lib/tool-sites.js';
+import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES, SHOP_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -54,6 +54,16 @@ const FLCSS = `
   .seg { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 8px 0; } .warn { color: #b45309; font-size: 13px; margin: 2px 0; } @media (prefers-color-scheme: dark) { .warn { color: #fbbf24; } } .gap { list-style: none; color: var(--soft); font-size: 14px; } .leg { margin: 8px 0; } .stay { color: var(--soft); margin: 4px 0; } .ok { color: var(--ok); } .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; }
   .pick { position: absolute; left: -9999px; } input[type=range] { width: 100%; min-height: 40px; accent-color: var(--accent); } output { font-weight: 600; }
   @media print { button, .sug, footer, .tk-row, .tk-ask, #related, .notice, #controls, #fl-err, .field:has(#i-paste), #i-help, #a-help, .grid3:has(#w-h), input[type=range], .chk, .pick, label.btn { display: none !important; } body { background: #fff; color: #000; } #app { min-height: 0 !important; } main { max-width: none; padding: 0; } .panel { border: 0; padding: 0; margin: 0 0 12px; break-inside: auto; } .seg { break-inside: avoid; } .seg input { border: 0; padding: 0; min-height: 0; } .alist li, .plain li, .dl > div { break-inside: avoid; } a { color: #000; text-decoration: none; } .soft { color: #333; } }`;
+// the shopping pages share the flights pages' look (panels, fields, lists) and add the cart's rows, the product cards and the labels of how sure an address is
+const SHCSS = `
+  .plist a.btn, .card a.btn, .prod a.btn { padding: 8px 16px; } a.btn.go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { a.btn.go { color: #0b0a10; } } .tot .big + .soft { margin-top: 0; }
+  .grow { flex: 1 1 260px; } .row.tight { margin: 0; flex-wrap: nowrap; } .row.tight input { flex: 1 1 auto; min-width: 0; } .tot .big { margin-top: 10px; } .more { margin: 10px 0; } .more summary { min-height: 40px; display: flex; align-items: center; cursor: pointer; }
+  .tag { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--soft); white-space: nowrap; } .tag-partly { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+  .prods { list-style: none; padding: 0; margin: 8px 0; } .prod { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); } .prod img, .noimg { width: 64px; height: 64px; object-fit: contain; flex: 0 0 64px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--soft); } .prod > div { min-width: 0; overflow-wrap: anywhere; }
+  .items { list-style: none; padding: 0; margin: 4px 0; } .items li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); } .items .chk { flex: 1 1 160px; min-width: 0; } .items .nm { overflow-wrap: anywhere; } .items li.done .nm, .plain li.done span { text-decoration: line-through; color: var(--soft); }
+  .qty { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; } .qty button, .items .del, .plain .rm { min-width: 40px; padding: 4px 10px; } .amt { min-width: 5.5em; text-align: right; font-variant-numeric: tabular-nums; } .sub { font-size: 14px; margin: 6px 0; } .grp { margin: 10px 0; }
+  .cam { margin: 8px 0; } .cam video { width: 100%; max-height: 50vh; border-radius: 12px; background: #000; display: block; margin-bottom: 6px; } .card .grid3 { margin-top: 6px; }
+  @media print { .notice, #lookup, #stores, #track, #prices, #unit, #returns, .more, .row, .qty button, .del, .rm, footer, #related, .tk-row, .tk-ask, #c-from, #w-from, .tk-ask { display: none !important; } #cart, #wish { border: 0; } }`;
 const KBCSS = `
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
@@ -70,9 +80,9 @@ const KBCSS = `
 
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
-  const pdf = kind === 'pdf', fl = kind === 'flights';
-  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : fl ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl ? '80vh' : '520px');
-  const foot = fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
+  const pdf = kind === 'pdf', sh = kind === 'shop', fl = kind === 'flights' || sh;
+  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS + (sh ? SHCSS : '') : KBCSS)).replace('__MAX__', pdf ? '860px' : fl ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl ? '80vh' : '520px');
+  const foot = sh ? 'Verse does not stock or ship goods and takes no payment here: you buy from the stores. Your list, cart, parcels, prices, wish lists and return windows stay in this browser, and the page works offline after one visit. A barcode or a name you look up is sent to the open product databases (Open Food Facts, Open Products Facts, Open Beauty Facts; ODbL, credited on the page); store and carrier links are built from a fixed list and carry nothing else. Built to be accessible: every control is labelled and at least 24 px, in light and dark. There is no account and there are no ads.' : fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
   return `<!doctype html>
@@ -114,7 +124,13 @@ export function pageOf(row, kind) {
 }
 /** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
 export function appOf(row, kind) {
-  const pdf = kind === 'pdf', fl = kind === 'flights', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
+  const pdf = kind === 'pdf', fl = kind === 'flights', sh = kind === 'shop', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl || sh ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
+  if (sh) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the shopping screen comes after the load event (only this small file stands before it), then the related row
+const go = () => import('/lib/shop-ui.js').then(({ mountShop }) => mountShop(document.getElementById('app'), ${JSON.stringify(cfg)}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+`;
   const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
   if (fl) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
 // the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
@@ -134,7 +150,7 @@ const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
-  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights']]) for (const row of rows) {
+  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights'], [SHOP_SITES, 'shop']]) for (const row of rows) {
     const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
     if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
     const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);
