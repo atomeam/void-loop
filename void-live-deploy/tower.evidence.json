@@ -11506,76 +11506,77 @@
   "finance: stockq.org": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 114,
-    "best": 1463,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 114 ms to the load event (median of 3, phone width) vs stockq.org 1463 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:09:43.934Z"
+    "verse": 99,
+    "best": 1078,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 99 ms to the load event (median of 3, phone width) vs stockq.org 1078 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs stockq.org 3 of 3 loads answered",
-    "at": "2026-10-26T03:09:43.934Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs stockq.org 3 of 3 loads answered",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 710,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stockq.org 710 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:09:43.934Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stockq.org 710 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs stockq.org 3 unnamed controls or images",
-    "at": "2026-10-26T03:09:43.934Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs stockq.org 3 unnamed controls or images",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stockq.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:09:43.934Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stockq.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stockq.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:09:43.934Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stockq.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 0,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not stockq.org (the site is not asked)",
-    "at": "2026-10-26T03:09:43.934Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 3 right against the worked-out answer (missed: the close on 31 Dec 2024 is 5,881.63, the symbol and its kind, from the answer, a price with cents); judged against the standard, not stockq.org (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 – Dow Jones – Nasdaq 100 – Bitc\"",
+    "at": "2026-10-26T03:56:50.185Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 352,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs stockq.org 352 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), stockq.org (58 low-contrast texts, 293 small tap targets, layout shift 0.16)",
-    "at": "2026-10-26T03:09:43.934Z"
+    "best": 381,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs stockq.org 381 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), stockq.org (81 low-contrast texts, 299 small tap targets, layout shift 0.22)",
+    "at": "2026-10-26T03:56:50.185Z"
    },
    "live quotes": {
-    "verdict": "better",
-    "verse": 3,
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stockq.org 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:09:43.934Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 3 shown vs stockq.org 0 of 3 shown (Verse lacks: a price with its move in percent, the source named, a 52-week range of two prices; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:56:50.185Z",
     "of": 3,
     "part": true
    },
    "charts": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stockq.org 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:09:43.934Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 of 3 shown vs stockq.org 0 of 3 shown (Verse lacks: the move over the range, from the drawn series, a hover readout; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:56:50.185Z",
     "of": 3,
     "part": true
    },
@@ -11583,84 +11584,85 @@
     "verdict": "better",
     "verse": 2,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs stockq.org 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T03:09:43.934Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs stockq.org 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
+    "at": "2026-10-26T03:56:50.185Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
+    "verse": 19,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 17 of 18 things a full answer shows vs stockq.org 1 of 18 things a full answer shows (Verse lacks: the price and its change in percent; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article)",
-    "at": "2026-10-26T03:09:43.934Z",
-    "of": 18
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 19 of 21 things a full answer shows vs stockq.org 1 of 21 things a full answer shows (Verse lacks: the price and its change in percent, Sources & Further Reading; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Links, Stock Market News, Sources & Further Reading)",
+    "at": "2026-10-26T03:56:50.185Z",
+    "of": 21
    }
   },
   "finance: stooq.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 159,
-    "best": 1237,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 159 ms to the load event (median of 3, phone width) vs stooq.com 1237 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:10:15.764Z"
+    "verse": 101,
+    "best": 775,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 101 ms to the load event (median of 3, phone width) vs stooq.com 775 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs stooq.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:10:15.764Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs stooq.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 589,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stooq.com 589 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:10:15.764Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stooq.com 589 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 16,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs stooq.com 16 unnamed controls or images",
-    "at": "2026-10-26T03:10:15.764Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs stooq.com 16 unnamed controls or images",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stooq.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:10:15.764Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stooq.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stooq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:10:15.764Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stooq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not stooq.com (the site is not asked)",
-    "at": "2026-10-26T03:10:15.764Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer (missed: the symbol and its kind, from the answer); judged against the standard, not stooq.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 7,623.68 ▲ +13.14% Dow Jones 52\"",
+    "at": "2026-10-26T03:57:33.671Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 63,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs stooq.com 63 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), stooq.com (7 low-contrast texts, 56 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:10:15.764Z"
+    "best": 65,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs stooq.com 65 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), stooq.com (9 low-contrast texts, 56 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:57:33.671Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stooq.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:10:15.764Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs stooq.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:57:33.671Z",
     "of": 3,
     "part": true
    },
@@ -11668,8 +11670,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stooq.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:10:15.764Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs stooq.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:57:33.671Z",
     "of": 3,
     "part": true
    },
@@ -11677,18 +11679,18 @@
     "verdict": "better",
     "verse": 2,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs stooq.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T03:10:15.764Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs stooq.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
+    "at": "2026-10-26T03:57:33.671Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 19,
     "best": 2,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs stooq.com 2 of 18 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article)",
-    "at": "2026-10-26T03:10:15.764Z",
-    "of": 18
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 19 of 21 things a full answer shows vs stooq.com 2 of 21 things a full answer shows (Verse lacks: the price and its change in percent, Sources & Further Reading; site lacks: the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Links, Stock Market News, Sources & Further Reading)",
+    "at": "2026-10-26T03:57:33.671Z",
+    "of": 21
    }
   },
   "finance: macrotrends.net": {
@@ -11696,73 +11698,74 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs macrotrends.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs macrotrends.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 122,
+    "verse": 95,
     "best": 200,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 122 ms to the load event (median of 3, phone width) vs the bar (macrotrends.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 95 ms to the load event (median of 3, phone width) vs the bar (macrotrends.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (macrotrends.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (macrotrends.net unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (macrotrends.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (macrotrends.net unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (macrotrends.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (macrotrends.net unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (macrotrends.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (macrotrends.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs the bar (macrotrends.net unreachable) 0 design defects",
-    "at": "2026-10-26T03:08:54.153Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs the bar (macrotrends.net unreachable) 0 design defects",
+    "at": "2026-10-26T03:58:10.914Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:08:54.153Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T03:58:10.914Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 18,
-    "best": 18,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs the bar (macrotrends.net unreachable) 18 of 18 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-26T03:08:54.153Z",
-    "of": 18
+    "verse": 21,
+    "best": 21,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs the bar (macrotrends.net unreachable) 21 of 21 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T03:58:10.914Z",
+    "of": 21
    },
    "live quotes": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:54.153Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:58:10.914Z",
     "of": 3,
     "part": true
    },
@@ -11770,8 +11773,8 @@
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:54.153Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:58:10.914Z",
     "of": 3,
     "part": true
    },
@@ -11779,8 +11782,8 @@
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (macrotrends.net unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:08:54.153Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (macrotrends.net unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T03:58:10.914Z",
     "of": 2,
     "part": true
    }
@@ -11788,162 +11791,163 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 115,
-    "best": 824,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 115 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 824 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:36:53.951Z"
+    "verse": 91,
+    "best": 716,
+    "evidence": "Verse (/markets/caps/) 91 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 716 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:55:46.291Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:36:53.951Z"
+    "evidence": "Verse (/markets/caps/) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:55:46.291Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:36:53.951Z"
+    "evidence": "Verse (/markets/caps/) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:55:46.291Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T03:36:53.951Z"
+    "evidence": "Verse (/markets/caps/) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
+    "at": "2026-10-26T03:55:46.291Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:36:53.951Z"
+    "evidence": "Verse (/markets/caps/) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:55:46.291Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/markets/caps/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:55:46.291Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 4,
+    "evidence": "Verse (/markets/caps/) 1 of 4 right against the worked-out answer (missed: Bitcoin is rank 1, a price in dollars on its row, a market cap in trillions or billions); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Crypto market caps The 50 largest coins by market cap, in US dollars. Prices may be delayed. No ads, no account. Find a coin Total market cap of these 50: – Coins by market cap # Coin Price 24h Mkt ca\"",
+    "at": "2026-10-26T03:55:46.291Z",
+    "was": "equal-and-better",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 66,
+    "evidence": "Verse (/markets/caps/) 0 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
+    "at": "2026-10-26T03:55:46.291Z"
+   },
+   "live quotes": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/markets/caps/) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price in dollars, a 24 hour move in percent; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:55:46.291Z",
+    "of": 3,
+    "part": true
+   },
+   "charts": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/markets/caps/) 1 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: the 7 day move; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:55:46.291Z",
+    "of": 2,
+    "part": true
+   },
+   "watchlists": {
+    "verdict": "better",
+    "verse": 2,
+    "best": 0,
+    "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
+    "at": "2026-10-26T03:55:46.291Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 4,
+    "evidence": "Verse (/markets/caps/) 8 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: price, 24 hour change, 7 day change, 24 hour volume, a total market cap, Compare symbols, Links, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
+    "at": "2026-10-26T03:55:46.291Z",
+    "of": 17
+   }
+  },
+  "finance: stockanalysis.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 127,
+    "best": 186,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 127 ms to the load event (median of 3, phone width) vs stockanalysis.com 186 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:58:39.316Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs stockanalysis.com 3 of 3 loads answered",
+    "at": "2026-10-26T03:58:39.316Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stockanalysis.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:58:39.316Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs stockanalysis.com 0 unnamed controls or images",
+    "at": "2026-10-26T03:58:39.316Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stockanalysis.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:58:39.316Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:36:53.951Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stockanalysis.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:58:39.316Z"
    },
    "accuracy": {
     "verdict": "worse",
-    "verse": 0,
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 of 3 right against the worked-out answer (missed: the close on 31 Dec 2024 is 250.42, the symbol and its currency, from the answer, a price with cents); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 – Dow Jones – Nasdaq 100 – Bitc\"",
-    "at": "2026-10-26T03:36:53.951Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer (missed: the symbol and its kind, from the answer); judged against the standard, not stockanalysis.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 7,623.68 ▲ +13.14% Dow Jones 52\"",
+    "at": "2026-10-26T03:58:39.316Z",
     "was": "equal-and-better",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 66,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
-    "at": "2026-10-26T03:36:53.951Z"
-   },
-   "live quotes": {
-    "verdict": "equal",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price with its move in percent, the source named, a 52-week range of two prices; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:36:53.951Z",
-    "of": 3,
-    "part": true
-   },
-   "charts": {
-    "verdict": "better",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: the move over the range, from the drawn series, a hover readout; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:36:53.951Z",
-    "of": 3,
-    "part": true
-   },
-   "watchlists": {
-    "verdict": "better",
-    "verse": 2,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T03:36:53.951Z",
-    "of": 2,
-    "part": true
-   },
-   "completeness": {
-    "verdict": "better",
-    "verse": 19,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 19 of 21 things a full answer shows vs companiesmarketcap.com 3 of 21 things a full answer shows (Verse lacks: the price and its change in percent, Sources & Further Reading; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
-    "at": "2026-10-26T03:36:53.951Z",
-    "of": 21
-   }
-  },
-  "finance: stockanalysis.com": {
-   "speed": {
-    "verdict": "equal-and-better",
-    "verse": 116,
-    "best": 306,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 116 ms to the load event (median of 3, phone width) vs stockanalysis.com 306 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "reliability": {
-    "verdict": "equal-and-better",
-    "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs stockanalysis.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "mobile": {
-    "verdict": "equal-and-better",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs stockanalysis.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "accessibility": {
-    "verdict": "equal-and-better",
-    "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs stockanalysis.com 0 unnamed controls or images",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "offline": {
-    "verdict": "better",
-    "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs stockanalysis.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "sharing": {
-    "verdict": "better",
-    "verse": 4,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs stockanalysis.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:11:08.141Z"
-   },
-   "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not stockanalysis.com (the site is not asked)",
-    "at": "2026-10-26T03:11:08.141Z",
-    "of": 3
-   },
-   "design polish": {
-    "verdict": "better",
-    "verse": 0,
     "best": 50,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs stockanalysis.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), stockanalysis.com (1 low-contrast texts, 49 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:11:08.141Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs stockanalysis.com 50 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), stockanalysis.com (1 low-contrast texts, 49 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T03:58:39.316Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stockanalysis.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:11:08.141Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs stockanalysis.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:58:39.316Z",
     "of": 3,
     "part": true
    },
@@ -11951,8 +11955,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs stockanalysis.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:11:08.141Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs stockanalysis.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:58:39.316Z",
     "of": 3,
     "part": true
    },
@@ -11960,18 +11964,18 @@
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs stockanalysis.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T03:11:08.141Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs stockanalysis.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
+    "at": "2026-10-26T03:58:39.316Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs stockanalysis.com 3 of 18 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols, Share quote or article)",
-    "at": "2026-10-26T03:11:08.141Z",
-    "of": 18
+    "verse": 21,
+    "best": 4,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs stockanalysis.com 4 of 21 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols, Share quote or article, Links, Sources & Further Reading)",
+    "at": "2026-10-26T03:58:39.316Z",
+    "of": 21
    }
   },
   "finance: investing.com": {
@@ -11979,73 +11983,74 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs investing.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs investing.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 104,
+    "verse": 86,
     "best": 200,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 104 ms to the load event (median of 3, phone width) vs the bar (investing.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 86 ms to the load event (median of 3, phone width) vs the bar (investing.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (investing.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (investing.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (investing.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (investing.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (investing.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (investing.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (investing.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (investing.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs the bar (investing.com unreachable) 0 design defects",
-    "at": "2026-10-26T03:27:39.975Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs the bar (investing.com unreachable) 0 design defects",
+    "at": "2026-10-26T04:01:10.664Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-26T03:27:39.975Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-26T04:01:10.664Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "completeness": {
     "verdict": "equal-and-better",
     "verse": 21,
     "best": 21,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs the bar (investing.com unreachable) 21 of 21 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-26T03:27:39.975Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs the bar (investing.com unreachable) 21 of 21 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T04:01:10.664Z",
     "of": 21
    },
    "live quotes": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:27:39.975Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T04:01:10.664Z",
     "of": 3,
     "part": true
    },
@@ -12053,8 +12058,8 @@
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:27:39.975Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (investing.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-26T04:01:10.664Z",
     "of": 3,
     "part": true
    },
@@ -12062,8 +12067,8 @@
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (investing.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-26T03:27:39.975Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (investing.com unreachable) 2 of 2 shown (Verse lacks: none)",
+    "at": "2026-10-26T04:01:10.664Z",
     "of": 2,
     "part": true
    }
@@ -12071,67 +12076,68 @@
   "finance: tradingview.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 114,
-    "best": 1659,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 114 ms to the load event (median of 3, phone width) vs tradingview.com 1659 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:09:08.846Z"
+    "verse": 84,
+    "best": 1834,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 84 ms to the load event (median of 3, phone width) vs tradingview.com 1834 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs tradingview.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs tradingview.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs tradingview.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs tradingview.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 101,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs tradingview.com 101 unnamed controls or images",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs tradingview.com 101 unnamed controls or images",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs tradingview.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs tradingview.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tradingview.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tradingview.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not tradingview.com (the site is not asked)",
-    "at": "2026-10-26T03:09:08.846Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer (missed: the symbol and its kind, from the answer); judged against the standard, not tradingview.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 7,623.68 ▲ +13.14% Dow Jones 52\"",
+    "at": "2026-10-26T04:01:39.510Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 186,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs tradingview.com 186 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), tradingview.com (14 low-contrast texts, 172 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T03:09:08.846Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs tradingview.com 186 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), tradingview.com (14 low-contrast texts, 172 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:01:39.510Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs tradingview.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:09:08.846Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs tradingview.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T04:01:39.510Z",
     "of": 3,
     "part": true
    },
@@ -12139,27 +12145,27 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs tradingview.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:09:08.846Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs tradingview.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T04:01:39.510Z",
     "of": 3,
     "part": true
    },
    "watchlists": {
     "verdict": "better",
     "verse": 2,
-    "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs tradingview.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T03:09:08.846Z",
+    "best": 0,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs tradingview.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
+    "at": "2026-10-26T04:01:39.510Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 21,
     "best": 7,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs tradingview.com 7 of 18 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, chart ranges 1D to Max, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols)",
-    "at": "2026-10-26T03:09:08.846Z",
-    "of": 18
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs tradingview.com 7 of 21 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Links)",
+    "at": "2026-10-26T04:01:39.510Z",
+    "of": 21
    }
   },
   "finance: marketwatch.com": {
@@ -13011,161 +13017,163 @@
   "finance: finviz.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 3502,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 108 ms to the load event (median of 3, phone width) vs finviz.com 3502 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:11:28.972Z"
+    "verse": 81,
+    "best": 4857,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 81 ms to the load event (median of 3, phone width) vs finviz.com 4857 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs finviz.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:11:28.972Z"
+    "best": 2,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 2 of 3 loads answered",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 815,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:11:28.972Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
-    "at": "2026-10-26T03:11:28.972Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:11:28.972Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 4,
+    "verse": 3,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:11:28.972Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not finviz.com (the site is not asked)",
-    "at": "2026-10-26T03:11:28.972Z",
-    "of": 3
+    "verdict": "worse",
+    "verse": 1,
+    "best": 4,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 of 4 right against the worked-out answer (missed: the matches counted, a share row with a price and a move, a coin row); judged against the standard, not finviz.com (the site is not asked). The page showed: \"Screener Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account. Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, \"",
+    "at": "2026-10-26T03:58:57.973Z",
+    "was": "equal-and-better",
+    "of": 4
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 256,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs finviz.com 256 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), finviz.com (3 low-contrast texts, 253 small tap targets, layout shift 0.08)",
-    "at": "2026-10-26T03:11:28.972Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 design defects vs finviz.com 256 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), finviz.com (3 low-contrast texts, 253 small tap targets, layout shift 0.05)",
+    "at": "2026-10-26T03:58:57.973Z"
    },
    "live quotes": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs finviz.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:11:28.972Z",
-    "of": 3,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: a price and a move on a row; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T03:58:57.973Z",
+    "of": 2,
     "part": true
    },
    "charts": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 2,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs finviz.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:11:28.972Z",
-    "of": 3,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T03:58:57.973Z",
+    "of": 2,
     "part": true
    },
    "watchlists": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T03:11:28.972Z",
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
+    "at": "2026-10-26T03:58:57.973Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
-    "best": 6,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs finviz.com 6 of 18 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, market cap, chart ranges 1D to Max, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols)",
-    "at": "2026-10-26T03:11:28.972Z",
-    "of": 18
+    "verse": 11,
+    "best": 4,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 11 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: a match count, Compare symbols, Links, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
+    "at": "2026-10-26T03:58:57.973Z",
+    "of": 15
    }
   },
   "finance: barchart.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 126,
-    "best": 2401,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 126 ms to the load event (median of 3, phone width) vs barchart.com 2401 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:12:21.930Z"
+    "verse": 87,
+    "best": 1599,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 87 ms to the load event (median of 3, phone width) vs barchart.com 1599 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 loads answered vs barchart.com 3 of 3 loads answered",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs barchart.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs barchart.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs barchart.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 unnamed controls or images vs barchart.com 7 unnamed controls or images",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs barchart.com 7 unnamed controls or images",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs barchart.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs barchart.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs barchart.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs barchart.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "accuracy": {
-    "verdict": "equal-and-better",
-    "verse": 3,
+    "verdict": "worse",
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not barchart.com (the site is not asked)",
-    "at": "2026-10-26T03:12:21.930Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 3 right against the worked-out answer (missed: the symbol and its kind, from the answer); judged against the standard, not barchart.com (the site is not asked). The page showed: \"Markets Stocks, ETFs, indices, currencies and crypto. Prices may be delayed. No ads, no account. A symbol or a name: AAPL, Tesla, S&P 500, BTC, EURUSD Get quote S&P 500 – Dow Jones – Nasdaq 100 – Bitc\"",
+    "at": "2026-10-26T04:00:23.225Z",
+    "was": "equal-and-better",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 84,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 0 design defects vs barchart.com 84 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), barchart.com (0 low-contrast texts, 84 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T03:12:21.930Z"
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs barchart.com 84 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), barchart.com (0 low-contrast texts, 84 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T04:00:23.225Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs barchart.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T03:12:21.930Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs barchart.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
+    "at": "2026-10-26T04:00:23.225Z",
     "of": 3,
     "part": true
    },
@@ -13173,8 +13181,8 @@
     "verdict": "better",
     "verse": 3,
     "best": 0,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 3 of 3 shown vs barchart.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T03:12:21.930Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs barchart.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
+    "at": "2026-10-26T04:00:23.225Z",
     "of": 3,
     "part": true
    },
@@ -13182,18 +13190,18 @@
     "verdict": "better",
     "verse": 2,
     "best": 1,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 2 of 2 shown vs barchart.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T03:12:21.930Z",
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs barchart.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
+    "at": "2026-10-26T04:00:23.225Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
-    "best": 5,
-    "evidence": "Verse (/markets/?s=AAPL&r=5y&on=2024-12-31) 18 of 18 things a full answer shows vs barchart.com 5 of 18 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, market cap, chart ranges 1D to Max, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols, Share quote or article)",
-    "at": "2026-10-26T03:12:21.930Z",
-    "of": 18
+    "verse": 19,
+    "best": 6,
+    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 19 of 21 things a full answer shows vs barchart.com 6 of 21 things a full answer shows (Verse lacks: the price and its change in percent, Sources & Further Reading; site lacks: the previous close, the day range, the 52-week range, market cap, chart ranges 1D to Max, compare two symbols, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols, Share quote or article, Links, Sources & Further Reading)",
+    "at": "2026-10-26T04:00:23.225Z",
+    "of": 21
    }
   },
   "podcasts: player.fm": {
@@ -14139,59 +14147,59 @@
   "photos: exifeditor.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 200,
-    "best": 1647,
-    "evidence": "Verse (/photos/exifeditor/) 200 ms to the load event (median of 3, phone width) vs exifeditor.io 1647 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:51:15.826Z"
+    "verse": 160,
+    "best": 2245,
+    "evidence": "Verse (/photos/exifeditor/) 160 ms to the load event (median of 3, phone width) vs exifeditor.io 2245 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/exifeditor/) 3 of 3 loads answered vs exifeditor.io 3 of 3 loads answered",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 17,
     "evidence": "Verse (/photos/exifeditor/) 0 px sideways overflow at 390 px vs exifeditor.io 17 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/photos/exifeditor/) 0 unnamed controls or images vs exifeditor.io 0 unnamed controls or images",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/photos/exifeditor/) 1 (1: the page shows itself again with the network cut) vs exifeditor.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse (/photos/exifeditor/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs exifeditor.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 51,
     "evidence": "Verse (/photos/exifeditor/) 1 design defects vs exifeditor.io 51 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), exifeditor.io (40 low-contrast texts, 10 small tap targets, layout shift 0.63)",
-    "at": "2026-10-26T03:51:15.826Z"
+    "at": "2026-10-26T03:55:18.430Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 27,
     "best": 5,
     "evidence": "Verse (/photos/exifeditor/) 27 of 30 things a full answer shows vs exifeditor.io 5 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, strip metadata, batch to a zip, paste or drop, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider, Size saved readout)",
-    "at": "2026-10-26T03:51:15.826Z",
+    "at": "2026-10-26T03:55:18.430Z",
     "of": 30
    },
    "accuracy": {
@@ -14199,7 +14207,7 @@
     "verse": 2,
     "best": 3,
     "evidence": "Verse (/photos/exifeditor/) 2 of 3 right against the worked-out answer (missed: its size before and after, in bytes); judged against the standard, not exifeditor.io (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all No camera, place or editing data found in this file. Strip metadata only (same pixels) Save the metad\"",
-    "at": "2026-10-26T03:51:15.826Z",
+    "at": "2026-10-26T03:55:18.430Z",
     "of": 3
    },
    "editing": {
@@ -14207,7 +14215,7 @@
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/photos/exifeditor/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:51:15.826Z",
+    "at": "2026-10-26T03:55:18.430Z",
     "of": 7,
     "part": true
    },
@@ -14216,7 +14224,7 @@
     "verse": 1,
     "best": 7,
     "evidence": "Verse (/photos/exifeditor/) 1 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:51:15.826Z",
+    "at": "2026-10-26T03:55:18.430Z",
     "of": 7,
     "part": true
    },
@@ -14225,7 +14233,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/photos/exifeditor/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:51:15.826Z",
+    "at": "2026-10-26T03:55:18.430Z",
     "of": 2,
     "part": true
    }
