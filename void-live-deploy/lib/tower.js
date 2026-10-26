@@ -123,6 +123,8 @@ export const LANES = Object.freeze({
   music: ['https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', 'https://chordchord.com/chord-finder', 'https://metronomeonline.com/', 'https://virtualpiano.net/'],
   // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
+  // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
+  travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
@@ -134,6 +136,7 @@ export const LANE_PAGES = Object.freeze({
   'sports: thesportsdb.com': '/sports/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
+  'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
@@ -144,6 +147,13 @@ export const LANE_EXTRAS = Object.freeze({
   'music: chordchord.com': ['chord finder', 'scale finder', 'guitar and piano shapes', 'chords in a key'],
   'music: metronomeonline.com': ['tap tempo', 'accents', 'subdivisions', 'practice timer', 'light and dark mode', 'sounds'],
   'music: virtualpiano.net': ['computer keyboard play', 'touch and mouse play', 'sustain', 'instruments', 'sheet music', 'MIDI input'],
+  'travel: tripwaffle.com': ['paste a confirmation', 'day by day timeline', 'layover warnings', 'calendar export', 'share a trip', 'works offline'],
+  'travel: aruljohn.com': ['code lookup', 'search by city or country', 'airport details', 'nearby airports'],
+  'travel: clock7.com': ['flight duration', 'local arrival time', 'time zone difference', 'date line', 'layover'],
+  'travel: airmilescalculator.com': ['distance in miles and km', 'flight time', 'time difference', 'flown distance', 'multi leg trips'],
+  'travel: gcmap.com': ['route map', 'chained routes', 'great circle distance', 'airport info'],
+  'travel: co2.myclimate.org': ['CO2 per passenger', 'cabin class', 'return trip', 'method named'],
+  'travel: flightconnections.com': ['where can I go', 'filter by distance', 'airport finder', 'provider links'],
   'sports: thesportsdb.com': ['sport search', 'born on this day', 'sport grid', 'free api'] });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */
