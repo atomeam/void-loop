@@ -15444,67 +15444,67 @@
   "pdf: 10015.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 131,
-    "best": 1135,
-    "evidence": "Verse (/pdf/organize/) 131 ms to the load event (median of 3, phone width) vs 10015.io 1135 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "verse": 150,
+    "best": 1218,
+    "evidence": "Verse (/pdf/organize/) 150 ms to the load event (median of 3, phone width) vs 10015.io 1218 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/organize/) 3 of 3 loads answered vs 10015.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 px sideways overflow at 390 px vs 10015.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 unnamed controls or images vs 10015.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 1 (1: the page shows itself again with the network cut) vs 10015.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "sharing": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/pdf/organize/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "evidence": "Verse (/pdf/organize/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/pdf/organize/) 3 of 3 right against the worked-out answer; judged against the standard, not 10015.io (the site is not asked)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 8,
-    "evidence": "Verse (/pdf/organize/) 1 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.12), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:52:20.811Z"
+    "evidence": "Verse (/pdf/organize/) 0 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:09:46.204Z"
    },
    "merge and split": {
-    "verdict": "worse",
-    "verse": 1,
+    "verdict": "equal-and-better",
+    "verse": 2,
     "best": 2,
-    "evidence": "Verse (/pdf/organize/) 1 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: split; site lacks: none)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 2 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 2,
     "part": true
    },
@@ -15513,34 +15513,34 @@
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/pdf/organize/) 3 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 3,
     "part": true
    },
    "images to pdf": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: images to PDF; site lacks: images to PDF)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: none; site lacks: images to PDF)",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 1,
     "part": true
    },
    "compress": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: none; site lacks: compress)",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 9,
+    "verse": 15,
     "best": 7,
-    "evidence": "Verse (/pdf/organize/) 9 of 19 things a full answer shows vs 10015.io 7 of 19 things a full answer shows (Verse lacks: split, delete pages, compress, images to PDF, PDF to images, page numbers, watermark, no account, Split by range, every N pages, or extract, Compress PDF; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages, Compress PDF)",
-    "at": "2026-10-26T04:52:20.811Z",
+    "evidence": "Verse (/pdf/organize/) 15 of 19 things a full answer shows vs 10015.io 7 of 19 things a full answer shows (Verse lacks: PDF to images, page numbers, watermark, no account; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T05:09:46.204Z",
     "of": 19
    }
   },
@@ -16778,6 +16778,108 @@
     "evidence": "Verse (/flights/distance/) 0 design defects vs the bar (airmilescalculator.com unreachable) 0 design defects",
     "at": "2026-10-26T05:06:13.870Z"
    }
+  },
+  "travel: gcmap.com": {
+   "reliability": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 of 3 loads answered vs gcmap.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 143,
+    "best": 200,
+    "evidence": "Verse (/flights/map/) 143 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 px sideways overflow at 390 px vs the bar (gcmap.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 unnamed controls or images vs the bar (gcmap.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "offline": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/map/) 0 (1: the page shows itself again with the network cut) vs the bar (gcmap.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/flights/map/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (gcmap.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:13.817Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/map/) 0 design defects vs the bar (gcmap.com unreachable) 0 design defects",
+    "at": "2026-10-26T05:10:13.817Z"
+   }
+  },
+  "travel: co2.myclimate.org": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 141,
+    "best": 762,
+    "evidence": "Verse (/flights/co2/) 141 ms to the load event (median of 3, phone width) vs co2.myclimate.org 762 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 of 3 loads answered vs co2.myclimate.org 3 of 3 loads answered",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/co2/) 0 px sideways overflow at 390 px vs co2.myclimate.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 unnamed controls or images vs co2.myclimate.org 3 unnamed controls or images",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/co2/) 0 (1: the page shows itself again with the network cut) vs co2.myclimate.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/co2/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs co2.myclimate.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:10:28.671Z"
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/flights/co2/) 0 design defects vs co2.myclimate.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), co2.myclimate.org (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:10:28.671Z"
+   }
   }
  },
  "icons": {
@@ -16949,6 +17051,7 @@
   "trello.com": "tower.icons/trello.com.ico",
   "tripwaffle.com": "tower.icons/tripwaffle.com.png",
   "aruljohn.com": "tower.icons/aruljohn.com.ico",
-  "clock7.com": "tower.icons/clock7.com.png"
+  "clock7.com": "tower.icons/clock7.com.png",
+  "co2.myclimate.org": "tower.icons/co2.myclimate.org.png"
  }
 }
