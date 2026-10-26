@@ -18449,6 +18449,73 @@
     "at": "2026-10-26T13:24:25.958Z",
     "of": 10
    }
+  },
+  "paint": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 111,
+    "best": 256,
+    "evidence": "Verse (/paint/) 111 ms to the load event (median of 3, phone width) vs heycolor.com 256 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/paint/) 3 of 3 loads answered vs heycolor.com 3 of 3 loads answered",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/paint/) 0 px sideways overflow at 390 px vs heycolor.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "accessibility": {
+    "verdict": "worse",
+    "verse": 101,
+    "best": 4,
+    "evidence": "Verse (/paint/) 101 unnamed controls or images vs heycolor.com 4 unnamed controls or images",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/paint/) 1 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/paint/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs heycolor.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 6,
+    "best": 6,
+    "evidence": "Verse (/paint/) 6 of 6 right against the worked-out answer; judged against the standard, not heycolor.com (the site is not asked)",
+    "at": "2026-10-26T19:39:28.884Z",
+    "of": 6
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 257,
+    "best": 11,
+    "evidence": "Verse (/paint/) 257 design defects vs heycolor.com 11 design defects: Verse (0 low-contrast texts, 256 small tap targets, layout shift 0.45), heycolor.com (0 low-contrast texts, 11 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T19:39:28.884Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 1,
+    "evidence": "Verse (/paint/) 16 of 16 things a full answer shows vs heycolor.com 1 of 16 things a full answer shows (Verse lacks: none; site lacks: numbered cells, a numbered palette, the progress count, next cell, start over, download a PNG, a share link, save to a gallery, your gallery, upload your own image, kept on this device, works offline, no account, no ads, four colours)",
+    "at": "2026-10-26T19:39:28.884Z",
+    "of": 16
+   }
   }
  },
  "icons": {
@@ -18628,6 +18695,7 @@
   "himalayas.app": "tower.icons/himalayas.app.ico",
   "convertlive.com": "tower.icons/convertlive.com.png",
   "convertunits.com": "tower.icons/convertunits.com.ico",
-  "remotive.com": "tower.icons/remotive.com.png"
+  "remotive.com": "tower.icons/remotive.com.png",
+  "heycolor.com": "tower.icons/heycolor.com.png"
  }
 }
