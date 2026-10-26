@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 889,
+ "counted": 890,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -234,6 +234,13 @@
    "tests": 1
   },
   {
+   "file": "lib/flight-sites.js",
+   "skills": 8,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/bridges.js",
    "skills": 8,
    "direct": 4,
@@ -277,13 +284,6 @@
   },
   {
    "file": "lib/art-source.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/flight-sites.js",
    "skills": 7,
    "direct": 0,
    "dependants": 12,
@@ -5025,7 +5025,8 @@
    "imports": [],
    "importedBy": [
     "lib/tool-sites.js",
-    "lib/toolkit.js"
+    "lib/toolkit.js",
+    "skills/flights.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -9656,6 +9657,12 @@
   "skills/fix-audit.js": {
    "imports": [
     "lib/fix-audit.js"
+   ],
+   "importedBy": []
+  },
+  "skills/flights.js": {
+   "imports": [
+    "lib/flight-sites.js"
    ],
    "importedBy": []
   },

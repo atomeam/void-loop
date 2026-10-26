@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:34:47Z",
+   "subject": "Flights: the stage card skill, the map above its table so the page does not jump"
+  },
+  {
+   "at": "2026-10-26T05:34:44Z",
+   "subject": "Tower gate: finance: finviz.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:33:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:33:02Z",
    "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
   },
@@ -556,18 +568,6 @@
   },
   {
    "at": "2026-10-26T05:18:34Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:18:17Z",
-   "subject": "Kanban quick page: checklists on its cards (items, ticks, n of m on the card, kept in the board JSON), said in its page text"
-  },
-  {
-   "at": "2026-10-26T05:17:54Z",
-   "subject": "Tower gate: kanban: abacktools.com,travel: flightconnections.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:17:47Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
