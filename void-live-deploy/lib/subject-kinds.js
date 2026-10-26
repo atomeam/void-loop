@@ -3,6 +3,7 @@
 //   theme   the card's frame (CSS in lib/card-frame.js, data-theme): collectible (blister pack), postcard, sleeve, portrait, cinema, specimen, plain
 //   badges  facts that become small badges, each read from the ANSWER'S OWN TEXT with a regex; a badge whose fact is not in the text is not shown
 //   art     what the picture is drawn from: 'motif' (the answer's nouns), or a fixed neutral drawing; a real person is never drawn as a likeness
+//   photo   the free-pictures kind (lib/free-pics.js) to ask for a real, licensed picture of the subject, with its credit; absent = Verse draws it (a fictional character, a real person's neutral plate)
 //   notice  true when the card is about someone else's work: it carries "A Verse card · not affiliated with ..." (no logos, no trade dress, ever)
 // Badge patterns capture one group. Pure data; badgesOf() applies it.
 const YEAR = /\b((?:1[5-9]|20)\d\d)\b/;
@@ -17,14 +18,14 @@ export const SUBJECT_KINDS = {
   Book: { theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR], ['Author', /\b(?:written )?by ((?:[A-Z]\. )*[A-Z][\w'-]+(?: [A-Z][\w'-]+){0,2})/]] },
   Game: { theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR]] },
   Person: { theme: 'portrait', art: 'silhouette', notice: false, badges: [['Born', /(?<![-\w])born\b[^.;)]{0,40}?\b((?:1[5-9]|20)\d\d)\b/], ['Known for', /\bis (?:an? |the )?((?:[a-z-]+ ){0,3}(?:footballer|actor|actress|singer|songwriter|rapper|musician|politician|writer|author|scientist|physicist|mathematician|comedian|director|painter|inventor|athlete|chef|astronaut))\b/]] },
-  Place: { theme: 'postcard', art: 'motif', notice: false, badges: [['Population', /\bpopulation of ([\d,.]+(?: million)?)/], ['Country', /\b(?:in|of) ((?:the )?[A-Z][a-z]+(?: [A-Z][a-z]+)?)[.,]/]] },
-  Creature: { theme: 'specimen', art: 'motif', notice: false, badges: [['Genus', /\bgenus ([A-Z][a-z]+)/]] },
-  Food: { theme: 'specimen', art: 'motif', notice: false, badges: [['From', /\b(?:originat\w+|traditional|popular) (?:in|from) ((?:the )?[A-Z][a-z]+(?: [A-Z][a-z]+)?)/]] },
-  Vehicle: { theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR], ['Maker', /\b(?:made|built|produced|manufactured) by ((?:[A-Z]\. )*[A-Z][\w'&-]+(?: [A-Z][\w'&-]+){0,2})/]] },
-  Myth: { theme: 'collectible', art: 'motif', notice: false, badges: [['Domain', /\bgod(?:dess)? of ([a-z ]{3,30}?)(?:[.,;]| and )/]] },
+  Place: { photo: 'place', theme: 'postcard', art: 'motif', notice: false, badges: [['Population', /\bpopulation of ([\d,.]+(?: million)?)/]] }, // a country badge was dropped: "coast of Queensland," is a state, and a guess at a fact is not a badge
+  Creature: { photo: 'animal', theme: 'specimen', art: 'motif', notice: false, badges: [['Genus', /\bgenus ([A-Z][a-z]+)/]] },
+  Food: { photo: 'place', theme: 'specimen', art: 'motif', notice: false, badges: [['From', /\b(?:originat\w+|traditional|popular) (?:in|from) ((?:the )?[A-Z][a-z]+(?: [A-Z][a-z]+)?)/]] },
+  Vehicle: { photo: 'place', theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR], ['Maker', /\b(?:made|built|produced|manufactured) by ((?:[A-Z]\. )*[A-Z][\w'&-]+(?: [A-Z][\w'&-]+){0,2})/]] },
+  Myth: { photo: 'art', theme: 'collectible', art: 'motif', notice: false, badges: [['Domain', /\bgod(?:dess)? of ([a-z ]{3,30}?)(?:[.,;]| and )/]] },
   Organisation: { theme: 'plain', art: 'neutral', notice: false, badges: [['Founded', /\bfounded (?:in |by [^.]{0,40}? in )?((?:1[5-9]|20)\d\d)/]] },
   Team: { theme: 'plain', art: 'neutral', notice: false, badges: [['Founded', /\b(?:founded|established) (?:in )?((?:1[5-9]|20)\d\d)/]] },
-  Event: { theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR]] },
+  Event: { photo: 'history', theme: 'plain', art: 'motif', notice: false, badges: [['Year', YEAR]] },
   Concept: { theme: 'plain', art: 'motif', notice: false, badges: [] },
   Card: { theme: 'collectible', art: 'motif', notice: false, badges: [['Year', YEAR]] },
   Idea: { theme: '', art: 'motif', notice: false, badges: [] },
@@ -55,3 +56,5 @@ export function describeSection(pageTitle) {
   if (/\btrack(?:s| listing)\b/i.test(t)) return 'song on ' + t.replace(/\s*tracks?(?: listing)?$/i, '');
   return '';
 }
+/** the lib/free-pics.js kind for a card's kind, or '' when the card keeps Verse's own drawing (a fictional character, a real person, a company). Pure. */
+export const photoKindOf = (kind) => (SUBJECT_KINDS[kind] || {}).photo || '';

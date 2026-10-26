@@ -22,6 +22,8 @@ for (const fx of fixtures) {
   const page = await browser.newPage({ viewport: { width: 520, height: 1100 } }), errs = []; page.on('pageerror', (e) => errs.push(e.message));
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
   // the page's own Wikipedia reads (a one- or two-word name is looked up in the browser, not by /api/answer): the same fixture answers them
+  const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'); // a 1x1 picture stands in for a hotlinked photo
+  await page.route(/^https:\/\/upload\.wikimedia\.org\//, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
   const w = fx.wiki || {}, jj = (o) => ({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(o) });
   await page.route(/^https:\/\/en\.wikipedia\.org\//, (r) => {
     const u = r.request().url();
@@ -39,7 +41,7 @@ for (const fx of fixtures) {
     const q = (s) => (v.querySelector(s) || {}).textContent || '';
     return { title: q('h2'), type: q(':scope > .vc-type'), adds: q('.vc-adds'), addsLine: /Adds to Verse/.test(q('.vc-adds')), badges: [...v.querySelectorAll('.vc-badge')].map((b) => b.textContent.trim()), notice: q('.vc-notice'), theme: v.dataset.theme || '',
       links: [...v.querySelectorAll('.src a')].map((a) => ({ t: a.textContent, h: a.getAttribute('href') })), body: [...v.querySelectorAll(':scope > p')].map((p) => p.textContent).join(' ').slice(0, 400),
-      pic: (v.querySelector(':scope > .vc-art') || {}).ariaLabel || '', subject: ((v.querySelector(':scope > .vc-art') || {}).dataset || {}).subject || '', text: v.innerText.slice(0, 700) }; });
+      photo: !!v.querySelector(':scope > .vc-art > img.vc-art-photo'), credit: (v.querySelector('.vc-credit') || {}).textContent || '', pic: (v.querySelector(':scope > .vc-art') || {}).ariaLabel || '', subject: ((v.querySelector(':scope > .vc-art') || {}).dataset || {}).subject || '', text: v.innerText.slice(0, 700) }; });
   await page.addStyleTag({ content: '.vpage{max-height:none!important;overflow:visible!important;height:auto!important}' }); await page.waitForTimeout(200); // the whole card, not the part that fits the window
   const shot = path.join(shots, 'eval-' + flat(fx.ask).slice(0, 40) + '.png'); await page.locator('.vpage.on, .vpage').first().screenshot({ path: shot }).catch(() => page.screenshot({ path: shot }));
   if (process.env.EVAL_DOM) console.log(await page.evaluate(() => [...(document.querySelector('.vpage.on')||document.querySelector('.vpage')).children].map((c) => c.tagName + '.' + c.className + ' h=' + Math.round(c.getBoundingClientRect().height) + ' d=' + getComputedStyle(c).display + ' o=' + getComputedStyle(c).opacity + ' c=' + getComputedStyle(c).color + ' ih=' + c.innerHTML.length + ' style=' + c.getAttribute('style') + ' attrs=' + c.getAttributeNames().join(',') + ' pos=' + getComputedStyle(c).position + ' ov=' + getComputedStyle(c).overflow + ' mh=' + getComputedStyle(c).maxHeight).join('\n')));
@@ -67,6 +69,8 @@ for (const fx of fixtures) {
     if (e.didYouMean && !new RegExp('Did you mean ' + e.didYouMean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\?').test(card.text)) problems.push('no "Did you mean ' + e.didYouMean + '?"');
     if (e.noGuessLine && /Did you mean/.test(card.text)) problems.push('offers a guess it does not have');
     if (e.notFound === false && /^Not found/i.test(card.type.trim())) problems.push('a real answer drawn as Not found');
+    if (e.photo === true && !(card.photo && /Photo:/.test(card.credit) && /Archive photo/i.test(card.credit))) problems.push('no licensed photo with its credit and the "Archive photo" label');
+    if (e.photo === false && card.photo) problems.push('a photo on a card that keeps Verse\'s own picture');
     if (e.notice && !/not affiliated/.test(card.notice)) problems.push('missing the "not affiliated" line');
     if (e.body && !new RegExp(e.body, 'i').test(card.body)) problems.push('body lacks /' + e.body + '/: ' + card.body.slice(0, 120));
     if (e.notBody && new RegExp(e.notBody, 'i').test(card.body)) problems.push('body holds /' + e.notBody + '/: ' + card.body.slice(0, 120));

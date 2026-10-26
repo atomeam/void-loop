@@ -175,6 +175,7 @@ export const CARD_CSS = [
   '.vpage.vcard[data-theme=plain]{--foil:linear-gradient(135deg,#59616f,#2b303a,#59616f,#262b34)!important}.vpage.vcard[data-theme=plain] .vc-art{aspect-ratio:16/5;max-height:92px}',
   // specimen: an animal, a plant, a dish: a field-guide plate, the art in a ruled frame
   '.vpage.vcard[data-theme=specimen]{--foil:linear-gradient(135deg,#8fbf7a,#3f6b3a,#c7e2a8,#2e5230)!important}.vpage.vcard[data-theme=specimen] .vc-art{border-style:double;border-width:5px}',
+  '.vpage.vcard[data-kind=place] .vc-art.has-photo{height:auto;aspect-ratio:16/9;max-height:220px}',
   '.vpage.vcard[data-theme=portrait] .vc-art{box-shadow:inset 0 0 0 4px rgba(255,255,255,.12)}.vpage.vcard[data-theme=sleeve] .vc-art{aspect-ratio:1/1;max-height:min(260px,36vh);width:min(260px,70%);margin-left:auto;margin-right:auto}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 

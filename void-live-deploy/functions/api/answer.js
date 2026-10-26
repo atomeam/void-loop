@@ -33,12 +33,14 @@ import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
-import { capAll } from '../../lib/daily-cap.js';
+import { capAll, cap as dayCap } from '../../lib/daily-cap.js';
 import { prepare as prepareReport, settle as settleReport, REPORT_SYSTEM } from '../../lib/news-report.js';
 import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
 import { reportAnswer as marketReportRun, d1Store } from '../../lib/report-run.js';
 import { quoteBody, batch } from './markets.js';
-import { describeSection, seriesOfList } from '../../lib/subject-kinds.js';
+import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
+import { kindOf as subjectKind } from '../../lib/card-kinds.js';
+import * as FP from '../../lib/free-pics.js';
 import { grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
@@ -70,6 +72,14 @@ async function sources(ask) {
   return out;
 }
 const WIKI = 'https://en.wikipedia.org/w/api.php?format=json&origin=*';
+async function picFor(env, lead) {
+  const kind = photoKindOf(subjectKind(lead.desc, lead.text).kind); if (!kind) return null;
+  try {
+    const got = await Promise.race([FP.findPictures(lead.name, { kind, fromAnswer: true, max: 1, env, fetch: (u, o) => fetch(u, o), cap: (k, l) => dayCap(env, k, l), timeoutMs: 3000, deadlineMs: 3500 }), new Promise((r) => setTimeout(() => r([]), 3800))]);
+    const p = got && got[0]; if (!p || !/^https:\/\//.test(p.thumb || p.url || '')) return null;
+    return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
+  } catch (_) { return null; }
+}
 async function sectionSource(q) {
   try {
     const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
@@ -546,5 +556,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     later(env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
       .bind(key, ask, answer, JSON.stringify(pub), at).run().catch(() => {}));
   } catch (_) {}
-  return Response.json({ answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(!self && !told && src.length && isNameAsk(ask) && !sourcesMatch(ask, src) ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+  // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
+  // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
+  const pic = lead && lead.desc ? await picFor(env, lead) : null;
+  return Response.json({ answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(pic ? { pic } : {}), ...(!self && !told && src.length && isNameAsk(ask) && !sourcesMatch(ask, src) ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
 }

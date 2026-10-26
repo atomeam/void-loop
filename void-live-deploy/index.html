@@ -2647,6 +2647,14 @@ say('nothing selected to remove');
       const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, ''), shown = j.name && flat(j.name).length > 2 && (flat(text).includes(flat(j.name)) || flat(j.name).includes(flat(text))) ? String(j.name) : text; // the thing's own name, cased, when it is what was asked
       el.innerHTML = '<h2>' + esc(shown) + '</h2>' + about + (j.fuzzy ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">A guess: nothing I read names \u201c' + esc(String(text).slice(0, 80)) + '\u201d exactly.</p>' : '') + fixHtml(j.answer)
         + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Verse' : j.told ? 'from what you told me · written by Verse' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Verse' : 'written by Verse, from what it knows') + '</div>';
+      // a real, licensed picture of a real place, animal, event or work (lib/free-pics.js, chosen by the server from the fetched source): the art box shows it, with its credit and an "archive photo" label; never for a character or a person
+      if (j.pic && /^https:\/\//i.test(String(j.pic.url || '')) && !page) {
+        const im = document.createElement('img'); im.alt = String(j.pic.alt || '').slice(0, 140); im.src = j.pic.url; im.referrerPolicy = 'no-referrer'; im.style.cssText = 'position:absolute;width:0;height:0;opacity:0;pointer-events:none'; /* the art box shows it */ im.addEventListener('error', () => { im.remove(); const c0 = el.querySelector('.vc-credit'); if (c0) c0.remove(); });
+        const h2e = el.querySelector('h2'); if (h2e) h2e.after(im);
+        const cr = document.createElement('p'); cr.className = 'vc-credit'; cr.style.cssText = 'font-size:11px;color:#9aa;margin:4px 18px 0'; cr.append('Archive photo \u00b7 ');
+        import('/lib/daily-art.js').then((M) => { const sp = document.createElement('span'); M.mountCredit(sp, { credit: j.pic.credit, source: j.pic.source }); cr.append(sp); }).catch(() => cr.remove());
+        const srcEl = el.querySelector('.src'); if (srcEl) srcEl.after(cr); else el.append(cr);
+      }
       if (j.desc) { el.dataset.cardDesc = String(j.desc).slice(0, 160); el.dataset.cardExtract = String(j.answer).slice(0, 160); if (j.series) el.dataset.cardSeries = String(j.series).slice(0, 60); keepCard(el); } // the kind the source says it is types the card (lib/card-kinds.js)
       addCopy(el, false);
       say('');

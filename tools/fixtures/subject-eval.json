@@ -656,6 +656,82 @@
   }
  },
  {
+  "ask": "great barrier reef australia",
+  "wiki": {
+   "search": [
+    {
+     "title": "Great Barrier Reef",
+     "description": "World's largest coral reef system",
+     "extract": "The Great Barrier Reef is the world's largest coral reef system, off the coast of Queensland, Australia, a coral sea region."
+    }
+   ],
+   "commons": [
+    {
+     "file": "Great_Barrier_Reef_aerial.jpg",
+     "artist": "Jane Diver",
+     "about": "Great Barrier Reef aerial coral Australia"
+    }
+   ]
+  },
+  "model": "The Great Barrier Reef is the world's largest coral reef system, off the coast of Queensland, Australia, a coral sea region. [1]",
+  "expect": {
+   "title": "Great Barrier Reef",
+   "type": "Place",
+   "photo": true
+  }
+ },
+ {
+  "ask": "african forest elephant species",
+  "wiki": {
+   "search": [
+    {
+     "title": "African forest elephant",
+     "description": "Species of elephant",
+     "extract": "The African forest elephant is a species of elephant native to the humid tropical forests of West and Central Africa, a species of the genus Loxodonta."
+    }
+   ],
+   "commons": [
+    {
+     "file": "African_forest_elephant.jpg",
+     "artist": "Sam Ranger",
+     "about": "African forest elephant Loxodonta"
+    }
+   ]
+  },
+  "model": "The African forest elephant is a species of elephant native to the humid tropical forests of West and Central Africa, a species of the genus Loxodonta. [1]",
+  "expect": {
+   "title": "African forest elephant",
+   "type": "Creature",
+   "photo": true
+  }
+ },
+ {
+  "ask": "marie curie physicist chemist",
+  "wiki": {
+   "search": [
+    {
+     "title": "Marie Curie",
+     "description": "Polish-French physicist and chemist (1867-1934)",
+     "extract": "Marie Curie (born 7 November 1867) was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity."
+    }
+   ],
+   "commons": [
+    {
+     "file": "Marie_Curie_portrait.jpg",
+     "artist": "Someone",
+     "about": "Marie Curie physicist chemist portrait"
+    }
+   ]
+  },
+  "model": "Marie Curie (born 7 November 1867) was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity. [1]",
+  "expect": {
+   "title": "Marie Curie",
+   "type": "Person",
+   "photo": false,
+   "motif": "portrait"
+  }
+ },
+ {
   "ask": "how to bake bread",
   "wiki": {
    "search": [

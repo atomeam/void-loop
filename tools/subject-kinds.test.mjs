@@ -54,6 +54,8 @@ for (const fx of FX) test('route: ' + fx.ask, async () => {
   assert.ok(j.answer, 'an answer'); assert.ok(!j.noAnswer);
   assert.ok((j.sources || []).every((s) => /^https:\/\//.test(s.url)), 'every listed source has a link');
   if (e.guess) assert.equal(j.fuzzy, true); else if (e.guess === false) assert.ok(!j.fuzzy);
+  if (e.photo === true) { assert.ok(j.pic && /^https:/.test(j.pic.url) && j.pic.archive, 'a licensed picture'); assert.ok(j.pic.credit.some((s) => s.href && /^https:/.test(s.href)), 'with its credit links'); }
+  if (e.photo === false || (e.type && /Person|Character|Not found/.test(e.type))) assert.ok(!j.pic, 'no photo for a person, a character or a refusal');
   if (e.notBody) assert.ok(!new RegExp(e.notBody, 'i').test(j.answer), j.answer);
   if (e.title && j.name) assert.equal(j.name.toLowerCase().replace(/[^a-z0-9]/g, ''), e.title.toLowerCase().replace(/[^a-z0-9]/g, ''));
 });
