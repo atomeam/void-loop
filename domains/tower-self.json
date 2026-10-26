@@ -18,29 +18,34 @@
    "title": "The Color Canon — Official Registry of Hex Color Names"
   },
   "heycolor.com": {
-   "at": "2026-10-26T07:16:04Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-26T16:55:31Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a digital paint-by-number game. None of the available Verse pages provide gaming, art creation, or coloring tools.)",
+   "title": "Hey Color: Paint by Number Art"
   },
   "emojitracker.com": {
-   "at": "2026-10-26T07:16:27Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-26T16:55:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "emojitracker: realtime emoji use"
   },
   "yunite.xyz": {
-   "at": "2026-10-26T07:16:52Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-26T16:55:46Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a specialized Discord bot and dashboard service for managing Fortnite tournaments, player registration, and custom game)",
+   "title": "Yunite"
   },
   "thunit.com": {
-   "at": "2026-10-26T07:17:13Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-26T16:55:53Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a web hosting service provider. Verse does not have a page for web hosting or server services.)",
+   "title": "THUNIT™ | A Lianudom Co.,ltd Company"
   },
   "cpantesters.org": {
-   "at": "2026-10-26T07:17:34Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-26T16:55:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a specialized community network for testing Perl software modules. Verse has no tool for software testing, package management)",
+   "title": "Recent - CPAN Testers"
   },
   "nameunit.com": {
    "at": "2026-10-26T07:17:42Z",
@@ -114,6 +119,23 @@
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "Tally Count App - The Best Online Tally Counter"
+  },
+  "hexonet.net": {
+   "at": "2026-10-26T16:56:01Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a domain registrar and reseller service, which is a business service, not a utility tool or informational page provided by Ve)",
+   "title": "Hexonet is now CentralNic Reseller"
+  },
+  "emojicombos.com": {
+   "at": "2026-10-26T16:56:08Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website emojicombos.com is a database for searching and discovering combinations of emojis, whereas the existing Verse pages focus on ut)",
+   "title": "Emoji Combos"
+  },
+  "supercolorapp.com": {
+   "at": "2026-10-26T16:56:10Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401"
   }
  },
  "runs": [
