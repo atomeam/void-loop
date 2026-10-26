@@ -412,6 +412,29 @@ export const PROBES = Object.freeze({
     facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
       ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
+  // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management
+  // beside it; Verse's /g/ is a gist page that keeps the work beside the code — a task list, a timer and notes on this device, with the
+  // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are
+  // checkable: hello world is 11 characters on 1 line. Judged on Verse alone (Codebase's page is a sign-up wall, not a tool).
+  codebase: {
+    site: 'https://www.codebasehq.com/', verse: '/g/?text=hello%20world&name=notes.txt',
+    truth: [['the file it was asked to hold', /notes\.txt/], ['the text it was asked to hold', /hello world/], ['the count of characters, worked out (11)', /11 characters/], ['the line count, worked out (1)', /1 line\b/], ['where the gist lives', /whole gist in the link/i]],
+    askParts: {
+      'code hosting': [['a raw view', /\bRaw\b/], ['a download', /\bDownload\b/], ['a copy-link', /Copy link/], ['a share control', /Share link/], ['a GitHub file it can open', /GitHub/], ['a stated limit', /[\d,]+ characters is the limit/]],
+      'ticket tracking': [['a task list', /\bTask list\b/], ['add a task', /Add a task/], ['how many are left', /\d+ of \d+ tasks left/], ['kept on the device', /on this device/]],
+      'time tracking': [['a timer', /\bTimer\b/], ['start', /\bStart\b/], ['stop', /\bStop\b/], ['the time shown', /\d+ m \d+ s/], ['a total', /Total \d+ m/], ['kept on the device', /on this device/]],
+      'project files and docs': [['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/], ['the code is in the link', /whole gist in the link/i]],
+    },
+    facts: [
+      ['no account', /no account/i], ['nothing stored', /nothing stored/i], ['a passphrase lock', /passphrase/i], ['a raw view', /\bRaw\b/],
+      ['a download', /\bDownload\b/], ['a copy link', /Copy link/], ['a share control', /Share link/], ['an editable copy', /Edit a copy/],
+      ['the character count', /\d+ characters/], ['the line count', /\d+ lines?\b/], ['where the gist lives', /whole gist in the link/i],
+      ['a task list', /\bTask list\b/], ['add a task', /Add a task/], ['how many tasks are left', /\d+ of \d+ tasks left/],
+      ['a timer', /\bTimer\b/], ['start and stop', /Start[\s\S]{0,120}Stop/], ['the time shown', /\d+ m \d+ s/], ['the total time', /Total \d+ m/],
+      ['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/],
+      ['kept on this device', /on this device/], ['works offline', /works offline/i], ['a GitHub file', /GitHub/],
+    ],
+  },
   // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
   // sites yet"): Amazon is the floor, fought from Verse's own /store/. The ask arrives carrying a cart, so the money on the page is checkable against the
   // worked-out answer and the cart opens itself; the totals are the page's own, and the payment page (Gumroad or Stripe) is said to be the final word before

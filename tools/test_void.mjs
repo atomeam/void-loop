@@ -719,6 +719,35 @@ try {
       facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
     await F.ctx.close();
   }
+  // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
+  // code — a task list, a timer and notes on this device — and every item the gate reads is on it (the probe's own lists, run here)
+  if (want("gist: the work beside the code — tasks, a timer, notes and sizes on the device, and every item the codebase probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const g = await fresh({ base: base + 'g/?text=hello world&name=notes.txt' });
+    await g.p.waitForSelector('#work', { timeout: 10000 });
+    const probe = PROBES.codebase, text = () => g.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const missFact = (probe.facts || []).filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => name);
+    const missPart = Object.entries(probe.askParts || {}).flatMap(([a, items]) => items.filter(([, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => a + ': ' + name));
+    check('gist: the seeded gist shows its file, its 11 characters on 1 line, and where it lives', /notes\.txt/.test(t) && /hello world/.test(t) && /11 characters/.test(t) && /1 line\b/.test(t) && /whole gist in the link/i.test(t), t.slice(0, 220));
+    check('gist: the work panel is there — task list, timer, notes and docs, file sizes, download all, kept on this device', /Task list/.test(t) && /Add a task/.test(t) && /\d+ of \d+ tasks left/.test(t) && /\bTimer\b/.test(t) && /\d+ m \d+ s/.test(t) && /Total \d+ m/.test(t) && /Notes and docs/.test(t) && /\bPreview\b/.test(t) && /\d+ B\b/.test(t) && /Download all/.test(t) && /on this device/.test(t), String(t).slice(String(t).indexOf('Task list'), String(t).indexOf('Task list') + 320));
+    check('gist: every item the codebase probe reads is on the page — its facts and all four named parts, checked with the probe own lists', !missFact.length && !missPart.length, JSON.stringify({ missFact, missPart }));
+    await g.p.fill('#tasknew', 'ship the gist'); await g.p.click('text=Add a task'); await g.p.waitForTimeout(200);
+    const afterAdd = await text();
+    await g.p.check('#tasks input[type=checkbox]'); await g.p.waitForTimeout(200);
+    const afterDone = await text();
+    check('gist: a task is added and ticked off, and the count says how many are left', /1 of 1 tasks left/.test(afterAdd) && /0 of 1 tasks left/.test(afterDone), JSON.stringify({ afterAdd: (afterAdd.match(/\d+ of \d+ tasks left/g) || []), afterDone: (afterDone.match(/\d+ of \d+ tasks left/g) || []) }));
+    await g.p.click('text=Start'); await g.p.waitForTimeout(1200); await g.p.click('text=Stop'); await g.p.waitForTimeout(200);
+    const stopped = await g.p.$eval('#totaltime', (e) => e.textContent);
+    await g.p.reload({ waitUntil: 'load' }); await g.p.waitForSelector('#work', { timeout: 10000 });
+    const kept = await g.p.$eval('#totaltime', (e) => e.textContent);
+    check('gist: the timer starts and stops, and its total survives a reload (it is on this device)', /^Total \d+ m$/.test(stopped) && stopped === kept, JSON.stringify({ stopped, kept }));
+    await g.p.fill('#docs', '## Plan\n\n**ship** it'); await g.p.click('text=Preview'); await g.p.waitForTimeout(200);
+    const preview = await g.p.$eval('#docout', (e) => e.innerHTML);
+    const notesKept = await g.p.$eval('#docs', (e) => e.value);
+    check('gist: the notes preview renders a heading and bold, and the notes survive a reload', /<b>Plan<\/b>/.test(preview) && /<b>ship<\/b>/.test(preview) && /ship/.test(notesKept), String(preview).slice(0, 140));
+    await g.ctx.close();
+  }
   // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
   if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
     const P = await fresh(); const posts = []; let reads = 0;

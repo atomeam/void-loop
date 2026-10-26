@@ -39,6 +39,17 @@
   .add { background: rgba(46, 160, 67, .18); } .del { background: rgba(248, 81, 73, .18); text-decoration: line-through; text-decoration-color: rgba(248, 81, 73, .5); }
   .lock { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 18px 12px; }
   footer { font-size: 12px; color: var(--soft); margin-top: 18px; } footer a { color: inherit; }
+  .meta { font-size: 12px; color: var(--soft); text-align: center; margin: 8px 0 0; }
+  #work { margin-top: 16px; display: grid; gap: 12px; }
+  .wk { border: 1px solid var(--line, #2a2a35); border-radius: 10px; padding: 10px 12px; }
+  .wk b { display: block; margin-bottom: 6px; }
+  .wk .tasks, .wk .sizes { list-style: none; margin: 8px 0 0; padding: 0; }
+  .wk .tasks li, .wk .sizes li { display: flex; gap: 8px; align-items: center; padding: 3px 0; font-size: 14px; }
+  .wk .sizes li { justify-content: space-between; }
+  .wk .done { text-decoration: line-through; opacity: .6; }
+  .wk #elapsed { margin-left: 10px; font-variant-numeric: tabular-nums; }
+  .wk .preview { margin-top: 8px; font-size: 14px; }
+  .wk .preview p { margin: 6px 0; }
 </style>
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/gist.js">
@@ -51,7 +62,8 @@
   <div class="box" id="box"></div>
   <div class="bar" id="bar"></div>
   <div id="note" aria-live="polite"></div>
-  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <a href="/">Ask Verse anything</a></footer>
+  <section id="work" hidden aria-label="Work beside this gist"></section>
+  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. It works offline after one visit, and a GitHub file opens here too: <a href="/g/?gh=atomeam/void-loop/blob/main/README.md">GitHub file as a gist</a>. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { pack, open, isLocked, lineDiff, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
@@ -76,6 +88,8 @@
   if (loaded) { files = loaded.files; prev = loaded.prev; view = true; }
   else if (!gh && isLocked(location.hash)) locked = true;
   else if (!gh && location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
+  // a seeded gist (owner, 2026-10-26: the codebase floor's ask): ?text=&name= shows it the way a shared link does, so the page can be read at a known content
+  if (!gh && !loaded && !locked && q.get('text') != null) { files = [[cleanName(q.get('name') || 'snippet.txt') || 'snippet.txt', q.get('text')]]; view = true; }
   const note = (t) => { $('note').textContent = t; };
   // a locked gist: nothing is shown until the passphrase opens it, here in the page (the passphrase never leaves it)
   function drawLock() {
@@ -110,6 +124,8 @@
     else if (view) {
       renderCode(box, name, text, gh && gh.lines);
       const first = box.querySelector('.lit'); if (first) requestAnimationFrame(() => first.scrollIntoView({ block: 'center' }));
+      const lines = text.split('\n').length;
+      box.appendChild(el('div', 'meta', text.length.toLocaleString() + ' characters \u00b7 ' + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ' \u00b7 ' + MAX_TEXT.toLocaleString() + ' characters is the limit \u00b7 the whole gist in the link'));
     } else {
       const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here…';
       ta.addEventListener('input', meter); ta.addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); meter(); } });
@@ -159,7 +175,61 @@
     const g = await open(location.hash); diff = false; at = 0;
     if (g) { files = g.files; prev = g.prev; pass = ''; locked = false; view = true; draw(); } else if (isLocked(location.hash)) { locked = true; pass = ''; draw(); }
   });
+  // work beside the gist (owner, 2026-10-26, the codebase floor's four extras): a task list, a timer and notes, kept on this device, with the
+  // code itself still only in the link. Nothing here is sent anywhere: it is the same rule the page states for the gist.
+  const WKEY = () => 'a2m.void.gistwork.v1:' + (location.hash.length > 1 ? location.hash.slice(1, 25) : 'seed');
+  let work = null; try { work = JSON.parse(localStorage.getItem(WKEY()) || 'null'); } catch (_) { work = null; }
+  work = work && typeof work === 'object' ? { tasks: Array.isArray(work.tasks) ? work.tasks : [], startedAt: +work.startedAt || 0, totalMs: +work.totalMs || 0, docs: String(work.docs || '') } : { tasks: [], startedAt: 0, totalMs: 0, docs: '' };
+  const saveWork = () => { try { localStorage.setItem(WKEY(), JSON.stringify(work)); } catch (_) {} };
+  const mmss = (ms) => Math.floor(ms / 60000) + ' m ' + Math.floor((ms % 60000) / 1000) + ' s';
+  let tick = null;
+  function sizes() { const s = $('sizes'); if (!s) return; s.textContent = ''; for (const [n, t] of files) { const li = el('li'); li.append(el('span', null, n), el('span', 'note', t.length.toLocaleString() + ' B')); s.appendChild(li); } }
+  function initWork() {
+    const w = $('work'); if (!w) return; w.hidden = false; w.textContent = '';
+    const tl = el('div', 'wk'); tl.appendChild(el('b', null, 'Task list'));
+    const list = el('ul', 'tasks'); list.id = 'tasks';
+    const count = el('span', 'note'); count.id = 'tasksleft';
+    const inp = el('input', 'name'); inp.id = 'tasknew'; inp.placeholder = 'What needs doing'; inp.maxLength = 120; inp.setAttribute('aria-label', 'A new task');
+    const add = el('button', null, 'Add a task'); add.type = 'button';
+    const renderTasks = () => {
+      list.textContent = '';
+      work.tasks.forEach((t) => { const li = el('li'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = !!t.done; cb.setAttribute('aria-label', 'Done: ' + t.text);
+        cb.onchange = () => { t.done = cb.checked; saveWork(); renderTasks(); };
+        li.append(cb, el('span', t.done ? 'done' : null, t.text)); list.appendChild(li); });
+      count.textContent = work.tasks.filter((t) => !t.done).length + ' of ' + work.tasks.length + ' tasks left';
+    };
+    add.onclick = () => { const v = inp.value.trim(); if (!v) return; work.tasks.push({ text: v, done: false }); inp.value = ''; saveWork(); renderTasks(); };
+    tl.append(inp, add, list, count);
+    const tm = el('div', 'wk'); tm.appendChild(el('b', null, 'Timer'));
+    const shown = el('span'); shown.id = 'elapsed';
+    const totalLine = el('span', 'note'); totalLine.id = 'totaltime';
+    const start = el('button', null, 'Start'); start.type = 'button';
+    const stop = el('button', null, 'Stop'); stop.type = 'button';
+    const paint = () => { shown.textContent = mmss(work.totalMs + (work.startedAt ? Date.now() - work.startedAt : 0)); totalLine.textContent = 'Total ' + Math.floor(work.totalMs / 60000) + ' m'; };
+    start.onclick = () => { if (!work.startedAt) { work.startedAt = Date.now(); saveWork(); } clearInterval(tick); tick = setInterval(paint, 1000); paint(); };
+    stop.onclick = () => { if (work.startedAt) { work.totalMs += Date.now() - work.startedAt; work.startedAt = 0; saveWork(); } clearInterval(tick); paint(); };
+    tm.append(start, el('span', null, ' '), stop, el('span', null, ' '), shown, totalLine);
+    const dc = el('div', 'wk'); dc.appendChild(el('b', null, 'Notes and docs'));
+    const docs = el('textarea'); docs.id = 'docs'; docs.value = work.docs || ''; docs.placeholder = 'Notes for this gist'; docs.setAttribute('aria-label', 'Notes for this gist');
+    docs.oninput = () => { work.docs = docs.value; saveWork(); };
+    const prev = el('button', null, 'Preview'); prev.type = 'button';
+    const out = el('div', 'preview'); out.id = 'docout';
+    const md = (x) => x.split(/\n{2,}/).map((para) => { const esc2 = (y) => y.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      const b = esc2(para).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+      return /^#{1,3} /.test(para) ? '<b>' + b.replace(/^#+ /, '') + '</b>' : '<p>' + b + '</p>'; }).join('');
+    prev.onclick = () => { out.innerHTML = md(docs.value || ''); };
+    dc.append(docs, prev, out);
+    const fl = el('div', 'wk'); fl.appendChild(el('b', null, 'Files'));
+    const sz = el('ul', 'sizes'); sz.id = 'sizes';
+    const all = el('button', null, 'Download all'); all.type = 'button';
+    all.onclick = () => download('gist.txt', files.map(([n, t]) => '===== ' + n + ' =====\n' + t).join('\n\n'));
+    fl.append(sz, all);
+    w.append(tl, tm, dc, fl, el('p', 'note', 'Tasks, the timer and the notes are kept on this device; the code itself is only in the link.'));
+    renderTasks(); paint(); sizes();
+    if (work.startedAt) { clearInterval(tick); tick = setInterval(paint, 1000); }
+  }
   draw();
+  initWork();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
