@@ -10,13 +10,13 @@ test('copy text reads well and ends in one code line', () => {
 });
 test('pasting the copied text, or only its code, gives the card back (unicode, newlines)', () => {
   const back = parse(shareText(card)), bare = parse(codeOf(card));
-  for (const d of [back, bare]) { assert.equal(d.t, card.t); assert.equal(d.k, card.k); assert.equal(d.b, card.b); assert.equal(d.src.length, 2); assert.equal(d.src[1].u, ''); }
+  for (const d of [back, bare]) { assert.equal(d.t, card.t); assert.equal(d.k, card.k); assert.equal(d.b, card.b); assert.equal(d.src.length, 1, 'the source with no link is dropped'); assert.match(d.src[0].u, /^https:/); }
 });
 test('only https links survive and nothing else rides along', () => {
   assert.ok(parse(codeOf(card)).src.every((s) => s.u === '' || s.u.startsWith('https://')));
   assert.deepEqual(Object.keys(dataOf(card)).sort(), ['b', 'k', 'src', 't', 'v']);
   const evil = MARK + Buffer.from(JSON.stringify({ v: 1, t: '<img src=x onerror=1>', b: 'x', power: 99, src: [{ t: 'a', u: 'http://x.test' }] })).toString('base64url');
-  const d = parse(evil); assert.equal(d.power, undefined); assert.equal(d.src[0].u, '');
+  const d = parse(evil); assert.equal(d.power, undefined); assert.deepEqual(d.src, [], 'an http link is not a source');
 });
 test('junk is not a card', () => {
   assert.equal(parse('hello'), null); assert.equal(parse(MARK + 'not-json-at-all'), null); assert.equal(parse(MARK + Buffer.from('{"v":2,"t":"x"}').toString('base64url')), null); assert.equal(parse(''), null);
