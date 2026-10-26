@@ -5,7 +5,7 @@
 // People are never priced: a person in the photo, or an ask about one, gets a compliment (owner, 2026-10-15). 503 with no AI
 // binding (a deploy without the model), 502 when the model does not answer, 400 for anything that is not a small image.
 import { models, VISION_FALLBACK } from '../../lib/models.js';
-import { valueFrom, appraisalText, isPersonAsk, complimentFor, VISION_PROMPT } from '../../lib/appraise-photo.js';
+import { valueFrom, appraisalText, isPersonAsk, complimentFor, VISION_PROMPT, bullionOf } from '../../lib/appraise-photo.js';
 
 export const MAX_IMAGE_CHARS = 1100000; // base64 characters, about 800 KB: the page sends a 768 px JPEG, far under this
 const IMAGE = /^data:image\/(?:png|jpeg|jpg|webp);base64,([A-Za-z0-9+/]+=*)$/;
@@ -30,6 +30,25 @@ export async function describe(env, bytes, dataUrl) {
   catch (e) { const m = (x) => String((x && x.message) || x || 'said nothing').replace(/\s+/g, ' ').slice(0, 80); throw new Error('vision: ' + m(first) + '; fallback: ' + m(e)); }
 }
 
+// the metal spot (owner, 2026-10-26: "that \$20 estimate is way off" \u2014 a 1 oz Krugerrand is an ounce of gold): Stooq's live
+// quote, the same host the markets pages read. Cached 10 minutes per isolate; a failed quote is null and the appraisal says so
+// instead of inventing a number. Fetched only when the description names bullion.
+let SPOT_CACHE = null;
+export async function spotQuote(fetchImpl = fetch, now = Date.now()) {
+  if (SPOT_CACHE && now - SPOT_CACHE.t < 600e3) return SPOT_CACHE.v;
+  const out = { source: 'Stooq', at: new Date(now).toISOString().slice(0, 10) };
+  await Promise.all([['xauusd', 'gold'], ['xagusd', 'silver'], ['xptusd', 'platinum']].map(async ([sym, metal]) => {
+    try {
+      const r = await fetchImpl('https://stooq.com/q/l/?s=' + sym + '&f=sd2t2ohlcv&h&e=csv');
+      const row = String(await r.text()).trim().split(/\r?\n/)[1] || '';
+      const close = Math.round(parseFloat(row.split(',')[6]) * 100);
+      if (Number.isFinite(close) && close > 0) out[metal] = close;
+    } catch (_) {}
+  }));
+  const v = out.gold || out.silver || out.platinum ? out : null;
+  SPOT_CACHE = { t: now, v };
+  return v;
+}
 const json = (body, status = 200) => Response.json(body, { status });
 
 export async function onRequestPost({ request, env }) {
@@ -42,6 +61,7 @@ export async function onRequestPost({ request, env }) {
   if (!env || !env.AI) return json({ error: 'Verse cannot see photos from this deploy yet (no vision model bound)' }, 503);
   let seen = '';
   try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 200) }, 502); }
-  const value = valueFrom(seen, note);
+  const spot = bullionOf(seen + ' ' + note) ? await spotQuote().catch(() => null) : null;
+  const value = valueFrom(seen, note, spot);
   return json({ seen: value.person ? '' : seen, value, text: appraisalText(value) });
 }
