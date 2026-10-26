@@ -217,6 +217,13 @@
     "host": "amazon.com",
     "at": "2026-10-26",
     "id": "mvoxkk1v"
+   },
+   {
+    "target": "feature:amazon-com-292bb8bb",
+    "feature": "Ratings and reviews",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvp4ahwz"
    }
   ]
  }
