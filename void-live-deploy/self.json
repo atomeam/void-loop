@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:43:45Z",
+   "subject": "Free pictures: a 403 from loc.gov rests the source; the probe asks loc.gov once (explore only by hand)"
+  },
+  {
+   "at": "2026-10-26T04:43:23Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:43:07Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:42:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:42:15Z",
    "subject": "Free pictures: loc.gov ids come as http, image addresses carry size fragments; probe records rights fields"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-26T04:33:00Z",
    "subject": "Tower gate: finance: macrotrends.net,finance: investing.com,finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:32:08Z",
-   "subject": "Free pictures: one registry of open-licensed picture sources, a probe, docs and tests"
-  },
-  {
-   "at": "2026-10-26T04:25:39Z",
-   "subject": "Markets: the quote answers a burst without the limiter, the record first, a stale copy on a bad moment, and says so when it cannot load"
-  },
-  {
-   "at": "2026-10-26T04:21:56Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:19:51Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
   }
  ],
  "builders": {
