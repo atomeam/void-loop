@@ -52,5 +52,16 @@ Other possible later sources (not built): Rijksmuseum (new open data at data.rij
 | Openverse (raises limits) | `POST api.openverse.org/v1/auth_tokens/register/` | `OPENVERSE_CLIENT_ID`, `OPENVERSE_CLIENT_SECRET` |
 Switches: `FREE_PICS_OFF=1`, `FREE_PICS_<ID>=0`, `FREE_PICS_DAY` (global daily cap, default 400).
 
-## Probe results
-(filled in from `domains/free-pics.probe.json` after the first runner probe; see the end of this file)
+## Probe results (GitHub runner, 2026-10-26; `domains/free-pics.probe.json`, refreshed weekly)
+| Source | Result | Notes |
+| --- | --- | --- |
+| Commons | works, 200, 0.8 s, 9 of 10 accepted for "football" | real thumbnail host is `thumb.wikimedia.org`, not only `upload.wikimedia.org` (the first probe lost 8 of 10 to that; fixed here and in `lib/daily-photo.js`); a named-player query keeps 9, refuses sponsor/logo categories; no rate-limit headers |
+| Openverse | works, 200, 4 to 6 s (slow), 10 of 10 | anonymous; `license_url` per result; no rate-limit headers seen anonymously |
+| NASA | works, 200, 0.4 s, 10 of 10 | keyless; no licence field per item, accepted as public domain with the NASA media guidelines link **[confirm]** |
+| Met | works, 200, 0.3 s | **the owner's `/v1.1/search` answered (via primary)**; objects checked for `isPublicDomain === true` |
+| Art Institute of Chicago | works, 200, 0.4 s, 10 of 10 | IIIF `/full/843,/0/default.jpg` built from `image_id` and `config.iiif_url` |
+| Cleveland | works, 200, 0.4 to 1 s, 10 of 10 | `share_license_status: CC0` |
+| Internet Archive | works, 200, 0.5 to 0.8 s, 10 of 10 | licence is a `licenseurl` (often `http://`); thumbnails are small |
+| Library of Congress | the first answers were 200 with results at `results[]` (ids as `http://`, `image_url` with `#h=..&w=..` fragments, `access_restricted`); **the later probes were blocked with a 403** (the documented one-hour block: the probe asked four extra variants and several runs came close together). Parser fixed from the shapes seen; the rights statement field still needs one clean look (the next single-request probe records `rightsFields`) | do not probe it more than once a day; `explore` is by hand only |
+| Smithsonian, Europeana, Flickr, Pexels, Pixabay, Unsplash | needs key (not probed) | owner actions above |
+| Rate-limit headers | none of the keyless sources sent `X-RateLimit-*` headers to an anonymous caller | Pexels/Unsplash send them with a key **[confirm]** |
