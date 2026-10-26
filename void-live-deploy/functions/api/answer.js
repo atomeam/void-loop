@@ -33,6 +33,7 @@ import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
+import { capAll } from '../../lib/daily-cap.js';
 import { prepare as prepareReport, settle as settleReport, REPORT_SYSTEM } from '../../lib/news-report.js';
 import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
 const MODEL = models('answer');
@@ -205,8 +206,8 @@ async function storyAnswer(request, env, body) {
 // "Verse reports" on /news/ (lib/news-report.js): a short write-up of what the news feeds already say. The caller sends only items (a source from the closed
 // list, a headline, a short summary); the route builds the plain draft itself, asks the free answer model to polish it, and VALIDATES the polish (every name,
 // number and date must be in the source text, no quote, no reporter): a polish that fails is dropped and the draft is the answer. One generation per distinct
-// source text, kept on the edge 3 hours for everyone, so the second reader costs nothing; at most REPORT_PER_HOUR and REPORT_PER_DAY generations a hour and a day
-// on this edge location (a count in the edge cache); past that, and with models off, the draft is returned. The model sees only feed text, redacted, with the
+// source text, kept on the edge 3 hours for everyone, so the second reader costs nothing; at most REPORT_PER_HOUR and REPORT_PER_DAY generations an hour and a day
+// in all, counted once in D1 for every edge location (lib/daily-cap.js, fail closed); past that, and with models off, the draft is returned. The model sees only feed text, redacted, with the
 // injection rule; nothing is written to a database.
 export const REPORT_PER_HOUR = 10, REPORT_PER_DAY = 80, REPORT_TTL = 10800;
 async function reportAnswer(request, env, body) {
@@ -217,8 +218,9 @@ async function reportAnswer(request, env, body) {
   const plainOut = (why) => Response.json({ ...base, text: p.draft, polished: false, why });
   if (!modelsOn(env)) return plainOut('models off');
   if (await rateLimited(request, env)) return Response.json({ ...base, text: p.draft, polished: false, why: 'slow down' }, { status: 429 });
-  const now = new Date(), count = async (bucket, max, ttl) => { try { const k = new Request(origin + '/__void-news-report/' + bucket), n = parseInt((await (await caches.default.match(k))?.text()) || '0', 10); if (n >= max) return false; await caches.default.put(k, new Response(String(n + 1), { headers: { 'cache-control': 'max-age=' + ttl } })); } catch (_) {} return true; };
-  if (!(await count('h' + now.toISOString().slice(0, 13), REPORT_PER_HOUR, 3600)) || !(await count('d' + now.toISOString().slice(0, 10), REPORT_PER_DAY, 86400))) return plainOut('busy: the hour\'s write-ups are used');
+  // ONE global count in D1 (lib/daily-cap.js), the hour first so a full hour never uses a place of the day; no D1 or an error refuses: the draft, never a spend
+  const at = new Date().toISOString();
+  if (!(await capAll(env, [['news-report:h' + at.slice(0, 13), REPORT_PER_HOUR], ['news-report', REPORT_PER_DAY]])).ok) return plainOut('busy: the hour\'s write-ups are used');
   let out;
   try {
     const r = await env.AI.run(MODEL, { messages: [{ role: 'system', content: REPORT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: redact('Draft:\n' + p.draft + '\n\nSource text:\n' + p.source) }], max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
