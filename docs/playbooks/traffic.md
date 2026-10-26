@@ -34,8 +34,12 @@ Cloudflare token with zone analytics appears. The owner will not switch on Cloud
 
 ## Mistakes made, and limits
 
-- The first version counts the stage (`void.html`) only; the tool pages (`/markets/`, `/base64/`, ...) do not load `/visit.js` yet. Adding
-  `<script src="/visit.js" defer></script>` to a page counts it under its first path segment.
+- The first version counted the stage only, but search and launch traffic lands on the tool pages. Since 2026-10-26 every page in
+  `sitemap.xml` loads `<script src="/visit.js" defer></script>`: the generators carry it in their templates (`tools/tool-site-pages.mjs`,
+  `fix-pages.mjs`, `music-pages.mjs`, `photos/index.html` for `photos-pages.mjs`, the head `functions/is-it/[what].js` writes), and
+  `node tools/beacon-pages.mjs` adds it before `</head>` on the hand-written ones. `tools/beacon-pages.test.mjs` (checks.mjs "beacon") fails
+  when a sitemap page lacks it: a new page gets it from its generator or from that command. It is deferred (no effect on first paint),
+  under 1 KB, cached a day (`_headers`), and the beacon waits for the load event.
 - The count starts on the day it was deployed: there is no history before 2026-10-26.
 - An address with many user agents, or many addresses, can inflate "people"; the route's limits bound how fast, never whether.
 - `node tools/traffic.mjs` from a machine whose Node fetch cannot reach the site (a proxy) prints "fetch failed": run it in CI.

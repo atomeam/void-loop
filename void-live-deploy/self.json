@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T07:24:44Z",
+   "subject": "Games pages: the game behind a shared start file (one CSP rule, the load event holds only app.js), 5 to 8 common asks per page, no…"
+  },
+  {
    "at": "2026-10-26T06:56:32Z",
    "subject": "Tower gate: shopping,jobs measured against their live sites"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T06:31:35Z",
    "subject": "Traffic: a placeholder domains/traffic.json until the first run, deps and guide regenerated"
-  },
-  {
-   "at": "2026-10-26T06:31:35Z",
-   "subject": "Who visits Verse: a cookie-less count, a daily traffic file and \"People this week\""
   }
  ],
  "builders": {

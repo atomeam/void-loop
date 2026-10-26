@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 908,
+ "counted": 910,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -157,6 +157,13 @@
    "tests": 3
   },
   {
+   "file": "lib/self-sites.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 1
+  },
+  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
@@ -308,7 +315,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 11,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/card-image.js",
@@ -679,7 +686,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 16
+   "tests": 17
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1574,14 +1581,14 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 66,
+   "dependants": 67,
    "tests": 25
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 8
   },
   {
@@ -1637,7 +1644,7 @@
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 0
   },
   {
@@ -3229,6 +3236,14 @@
    "imports": [
     "lib/guard.js",
     "lib/tally.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/tower-self.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/shortfall.js"
    ],
    "importedBy": []
   },
@@ -5395,6 +5410,7 @@
     "functions/api/studies.js",
     "functions/api/support.js",
     "functions/api/tally.js",
+    "functions/api/tower-self.js",
     "functions/api/v01d-fixes.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
@@ -6236,6 +6252,7 @@
     "functions/api/recipeimport.js",
     "functions/api/reflect.js",
     "functions/api/report.js",
+    "functions/api/tower-self.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js",
@@ -7664,6 +7681,30 @@
     "functions/api/weather.js"
    ]
   },
+  "lib/self-sites.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tool-sites.js",
+    "lib/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/will.js",
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/seo.js",
+    "lib/toolkit.js",
+    "skills/about-skill.js",
+    "skills/cartoon.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/kanban-board.js",
+    "skills/merge.js",
+    "skills/pdf-tools.js",
+    "skills/toolkit.js",
+    "skills/tower.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/seo.js": {
    "imports": [
     "lib/tool-sites.js"
@@ -7722,6 +7763,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/reflect.js",
+    "functions/api/tower-self.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js"
    ],
@@ -8679,7 +8721,8 @@
    "imports": [
     "lib/flight-sites.js",
     "lib/job-sites.js",
-    "lib/game-sites.js"
+    "lib/game-sites.js",
+    "lib/self-sites.js"
    ],
    "external": [
     ", "
@@ -8718,7 +8761,9 @@
    ]
   },
   "lib/tower.js": {
-   "imports": [],
+   "imports": [
+    "lib/self-sites.js"
+   ],
    "external": [
     ", "
    ],

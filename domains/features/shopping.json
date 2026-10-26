@@ -201,5 +201,23 @@
   "the store sells only what is live, no dark patterns",
   "price alert on any shop's link, not just one store"
  ],
- "first_page": "Shopping list and price watch page /shop/ for people who buy across many stores. First: paste product links from any shop into a list kept on the device (title, image and price read from the page's public metadata), set a price to wait for (existing watch), compare two side by side, share the list by link. Will not build: a catalogue, checkout, payments, reviews or delivery tracking (money stays out)."
+ "first_page": "Shopping list and price watch page /shop/ for people who buy across many stores. First: paste product links from any shop into a list kept on the device (title, image and price read from the page's public metadata), set a price to wait for (existing watch), compare two side by side, share the list by link. Will not build: a catalogue, checkout, payments, reviews or delivery tracking (money stays out).",
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:amazon-com-00694bb6",
+    "feature": "Product search",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvoxkjn0"
+   },
+   {
+    "target": "feature:amazon-com-10408b2b",
+    "feature": "Departments and filters",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvoxkk1v"
+   }
+  ]
+ }
 }

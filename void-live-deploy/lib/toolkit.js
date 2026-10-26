@@ -7,7 +7,7 @@
  *      time into a countdown): each page passes its own as { label, href: () => url }, worked out when pressed, so they carry what is there now.
  * Nothing leaves the device. Pure except accent(), setAccent() and mountRelated(). Tests: tools/toolkit.test.mjs.
  */
-import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
+import { SITE_PAGES, PDF_SITES, KANBAN_SITES, SELF_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
 import { jobAskOf } from './job-sites.js';
 import { gameAskOf } from './game-sites.js';
@@ -27,7 +27,7 @@ export const TOOLS = Object.freeze({
 const sisters = (list, p) => list.map((x) => x.path).filter((x) => x !== p);
 const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path === '/pdf/' ? [...sisters(PDF_SITES, p.path).slice(0, 2), '/resize-image/', '/word-count/'] : ['/pdf/', ...sisters(PDF_SITES, p.path).filter((x) => x !== '/pdf/').slice(0, 2), '/resize-image/']]),
   ...KANBAN_SITES.map((p) => [p.path, p.path === '/kanban/' ? [...sisters(KANBAN_SITES, p.path).slice(0, 2), '/calendar/', '/notes/', '/stopwatch/'] : ['/kanban/', ...sisters(KANBAN_SITES, p.path).filter((x) => x !== '/kanban/').slice(0, 2), '/calendar/']])]);
-export const RELATED = Object.freeze({
+const HAND_RELATED = Object.freeze({
   ...SITE_RELATED,
   '/photos/': ['/resize-image/', '/color/', '/convert/'],
   '/color/': ['/gradient/', '/wheel/', '/base-converter/'],
@@ -95,9 +95,11 @@ export const RELATED = Object.freeze({
   '/games/merge/': ['/games/', '/games/mines/', '/games/word/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
+// a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
+export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_RELATED[r.base]).map((r) => [r.path, [r.base, ...HAND_RELATED[r.base]].slice(0, 4)])) });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
-export const CARD_ASK = Object.freeze({
+const HAND_CARD_ASK = Object.freeze({
   '/photos/': 'edit a photo',
   '/color/': 'color #ff5733', '/gradient/': 'gradient from red to blue', '/wheel/': 'spin the wheel with ann, bob and cat', '/random-user/': 'fake name generator',
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
@@ -106,6 +108,8 @@ export const CARD_ASK = Object.freeze({
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
   '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
+// a self-built page opens its family's card on the stage
+export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */

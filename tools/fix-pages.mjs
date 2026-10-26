@@ -80,6 +80,7 @@ ${JSON.stringify(ld, null, 2)}
   <style>
     ${STYLE}
   </style>
+  <script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
