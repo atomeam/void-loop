@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T07:33:04Z",
+   "subject": "Versus by itself: a row's words end at a sentence, and an ask meets its family by the stem of its words (the first page's own words were…"
+  },
+  {
+   "at": "2026-10-26T07:31:49Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T07:30:52Z",
    "subject": "seo-audit: duplicate titles are told every run, not held, so Verse's tower-self loop is never stopped by the check"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T07:18:01Z",
    "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-26T07:15:46Z",
-   "subject": "Tower gate: shopping measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T07:15:15Z",
-   "subject": "Versus by itself: a site the model never judged is read again next run"
   }
  ],
  "builders": {
