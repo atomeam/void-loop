@@ -267,13 +267,13 @@ export const PROBES = Object.freeze({
       ['the same story from several sources', /\b\d+ sources\b/i], ['a share link', /\bcopy link\b/i], ['headlines only', /\bheadlines only\b/i], ['works offline', /\boffline\b/i]],
   },
   finance: {
-    site: 'https://finance.yahoo.com/', verse: '/markets/?s=AAPL&r=5y&on=2024-12-31',
-    // the question: Apple's close on the last trading day of 2024, in the page's link (a day that never changes, so no live price is guessed). The truth any correct quote
-    // page agrees on, worked out by hand from the exchange's record (never read off the site): AAPL closed 2024 at 250.42 US dollars, on 31 Dec 2024. The words beside it
-    // ("AAPL · USD") appear only once the price has come back, so a page that is still loading fails. Judged on Verse alone (the site is not asked); the same probe measures
+    site: 'https://finance.yahoo.com/', verse: '/markets/?s=SPX&r=5y&on=2024-12-31',
+    // the question: the S&P 500's close on the last trading day of 2024, in the page's link (a day that never changes, so no live price is guessed). The truth any correct quote
+    // page agrees on, worked out by hand from the exchange's record (never read off the site): the S&P 500 closed 2024 at 5,881.63 points on 31 Dec 2024 (the Associated Press's market report of that day, checked 2026-10-26). The words beside it
+    // ("SPX · Index") appear only once the price has come back, so a page that is still loading fails. Judged on Verse alone (the site is not asked); the same probe measures
     // every site in the finance lane (lib/tower.js LANES)
-    ask: { verse: '/markets/?s=AAPL&r=5y&on=2024-12-31' },
-    truth: [['the close on 31 Dec 2024 is 250.42', /Close on 31 Dec 2024:\s*250\.42\b/], ['the symbol and its currency, from the answer', /\bAAPL · USD\b/], ['a price with cents', /\b\d{1,3}(?:,\d{3})*\.\d{2}\b[\s\S]{0,60}today/]],
+    ask: { verse: '/markets/?s=SPX&r=5y&on=2024-12-31' },
+    truth: [['the close on 31 Dec 2024 is 5,881.63', /Close on 31 Dec 2024:\s*5,881\.63\b/], ['the symbol and its kind, from the answer', /\bSPX · Index\b/], ['a price with cents', /\b\d{1,3}(?:,\d{3})*\.\d{2}\b[\s\S]{0,60}today/]],
     // real numbers for fixed params, so a loading-only page fails: a quote with a percent move and its source; a chart with its change over the range; the watchlist box
     askParts: { 'live quotes': [['a price with its move in percent', /[+−]\d+\.\d{2}%\) today/], ['the source named', /Source: (?:Stooq|Yahoo|CoinGecko|ECB)/], ['a 52-week range of two prices', /52-week range\s*\d[\d,]*\.\d{2}\s*–\s*\d[\d,]*\.\d{2}/]],
       charts: [['ranges from 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\bYTD\b[\s\S]{0,40}\b5Y\b[\s\S]{0,20}\bMax\b/], ['the move over the range, from the drawn series', /[+−]\d+\.\d+% over 5Y/], ['a hover readout', /Move across the chart/i]],
@@ -282,6 +282,26 @@ export const PROBES = Object.freeze({
     // movers, comparing, history); news, financial statements, options and portfolios are not here and not claimed
     facts: [['the price and its change in percent', /[+−]\d+\.\d{2}%/], ['the previous close', /previous close/i], ['the day range', /day range/i], ['the 52-week range', /52-week range/i], ['volume', /\bvolume\b/i], ['market cap', /market cap/i],
       ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['a written market wrap', /verse reports/i], ['the source and the delay said', /may be delayed/i]],
+  },
+  // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/caps/, the screener site against
+  // /markets/screener/. Each judged on Verse alone; the truth is what holds on any day.
+  'finance: companiesmarketcap.com': {
+    site: 'https://companiesmarketcap.com/', verse: '/markets/caps/',
+    // the question: the coins by market cap. The truth on any day (worked out by hand): Bitcoin is rank 1, its name and ticker stand together on the row, with a price in dollars
+    // and a market cap in billions or trillions; the page says it lists the 50 largest. Numbers only appear once the list has come back, so a loading page fails.
+    ask: { verse: '/markets/caps/' },
+    truth: [['Bitcoin is rank 1', /(?:^|\n)\s*1\s+\S*\s*Bitcoin\s*BTC\b/], ['a price in dollars on its row', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a market cap in trillions or billions', /\$\d+(?:\.\d+)?[TB]\b/], ['the 50 largest', /\b50 largest\b/i]],
+    askParts: { 'live quotes': [['a price in dollars', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a 24 hour move in percent', /[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a 7 day chart', /\b7d chart\b/i], ['the 7 day move', /\b7d [+−]\d+\.\d{2}%/]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
+    facts: [['rank', /(?:^|\n)\s*1\s/], ['price', /\$[\d,]{3,}/], ['market cap', /\bMkt cap\b|market cap/i], ['24 hour change', /[+−]\d+\.\d{2}%/], ['7 day change', /\b7d [+−]\d+\.\d{2}%/], ['24 hour volume', /\bVol 24h \$/i], ['a total market cap', /Total market cap of these \d+: \$\d/i], ['a coin search', /find a coin/i], ['sorting', /\bMkt cap\b/i], ['a 7 day chart', /\b7d chart\b/i], ['company market caps said to be absent, and why', /Company market caps[\s\S]{0,160}no free source/i]],
+  },
+  'finance: finviz.com': {
+    site: 'https://finviz.com/', verse: '/markets/screener/?near=100&sort=pct',
+    // the question: the whole small universe (a filter every symbol passes: within 100 percent of its high), biggest gain first. The truth on any day: the page counts how many of
+    // the universe match, names a stock and a coin in its rows, and the universe is labelled as 12 stocks, 4 indices and 30 coins, "not every listed company".
+    ask: { verse: '/markets/screener/?near=100&sort=pct' },
+    truth: [['the matches counted', /\b\d+ of \d+ symbols match\b/], ['a share row with a price and a move', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['a coin row', /\bBTC\b[\s\S]{0,60}[+−]\d+\.\d{2}%/], ['the universe labelled as small', /12 large US stocks[\s\S]{0,200}30 large coins[\s\S]{0,80}not every listed company/i]],
+    askParts: { 'live quotes': [['a price and a move on a row', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a chart under each move', /small line under each move is its chart/i], ['the distance from the high', /Below high/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
+    facts: [['a move filter', /Move at least/i], ['a distance from the high filter', /Within % of high/i], ['a volume filter', /Volume at least/i], ['a group filter', /\bIndices\b[\s\S]{0,40}\bCoins\b/i], ['sorting', /Sort by/i], ['a match count', /\d+ of \d+ symbols match/], ['volume against the average', /Volume ×/], ['the universe said plainly', /not every listed company/i], ['a chart on each row', /small line under each move is its chart/i]],
   },
   'image boards': {
     site: 'https://www.4chan.org/', verse: '/boards/',
@@ -369,6 +389,51 @@ export const PROBES = Object.freeze({
     facts: [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b/i], ['cards', /\bcards?\b/i], ['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i], ['drag and drop', /\bdrag\b/i], ['search', /\bsearch\b|\bfilter\b/i], ['archive', /\barchive\b/i], ['WIP limits', /\bWIP\b|\blimit\b/i],
       ['export', /\bexport\b/i], ['import', /\bimport\b/i], ['keyboard moves', /\bkeyboard\b|\barrow keys\b/i], ['on this device', /\bon (?:this|your) device\b/i], ['works offline', /\boffline\b/i]],
   },
+  // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
+  // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
+  // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
+  music: {
+    site: 'https://open.spotify.com/', verse: '/music/',
+    ask: { verse: '/music/' },
+    truth: [['the five music tools named', /Metronome[\s\S]*Piano[\s\S]*Tuner[\s\S]*BPM counter[\s\S]*Chords and scales/], ['the tempo word Allegro for 120 to 156 BPM', /Allegro[\s\S]{0,40}120 to 156 BPM/], ['setlists kept on the device', /setlists?[\s\S]{0,200}(?:on this device|device)/i]],
+    askParts: { catalogue: [['tempo words', /tempo words/i], ['scales', /\bscales\b/i], ['chords', /\bchords\b/i], ['tunings', /\btunings\b/i]], playlists: [['playlists', /\bplaylists\b/i], ['setlists', /\bsetlists?\b/i], ['shared by link', /shared by link|copy link/i]], recommendations: [['recommendations', /\brecommendations\b/i], ['a practice ladder', /\bstart at\b[\s\S]{0,30}\bBPM\b/i], ['what chord comes next', /goes to/i]] },
+    facts: [['a metronome', /\bmetronome\b/i], ['a piano', /\bpiano\b/i], ['a tuner', /\btuner\b/i], ['a BPM counter', /BPM counter/i], ['chords and scales', /chords and scales/i], ['setlists', /\bsetlists?\b/i], ['a catalogue', /\bcatalogue\b/i], ['recommendations', /\brecommendations\b/i], ['no account', /no account/i], ['on your device', /on your device|on this device/i], ['songs in the public domain', /\bpublic domain\b|songs to play/i]],
+  },
+  'music: metronomeonline.com': {
+    site: 'https://metronomeonline.com/', verse: '/metronome/?bpm=120',
+    ask: { verse: '/metronome/?bpm=120' },
+    truth: [['120 BPM', /\b120\b[\s\S]{0,12}BPM/], ['Allegro, the word for 120', /\bAllegro\b/], ['500 ms between beats (60000 / 120)', /\b500 ms\b/], ['a start control', /\bStart\b/]],
+    askParts: { 'tap tempo': [['a tap tempo button', /tap tempo/i], ['the T key taps', /\bT taps\b/]], accents: [['an accent on each beat', /\baccent/i], ['strong, medium, soft or silent', /strong, medium, soft or silent/i], ['the first beat accented', /accent the first beat/i]], subdivisions: [['eighth notes', /eighth notes/i], ['triplets', /triplets/i], ['sixteenth notes', /sixteenth notes/i]], 'practice timer': [['a practice timer', /practice timer/i], ['in minutes', /minutes/i]], 'light and dark mode': [['light or dark', /light or dark/i]], sounds: [['a wood block', /wood block/i], ['a hi-hat', /hi-hat/i], ['a cowbell', /cowbell/i], ['a voice count', /voice count/i]] },
+    facts: [['BPM', /\bBPM\b/], ['tap tempo', /tap tempo/i], ['time signatures', /time signature/i], ['accents', /\baccents?\b/i], ['subdivisions', /subdivision/i], ['sounds', /\bsound\b/i], ['a visual beat', /visual beat/i], ['a practice timer', /practice timer/i], ['a speed trainer', /speed trainer/i], ['silent bars', /silent bars/i], ['tempo presets', /presets/i], ['setlists', /setlist/i], ['volume', /\bvolume\b/i], ['nothing leaves your device', /nothing leaves your device|on this device/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: virtualpiano.net': {
+    site: 'https://virtualpiano.net/', verse: '/piano/',
+    ask: { verse: '/piano/' },
+    truth: [['the white keys on the computer keys 1 2 3 4 5 6 7 8 9 0 q w e r t y', /1 2 3 4 5 6 7 8 9 0 q w e r t y/], ['Shift for a sharp', /\bShift\b[\s\S]{0,20}sharp/i], ['middle C named C4', /\bC4\b[\s\S]{0,12}middle C/i]],
+    askParts: { 'computer keyboard play': [['the key letters', /1 2 3 4 5 6 7 8 9 0 q w e r t y/], ['Shift for a sharp', /\bShift\b/]], 'touch and mouse play': [['tap or click the keys', /tap or click/i], ['a touch screen', /touch screen/i]], sustain: [['a sustain pedal', /sustain/i], ['the space bar', /space bar/i]], instruments: [['a grand piano', /grand piano/i], ['an organ', /\borgan\b/i], ['strings', /\bstrings\b/i]], 'sheet music': [['sheets', /\bsheets?\b/i], ['plain letters', /plain letters/i], ['a song: Ode to Joy', /ode to joy/i]], 'MIDI input': [['a MIDI keyboard', /MIDI keyboard/i]] },
+    facts: [['the computer keyboard', /computer keyboard|computer key/i], ['touch', /touch screen/i], ['a sustain pedal', /sustain/i], ['instruments', /\binstrument\b/i], ['sheets', /\bsheets?\b/i], ['record', /\brecord/i], ['reverb', /\breverb\b/i], ['transpose', /\btranspose\b/i], ['MIDI', /\bMIDI\b/], ['key labels', /computer key on each note|key labels/i], ['an octave shift', /\boctave\b/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: jasperbernaers.com': {
+    site: 'https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', verse: '/tuner/',
+    ask: { verse: '/tuner/' },
+    truth: [['standard guitar tuning E A D G B E', /E A D G B E/], ['the A4 reference of 440 Hz', /\b440\b/], ['cents', /\bcents?\b/i], ['a microphone', /\bmicrophone\b/i]],
+    askParts: { 'microphone tuning': [['a microphone', /\bmicrophone\b/i], ['cents flat or sharp', /\bcents\b[\s\S]{0,40}\b(?:flat|sharp)\b|\b(?:flat|sharp)\b[\s\S]{0,40}\bcents\b/i], ['in tune within 5 cents', /within 5 cents/i]], 'instrument presets': [['guitar', /\bguitar\b/i], ['bass', /\bbass\b/i], ['ukulele', /\bukulele\b/i], ['violin', /\bviolin\b/i]], 'reference tones': [['reference tones', /reference tones?/i], ['a pitch pipe', /pitch pipe/i]], 'adjustable A4': [['an A4 reference', /\bA4\b/], ['in Hz', /\bHz\b/]] },
+    facts: [['a microphone', /\bmicrophone\b/i], ['cents', /\bcents\b/i], ['guitar', /\bguitar\b/i], ['bass', /\bbass\b/i], ['ukulele', /\bukulele\b/i], ['violin', /\bviolin\b/i], ['alternate tunings', /drop d|dadgad|open g/i], ['an adjustable A4', /\bA4\b/], ['reference tones', /reference tones?/i], ['a pitch pipe', /pitch pipe/i], ['nothing recorded or sent', /nothing is recorded or sent|never leaves your device/i], ['works offline', /\boffline\b/i]],
+  },
+  'music: anotherproducer.com': {
+    site: 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', verse: '/bpm/',
+    ask: { verse: '/bpm/' },
+    truth: [['a quarter note lasts 500 ms at 120 BPM', /\b500\b/], ['a dotted quarter lasts 750 ms', /\b750\b/], ['a quarter-note triplet lasts 333.33 ms', /\b333\.33\b/], ['an eighth lasts 250 ms', /\b250\b/]],
+    askParts: { 'tap tempo counter': [['a tap button', /tap here/i], ['any key', /any key/i], ['an average of the last taps', /average the last/i]], 'half and double time': [['half time', /half time/i], ['double time', /double time/i]], 'note lengths': [['milliseconds', /\bms\b/], ['dotted notes', /\bdotted\b/i], ['triplets', /\btriplet\b/i], ['Hz', /\bHz\b/]], 'tempo of a file': [['an audio file', /audio file/i], ['not uploaded', /not uploaded|nothing is uploaded/i]] },
+    facts: [['tap tempo', /\btap\b/i], ['any key', /any key/i], ['half and double', /half time[\s\S]*double time/i], ['a reset', /\breset\b/i], ['average of the last taps', /average the last/i], ['a click on each tap', /click on each tap/i], ['note lengths in ms', /\bms\b/], ['song length in bars', /\bbars\b/i], ['the tempo of a file', /audio file/i], ['nothing uploaded', /not uploaded|nothing is uploaded/i]],
+  },
+  'music: chordchord.com': {
+    site: 'https://chordchord.com/chord-finder', verse: '/chords/',
+    ask: { verse: '/chords/' },
+    truth: [['C major is C E G', /\bC E G\b/], ['C major scale C D E F G A B', /C D E F G A B/], ['the open C chord shape x 3 2 0 1 0', /x 3 2 0 1 0/], ['Am (vi) among the chords of C major', /\bvi\b[\s\S]{0,12}\bAm\b/]],
+    askParts: { 'chord finder': [['a chord finder', /chord finder/i], ['inversions', /inversion/i], ['naming a chord from notes', /which chord is this/i]], 'scale finder': [['a scale finder', /scale finder/i], ['Dorian', /\bdorian\b/i], ['the notes of the scale', /C D E F G A B/]], 'guitar and piano shapes': [['guitar fingerings', /guitar fingerings/i], ['an open shape', /x 3 2 0 1 0/], ['a piano keyboard', /piano keyboard/i]], 'chords in a key': [['roman numerals', /\bvii°/], ['the circle of fifths', /circle of fifths/i], ['progressions', /progressions/i]] },
+    facts: [['chord finder', /chord finder/i], ['scale finder', /scale finder/i], ['guitar fingerings', /guitar fingerings/i], ['a piano keyboard', /piano keyboard/i], ['inversions', /inversion/i], ['a chord named from notes', /which chord is this/i], ['chords in a key', /chords in this key/i], ['seventh chords', /seventh chords/i], ['progressions', /progressions/i], ['the circle of fifths', /circle of fifths/i], ['a transposer', /transpose/i], ['plays the chord', /play the chord/i]],
+  },
   podcasts: {
     site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',
     // the question: open Verse Out Loud's first episode from a link. A page that only loaded shows its title and a search box; a page that works shows
@@ -400,6 +465,24 @@ export const PROBES = Object.freeze({
     // humidity, wind, the chance of rain, sunrise and sunset, and a link to share)
     facts: [['conditions now', /\bnow\b/i], ['°F', /°\s?F\b/], ['°C', /°\s?C\b/], ['feels like', /feels like/i], ['humidity', /\bhumidity\b/i], ['wind', /\bwind\b/i], ['the chance of rain', /chance of rain|\bprecipitation\b|\bprobab/i],
       ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['an hourly forecast', /\bhourly\b|next 24 hours/i], ['a daily forecast', /\bdaily\b|days ahead|7.day|extended forecast/i], ['alerts', /\balerts?\b/i], ['radar', /\bradar\b/i], ['a share link', /\bshare\b|copy link/i]],
+  },
+  photos: {
+    site: 'https://photos.google.com/', verse: '/photos/',
+    // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL), as the photo resizer's does. The truth by
+    // arithmetic: it is one pixel by one pixel, the page names its size before and after in bytes, and (the format being kept) says PNG. Judged on Verse alone
+    // (a photo sites' own pages are not asked); the same probe measures every site in the photos lane (lib/tower.js LANES: squoosh.app, photopea.com,
+    // tinypng.com, exif.tools, exifeditor.io, iloveimg.com)
+    ask: { site: 'https://squoosh.app/', verse: '/photos/', verseFile: true },
+    truth: [['the picture is 1 by 1 pixel', /\b1 [×x] 1 px\b/], ['its size before and after, in bytes', /\b\d+ B → \d+ B\b/], ['the format named', /\bPNG\b/]],
+    askParts: {
+      editing: [['crop', /\bcrop\b/i], ['rotate', /\brotate\b/i], ['adjust', /\badjust\b/i], ['filters', /\bfilters?\b/i], ['draw', /\bdraw\b/i], ['text', /\btext\b/i], ['undo', /\bundo\b/i]],
+      'compress and convert': [['a quality choice', /\bquality\b/i], ['JPEG', /\bjpeg\b/i], ['WebP', /\bwebp\b/i], ['PNG', /\bpng\b/i], ['the size saved', /\b\d+% (?:saved|bigger)\b|\bthe same size\b/i], ['a resize', /\bwidth\b/i], ['before and after', /\boriginal\b[\s\S]{0,80}\bresult\b/i]],
+      'metadata and privacy': [['EXIF', /\bexif\b/i], ['strip metadata', /\bstrip metadata\b/i]],
+    },
+    // what the lane's sites show between them (squoosh: formats, a quality slider, a compare slider, resize, offline; tinypng: PNG colours, batch, the saving; exif.tools and
+    // exifeditor.io: EXIF and GPS viewer, strip, nothing uploaded; iloveimg: crop, rotate, convert, filters, text; photopea: adjustments, filters, text, drawing, history)
+    facts: [['JPEG', /\bjpeg\b/i], ['PNG', /\bpng\b/i], ['WebP', /\bwebp\b/i], ['AVIF', /\bavif\b/i], ['a quality slider', /\bquality\b/i], ['a before and after slider', /\bbefore and after\b/i], ['the size saved', /\bsize saved\b|\bsaved\b/i], ['resize', /\bresize\b/i], ['crop with shapes', /\bcrop\b/i], ['rotate and flip', /\brotate\b[\s\S]{0,12}\bflip\b/i],
+      ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
   },
   photos: {
     site: 'https://photos.google.com/', verse: '/photos/',
@@ -534,6 +617,22 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   'word count': { 'live counting': [['counts as you type', /\bas you (?:type|edit)\b/i]], 'characters and sentences': [['characters', /\bcharacters\b/i], ['characters without spaces', /without spaces/i], ['sentences', /\bsentences\b/i], ['paragraphs', /\bparagraphs\b/i]] },
   'random user': { 'output formats': [['JSON', /\bjson\b/i], ['CSV', /\bcsv\b/i], ['XML', /\bxml\b/i], ['YAML', /\byaml\b/i], ['SQL', /\bsql\b/i]], seed: [['a seed', /\bseed\b/i]], nationalities: [['United States', /united states|\bamerican\b/i], ['United Kingdom', /united kingdom|\bbritish\b/i], ['France', /\bfrance\b|\bfrench\b/i], ['Germany', /\bgermany\b|\bgerman\b/i], ['Spain', /\bspain\b|\bspanish\b/i], ['Brazil', /\bbrazil/i], ['India', /\bindia\b|\bindian\b/i], ['Japan', /\bjapan/i]] },
 });
+// a lane site with a page of its own may ask its own question (owner, 2026-10-26: every lane site gets its own page, gated against it): the keys it gives replace the leader's
+// (ask, truth, askParts, pageParts, parts, facts); what it leaves out is the leader's. thesportsdb.com is a sports database: its page browses by sport, searches across all of
+// them (teams, events, venues, players), lists who was born on this day and says its API is free; the question is a search for Arsenal, which any sports database answers
+// with the club, its league and its sport. Truth worked out by hand, judged on Verse alone.
+const LANE_PROBES = Object.freeze({
+  'sports: thesportsdb.com': {
+    ask: { verse: '/sports/?q=arsenal' },
+    truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
+    askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
+      'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],
+      'sport grid': [['click a sport to browse', /Click a sport to browse/i], ['soccer', /\bSoccer\b/], ['basketball', /\bBasketball\b/], ['tennis', /\bTennis\b/], ['cricket', /\bCricket\b/]],
+      'free api': [['a free API', /Free API/i], ['read only', /read only/i], ['its description', /openapi\.json/i]] },
+    pageParts: {}, parts: {},
+    facts: [['sports to browse', /Click a sport to browse/i], ['search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['events', /\bEvents\b/], ['venues', /\bVenues\b/], ['players', /\bPlayers\b/], ['born on this day', /Born on this day/i], ['a stats strip', /On this device/i], ['a free API', /Free API/i], ['the source named', /TheSportsDB/], ['no betting', /no betting/i]],
+  },
+});
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
@@ -541,8 +640,9 @@ export function probeFor(id) {
   const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
   if (lane) id = lane[1];
   // a lane site with a page of its own (LANE_PAGES) is measured against that page, not its leader's
-  const own = lane && LANE_PAGES[id0];
-  return { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  const own = lane && LANE_PAGES[id0], lp = lane && LANE_PROBES[id0]; // a lane page may bring its own question, parts and facts (LANE_PROBES)
+  const base = { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  return lp ? { ...base, ...lp, verse: own || base.verse, ask: lp.ask || base.ask, ownFacts: true } : base;
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
 export function score(text, items) {
@@ -593,7 +693,8 @@ export function featuresOf(id, dir = FEATURE_DIR) {
 }
 /** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */
 export function withFeatureFacts(probe, id, n = 6, dir = FEATURE_DIR) {
-  if (!probe) return probe; const file = featuresOf(id, dir); if (!file) return probe;
+  if (!probe || probe.ownFacts) return probe; // a lane page with its own facts is not asked for its leader's features
+  const file = featuresOf(id, dir); if (!file) return probe;
   const have = new Set((probe.facts || []).map(([l]) => String(l).toLowerCase())), extra = factsFromFile(file, n).filter(([l]) => !have.has(l.toLowerCase()));
   return extra.length ? { ...probe, facts: [...(probe.facts || []), ...extra] } : probe;
 }

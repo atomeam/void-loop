@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 870,
+ "counted": 880,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -281,6 +281,13 @@
    "direct": 0,
    "dependants": 12,
    "tests": 1
+  },
+  {
+   "file": "lib/tool-sites.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 11,
+   "tests": 0
   },
   {
    "file": "lib/card-image.js",
@@ -623,7 +630,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 12
+   "tests": 13
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1030,13 +1037,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 12
   },
   {
    "file": "lib/v01d-fixes.js",
@@ -1474,6 +1474,20 @@
   },
   {
    "file": "lib/time-math.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 12
+  },
+  {
+   "file": "lib/tower-rank.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1935,6 +1949,13 @@
    "tests": 2
   },
   {
+   "file": "lib/kanban.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/lap.js",
    "skills": 0,
    "direct": 0,
@@ -1954,6 +1975,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 0
+  },
+  {
+   "file": "lib/pdf-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/podcasts.js",
@@ -2173,6 +2201,13 @@
    "tests": 1
   },
   {
+   "file": "lib/kanban-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
    "file": "lib/kitchen.js",
    "skills": 0,
    "direct": 0,
@@ -2227,6 +2262,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/pdf-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/photo-edit.js",
@@ -2970,7 +3012,8 @@
   },
   "functions/api/sportsearch.js": {
    "imports": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/guard.js"
    ],
    "importedBy": []
   },
@@ -3928,7 +3971,8 @@
     "lib/card-subject.js",
     "lib/card-look.js",
     "lib/art-source.js",
-    "lib/card-sections.js"
+    "lib/card-sections.js",
+    "lib/tool-sites.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -5012,6 +5056,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/rsvp.js",
+    "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
     "functions/api/support.js",
@@ -5042,7 +5087,6 @@
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
-    "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
@@ -5257,6 +5301,21 @@
    ],
    "importedBy": [
     "functions/api/queue.js"
+   ]
+  },
+  "lib/kanban-ui.js": {
+   "imports": [
+    "lib/kanban.js"
+   ],
+   "external": [
+    ", share: "
+   ],
+   "importedBy": []
+  },
+  "lib/kanban.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/kanban-ui.js"
    ]
   },
   "lib/keep-going.js": {
@@ -5896,7 +5955,6 @@
   },
   "lib/music-ui.js": {
    "imports": [
-    "lib/toolkit.js",
     "lib/music-tools.js",
     "lib/music-de.js"
    ],
@@ -6295,6 +6353,18 @@
    "importedBy": [
     "skills/pdf-card.js"
    ]
+  },
+  "lib/pdf-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/pdf-ui.js"
+   ]
+  },
+  "lib/pdf-ui.js": {
+   "imports": [
+    "lib/pdf-tools.js"
+   ],
+   "importedBy": []
   },
   "lib/persona.js": {
    "imports": [],
@@ -7172,7 +7242,9 @@
    ]
   },
   "lib/seo.js": {
-   "imports": [],
+   "imports": [
+    "lib/tool-sites.js"
+   ],
    "importedBy": []
   },
   "lib/service-health.js": {
@@ -8135,11 +8207,39 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/tool-sites.js": {
+   "imports": [],
+   "external": [
+    ", "
+   ],
+   "importedBy": [
+    "lib/card-frame.js",
+    "lib/seo.js",
+    "lib/toolkit.js",
+    "skills/kanban-board.js",
+    "skills/pdf-tools.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/toolkit.js"
+   ]
+  },
   "lib/toolkit.js": {
+   "imports": [
+    "lib/tool-sites.js"
+   ],
+   "importedBy": [
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/tower-rank.js": {
    "imports": [],
    "importedBy": [
-    "lib/music-ui.js",
-    "skills/toolkit.js"
+    "skills/tower.js"
    ]
   },
   "lib/tower.js": {
@@ -9865,6 +9965,12 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/kanban-board.js": {
+   "imports": [
+    "lib/tool-sites.js"
+   ],
+   "importedBy": []
+  },
   "skills/kept.js": {
    "imports": [
     "skills/notepad.js",
@@ -10517,6 +10623,10 @@
     "skills/pick-for-me.js"
    ]
   },
+  "skills/music-tools.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/music.js": {
    "imports": [
     "lib/compose.js",
@@ -10707,6 +10817,12 @@
   "skills/pdf-card.js": {
    "imports": [
     "lib/pdf-qa.js"
+   ],
+   "importedBy": []
+  },
+  "skills/pdf-tools.js": {
+   "imports": [
+    "lib/tool-sites.js"
    ],
    "importedBy": []
   },
@@ -11453,6 +11569,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/sports-browse.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/stage-arrange.js": {
    "imports": [
     "lib/stage-tools.js",
@@ -11834,7 +11954,8 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower.js",
-    "lib/avatar.js"
+    "lib/avatar.js",
+    "lib/tower-rank.js"
    ],
    "importedBy": []
   },

@@ -12,6 +12,7 @@ Each playbook is one kind of work a builder did by hand, written so Verse's own 
 | [route-correction.md](route-correction.md) | a skill that took an ask that is not its job | Verse narrows its own matcher from the owner's correction (`route:` jobs, `tools/propose-fix.mjs` narrow mode, checked by "lets go"); a route made inside the page goes to a builder |
 | [floor-kit.md](floor-kit.md) | one site of the tower, from next in the queue to gate dispatched, in minutes (lanes: the smallest site first, the leader last) | not yet |
 | [lane-site-pages.md](lane-site-pages.md) | a page of its own for every site of a lane, from one table (PDF tools, Kanban) | not yet |
+| [tower-rank.md](tower-rank.md) | which Versus site next: every site ranked by real traffic (Tranco), smallest first, with a hand order | not yet |
 | [table-skill.md](table-skill.md) | a new skill answered from a built-in table | not yet |
 | [review-rule.md](review-rule.md) | a code-review check for a bug the review missed | not yet |
 | [film.md](film.md) | a film, and the next film being better | not yet |

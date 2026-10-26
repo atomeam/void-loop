@@ -37,6 +37,7 @@ export const SDB = { teams: { teams: [{ idTeam: '133604', strTeam: 'Arsenal', st
   event: { event: [{ idEvent: '1', strEvent: 'Arsenal vs Southampton', dateEvent: '2025-05-25', strLeague: 'English Premier League', strSport: 'Soccer', strHomeTeam: 'Arsenal', strAwayTeam: 'Southampton', intHomeScore: '2', intAwayScore: '1' }] },
   venues: { venues: [{ idVenue: '9', strVenue: 'Emirates Stadium', strLocation: 'London', strCountry: 'England', intCapacity: '60260', strSport: 'Soccer' }] },
   player: { player: [{ idPlayer: '7', strPlayer: 'Test Player <b>', strTeam: 'Arsenal', strSport: 'Soccer', strNationality: 'England', dateBorn: '2000-01-01', strPosition: 'Midfielder' }] } };
+export const ESPN_SEARCH = { items: [{ id: '359', type: 'team', displayName: 'Arsenal', sport: 'soccer', description: 'English Premier League' }, { id: '1', type: 'player', displayName: 'Test Winger', subtitle: 'Arsenal', sport: 'soccer' }, { id: '9', type: 'article', displayName: 'Some story' }] };
 export const WIKI_BORN = { births: [{ year: 1984, text: 'Test Footballer', pages: [{ description: 'English footballer' }] }, { year: 1950, text: 'A Poet', pages: [{ description: 'American poet' }] }] };
 /** a fetch that answers like the three feeds from the fixtures, recording what it was asked (a request to any other host throws) */
 export function fakeFeeds(log = []) {
@@ -48,6 +49,7 @@ export function fakeFeeds(log = []) {
     if (u.startsWith('https://api.openligadb.de/getmatchdata/bl1/')) return ok(OPENLIGA);
     if (u.startsWith('https://api.jolpi.ca/ergast/f1/')) return ok(/results\.json/.test(u) ? F1_RESULTS : /driverStandings/.test(u) ? F1_DRIVERS : /constructorStandings/.test(u) ? F1_CONS : F1_RACES);
     if (u.startsWith('https://www.thesportsdb.com/api/v1/json/123/')) return ok(/searchteams/.test(u) ? SDB.teams : /searchevents/.test(u) ? SDB.event : /searchvenues/.test(u) ? SDB.venues : SDB.player);
+    if (u.startsWith('https://site.api.espn.com/apis/common/v3/search')) return ok(ESPN_SEARCH);
     throw new Error('unexpected host ' + u);
   };
 }

@@ -11,10 +11,11 @@ import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } f
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
+  '/photos/': 'Photo tools',
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
@@ -25,6 +26,7 @@ const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path
   ...KANBAN_SITES.map((p) => [p.path, p.path === '/kanban/' ? [...sisters(KANBAN_SITES, p.path).slice(0, 2), '/calendar/', '/notes/', '/stopwatch/'] : ['/kanban/', ...sisters(KANBAN_SITES, p.path).filter((x) => x !== '/kanban/').slice(0, 2), '/calendar/']])]);
 export const RELATED = Object.freeze({
   ...SITE_RELATED,
+  '/photos/': ['/resize-image/', '/color/', '/convert/'],
   '/color/': ['/gradient/', '/wheel/', '/base-converter/'],
   '/gradient/': ['/color/', '/wheel/'],
   '/wheel/': ['/random/', '/random-user/', '/flip/', '/gradient/', '/color/'],
@@ -43,7 +45,8 @@ export const RELATED = Object.freeze({
   '/weather/': ['/time/', '/stopwatch/'],
   '/translate/': ['/word-count/', '/time/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
-  '/scores/': ['/time/', '/calendar/', '/weather/'],
+  '/scores/': ['/sports/', '/time/', '/calendar/'],
+  '/sports/': ['/scores/', '/calendar/', '/time/'],
   '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
   '/markets/': ['/convert/', '/calculator/', '/time/'],
@@ -53,17 +56,24 @@ export const RELATED = Object.freeze({
   '/base64/': ['/word-count/', '/base-converter/'],
   '/boards/': ['/resize-image/', '/translate/', '/notes/'],
   '/news/': ['/translate/', '/notes/', '/weather/'],
+  '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/'],
+  '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/'],
+  '/piano/': ['/chords/', '/metronome/', '/tuner/'],
+  '/tuner/': ['/piano/', '/chords/', '/metronome/'],
+  '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
+  '/chords/': ['/piano/', '/tuner/', '/metronome/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 export const CARD_ASK = Object.freeze({
+  '/photos/': 'edit a photo',
   '/color/': 'color #ff5733', '/gradient/': 'gradient from red to blue', '/wheel/': 'spin the wheel with ann, bob and cat', '/random-user/': 'fake name generator',
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
-  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
@@ -149,6 +159,15 @@ const ROUTES = [
   [/^(?:free )?(?:ai )?(?:image|picture|art) generator$|^text to (?:image|picture)$|^(?:ai art|ai image|ai picture)$/i, () => '/image/'],
   [/^(?:generate|create|make) (?:an? )?(?:ai )?(?:image|picture|photo|art) (?:of|showing) (.+)$|^ai (?:art|image|picture) of (.+)$/i, (m) => '/image/?' + new URLSearchParams({ prompt: m[1] || m[2], go: '1' })],
   [/^(?:make|create|write|build) (?:a |my own |your own )?(?:random )?generator$|^(?:perchance|generator editor|list generator)$/i, () => '/generators/make/'],
+  // music: 'metronome 120 bpm', '90 bpm 6/8 metronome', 'online piano', 'guitar tuner', 'tap tempo', 'bpm counter', 'am7 chord', 'c major scale', 'chord finder'
+  [/^(?:an? |the |online |free )*metronome(?: (?:at|for))?\s*(\d{2,3})\s*(?:bpm)?(?: (\d{1,2}\/\d{1,2}))?$|^(\d{2,3})\s*bpm\s*(?:(\d{1,2}\/\d{1,2})\s*)?metronome$/i, (m) => '/metronome/?bpm=' + (m[1] || m[3]) + (m[2] || m[4] ? '&sig=' + encodeURIComponent(m[2] || m[4]) : '')],
+  [/^(?:an? |the |online |free |open )*(?:metronome|click track|beat keeper)(?: online)?$/i, () => '/metronome/'],
+  [/^(?:an? |the |online |free |virtual |play )*(?:piano|keyboard piano|virtual keyboard)(?: online)?$/i, () => '/piano/'],
+  [/^(?:an? |the |online |free |chromatic |instrument )*(?:guitar |bass |ukulele |violin |cello )?tuner(?: online)?$|^tune (?:my |a |the )?(?:guitar|bass|ukulele|violin|cello)$/i, () => '/tuner/'],
+  [/^(?:tap tempo|tap bpm|bpm counter|bpm tapper|bpm finder|find (?:the )?bpm|what(?:'s| is) the bpm)$/i, () => '/bpm/'],
+  [/^(?:an? |the )*(?:chord|chords|scale|scales) (?:finder|chart|dictionary|identifier)$|^circle of fifths$/i, () => '/chords/'],
+  [/^([a-g][#b]?(?:m|maj7|m7|7|dim|dim7|aug|sus2|sus4|add9|m7b5|maj9|9|6|m6|5)?) chord$/i, (m) => '/chords/?chord=' + encodeURIComponent(m[1][0].toUpperCase() + m[1].slice(1))],
+  [/^([a-g][#b]?)\s+(major|minor|dorian|mixolydian|lydian|phrygian|blues|pentatonic)\s+scale$/i, (m) => '/chords/?scale=' + encodeURIComponent(m[1][0].toUpperCase() + m[1].slice(1) + ' ' + m[2])],
   // news: 'news page', 'my news', 'saved news' (plain 'news today' and 'tech news' stay the cards on the stage, whose link opens this page)
   [/^(?:the |open )?news (?:page|app|reader)$/i, () => '/news/'],
   [/^my news$/i, () => '/news/?sec=my'],
@@ -183,6 +202,11 @@ const ROUTES = [
   [/^(?:0x[0-9a-f]+|0b[01]+|\d+) (?:in|to|as) (binary|hex(?:adecimal)?|octal|decimal|base \d+)$/i, (m, t) => { const v = t.split(/\s/)[0], b = /^bin/i.test(m[1]) ? 2 : /^hex/i.test(m[1]) ? 16 : /^oct/i.test(m[1]) ? 8 : /^dec/i.test(m[1]) ? 10 : +m[1].replace(/\D/g, ''); return '/base-converter/?v=' + encodeURIComponent(v) + '&b=' + b; }],
   [/^#?[0-9a-f]{6}$|^#?[0-9a-f]{3}$|^rgba?\(.+\)$|^hsla?\(.+\)$/i, (m, t) => '/color/?c=' + encodeURIComponent(t.replace(/^#/, ''))],
   [/^(?:a )?gradient(?: from (.+))?$/i, () => '/gradient/'],
+  // photo tools: 'compress image', 'crop photo', 'convert png to webp', 'view exif', 'strip exif', 'squoosh' (lib/photo-ask.js); a sized ask stays with the resizer below
+  [/^(?:please )?(?:strip|remove|clean|scrub) (?:the )?(?:exif|metadata|gps|location)(?: (?:from|off|of|in) (?:an? |my |the |this )?(?:photo|picture|image|pic|jpe?g|png)s?)?$|^(?:exif|metadata) (?:stripper|remover|cleaner)$/i, () => '/photos/?tab=info'],
+  [/^(?:please )?(?:compress|optimi[sz]e|convert|crop|rotate|flip|edit|annotate) (?:an? |my |the |this )?(?:image|photo|picture|pic|jpe?g|png|webp|avif)s?(?: (?:to|into) (?:jpe?g|png|webp|avif))?$|^(?:png|jpe?g|webp|avif) to (?:png|jpe?g|webp|avif)$|^(?:photo|image) (?:editor|compressor)$/i, (m, t) => '/photos/' + (/^(?:please )?(?:crop|rotate|flip)/i.test(t) ? '?tab=crop' : '')],
+  [/^(?:view |see |check )?(?:the )?(?:exif|metadata)(?: viewer| of (?:an? |my |the )?(?:photo|picture|image))?$/i, () => '/photos/exif/'],
+  [/^(squoosh|tinypng|photopea|iloveimg)$/i, (m) => '/photos/' + m[1].toLowerCase() + '/'],
   [/^(?:resize|shrink|crop) (?:an? |my |the )?(?:image|photo|picture|signature)(?: to (.+))?$/i, () => '/resize-image/'],
   [/^(?:count (?:the )?words(?: in)?|how many words(?: in)?|word count(?: of)?) (.+)$/i, (m) => '/word-count/?t=' + encodeURIComponent(m[1])],
   [/^(?:start (?:a )?)?(?:stopwatch|timer|countdown)(?: (?:for|of) (.+))?$|^(\d+ ?(?:min(?:ute)?s?|sec(?:ond)?s?|hours?)) timer$/i, (m) => '/stopwatch/' + (m[1] || m[2] ? '?t=' + encodeURIComponent(m[1] || m[2]) : '')],

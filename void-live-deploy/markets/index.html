@@ -94,6 +94,8 @@
     <a href="/markets/?s=EURUSD"><b>EUR/USD</b><span>–</span><small></small></a>
   </div>
 
+  <nav class="tk-row" aria-label="More markets" style="margin:8px 0 0"><span class="tk-label">More</span><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
+
   <section id="card" aria-labelledby="qn">
     <h2 id="qn">Quote</h2>
     <div id="qs">Type a symbol above, or open one below</div>
@@ -136,6 +138,7 @@
   <div class="row" style="margin-top:14px"><button type="button" id="repBtn" aria-expanded="false" aria-controls="rep">Verse reports</button><span class="note" style="margin:0">A daily wrap and a “why is it moving” line, written from the data.</span></div>
   <section id="rep" hidden aria-label="Verse reports" style="border:1px solid var(--line);border-radius:14px;background:var(--box);padding:14px;margin-top:8px">
     <div class="seg" role="group" aria-label="Which report" style="margin-top:0"><button type="button" id="repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-pressed="false">Why is <span id="repSym">AAPL</span> moving</button></div>
+    <figure id="repArt" hidden style="margin:10px 0 0"><div id="repBox" style="width:100%;aspect-ratio:16 / 9;border-radius:12px;background:rgba(127,127,127,.12);overflow:hidden"></div><figcaption class="note" id="repCredit" style="margin:4px 0 0"></figcaption></figure>
     <p id="repText" role="status" style="font-size:16px;line-height:1.55;min-height:9em;margin:10px 0 0">Loading the report</p>
     <p class="note" id="repLabel" style="margin:6px 0 0"></p>
   </section>
@@ -149,7 +152,7 @@
   <p class="note" id="mvNote">Among twelve large US stocks, over the last session.</p>
 
   <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/markets/?s=AAPL">Apple (AAPL)</a><a href="/markets/?s=TSLA">Tesla</a><a href="/markets/?s=SPX">S&amp;P 500</a><a href="/markets/?s=BTC">Bitcoin</a><a href="/markets/?s=EURUSD">Euro to US dollar</a><a href="/markets/?s=AAPL&amp;r=5y&amp;on=2024-12-31">Apple on 31 Dec 2024</a><a href="/markets/?s=NVDA&amp;r=5y">Nvidia over five years</a><a href="/markets/?s=AAPL&amp;c=MSFT">Apple against Microsoft</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/markets/?s=AAPL">Apple (AAPL)</a><a href="/markets/?s=TSLA">Tesla</a><a href="/markets/?s=SPX">S&amp;P 500</a><a href="/markets/?s=BTC">Bitcoin</a><a href="/markets/?s=EURUSD">Euro to US dollar</a><a href="/markets/?s=SPX&amp;r=5y&amp;on=2024-12-31">The S&amp;P 500 on 31 Dec 2024</a><a href="/markets/?s=NVDA&amp;r=5y">Nvidia over five years</a><a href="/markets/?s=AAPL&amp;c=MSFT">Apple against Microsoft</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
 
@@ -199,7 +202,7 @@
     function draw() {
       if (!$('rep').hidden && rep.kind === 'why') report();
       const q = state.q, c = cur(q), money = (v) => (v == null ? '–' : M.fmtPrice(v) + (c ? ' ' : ''));
-      $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + (c ? ' · ' + c : '') + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || '');
+      $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || 'Symbol') + (c ? ' · ' + c : '');
       $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change); if (q.partial) $('qm').textContent = '';
       $('qa').textContent = (q.offline ? 'Offline: the last price saved on this device, ' + new Date(q.saved).toLocaleString() + '. ' : 'Source: ' + q.source + '. ') + 'Data may be delayed' + (q.offline || !q.asOf ? '.' : '; as of ' + M.fmtDay(q.asOf) + '.');
       $('sPrev').textContent = money(q.prev); $('sOpen').textContent = money(q.open);
@@ -307,7 +310,20 @@
       if (rep.kind !== kind || (kind === 'why' && state.sym !== sym)) return;
       if (j.ok) rep.got[id] = j; paintRep(j);
     }
-    function paintRep(j) { $('repText').textContent = j.ok ? j.text : j.say || 'No report just now.'; $('repLabel').textContent = j.ok ? j.label + (j.polished ? '' : ' Plain template text.') : ''; }
+    // the day's illustration for the wrap (lib/daily-art.js, owner 2026-10-26): its box is kept before the picture arrives; loaded only when the wrap is opened
+    let art = null;
+    async function paintArt(j) {
+      $('repArt').hidden = rep.kind !== 'wrap'; if (rep.kind !== 'wrap' || !j || !j.ok) return;
+      const mood = ['hopeful', 'calm', 'tense'].includes(j.mood) ? j.mood : '', key = mood + '|' + (j.window || '');
+      if (art === key) return; art = key;
+      try {
+        const D = await import('/lib/daily-art.js'), d = D.dailyArtImg('finance', 'wrap', { day: (j.window || '').slice(0, 10), mood }); if (!d.src) return;
+        const img = new Image(); img.width = d.width; img.height = d.height; img.alt = d.alt; img.decoding = 'async'; img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+        img.addEventListener('load', () => $('repBox').replaceChildren(img)); img.addEventListener('error', () => { $('repArt').hidden = true; }); img.src = d.src;
+        D.dailyArtInfo('finance', 'wrap', { day: (j.window || '').slice(0, 10), mood }).then((i) => D.mountCredit($('repCredit'), i));
+      } catch (_) {}
+    }
+    function paintRep(j) { paintArt(j); $('repText').textContent = j.ok ? j.text : j.say || 'No report just now.'; $('repLabel').textContent = j.ok ? j.label + (j.polished ? '' : ' Plain template text.') : ''; }
     $('repBtn').addEventListener('click', () => { const open = $('rep').hidden; $('rep').hidden = !open; $('repBtn').setAttribute('aria-expanded', String(open)); if (open) report(); });
     $('repWrap').addEventListener('click', () => { rep.kind = 'wrap'; report(); });
     $('repWhy').addEventListener('click', () => { rep.kind = 'why'; report(); });

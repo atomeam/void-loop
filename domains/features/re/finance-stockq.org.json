@@ -1,0 +1,623 @@
+{
+ "site": "www.stockq.org",
+ "url": "https://www.stockq.org/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "ads.whychip.com/ajs.php",
+   "t": "js",
+   "b": 9126,
+   "ext": true
+  },
+  {
+   "f": "ads.whychip.com/ajs.php",
+   "t": "js",
+   "b": 924,
+   "ext": true
+  },
+  {
+   "f": "ads.whychip.com/ajs.php",
+   "t": "js",
+   "b": 814,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 1961,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7904,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 3230,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/mbads",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-9803646600609510",
+   "t": "js",
+   "b": 226527,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63401,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166786,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/rum.js",
+   "t": "js",
+   "b": 84287,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 516652,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/tooltip.css",
+   "t": "css",
+   "b": 1524,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/util.css",
+   "t": "css",
+   "b": 12720,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 8077,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 269363,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 24811,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/jsapi_compiled_ui_module.js",
+   "t": "js",
+   "b": 519614,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/loader.js",
+   "t": "js",
+   "b": 49299,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/loader.js",
+   "t": "js",
+   "b": 62428,
+   "ext": true
+  },
+  {
+   "f": "article-preview.css",
+   "t": "css",
+   "b": 2587
+  },
+  {
+   "f": "desktop_banner.css",
+   "t": "css",
+   "b": 1316
+  },
+  {
+   "f": "home.css",
+   "t": "css",
+   "b": 2303
+  },
+  {
+   "f": "index2.css",
+   "t": "css",
+   "b": 2213
+  },
+  {
+   "f": "main.css",
+   "t": "css",
+   "b": 5476
+  },
+  {
+   "f": "chart-data.php",
+   "t": "js",
+   "b": 366
+  },
+  {
+   "f": "UST10Y_intraday.js",
+   "t": "js",
+   "b": 5316
+  },
+  {
+   "f": "display-settings.js",
+   "t": "js",
+   "b": 2168
+  },
+  {
+   "f": "home-survey.js",
+   "t": "js",
+   "b": 4015
+  },
+  {
+   "f": "sq-obfuscate.js",
+   "t": "js",
+   "b": 1564
+  },
+  {
+   "f": "stockq.js",
+   "t": "js",
+   "b": 385
+  }
+ ],
+ "assetCount": 33,
+ "bytes": 2592736,
+ "html": {
+  "mobile": {
+   "title": "StockQ 國際股市指數",
+   "lang": "zh-Hant",
+   "manifest": null,
+   "canonical": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "www.stockq.org",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "forms": 1,
+   "ariaLabels": [
+    "A chart.",
+    "A tabular representation of the data in ",
+    "Advertisement",
+    "StockQ 首頁",
+    "主要導覽",
+    "主要連結",
+    "以下是與文章相關且您可能會感興趣的主題",
+    "全球股市報告",
+    "國際市場行情",
+    "國際指數查詢",
+    "相關資源",
+    "股市指數追蹤",
+    "股票交易平台",
+    "股票市場分析",
+    "金融市場入門",
+    "閱讀市場資訊"
+   ],
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "www.stockq.org",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "checkbox": 7,
+    "radio": 3,
+    "text": 1
+   },
+   "selects": 3,
+   "forms": 2,
+   "ariaLabels": [
+    "A chart.",
+    "A tabular representation of the data in ",
+    "Advertisement",
+    "StockQ 首頁",
+    "主要導覽",
+    "主要連結",
+    "相關資源"
+   ],
+   "roles": {
+    "status": 1
+   },
+   "live": true
+  }
+ },
+ "controls": [
+  {
+   "l": "12星座分析",
+   "w": "md"
+  },
+  {
+   "l": "AI科技ETF",
+   "w": "md"
+  },
+  {
+   "l": "ETF",
+   "w": "md"
+  },
+  {
+   "l": "Hilton限時大禮包",
+   "w": "md"
+  },
+  {
+   "l": "Pasta Recipes",
+   "w": "md"
+  },
+  {
+   "l": "Salad Recipes",
+   "w": "md"
+  },
+  {
+   "l": "StockQ 首頁",
+   "w": "md"
+  },
+  {
+   "l": "Wordle answers",
+   "w": "md"
+  },
+  {
+   "l": "Wordle每日答案",
+   "w": "md"
+  },
+  {
+   "l": "債券",
+   "w": "d"
+  },
+  {
+   "l": "共同基金",
+   "w": "d"
+  },
+  {
+   "l": "其他",
+   "w": "d"
+  },
+  {
+   "l": "加密貨幣",
+   "w": "d"
+  },
+  {
+   "l": "台灣人辦美卡",
+   "w": "md"
+  },
+  {
+   "l": "台股",
+   "w": "d"
+  },
+  {
+   "l": "回復預設(刪除cookie)",
+   "w": "md"
+  },
+  {
+   "l": "基金分類",
+   "w": "md"
+  },
+  {
+   "l": "基金淨值",
+   "w": "md"
+  },
+  {
+   "l": "女性",
+   "w": "d"
+  },
+  {
+   "l": "市場動態",
+   "w": "md"
+  },
+  {
+   "l": "年齡",
+   "w": "d"
+  },
+  {
+   "l": "投資級公司債ETF",
+   "w": "md"
+  },
+  {
+   "l": "投資總額（台幣）",
+   "w": "d"
+  },
+  {
+   "l": "投資觀點",
+   "w": "md"
+  },
+  {
+   "l": "期貨報告",
+   "w": "md"
+  },
+  {
+   "l": "歷史股價",
+   "w": "md"
+  },
+  {
+   "l": "熱門美股",
+   "w": "md"
+  },
+  {
+   "l": "男性",
+   "w": "d"
+  },
+  {
+   "l": "紅漲綠跌",
+   "w": "md"
+  },
+  {
+   "l": "統一發票",
+   "w": "md"
+  },
+  {
+   "l": "經濟數據",
+   "w": "md"
+  },
+  {
+   "l": "綠漲紅跌",
+   "w": "md"
+  },
+  {
+   "l": "網站地圖",
+   "w": "md"
+  },
+  {
+   "l": "美卡套利",
+   "w": "md"
+  },
+  {
+   "l": "美股",
+   "w": "d"
+  },
+  {
+   "l": "聯絡我們",
+   "w": "md"
+  },
+  {
+   "l": "職業",
+   "w": "d"
+  },
+  {
+   "l": "股市比較",
+   "w": "md"
+  },
+  {
+   "l": "萬豪史高開卡禮",
+   "w": "md"
+  },
+  {
+   "l": "萬豪煉金術",
+   "w": "md"
+  },
+  {
+   "l": "行事曆",
+   "w": "md"
+  },
+  {
+   "l": "行動網站",
+   "w": "md"
+  },
+  {
+   "l": "辦美卡",
+   "w": "md"
+  },
+  {
+   "l": "送出問卷",
+   "w": "d"
+  },
+  {
+   "l": "隱私權政策",
+   "w": "md"
+  },
+  {
+   "l": "非投資等級債券ETF",
+   "w": "md"
+  },
+  {
+   "l": "首頁",
+   "w": "md"
+  },
+  {
+   "l": "高回饋美卡",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 4743,
+  "index": false,
+  "sections": [
+   {
+    "s": "funds",
+    "n": 2429
+   },
+   {
+    "s": "stock",
+    "n": 1391
+   },
+   {
+    "s": "index",
+    "n": 540
+   },
+   {
+    "s": "fundcategory",
+    "n": 131
+   },
+   {
+    "s": "future",
+    "n": 47
+   },
+   {
+    "s": "tv",
+    "n": 46
+   },
+   {
+    "s": "commodity",
+    "n": 37
+   },
+   {
+    "s": "taiwan",
+    "n": 31
+   },
+   {
+    "s": "forex",
+    "n": 28
+   },
+   {
+    "s": "signal",
+    "n": 22
+   },
+   {
+    "s": "market",
+    "n": 19
+   },
+   {
+    "s": "economy",
+    "n": 10
+   },
+   {
+    "s": "bond",
+    "n": 6
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "contact.php",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "hosts": [
+  {
+   "host": "www.stockq.org",
+   "file": "UST10Y_intraday.js",
+   "at": 112
+  }
+ ],
+ "thirdParty": [
+  "ads.whychip.com",
+  "analytics.google.com",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "fundingchoicesmessages.google.com",
+  "pagead2.googlesyndication.com",
+  "www.googletagmanager.com",
+  "www.gstatic.com"
+ ],
+ "services": [
+  "Ads",
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://analytics.google.com/g/collect?_ee&_eu&_fv&_gaz&_nsi&_p&_s&_ss",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://pagead2.googlesyndication.com/pagead/ping?e"
+ ],
+ "storage": {
+  "local": [
+   "google_ama_config"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Section /commodity/ (37 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /fundcategory/ (131 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /funds/ (2429 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /future/ (47 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /index/ (540 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /stock/ (1391 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /taiwan/ (31 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /tv/ (46 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

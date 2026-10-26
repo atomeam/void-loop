@@ -1,0 +1,23 @@
+{
+ "site": "stooq.com",
+ "url": "https://stooq.com/",
+ "scanned": "2026-10-26",
+ "blocked": {
+  "kind": "robots",
+  "why": "robots.txt disallows the page for every crawler"
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [
+   "/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

@@ -1,0 +1,68 @@
+# Reverse engineering of every tower site (tools/site-re.mjs; owner, 2026-10-26: "make sure you reverse-engineer each site so we dont miss any
+# hidden features"). Marketing pages and searches name what a site sells; its own client code also holds the shortcuts, URL parameters, export and
+# import formats, API paths, offline and share support, routes, flags and languages it does not advertise. This opens each site once like dev tools
+# (phone and desktop width, no clicks, no sign-in, no form, robots.txt respected, a wall recorded and never worked around; nothing but short facts
+# and evidence coordinates is kept) and writes domains/features/re/<floor>.json, then folds the candidates into the floor's features file under "re"
+# as "unbuilt (found by reverse engineering)" rows, which feature-scan queues like any gap. The session container cannot reach the sites; this runner can.
+# When it runs:
+#   by hand       `floor`: tower entry ids as the gate names them, several separated by commas ("photos: squoosh.app,kanban: wekan.fi"), one job
+#   once a week   the six entries never scanned or scanned 30 or more days ago, smallest site first (tools/site-re.mjs --which; easiest site first)
+# Same conventions as the tower gate: a run by hand has a group of its own (it neither waits for nor cuts short the weekly run), results are committed to
+# main with the workflow's own token (which starts no workflow; domains/ is not on the site, so no deploy), landed by resetting to the newest main and
+# putting only this run's re/ files back, so builders pushing meanwhile never conflict. A site that hangs costs five minutes, never the run.
+# Playbook: docs/playbooks/site-re.md.
+name: Site reverse engineering
+
+on:
+  workflow_dispatch:
+    inputs:
+      floor:
+        description: 'tower entry ids as the gate names them, several separated by commas (e.g. photos: squoosh.app,pdf: 10015.io); empty takes the six due (never scanned or 30+ days old), smallest first'
+        default: ''
+  schedule:
+    - cron: '23 5 * * 0'
+
+permissions:
+  contents: write # commit the findings
+
+concurrency:
+  group: ${{ github.event_name == 'workflow_dispatch' && format('site-re-hand-{0}', github.run_id) || 'site-re' }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # six sites about a minute each; a site that hangs is stopped after five minutes
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Read the sites' client code, one polite visit each
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          FLOOR: ${{ inputs.floor }}
+        run: |
+          if [ -n "$FLOOR" ]; then printf '%s\n' "$FLOOR" | tr ',' '\n' | sed 's/^ *//; s/ *$//' > floors.txt
+          else node tools/site-re.mjs --which 6 > floors.txt; fi
+          echo "reverse engineering: $(paste -sd, floors.txt)"
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 300 node tools/site-re.mjs "$f" || echo "::warning::$f not scanned (or stopped after 5 minutes)"; }; done < floors.txt
+          git ls-files -m -o --exclude-standard domains/features/re > scanned.txt; echo "files written:"; cat scanned.txt
+      - name: Commit the findings
+        run: |
+          [ -s scanned.txt ] || { echo "nothing scanned"; exit 0; }
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p "$RUNNER_TEMP/mine"; while IFS= read -r f; do cp "$f" "$RUNNER_TEMP/mine/$(basename "$f")"; done < scanned.txt
+          # builders and other scans push meanwhile: start again from the newest main, put only this run's files back, fold them in, push
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            mkdir -p domains/features/re; cp "$RUNNER_TEMP"/mine/*.json domains/features/re/
+            node tools/site-re.mjs --merge
+            git add domains/features
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Site reverse engineering: $(paste -sd, scanned.txt | sed 's#domains/features/re/##g; s#\.json##g') read from their client code"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done

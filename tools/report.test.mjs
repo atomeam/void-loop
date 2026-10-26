@@ -55,7 +55,7 @@ const deps = (over = {}) => {
 const post = (body, d) => reportAnswer(new Request('https://a-to-mind.com/api/answer', { method: 'POST' }), {}, body, d).then(async (r) => ({ status: r.status, j: await r.json() }));
 test('the route: one report per window for everyone, the same words the second time, no model call for a repeat', async () => {
   const d = deps(); const a = await post({ mode: 'market-report', kind: 'wrap' }, d), b = await post({ mode: 'market-report', kind: 'wrap' }, d);
-  assert.equal(a.j.ok, true); assert.equal(a.j.polished, true); assert.equal(b.j.cached, true); assert.equal(b.j.text, a.j.text); assert.equal(d.calls.model, 1); assert.match(a.j.label, /Written by Verse from/);
+  assert.equal(a.j.ok, true); assert.equal(a.j.polished, true); assert.equal(b.j.cached, true); assert.equal(b.j.text, a.j.text); assert.equal(d.calls.model, 1); assert.equal(a.j.mood, 'hopeful', 'the day\'s picture mood comes from the S&P 500 move (+0.42%)'); assert.match(a.j.label, /Written by Verse from/);
   const w = await post({ mode: 'market-report', kind: 'why', s: 'aapl' }, d); assert.equal(w.j.sym, 'AAPL'); assert.ok(w.j.text.endsWith(NO_CAUSE)); assert.equal(d.calls.model, 2);
   await post({ mode: 'market-report', kind: 'why', s: 'AAPL' }, d); assert.equal(d.calls.model, 2, 'the same symbol in the same window is kept');
   const later = await post({ mode: 'market-report', kind: 'why', s: 'AAPL' }, { ...d, now: AT + 7 * 3600e3 }); assert.equal(later.j.cached, undefined, 'a new window is a new report');
@@ -76,5 +76,5 @@ test('bounds: nothing but a kind and a resolvable symbol is read; no price means
   assert.equal((await post({ mode: 'market-report', kind: 'x' }, deps())).status, 400); assert.equal((await post({ mode: 'market-report', kind: 'why', s: 'http://evil.example' }, deps())).status, 400); assert.equal((await post({ mode: 'market-report', kind: 'why', data: { price: 1 } }, deps())).status, 400);
   const d = deps({ markets: { fetchFn: null, quoteBody: async () => ({ ok: false }), batch: async () => [] } }); const none = await post({ mode: 'market-report', kind: 'why', s: 'ZZZZ' }, d); assert.equal(none.j.ok, false); assert.equal(d.calls.model, 0);
   const busy = await post({ mode: 'market-report', kind: 'wrap' }, deps({ rateLimited: async () => true })); assert.equal(busy.status, 429);
-  const lie = deps(); await post({ mode: 'market-report', kind: 'why', s: 'AAPL', price: 1, pct: 99, text: 'buy' }, lie); assert.equal(lie.store.m.get('report:2026-10-23:why:AAPL:18').includes('99'), false, 'a number sent by a caller is never read');
+  const lie = deps(); await post({ mode: 'market-report', kind: 'why', s: 'AAPL', price: 1, pct: 99, text: 'buy' }, lie); assert.equal(lie.store.m.get('report:2026-10-23:v2:why:AAPL:18').includes('99'), false, 'a number sent by a caller is never read');
 });

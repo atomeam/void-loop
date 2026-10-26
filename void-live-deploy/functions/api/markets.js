@@ -13,7 +13,7 @@
 // answer.js is loaded when first needed, not at import: the report code (lib/report-run.js) reaches this file from answer.js, and a static import back would be a cycle
 const rateLimited = async (...a) => (await import('./answer.js')).rateLimited(...a);
 import { recordClose, RECORD_NAME } from '../../lib/markets-record.js';
-import { resolve, RANGES, parseStooqDaily, parseYahoo, summarize, closeOn, rowsFromPrices, rowsFromFx } from '../../lib/markets.js';
+import { capsRows, scanRows, COINS, resolve, RANGES, parseStooqDaily, parseYahoo, summarize, closeOn, rowsFromPrices, rowsFromFx } from '../../lib/markets.js';
 
 export const ID_RE = /^[a-z0-9-]{2,40}$/;
 const DEFAULT_IDS = 'bitcoin,ethereum,solana,ripple,dogecoin,cardano,litecoin,binancecoin';
@@ -123,8 +123,23 @@ export async function batch(request, env, list, f) {
   const rs = []; for (const s of String(list || '').split(',').slice(0, 12)) { const r = resolve(s); if (r && !rs.some((x) => x.sym === r.sym)) rs.push(r); }
   return Promise.all(rs.map((r) => quoteBody(request, env, r, '5d', '', f, true).then((q) => slimQ(q) || { ok: false, sym: r.sym, kind: q && q.kind })));
 }
+
+// the coin table (CoinGecko's top 50 by market cap, one call) and the screener's universe (16 shares and indices from the same quote cache, 30 coins in one call)
+const geckoMarkets = (f, qs) => get(f, 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=24h,7d&' + qs);
+export const SCAN_STOCKS = [...MOVERS, 'SPX', 'DJI', 'NDX', 'IXIC'];
+async function capsBody(f, now) {
+  try { const rows = capsRows(await geckoMarkets(f, 'order=market_cap_desc&per_page=50&page=1')); return rows.length >= 10 ? { ok: true, coins: rows, total: rows.reduce((a, r) => a + (r.cap || 0), 0), source: 'CoinGecko', delayed: true, at: new Date(now).toISOString() } : { ok: false, kind: 'away', say: 'The coin list did not answer just now.' }; } catch (_) { return { ok: false, kind: 'away', say: 'The coin list did not answer just now.' }; }
+}
+async function scanBody(request, env, f, now) {
+  const quotes = await Promise.all(SCAN_STOCKS.map((s) => quoteBody(request, env, resolve(s), '1y', '', f, true).catch(() => null)));
+  let coins = []; try { coins = capsRows(await geckoMarkets(f, 'ids=' + Object.values(COINS).map((c) => c[0]).join(',') + '&per_page=50')); } catch (_) {}
+  const rows = scanRows(quotes, coins);
+  return rows.length >= 8 ? { ok: true, rows, universe: { stocks: MOVERS.length, indices: 4, coins: coins.length }, source: 'Stooq, Yahoo Finance (fallback), CoinGecko', delayed: true, at: new Date(now).toISOString() } : { ok: false, kind: 'away', say: 'The price sources did not answer just now.' };
+}
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const u = new URL(request.url), p = u.searchParams, stamp = () => new Date().toISOString();
+  if (p.has('caps')) return reply(await cachedBody(request, env, 'caps', 300, () => capsBody(fetchFn, Date.now()), 'markets-batch', RL_BATCH), 300);
+  if (p.has('scan')) return reply(await cachedBody(request, env, 'scan', 300, () => scanBody(request, env, fetchFn, Date.now()), 'markets-batch', RL_BATCH), 300);
   if (p.has('strip')) { const quotes = (await batch(request, env, STRIP.join(','), fetchFn)).filter((q) => q.ok); return reply(quotes.length ? { ok: true, quotes, source: 'Stooq, CoinGecko, ECB', delayed: true, at: stamp() } : { ok: false, kind: 'away', say: 'The price sources did not answer.' }, 120); }
   if (p.has('movers')) {
     const q = (await batch(request, env, MOVERS.join(','), fetchFn)).filter((x) => x.ok && x.pct != null).sort((a, b) => b.pct - a.pct);

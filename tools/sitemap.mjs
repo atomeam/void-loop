@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { PAGES as PHOTO_PAGES } from './photos-pages.mjs';
 import { TOOLS } from '../void-live-deploy/lib/toolkit.js';
 import { DAYS, isIt } from '../void-live-deploy/skills/is-it.js';
 
@@ -55,6 +56,7 @@ export function lastmod(files, cwd = root, today = new Date().toISOString().slic
 export function pages({ tools = TOOLS, fixPages = [], days = DAYS } = {}) {
   const out = [{ loc: '/', changefreq: 'daily', priority: '1.0', files: [D + 'index.html'] }];
   for (const p of Object.keys(tools)) out.push({ loc: p, changefreq: 'weekly', priority: '0.9', files: [D + p.slice(1) + 'index.html'] });
+  for (const p of PHOTO_PAGES) out.push({ loc: '/photos/' + p.slug + '/', changefreq: 'weekly', priority: '0.8', files: [D + 'photos/' + p.slug + '/index.html'] }); // the photos lane's own pages (tools/photos-pages.mjs)
   out.push({ loc: '/conquered/', changefreq: 'daily', priority: '0.8', files: [D + 'conquered/index.html', D + 'tower.frontier.json'] });
   out.push({ loc: '/compare/', changefreq: 'daily', priority: '0.6', files: [D + 'compare/index.html', D + 'tower.frontier.json'] });
   for (const [loc, changefreq, priority, files] of KEPT) out.push({ loc, changefreq, priority, files });

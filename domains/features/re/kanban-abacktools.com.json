@@ -1,0 +1,1591 @@
+{
+ "site": "abacktools.com",
+ "url": "https://abacktools.[token]",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "0--sbr-beas~3.css",
+   "t": "css",
+   "b": 992
+  },
+  {
+   "f": "04litm7z_9za7.js",
+   "t": "js",
+   "b": 63865
+  },
+  {
+   "f": "05zi6l3~c4lhe.js",
+   "t": "js",
+   "b": 118569
+  },
+  {
+   "f": "07i5exesv8769.js",
+   "t": "js",
+   "b": 11394
+  },
+  {
+   "f": "09-xv9ots19we.js",
+   "t": "js",
+   "b": 27875
+  },
+  {
+   "f": "09856qqg_trg4.js",
+   "t": "js",
+   "b": 94711
+  },
+  {
+   "f": "0bq1~ib0k5zqf.js",
+   "t": "js",
+   "b": 22594
+  },
+  {
+   "f": "0d0_pl-02w.ek.js",
+   "t": "js",
+   "b": 38507
+  },
+  {
+   "f": "0e8u0245oklz8.js",
+   "t": "js",
+   "b": 44712
+  },
+  {
+   "f": "0jsjzcrhaf6vh.js",
+   "t": "js",
+   "b": 26780
+  },
+  {
+   "f": "0mhfzzv6aypti.js",
+   "t": "js",
+   "b": 155615
+  },
+  {
+   "f": "0o6u~jskkdk2e.js",
+   "t": "js",
+   "b": 29884
+  },
+  {
+   "f": "0p.3lz8-t_ju5.js",
+   "t": "js",
+   "b": 109853
+  },
+  {
+   "f": "0qdmpu2a3w408.js",
+   "t": "js",
+   "b": 31000
+  },
+  {
+   "f": "0rgyomk9_rp2d.js",
+   "t": "js",
+   "b": 226656
+  },
+  {
+   "f": "0rptz7yx.6qqt.js",
+   "t": "js",
+   "b": 49120
+  },
+  {
+   "f": "0suxhd9wfs7fu.js",
+   "t": "js",
+   "b": 136888
+  },
+  {
+   "f": "0w0jvzt5.qisa.js",
+   "t": "js",
+   "b": 5272
+  },
+  {
+   "f": "0yxg7rhu3z-6d.js",
+   "t": "js",
+   "b": 18201
+  },
+  {
+   "f": "10dss59v7~csf.js",
+   "t": "js",
+   "b": 30925
+  },
+  {
+   "f": "110da4n.h-7k1.js",
+   "t": "js",
+   "b": 31056
+  },
+  {
+   "f": "12_vhw_.rvqb1.js",
+   "t": "js",
+   "b": 28943
+  },
+  {
+   "f": "133ns~0arg1g1.js",
+   "t": "js",
+   "b": 56094
+  },
+  {
+   "f": "13stz44zhv4fq.js",
+   "t": "js",
+   "b": 109853
+  },
+  {
+   "f": "16zdj3zm99c98.css",
+   "t": "css",
+   "b": 545104
+  },
+  {
+   "f": "turbopack-0y.vq8lfvgfk..js",
+   "t": "js",
+   "b": 10653
+  },
+  {
+   "f": "exchange.journeymv.com/usersync.min.js",
+   "t": "js",
+   "b": 9395,
+   "ext": true
+  },
+  {
+   "f": "scripts.journeymv.com/wrapper.min.js",
+   "t": "js",
+   "b": 343415,
+   "ext": true
+  },
+  {
+   "f": "scripts.scriptwrapper.[token].js",
+   "t": "js",
+   "b": 79119,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 134274,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 540330,
+   "ext": true
+  }
+ ],
+ "assetCount": 32,
+ "bytes": 3163502,
+ "html": {
+  "mobile": {
+   "title": "Kanban Board - Free Online Drag-and-Drop",
+   "lang": "en",
+   "manifest": "https://abacktools.com/site.webmanifest",
+   "hreflang": [
+    "en",
+    "es",
+    "fr",
+    "pt-BR",
+    "de",
+    "ru",
+    "id",
+    "x-default"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 10,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "inputTypes": {
+    "email": 1,
+    "text": 1
+   },
+   "forms": 1,
+   "ariaLabels": [
+    "Advertisement",
+    "Backlog",
+    "Breadcrumb",
+    "Change language",
+    "Column options",
+    "Copy link",
+    "Delete card Build kanban board",
+    "Delete card Design landing page",
+    "Delete card Project setup",
+    "Delete card Set up CI/CD pipeline",
+    "Done",
+    "Edit card Build kanban board",
+    "Edit card Design landing page",
+    "Edit card Project setup",
+    "Edit card Set up CI/CD pipeline",
+    "Email for newsletter",
+    "In Progress",
+    "Open feedback form",
+    "Open global search dialog",
+    "Review",
+    "Share on Facebook",
+    "Share on LinkedIn",
+    "Share on WhatsApp",
+    "Share on X",
+    "Switch to dark mode",
+    "To Do",
+    "Toggle AI Tools subcategories",
+    "Toggle Audio &amp; Video subcategories",
+    "Toggle Business tools",
+    "Toggle Calculators tools",
+    "Toggle Calendar subcategories",
+    "Toggle Communication tools",
+    "Toggle Compress subcategories",
+    "Toggle Creative &amp; Design tools",
+    "Toggle Crypto &amp; Security subcategori",
+    "Toggle Data subcategories",
+    "Toggle Deobfuscator subcategories",
+    "Toggle Design &amp; Creative subcategori",
+    "Toggle File Tools subcategories",
+    "Toggle File Tools tools",
+    "Toggle Games &amp; Random tools",
+    "Toggle Generators tools",
+    "Toggle Health tools",
+    "Toggle Home &amp; Lifestyle tools",
+    "Toggle Image subcategories",
+    "Toggle Learning tools",
+    "Toggle Math &amp; Calculators subcategor",
+    "Toggle Network Tools subcategories",
+    "Toggle Network Tools tools",
+    "Toggle Obfuscator subcategories",
+    "Toggle PDF Tools subcategories",
+    "Toggle Payment subcategories",
+    "Toggle Planning tools",
+    "Toggle Productivity &amp; Utility subcat",
+    "Toggle Reference tools",
+    "Toggle Scheduling tools",
+    "Toggle Science &amp; Reference subcatego",
+    "Toggle Security &amp; Encryption tools",
+    "Toggle Text &amp; Writing subcategories",
+    "Toggle Timers tools"
+   ],
+   "roles": {
+    "status": 1,
+    "alert": 1
+   },
+   "live": true,
+   "skipLink": true,
+   "draggable": true,
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "AI Docs",
+   "w": "md"
+  },
+  {
+   "l": "AI Tools",
+   "w": "d"
+  },
+  {
+   "l": "Aback Tools",
+   "w": "md"
+  },
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Add card",
+   "w": "md"
+  },
+  {
+   "l": "Add column",
+   "w": "md"
+  },
+  {
+   "l": "Audio & Video",
+   "w": "d"
+  },
+  {
+   "l": "Backlog 0",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Business",
+   "w": "d"
+  },
+  {
+   "l": "Calculators",
+   "w": "d"
+  },
+  {
+   "l": "Calendar",
+   "w": "d"
+  },
+  {
+   "l": "Can I edit a card after creating it?",
+   "w": "md"
+  },
+  {
+   "l": "Change language",
+   "w": "md"
+  },
+  {
+   "l": "ChatGPT",
+   "w": "md"
+  },
+  {
+   "l": "Checklist Generator",
+   "w": "d"
+  },
+  {
+   "l": "Claude",
+   "w": "md"
+  },
+  {
+   "l": "Column options",
+   "w": "md"
+  },
+  {
+   "l": "Communication",
+   "w": "d"
+  },
+  {
+   "l": "Comparison Matrix Tool",
+   "w": "d"
+  },
+  {
+   "l": "Compress",
+   "w": "d"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Cookie Settings",
+   "w": "md"
+  },
+  {
+   "l": "Copy link",
+   "w": "d"
+  },
+  {
+   "l": "Creative & Design",
+   "w": "d"
+  },
+  {
+   "l": "Crypto & Security",
+   "w": "d"
+  },
+  {
+   "l": "DMCA",
+   "w": "md"
+  },
+  {
+   "l": "Daily Journal / Diary",
+   "w": "d"
+  },
+  {
+   "l": "Daily Planner",
+   "w": "d"
+  },
+  {
+   "l": "Data",
+   "w": "d"
+  },
+  {
+   "l": "Delete card Build kanban board",
+   "w": "md"
+  },
+  {
+   "l": "Delete card Design landing page",
+   "w": "md"
+  },
+  {
+   "l": "Delete card Project setup",
+   "w": "md"
+  },
+  {
+   "l": "Delete card Set up CI/CD pipeline",
+   "w": "md"
+  },
+  {
+   "l": "Deobfuscator",
+   "w": "d"
+  },
+  {
+   "l": "Design & Creative",
+   "w": "d"
+  },
+  {
+   "l": "Devvrat Hans",
+   "w": "md"
+  },
+  {
+   "l": "Does the Kanban Board work on mobile?",
+   "w": "md"
+  },
+  {
+   "l": "Done 1",
+   "w": "md"
+  },
+  {
+   "l": "Edit card Build kanban board",
+   "w": "md"
+  },
+  {
+   "l": "Edit card Design landing page",
+   "w": "md"
+  },
+  {
+   "l": "Edit card Project setup",
+   "w": "md"
+  },
+  {
+   "l": "Edit card Set up CI/CD pipeline",
+   "w": "md"
+  },
+  {
+   "l": "File Tools",
+   "w": "d"
+  },
+  {
+   "l": "Flowchart Builder",
+   "w": "d"
+  },
+  {
+   "l": "Games & Random",
+   "w": "d"
+  },
+  {
+   "l": "Generators",
+   "w": "d"
+  },
+  {
+   "l": "Grok",
+   "w": "md"
+  },
+  {
+   "l": "Guides",
+   "w": "md"
+  },
+  {
+   "l": "Health",
+   "w": "d"
+  },
+  {
+   "l": "Home",
+   "w": "md"
+  },
+  {
+   "l": "Home & Lifestyle",
+   "w": "d"
+  },
+  {
+   "l": "Image",
+   "w": "d"
+  },
+  {
+   "l": "In Progress 1",
+   "w": "md"
+  },
+  {
+   "l": "Invoice Generator",
+   "w": "d"
+  },
+  {
+   "l": "Is my data safe with this Kanban Board?",
+   "w": "md"
+  },
+  {
+   "l": "Kanban Board",
+   "w": "d"
+  },
+  {
+   "l": "Learning",
+   "w": "d"
+  },
+  {
+   "l": "Math & Calculators",
+   "w": "d"
+  },
+  {
+   "l": "Meal Planner",
+   "w": "d"
+  },
+  {
+   "l": "Mind Map Builder",
+   "w": "d"
+  },
+  {
+   "l": "Network Tools",
+   "w": "d"
+  },
+  {
+   "l": "Note-Taking App",
+   "w": "d"
+  },
+  {
+   "l": "OAuth metadata",
+   "w": "md"
+  },
+  {
+   "l": "Obfuscator",
+   "w": "d"
+  },
+  {
+   "l": "Open feedback form",
+   "w": "d"
+  },
+  {
+   "l": "Open global search dialog",
+   "w": "d"
+  },
+  {
+   "l": "PDF Tools",
+   "w": "d"
+  },
+  {
+   "l": "Payment",
+   "w": "d"
+  },
+  {
+   "l": "Perplexity",
+   "w": "md"
+  },
+  {
+   "l": "Planning",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Productivity & Utility",
+   "w": "d"
+  },
+  {
+   "l": "Productivity Tools",
+   "w": "md"
+  },
+  {
+   "l": "Recipe Scaler",
+   "w": "d"
+  },
+  {
+   "l": "Reference",
+   "w": "d"
+  },
+  {
+   "l": "Reset board",
+   "w": "md"
+  },
+  {
+   "l": "Review 0",
+   "w": "md"
+  },
+  {
+   "l": "Scheduling",
+   "w": "d"
+  },
+  {
+   "l": "Science & Reference",
+   "w": "d"
+  }
+ ],
+ "manifest": {
+  "name": "Aback Tools - Free Online Tools & Utilit",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "",
+  "icons": 2,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [
+   "/api/"
+  ],
+  "sitemaps": [
+   "https://abacktools.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 7,
+  "index": true,
+  "sections": [
+   {
+    "s": "sitemap-de.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-en.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-es.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-fr.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-id.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-pt.xml",
+    "n": 1
+   },
+   {
+    "s": "sitemap-ru.xml",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "04litm7z_9za7.js",
+   "own": true,
+   "storage": [
+    "theme@37587"
+   ],
+   "apis": [
+    "Follows the system dark mode"
+   ],
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "07i5exesv8769.js",
+   "own": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "09-xv9ots19we.js",
+   "own": true,
+   "extLists": [
+    ".css,.scss,.sass,.less,.svg,.png,.jpg,.jpeg,.gif,.webp,.avif,.wasm,.vue@26172",
+    ".md,.mdx,.html,.txt@26280",
+    ".ts,.tsx,.js,.jsx,.mjs,.cjs,.json@27367"
+   ],
+   "langs": 16
+  },
+  {
+   "file": "09856qqg_trg4.js",
+   "own": true,
+   "routes": [
+    "[token]@1858",
+    "/tools/productivity/games/chess@27715",
+    "/tools/productivity/games/2048@32765"
+   ],
+   "apis": [
+    "Compresses data in the browser"
+   ]
+  },
+  {
+   "file": "0bq1~ib0k5zqf.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "0d0_pl-02w.ek.js",
+   "own": true,
+   "mimes": [
+    "text/x-component"
+   ],
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "0jsjzcrhaf6vh.js",
+   "own": true,
+   "flags": [
+    "showCloseButton@26207"
+   ]
+  },
+  {
+   "file": "0p.3lz8-t_ju5.js",
+   "own": true,
+   "flags": [
+    "allowPinchZoom@30687",
+    "disableOutsidePointerEvents@31341"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "0qdmpu2a3w408.js",
+   "own": true,
+   "routes": [
+    "/tools@12108",
+    "/guides@12462",
+    "/blog@12815"
+   ],
+   "mimes": [
+    "text/partytown",
+    "image/x-adobe-dng",
+    "image/dng",
+    "image/x-dcraw",
+    "image/x-sony-arw",
+    "image/x-sony-sr2",
+    "image/x-sony-srf",
+    "image/x-canon-cr2",
+    "image/x-canon-cr3",
+    "image/x-canon-crw",
+    "image/x-nikon-nef",
+    "image/x-nikon-nrw",
+    "image/x-olympus-orf",
+    "image/x-fuji-raf",
+    "image/x-panasonic-rw2",
+    "image/x-panasonic-raw",
+    "image/x-pentax-pef",
+    "image/x-samsung-srw",
+    "image/x-epson-erf",
+    "image/x-kodak-kdc"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "0rgyomk9_rp2d.js",
+   "own": true,
+   "apis": [
+    "Picture in picture"
+   ]
+  },
+  {
+   "file": "0rptz7yx.6qqt.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "mimes": [
+    "image/jpeg",
+    "image/jpg",
+    "image/pjpeg",
+    "image/png",
+    "image/apng",
+    "image/gif",
+    "image/webp",
+    "image/avif",
+    "image/bmp",
+    "image/x-bmp",
+    "image/x-ms-bmp",
+    "image/x-icon",
+    "image/vnd.microsoft.icon",
+    "image/tiff",
+    "image/tif",
+    "image/x-tiff",
+    "image/heic",
+    "image/heif",
+    "image/x-adobe-dng",
+    "image/dng"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "0suxhd9wfs7fu.js",
+   "own": true,
+   "flags": [
+    "allowPartialStream@82448"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "0w0jvzt5.qisa.js",
+   "own": true,
+   "mimes": [
+    "text/partytown"
+   ]
+  },
+  {
+   "file": "0yxg7rhu3z-6d.js",
+   "own": true,
+   "routes": [
+    "/tools@11307",
+    "/guides@11661",
+    "/blog@12014"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "10dss59v7~csf.js",
+   "own": true,
+   "apiPaths": [
+    "/api/subscribe@14314",
+    "/api/feedback@20429"
+   ],
+   "flags": [
+    "showText@1390"
+   ],
+   "routes": [
+    "/support@797",
+    "/blog@847",
+    "/guides@897",
+    "/llms.txt@5365",
+    "/llms-full.txt@5405",
+    "/ai.txt@5443",
+    "/docs/index.md@5475",
+    "/auth.md@5514",
+    "/.[token]@5554",
+    "/sitemap.xml@5620",
+    "/robots.txt@5660",
+    "/about@5698",
+    "/contact@5875",
+    "/privacy-policy@5911",
+    "/terms-of-service@5950",
+    "/dmca@5989"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "110da4n.h-7k1.js",
+   "own": true,
+   "storage": [
+    "theme@20383"
+   ],
+   "apis": [
+    "Follows the system dark mode"
+   ],
+   "langs": 7,
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "13stz44zhv4fq.js",
+   "own": true,
+   "flags": [
+    "allowPinchZoom@30687",
+    "disableOutsidePointerEvents@31341"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "16zdj3zm99c98.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings",
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "turbopack-0y.vq8lfvgfk..js",
+   "own": true,
+   "apis": [
+    "WebAssembly engine (heavy work runs in the browser)"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "[token].cdn.bubble.io",
+   "file": "04litm7z_9za7.js",
+   "at": 45661
+  },
+  {
+   "host": "abacklaunch.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47031
+  },
+  {
+   "host": "abacktools.com",
+   "file": "110da4n.h-7k1.js",
+   "at": 8044
+  },
+  {
+   "host": "acidtools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47463
+  },
+  {
+   "host": "aiagentsdirectory.com",
+   "file": "04litm7z_9za7.js",
+   "at": 51081
+  },
+  {
+   "host": "aibesttop.com",
+   "file": "04litm7z_9za7.js",
+   "at": 46452
+  },
+  {
+   "host": "aiblog.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 46347
+  },
+  {
+   "host": "aidirs.best",
+   "file": "04litm7z_9za7.js",
+   "at": 47362
+  },
+  {
+   "host": "aidirs.org",
+   "file": "04litm7z_9za7.js",
+   "at": 46506
+  },
+  {
+   "host": "aifinder.site",
+   "file": "04litm7z_9za7.js",
+   "at": 44452
+  },
+  {
+   "host": "aigc160.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47580
+  },
+  {
+   "host": "aihuntlist.com",
+   "file": "04litm7z_9za7.js",
+   "at": 58193
+  },
+  {
+   "host": "aijustbetter.com",
+   "file": "04litm7z_9za7.js",
+   "at": 46659
+  },
+  {
+   "host": "ainewtool.site",
+   "file": "04litm7z_9za7.js",
+   "at": 48501
+  },
+  {
+   "host": "airanking.ai",
+   "file": "04litm7z_9za7.js",
+   "at": 52881
+  },
+  {
+   "host": "aitechviral.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47698
+  },
+  {
+   "host": "aitoolcenter.com",
+   "file": "04litm7z_9za7.js",
+   "at": 46100
+  },
+  {
+   "host": "aitoolfame.com",
+   "file": "04litm7z_9za7.js",
+   "at": 52211
+  },
+  {
+   "host": "aitooltrek.com",
+   "file": "04litm7z_9za7.js",
+   "at": 46285
+  },
+  {
+   "host": "aitoolzs.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47819
+  },
+  {
+   "host": "aitop10.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 51326
+  },
+  {
+   "host": "aixcollection.com",
+   "file": "04litm7z_9za7.js",
+   "at": 47941
+  },
+  {
+   "host": "allinai.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 43459
+  },
+  {
+   "host": "amzdir.com",
+   "file": "04litm7z_9za7.js",
+   "at": 57758
+  },
+  {
+   "host": "appalist.com",
+   "file": "04litm7z_9za7.js",
+   "at": 51860
+  },
+  {
+   "host": "appsytools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 53216
+  },
+  {
+   "host": "ashlist.com",
+   "file": "04litm7z_9za7.js",
+   "at": 53335
+  },
+  {
+   "host": "assets.bestsky.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 45318
+  },
+  {
+   "host": "auraplusplus.com",
+   "file": "04litm7z_9za7.js",
+   "at": 41024
+  },
+  {
+   "host": "awesome.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 61291
+  },
+  {
+   "host": "backlinkdirs.com",
+   "file": "04litm7z_9za7.js",
+   "at": 49324
+  },
+  {
+   "host": "beamtools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 56158
+  },
+  {
+   "host": "bestsky.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 45268
+  },
+  {
+   "host": "besttoolvault.com",
+   "file": "04litm7z_9za7.js",
+   "at": 48779
+  },
+  {
+   "host": "bit.ly",
+   "file": "0o6u~jskkdk2e.js",
+   "at": 4026
+  },
+  {
+   "host": "cdn.aijustbetter.com",
+   "file": "04litm7z_9za7.js",
+   "at": 46717
+  },
+  {
+   "host": "chatgpt.com",
+   "file": "10dss59v7~csf.js",
+   "at": 4175
+  },
+  {
+   "host": "claude.ai",
+   "file": "10dss59v7~csf.js",
+   "at": 4552
+  },
+  {
+   "host": "code.market",
+   "file": "04litm7z_9za7.js",
+   "at": 43648
+  },
+  {
+   "host": "dayslaunch.com",
+   "file": "04litm7z_9za7.js",
+   "at": 45138
+  },
+  {
+   "host": "deeplaunch.io",
+   "file": "04litm7z_9za7.js",
+   "at": 43965
+  },
+  {
+   "host": "devvrathans.com",
+   "file": "10dss59v7~csf.js",
+   "at": 7565
+  },
+  {
+   "host": "directoryhunt.org",
+   "file": "04litm7z_9za7.js",
+   "at": 52344
+  },
+  {
+   "host": "dironix.com",
+   "file": "04litm7z_9za7.js",
+   "at": 53115
+  },
+  {
+   "host": "divvlaunches.com",
+   "file": "04litm7z_9za7.js",
+   "at": 59452
+  },
+  {
+   "host": "dofollow.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 41352
+  },
+  {
+   "host": "domainrank.app",
+   "file": "04litm7z_9za7.js",
+   "at": 44712
+  },
+  {
+   "host": "drchecker.net",
+   "file": "04litm7z_9za7.js",
+   "at": 57888
+  },
+  {
+   "host": "earlyhunt.com",
+   "file": "04litm7z_9za7.js",
+   "at": 41933
+  },
+  {
+   "host": "famed.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 50184
+  },
+  {
+   "host": "fazier.com",
+   "file": "04litm7z_9za7.js",
+   "at": 39589
+  },
+  {
+   "host": "findly.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 40116
+  },
+  {
+   "host": "firstlook.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 44243
+  },
+  {
+   "host": "geoly.net",
+   "file": "04litm7z_9za7.js",
+   "at": 44574
+  },
+  {
+   "host": "gets.tools",
+   "file": "04litm7z_9za7.js",
+   "at": 49483
+  },
+  {
+   "host": "goodaitools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 48909
+  },
+  {
+   "host": "grok.com",
+   "file": "10dss59v7~csf.js",
+   "at": 5324
+  },
+  {
+   "host": "hotools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 49985
+  },
+  {
+   "host": "huntfortools.com",
+   "file": "04litm7z_9za7.js",
+   "at": 43203
+  },
+  {
+   "host": "img.turbo0.com",
+   "file": "04litm7z_9za7.js",
+   "at": 40323
+  }
+ ],
+ "thirdParty": [
+  "[token].cdn.bubble.io",
+  "abacklaunch.com",
+  "acidtools.com",
+  "aiagentsdirectory.com",
+  "aibesttop.com",
+  "aiblog.tools",
+  "aidirs.best",
+  "aidirs.org",
+  "aifinder.site",
+  "aigc160.com",
+  "aihuntlist.com",
+  "aijustbetter.com",
+  "ainewtool.site",
+  "airanking.ai",
+  "aitechviral.com",
+  "aitoolcenter.com",
+  "aitoolfame.com",
+  "aitooltrek.com",
+  "aitoolzs.com",
+  "aitop10.tools",
+  "aixcollection.com",
+  "allinai.tools",
+  "amzdir.com",
+  "appalist.com",
+  "appsytools.com",
+  "ashlist.com",
+  "assets.bestsky.tools",
+  "auraplusplus.com",
+  "awesome.tools",
+  "backlinkdirs.com",
+  "beamtools.com",
+  "bestsky.tools",
+  "besttoolvault.com",
+  "bit.ly",
+  "cdn.aijustbetter.com",
+  "chatgpt.com",
+  "claude.ai",
+  "code.market",
+  "dayslaunch.com",
+  "deeplaunch.io",
+  "devvrathans.com",
+  "directoryhunt.org",
+  "dironix.com",
+  "divvlaunches.com",
+  "dofollow.tools",
+  "domainrank.app",
+  "drchecker.net",
+  "earlyhunt.com",
+  "exchange.journeymv.com",
+  "famed.tools",
+  "fazier.com",
+  "findly.tools",
+  "firstlook.tools",
+  "geoly.net",
+  "gets.tools",
+  "goodaitools.com",
+  "grok.com",
+  "hotools.com",
+  "huntfortools.com",
+  "img.turbo0.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://abacktools.com/cdn-cgi/rum",
+  "https://abacktools.com/search-index.json",
+  "https://exchange.journeymv.com/ias/check?s2sVersion",
+  "https://keywords.journeymv.com/keyword?pageUrl",
+  "https://scripts.journeymv.com/launcher/settings.json?off",
+  "https://scripts.scriptwrapper.com/flooring/countryLookup",
+  "https://www.google-analytics.com/g/collect?_ee&_fv&_nsi&_p&_s&_ss&_tu&cid"
+ ],
+ "storage": {
+  "local": [
+   "abacktools-kanban-board",
+   "mv_session"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Accepts the file types .css,.scss,.sass,.less,.svg,.png,.jpg,.jpeg,.gif,.",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "09-xv9ots19we.js@26172"
+  },
+  {
+   "name": "Accepts the file types .md,.mdx,.html,.txt",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "09-xv9ots19we.js@26280"
+  },
+  {
+   "name": "Accepts the file types .ts,.tsx,.js,.jsx,.mjs,.cjs,.json",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "09-xv9ots19we.js@27367"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "16zdj3zm99c98.css"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "API path /api/feedback",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@20429"
+  },
+  {
+   "name": "API path /api/subscribe",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@14314"
+  },
+  {
+   "name": "Feature flag allowPartialStream",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0suxhd9wfs7fu.js@82448"
+  },
+  {
+   "name": "Feature flag allowPinchZoom",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0p.3lz8-t_ju5.js@30687"
+  },
+  {
+   "name": "Feature flag disableOutsidePointerEvents",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0p.3lz8-t_ju5.js@31341"
+  },
+  {
+   "name": "Feature flag showCloseButton",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0jsjzcrhaf6vh.js@26207"
+  },
+  {
+   "name": "Feature flag showText",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "10dss59v7~csf.js@1390"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "0rptz7yx.6qqt.js@513"
+  },
+  {
+   "name": "Picture in picture",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "0rgyomk9_rp2d.js@171263"
+  },
+  {
+   "name": "Draggable items",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "[draggable=true]"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Remembers a setting in the browser: abacktools-kanban-board",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: mv_session",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Interface languages: 16 (px, py, ps, pe, pt, pr)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "09-xv9ots19we.js@23608"
+  },
+  {
+   "name": "Interface languages: 7 (en, es, fr, pt, de, ru)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "110da4n.h-7k1.js@7965"
+  },
+  {
+   "name": "Language versions: 8 (en, es, fr, pt-BR, de, ru)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Compresses data in the browser",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "09856qqg_trg4.js@54346"
+  },
+  {
+   "name": "WebAssembly engine (heavy work runs in the browser)",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "turbopack-0y.vq8lfvgfk..js@10421"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "04litm7z_9za7.js"
+  },
+  {
+   "name": "Follows the system dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "04litm7z_9za7.js@37721"
+  },
+  {
+   "name": "Respects high-contrast settings",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "16zdj3zm99c98.css@344871"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "16zdj3zm99c98.css@353809"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Skip to content link",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "a[href^=\"#main\"]"
+  },
+  {
+   "name": "Path kept from crawlers /api/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Route /.[token]",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5554"
+  },
+  {
+   "name": "Route /about",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5698"
+  },
+  {
+   "name": "Route /ai.txt",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5443"
+  },
+  {
+   "name": "Route /auth.md",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5514"
+  },
+  {
+   "name": "Route /blog",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "0qdmpu2a3w408.js@12815"
+  },
+  {
+   "name": "Route /contact",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5875"
+  },
+  {
+   "name": "Route /dmca",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5989"
+  },
+  {
+   "name": "Route /docs/index.md",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5475"
+  },
+  {
+   "name": "Route /guides",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "0qdmpu2a3w408.js@12462"
+  },
+  {
+   "name": "Route /llms-full.txt",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5405"
+  },
+  {
+   "name": "Route /llms.txt",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5365"
+  },
+  {
+   "name": "Route /privacy-policy",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5911"
+  },
+  {
+   "name": "Route /robots.txt",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5660"
+  },
+  {
+   "name": "Route /sitemap.xml",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5620"
+  },
+  {
+   "name": "Route /support",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@797"
+  },
+  {
+   "name": "Route /terms-of-service",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "10dss59v7~csf.js@5950"
+  },
+  {
+   "name": "Route /tools",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "0qdmpu2a3w408.js@12108"
+  },
+  {
+   "name": "Route /tools/productivity/games/2048",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "09856qqg_trg4.js@32765"
+  },
+  {
+   "name": "Route /tools/productivity/games/chess",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "09856qqg_trg4.js@27715"
+  },
+  {
+   "name": "Route [token]",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "09856qqg_trg4.js@1858"
+  }
+ ]
+}

@@ -1,0 +1,1651 @@
+{
+ "site": "www.metronomeonline.com",
+ "url": "https://www.metronomeonline.com/",
+ "scanned": "2026-10-26",
+ "status": 301,
+ "assets": [
+  {
+   "f": "a.ad.gt/474",
+   "t": "js",
+   "b": 9263,
+   "ext": true
+  },
+  {
+   "f": "a.amxrtb.com/cframe.js",
+   "t": "js",
+   "b": 14439,
+   "ext": true
+  },
+  {
+   "f": "a.pub.network/cls.css",
+   "t": "css",
+   "b": 5132,
+   "ext": true
+  },
+  {
+   "f": "a.pub.network/prebid.js",
+   "t": "js",
+   "b": 482440,
+   "ext": true
+  },
+  {
+   "f": "a.pub.network/pubfig.engine.js",
+   "t": "js",
+   "b": 587011,
+   "ext": true
+  },
+  {
+   "f": "a.pub.network/pubfig.min.js",
+   "t": "js",
+   "b": 90298,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/client",
+   "t": "js",
+   "b": 276306,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/style",
+   "t": "css",
+   "b": 696,
+   "ext": true
+  },
+  {
+   "f": "ads.pubmatic.com/userSync.js",
+   "t": "js",
+   "b": 11177,
+   "ext": true
+  },
+  {
+   "f": "agent.intentiq.com/IIQAgent.js",
+   "t": "js",
+   "b": 214294,
+   "ext": true
+  },
+  {
+   "f": "agent.intentiq.com/IIQAgent.js",
+   "t": "js",
+   "b": 214294,
+   "ext": true
+  },
+  {
+   "f": "apps.smartadserver.com/csync.js",
+   "t": "js",
+   "b": 2672,
+   "ext": true
+  },
+  {
+   "f": "apps.smartadserver.com/csync.js",
+   "t": "js",
+   "b": 2672,
+   "ext": true
+  },
+  {
+   "f": "apps.smartadserver.com/csync.js",
+   "t": "js",
+   "b": 2672,
+   "ext": true
+  },
+  {
+   "f": "btloader.com/tag",
+   "t": "js",
+   "b": 96452,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/apstag.js",
+   "t": "js",
+   "b": 372701,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/aps_csm.js",
+   "t": "js",
+   "b": 6482,
+   "ext": true
+  },
+  {
+   "f": "cdn.hadronid.net/hadron.js",
+   "t": "js",
+   "b": 59325,
+   "ext": true
+  },
+  {
+   "f": "cdn.hadronid.net/hadron.js",
+   "t": "js",
+   "b": 59325,
+   "ext": true
+  },
+  {
+   "f": "cdn.iubenda.com/core-en.js",
+   "t": "js",
+   "b": 451487,
+   "ext": true
+  },
+  {
+   "f": "cdn.iubenda.com/tcf-v2-0.31.11.js",
+   "t": "js",
+   "b": 89684,
+   "ext": true
+  },
+  {
+   "f": "cdn.iubenda.com/ui-v2.iife.js",
+   "t": "js",
+   "b": 167639,
+   "ext": true
+  },
+  {
+   "f": "ced-ns.sascdn.com/cmp.js",
+   "t": "js",
+   "b": 24804,
+   "ext": true
+  },
+  {
+   "f": "csync-us.smartadserver.com/TemplatePool.min.js",
+   "t": "js",
+   "b": 19191,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/CookieSync.min.js",
+   "t": "js",
+   "b": 75330,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/TemplatePool.min.js",
+   "t": "js",
+   "b": 382605,
+   "ext": true
+  },
+  {
+   "f": "embeds.iubenda.[token].js",
+   "t": "js",
+   "b": 66546,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 1202,
+   "ext": true
+  },
+  {
+   "f": "freestar.solutions.cdn.optable.co/freestar-sdk.js",
+   "t": "js",
+   "b": 119471,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/omid-session-client-v1.5.6.js",
+   "t": "js",
+   "b": 70660,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/omweb-v1.5.6.js",
+   "t": "js",
+   "b": 45411,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/prebidVid.10.23.29.min.js",
+   "t": "js",
+   "b": 705974,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/primisslate.min.css",
+   "t": "css",
+   "b": 14512,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/hls.0.12.4_3.min.js",
+   "t": "js",
+   "b": 264636,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/liveVideo.php",
+   "t": "js",
+   "b": 1323534,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/liveView.php",
+   "t": "js",
+   "b": 66333,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/liveView.php",
+   "t": "js",
+   "b": 5553,
+   "ext": true
+  },
+  {
+   "f": "live.primis.tech/deflate.min.js",
+   "t": "js",
+   "b": 12823,
+   "ext": true
+  },
+  {
+   "f": "metrics.rapidedge.io/gamera.js",
+   "t": "js",
+   "b": 126170,
+   "ext": true
+  },
+  {
+   "f": "p.ad.gt/474",
+   "t": "js",
+   "b": 25684,
+   "ext": true
+  },
+  {
+   "f": "pixels.ad.gt/getpixels",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "pxl.iqm.com/mnet",
+   "t": "js",
+   "b": 2488,
+   "ext": true
+  },
+  {
+   "f": "script.hotjar.com/modules.fe0d6537f87c9cb831d4.js",
+   "t": "js",
+   "b": 239675,
+   "ext": true
+  },
+  {
+   "f": "scripts.mf.webcontentassessor.[token]",
+   "t": "js",
+   "b": 360414,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/pubads_impl.js",
+   "t": "js",
+   "b": 686549,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 134479,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "static.hotjar.com/hotjar-3208430.js",
+   "t": "js",
+   "b": 17009,
+   "ext": true
+  },
+  {
+   "f": "usync.4dex.io/usync.js",
+   "t": "js",
+   "b": 7489,
+   "ext": true
+  },
+  {
+   "f": "usync.4dex.io/usync.js",
+   "t": "js",
+   "b": 7489,
+   "ext": true
+  },
+  {
+   "f": "usync.ingage.tech/main.js",
+   "t": "js",
+   "b": 24159,
+   "ext": true
+  },
+  {
+   "f": "usync.ingage.tech/main.js",
+   "t": "js",
+   "b": 24159,
+   "ext": true
+  },
+  {
+   "f": "wt.rqtrk.[token].js",
+   "t": "js",
+   "b": 10640,
+   "ext": true
+  },
+  {
+   "f": "04b6758.js",
+   "t": "js",
+   "b": 255656
+  },
+  {
+   "f": "0bedd5b.js",
+   "t": "js",
+   "b": 55295
+  },
+  {
+   "f": "5ad9983.js",
+   "t": "js",
+   "b": 35977
+  },
+  {
+   "f": "5c411fe.js",
+   "t": "js",
+   "b": 33481
+  },
+  {
+   "f": "609db8d.js",
+   "t": "js",
+   "b": 6513
+  },
+  {
+   "f": "6121226.js",
+   "t": "js",
+   "b": 19608
+  },
+  {
+   "f": "9971943.js",
+   "t": "js",
+   "b": 10888
+  },
+  {
+   "f": "ada254c.js",
+   "t": "js",
+   "b": 35628
+  },
+  {
+   "f": "b0ba772.js",
+   "t": "js",
+   "b": 35632
+  },
+  {
+   "f": "b395047.js",
+   "t": "js",
+   "b": 261
+  },
+  {
+   "f": "b6d442e.js",
+   "t": "js",
+   "b": 6992
+  },
+  {
+   "f": "bc02ae6.js",
+   "t": "js",
+   "b": 121968
+  },
+  {
+   "f": "c29c16d.js",
+   "t": "js",
+   "b": 59561
+  },
+  {
+   "f": "cb01d75.js",
+   "t": "js",
+   "b": 4805
+  },
+  {
+   "f": "0380840.css",
+   "t": "css",
+   "b": 122
+  },
+  {
+   "f": "1bc20d6.css",
+   "t": "css",
+   "b": 9897
+  },
+  {
+   "f": "70398f7.css",
+   "t": "css",
+   "b": 18949
+  },
+  {
+   "f": "7977f56.css",
+   "t": "css",
+   "b": 10463
+  },
+  {
+   "f": "885dd62.css",
+   "t": "css",
+   "b": 7792
+  },
+  {
+   "f": "98fb3c8.css",
+   "t": "css",
+   "b": 6028
+  },
+  {
+   "f": "9b5c403.css",
+   "t": "css",
+   "b": 251
+  },
+  {
+   "f": "bc79b5b.css",
+   "t": "css",
+   "b": 19674
+  },
+  {
+   "f": "d318bb5.css",
+   "t": "css",
+   "b": 3344
+  },
+  {
+   "f": "d1ab741.js",
+   "t": "js",
+   "b": 173495
+  },
+  {
+   "f": "f52331f.js",
+   "t": "js",
+   "b": 359468
+  },
+  {
+   "f": "f79595d.js",
+   "t": "js",
+   "b": 316235
+  }
+ ],
+ "assetCount": 82,
+ "bytes": 9820891,
+ "html": {
+  "mobile": {
+   "title": "Free Online Metronome – Accurate BPM Tem",
+   "lang": "en",
+   "manifest": "https://www.metronomeonline.com/site.webmanifest",
+   "hreflang": [
+    "en",
+    "de",
+    "fr",
+    "es",
+    "pt-BR",
+    "ja",
+    "zh-Hant",
+    "x-default"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 9,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.metronomeonline.com",
+    "ads.pubmatic.com",
+    "u.openx.net",
+    "cs-server-s2s.yellowblue.io",
+    "rtb.nexverse.ai",
+    "www.metronomeonline.com",
+    "www.metronomeonline.com",
+    "metronomeonline-35f8e.firebaseapp.com",
+    "static.fsrv.io",
+    "ssp-sync.criteo.com",
+    "hbx.media.net",
+    "ssp-sync.criteo.com",
+    "apps.smartadserver.com",
+    "acdn.adnxs.com",
+    "js-sec.indexww.com",
+    "eus.rubiconproject.com",
+    "hbx.media.net",
+    "js-sec.indexww.com",
+    "ads.pubmatic.com",
+    "gum.criteo.com",
+    "primis-d.openx.net",
+    "gum.criteo.com",
+    "js-sec.indexww.com",
+    "gum.criteo.com",
+    "apps.smartadserver.com",
+    "apps.smartadserver.com",
+    "ssum-sec.casalemedia.com",
+    "ssum-sec.casalemedia.com",
+    "hbx.media.net"
+   ],
+   "inputTypes": {
+    "checkbox": 2,
+    "email": 1,
+    "range": 1
+   },
+   "selects": 3,
+   "forms": 1,
+   "ariaLabels": [
+    "Close Ad"
+   ]
+  },
+  "desktop": {
+   "iframes": [
+    "www.metronomeonline.com",
+    "ads.pubmatic.com",
+    "u.openx.net",
+    "cs-server-s2s.yellowblue.io",
+    "rtb.nexverse.ai",
+    "www.metronomeonline.com",
+    "www.metronomeonline.com",
+    "static.fsrv.io",
+    "ssp-sync.criteo.com",
+    "hbx.media.net",
+    "ssp-sync.criteo.com",
+    "js-sec.indexww.com",
+    "acdn.adnxs.com",
+    "primis-d.openx.net",
+    "eus.rubiconproject.com",
+    "ads.pubmatic.com",
+    "hbx.media.net",
+    "js-sec.indexww.com",
+    "gum.criteo.com",
+    "js-sec.indexww.com",
+    "gum.criteo.com",
+    "gum.criteo.com",
+    "apps.smartadserver.com",
+    "apps.smartadserver.com",
+    "apps.smartadserver.com",
+    "eb2.3lift.com",
+    "ssum-sec.casalemedia.com",
+    "hbx.media.net",
+    "ssum-sec.casalemedia.com"
+   ],
+   "inputTypes": {
+    "checkbox": 2,
+    "email": 1,
+    "range": 1,
+    "tel": 1
+   },
+   "selects": 5,
+   "ariaLabels": [
+    "Close Ad",
+    "Full Screen",
+    "Next Video",
+    "Pause",
+    "Play",
+    "Previous Video",
+    "Share",
+    "Skip seconds back",
+    "Skip seconds forward",
+    "Sound Off",
+    "Sound On",
+    "The 4 Most Important Drum Grooves - Drum"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16",
+   "w": "d"
+  },
+  {
+   "l": "1 2 4 8",
+   "w": "d"
+  },
+  {
+   "l": "ABOUT",
+   "w": "md"
+  },
+  {
+   "l": "ADD YOUR EMAIL",
+   "w": "md"
+  },
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Articles",
+   "w": "md"
+  },
+  {
+   "l": "CONTACT US",
+   "w": "md"
+  },
+  {
+   "l": "Close Ad",
+   "w": "md"
+  },
+  {
+   "l": "Contact Us",
+   "w": "md"
+  },
+  {
+   "l": "HELP CENTER",
+   "w": "md"
+  },
+  {
+   "l": "Home",
+   "w": "md"
+  },
+  {
+   "l": "Login",
+   "w": "md"
+  },
+  {
+   "l": "METRONOME ONLINE",
+   "w": "md"
+  },
+  {
+   "l": "Metronome Online Facebook",
+   "w": "md"
+  },
+  {
+   "l": "Metronome Online Instagram",
+   "w": "md"
+  },
+  {
+   "l": "Metronome Online Twitter",
+   "w": "md"
+  },
+  {
+   "l": "PRIVACY & COOKIES",
+   "w": "md"
+  },
+  {
+   "l": "Register",
+   "w": "md"
+  },
+  {
+   "l": "SITEMAP",
+   "w": "md"
+  },
+  {
+   "l": "Subscribe",
+   "w": "md"
+  },
+  {
+   "l": "TERMS OF USE",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "Metronome",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "",
+  "icons": 2,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [
+   "/dashboard",
+   "/profile",
+   "/login",
+   "/register",
+   "/forgot-password",
+   "/paywall",
+   "/subscription",
+   "/adTest",
+   "/*?primis_content=",
+   "/*&primis_content=",
+   "/*?mobile-app=",
+   "/*&mobile-app=",
+   "/*?theme=",
+   "/*&theme="
+  ],
+  "sitemaps": [
+   "https://www.metronomeonline.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 137,
+  "index": false,
+  "sections": [
+   {
+    "s": "blog",
+    "n": 124
+   },
+   {
+    "s": "%E3%83%A1%E3%83%88%E3%83%AD%E3",
+    "n": 1
+   },
+   {
+    "s": "%E7%B7%9A%E4%B8%8A%E7%AF%80%E6",
+    "n": 1
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "about",
+    "n": 1
+   },
+   {
+    "s": "help-center",
+    "n": 1
+   },
+   {
+    "s": "mastery",
+    "n": 1
+   },
+   {
+    "s": "metronom-online",
+    "n": 1
+   },
+   {
+    "s": "metronome-en-ligne",
+    "n": 1
+   },
+   {
+    "s": "metronomo-on-line",
+    "n": 1
+   },
+   {
+    "s": "metronomo-online",
+    "n": 1
+   },
+   {
+    "s": "privacy-policy",
+    "n": 1
+   },
+   {
+    "s": "sitemap",
+    "n": 1
+   },
+   {
+    "s": "terms-of-use",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "04b6758.js",
+   "own": true,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "0bedd5b.js",
+   "own": true,
+   "flags": [
+    "showPulseInfo@1695",
+    "showTaskTimeSignatureButton@1730",
+    "useTuner@7535",
+    "useGrouping@14904"
+   ]
+  },
+  {
+   "file": "5ad9983.js",
+   "own": true,
+   "flags": [
+    "showAuthPanel@14983"
+   ],
+   "storage": [
+    "proceedToPayment@6916"
+   ]
+  },
+  {
+   "file": "6121226.js",
+   "own": true,
+   "apis": [
+    "Syncs between tabs"
+   ]
+  },
+  {
+   "file": "9971943.js",
+   "own": true,
+   "storage": [
+    "totalTime@4696",
+    "practiceDate@4733",
+    "stripeId@4773"
+   ],
+   "routes": [
+    "/login@6684",
+    "/register@6857"
+   ]
+  },
+  {
+   "file": "ada254c.js",
+   "own": true,
+   "params": [
+    "checkout_canceled@30099"
+   ],
+   "storage": [
+    "google_one_tap_last_shown@12270"
+   ],
+   "routes": [
+    "/sitemap/@25323"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "b0ba772.js",
+   "own": true,
+   "storage": [
+    "wce_first_visit@30802"
+   ]
+  },
+  {
+   "file": "bc02ae6.js",
+   "own": true,
+   "apiPaths": [
+    "/v1/accounts:lookup@35227",
+    "/v1/token@37250",
+    "/v1/accounts:delete@41193",
+    "/v1/accounts:resetPassword@56614",
+    "/v1/accounts:update@56692",
+    "/v1/accounts:sendOobCode@56758",
+    "/v1/accounts:signInWithPassword@57580",
+    "/v1/accounts:signInWithEmailLink@57752",
+    "/v1/accounts:signInWithIdp@58329",
+    "/v1/accounts:signInWithPhoneNumber@60304",
+    "/v1/accounts:signUp@68076",
+    "/v1/accounts:signInWithCustomToken@71147",
+    "/v1/accounts:createAuthUri@74175",
+    "/v2/accounts/mfaEnrollment:withdraw@79054",
+    "/v1/recaptchaParams@95490",
+    "/v2/accounts/mfaEnrollment:start@96541",
+    "/v2/accounts/mfaSignIn:start@96918",
+    "/v1/accounts:sendVerificationCode@97156",
+    "/v1/projects@105864",
+    "/v2/accounts/mfaEnrollment:finalize@112445",
+    "/v2/accounts/mfaSignIn:finalize@112646"
+   ]
+  },
+  {
+   "file": "d1ab741.js",
+   "own": true,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "f52331f.js",
+   "own": true,
+   "flags": [
+    "disableScriptLoad@204681",
+    "useNestjs@299447",
+    "enableLongTask@311084"
+   ],
+   "storage": [
+    "nuxt-reload@4937"
+   ],
+   "routes": [
+    "/404@250620",
+    "/about@250718",
+    "/adTest@250820",
+    "/adTestHomepage@250924",
+    "/blog@251080",
+    "/dashboard@251180",
+    "/forgot-password@251326",
+    "/help-center@251470",
+    "/login@251584",
+    "/mastery@251708",
+    "/metronom-online@251814",
+    "/metronome-en-ligne@251972",
+    "/metronomo-on-line@252136",
+    "/metronomo-online@252298",
+    "/paywall@252458",
+    "/privacy-policy@252564",
+    "/profile@252684",
+    "/register@252790",
+    "/sitemap@252920",
+    "/subscription@253026",
+    "/terms-of-use@253142",
+    "/blog/:slug@253258",
+    "/:slug@253524",
+    "/apple-touch-icon.png@344222",
+    "/favicon-32x32.png@344295",
+    "/favicon-16x16.png@344365",
+    "/site.webmanifest@344408",
+    "/safari-pinned-tab.svg@344451",
+    "/fonts/montserrat-bold.latin.woff2@344590",
+    "/fonts/montserrat-regular.latin.woff2@344700"
+   ],
+   "apis": [
+    "Background worker threads"
+   ],
+   "mimes": [
+    "image/png"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "f8d2df3.js",
+   "own": true,
+   "flags": [
+    "showPaywall@11233",
+    "showDialog@15905"
+   ],
+   "storage": [
+    "cp_ip_address@4301",
+    "user_pseudo_id@4876",
+    "stripeId@7746",
+    "colorScheme@10824"
+   ]
+  },
+  {
+   "file": "rocket-loader.min.js",
+   "own": true,
+   "mimes": [
+    "application/ecmascript",
+    "application/x-ecmascript",
+    "application/x-javascript",
+    "text/ecmascript",
+    "text/javascript1.0",
+    "text/javascript1.1",
+    "text/javascript1.2",
+    "text/javascript1.3",
+    "text/javascript1.4",
+    "text/javascript1.5",
+    "text/jscript",
+    "text/livescript",
+    "text/x-ecmascript",
+    "text/x-javascript"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "[token].cloudfunctions.net",
+   "file": "f8d2df3.js",
+   "at": 20826
+  },
+  {
+   "host": "a.pub.network",
+   "file": "b0ba772.js",
+   "at": 25840
+  },
+  {
+   "host": "accounts.google.com",
+   "file": "f52331f.js",
+   "at": 345412
+  },
+  {
+   "host": "api.btloader.com",
+   "file": "f52331f.js",
+   "at": 345141
+  },
+  {
+   "host": "api.ipify.org",
+   "file": "f8d2df3.js",
+   "at": 4425
+  },
+  {
+   "host": "api.moosend.com",
+   "file": "ada254c.js",
+   "at": 22150
+  },
+  {
+   "host": "apis.google.com",
+   "file": "bc02ae6.js",
+   "at": 107127
+  },
+  {
+   "host": "apps.apple.com",
+   "file": "9971943.js",
+   "at": 1155
+  },
+  {
+   "host": "axios-http.com",
+   "file": "04b6758.js",
+   "at": 253514
+  },
+  {
+   "host": "b.pub.network",
+   "file": "f52331f.js",
+   "at": 344886
+  },
+  {
+   "host": "btloader.com",
+   "file": "f52331f.js",
+   "at": 345078
+  },
+  {
+   "host": "c.pub.network",
+   "file": "f52331f.js",
+   "at": 344950
+  },
+  {
+   "host": "content.metronomeonline.com",
+   "file": "f8d2df3.js",
+   "at": 12681
+  },
+  {
+   "host": "d.pub.network",
+   "file": "f52331f.js",
+   "at": 345014
+  },
+  {
+   "host": "embeds.iubenda.com",
+   "file": "f52331f.js",
+   "at": 345298
+  },
+  {
+   "host": "firebase.googleapis.com",
+   "file": "6121226.js",
+   "at": 11973
+  },
+  {
+   "host": "firebaseinstallations.googleapis.com",
+   "file": "6121226.js",
+   "at": 921
+  },
+  {
+   "host": "live.primis.tech",
+   "file": "b0ba772.js",
+   "at": 32327
+  },
+  {
+   "host": "metronomeonline-35f8e.firebaseio.com",
+   "file": "f52331f.js",
+   "at": 334360
+  },
+  {
+   "host": "o4504887285383168.ingest.sentry.io",
+   "file": "f52331f.js",
+   "at": 326262
+  },
+  {
+   "host": "securetoken.google.com",
+   "file": "5c411fe.js",
+   "at": 5178
+  },
+  {
+   "host": "static.hotjar.com",
+   "file": "f8d2df3.js",
+   "at": 1391
+  },
+  {
+   "host": "twitter.com",
+   "file": "ada254c.js",
+   "at": 26164
+  },
+  {
+   "host": "www.activecolor.com",
+   "file": "ada254c.js",
+   "at": 18348
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "ada254c.js",
+   "at": 25920
+  },
+  {
+   "host": "www.google.com",
+   "file": "bc02ae6.js",
+   "at": 92444
+  },
+  {
+   "host": "www.googletagmanager.com",
+   "file": "6121226.js",
+   "at": 7937
+  },
+  {
+   "host": "www.instagram.com",
+   "file": "ada254c.js",
+   "at": 25666
+  },
+  {
+   "host": "www.metronomeonline.com",
+   "file": "ada254c.js",
+   "at": 367
+  }
+ ],
+ "thirdParty": [
+  "[token].cloudfunctions.net",
+  "a.ad.gt",
+  "a.amxrtb.com",
+  "a.pub.network",
+  "ab.dns-finder.com",
+  "accounts.google.com",
+  "ad-delivery.net",
+  "ad.doubleclick.net",
+  "ads.pubmatic.com",
+  "agent.intentiq.com",
+  "api.btloader.com",
+  "api.intentiq.com",
+  "api.ipify.org",
+  "api.moosend.com",
+  "api.rlcdn.com",
+  "apis.google.com",
+  "apps.apple.com",
+  "apps.smartadserver.com",
+  "axios-http.com",
+  "b.pub.network",
+  "btloader.com",
+  "c.amazon-adsystem.com",
+  "c.pub.network",
+  "c2shb.pubgw.yahoo.com",
+  "c3.a-mo.net",
+  "cdn.api.btloader.com",
+  "cdn.hadronid.net",
+  "cdn.iubenda.com",
+  "ced-ns.sascdn.com",
+  "cs.media.net",
+  "csync-us.smartadserver.com",
+  "csync.smartadserver.com",
+  "d.pub.network",
+  "edge.cdn-vitals.com",
+  "embeds.iubenda.com",
+  "eus.rubiconproject.com",
+  "fastlane.rubiconproject.com",
+  "firebase.googleapis.com",
+  "firebaseinstallations.googleapis.com",
+  "fonts.googleapis.com",
+  "freestar.solutions.cdn.optable.co",
+  "grid-bidder.criteo.com",
+  "gum.criteo.com",
+  "hbopenbid.pubmatic.com",
+  "htlb.casalemedia.com",
+  "ib.adnxs.com",
+  "id.a-mx.com",
+  "id.crwdcntrl.net",
+  "id.hadron.ad.gt",
+  "id.hadronid.net",
+  "id5-sync.com",
+  "idb.iubenda.com",
+  "idx.liadm.com",
+  "lb.eu-1-id5-sync.com",
+  "live.primis.tech",
+  "match.adsrvr.org",
+  "metrics.rapidedge.io",
+  "metronomeonline-35f8e.firebaseio.com",
+  "na.edge.optable.co",
+  "o4504887285383168.ingest.sentry.io"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Firebase",
+  "Google Analytics",
+  "Product analytics",
+  "Sentry",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://a.ad.gt/api/v1/collect",
+  "https://a.pub.network/core/imgs/1.png",
+  "https://ab.dns-finder.com/meta/dns",
+  "https://ad-delivery.net/px.gif?ch&e",
+  "https://ad.doubleclick.net/favicon.ico?ad&ad_box_&adnet&e&showad&size",
+  "https://api.btloader.com/country?o",
+  "https://api.btloader.com/exd?cv&sid&tid&upapi",
+  "https://api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+  "https://api.intentiq.[token]?at&cttl&dbsaved&dpi&dpn&gdpr&gdpr_consent&gpp",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&gpp&iiqidtype",
+  "https://api.ipify.org/?format",
+  "https://api.rlcdn.com/api/identity/envelope?pid",
+  "https://btloader.com/websiteconfig?bt_env&o&w",
+  "https://c.amazon-adsystem.com/bao-csm/aps-comm/aps_csm.js",
+  "https://c.pub.network/v2/c",
+  "https://c2shb.pubgw.yahoo.com/admax/bid/partners/PBJS",
+  "https://c3.a-mo.net/b?gdpr&sh&uid",
+  "https://c3.a-mo.net/b?gdpr&sh&uid&us_privacy",
+  "https://cdn.api.btloader.com/device?fullVersionList&orgid&platformVersion&upapi",
+  "https://cdn.api.btloader.com/device?fullVersionList&orgid&upapi",
+  "https://content.metronomeonline.com/wp-json/wp/get-posts?per_page",
+  "https://cs.media.net/cst?cid&cs&gdpr&gdprconsent&itype&ref&us_privacy&usp_consent",
+  "https://cs.media.net/cst?cid&cs&ref&us_privacy",
+  "https://d.pub.[token]?cb&env",
+  "https://edge.cdn-vitals.com/px",
+  "https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id&alt_size_ids&eid_adserver.org&eid_freestar.com&eid_id",
+  "https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id&alt_size_ids&eid_adserver.org&eid_freestar.com&eid_pu",
+  "https://firebase.googleapis.com/v1alpha/projects/-/apps/1:567879205336:web:[token]",
+  "https://firebaseinstallations.googleapis.[token]",
+  "https://grid-bidder.criteo.[token]?av&cb&gzip&lsavail&networkId&profileId&wv",
+  "https://gum.criteo.com/sid/json?bundle&domain&origin&pm&sn&so&topUrl",
+  "https://gum.criteo.com/sid/json?bundle&domain&origin&sn&so&topUrl",
+  "https://gum.criteo.com/sid/json?domain&lsw&origin&topUrl",
+  "https://gum.criteo.com/sid/json?domain&lsw&origin&topUrl&us_privacy",
+  "https://hbopenbid.pubmatic.com/translator?gzip&source",
+  "https://hbopenbid.pubmatic.com/translator?source",
+  "https://htlb.casalemedia.com/openrtb/pbjs?s",
+  "https://ib.adnxs.com/openrtb2/prebidjs",
+  "https://id.a-mx.com/set?gdpr&oid&uid&us_privacy"
+ ],
+ "storage": {
+  "local": [
+   "BT_AA_DETECTION",
+   "BT_device",
+   "BT_tpc",
+   "OPTABLE_RESOLVED",
+   "OPTABLE_SPLIT_TEST",
+   "[token]",
+   "[token]",
+   "[token]",
+   "__tamLIResolveResult",
+   "__tamLIResolveResult_cst",
+   "__tamLIResolveResult_exp",
+   "_cc_id",
+   "_iiq_ch",
+   "_iiq_fdata",
+   "_iiq_fdata_1434517136",
+   "_iiq_fdata_319708947",
+   "_iiq_sync_1434517136",
+   "_iiq_sync_319708947",
+   "_lc2_fpi",
+   "_lc2_fpi_meta",
+   "_li_duid",
+   "amxId",
+   "amxId_cst",
+   "amxId_exp",
+   "au/1d",
+   "au/consent_gpp",
+   "au/last_seen_pixels",
+   "au/seg",
+   "au/sid",
+   "au/tid",
+   "auEids",
+   "auHadronId",
+   "auHaloId",
+   "btUserCountry",
+   "btUserCountryExpiry",
+   "btUserIsFromRestrictedCountry",
+   "carbon_ccuid",
+   "connectId",
+   "connectid",
+   "connectid_cst"
+  ],
+  "session": [
+   "BT_sid",
+   "OPTABLE_TARGETING_DONE",
+   "cp_ip_address",
+   "fs.cloudflareBotScore",
+   "fs.config",
+   "fs.idealadstack.config",
+   "fs.itf.globalControl",
+   "fs.itf.group",
+   "fs.itf.targeting",
+   "fs.session",
+   "fs.sitePath",
+   "fs.slotFit",
+   "google_one_tap_last_shown",
+   "hasLoadedBefore",
+   "optableReload",
+   "optableSessionDepth",
+   "optable_source_exists",
+   "pageviews",
+   "wce_first_visit"
+  ],
+  "idb": [
+   "firebase-heartbeat-database",
+   "firebase-installations-database",
+   "firebaseLocalStorageDb"
+  ]
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?checkout_canceled",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "ada254c.js@30099"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Embeds ads.pubmatic.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds apps.smartadserver.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds cs-server-s2s.yellowblue.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds eb2.3lift.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds eus.rubiconproject.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds gum.criteo.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds hbx.media.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds js-sec.indexww.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds metronomeonline-35f8e.firebaseapp.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds primis-d.openx.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds rtb.nexverse.ai",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds ssp-sync.criteo.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds ssum-sec.casalemedia.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds static.fsrv.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds u.openx.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call a.ad.gt/api/v1/collect",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/country?o",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?at&cttl&dbsaved&dpi&dpn&gdpr&gdpr_consent&gpp",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&gpp&iiqidtype",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.ipify.org/?format",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /v1/accounts:createAuthUri",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@74175"
+  },
+  {
+   "name": "API path /v1/accounts:delete",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@41193"
+  },
+  {
+   "name": "API path /v1/accounts:lookup",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@35227"
+  },
+  {
+   "name": "API path /v1/accounts:resetPassword",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@56614"
+  },
+  {
+   "name": "API path /v1/accounts:sendOobCode",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@56758"
+  },
+  {
+   "name": "API path /v1/accounts:sendVerificationCode",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@97156"
+  },
+  {
+   "name": "API path /v1/accounts:signInWithCustomToken",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@71147"
+  },
+  {
+   "name": "API path /v1/accounts:signInWithEmailLink",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@57752"
+  },
+  {
+   "name": "API path /v1/accounts:signInWithIdp",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@58329"
+  },
+  {
+   "name": "API path /v1/accounts:signInWithPassword",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@57580"
+  },
+  {
+   "name": "API path /v1/accounts:signInWithPhoneNumber",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@60304"
+  },
+  {
+   "name": "API path /v1/accounts:signUp",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@68076"
+  },
+  {
+   "name": "API path /v1/accounts:update",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@56692"
+  },
+  {
+   "name": "API path /v1/projects",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@105864"
+  },
+  {
+   "name": "API path /v1/recaptchaParams",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@95490"
+  },
+  {
+   "name": "API path /v1/token",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@37250"
+  },
+  {
+   "name": "API path /v2/accounts/mfaEnrollment:finalize",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@112445"
+  },
+  {
+   "name": "API path /v2/accounts/mfaEnrollment:start",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@96541"
+  },
+  {
+   "name": "API path /v2/accounts/mfaEnrollment:withdraw",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@79054"
+  },
+  {
+   "name": "API path /v2/accounts/mfaSignIn:finalize",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@112646"
+  },
+  {
+   "name": "API path /v2/accounts/mfaSignIn:start",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "bc02ae6.js@96918"
+  },
+  {
+   "name": "Feature flag disableScriptLoad",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "f52331f.js@204681"
+  },
+  {
+   "name": "Feature flag enableLongTask",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "f52331f.js@311084"
+  },
+  {
+   "name": "Feature flag showAuthPanel",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "5ad9983.js@14983"
+  },
+  {
+   "name": "Feature flag showDialog",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "f8d2df3.js@15905"
+  },
+  {
+   "name": "Feature flag showPaywall",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "f8d2df3.js@11233"
+  },
+  {
+   "name": "Feature flag showPulseInfo",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0bedd5b.js@1695"
+  },
+  {
+   "name": "Feature flag showTaskTimeSignatureButton",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0bedd5b.js@1730"
+  },
+  {
+   "name": "Feature flag useGrouping",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0bedd5b.js@14904"
+  },
+  {
+   "name": "Feature flag useNestjs",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "f52331f.js@299447"
+  },
+  {
+   "name": "Feature flag useTuner",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0bedd5b.js@7535"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Input of type range",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=range] x1"
+  },
+  {
+   "name": "Input of type tel",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=tel] x1"
+  },
+  {
+   "name": "Keeps a database in the browser: firebase-heartbeat-database",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "indexedDB"
+  }
+ ]
+}
