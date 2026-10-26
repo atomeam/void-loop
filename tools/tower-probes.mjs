@@ -610,7 +610,8 @@ export function featuresOf(id, dir = FEATURE_DIR) {
 }
 /** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */
 export function withFeatureFacts(probe, id, n = 6, dir = FEATURE_DIR) {
-  if (!probe || probe.ownFacts) return probe; // a lane page with its own facts is not asked for its leader's features const file = featuresOf(id, dir); if (!file) return probe;
+  if (!probe || probe.ownFacts) return probe; // a lane page with its own facts is not asked for its leader's features
+  const file = featuresOf(id, dir); if (!file) return probe;
   const have = new Set((probe.facts || []).map(([l]) => String(l).toLowerCase())), extra = factsFromFile(file, n).filter(([l]) => !have.has(l.toLowerCase()));
   return extra.length ? { ...probe, facts: [...(probe.facts || []), ...extra] } : probe;
 }
