@@ -129,11 +129,16 @@ ${helpBoxes(askOf(p))}
 ${p.sources.map(([t, u]) => '    <li><a href="' + esc(u) + '" rel="noopener">' + esc(t) + '</a></li>').join('\n')}
   </ul>
 </main>
+${RELATED_ROW}
 ${PRICE_JS}
 </body>
 </html>
 `;
 }
+
+// the pages these go with, the ask bar and "Everything Verse does" (lib/toolkit.js RELATED['/fix/']; owner, 2026-10-26: "and link them all if they are usable together")
+const RELATED_ROW = `<nav id="related" aria-label="Related pages" style="max-width:760px;margin:0 auto;padding:0 16px 24px;box-sizing:border-box"></nav>
+<script type="module">addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/fix/')).catch(() => {}); });</script>`;
 
 export function hubOf(pages) {
   const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
@@ -154,6 +159,7 @@ ${group(name)}
 `).join('')}
 ${helpBoxes('my automation stopped working, here is the error:')}
 </main>
+${RELATED_ROW}
 ${PRICE_JS}
 </body>
 </html>

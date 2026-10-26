@@ -4,6 +4,7 @@
 // language the browser asks for (Accept-Language), never guessed from the network. /is-it/<day>.rss is the feed. Nothing is stored; read only.
 //   /is-it/christmas   /is-it/friday?tz=America/Toronto   /is-it/halloween.rss
 import { isIt, wordFor } from '../../skills/is-it.js';
+import { relatedOf } from '../../lib/toolkit.js';
 
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 /** "now" as the wall clock of a time zone (the Worker's own clock is UTC, so its getters then read that zone's day). Pure. */
@@ -31,7 +32,9 @@ export function page(slug, a, w, zone, origin = 'https://a-to-mind.com') {
     + '<style>html,body{margin:0;height:100%;background:#fff;color:#000;font-family:system-ui,-apple-system,sans-serif}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}'
     + 'h1{font-size:min(260px,calc(84vw / (var(--n) * .8)));line-height:1;margin:0;font-weight:900;white-space:nowrap}button{font:inherit;font-size:14px;color:inherit;background:none;border:1px solid #999;border-radius:999px;padding:4px 14px;cursor:pointer;margin-top:10px}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}</style></head>'
     + '<body><main><h1 id="w" style="--n:' + letters(w.word) + '">' + esc(w.word) + '</h1><p id="n">' + esc(a.note) + '</p><p id="t">' + esc(a.today) + '</p>'
-    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small><button type="button" id="s">Share</button></main>'
+    + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small><button type="button" id="s">Share</button>'
+    // the pages a day goes with and the index of everything, as plain links (they work with scripts off; lib/toolkit.js RELATED['/is-it/'])
+    + '<nav id="related" aria-label="Related pages"><small>Use with: ' + relatedOf('/is-it/').map((r) => '<a href="' + esc(r.href) + '">' + esc(r.label) + '</a>').join(' · ') + ' · <a href="/tools/">Everything Verse does</a></small></nav></main>'
     + '<script type="module">import{isIt,wordFor}from"/skills/is-it.js";const a=isIt(' + JSON.stringify('is it ' + slug.replace(/-/g, ' ')) + ');if(a){const w=wordFor(a.yes,navigator.languages);'
     + 'const h=document.getElementById("w");h.textContent=w.word;h.style.setProperty("--n",Array.from(w.word).reduce((n,c)=>n+(/[\\u1100-\\u115f\\u2e80-\\ua4cf\\uac00-\\ud7a3\\uf900-\\ufaff\\uff00-\\uff60]/.test(c)?1.3:1),0));document.getElementById("n").textContent=a.note;document.getElementById("t").textContent=a.today;'
     + 'document.getElementById("z").firstChild.textContent="By this device\\u2019s clock ("+(Intl.DateTimeFormat().resolvedOptions().timeZone||"local time")+"). ";}'

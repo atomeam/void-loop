@@ -193,6 +193,8 @@
   <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
 
 </main>
+<nav id="related" aria-label="Related pages" style="max-width:760px;margin:0 auto;padding:0 16px 24px;box-sizing:border-box"></nav>
+<script type="module">addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/fix/')).catch(() => {}); });</script>
 <script>
 (function () {
   'use strict';

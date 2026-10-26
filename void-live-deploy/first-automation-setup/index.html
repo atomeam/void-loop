@@ -98,5 +98,8 @@
   }).catch(function (e) { console.warn('['+'first-automation-setup'+'] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<nav id="related" aria-label="Related pages" style="max-width:860px;margin:0 auto;padding:0 16px 24px;box-sizing:border-box"></nav>
+<script type="module">/* the pages this one goes with, the ask bar and "Everything Verse does" (lib/toolkit.js; owner, 2026-10-26: "and link them all if they are usable together"), after the load */
+addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/first-automation-setup/')).catch(() => {}); });</script>
 </body>
 </html>
