@@ -191,6 +191,8 @@ export function blockedOf(view) {
 
 // ---- the report ----
 const MAX_CAND = 60;
+/** a candidate that is advertising, tracking or a one-page section, not a feature of the site: ad frames and captchas, ad and analytics storage keys, sections of one page. Pure. */
+export const noiseOf = (c, site = '') => /^Embeds (?:[\w.-]*(?:doubleclick|googlesyndication|googleads|adsystem|adnxs|recaptcha|hcaptcha|challenges\.cloudflare|facebook|twitter|google\.com)[\w.-]*|\w[\w.-]*)$/.test(c.name) && (!site || c.name === 'Embeds ' + site || /(?:doubleclick|googlesyndication|googleads|adsystem|adnxs|recaptcha|hcaptcha|challenges\.cloudflare|facebook|twitter|google\.com)/.test(c.name)) || /^Remembers a setting in the browser: (?:google_|__lsa__|_ga|__gads|__gpi|ajs_|amplitude|mp_|_fbp|cf_|__cf|_hj|ph_|__stripe)/i.test(c.name) || /^Section \/.+\/ \(1 pages\)$/.test(c.name);
 /** the candidate hidden features from the facts, each { name, kind, tag, evidence }, deduplicated by name, sorted, at most MAX_CAND. Pure. */
 export function candidatesOf(r) {
   const out = new Map(), add = (name, kind, tag, evidence) => { const k = name.toLowerCase(); if (!out.has(k)) out.set(k, { name: clip(name, 80), kind, tag, evidence: clip(evidence, 80) }); };
@@ -245,7 +247,7 @@ export function candidatesOf(r) {
   const sm = r.sitemap; if (sm) { for (const s of sm.sections.slice(0, 8)) if (s.s !== '/') add('Section /' + s.s + '/ (' + s.n + ' pages)', 'route', 'observed', 'sitemap.xml'); if (sm.langs.length >= 2) add('Language versions in the sitemap: ' + sm.langs.length, 'i18n', 'observed', 'sitemap.xml'); }
   for (const p of (r.robots && r.robots.disallow) || []) if (!/^\/(?:\*|\?|$)/.test(p) && !/\*|\.(?:js|css|json)$/.test(p) && p.length > 2) add('Path kept from crawlers ' + p, 'route', 'observed', 'robots.txt');
   const order = ['url-param', 'shortcut', 'import', 'export', 'pwa', 'share', 'embed', 'api', 'flag', 'setting', 'input', 'storage', 'i18n', 'service', 'a11y', 'route'], rank = (k) => (order.indexOf(k) < 0 ? 99 : order.indexOf(k));
-  return [...out.values()].sort((a, b) => rank(a.kind) - rank(b.kind) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)).slice(0, MAX_CAND);
+  return [...out.values()].filter((c) => !noiseOf(c, r.site)).sort((a, b) => rank(a.kind) - rank(b.kind) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)).slice(0, MAX_CAND);
 }
 /** the whole report for one site from what was collected. `got` = { url, final, status, date, blocked, html: { mobile, desktop } (html strings), controls: { mobile, desktop } (label lists), assets: [{ url, kind, bytes, text, headers }],
  *  manifest (parsed json), sw: { url, text }, robots (text), sitemap (xml), requests: [urls], websockets: [urls], storage: { local, session, idb }, consent }. Deterministic: no clock but `date`. Pure. */
@@ -299,7 +301,7 @@ export const rowOf = (c) => ({ name: c.name, detail: c.kind + ', ' + c.tag, paid
  *  may later fill. The inputs are not changed. Pure. */
 export function mergeRe(file, floor, host, report) {
   const prevRe = (file && file.re) || {}, prevRows = new Map((((prevRe.sites || {})[host] || {}).features || []).map((r) => [r.name.toLowerCase(), r]));
-  const rows = (report.candidates || []).map((c) => { const old = prevRows.get(c.name.toLowerCase()); return old && old.verse !== 'missing' ? { ...rowOf(c), verse: old.verse, verse_evidence: old.verse_evidence } : rowOf(c); });
+  const rows = (report.candidates || []).filter((c) => !noiseOf(c, host)).map((c) => { const old = prevRows.get(c.name.toLowerCase()); return old && old.verse !== 'missing' ? { ...rowOf(c), verse: old.verse, verse_evidence: old.verse_evidence } : rowOf(c); });
   const sites = { ...(prevRe.sites || {}), [host]: { url: report.url, scanned: report.scanned, ...(report.blocked ? { blocked: report.blocked } : {}), features: rows } };
   const re = { scanned: report.scanned > (prevRe.scanned || '') ? report.scanned : prevRe.scanned, sites: Object.fromEntries(Object.entries(sites).sort(([a], [b]) => (a < b ? -1 : 1))) };
   if (!file) return { floor: floor.id, verse_page: floor.page || null, researched: null, source: 'auto', method: 'tools/site-re.mjs: the sites\' client code and loaded pages, facts only (no feature scan yet)', sites: {}, gaps: [], verse_extra: [], re };

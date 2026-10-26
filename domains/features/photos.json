@@ -2937,16 +2937,6 @@
       "evidence": "manifest.share_target"
      },
      {
-      "name": "Embeds exif.tools",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
       "name": "API path /embed",
       "detail": "api, read",
       "paid": false,
@@ -3213,36 +3203,6 @@
       "evidence": "manifest"
      },
      {
-      "name": "Embeds exifeditor.io",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
-      "name": "Embeds googleads.g.doubleclick.net",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
-      "name": "Embeds www.google.com",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
       "name": "Copy and paste through the clipboard",
       "detail": "setting, read",
       "paid": false,
@@ -3271,36 +3231,6 @@
       "found_by": "re",
       "tag": "observed",
       "evidence": "input[type=search] x2"
-     },
-     {
-      "name": "Remembers a setting in the browser: __lsa__",
-      "detail": "storage, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "localStorage"
-     },
-     {
-      "name": "Remembers a setting in the browser: google_adsense_settings",
-      "detail": "storage, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "localStorage"
-     },
-     {
-      "name": "Remembers a setting in the browser: google_ama_config",
-      "detail": "storage, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "localStorage"
      },
      {
       "name": "Language versions: 2 (en, x-default)",
@@ -3413,67 +3343,7 @@
       "evidence": "footer-nav.js@220"
      },
      {
-      "name": "Section /about/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
       "name": "Section /blog/ (5 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /exif-quiz/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /exif-viewer/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /faq/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /guides/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /photo-location-finder/ (1 pages)",
       "detail": "route, observed",
       "paid": false,
       "verse": "missing",

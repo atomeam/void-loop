@@ -3073,66 +3073,6 @@
       "found_by": "re",
       "tag": "observed",
       "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /activity/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /browse_calendar/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /browse_events/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /browse_highlights/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /browse_honours/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
-     },
-     {
-      "name": "Section /browse_milestones/ (1 pages)",
-      "detail": "route, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "sitemap.xml"
      }
     ]
    }

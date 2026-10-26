@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { visit, scanEntry, codeFacts, htmlFacts, controlsOf, manifestFacts, swFacts, robotsFacts, sitemapFacts, blockedOf, reportOf, candidatesOf, mergeRe, rowOf, ROW_NOTE, clip, bareUrl, fileOf, slugOf, dueOf, entriesOf, writeReport, mergeAll, servicesOf } from './site-re.mjs';
+import { noiseOf, visit, scanEntry, codeFacts, htmlFacts, controlsOf, manifestFacts, swFacts, robotsFacts, sitemapFacts, blockedOf, reportOf, candidatesOf, mergeRe, rowOf, ROW_NOTE, clip, bareUrl, fileOf, slugOf, dueOf, entriesOf, writeReport, mergeAll, servicesOf } from './site-re.mjs';
 import { mergeAuto, putMine, nextJobs } from './feature-scan.mjs';
 import { secretsIn } from './secret-scan.mjs';
 
@@ -170,4 +170,12 @@ test('visit: a refusal (403) is recorded as a wall and the candidates stay empty
 test('scanEntry: a site that throws is written as unreachable, never skipped', async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sitere-s-')), r = await scanEntry({ newContext: async () => { throw new Error('net::ERR_NAME_NOT_RESOLVED'); } }, { id: 'x: gone.test', url: 'https://gone.test/' }, { dir });
   assert.equal(r.blocked.kind, 'unreachable'); assert.ok(fs.existsSync(path.join(dir, 'x-gone.test.json')));
+});
+
+test('advertising, tracking and one-page sections are not candidates, at the scan or at the fold', () => {
+  const n = (name) => noiseOf({ name }, 'site.test');
+  assert.ok(n('Embeds googleads.g.doubleclick.net') && n('Embeds www.google.com') && n('Embeds site.test') && n('Remembers a setting in the browser: google_ama_config') && n('Section /activity/ (1 pages)'));
+  assert.ok(!n('Embeds www.youtube-nocookie.com') && !n('Remembers a setting in the browser: fx.theme') && !n('Section /guides/ (2 pages)') && !n('Print layout'));
+  const rows = mergeRe(null, { id: 'f' }, 'site.test', { url: 'u', scanned: '2026-10-26', candidates: [{ name: 'Embeds www.google.com', kind: 'embed', tag: 'observed', evidence: 'iframe' }, { name: 'Print layout', kind: 'export', tag: 'read', evidence: 'a.css' }] }).re.sites['site.test'].features;
+  assert.deepEqual(rows.map((r) => r.name), ['Print layout']);
 });

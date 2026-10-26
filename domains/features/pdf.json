@@ -1155,36 +1155,6 @@
       "evidence": "_app-697468a544e3fe97.js@25507"
      },
      {
-      "name": "Embeds 10015.io",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
-      "name": "Embeds googleads.g.doubleclick.net",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
-      "name": "Embeds www.google.com",
-      "detail": "embed, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "iframe"
-     },
-     {
       "name": "API call 10015.io/api/auth/session",
       "detail": "api, observed",
       "paid": false,
@@ -1576,26 +1546,6 @@
      },
      {
       "name": "Remembers a setting in the browser: _ym_uid",
-      "detail": "storage, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "localStorage"
-     },
-     {
-      "name": "Remembers a setting in the browser: google_adsense_settings",
-      "detail": "storage, observed",
-      "paid": false,
-      "verse": "missing",
-      "verse_evidence": "unbuilt (found by reverse engineering)",
-      "found_by": "re",
-      "tag": "observed",
-      "evidence": "localStorage"
-     },
-     {
-      "name": "Remembers a setting in the browser: google_ama_config",
       "detail": "storage, observed",
       "paid": false,
       "verse": "missing",
