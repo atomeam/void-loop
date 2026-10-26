@@ -219,6 +219,8 @@ for (const [name, file] of [
   ['sitemap', 'sitemap.test.mjs'],
   ['indexnow', 'indexnow.test.mjs'],
   ['seo', 'seo.test.mjs'],
+  ['seo-audit-unit', 'seo-audit.test.mjs'],
+  ['shrink-images', 'shrink-images.test.mjs'],
   ['review-bench', 'review-bench.test.mjs'],
   ['honest', 'honest.test.mjs'],
   ['cron-gate', 'cron-gate.test.mjs'],
@@ -561,6 +563,12 @@ addScript('index', 'skills-index.mjs', ['--check']);
 // every module a direct page (/flip/, /g/, /conquered/) imports is preloaded in its head (tools/preload.mjs; owner, 2026-10-24: "speed fixes a
 // lot of our other issues and is worth fixing permanently"): an import added without its preload is a waterfall again
 addScript('preload-pages', 'preload.mjs', ['--check']);
+// Verse's own SEO tool over every page it serves (tools/seo-audit.mjs, lib/seo-audit.js; owner, 2026-10-26: "Verse uses its own tools"): a missing
+// canonical, title, description or share card, a broken internal link, unparsable JSON-LD, a page nothing links to, or one fewer free page leading
+// to what Verse sells fails here; the counts in tools/seo-audit.baseline.json only go down
+addScript('seo-audit', 'seo-audit.mjs', ['--check']);
+// the share pictures in og/ go out through Verse's own photo compressor (tools/shrink-images.mjs, lib/photo-edit.js's palette PNG): one that went in raw fails
+addScript('og-shrunk', 'shrink-images.mjs', ['--check']);
 addScript('similar', 'similar-index.mjs', ['--check']); // the "what's similar" index of every family's parts (lib/similar-index.js)
 addScript('refresh', 'refresh.mjs', ['--check']);
 addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its source: the floor only rises (tools/art-floor.json)

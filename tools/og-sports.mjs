@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
+import { shrinkFile } from './shrink-images.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'og');
 const CARDS = {
@@ -19,5 +20,5 @@ const page = (c) => `<html><body style="margin:0;width:1200px;height:630px;backg
 <div style="position:absolute;right:64px;bottom:36px;font-size:26px;color:#a58bff;font-weight:700">a-to-mind.com</div></body></html>`;
 const exe = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x));
 const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] }), p = await b.newPage({ viewport: { width: 1200, height: 630 } });
-for (const [name, c] of Object.entries(CARDS)) { await p.setContent(page(c)); await p.screenshot({ path: path.join(root, name + '.png') }); console.log('wrote og/' + name + '.png'); }
+for (const [name, c] of Object.entries(CARDS)) { await p.setContent(page(c)); await p.screenshot({ path: path.join(root, name + '.png') }); const z = await shrinkFile(path.join(root, name + '.png')); console.log('wrote og/' + name + '.png (' + Math.round(z.after / 1024) + ' KB, Verse\'s own compressor)'); }
 await b.close();

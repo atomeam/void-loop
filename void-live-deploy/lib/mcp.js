@@ -12,6 +12,9 @@ import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
 import { SKILL_TOOLS } from './mcp-skills.js';
 import { drive } from './drive.js';
+import { auditPage } from './seo-audit.js';
+import { readingLevel, proofread } from './writing-aids.js';
+import { parse as parseColour, contrast as contrastOf, passes, toHex } from './colour.js';
 
 export const PROTOCOL = '2025-06-18';
 export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.2.0' };
@@ -53,6 +56,16 @@ export const TOOLS = [
     description: "How long the drive is between two places, and how far, from a live routing service (the public OSRM router, no key; road network at free-flow speed, so no live traffic). Places by name (looked up with Open-Meteo's geocoder) or as \"lat,lon\". Verse's rides family checks this same router once a day.",
     inputSchema: { type: 'object', required: ['from', 'to'], properties: { from: { type: 'string', description: 'Where from: a place name ("San Francisco") or "lat,lon".' }, to: { type: 'string', description: 'Where to: a place name or "lat,lon".' } } } },
   ...SKILL_TOOLS.map(skillTool),
+  // Verse's own tools, the ones it runs on its own pages (owner, 2026-10-26: "Verse uses its own tools"): pure, computed from what is given
+  { name: 'seo_audit', title: 'SEO audit of a page', annotations: RO,
+    description: "Verse's SEO audit of one page's HTML, the same one it runs over every page of a-to-mind.com before it ships (tools/seo-audit.mjs): the title and meta description (there, and cut short in a result or not), the canonical link (there and pointing at the page), JSON-LD that parses, one h1, the html lang, the share card (og:title, og:image), the internal links it makes, and how hard the description is to read (Flesch-Kincaid grade). Give the page's own path so the canonical can be checked. Links are listed, not fetched.",
+    inputSchema: { type: 'object', required: ['html'], properties: { html: { type: 'string', description: 'The page HTML (up to 500,000 characters).' }, path: { type: 'string', description: "The page's path on its site, like /pricing/ (default /)." }, response_type: RESPONSE_TYPE } } },
+  { name: 'readability', title: 'How easy a text is to read', annotations: RO,
+    description: "How easy a text is to read, from the readability tool on a-to-mind.com/word-count/ that Verse also runs on its own page descriptions: the Flesch reading ease and Flesch-Kincaid grade with who reads it comfortably, the words and sentences counted, and what a proofread would fix (doubled words, extra spaces, common misspellings, sentences without a capital). No model.",
+    inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string', description: 'The text (5 words to 100,000 characters).' }, response_type: RESPONSE_TYPE } } },
+  { name: 'colour_contrast', title: 'Colour contrast (WCAG)', annotations: RO,
+    description: "The WCAG contrast ratio of a text colour on a background colour, and which levels it passes (AA, AA large, AAA, AAA large), from a-to-mind.com/color/. Colours as hex (#6d4aff), rgb(), hsl() or a CSS name.",
+    inputSchema: { type: 'object', required: ['text', 'background'], properties: { text: { type: 'string', description: 'The text colour.' }, background: { type: 'string', description: 'The background colour.' } } } },
   { name: 'skill_health', title: "Verse's skill-family health", annotations: RO,
     description: "How far each of Verse's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Verse's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
     inputSchema: { type: 'object', properties: { family: { type: 'string', description: "A family's id (families[].id in this tool's result, e.g. numbers) for its skills one by one." }, response_type: RESPONSE_TYPE } } },
@@ -163,6 +176,28 @@ const RUN = {
   skill_discovery: discovery,
   ...Object.fromEntries(SKILL_TOOLS.map((s) => [s.tool, (a, ctx) => askSkill(s, a, ctx)])),
   review_code_closer: closer,
+  seo_audit(a) {
+    if (typeof a.html !== 'string' || !a.html.trim()) return toolError('Give the page as "html".');
+    if (a.html.length > 500000) return toolError('That page is over 500,000 characters.');
+    const path = typeof a.path === 'string' && a.path.startsWith('/') ? a.path.slice(0, 300) : '/';
+    const r = auditPage(a.html, path), out = { path, title: r.title, description: r.description, canonical: r.canonical, h1: r.h1, grade: r.grade, ease: r.ease, defects: r.defects, notes: r.notes, internal_links: r.links.slice(0, 200) };
+    const text = (r.defects.length ? r.defects.length + ' problem' + (r.defects.length === 1 ? '' : 's') + ':\n' + r.defects.map((d) => '- ' + d.kind + ': ' + d.message).join('\n') : 'No problems found.')
+      + (r.notes.length ? '\nWorth a look: ' + r.notes.map((d) => d.message).join('; ') + '.' : '') + (r.grade != null ? '\nThe description reads at grade ' + r.grade + ' (ease ' + r.ease + ').' : '')
+      + '\n' + r.links.length + ' internal link' + (r.links.length === 1 ? '' : 's') + ' (not fetched).';
+    return toolResult(text, out);
+  },
+  readability(a) {
+    const t = typeof a.text === 'string' ? a.text.slice(0, 100000) : '';
+    const lv = readingLevel(t); if (!lv) return toolError('Give at least 5 words as "text".');
+    const issues = proofread(t).fixes;
+    return toolResult('Reading ease ' + lv.ease + ' (' + lv.label + ', ' + lv.who + '), grade ' + lv.grade + '; ' + lv.words + ' words in ' + lv.sentences + ' sentence' + (lv.sentences === 1 ? '' : 's') + '.' + (issues.length ? ' To proofread: ' + issues.join(', ') + '.' : ''), { ...lv, proofread: issues });
+  },
+  colour_contrast(a) {
+    const fg = parseColour(a.text), bg = parseColour(a.background);
+    if (!fg || !bg) return toolError('Give two colours as "text" and "background" (hex, rgb(), hsl() or a CSS name).');
+    const ratio = Math.round(contrastOf(fg, bg) * 100) / 100, p = passes(ratio);
+    return toolResult(ratio + ':1 for ' + toHex(fg) + ' on ' + toHex(bg) + ': ' + (p.aa ? 'passes AA' + (p.aaa ? ' and AAA' : '') : p.aaLarge ? 'passes AA for large text only' : 'fails AA') + '.', { text: toHex(fg), background: toHex(bg), ratio, ...p });
+  },
   review_code(a) {
     if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
     const r = quick({ code: a.code, diff: a.diff, lang: typeof a.lang === 'string' ? a.lang : undefined });
@@ -196,7 +231,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, its SEO audit of a page (seo_audit), readability, colour contrast, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {

@@ -283,7 +283,7 @@ export function pageHtml(key) {
   <h1>${p.h1}</h1>
   <p class="sub" id="lede">${p.sub}</p>
   ${hubNav(dir)}${p.body}
-  ${key === 'music' ? '' : '<!-- asks -->\n  <!-- /asks -->\n  '}<nav id="related" aria-label="Related tools"></nav>
+  ${key === 'music' ? '' : '<!-- asks -->\n  <!-- /asks -->\n  '}<nav id="related" aria-label="Related tools"><!-- related --><!-- /related --></nav>
   <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
   <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
@@ -303,7 +303,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const file = path.join(site, PAGES[k].path, 'index.html'); fs.mkdirSync(path.dirname(file), { recursive: true });
     let html = pageHtml(k);
     try { const old = fs.readFileSync(file, 'utf8'); // keep the generated blocks seo-pages.mjs and preload.mjs wrote
-      for (const [a, b] of [['<!-- seo -->', '<!-- /seo -->'], ['<!-- asks -->', '<!-- /asks -->']]) { const i = old.indexOf(a), j = old.indexOf(b); if (i >= 0 && j > i) html = html.replace(new RegExp(a + '[\\s\\S]*?' + b), () => old.slice(i, j + b.length)); } } catch (_) { /* new page */ }
+      for (const [a, b] of [['<!-- seo -->', '<!-- /seo -->'], ['<!-- asks -->', '<!-- /asks -->'], ['<!-- related -->', '<!-- /related -->']]) { const i = old.indexOf(a), j = old.indexOf(b); if (i >= 0 && j > i) html = html.replace(new RegExp(a + '[\\s\\S]*?' + b), () => old.slice(i, j + b.length)); } } catch (_) { /* new page */ }
     fs.writeFileSync(file, html); console.log('wrote', path.relative(site, file));
   }
 }
