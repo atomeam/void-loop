@@ -48,6 +48,7 @@
   .sk { border-top: 1px solid var(--line); height: 87px; box-sizing: border-box; padding: 12px 0; }
   .sk i { display: block; height: 14px; border-radius: 7px; background: var(--line); margin: 0 0 9px; opacity: .7; } .sk i:nth-child(1) { width: 92%; } .sk i:nth-child(2) { width: 60%; } .sk i:nth-child(3) { width: 30%; }
   .compact .story { min-height: 64px; } .compact .story .s { display: none; } .compact #list { min-height: 520px; } .compact .sk { height: 64px; }
+  #reportBox .pic { aspect-ratio: 16 / 9; max-width: 280px; margin: 0 0 8px; border-radius: 12px; overflow: hidden; background: rgba(127,127,127,.12); } #reportBox .pic img, #artBox img { width: 100%; height: 100%; object-fit: cover; display: block; }
   #reportBox article { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; background: var(--box); }
   #reportBox h2 { font-size: 15px; margin: 0 0 6px; } #reportBox p { margin: 4px 0; } #reportBox .by { font-size: 12px; color: var(--soft); }
   .pane { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; background: var(--box); }
@@ -88,6 +89,8 @@
     <ul class="chips" id="chips"></ul>
     <p class="sub" style="text-align:left;margin:0">Followed topics and sources are kept on this device. My news shows the stories that mention a topic or come from a source you follow.</p>
   </section>
+  <div id="artBox" style="aspect-ratio:16 / 9;max-width:280px;margin:8px auto 0;border-radius:12px;overflow:hidden;background:rgba(127,127,127,.12)"></div>
+  <p class="sub" id="artCredit" style="margin:2px 0 0;min-height:20px"></p>
   <p id="status" role="status" aria-live="polite">Loading the headlines…</p>
   <ol id="list" aria-label="Headlines"><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li></ol>
   <div id="reportBox" hidden></div>
@@ -193,6 +196,15 @@
       sourceMenu(); draw();
     }
 
+    // the day's illustration (lib/daily-art.js, the route /api/daily-art): one per section, drawn once a day for everyone, loaded after the first draw so the speed does not move;
+    // its box is reserved in the HTML and in the brief, so nothing shifts. Illustration only: no photograph is ever asked for here
+    const ART_KEY = { top: 'top', world: 'world', uk: 'world', us: 'us', business: 'business', tech: 'tech', science: 'science', sport: 'top', culture: 'culture', africa: 'world', asia: 'world', europe: 'world', 'middle-east': 'world', 'latin-america': 'world', report: 'top' };
+    let DA = null; const daily = () => (DA = DA || import('/lib/daily-art.js').catch(() => null));
+    async function paintArt(sec, box, credit) {
+      const A = await daily(), key = ART_KEY[sec]; if (!A || !key || !box) return; const a = A.dailyArtImg('news', key); if (!a.src) return;
+      const img = new Image(); img.width = a.width; img.height = a.height; img.alt = a.alt; img.decoding = 'async'; img.src = a.src; box.textContent = ''; box.append(img);
+      if (credit) A.dailyArtInfo('news', key).then((i) => { if (i) A.mountCredit(credit, i); else credit.textContent = A.LABEL; }).catch(() => { credit.textContent = A.LABEL; });
+    }
     // Verse reports (lib/news-report.js): loaded only when the tab is opened, never before the load event. Drafts are built here from the feeds' own words
     // and shown at once; the polish (a text model, checked again here) is asked for the brief on opening and for the rest only when pressed.
     async function showReport() {
@@ -212,7 +224,7 @@
       }
       const lead = (sec) => (got[sec] || []).slice().sort((a, b) => b.n - a.n || b.t - a.t);
       const briefItems = secs.flatMap((sec, i) => lead(sec).slice(0, sec === 'top' ? 2 : 1).map((s) => ({ sec, srcs: srcsOf(s), title: s.title, summary: s.summary || '' })));
-      const b = briefItems.length ? card('Verse brief', 'brief', briefItems, true) : null; if (b) box.append(b);
+      const b = briefItems.length ? card('Verse brief', 'brief', briefItems, true) : null; if (b) { const pic = el('div', 'pic'); b.insertBefore(pic, b.firstChild.nextSibling); box.append(b); paintArt('top', pic, null); }
       // changes since 06:00 on the followed topics
       if (mem.topics.length) { const all = [...new Map(secs.flatMap((s) => got[s]).map((s) => [s.id, s])).values()], found = R.changedOn(all, mem.topics, R.morning()); const items = found.map((f) => ({ topic: f.topic, srcs: f.srcs, title: f.title, sec: 'top' }));
         const c = items.length ? card('Since this morning on your topics', 'changes', items, false) : null; if (c) box.append(c); else box.append(el('p', 'sub', 'Nothing new on ' + mem.topics.join(', ') + ' since this morning.')); }
@@ -224,6 +236,7 @@
     }
     async function pick(sec) {
       st.sec = sec; for (const b of $('secs').children) b.setAttribute('aria-pressed', String(b.dataset.sec === sec));
+      const art = sec !== 'saved' && sec !== 'my'; $('artBox').hidden = !art || sec === 'report'; $('artCredit').hidden = !art || sec === 'report'; if (art && sec !== 'report') paintArt(sec, $('artBox'), $('artCredit'));
       $('list').hidden = sec === 'report'; $('reportBox').hidden = sec !== 'report'; if (sec === 'report') { $('pane').hidden = true; return showReport(); }
       if (sec === 'saved') { st.src = ''; sourceMenu(); draw(); return; }
       if (sec === 'my') { draw(); await Promise.all(['top', 'world'].filter((s) => !mem.cache[st.lang + ':' + s]).map((s) => fetch('/api/news?sec=' + s + '&lang=' + st.lang).then((r) => r.json()).then((j) => { if (j.ok) { mem.cache[st.lang + ':' + s] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); } }).catch(() => {}))); draw(); return; }
