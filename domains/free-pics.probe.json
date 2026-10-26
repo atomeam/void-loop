@@ -1,0 +1,482 @@
+{
+ "at": "2026-10-26T04:37:11.995Z",
+ "note": "one polite request per source; no keys, no picture bytes",
+ "sources": {
+  "commons": {
+   "name": "Wikimedia Commons",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 739,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "batchcomplete",
+    "continue",
+    "query"
+   ],
+   "found": 10,
+   "accepted": 1,
+   "refused": {
+    "no picture on the source's own image host": 8,
+    "marked non-free or with personality rights": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "Public domain",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "thumb.wikimedia.org",
+     "taken": "1872-02-24"
+    },
+    {
+     "licRaw": "Public domain",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "thumb.wikimedia.org",
+     "taken": "2009-02-08"
+    },
+    {
+     "licRaw": "CC BY-SA 3.0",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "upload.wikimedia.org",
+     "taken": "2014-01-09"
+    }
+   ]
+  },
+  "openverse": {
+   "name": "Openverse",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 3792,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "result_count",
+    "page_count",
+    "page_size",
+    "page",
+    "results"
+   ],
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY-SA",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    }
+   ]
+  },
+  "nasa": {
+   "name": "NASA Image and Video Library",
+   "state": "works",
+   "why": "",
+   "query": "moon",
+   "status": 200,
+   "ms": 414,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "collection"
+   ],
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2009-09-24"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2010-09-10"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2025-03-12"
+    }
+   ]
+  },
+  "loc": {
+   "name": "Library of Congress",
+   "state": "answered, no candidates (parser or query?)",
+   "why": "",
+   "query": "baseball",
+   "status": 200,
+   "ms": 1649,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "breadcrumbs",
+    "content",
+    "context",
+    "description",
+    "expert_resources",
+    "facet_trail",
+    "facet_views",
+    "facets"
+   ],
+   "found": 0,
+   "accepted": 0,
+   "refused": {},
+   "licenceShapes": []
+  },
+  "met": {
+   "name": "The Met Collection",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 318,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "total",
+    "objectIDs"
+   ],
+   "found": 3,
+   "accepted": 3,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    }
+   ]
+  },
+  "aic": {
+   "name": "Art Institute of Chicago",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 432,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "preference",
+    "pagination",
+    "data",
+    "info",
+    "config"
+   ],
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": "1880"
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": ""
+    }
+   ]
+  },
+  "cleveland": {
+   "name": "Cleveland Museum of Art",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 1030,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "info",
+    "data"
+   ],
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": "1896"
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": ""
+    }
+   ]
+  },
+  "smithsonian": {
+   "name": "Smithsonian Open Access",
+   "state": "needs key",
+   "why": "needs SMITHSONIAN_API_KEY"
+  },
+  "europeana": {
+   "name": "Europeana",
+   "state": "needs key",
+   "why": "needs EUROPEANA_API_KEY"
+  },
+  "flickr": {
+   "name": "Flickr",
+   "state": "needs key",
+   "why": "needs FLICKR_API_KEY"
+  },
+  "pexels": {
+   "name": "Pexels",
+   "state": "needs key",
+   "why": "needs PEXELS_API_KEY"
+  },
+  "pixabay": {
+   "name": "Pixabay",
+   "state": "needs key",
+   "why": "needs PIXABAY_API_KEY"
+  },
+  "unsplash": {
+   "name": "Unsplash",
+   "state": "needs key",
+   "why": "needs UNSPLASH_ACCESS_KEY"
+  },
+  "archive": {
+   "name": "Internet Archive",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 452,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "responseHeader",
+    "response"
+   ],
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2010-12-04"
+    },
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2009-09-16"
+    },
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2009-08-19"
+    }
+   ]
+  }
+ },
+ "rejectionLogic": {
+  "namedPlayer": {
+   "accepted": [
+    {
+     "source": "commons",
+     "licence": "pd",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    }
+   ],
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 3,
+     "refused": {
+      "no picture on the source's own image host": 6,
+      "a logo, sponsor or advertising category": 1
+     }
+    },
+    {
+     "source": "pexels",
+     "skipped": "needs PEXELS_API_KEY"
+    },
+    {
+     "source": "pixabay",
+     "skipped": "needs PIXABAY_API_KEY"
+    },
+    {
+     "source": "unsplash",
+     "skipped": "needs UNSPLASH_ACCESS_KEY"
+    }
+   ]
+  },
+  "stadium": {
+   "accepted": 0,
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 0,
+     "refused": {
+      "no picture on the source's own image host": 8
+     }
+    }
+   ]
+  },
+  "Wembley": {
+   "accepted": 3,
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 3,
+     "refused": {
+      "no picture on the source's own image host": 7
+     }
+    }
+   ]
+  }
+ }
+}
