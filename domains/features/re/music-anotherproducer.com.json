@@ -1,0 +1,862 @@
+{
+ "site": "anotherproducer.com",
+ "url": "https://anotherproducer.[token]",
+ "scanned": "2026-10-26",
+ "status": 301,
+ "consentBanner": true,
+ "assets": [
+  {
+   "f": "hgts6.css",
+   "t": "css",
+   "b": 5110
+  },
+  {
+   "f": "hgts6.css",
+   "t": "css",
+   "b": 19038
+  },
+  {
+   "f": "hgts6.css",
+   "t": "css",
+   "b": 2782
+  },
+  {
+   "f": "hgts6.css",
+   "t": "css",
+   "b": 6713
+  },
+  {
+   "f": "complianz.min.js",
+   "t": "js",
+   "b": 46224
+  },
+  {
+   "f": "frontend.min.css",
+   "t": "css",
+   "b": 54666
+  },
+  {
+   "f": "widget-divider.min.css",
+   "t": "css",
+   "b": 4258
+  },
+  {
+   "f": "widget-image.min.css",
+   "t": "css",
+   "b": 214
+  },
+  {
+   "f": "background-slideshow.min.js",
+   "t": "js",
+   "b": 23186
+  },
+  {
+   "f": "background-video.min.js",
+   "t": "js",
+   "b": 24570
+  },
+  {
+   "f": "section-stretched-section.min.js",
+   "t": "js",
+   "b": 1057
+  },
+  {
+   "f": "frontend-modules.min.js",
+   "t": "js",
+   "b": 53086
+  },
+  {
+   "f": "frontend.min.js",
+   "t": "js",
+   "b": 60022
+  },
+  {
+   "f": "webpack.runtime.min.js",
+   "t": "js",
+   "b": 103
+  },
+  {
+   "f": "wpa.js",
+   "t": "js",
+   "b": 5774
+  },
+  {
+   "f": "app.min.css",
+   "t": "css",
+   "b": 161054,
+   "map": true
+  },
+  {
+   "f": "app.min.js",
+   "t": "js",
+   "b": 75677
+  },
+  {
+   "f": "dark-mode.js",
+   "t": "js",
+   "b": 122218
+  },
+  {
+   "f": "BPM_Calculator.js",
+   "t": "js",
+   "b": 8946
+  },
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 277
+  },
+  {
+   "f": "style.min.css",
+   "t": "css",
+   "b": 183850
+  },
+  {
+   "f": "simple-line-icons.min.css",
+   "t": "css",
+   "b": 10927
+  },
+  {
+   "f": "all.min.css",
+   "t": "css",
+   "b": 73890
+  },
+  {
+   "f": "equal-height-elements.min.js",
+   "t": "js",
+   "b": 5262
+  },
+  {
+   "f": "full-screen-mobile-menu.min.js",
+   "t": "js",
+   "b": 22103
+  },
+  {
+   "f": "ow-lightbox.min.js",
+   "t": "js",
+   "b": 4111
+  },
+  {
+   "f": "ow-slider.min.js",
+   "t": "js",
+   "b": 2002
+  },
+  {
+   "f": "scroll-effect.min.js",
+   "t": "js",
+   "b": 12387
+  },
+  {
+   "f": "scroll-top.min.js",
+   "t": "js",
+   "b": 8989
+  },
+  {
+   "f": "select.min.js",
+   "t": "js",
+   "b": 5343
+  },
+  {
+   "f": "theme.min.js",
+   "t": "js",
+   "b": 19723
+  },
+  {
+   "f": "flickity.pkgd.min.js",
+   "t": "js",
+   "b": 57513
+  },
+  {
+   "f": "magnific-popup.min.js",
+   "t": "js",
+   "b": 20864
+  },
+  {
+   "f": "banner-1-optout.css",
+   "t": "css",
+   "b": 19353
+  },
+  {
+   "f": "comment-reply.min.js",
+   "t": "js",
+   "b": 2950
+  },
+  {
+   "f": "imagesloaded.min.js",
+   "t": "js",
+   "b": 5520
+  },
+  {
+   "f": "jquery.min.js",
+   "t": "js",
+   "b": 87553
+  },
+  {
+   "f": "core.min.js",
+   "t": "js",
+   "b": 18674
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63228,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166833,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 572772,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/gtm.js",
+   "t": "js",
+   "b": 365255,
+   "ext": true
+  }
+ ],
+ "assetCount": 47,
+ "bytes": 2992877,
+ "html": {
+  "mobile": {
+   "title": "BPM Counter & Tap Tempo - Find Beats Per",
+   "lang": "en-US",
+   "manifest": null,
+   "oembed": true,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 13,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "ep2.adtrafficquality.google",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "checkbox": 9,
+    "image": 1,
+    "text": 5
+   },
+   "selects": 3,
+   "textareas": 1,
+   "forms": 2,
+   "ariaLabels": [
+    "Advertisement",
+    "Close dialog",
+    "Close mobile menu",
+    "Comments",
+    "Dark Mode Toggle",
+    "Main website navigation",
+    "Mobile Menu",
+    "Mobile navigation",
+    "Primary Sidebar",
+    "Read more about TCF purposes on Cookie D",
+    "Reply to Anonymous",
+    "Reply to BuckFitch",
+    "Reply to Dierk",
+    "Scroll to the top of the page"
+   ],
+   "roles": {
+    "dialog": 2,
+    "status": 1
+   },
+   "live": true,
+   "skipLink": true,
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "ep2.adtrafficquality.google",
+    "www.google.com",
+    "googleads.g.doubleclick.net"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "0 1 2 3 4 5 6 7 8 9 10",
+   "w": "md"
+  },
+  {
+   "l": "2 3 4 5 6 7 8 9 10 11 12",
+   "w": "md"
+  },
+  {
+   "l": "Accept",
+   "w": "md"
+  },
+  {
+   "l": "Alternative:",
+   "w": "md"
+  },
+  {
+   "l": "Auto-Reset after",
+   "w": "md"
+  },
+  {
+   "l": "BLOG",
+   "w": "d"
+  },
+  {
+   "l": "Beats per measure",
+   "w": "md"
+  },
+  {
+   "l": "CONTACT",
+   "w": "d"
+  },
+  {
+   "l": "Comment",
+   "w": "md"
+  },
+  {
+   "l": "Copy the BPM",
+   "w": "md"
+  },
+  {
+   "l": "Dark Mode Toggle",
+   "w": "md"
+  },
+  {
+   "l": "Enter your email address to comment",
+   "w": "md"
+  },
+  {
+   "l": "Enter your name or username to comment",
+   "w": "md"
+  },
+  {
+   "l": "Enter your website URL (optional)",
+   "w": "md"
+  },
+  {
+   "l": "Facebook-f",
+   "w": "md"
+  },
+  {
+   "l": "HOME",
+   "w": "d"
+  },
+  {
+   "l": "Instagram",
+   "w": "md"
+  },
+  {
+   "l": "Legal Notice",
+   "w": "md"
+  },
+  {
+   "l": "Mobile Menu",
+   "w": "m"
+  },
+  {
+   "l": "PREVIOUS COMMENT PREVIOUS",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Reset (ESC)",
+   "w": "md"
+  },
+  {
+   "l": "TAP (or use any key )",
+   "w": "md"
+  },
+  {
+   "l": "TOOLS",
+   "w": "d"
+  },
+  {
+   "l": "Tap-Sound",
+   "w": "md"
+  },
+  {
+   "l": "Youtube",
+   "w": "md"
+  },
+  {
+   "l": "min",
+   "w": "md"
+  },
+  {
+   "l": "sec",
+   "w": "md"
+  },
+  {
+   "l": "x2",
+   "w": "md"
+  },
+  {
+   "l": "÷2",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/wp-admin/",
+   "/xmlrpc.php",
+   "/readme.html",
+   "/wp-login.php",
+   "/embed/",
+   "/?s=",
+   "/search/",
+   "/?author=",
+   "/cdn-cgi/"
+  ],
+  "sitemaps": [
+   "https://anotherproducer.com/sitemap_index.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 2,
+  "index": true,
+  "sections": [
+   {
+    "s": "page-sitemap.xml",
+    "n": 1
+   },
+   {
+    "s": "post-sitemap.xml",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "complianz.min.js",
+   "own": true,
+   "flags": [
+    "enableAutosize@45855"
+   ],
+   "storage": [
+    "cmplz_cookie_data@36773"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "frontend.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "frontend.min.js",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "usesLocationSearch": true,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "app.min.js",
+   "own": true,
+   "keys": [
+    "Enter@74822"
+   ],
+   "storage": [
+    "wp-dark-mode-visitor@47803"
+   ],
+   "apis": [
+    "Follows the system dark mode"
+   ],
+   "keydownHandlers": 2,
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "dark-mode.js",
+   "own": true,
+   "flags": [
+    "useFont@19429"
+   ],
+   "apis": [
+    "Fast image decoding",
+    "Follows the system dark mode"
+   ],
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "BPM_Calculator.js",
+   "own": true,
+   "keys": [
+    "Escape@8282",
+    "Space@8352"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "style.min.css",
+   "own": true,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "all.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "full-screen-mobile-menu.min.js",
+   "own": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "theme.min.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "flickity.pkgd.min.js",
+   "own": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "magnific-popup.min.js",
+   "own": true,
+   "flags": [
+    "showCloseBtn@9644",
+    "enableEscapeKey@9660",
+    "allowHTMLInStatusIndicator@9934",
+    "allowHTMLInTemplate@9964"
+   ]
+  },
+  {
+   "file": "comment-reply.min.js",
+   "own": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "jquery.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "anotherproducer.com",
+   "file": "BPM_Calculator.js",
+   "at": 2300
+  },
+  {
+   "host": "api.jqueryui.com",
+   "file": "core.min.js",
+   "at": 9326
+  },
+  {
+   "host": "bit.ly",
+   "file": "flickity.pkgd.min.js",
+   "at": 3383
+  },
+  {
+   "host": "dimsemenov.com",
+   "file": "magnific-popup.min.js",
+   "at": 43
+  },
+  {
+   "host": "flickity.metafizzy.co",
+   "file": "style.min.css",
+   "at": 173114
+  },
+  {
+   "host": "fontawesome.com",
+   "file": "all.min.css",
+   "at": 49
+  },
+  {
+   "host": "fonts.googleapis.com",
+   "file": "dark-mode.js",
+   "at": 84805
+  },
+  {
+   "host": "jquery.org",
+   "file": "core.min.js",
+   "at": 624
+  },
+  {
+   "host": "jqueryui.com",
+   "file": "core.min.js",
+   "at": 39
+  },
+  {
+   "host": "oceanwp.org",
+   "file": "style.css",
+   "at": 40
+  },
+  {
+   "host": "player.vimeo.com",
+   "file": "frontend.min.js",
+   "at": 25589
+  },
+  {
+   "host": "www.youtube-nocookie.com",
+   "file": "background-video.min.js",
+   "at": 22602
+  },
+  {
+   "host": "www.youtube.com",
+   "file": "frontend.min.js",
+   "at": 25135
+  }
+ ],
+ "thirdParty": [
+  "analytics.google.com",
+  "api.jqueryui.com",
+  "bit.ly",
+  "dimsemenov.com",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "flickity.metafizzy.co",
+  "fontawesome.com",
+  "fonts.googleapis.com",
+  "jquery.org",
+  "jqueryui.com",
+  "oceanwp.org",
+  "pagead2.googlesyndication.com",
+  "player.vimeo.com",
+  "static.cloudflareinsights.com",
+  "www.googletagmanager.com",
+  "www.youtube-nocookie.com",
+  "www.youtube.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "Web fonts",
+  "YouTube"
+ ],
+ "requests": [
+  "https://analytics.google.com/g/collect?_eu&_fv&_gaz&_nsi&_p&_s&_ss&_tu",
+  "https://anotherproducer.com/cdn-cgi/rum",
+  "https://anotherproducer.com/wp-json/complianz/v1/banner?lang&locale&token",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv"
+ ],
+ "storage": {
+  "local": [],
+  "session": [
+   "cmplz_id",
+   "cmplz_user_data"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "style.min.css"
+  },
+  {
+   "name": "Embeds ep2.adtrafficquality.google",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "oEmbed for embedding links",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "link[type*=oembed]"
+  },
+  {
+   "name": "API call anotherproducer.com/wp-json/complianz/v1/banner?lang&locale&token",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Feature flag allowHTMLInStatusIndicator",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "magnific-popup.min.js@9934"
+  },
+  {
+   "name": "Feature flag allowHTMLInTemplate",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "magnific-popup.min.js@9964"
+  },
+  {
+   "name": "Feature flag enableAutosize",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "complianz.min.js@45855"
+  },
+  {
+   "name": "Feature flag enableEscapeKey",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "magnific-popup.min.js@9660"
+  },
+  {
+   "name": "Feature flag showCloseBtn",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "magnific-popup.min.js@9644"
+  },
+  {
+   "name": "Feature flag useFont",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "dark-mode.js@19429"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "BPM_Calculator.js@642"
+  },
+  {
+   "name": "Fast image decoding",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "dark-mode.js@44493"
+  },
+  {
+   "name": "Uses YouTube",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "app.min.js"
+  },
+  {
+   "name": "Follows the system dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "app.min.js@1450"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "frontend.min.css@31330"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Skip to content link",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "a[href^=\"#main\"]"
+  },
+  {
+   "name": "Path kept from crawlers /cdn-cgi/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /embed/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /readme.html",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /search/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /wp-admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /wp-login.php",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /xmlrpc.php",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

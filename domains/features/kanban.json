@@ -709,6 +709,754 @@
  "re": {
   "scanned": "2026-10-26",
   "sites": {
+   "abacktools.com": {
+    "url": "https://abacktools.[token]",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Accepts the file types .css,.scss,.sass,.less,.svg,.png,.jpg,.jpeg,.gif,.",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@26172"
+     },
+     {
+      "name": "Accepts the file types .md,.mdx,.html,.txt",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@26280"
+     },
+     {
+      "name": "Accepts the file types .ts,.tsx,.js,.jsx,.mjs,.cjs,.json",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@27367"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "API path /api/feedback",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@20429"
+     },
+     {
+      "name": "API path /api/subscribe",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@14314"
+     },
+     {
+      "name": "Feature flag allowPartialStream",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0suxhd9wfs7fu.js@82448"
+     },
+     {
+      "name": "Feature flag allowPinchZoom",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0p.3lz8-t_ju5.js@30687"
+     },
+     {
+      "name": "Feature flag disableOutsidePointerEvents",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0p.3lz8-t_ju5.js@31341"
+     },
+     {
+      "name": "Feature flag showCloseButton",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0jsjzcrhaf6vh.js@26207"
+     },
+     {
+      "name": "Feature flag showText",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "10dss59v7~csf.js@1390"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0rptz7yx.6qqt.js@513"
+     },
+     {
+      "name": "Picture in picture",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0rgyomk9_rp2d.js@171263"
+     },
+     {
+      "name": "Draggable items",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[draggable=true]"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: abacktools-kanban-board",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: mv_session",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Interface languages: 16 (px, py, ps, pe, pt, pr)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@23608"
+     },
+     {
+      "name": "Interface languages: 7 (en, es, fr, pt, de, ru)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "110da4n.h-7k1.js@7965"
+     },
+     {
+      "name": "Language versions: 8 (en, es, fr, pt-BR, de, ru)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Compresses data in the browser",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@54346"
+     },
+     {
+      "name": "WebAssembly engine (heavy work runs in the browser)",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "turbopack-0y.vq8lfvgfk..js@10421"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "04litm7z_9za7.js"
+     },
+     {
+      "name": "Follows the system dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "04litm7z_9za7.js@37721"
+     },
+     {
+      "name": "Respects high-contrast settings",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css@344871"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css@353809"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Skip to content link",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[href^=\"#main\"]"
+     },
+     {
+      "name": "Path kept from crawlers /api/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Route /.[token]",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5554"
+     },
+     {
+      "name": "Route /about",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5698"
+     },
+     {
+      "name": "Route /ai.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5443"
+     },
+     {
+      "name": "Route /auth.md",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5514"
+     },
+     {
+      "name": "Route /blog",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12815"
+     },
+     {
+      "name": "Route /contact",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5875"
+     },
+     {
+      "name": "Route /dmca",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5989"
+     },
+     {
+      "name": "Route /docs/index.md",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5475"
+     },
+     {
+      "name": "Route /guides",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12462"
+     },
+     {
+      "name": "Route /llms-full.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5405"
+     },
+     {
+      "name": "Route /llms.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5365"
+     },
+     {
+      "name": "Route /privacy-policy",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5911"
+     },
+     {
+      "name": "Route /robots.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5660"
+     },
+     {
+      "name": "Route /sitemap.xml",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5620"
+     },
+     {
+      "name": "Route /support",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@797"
+     },
+     {
+      "name": "Route /terms-of-service",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5950"
+     },
+     {
+      "name": "Route /tools",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12108"
+     },
+     {
+      "name": "Route /tools/productivity/games/2048",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@32765"
+     },
+     {
+      "name": "Route /tools/productivity/games/chess",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@27715"
+     },
+     {
+      "name": "Route [token]",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@1858"
+     }
+    ]
+   },
+   "jasperbernaers.com": {
+    "url": "https://jasperbernaers.com/kanban-board/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Opens files: .json,application/json",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Widget toolbar",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=toolbar] x1"
+     },
+     {
+      "name": "Edit in place",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[contenteditable]"
+     },
+     {
+      "name": "Input of type color",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=color] x1"
+     },
+     {
+      "name": "Input of type date",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=date] x1"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: jb-kanban-v2",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Path kept from crawlers /.fuse_hidden",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /CLAUDE.md",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /STYLE-TEMPLATE.html",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /analytics/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /webmastertools/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /365tips/ (1268 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /europe-power-grid/ (11 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /national-power-belgium/ (3 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /periodic-table/ (129 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /typing-speed-test/ (6 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "kanbanflow.com": {
+    "url": "https://kanbanflow.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Path kept from crawlers /health",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /io/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /unsupported-browser",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers [token]",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
    "wekan.fi": {
     "url": "https://wekan.fi/",
     "scanned": "2026-10-26",

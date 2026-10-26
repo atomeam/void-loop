@@ -1,0 +1,286 @@
+{
+ "site": "jasperbernaers.com",
+ "url": "https://jasperbernaers.[token]",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "fonts.googleapis.com/css2",
+   "t": "css",
+   "b": 11405,
+   "ext": true
+  },
+  {
+   "f": "theme.css",
+   "t": "css",
+   "b": 5484
+  },
+  {
+   "f": "theme.js",
+   "t": "js",
+   "b": 2458
+  },
+  {
+   "f": "scripts.simpleanalyticscdn.com/latest.js",
+   "t": "js",
+   "b": 7515,
+   "ext": true
+  }
+ ],
+ "assetCount": 4,
+ "bytes": 26862,
+ "html": {
+  "mobile": {
+   "title": "Free Online Guitar Tuner & Instrument Tu",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 10,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "inputTypes": {
+    "range": 3
+   },
+   "selects": 2,
+   "ariaLabels": [
+    "Jasper Bernaers on LinkedIn",
+    "Jasper Bernaers on X"
+   ],
+   "downloadAttrs": 1
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "432",
+   "w": "md"
+  },
+  {
+   "l": "440",
+   "w": "md"
+  },
+  {
+   "l": "442",
+   "w": "md"
+  },
+  {
+   "l": "▶ START TUNER",
+   "w": "md"
+  },
+  {
+   "l": "○ A2 110.00 Hz",
+   "w": "md"
+  },
+  {
+   "l": "○ B3 246.94 Hz",
+   "w": "md"
+  },
+  {
+   "l": "○ D3 146.83 Hz",
+   "w": "md"
+  },
+  {
+   "l": "○ E2 82.41 Hz",
+   "w": "md"
+  },
+  {
+   "l": "○ E4 329.63 Hz",
+   "w": "md"
+  },
+  {
+   "l": "○ G3 196.00 Hz",
+   "w": "md"
+  },
+  {
+   "l": "⛶ FULL",
+   "w": "md"
+  },
+  {
+   "l": "🎤 TUNER",
+   "w": "md"
+  },
+  {
+   "l": "🔊 TONE",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/analytics/",
+   "/webmastertools/",
+   "/.fuse_hidden",
+   "/CLAUDE.md",
+   "/STYLE-TEMPLATE.html"
+  ],
+  "sitemaps": [
+   "https://jasperbernaers.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 1666,
+  "index": false,
+  "sections": [
+   {
+    "s": "365tips",
+    "n": 1268
+   },
+   {
+    "s": "periodic-table",
+    "n": 129
+   },
+   {
+    "s": "europe-power-grid",
+    "n": 11
+   },
+   {
+    "s": "typing-speed-test",
+    "n": 6
+   },
+   {
+    "s": "national-power-belgium",
+    "n": 3
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "3d-pipes-screensaver",
+    "n": 1
+   },
+   {
+    "s": "4-chord-song-player",
+    "n": 1
+   },
+   {
+    "s": "8bit-studio",
+    "n": 1
+   },
+   {
+    "s": "AS400.html",
+    "n": 1
+   },
+   {
+    "s": "ASCII-generator",
+    "n": 1
+   },
+   {
+    "s": "Advanced-SIP-Calculator",
+    "n": 1
+   },
+   {
+    "s": "Global-Radiation-Flux",
+    "n": 1
+   },
+   {
+    "s": "ITJargon",
+    "n": 1
+   },
+   {
+    "s": "KQL-example-generator",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "theme.js",
+   "own": true,
+   "storage": [
+    "jb-theme@364"
+   ]
+  }
+ ],
+ "thirdParty": [
+  "fonts.googleapis.com",
+  "scripts.simpleanalyticscdn.com"
+ ],
+ "services": [
+  "Web fonts"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Download links",
+   "kind": "export",
+   "tag": "observed",
+   "evidence": "a[download] x1"
+  },
+  {
+   "name": "Input of type range",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=range] x3"
+  },
+  {
+   "name": "Path kept from crawlers /.fuse_hidden",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /CLAUDE.md",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /STYLE-TEMPLATE.html",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /analytics/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /webmastertools/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /365tips/ (1268 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /europe-power-grid/ (11 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /national-power-belgium/ (3 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /periodic-table/ (129 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /typing-speed-test/ (6 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}
