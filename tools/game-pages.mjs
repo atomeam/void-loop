@@ -153,13 +153,7 @@ ${row.sprite ? SPRITE + '\n' : ''}<main id="app">
   <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
   <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
 </main>
-<script type="module">
-  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
-  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
-  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /\.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)${row.keep ? ', ...' + JSON.stringify(row.keep) : ''}])) fetch(u).catch(() => {}); };
-  const go = () => import('${row.path}app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
-  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
-</script>
+<script type="module" src="${row.path}app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>
@@ -259,6 +253,13 @@ export const HUB_BODY = (rows) => `
   <section class="pane" aria-label="On the stage"><h2>More games on the stage, in 3D</h2><p class="note">Verse's stage plays these against Verse on a 3D table: ask for one and it appears.</p>
   <div class="tk-row">${[['Connect four', 'play connect four'], ['Othello', 'play othello'], ['Go', 'play go'], ['Mancala', 'play mancala'], ['Battleship', 'play battleship'], ['Tic-tac-toe', 'play tic tac toe'], ['Snake', 'play snake'], ['Pong', 'play pong'], ['Chess in 3D', 'play chess'], ['The game box', 'games']].map(([n, q]) => `<a href="/?q=${encodeURIComponent(q)}">${n}</a>`).join(' · ')}</div></section>
   <p class="lacks">What Verse does not have: no online games against strangers and no accounts, ratings or leaderboards shared with anyone; your records stay on this device. Chess with a friend works by link: each move is sent as a link.</p>`;
+/** the page's start file: the game's code (game.js) after the load event, so only this small file stands before it (the gate times the load event); on a
+ *  first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline */
+export const bootOf = (row) => `// ${row.path}app.js: written by tools/game-pages.mjs; edit the generator, not this file. The game is ${row.path}game.js, loaded after the load event.
+const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /\\.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)${row.keep ? ', ...' + JSON.stringify(row.keep) : ''}])) fetch(u).catch(() => {}); };
+const go = () => import('${row.path}game.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+`;
 export const BODIES = { '/chess/': CHESS_BODY, '/games/': HUB_BODY(GAME_SITES), '/games/checkers/': CHECKERS_BODY, '/games/solitaire/': SOL_BODY, '/games/mines/': MINES_BODY, '/games/word/': WORD_BODY, '/games/sudoku/': SUDOKU_BODY, '/games/merge/': MERGE_BODY };
 export const EXTRA_CSS = { '/chess/': CHESS_CSS, '/games/': HUB_CSS, '/games/checkers/': CHECKERS_CSS, '/games/solitaire/': SOL_CSS, '/games/mines/': MINES_CSS, '/games/word/': WORD_CSS, '/games/sudoku/': SUDOKU_CSS, '/games/merge/': MERGE_CSS };
 const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/asks -->\n?|<!-- modulepreload: tools\/preload\.mjs -->[\s\S]*?<!-- \/modulepreload -->\n?/g;
@@ -267,11 +268,13 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const check = process.argv.includes('--check'), bad = [];
   for (const row of GAME_SITES) {
     const body = BODIES[row.path]; if (!body) continue;
+    const bootFile = path.join(site, row.path, 'app.js'), bootWant = bootOf(row);
+    if (!fs.existsSync(bootFile) || fs.readFileSync(bootFile, 'utf8') !== bootWant) { if (check) bad.push(row.path + 'app.js differs from tools/game-pages.mjs'); else { fs.mkdirSync(path.dirname(bootFile), { recursive: true }); fs.writeFileSync(bootFile, bootWant); console.log('wrote ' + row.path + 'app.js'); } }
     const want = pageOf({ ...row, css: EXTRA_CSS[row.path] || '' }, body), file = path.join(site, row.path, 'index.html'), have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
     if (have !== null && bare(have) === bare(want)) continue;
     if (check) { bad.push(row.path + ' differs from tools/game-pages.mjs (node tools/game-pages.mjs)'); continue; }
     // keep the blocks other generators own (seo, asks, preloads) where they were
-    let out = want; if (have) { for (const m of have.match(MARK) || []) { const tag = m.slice(0, m.indexOf('-->') + 3); if (/<!-- asks -->/.test(tag)) out = out.replace('  <nav id="related"', m.trimEnd() + '\n  <nav id="related"'); else out = out.replace('</head>', m.trimEnd() + '\n</head>'); } }
+    let out = want; if (have) { for (const m of have.match(MARK) || []) { const tag = m.slice(0, m.indexOf('-->') + 3); if (/<!-- asks -->/.test(tag)) { if (row.links && row.links.length) out = out.replace('  <nav id="related"', m.trimEnd() + '\n  <nav id="related"'); } else out = out.replace('</head>', m.trimEnd() + '\n</head>'); } }
     fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, out); console.log('wrote ' + row.path);
   }
   if (bad.length) { console.error(bad.join('\n')); process.exit(1); }

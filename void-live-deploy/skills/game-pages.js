@@ -6,8 +6,8 @@
  * Nothing is made here. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { GAME_SITES, gameAskOf } from '../lib/game-sites.js';
-const MINE = ['/games/sudoku/', '/games/solitaire/', '/games/word/', '/chess/?mode=puzzle', '/chess/?mode=analysis', '/chess/?mode=two', '/games/'];
-const pageOf = (lower) => { const to = gameAskOf(String(lower || '').trim()); return MINE.includes(to) && !/^games$/i.test(String(lower || '').trim()) ? to : ''; }; // plain "games" stays with the Game Box
+const MINE = ['/games/sudoku/', '/games/solitaire/', '/games/word/', '/chess/?mode=puzzle', '/chess/?mode=analysis', '/chess/?mode=two'];
+const pageOf = (lower) => { const to = gameAskOf(String(lower || '').trim()); return MINE.includes(to) ? to : ''; }; // "games" and "all games" stay with the Game Box
 function run(text, api) {
   const { showPage, esc } = api, to = pageOf(String(text || '').toLowerCase()) || '/games/', row = GAME_SITES.find((r) => r.path === to.replace(/\?.*$/, '')) || GAME_SITES[1];
   showPage((el) => {

@@ -74,19 +74,13 @@
   <p class="lacks">What Verse does not have: one shared word for everybody on the same day is the word of the day here, but there is no leaderboard (Verse keeps no accounts). Five-letter English words only for now.</p>
   <p class="note">The answers are Verse's own list of everyday words; a guess is accepted from a list of 12,578 five-letter words (word-list, MIT licence).</p>
 <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/word/?daily=1">Word of the day</a><a href="/games/word/">Unlimited</a><a href="/games/word/?hard=1">Hard mode</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/word/?daily=1">Word of the day</a><a href="/games/word/?hard=0">Unlimited</a><a href="/games/word/?hard=1">Hard mode</a><a href="/games/word/?daily=1&amp;hard=1">Word of the day, hard</a><a href="/games/word/?lang=de">Auf Deutsch</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
   <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
   <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
 </main>
-<script type="module">
-  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
-  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
-  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)])) fetch(u).catch(() => {}); };
-  const go = () => import('/games/word/app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
-  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
-</script>
+<script type="module" src="/games/word/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>

@@ -491,84 +491,84 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:56:32Z",
+   "subject": "Tower gate: shopping,jobs measured against their live sites"
+  },
+  {
    "at": "2026-10-26T06:56:12Z",
    "subject": "Games floor: /chess/ for Lichess and a page per lane site under /games/ (checkers, solitaire, mines, word guess, sudoku, slide and merge)…"
   },
   {
-   "at": "2026-10-26T06:07:54Z",
-   "subject": "RULES: an owner chore is worked around or gathered, never dropped (owner, 2026-10-26)"
+   "at": "2026-10-26T06:52:57Z",
+   "subject": "RULES: never stop overtaking (owner, 2026-10-26)"
   },
   {
-   "at": "2026-10-26T06:07:42Z",
-   "subject": "Launch drafts: AlternativeTo listings and community posts for review"
+   "at": "2026-10-26T06:52:33Z",
+   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
   },
   {
-   "at": "2026-10-26T06:07:27Z",
-   "subject": "RULES: Verse is autonomous (owner, 2026-10-26)"
-  },
-  {
-   "at": "2026-10-26T06:05:58Z",
-   "subject": "Tower gate: jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:05:51Z",
-   "subject": "Versus: every entry names its own Verse page, side by side opens it"
-  },
-  {
-   "at": "2026-10-26T06:03:16Z",
+   "at": "2026-10-26T06:51:32Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T06:03:00Z",
-   "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
-  },
-  {
-   "at": "2026-10-26T06:01:53Z",
-   "subject": "Tower gate: travel: aruljohn.com,travel: airmilescalculator.com,travel: co2.myclimate.org,travel: flightconnections.com measured against…"
-  },
-  {
-   "at": "2026-10-26T05:55:16Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:52:17Z",
+   "at": "2026-10-26T06:50:04Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T05:52:01Z",
-   "subject": "Flights card leaves distance asks to the distance skill; a test for the card"
+   "at": "2026-10-26T06:50:04Z",
+   "subject": "Tower gate: shopping measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:49:15Z",
-   "subject": "Tower gate: travel: tripwaffle.com,wheel,time zones,codebase,tildegit measured against their live sites"
+   "at": "2026-10-26T06:48:52Z",
+   "subject": "RULES: link what works together (owner, 2026-10-26)"
   },
   {
-   "at": "2026-10-26T05:46:11Z",
-   "subject": "Flights skill in the Sky and earth family; generated files"
-  },
-  {
-   "at": "2026-10-26T05:45:40Z",
+   "at": "2026-10-26T06:48:00Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T05:45:24Z",
-   "subject": "Flights: coastlines under the great-circle map (Natural Earth, 11 KB), nonstop routes on /flights/routes/ (OpenFlights ODbL, June 2014…"
+   "at": "2026-10-26T06:47:19Z",
+   "subject": "RULES: sites may share a page; a site with none goes into work at once (owner, 2026-10-26)"
   },
   {
-   "at": "2026-10-26T05:44:48Z",
-   "subject": "Tower floors: wheel advanced-mode weights, time zones skeleton (no layout shift), gist Share link"
+   "at": "2026-10-26T06:46:55Z",
+   "subject": "Jobs: an excerpt ends at a whole sentence; the generated files"
   },
   {
-   "at": "2026-10-26T05:44:00Z",
-   "subject": "Site reverse engineering: travel-airmilescalculator.com,travel-aruljohn.com,travel-clock7.com,travel-co2.myclimate.org,travel-flightconnect…"
+   "at": "2026-10-26T06:45:29Z",
+   "subject": "Tower gate: shopping measured against their live sites"
   },
   {
-   "at": "2026-10-26T05:41:27Z",
-   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
+   "at": "2026-10-26T06:42:49Z",
+   "subject": "Traffic: one visit, not one visits"
   },
   {
-   "at": "2026-10-26T05:38:54Z",
-   "subject": "Subject eval: 54 of 54 live"
+   "at": "2026-10-26T06:42:25Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
+  },
+  {
+   "at": "2026-10-26T06:37:45Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:35:09Z",
+   "subject": "RULES: Verse earns without Claude (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:34:27Z",
+   "subject": "Tower gate: shopping measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:34:02Z",
+   "subject": "RULES: Verse earns, on its own (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:31:35Z",
+   "subject": "Traffic: a placeholder domains/traffic.json until the first run, deps and guide regenerated"
+  },
+  {
+   "at": "2026-10-26T06:31:35Z",
+   "subject": "Who visits Verse: a cookie-less count, a daily traffic file and \"People this week\""
   }
  ],
  "builders": {

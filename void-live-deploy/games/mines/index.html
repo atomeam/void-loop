@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mines: clear the field without opening a mine · Verse</title>
-<meta name="description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, best times per level on this device, and a numbered board to share. No account, no ads, works offline.">
+<meta name="description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, fastest times per level on this device, and a numbered board to share. No account, no ads, works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Mines · Verse">
-<meta property="og:description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, best times per level on this device, and a numbered board to share. No account, no ads, works offline.">
+<meta property="og:description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, fastest times per level on this device, and a numbered board to share. No account, no ads, works offline.">
 <meta property="og:url" content="https://a-to-mind.com/games/mines/">
 <meta property="og:image" content="https://a-to-mind.com/og/games-mines.png">
 <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Mines on Verse">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mines · Verse">
-<meta name="twitter:description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, best times per level on this device, and a numbered board to share. No account, no ads, works offline.">
+<meta name="twitter:description" content="Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, fastest times per level on this device, and a numbered board to share. No account, no ads, works offline.">
 <meta name="twitter:image" content="https://a-to-mind.com/og/games-mines.png">
 <style>
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --warn: #a15c00;
@@ -55,7 +55,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/games/mines/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Mines","url":"https://a-to-mind.com/games/mines/","description":"Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, best times per level on this device, and a numbered board to share. No account, no ads, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"minesweeper, mines game, minesweeper expert, minesweeper online free, mine clearing game","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/games/mines/?tool={tool}"},"tool-input":"required name=tool"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Mines","item":"https://a-to-mind.com/games/mines/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Mines","url":"https://a-to-mind.com/games/mines/","description":"Free mine-clearing puzzle: beginner 9x9 with 10 mines, intermediate 16x16 with 40, expert 30x16 with 99, or a custom field; flags and question marks, chording on numbers, a first click that is always safe, a timer and mine counter, fastest times per level on this device, and a numbered board to share. No account, no ads, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"minesweeper, mines game, minesweeper expert, minesweeper online free, mine clearing game","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/games/mines/?tool={tool}"},"tool-input":"required name=tool"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Mines","item":"https://a-to-mind.com/games/mines/"}]}]}</script>
 <!-- /seo -->
 </head>
 <body>
@@ -70,19 +70,13 @@
   <div class="row c"><button type="button" class="go" id="new">New game</button><button type="button" id="flagmode" aria-pressed="false">Flag mode</button><label style="flex:0 1 auto;flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="marks" style="width:24px;height:24px;min-height:0"> Question marks</label><button type="button" id="share">Share link</button></div>
   <p class="lacks">What Verse does not have: no world ranking of times (Verse keeps no accounts); your best times stay on this device.</p>
 <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/mines/?level=beginner">Beginner</a><a href="/games/mines/?level=intermediate">Intermediate</a><a href="/games/mines/?level=expert">Expert</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/mines/?level=beginner">Beginner</a><a href="/games/mines/?level=intermediate">Intermediate</a><a href="/games/mines/?level=expert">Expert</a><a href="/games/mines/?level=custom&amp;w=20&amp;h=12&amp;m=40">Custom 20 x 12, 40 mines</a><a href="/games/mines/?level=expert&amp;board=1">Expert board 1</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
   <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
   <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
 </main>
-<script type="module">
-  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
-  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
-  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)])) fetch(u).catch(() => {}); };
-  const go = () => import('/games/mines/app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
-  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
-</script>
+<script type="module" src="/games/mines/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>

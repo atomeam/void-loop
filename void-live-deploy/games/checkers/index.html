@@ -70,19 +70,13 @@
   <div class="row c"><button type="button" class="go" id="new">New game</button><button type="button" id="undo">Undo</button><button type="button" id="hint">Hint</button><button type="button" id="share">Share link</button></div>
   <p class="lacks">What Verse does not have: no games against strangers online and no shared rankings (Verse keeps no accounts). The rules are American checkers (English draughts) on an 8x8 board; international 10x10 draughts is not here yet.</p>
 <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/checkers/?level=easy">Easy</a><a href="/games/checkers/?level=hard">Hard</a><a href="/games/checkers/?mode=two">Two players</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/games/checkers/?level=easy">Easy</a><a href="/games/checkers/?level=normal">Normal</a><a href="/games/checkers/?level=hard">Hard</a><a href="/games/checkers/?mode=ai">Against the computer</a><a href="/games/checkers/?mode=two">Two players</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"></nav>
   <p class="note" style="text-align:center" id="trust">Free, no account, no ads. It runs on your device and works offline after one visit.</p>
   <footer><a href="/">Verse</a> · <a href="/games/">every game</a> · <a href="/tools/">every tool</a></footer>
 </main>
-<script type="module">
-  // the page is whole before this runs: its words, controls and first board are in the HTML; the game's code comes after the load event
-  // on a first visit the service worker takes over after the code has loaded, so the code is asked for once more through it and kept for offline
-  const keep = () => { for (const u of new Set([...performance.getEntriesByType('resource').map((e) => new URL(e.name)).filter((u) => u.origin === location.origin && /.(?:js|json)$/.test(u.pathname)).map((u) => u.pathname)])) fetch(u).catch(() => {}); };
-  const go = () => import('/games/checkers/app.js').then(() => { const sw = navigator.serviceWorker; if (!sw) return; if (sw.controller) keep(); else sw.addEventListener('controllerchange', keep, { once: true }); });
-  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
-</script>
+<script type="module" src="/games/checkers/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>
