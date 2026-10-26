@@ -2501,53 +2501,97 @@
   },
   "photos": {
    "speed": {
-    "verdict": "better",
-    "verse": 339,
-    "best": 787,
-    "evidence": "Verse 339 ms to the load event (median of 3, phone width) vs Google Photos 787 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:39:28.860Z"
+    "verdict": "equal-and-better",
+    "verse": 155,
+    "best": 529,
+    "evidence": "Verse (/photos/) 155 ms to the load event (median of 3, phone width) vs Google Photos 529 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:03:04.570Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse 3 of 3 loads answered vs Google Photos 3 of 3 loads answered",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 3 of 3 loads answered vs Google Photos 3 of 3 loads answered",
+    "at": "2026-10-26T04:03:04.570Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Photos 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 0 px sideways overflow at 390 px vs Google Photos 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:03:04.570Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
-    "evidence": "Verse 0 unnamed controls or images vs Google Photos 2 unnamed controls or images",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 0 unnamed controls or images vs Google Photos 2 unnamed controls or images",
+    "at": "2026-10-26T04:03:04.570Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Photos 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 1 (1: the page shows itself again with the network cut) vs Google Photos 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:03:04.570Z"
    },
    "sharing": {
-    "verdict": "equal-and-better",
-    "verse": 4,
+    "verdict": "worse",
+    "verse": 3,
     "best": 4,
-    "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Photos 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Photos 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:03:04.570Z",
+    "was": "equal-and-better"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 20,
-    "evidence": "Verse 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.02)",
-    "at": "2026-10-25T11:39:28.860Z"
+    "evidence": "Verse (/photos/) 1 design defects vs Google Photos 20 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), Google Photos (4 low-contrast texts, 16 small tap targets, layout shift 0.06)",
+    "at": "2026-10-26T04:03:04.570Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/photos/) 3 of 3 right against the worked-out answer; judged against the standard, not Google Photos (the site is not asked)",
+    "at": "2026-10-26T04:03:04.570Z",
+    "of": 3
+   },
+   "editing": {
+    "verdict": "worse",
+    "verse": 5,
+    "best": 7,
+    "evidence": "Verse (/photos/) 5 of 7 shown for the question (Verse lacks: crop, rotate); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:03:04.570Z",
+    "of": 7,
+    "part": true
+   },
+   "compress and convert": {
+    "verdict": "worse",
+    "verse": 6,
+    "best": 7,
+    "evidence": "Verse (/photos/) 6 of 7 shown for the question (Verse lacks: a quality choice); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:03:04.570Z",
+    "of": 7,
+    "part": true
+   },
+   "metadata and privacy": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 2,
+    "evidence": "Verse (/photos/) 1 of 2 shown for the question (Verse lacks: EXIF); judged on Verse alone, the site is not asked",
+    "at": "2026-10-26T04:03:04.570Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 27,
+    "best": 1,
+    "evidence": "Verse (/photos/) 27 of 30 things a full answer shows vs Google Photos 1 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider, Size saved readout)",
+    "at": "2026-10-26T04:03:04.570Z",
+    "of": 30
    }
   },
   "games": {
@@ -14147,59 +14191,59 @@
   "photos: exifeditor.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 160,
-    "best": 2245,
-    "evidence": "Verse (/photos/exifeditor/) 160 ms to the load event (median of 3, phone width) vs exifeditor.io 2245 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T03:55:18.430Z"
+    "verse": 110,
+    "best": 2052,
+    "evidence": "Verse (/photos/exifeditor/) 110 ms to the load event (median of 3, phone width) vs exifeditor.io 2052 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/exifeditor/) 3 of 3 loads answered vs exifeditor.io 3 of 3 loads answered",
-    "at": "2026-10-26T03:55:18.430Z"
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 17,
     "evidence": "Verse (/photos/exifeditor/) 0 px sideways overflow at 390 px vs exifeditor.io 17 px sideways overflow at 390 px",
-    "at": "2026-10-26T03:55:18.430Z"
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/photos/exifeditor/) 0 unnamed controls or images vs exifeditor.io 0 unnamed controls or images",
-    "at": "2026-10-26T03:55:18.430Z"
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/photos/exifeditor/) 1 (1: the page shows itself again with the network cut) vs exifeditor.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T03:55:18.430Z"
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse (/photos/exifeditor/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs exifeditor.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T03:55:18.430Z"
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 51,
-    "evidence": "Verse (/photos/exifeditor/) 1 design defects vs exifeditor.io 51 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), exifeditor.io (40 low-contrast texts, 10 small tap targets, layout shift 0.63)",
-    "at": "2026-10-26T03:55:18.430Z"
+    "evidence": "Verse (/photos/exifeditor/) 1 design defects vs exifeditor.io 51 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.03), exifeditor.io (40 low-contrast texts, 10 small tap targets, layout shift 0.28)",
+    "at": "2026-10-26T04:02:35.976Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 27,
     "best": 5,
     "evidence": "Verse (/photos/exifeditor/) 27 of 30 things a full answer shows vs exifeditor.io 5 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: PNG, WebP, AVIF, a quality slider, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, strip metadata, batch to a zip, paste or drop, works offline, Timeline by date, Duplicate handling, Compress with a quality slider, Before and after compare slider, Size saved readout)",
-    "at": "2026-10-26T03:55:18.430Z",
+    "at": "2026-10-26T04:02:35.976Z",
     "of": 30
    },
    "accuracy": {
@@ -14207,7 +14251,7 @@
     "verse": 2,
     "best": 3,
     "evidence": "Verse (/photos/exifeditor/) 2 of 3 right against the worked-out answer (missed: its size before and after, in bytes); judged against the standard, not exifeditor.io (the site is not asked). The page showed: \"Compress and convert Crop and rotate Adjust Filters Draw Text EXIF and privacy Undo Redo Reset all No camera, place or editing data found in this file. Strip metadata only (same pixels) Save the metad\"",
-    "at": "2026-10-26T03:55:18.430Z",
+    "at": "2026-10-26T04:02:35.976Z",
     "of": 3
    },
    "editing": {
@@ -14215,7 +14259,7 @@
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/photos/exifeditor/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:55:18.430Z",
+    "at": "2026-10-26T04:02:35.976Z",
     "of": 7,
     "part": true
    },
@@ -14224,7 +14268,7 @@
     "verse": 1,
     "best": 7,
     "evidence": "Verse (/photos/exifeditor/) 1 of 7 shown for the question (Verse lacks: a quality choice, JPEG, WebP, the size saved, a resize, before and after); judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:55:18.430Z",
+    "at": "2026-10-26T04:02:35.976Z",
     "of": 7,
     "part": true
    },
@@ -14233,7 +14277,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/photos/exifeditor/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T03:55:18.430Z",
+    "at": "2026-10-26T04:02:35.976Z",
     "of": 2,
     "part": true
    }
@@ -14707,6 +14751,109 @@
     "at": "2026-10-26T04:00:13.566Z",
     "of": 30
    }
+  },
+  "pdf: codeshack.io": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 108,
+    "best": 207,
+    "evidence": "Verse (/pdf/merge/) 108 ms to the load event (median of 3, phone width) vs codeshack.io 207 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/pdf/merge/) 0 of 3 loads answered vs codeshack.io 3 of 3 loads answered",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/merge/) 0 px sideways overflow at 390 px vs codeshack.io 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/merge/) 0 unnamed controls or images vs codeshack.io 0 unnamed controls or images",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/merge/) 0 (1: the page shows itself again with the network cut) vs codeshack.io 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/pdf/merge/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 3,
+    "evidence": "Verse (/pdf/merge/) 1 of 3 right against the worked-out answer (missed: PDFs chosen or dropped, files stay on the device); judged against the standard, not codeshack.io (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/merge/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/merge/) 0 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T04:03:23.639Z"
+   },
+   "merge and split": {
+    "verdict": "equal",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/pdf/merge/) 1 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: split; site lacks: split)",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 2,
+    "part": true
+   },
+   "page tools": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/pdf/merge/) 0 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 3,
+    "part": true
+   },
+   "images to pdf": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 1,
+    "part": true
+   },
+   "compress": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 1,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 4,
+    "evidence": "Verse (/pdf/merge/) 1 of 14 things a full answer shows vs codeshack.io 4 of 14 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF)",
+    "at": "2026-10-26T04:03:23.639Z",
+    "of": 14
+   }
   }
  },
  "icons": {
@@ -14774,9 +14921,9 @@
   "docs.google.com": "tower.icons/docs.google.com.ico",
   "google.com": "tower.icons/google.com.png",
   "espn.com": "tower.icons/espn.com.png",
-  "finance.yahoo.com": "tower.icons/finance.yahoo.com.png",
+  "finance.yahoo.com": "tower.icons/finance.yahoo.com.ico",
   "bbc.com": "tower.icons/bbc.com.png",
-  "photos.google.com": "tower.icons/photos.google.com.svg",
+  "photos.google.com": "tower.icons/photos.google.com.ico",
   "khanacademy.org": "tower.icons/khanacademy.org.ico",
   "lichess.org": "tower.icons/lichess.org.svg",
   "timetreeapp.com": "tower.icons/timetreeapp.com.ico",
@@ -14860,6 +15007,7 @@
   "tinypng.com": "tower.icons/tinypng.com.png",
   "squoosh.app": "tower.icons/squoosh.app.png",
   "photopea.com": "tower.icons/photopea.com.png",
-  "iloveimg.com": "tower.icons/iloveimg.com.png"
+  "iloveimg.com": "tower.icons/iloveimg.com.png",
+  "codeshack.io": "tower.icons/codeshack.io.png"
  }
 }
