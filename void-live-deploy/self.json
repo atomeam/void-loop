@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:48:52Z",
+   "subject": "RULES: link what works together (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:48:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T06:47:19Z",
+   "subject": "RULES: sites may share a page; a site with none goes into work at once (owner, 2026-10-26)"
+  },
+  {
    "at": "2026-10-26T06:46:55Z",
    "subject": "Jobs: an excerpt ends at a whole sentence; the generated files"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T06:17:52Z",
    "subject": "Tower gate: jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:17:07Z",
-   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:15:12Z",
-   "subject": "RULES: use the sites as well as beat them (owner, 2026-10-26)"
-  },
-  {
-   "at": "2026-10-26T06:15:12Z",
-   "subject": "Flights: five providers, not six (the page builds five fixed provider links, plus the airline site when known)"
   }
  ],
  "builders": {
