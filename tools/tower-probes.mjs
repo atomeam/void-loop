@@ -267,13 +267,13 @@ export const PROBES = Object.freeze({
       ['the same story from several sources', /\b\d+ sources\b/i], ['a share link', /\bcopy link\b/i], ['headlines only', /\bheadlines only\b/i], ['works offline', /\boffline\b/i]],
   },
   finance: {
-    site: 'https://finance.yahoo.com/', verse: '/markets/?s=AAPL&r=5y&on=2024-12-31',
-    // the question: Apple's close on the last trading day of 2024, in the page's link (a day that never changes, so no live price is guessed). The truth any correct quote
-    // page agrees on, worked out by hand from the exchange's record (never read off the site): AAPL closed 2024 at 250.42 US dollars, on 31 Dec 2024. The words beside it
-    // ("AAPL · USD") appear only once the price has come back, so a page that is still loading fails. Judged on Verse alone (the site is not asked); the same probe measures
+    site: 'https://finance.yahoo.com/', verse: '/markets/?s=SPX&r=5y&on=2024-12-31',
+    // the question: the S&P 500's close on the last trading day of 2024, in the page's link (a day that never changes, so no live price is guessed). The truth any correct quote
+    // page agrees on, worked out by hand from the exchange's record (never read off the site): the S&P 500 closed 2024 at 5,881.63 points on 31 Dec 2024 (the Associated Press's market report of that day, checked 2026-10-26). The words beside it
+    // ("SPX · Index") appear only once the price has come back, so a page that is still loading fails. Judged on Verse alone (the site is not asked); the same probe measures
     // every site in the finance lane (lib/tower.js LANES)
-    ask: { verse: '/markets/?s=AAPL&r=5y&on=2024-12-31' },
-    truth: [['the close on 31 Dec 2024 is 250.42', /Close on 31 Dec 2024:\s*250\.42\b/], ['the symbol and its currency, from the answer', /\bAAPL · USD\b/], ['a price with cents', /\b\d{1,3}(?:,\d{3})*\.\d{2}\b[\s\S]{0,60}today/]],
+    ask: { verse: '/markets/?s=SPX&r=5y&on=2024-12-31' },
+    truth: [['the close on 31 Dec 2024 is 5,881.63', /Close on 31 Dec 2024:\s*5,881\.63\b/], ['the symbol and its kind, from the answer', /\bSPX · Index\b/], ['a price with cents', /\b\d{1,3}(?:,\d{3})*\.\d{2}\b[\s\S]{0,60}today/]],
     // real numbers for fixed params, so a loading-only page fails: a quote with a percent move and its source; a chart with its change over the range; the watchlist box
     askParts: { 'live quotes': [['a price with its move in percent', /[+−]\d+\.\d{2}%\) today/], ['the source named', /Source: (?:Stooq|Yahoo|CoinGecko|ECB)/], ['a 52-week range of two prices', /52-week range\s*\d[\d,]*\.\d{2}\s*–\s*\d[\d,]*\.\d{2}/]],
       charts: [['ranges from 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\bYTD\b[\s\S]{0,40}\b5Y\b[\s\S]{0,20}\bMax\b/], ['the move over the range, from the drawn series', /[+−]\d+\.\d+% over 5Y/], ['a hover readout', /Move across the chart/i]],
@@ -282,6 +282,26 @@ export const PROBES = Object.freeze({
     // movers, comparing, history); news, financial statements, options and portfolios are not here and not claimed
     facts: [['the price and its change in percent', /[+−]\d+\.\d{2}%/], ['the previous close', /previous close/i], ['the day range', /day range/i], ['the 52-week range', /52-week range/i], ['volume', /\bvolume\b/i], ['market cap', /market cap/i],
       ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['a written market wrap', /verse reports/i], ['the source and the delay said', /may be delayed/i]],
+  },
+  // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/caps/, the screener site against
+  // /markets/screener/. Each judged on Verse alone; the truth is what holds on any day.
+  'finance: companiesmarketcap.com': {
+    site: 'https://companiesmarketcap.com/', verse: '/markets/caps/',
+    // the question: the coins by market cap. The truth on any day (worked out by hand): Bitcoin is rank 1, its name and ticker stand together on the row, with a price in dollars
+    // and a market cap in billions or trillions; the page says it lists the 50 largest. Numbers only appear once the list has come back, so a loading page fails.
+    ask: { verse: '/markets/caps/' },
+    truth: [['Bitcoin is rank 1', /(?:^|\n)\s*1\s+\S*\s*Bitcoin\s*BTC\b/], ['a price in dollars on its row', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a market cap in trillions or billions', /\$\d+(?:\.\d+)?[TB]\b/], ['the 50 largest', /\b50 largest\b/i]],
+    askParts: { 'live quotes': [['a price in dollars', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a 24 hour move in percent', /[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a 7 day chart', /\b7d chart\b/i], ['the 7 day move', /\b7d [+−]\d+\.\d{2}%/]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
+    facts: [['rank', /(?:^|\n)\s*1\s/], ['price', /\$[\d,]{3,}/], ['market cap', /\bMkt cap\b|market cap/i], ['24 hour change', /[+−]\d+\.\d{2}%/], ['7 day change', /\b7d [+−]\d+\.\d{2}%/], ['24 hour volume', /\bVol 24h \$/i], ['a total market cap', /Total market cap of these \d+: \$\d/i], ['a coin search', /find a coin/i], ['sorting', /\bMkt cap\b/i], ['a 7 day chart', /\b7d chart\b/i], ['company market caps said to be absent, and why', /Company market caps[\s\S]{0,160}no free source/i]],
+  },
+  'finance: finviz.com': {
+    site: 'https://finviz.com/', verse: '/markets/screener/?near=100&sort=pct',
+    // the question: the whole small universe (a filter every symbol passes: within 100 percent of its high), biggest gain first. The truth on any day: the page counts how many of
+    // the universe match, names a stock and a coin in its rows, and the universe is labelled as 12 stocks, 4 indices and 30 coins, "not every listed company".
+    ask: { verse: '/markets/screener/?near=100&sort=pct' },
+    truth: [['the matches counted', /\b\d+ of \d+ symbols match\b/], ['a share row with a price and a move', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['a coin row', /\bBTC\b[\s\S]{0,60}[+−]\d+\.\d{2}%/], ['the universe labelled as small', /12 large US stocks[\s\S]{0,200}30 large coins[\s\S]{0,80}not every listed company/i]],
+    askParts: { 'live quotes': [['a price and a move on a row', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a chart under each move', /small line under each move is its chart/i], ['the distance from the high', /Below high/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
+    facts: [['a move filter', /Move at least/i], ['a distance from the high filter', /Within % of high/i], ['a volume filter', /Volume at least/i], ['a group filter', /\bIndices\b[\s\S]{0,40}\bCoins\b/i], ['sorting', /Sort by/i], ['a match count', /\d+ of \d+ symbols match/], ['volume against the average', /Volume ×/], ['the universe said plainly', /not every listed company/i], ['a chart on each row', /small line under each move is its chart/i]],
   },
   'image boards': {
     site: 'https://www.4chan.org/', verse: '/boards/',

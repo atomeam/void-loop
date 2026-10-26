@@ -53,7 +53,8 @@ export async function reportAnswer(request, env, body, deps) {
     let allowed = false; try { allowed = !!(deps.cap && (await deps.cap([['finance-report:h' + new Date(now).toISOString().slice(0, 13), HOUR_MAX], ['finance-report', DAY_MAX]])).ok); } catch (_) {}
     if (allowed) { try { const out = await deps.model(polishMessages(draft), MAX_TOKENS); const v = validatePolish(out, draft); if (v.ok) { text = String(out).trim(); polished = true; } else why = v.why; } catch (_) { why = 'model busy'; } } else why = 'hour allowance spent';
   }
-  const value = { ok: true, kind, sym: r ? r.sym : null, text, draft, polished, label: labelFor(quotes, now), at: new Date(now).toISOString(), window: win };
+  const spx = quotes.find((q) => q.sym === 'SPX'), mood = kind === 'wrap' && spx && spx.pct != null ? (spx.pct >= 0.4 ? 'hopeful' : spx.pct <= -0.4 ? 'tense' : 'calm') : undefined; // a closed mood for the day's picture (lib/daily-art.js MOODS)
+  const value = { ok: true, kind, sym: r ? r.sym : null, mood, text, draft, polished, label: labelFor(quotes, now), at: new Date(now).toISOString(), window: win };
   const raw = JSON.stringify(value);
   try { if (deps.store) { await deps.store.put(key, raw); if (deps.store.sweep) await deps.store.sweep(new Date(now - KEEP_DAYS * 864e5).toISOString().slice(0, 10)); } } catch (_) {}
   if (ck) { try { await deps.cache.put(ck, new Response(raw, { headers: { 'cache-control': 'max-age=' + (polished ? 3600 : 300) } })); } catch (_) {} }
