@@ -1080,3 +1080,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-26T07:29:37Z | verse | build | Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com
 2026-10-26T07:38:13Z | verse | build | Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten (also read: 1 walled, 3 no-family); next heycolor.com
 2026-10-26T07:42:05Z | verse | build | Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten; next heycolor.com
+2026-10-26T16:56:18Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com
