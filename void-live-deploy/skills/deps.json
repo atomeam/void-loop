@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 862,
+ "counted": 870,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -563,6 +563,13 @@
    "tests": 1
   },
   {
+   "file": "lib/photo-ask.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
+   "tests": 0
+  },
+  {
    "file": "lib/pwcheck.js",
    "skills": 3,
    "direct": 2,
@@ -686,7 +693,7 @@
    "skills": 3,
    "direct": 3,
    "dependants": 3,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/stage-port.js",
@@ -850,14 +857,14 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
+   "file": "lib/pay-share.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
-   "file": "lib/pay-share.js",
+   "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
    "dependants": 24,
@@ -1023,6 +1030,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 12
   },
   {
    "file": "lib/v01d-fixes.js",
@@ -1466,13 +1480,6 @@
    "tests": 1
   },
   {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 12
-  },
-  {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
@@ -1669,6 +1676,13 @@
    "tests": 1
   },
   {
+   "file": "lib/markets-record.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20,
+   "tests": 0
+  },
+  {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
@@ -1830,6 +1844,13 @@
    "tests": 3
   },
   {
+   "file": "lib/music-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -1926,6 +1947,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/music-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/podcasts.js",
@@ -2166,6 +2194,20 @@
    "tests": 1
   },
   {
+   "file": "lib/music-audio.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
+   "file": "lib/music-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
    "file": "lib/page-picture.js",
    "skills": 0,
    "direct": 0,
@@ -2181,6 +2223,13 @@
   },
   {
    "file": "lib/password.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/photo-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2640,6 +2689,7 @@
   "functions/api/markets.js": {
    "imports": [
     "functions/api/answer.js",
+    "lib/markets-record.js",
     "lib/markets.js"
    ],
    "importedBy": [
@@ -5430,6 +5480,33 @@
     "functions/gen/[id].js"
    ]
   },
+  "lib/markets-record.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/markets.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
   "lib/markets.js": {
    "imports": [],
    "importedBy": [
@@ -5798,6 +5875,33 @@
     "skills/media-pick.js"
    ]
   },
+  "lib/music-audio.js": {
+   "imports": [
+    "lib/music-tools.js"
+   ],
+   "importedBy": []
+  },
+  "lib/music-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/music-ui.js"
+   ]
+  },
+  "lib/music-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/music-audio.js",
+    "lib/music-ui.js"
+   ]
+  },
+  "lib/music-ui.js": {
+   "imports": [
+    "lib/toolkit.js",
+    "lib/music-tools.js",
+    "lib/music-de.js"
+   ],
+   "importedBy": []
+  },
   "lib/near-miss.js": {
    "imports": [],
    "importedBy": [
@@ -6158,6 +6262,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/store/[[path]].js",
+    "lib/photo-edit.js",
     "lib/store.js"
    ],
    "reachedBy": [
@@ -6227,6 +6332,24 @@
     "lib/bench-asks.js",
     "lib/built-detail.js"
    ]
+  },
+  "lib/photo-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/toolkit.js",
+    "skills/imgfit.js",
+    "skills/photo-tools.js"
+   ],
+   "reachedBy": [
+    "lib/music-ui.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/photo-edit.js": {
+   "imports": [
+    "lib/pay-share.js"
+   ],
+   "importedBy": []
   },
   "lib/photo-library.js": {
    "imports": [],
@@ -8018,8 +8141,11 @@
    ]
   },
   "lib/toolkit.js": {
-   "imports": [],
+   "imports": [
+    "lib/photo-ask.js"
+   ],
    "importedBy": [
+    "lib/music-ui.js",
     "skills/toolkit.js"
    ]
   },
@@ -9681,7 +9807,8 @@
   },
   "skills/imgfit.js": {
    "imports": [
-    "lib/imgfit.js"
+    "lib/imgfit.js",
+    "lib/photo-ask.js"
    ],
    "importedBy": []
   },
@@ -10606,6 +10733,12 @@
    "imports": [
     "lib/stage-pack.js",
     "lib/safety.js"
+   ],
+   "importedBy": []
+  },
+  "skills/photo-tools.js": {
+   "imports": [
+    "lib/photo-ask.js"
    ],
    "importedBy": []
   },
