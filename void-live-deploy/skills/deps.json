@@ -2949,7 +2949,8 @@
   },
   "functions/api/sportsearch.js": {
    "imports": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/guard.js"
    ],
    "importedBy": []
   },
@@ -4991,6 +4992,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/rsvp.js",
+    "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
     "functions/api/support.js",
@@ -5021,7 +5023,6 @@
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
-    "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",

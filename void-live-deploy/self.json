@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:35:38Z",
+   "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
+  },
+  {
    "at": "2026-10-26T03:34:58Z",
    "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T03:24:49Z",
    "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
-  },
-  {
-   "at": "2026-10-26T03:24:33Z",
-   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts…"
   }
  ],
  "builders": {
