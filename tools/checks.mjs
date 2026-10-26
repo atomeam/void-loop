@@ -506,6 +506,7 @@ for (const [name, file] of [
   ['zones', 'zones.test.mjs'],
   ['base64', 'base64.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
+  ['handoff', 'handoff.test.mjs'], // "Send to" between pages: payloads checked and cut, who takes what (lib/handoff.js)
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
@@ -558,6 +559,9 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
+// every sitemap page has its related row and is in the index of everything; every page that makes what another takes offers "Send to" (tools/link-check.mjs;
+// owner, 2026-10-26: "and link them all if they are usable together")
+addScript('links', 'link-check.mjs');
 // every module a direct page (/flip/, /g/, /conquered/) imports is preloaded in its head (tools/preload.mjs; owner, 2026-10-24: "speed fixes a
 // lot of our other issues and is worth fixing permanently"): an import added without its preload is a waterfall again
 addScript('preload-pages', 'preload.mjs', ['--check']);
