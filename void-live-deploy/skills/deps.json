@@ -1610,7 +1610,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 22,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/memory-core.js",
@@ -8273,6 +8273,9 @@
   },
   "lib/tower.js": {
    "imports": [],
+   "external": [
+    ", "
+   ],
    "importedBy": [
     "functions/api/will.js",
     "skills/tower.js",
