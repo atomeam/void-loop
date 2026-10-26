@@ -42,3 +42,12 @@ test('skills/scores.js owns score asks; skills/calendar.js leaves them alone but
   for (const e of sc.nearMisses) assert.ok(!sc.match(e.toLowerCase(), e), e);
   for (const e of ['call Sam next Tuesday at 4', 'dentist October 12 at 3pm', 'my calendar']) assert.ok(cal.match(e.toLowerCase(), e), e);
 });
+
+// the skill contract on more untested skills: each example is taken by its own skill, no near miss is
+for (const f of ['skills/pick-for-me.js', 'skills/eat.js', 'skills/automations.js', 'skills/part.js', 'skills/quote.js', 'skills/holidays.js', 'skills/today.js', 'skills/wheel.js', 'skills/pollen.js', 'skills/loan.js']) {
+  test(f + ': examples match, near misses do not', async () => {
+    const d = (await import(S + f.slice('skills/'.length))).default;
+    for (const e of d.examples || []) assert.ok(d.match(e.toLowerCase(), e), 'example not matched: ' + e);
+    for (const e of d.nearMisses || []) assert.ok(!d.match(e.toLowerCase(), e), 'near miss matched: ' + e);
+  });
+}
