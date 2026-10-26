@@ -15444,52 +15444,52 @@
   "pdf: 10015.io": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 176,
-    "best": 1793,
-    "evidence": "Verse (/pdf/organize/) 176 ms to the load event (median of 3, phone width) vs 10015.io 1793 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:39:37.993Z"
+    "verse": 173,
+    "best": 1038,
+    "evidence": "Verse (/pdf/organize/) 173 ms to the load event (median of 3, phone width) vs 10015.io 1038 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "reliability": {
     "verdict": "worse",
-    "verse": 0,
+    "verse": 2,
     "best": 3,
-    "evidence": "Verse (/pdf/organize/) 0 of 3 loads answered vs 10015.io 3 of 3 loads answered",
-    "at": "2026-10-26T04:39:37.993Z"
+    "evidence": "Verse (/pdf/organize/) 2 of 3 loads answered vs 10015.io 3 of 3 loads answered",
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 px sideways overflow at 390 px vs 10015.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:39:37.993Z"
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 unnamed controls or images vs 10015.io 0 unnamed controls or images",
-    "at": "2026-10-26T04:39:37.993Z"
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 (1: the page shows itself again with the network cut) vs 10015.io 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:39:37.993Z"
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/pdf/organize/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:39:37.993Z"
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/pdf/organize/) 0 of 3 right against the worked-out answer (missed: the merge tool, PDFs chosen or dropped, files stay on the device); judged against the standard, not 10015.io (the site is not asked). The page showed: \"404 Nothing lives at this address. /pdf/organize/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
-    "at": "2026-10-26T04:39:37.993Z",
+    "evidence": "Verse (/pdf/organize/) 3 of 3 right against the worked-out answer; judged against the standard, not 10015.io (the site is not asked)",
+    "at": "2026-10-26T04:47:03.581Z",
     "of": 3
    },
    "design polish": {
@@ -15497,23 +15497,23 @@
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/pdf/organize/) 0 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-26T04:39:37.993Z"
+    "at": "2026-10-26T04:47:03.581Z"
    },
    "merge and split": {
     "verdict": "worse",
-    "verse": 0,
+    "verse": 1,
     "best": 2,
-    "evidence": "Verse (/pdf/organize/) 0 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: merge, split; site lacks: none)",
-    "at": "2026-10-26T04:39:37.993Z",
+    "evidence": "Verse (/pdf/organize/) 1 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: split; site lacks: none)",
+    "at": "2026-10-26T04:47:03.581Z",
     "of": 2,
     "part": true
    },
    "page tools": {
-    "verdict": "worse",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/pdf/organize/) 0 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
-    "at": "2026-10-26T04:39:37.993Z",
+    "evidence": "Verse (/pdf/organize/) 3 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
+    "at": "2026-10-26T04:47:03.581Z",
     "of": 3,
     "part": true
    },
@@ -15522,7 +15522,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: images to PDF; site lacks: images to PDF)",
-    "at": "2026-10-26T04:39:37.993Z",
+    "at": "2026-10-26T04:47:03.581Z",
     "of": 1,
     "part": true
    },
@@ -15531,17 +15531,17 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/pdf/organize/) 0 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
-    "at": "2026-10-26T04:39:37.993Z",
+    "at": "2026-10-26T04:47:03.581Z",
     "of": 1,
     "part": true
    },
    "completeness": {
     "verdict": "worse",
     "verse": 0,
-    "best": 4,
-    "evidence": "Verse (/pdf/organize/) 0 of 14 things a full answer shows vs 10015.io 4 of 14 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF)",
-    "at": "2026-10-26T04:39:37.993Z",
-    "of": 14
+    "best": 7,
+    "evidence": "Verse (/pdf/organize/) 0 of 19 things a full answer shows vs 10015.io 7 of 19 things a full answer shows (Verse lacks: merge, split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, no account, works offline, ask questions about a PDF, Merge PDFs, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: delete pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages, Compress PDF)",
+    "at": "2026-10-26T04:47:03.581Z",
+    "of": 19
    }
   },
   "pdf: pdfcandy.com": {
@@ -16058,6 +16058,521 @@
     "at": "2026-10-26T04:46:56.199Z",
     "of": 19
    }
+  },
+  "kanban: jasperbernaers.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 155,
+    "best": 313,
+    "evidence": "Verse (/kanban/simple/) 155 ms to the load event (median of 3, phone width) vs jasperbernaers.com 313 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/simple/) 0 of 3 loads answered vs jasperbernaers.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/simple/) 0 px sideways overflow at 390 px vs jasperbernaers.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/simple/) 0 unnamed controls or images vs jasperbernaers.com 0 unnamed controls or images",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/simple/) 0 (1: the page shows itself again with the network cut) vs jasperbernaers.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/simple/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs jasperbernaers.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/simple/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not jasperbernaers.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /kanban/simple/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 41,
+    "evidence": "Verse (/kanban/simple/) 0 design defects vs jasperbernaers.com 41 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), jasperbernaers.com (27 low-contrast texts, 14 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T04:44:31.682Z"
+   },
+   "boards and columns": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/simple/) 0 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: boards, add a column; site lacks: none)",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 2,
+    "part": true
+   },
+   "card details": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/simple/) 0 of 3 shown vs jasperbernaers.com 3 of 3 shown (Verse lacks: labels, due dates, checklists; site lacks: none)",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 3,
+    "part": true
+   },
+   "drag and drop": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/simple/) 0 of 2 shown vs jasperbernaers.com 1 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: none)",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 2,
+    "part": true
+   },
+   "import and export": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/simple/) 0 of 2 shown vs jasperbernaers.com 2 of 2 shown (Verse lacks: export, import; site lacks: none)",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 19,
+    "evidence": "Verse (/kanban/simple/) 0 of 21 things a full answer shows vs jasperbernaers.com 19 of 21 things a full answer shows (Verse lacks: boards, columns, cards, labels, due dates, checklists, drag and drop, search, archive, WIP limits, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels; site lacks: archive, Coloured labels)",
+    "at": "2026-10-26T04:44:31.682Z",
+    "of": 21
+   }
+  },
+  "kanban: abacktools.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 134,
+    "best": 579,
+    "evidence": "Verse (/kanban/quick/) 134 ms to the load event (median of 3, phone width) vs abacktools.com 579 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/quick/) 0 of 3 loads answered vs abacktools.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/quick/) 0 px sideways overflow at 390 px vs abacktools.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/quick/) 0 unnamed controls or images vs abacktools.com 1 unnamed controls or images",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/quick/) 0 (1: the page shows itself again with the network cut) vs abacktools.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/quick/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/quick/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not abacktools.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /kanban/quick/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 25,
+    "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T04:45:00.844Z"
+   },
+   "boards and columns": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/quick/) 0 of 2 shown vs abacktools.com 2 of 2 shown (Verse lacks: boards, add a column; site lacks: none)",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 2,
+    "part": true
+   },
+   "card details": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/quick/) 0 of 3 shown vs abacktools.com 2 of 3 shown (Verse lacks: labels, due dates, checklists; site lacks: due dates)",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 3,
+    "part": true
+   },
+   "drag and drop": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/quick/) 0 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: none)",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 2,
+    "part": true
+   },
+   "import and export": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/quick/) 0 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: export, import; site lacks: import)",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 14,
+    "evidence": "Verse (/kanban/quick/) 0 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: boards, columns, cards, labels, due dates, checklists, drag and drop, search, archive, WIP limits, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
+    "at": "2026-10-26T04:45:00.844Z",
+    "of": 21
+   }
+  },
+  "kanban: wekan.fi": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 145,
+    "best": 42,
+    "evidence": "Verse (/kanban/teams/) 145 ms to the load event (median of 3, phone width) vs wekan.fi 42 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/teams/) 0 of 3 loads answered vs wekan.fi 3 of 3 loads answered",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/teams/) 0 px sideways overflow at 390 px vs wekan.fi 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/teams/) 0 unnamed controls or images vs wekan.fi 1 unnamed controls or images",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/teams/) 0 (1: the page shows itself again with the network cut) vs wekan.fi 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "sharing": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/teams/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs wekan.fi 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/teams/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not wekan.fi (the site is not asked). The page showed: \"404 Nothing lives at this address. /kanban/teams/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/teams/) 0 design defects vs wekan.fi 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wekan.fi (2 low-contrast texts, 1 small tap targets, layout shift 0.01)",
+    "at": "2026-10-26T04:45:31.273Z"
+   },
+   "boards and columns": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/teams/) 0 of 2 shown vs wekan.fi 2 of 2 shown (Verse lacks: boards, add a column; site lacks: none)",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 2,
+    "part": true
+   },
+   "card details": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/teams/) 0 of 3 shown vs wekan.fi 3 of 3 shown (Verse lacks: labels, due dates, checklists; site lacks: none)",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 3,
+    "part": true
+   },
+   "drag and drop": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/teams/) 0 of 2 shown vs wekan.fi 0 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: drag)",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 2,
+    "part": true
+   },
+   "import and export": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/teams/) 0 of 2 shown vs wekan.fi 1 of 2 shown (Verse lacks: export, import; site lacks: export)",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 12,
+    "evidence": "Verse (/kanban/teams/) 0 of 21 things a full answer shows vs wekan.fi 12 of 21 things a full answer shows (Verse lacks: boards, columns, cards, labels, due dates, checklists, drag and drop, search, archive, WIP limits, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels; site lacks: drag and drop, search, archive, export, keyboard moves, on this device, works offline, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T04:45:31.273Z",
+    "of": 21
+   }
+  },
+  "kanban: kanbanflow.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 136,
+    "best": 234,
+    "evidence": "Verse (/kanban/flow/) 136 ms to the load event (median of 3, phone width) vs kanbanflow.com 234 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/flow/) 0 of 3 loads answered vs kanbanflow.com 3 of 3 loads answered",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/flow/) 0 px sideways overflow at 390 px vs kanbanflow.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/flow/) 0 unnamed controls or images vs kanbanflow.com 1 unnamed controls or images",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/flow/) 0 (1: the page shows itself again with the network cut) vs kanbanflow.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/flow/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs kanbanflow.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/flow/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not kanbanflow.com (the site is not asked). The page showed: \"404 Nothing lives at this address. /kanban/flow/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 12,
+    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T04:45:58.471Z"
+   },
+   "boards and columns": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/flow/) 0 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: boards, add a column; site lacks: columns)",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 2,
+    "part": true
+   },
+   "card details": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/flow/) 0 of 3 shown vs kanbanflow.com 0 of 3 shown (Verse lacks: labels, due dates, checklists; site lacks: labels, due dates, checklists)",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 3,
+    "part": true
+   },
+   "drag and drop": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/flow/) 0 of 2 shown vs kanbanflow.com 0 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: drag)",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 2,
+    "part": true
+   },
+   "import and export": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/flow/) 0 of 2 shown vs kanbanflow.com 2 of 2 shown (Verse lacks: export, import; site lacks: none)",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 5,
+    "evidence": "Verse (/kanban/flow/) 0 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: boards, columns, cards, labels, due dates, checklists, drag and drop, search, archive, WIP limits, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T04:45:58.471Z",
+    "of": 21
+   }
+  },
+  "kanban": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 156,
+    "best": 1309,
+    "evidence": "Verse (/kanban/) 156 ms to the load event (median of 3, phone width) vs Trello 1309 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/kanban/) 0 of 3 loads answered vs Trello 3 of 3 loads answered",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/) 0 px sideways overflow at 390 px vs Trello 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/) 0 unnamed controls or images vs Trello 1 unnamed controls or images",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/) 0 (1: the page shows itself again with the network cut) vs Trello 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs Trello 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "accuracy": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 4,
+    "evidence": "Verse (/kanban/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not Trello (the site is not asked). The page showed: \"404 Nothing lives at this address. /kanban/ Ask Verse Ask Or go to a page that exists: Verse Films Store Fix an automation Code review Privacy\"",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 13,
+    "evidence": "Verse (/kanban/) 0 design defects vs Trello 13 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Trello (0 low-contrast texts, 13 small tap targets, layout shift 0.05)",
+    "at": "2026-10-26T04:46:27.674Z"
+   },
+   "boards and columns": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/kanban/) 0 of 2 shown vs Trello 2 of 2 shown (Verse lacks: boards, add a column; site lacks: none)",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 2,
+    "part": true
+   },
+   "card details": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/) 0 of 3 shown vs Trello 0 of 3 shown (Verse lacks: labels, due dates, checklists; site lacks: labels, due dates, checklists)",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 3,
+    "part": true
+   },
+   "drag and drop": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/kanban/) 0 of 2 shown vs Trello 1 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: none)",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 2,
+    "part": true
+   },
+   "import and export": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/kanban/) 0 of 2 shown vs Trello 0 of 2 shown (Verse lacks: export, import; site lacks: export, import)",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 5,
+    "evidence": "Verse (/kanban/) 0 of 21 things a full answer shows vs Trello 5 of 21 things a full answer shows (Verse lacks: boards, columns, cards, labels, due dates, checklists, drag and drop, search, archive, WIP limits, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels; site lacks: columns, labels, due dates, checklists, search, archive, export, import, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Keyboard shortcuts and keyboard moves, Coloured labels)",
+    "at": "2026-10-26T04:46:27.674Z",
+    "of": 21
+   }
   }
  },
  "icons": {
@@ -16223,6 +16738,9 @@
   "sejda.com": "tower.icons/sejda.com.png",
   "tools.pdf24.org": "tower.icons/tools.pdf24.org.png",
   "smallpdf.com": "tower.icons/smallpdf.com.png",
-  "ilovepdf.com": "tower.icons/ilovepdf.com.png"
+  "ilovepdf.com": "tower.icons/ilovepdf.com.png",
+  "wekan.fi": "tower.icons/wekan.fi.png",
+  "kanbanflow.com": "tower.icons/kanbanflow.com.png",
+  "trello.com": "tower.icons/trello.com.ico"
  }
 }
