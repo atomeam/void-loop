@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:47:56Z",
+   "subject": "Music pages: preload lists follow toolkit.js's new import; deps and self regenerated"
+  },
+  {
+   "at": "2026-10-26T04:47:50Z",
+   "subject": "Tower gate: kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,kanban,pdf: 10015.io measured…"
+  },
+  {
    "at": "2026-10-26T04:47:24Z",
    "subject": "Tower gate: pdf: codeshack.io,pdf: pdfcandy.com,pdf: sejda.com,pdf: tools.pdf24.org,pdf: smallpdf.com,pdf measured against their live sites"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T04:40:54Z",
    "subject": "Tower gate: music: jasperbernaers.com,pdf: 10015.io,pdf: pdfcandy.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:40:24Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T04:40:07Z",
-   "subject": "Free pictures probe: explore loc.gov answer shapes"
   }
  ],
  "builders": {
