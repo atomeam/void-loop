@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:45:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:45:24Z",
    "subject": "Flights: coastlines under the great-circle map (Natural Earth, 11 KB), nonstop routes on /flights/routes/ (OpenFlights ODbL, June 2014…"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T05:23:07Z",
    "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:22:43Z",
-   "subject": "Tower gate: finance: finviz.com,finance: companiesmarketcap.com,kanban: abacktools.com measured against their live sites"
   }
  ],
  "builders": {

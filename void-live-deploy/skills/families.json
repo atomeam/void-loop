@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 10,
+  "experiment": 11,
   "tested": 26,
   "checked": 17,
   "proven": 297
@@ -780,12 +780,20 @@
    "name": "Sky and earth",
    "for": "weather, the sky tonight, places and time zones",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 3,
     "checked": 1,
     "proven": 15
    },
    "skills": [
+    {
+     "name": "flights",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
+    },
     {
      "name": "sky",
      "tier": "proven",
