@@ -13094,68 +13094,67 @@
   "finance: finviz.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 110,
-    "best": 4060,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 110 ms to the load event (median of 3, phone width) vs finviz.com 4060 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:19:55.472Z"
+    "verse": 95,
+    "best": 10586,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 95 ms to the load event (median of 3, phone width) vs finviz.com 10586 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 2,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 2 of 3 loads answered",
-    "at": "2026-10-26T05:19:55.472Z"
+    "best": 3,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 3 of 3 loads answered",
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 815,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:19:55.472Z"
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
-    "at": "2026-10-26T05:19:55.472Z"
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:19:55.472Z"
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 3,
+    "verse": 4,
     "best": 1,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:19:55.472Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "accuracy": {
-    "verdict": "worse",
-    "verse": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
     "best": 4,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 right against the worked-out answer (missed: a coin row); judged against the standard, not finviz.com (the site is not asked). The page showed: \"Screener Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account. Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, \"",
-    "at": "2026-10-26T05:19:55.472Z",
-    "was": "equal-and-better",
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 4 of 4 right against the worked-out answer; judged against the standard, not finviz.com (the site is not asked)",
+    "at": "2026-10-26T05:33:31.303Z",
     "of": 4
    },
    "design polish": {
     "verdict": "better",
-    "verse": 16,
-    "best": 253,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 253 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (4 low-contrast texts, 249 small tap targets, layout shift 0.06)",
-    "at": "2026-10-26T05:19:55.472Z"
+    "verse": 46,
+    "best": 254,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 46 design defects vs finviz.com 254 design defects: Verse (0 low-contrast texts, 46 small tap targets, layout shift 0.02), finviz.com (4 low-contrast texts, 249 small tap targets, layout shift 0.14)",
+    "at": "2026-10-26T05:33:31.303Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T05:19:55.472Z",
+    "at": "2026-10-26T05:33:31.303Z",
     "of": 2,
     "part": true
    },
@@ -13164,7 +13163,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T05:19:55.472Z",
+    "at": "2026-10-26T05:33:31.303Z",
     "of": 2,
     "part": true
    },
@@ -13173,16 +13172,16 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T05:19:55.472Z",
+    "at": "2026-10-26T05:33:31.303Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 12,
+    "verse": 13,
     "best": 4,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 12 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: Compare symbols, Links, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
-    "at": "2026-10-26T05:19:55.472Z",
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 13 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: Compare symbols, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
+    "at": "2026-10-26T05:33:31.303Z",
     "of": 15
    }
   },
