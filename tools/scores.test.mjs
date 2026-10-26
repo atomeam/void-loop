@@ -2,7 +2,7 @@
 // checked against allowlists, each feed read into one shape, the Bundesliga fallback, F1, cache lifetimes, the endpoint's bounds, the routes
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState } from '../void-live-deploy/lib/scores.js';
+import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState, draftOrder, botPick, playersOf } from '../void-live-deploy/lib/scores.js';
 import { askIn, lookScores, onRequestGet } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
@@ -128,4 +128,17 @@ test('fantasy points, win chance, ratings, the what-if table, pick\'em and survi
   const fin = readScoreboard(SCOREBOARD), ids = fin.map((x) => x.id); assert.deepEqual(scorePicks(fin, { [ids[0]]: 'h', [ids[2]]: 'h' }), { right: 1, played: 1, points: 1, total: 1 }); assert.deepEqual(scorePicks(fin, { [ids[0]]: 'a' }, { [ids[0]]: 5 }), { right: 0, played: 1, points: 0, total: 5 });
   const wk = { w1: [{ state: 'final', home: { id: 'a', score: '2' }, away: { id: 'b', score: '1' } }], w2: [{ state: 'pre', home: { id: 'c', score: '' }, away: { id: 'd', score: '' } }] };
   assert.equal(survivorState({ w1: 'a' }, wk).status, 'alive'); assert.equal(survivorState({ w1: 'a', w2: 'c' }, wk).status, 'open'); assert.equal(survivorState({ w1: 'b' }, wk).status, 'out'); assert.equal(survivorState({ w1: 'a', w2: 'a' }, wk).why, 'a team used twice');
+});
+
+test('US conference tables get playoff places by rank, said plainly; a table ESPN already marks is left alone', () => {
+  const mk = (n) => ({ children: [{ name: 'Eastern Conference', standings: { entries: Array.from({ length: n }, (_, i) => ({ team: { id: String(i + 1), displayName: 'T' + (i + 1) }, stats: [{ name: 'rank', value: i + 1 }, { name: 'wins', displayValue: String(60 - i) }, { name: 'losses', displayValue: String(20 + i) }] })) } }] });
+  const g = readStandings(mk(15), 'nba').groups[0]; assert.equal(g.rows[5].note.text, 'Playoffs (by rank)'); assert.equal(g.rows[6].note.text, 'Play-in (by rank)'); assert.equal(g.rows[9].note.text, 'Play-in (by rank)'); assert.equal(g.rows[10].note, null); assert.equal(g.legend.length, 2);
+  assert.equal(readStandings(mk(16), 'nfl').groups[0].rows.filter((r) => r.note).length, 7); assert.match(readStandings(mk(16), 'nfl').groups[0].legend[0].text, /not modelled/);
+  assert.equal(readStandings(STANDINGS, 'soccer').groups[0].rows[2].note, null, 'soccer is untouched');
+});
+
+test('the mock draft: snake order, a bot that mostly takes the best, a pasted list read', () => {
+  assert.deepEqual(draftOrder(3, 2).map((p) => p.team), [0, 1, 2, 2, 1, 0]); assert.equal(draftOrder(10, 6).length, 60); assert.equal(draftOrder(4, 3)[4].round, 2);
+  assert.equal(botPick(['a', 'b', 'c', 'd', 'e'], 0), 0); assert.ok(botPick(['a', 'b', 'c', 'd', 'e'], 0.99) <= 3); assert.equal(botPick(['a'], 0.99), 0); assert.equal(botPick([], 0.5), -1);
+  assert.deepEqual(playersOf('1. Ann Lee\n2) Bob Ray\n\n  3 - Cy Dee\nann lee\nEve'), ['Ann Lee', 'Bob Ray', 'Cy Dee', 'Eve']); assert.equal(playersOf('x\n'.repeat(5) + 'y').length, 2);
 });

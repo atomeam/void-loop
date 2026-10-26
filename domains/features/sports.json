@@ -265,8 +265,8 @@
      "name": "Mock draft simulator",
      "detail": "tier 2",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse page does this yet"
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a snake mock draft on the device against bots, from a ranked list you paste (no free ADP feed read, so none is claimed); no built-in ADP, positions or roster rules"
     },
     {
      "group": "power",
@@ -282,7 +282,7 @@
      "detail": "tier 3",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a What-if tab: tap upcoming games and the table recalculates and shows places moved; no playoff seeding or tiebreaker engine"
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a What-if tab: tap upcoming games and the table recalculates with places moved; NBA, NFL, NHL and MLB conference tables mark playoff places by rank (NBA play-in too), said plainly that division winners and tiebreakers are not modelled"
     },
     {
      "group": "power",
@@ -374,9 +374,10 @@
   "team rosters, injuries and depth charts",
   "player pages and stats",
   "alerts",
-  "my fantasy team, start/sit and trade comparator, mock draft (no free player or projection source read)",
   "playoff seeding simulator, trade and salary-cap checker, playoff odds",
-  "polls and brackets, recruiting, draft hubs, golf/UFC/tennis/NASCAR templates, historical archive (tier 4, not started)"
+  "polls and brackets, recruiting, draft hubs, golf/UFC/tennis/NASCAR templates, historical archive (tier 4, not started)",
+  "my fantasy team, start/sit and trade comparator (no free player or projection feed read; building them from box scores alone would invent numbers)",
+  "league stat leaders (ESPN's leaders endpoint shape not verified from here; computing from box scores needs one fetch per game)"
  ],
  "verse_extra": [
   "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",

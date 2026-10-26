@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T02:37:08Z",
+   "subject": "Calendar: drag an event to another day, or give it a new day with \"Move to\""
+  },
+  {
+   "at": "2026-10-26T02:36:57Z",
+   "subject": "Sports features: what the scores page now covers, and what is still a gap"
+  },
+  {
+   "at": "2026-10-26T02:36:42Z",
+   "subject": "Refresh generated files after the scores card"
+  },
+  {
    "at": "2026-10-26T02:36:18Z",
    "subject": "Scores: Next games on the day view, the stage card (skills/scores.js, PAGE_OF), Pick'em, Survivor and What-if tabs, NFL fantasy points…"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T02:25:48Z",
    "subject": "News: the /news/ page, registered as a tool page"
-  },
-  {
-   "at": "2026-10-26T02:25:47Z",
-   "subject": "News: the feed list, a reader for RSS, RDF and Atom, story grouping across sources and the /api/news route"
-  },
-  {
-   "at": "2026-10-26T02:25:33Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: onefootball.com,sports: 365scores.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T02:22:34Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com measured against their live sites"
   }
  ],
  "builders": {
