@@ -78,7 +78,7 @@ wire($('clearRec'), 'click', () => { keep({ rec: '' }); for (const b of ['replay
 if (mem().rec) for (const b of ['replay', 'copyRec', 'clearRec']) $(b).disabled = false;
 // sheets
 wire($('song'), 'change', () => { const v = $('song').value, s = SHEETS.find((x) => x.id === v); if (s) { $('sheet').value = s.sheet; $('songBpm').value = s.bpm; } else if (v === 'mine') $('sheet').value = mem().rec || ''; else $('sheet').value = ''; });
-$('song').value = SHEETS[0].id; $('sheet').value = SHEETS[0].sheet; $('songBpm').value = SHEETS[0].bpm;
+{ const want = SHEETS.find((x) => x.id === new URLSearchParams(location.search).get('song')) || SHEETS[0]; $('song').value = want.id; $('sheet').value = want.sheet; $('songBpm').value = want.bpm; }
 function stopSheet() { for (const x of sheetTimers) clearTimeout(x); sheetTimers = []; for (const n of sheetNotes) n.release(); sheetNotes = []; for (const el of keyEls.values()) el.classList.remove('on'); }
 function playSheet() {
   stopSheet(); const p = parseSheet($('sheet').value), c = audio(); if (!c) { say_(t('This browser cannot make sound.')); return; }

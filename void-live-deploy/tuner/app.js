@@ -32,7 +32,7 @@ function block(buf, sr) {
   quiet = 0; recent.push(r.freq); recent = recent.slice(-5); const f = steadyFreq(recent, 5); if (f) show(f);
 }
 boot('/tuner/', say_); mountRelated($('related'), '/tuner/');
-$('tun').value = mem().tun || 'guitar-standard'; $('a4').value = mem().a4 || 440; strings();
+{ const w = new URLSearchParams(location.search).get('tun'); $('tun').value = TUNINGS[w] ? w : (mem().tun || 'guitar-standard'); } $('a4').value = mem().a4 || 440; strings();
 wire($('tun'), 'change', () => { keep({ tun: $('tun').value }); strings(); }); wire($('a4'), 'change', () => { keep({ a4: a4() }); strings(); });
 wire($('mic'), 'click', async () => {
   if (mic) { mic.stop(); mic = null; $('mic').setAttribute('aria-pressed', 'false'); $('mic').textContent = t('Turn the microphone on'); say_(t('The microphone is off.')); return; }

@@ -23,6 +23,7 @@ function tap() {
   if (r.bpm) { show(r.bpm); say_(r.taps + ' ' + t('taps') + ' · ±' + r.spread + ' ms ' + t('between the shortest and longest gap') + (r.taps < 8 ? ' · ' + t('keep going for a steadier number') : '')); } else say_(t('Keep tapping the beat.'));
 }
 boot('/bpm/', say_); mountRelated($('related'), '/bpm/'); lens();
+{ const w = parseFloat(new URLSearchParams(location.search).get('bpm')); if (w >= 20 && w <= 400) { show(w); say_(t('Note lengths for') + ' ' + w + ' BPM. ' + t('Tap to measure your own.')); } }
 wire($('tap'), 'pointerdown', (e) => { e.preventDefault(); tap(); }); wire($('tap'), 'keydown', (e) => { if (e.code === 'Space' || e.code === 'Enter') e.preventDefault(); });
 addEventListener('keydown', (e) => { const tag = (e.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'select' || tag === 'textarea' || e.ctrlKey || e.metaKey || e.altKey || e.repeat || e.key === 'Tab' || e.key === 'Shift') return; if (e.target === $('tap') && (e.code === 'Space' || e.code === 'Enter')) { tap(); return; } if (tag !== 'button') { e.preventDefault(); tap(); } });
 wire($('half'), 'click', () => { if (bpm != null) show(halfDouble(bpm).half); }); wire($('dbl'), 'click', () => { if (bpm != null) show(halfDouble(bpm).double); });

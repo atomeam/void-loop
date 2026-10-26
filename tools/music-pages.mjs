@@ -269,9 +269,7 @@ export function pageHtml(key) {
   <h1>${p.h1}</h1>
   <p class="sub" id="lede">${p.sub}</p>
   ${hubNav(dir)}${p.body}
-  <!-- asks -->
-  <!-- /asks -->
-  <nav id="related" aria-label="Related tools"></nav>
+  ${key === 'music' ? '' : '<!-- asks -->\n  <!-- /asks -->\n  '}<nav id="related" aria-label="Related tools"></nav>
   <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
   <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
