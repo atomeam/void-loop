@@ -4403,8 +4403,11 @@ say('nothing selected to remove');
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds); // a skill that answers early may put its kind on the stage
         slot.done = true; slot.set(slot.skill);
       };
+      // a live card (the Versus ladder reads data that changes every few minutes) is fetched under a key that turns over every 5 minutes, so a browser or
+      // edge copy of its code can never outlive that: a plain reload brings the current card (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card")
+      const LIVE_SKILLS = new Set(['tower']);
       let nextIdx = 0;
-      const lane = async () => { while (nextIdx < index.length) { const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js').catch(() => null)); } };
+      const lane = async () => { while (nextIdx < index.length) { const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
       await Promise.all(Array.from({ length: SKILL_LANES }, lane));
       // once all are in, everything is registered in index order, exactly as when they loaded all at once
       for (const slot of skillSlots) {
