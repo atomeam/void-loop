@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:40:07Z",
+   "subject": "Free pictures probe: explore loc.gov answer shapes"
+  },
+  {
+   "at": "2026-10-26T04:39:44Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:39:05Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:38:40Z",
    "subject": "Free pictures: fix Commons thumbnail host and loc.gov result path from the first probe; probe records result shapes"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T04:09:41Z",
    "subject": "Tower gate: sports: thesportsdb.com,music: jasperbernaers.com,music: anotherproducer.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:08:51Z",
-   "subject": "Site reverse engineering: kanban-abacktools.com,kanban-jasperbernaers.com,kanban-kanbanflow.com,music-anotherproducer.com,music-chordchord.…"
-  },
-  {
-   "at": "2026-10-26T04:08:49Z",
-   "subject": "Site reverse engineering: finance-barchart.com,finance-companiesmarketcap.com,finance-finviz.com,finance-investing.com,finance-macrotrends.…"
-  },
-  {
-   "at": "2026-10-26T04:08:09Z",
-   "subject": "Sports pictures: what Verse can actually do, source by source, with licence and limit (asked by the owner)"
   }
  ],
  "builders": {
