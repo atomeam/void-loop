@@ -491,6 +491,62 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:57:07Z",
+   "subject": "Sports page: what it has said in plain text before its code runs (browse, search across Teams, Events, Venues and Players, on this device…"
+  },
+  {
+   "at": "2026-10-26T03:53:20Z",
+   "subject": "Photos features: drop a contact address the scan read off exifeditor.io (privacy scan)"
+  },
+  {
+   "at": "2026-10-26T03:52:26Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:50:51Z",
+   "subject": "Tower gate: photos: exifeditor.io,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
+  },
+  {
+   "at": "2026-10-26T03:48:02Z",
+   "subject": "sw: keep the markets caps and screener pages offline after their first visit"
+  },
+  {
+   "at": "2026-10-26T03:47:48Z",
+   "subject": "Markets: crypto market-cap page, small-universe screener, the daily illustration on the wrap, a year-end record kept to confirmed figures"
+  },
+  {
+   "at": "2026-10-26T03:47:41Z",
+   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:45:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T03:44:32Z",
+   "subject": "Photos: /photos/ photo tools and the lane's own pages (squoosh, tinypng, exif, exifeditor, photopea, iloveimg)"
+  },
+  {
+   "at": "2026-10-26T03:41:06Z",
+   "subject": "Search: ESPN's public search as the second source, every kind always listed as text (No team found.), items labelled by source, the…"
+  },
+  {
+   "at": "2026-10-26T03:40:15Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:40:09Z",
+   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:38:28Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com,photos: exifeditor.io,photos: exif.tools measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:38:22Z",
+   "subject": "Feature scan: finance,news researched by Verse"
+  },
+  {
    "at": "2026-10-26T03:35:38Z",
    "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
   },
@@ -513,62 +569,6 @@
   {
    "at": "2026-10-26T03:30:50Z",
    "subject": "Incident: the browser suite failed on 92b0983f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T03:30:42Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
-  },
-  {
-   "at": "2026-10-26T03:30:40Z",
-   "subject": "Tower gate: finance: companiesmarketcap.com,finance: investing.com,news: allsides.com,news: apnews.com,news measured against their live…"
-  },
-  {
-   "at": "2026-10-26T03:30:27Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:30:06Z",
-   "subject": "Scores: the day's picture (lib/daily-art.js, photo when a licensed one is found, else Verse's illustration) with its credit on stories…"
-  },
-  {
-   "at": "2026-10-26T03:29:34Z",
-   "subject": "Versus by size: Tranco rank of every site, size column, By size view, next-10 tool and monthly workflow"
-  },
-  {
-   "at": "2026-10-26T03:29:23Z",
-   "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
-  },
-  {
-   "at": "2026-10-26T03:28:48Z",
-   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:28:42Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:28:02Z",
-   "subject": "Sports: common asks that each take a setting in the link"
-  },
-  {
-   "at": "2026-10-26T03:28:02Z",
-   "subject": "Sports: a page of its own (42-sport grid, one search across teams, events, venues and players, born on this day, the free API), its stage…"
-  },
-  {
-   "at": "2026-10-26T03:27:57Z",
-   "subject": "Incident: the browser suite failed on 086da994 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T03:26:30Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:25:06Z",
-   "subject": "tower-gate test: the finance floor has its own probe now"
-  },
-  {
-   "at": "2026-10-26T03:24:49Z",
-   "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
   }
  ],
  "builders": {
