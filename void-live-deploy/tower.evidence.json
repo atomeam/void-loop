@@ -11874,52 +11874,52 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 126,
-    "best": 807,
-    "evidence": "Verse (/markets/caps/) 126 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 807 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:29:45.685Z"
+    "verse": 107,
+    "best": 906,
+    "evidence": "Verse (/markets/caps/) 107 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 906 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/caps/) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 1,
     "best": 4,
     "evidence": "Verse (/markets/caps/) 1 of 4 right against the worked-out answer (missed: Bitcoin is rank 1, a price in dollars on its row, a market cap in trillions or billions); judged against the standard, not companiesmarketcap.com (the site is not asked). The page showed: \"Crypto market caps The 50 largest coins by market cap, in US dollars. Prices may be delayed. No ads, no account. Find a coin Total market cap of these 50: – Coins by market cap # Coin Price 24h Mkt ca\"",
-    "at": "2026-10-26T04:29:45.685Z",
+    "at": "2026-10-26T04:49:52.636Z",
     "was": "equal-and-better",
     "of": 4
    },
@@ -11928,14 +11928,14 @@
     "verse": 0,
     "best": 66,
     "evidence": "Verse (/markets/caps/) 0 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
-    "at": "2026-10-26T04:29:45.685Z"
+    "at": "2026-10-26T04:49:52.636Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: a price in dollars, a 24 hour move in percent; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T04:29:45.685Z",
+    "at": "2026-10-26T04:49:52.636Z",
     "of": 3,
     "part": true
    },
@@ -11944,7 +11944,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: the 7 day move; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T04:29:45.685Z",
+    "at": "2026-10-26T04:49:52.636Z",
     "of": 2,
     "part": true
    },
@@ -11953,7 +11953,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T04:29:45.685Z",
+    "at": "2026-10-26T04:49:52.636Z",
     "of": 2,
     "part": true
    },
@@ -11962,7 +11962,7 @@
     "verse": 8,
     "best": 4,
     "evidence": "Verse (/markets/caps/) 8 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: price, 24 hour change, 7 day change, 24 hour volume, a total market cap, Compare symbols, Links, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
-    "at": "2026-10-26T04:29:45.685Z",
+    "at": "2026-10-26T04:49:52.636Z",
     "of": 17
    }
   },
@@ -13097,52 +13097,52 @@
   "finance: finviz.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 86,
-    "best": 2417,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 86 ms to the load event (median of 3, phone width) vs finviz.com 2417 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T04:32:19.770Z"
+    "verse": 106,
+    "best": 5814,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 106 ms to the load event (median of 3, phone width) vs finviz.com 5814 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 3 of 3 loads answered",
-    "at": "2026-10-26T04:32:19.770Z"
+    "best": 2,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 2 of 3 loads answered",
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 815,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
-    "at": "2026-10-26T04:32:19.770Z"
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
-    "at": "2026-10-26T04:32:19.770Z"
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T04:32:19.770Z"
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T04:32:19.770Z"
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 right against the worked-out answer (missed: a coin row); judged against the standard, not finviz.com (the site is not asked). The page showed: \"Screener Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account. Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, \"",
-    "at": "2026-10-26T04:32:19.770Z",
+    "at": "2026-10-26T04:51:24.562Z",
     "was": "equal-and-better",
     "of": 4
    },
@@ -13150,15 +13150,15 @@
     "verdict": "better",
     "verse": 16,
     "best": 252,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 252 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.00), finviz.com (4 low-contrast texts, 248 small tap targets, layout shift 0.08)",
-    "at": "2026-10-26T04:32:19.770Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 252 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (3 low-contrast texts, 249 small tap targets, layout shift 0.07)",
+    "at": "2026-10-26T04:51:24.562Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T04:32:19.770Z",
+    "at": "2026-10-26T04:51:24.562Z",
     "of": 2,
     "part": true
    },
@@ -13167,7 +13167,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T04:32:19.770Z",
+    "at": "2026-10-26T04:51:24.562Z",
     "of": 2,
     "part": true
    },
@@ -13176,7 +13176,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T04:32:19.770Z",
+    "at": "2026-10-26T04:51:24.562Z",
     "of": 2,
     "part": true
    },
@@ -13185,7 +13185,7 @@
     "verse": 12,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 12 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: Compare symbols, Links, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
-    "at": "2026-10-26T04:32:19.770Z",
+    "at": "2026-10-26T04:51:24.562Z",
     "of": 15
    }
   },
