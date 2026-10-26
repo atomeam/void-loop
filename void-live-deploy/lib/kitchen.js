@@ -161,13 +161,13 @@ export function wordsFor(lang) {
     perServing: 'Pro Portion (geschätzt)', kcal: 'kcal', protein: 'Eiweiß', fat: 'Fett', carbs: 'Kohlenhydrate', fromN: (n, m) => 'aus ' + n + ' von ' + m + ' Zutaten', save: 'Speichern', savedOn: 'Gespeichert', noColl: 'Keine Sammlung', newColl: 'Neue Sammlung …', collName: 'Name der Sammlung',
     toList: 'Auf die Einkaufsliste', added: 'Auf der Einkaufsliste', copyAll: 'Liste kopieren', clearDone: 'Abgehakte entfernen', clearAll: 'Alles leeren', listEmpty: 'Die Liste ist leer: „Auf die Einkaufsliste“ bei einem Rezept füllt sie.', items: 'Dinge',
     savedEmpty: 'Noch nichts gespeichert: „Speichern“ bei einem Rezept legt es hier ab.', all: 'Alle', rating: 'Deine Bewertung', stars: (n) => n + (n === 1 ? ' Stern' : ' Sterne'), notes: 'Deine Notizen', notesPh: 'Was du nächstes Mal anders machst', fitNone: 'Keines passt zu', showing: 'Nur Rezepte', remove: 'Entfernen', unchecked: 'nicht geprüft',
-    plan: 'Essensplan', planFor: 'Für einen Tag planen …', today: 'Heute', tomorrow: 'Morgen', planned: 'Geplant', weekToList: 'Die Woche auf die Einkaufsliste', weekToCal: 'Die Woche in meinen Kalender', planEmpty: 'Nichts geplant: „Für einen Tag planen“ bei einem Rezept legt es hier ab.', costL: 'Kosten (grob geschätzt)', perServ: 'pro Portion', forAll: 'für das Rezept', priceNote: 'typische US-Supermarktpreise', onCal: 'Im Kalender', meal: 'Essen', browse: 'Stöbern', cuisine: 'Küche', category: 'Kategorie', pick: 'Wählen …', found: 'Rezepte',
+    plan: 'Essensplan', planFor: 'Für einen Tag planen …', today: 'Heute', tomorrow: 'Morgen', planned: 'Geplant', weekToList: 'Die Woche auf die Einkaufsliste', weekToCal: 'Die Woche in meinen Kalender', planEmpty: 'Nichts geplant: „Für einen Tag planen“ bei einem Rezept legt es hier ab.', shopAt: 'Einkaufen bei', find: 'Suchen', storeNote: 'Nur Links: die Suche des Ladens öffnet sich in einem neuen Tab; es wird nichts gesendet oder angemeldet', costL: 'Kosten (grob geschätzt)', perServ: 'pro Portion', forAll: 'für das Rezept', priceNote: 'typische US-Supermarktpreise', onCal: 'Im Kalender', meal: 'Essen', browse: 'Stöbern', cuisine: 'Küche', category: 'Kategorie', pick: 'Wählen …', found: 'Rezepte',
   } : {
     saved: 'Saved', list: 'Shopping list', diets: 'Diets', dietsH: 'Diet and allergies', withoutL: 'Without (e.g. onion, nuts)', vegetarian: 'Vegetarian', vegan: 'Vegan', 'gluten-free': 'Gluten-free', 'dairy-free': 'Dairy-free', 'egg-free': 'Egg-free', 'nut-free': 'Nut-free',
     perServing: 'Per serving (estimate)', kcal: 'kcal', protein: 'protein', fat: 'fat', carbs: 'carbs', fromN: (n, m) => 'from ' + n + ' of ' + m + ' ingredients', save: 'Save', savedOn: 'Saved', noColl: 'No collection', newColl: 'New collection…', collName: 'Collection name',
     toList: 'Add to shopping list', added: 'On the shopping list', copyAll: 'Copy list', clearDone: 'Clear ticked', clearAll: 'Clear all', listEmpty: 'The list is empty: "Add to shopping list" on a recipe fills it.', items: 'items',
     savedEmpty: 'Nothing saved yet: "Save" on a recipe keeps it here.', all: 'All', rating: 'Your rating', stars: (n) => n + (n === 1 ? ' star' : ' stars'), notes: 'Your notes', notesPh: 'What you would change next time', fitNone: 'None fits', showing: 'Only recipes', remove: 'Remove', unchecked: 'not checked',
-    plan: 'Meal plan', planFor: 'Plan for a day…', today: 'Today', tomorrow: 'Tomorrow', planned: 'Planned', weekToList: 'Add the week to the shopping list', weekToCal: 'Put the week on my calendar', planEmpty: 'Nothing planned: "Plan for a day" on a recipe puts it here.', costL: 'Cost (rough estimate)', perServ: 'per serving', forAll: 'for the recipe', priceNote: 'typical US supermarket prices', onCal: 'On your calendar', meal: 'Meal', browse: 'Browse', cuisine: 'Cuisine', category: 'Category', pick: 'Choose…', found: 'recipes',
+    plan: 'Meal plan', planFor: 'Plan for a day…', today: 'Today', tomorrow: 'Tomorrow', planned: 'Planned', weekToList: 'Add the week to the shopping list', weekToCal: 'Put the week on my calendar', planEmpty: 'Nothing planned: "Plan for a day" on a recipe puts it here.', shopAt: 'Shop at', find: 'Find', storeNote: 'Links only: the store\'s own search opens in a new tab; nothing is sent or signed in', costL: 'Cost (rough estimate)', perServ: 'per serving', forAll: 'for the recipe', priceNote: 'typical US supermarket prices', onCal: 'On your calendar', meal: 'Meal', browse: 'Browse', cuisine: 'Cuisine', category: 'Category', pick: 'Choose…', found: 'recipes',
   };
 }
 
@@ -196,4 +196,31 @@ export function costOf(lines, servings = 1) {
   for (const l of list) { const g = gramsOf(l); if (g.entry && g.grams != null) { counted++; total += pricePerKg(g.entry) * g.grams / 1000; } }
   const per = Math.max(1, +servings || 1);
   return { total: Math.round(total * 100) / 100, perServing: Math.round(total / per * 100) / 100, counted, of: list.length };
+}
+
+// the shopping list handed to a shop, as links only: each item opens the store's own search in a new tab. Fixed addresses (no address ever comes from a recipe),
+// no account, no key, no tracking parameter; Verse sends nothing and learns nothing. Pure.
+export const STORES = Object.freeze([
+  { id: 'walmart', name: 'Walmart', url: 'https://www.walmart.com/search?q=', regions: ['US'] },
+  { id: 'instacart', name: 'Instacart', url: 'https://www.instacart.com/store/s?k=', regions: ['US', 'CA'] },
+  { id: 'amazonfresh', name: 'Amazon Fresh', url: 'https://www.amazon.com/s?i=amazonfresh&k=', regions: ['US'] },
+  { id: 'target', name: 'Target', url: 'https://www.target.com/s?searchTerm=', regions: ['US'] },
+  { id: 'tesco', name: 'Tesco', url: 'https://www.tesco.com/groceries/en-GB/search?query=', regions: ['GB'] },
+  { id: 'ocado', name: 'Ocado', url: 'https://www.ocado.com/search?entry=', regions: ['GB'] },
+  { id: 'sainsburys', name: "Sainsbury's", url: 'https://www.sainsburys.co.uk/gol-ui/SearchResults/', regions: ['GB'], path: true },
+  { id: 'rewe', name: 'REWE', url: 'https://www.rewe.de/suche/produkte?search=', regions: ['DE', 'AT'] },
+  { id: 'amazonde', name: 'Amazon Fresh (DE)', url: 'https://www.amazon.de/s?i=amazonfresh&k=', regions: ['DE', 'AT'] },
+  { id: 'amazonuk', name: 'Amazon Fresh (UK)', url: 'https://www.amazon.co.uk/s?i=amazonfresh&k=', regions: ['GB'] },
+]);
+/** the store a country starts with (the first listed for its region, Walmart when none). Pure. */
+export function defaultStore(lang) { const m = /[-_]([A-Za-z]{2})\b/.exec(String(lang || '')); const c = m ? m[1].toUpperCase() : /^de\b/i.test(String(lang || '')) ? 'DE' : 'US'; return (STORES.find((x) => x.regions.includes(c)) || STORES[0]).id; }
+/** what to search for from a list line: the amounts and "chopped, to serve" left off ("1 ½ cups all-purpose flour (190 g)" -> "all-purpose flour"). Pure. */
+export function searchName(line) {
+  const g = gramsOf(line); let n = String(g.name || line || '').replace(/\b(?:chopped|diced|sliced|minced|grated|melted|softened|finely|roughly|thinly|fresh|freshly|to serve|to taste|optional|for serving|plus more)\b/gi, ' ').replace(/[^\p{L}\p{N}\s'-]/gu, ' ').replace(/\s+/g, ' ').trim();
+  return (n || String(line || '').replace(/[^\p{L}\s]/gu, ' ').replace(/\s+/g, ' ').trim()).slice(0, 60);
+}
+/** the link that opens a store's search for an item, or null for an unknown store or an empty search. Pure. */
+export function storeLink(storeId, line) {
+  const st = STORES.find((x) => x.id === storeId), q = searchName(line); if (!st || !q) return null;
+  return st.url + (st.path ? encodeURIComponent(q).replace(/%20/g, '%20') : encodeURIComponent(q).replace(/%20/g, '+'));
 }

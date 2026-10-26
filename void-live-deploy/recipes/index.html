@@ -76,6 +76,7 @@
   .stars button[aria-pressed="true"] { background: transparent; border: 0; font-weight: 400; color: var(--soft); } .stars button.on { color: var(--accent); }
   .shop li label { display: flex; gap: 10px; align-items: center; flex: 1 1 auto; min-height: 40px; cursor: pointer; } .shop li.done label { color: var(--soft); text-decoration: line-through; }
   .shop input[type=checkbox] { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--accent); } .shop .from { font-size: 12px; color: var(--soft); flex-basis: 100%; margin-top: 8px; }
+  .shop a.find { flex: none; font-size: 13px; color: var(--accent); padding: 4px 8px; min-height: 32px; display: inline-flex; align-items: center; }
   .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -134,7 +135,9 @@
   </section>
   <section class="pane" id="listPane" hidden aria-labelledby="listH" style="margin-top:8px;min-height:0">
     <h2 id="listH" style="margin:0 0 4px">Shopping list</h2>
+    <div class="row"><label for="storePick" id="storePickL" style="font-size:14px;color:var(--soft)">Shop at</label><select class="box" id="storePick"></select></div>
     <ul class="list shop" id="shop"></ul>
+    <p class="note" id="storeNote"></p>
     <div class="row"><button type="button" id="shopCopy">Copy list</button><button type="button" id="shopDone">Clear ticked</button><button type="button" class="bad" id="shopAll">Clear all</button></div>
   </section>
   <section class="pane" id="savedPane" hidden aria-labelledby="savedH" style="margin-top:8px;min-height:0">
@@ -222,7 +225,7 @@
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
       if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
@@ -419,9 +422,13 @@
         if (x.from !== last) { last = x.from; ul.append(el('li', 'from', x.from)); }
         const li = el('li', x.done ? 'done' : ''), lb = el('label'), cb = el('input'), del = el('button', '', '×'); cb.type = 'checkbox'; cb.checked = !!x.done; lb.append(cb, el('span', '', x.text)); del.type = 'button'; del.setAttribute('aria-label', KW.remove + ': ' + x.text);
         cb.addEventListener('change', () => { x.done = cb.checked; keep(); drawShop(); }); del.addEventListener('click', () => { store.shop = store.shop.filter((y) => y !== x); keep(); drawShop(); });
-        li.append(lb, del); ul.append(li);
+        const href = !x.done && K.storeLink(store.shopStore || K.defaultStore(navigator.language), x.text);
+        if (href) { const a = el('a', 'find', KW.find); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.setAttribute('aria-label', KW.find + ': ' + K.searchName(x.text)); li.append(lb, a, del); } else li.append(lb, del);
+        ul.append(li);
       }
+      $('storeNote').textContent = store.shop.length ? KW.storeNote : '';
     }
+    { const sp = $('storePick'), cur = store.shopStore || K.defaultStore(navigator.language); for (const st of K.STORES) sp.append(Object.assign(el('option', '', st.name), { value: st.id })); sp.value = cur; sp.addEventListener('change', () => { store.shopStore = sp.value; keep(); drawShop(); }); }
     $('toList').addEventListener('click', () => { const r = state.recipe; if (!r) return; const ticks = store.ticks[r.id] || []; const lines = r.ingredients.map((s2, k) => [s2, k]).filter(([, k]) => !ticks.includes(k)).map(([s2]) => line(s2));
       store.shop = K.withLines(store.shop, r.name + ' (' + state.servings + ')', lines); keep(); toast($('toList'), KW.added); if (!$('listPane').hidden) drawShop(); });
     $('shopCopy').addEventListener('click', () => copy($('shopCopy'), K.listText(store.shop)));

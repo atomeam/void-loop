@@ -45,3 +45,11 @@ test('cost: a rough estimate from typical US prices per kilogram, said as one; u
   const d = K.costOf(['1 cup mystery powder', '2 eggs'], 1); assert.equal(d.counted, 1); assert.equal(d.total, 0.5, '100 g of egg at about 5 dollars a kilogram'); assert.equal(K.costOf([], 4).total, 0);
   assert.equal(K.pricePerKg(K.entryOf('salmon fillets')), 22); assert.equal(K.pricePerKg(null), null); assert.equal(K.pricePerKg(K.entryOf('mace')), K.pricePerKg(K.entryOf('mace')));
 });
+test('store links: fixed https addresses, a clean search from a list line, a country\'s own first store; nothing from a recipe becomes an address', () => {
+  assert.ok(K.STORES.length >= 8 && K.STORES.every((s) => /^https:\/\/[a-z.]+\//.test(s.url)) && new Set(K.STORES.map((s) => s.id)).size === K.STORES.length);
+  assert.deepEqual(['1 ½ cups all-purpose flour (190 g)', '3 cloves garlic, thinly sliced', '2 tablespoons chopped coriander (cilantro)', '1 can crushed tomatoes (400 g)', '200g Flour'].map(K.searchName), ['all-purpose flour', 'garlic', 'coriander', 'crushed tomatoes', 'Flour']);
+  assert.equal(K.storeLink('tesco', '2 eggs'), 'https://www.tesco.com/groceries/en-GB/search?query=eggs'); assert.equal(K.storeLink('instacart', '1 tbsp olive oil'), 'https://www.instacart.com/store/s?k=olive+oil');
+  assert.equal(K.storeLink('sainsburys', '2 tbsp olive oil'), 'https://www.sainsburys.co.uk/gol-ui/SearchResults/olive%20oil'); assert.equal(K.storeLink('nope', '2 eggs'), null); assert.equal(K.storeLink('walmart', '  '), null);
+  const evil = K.storeLink('walmart', '1 cup ../../evil?x=1&url=http://evil.test'); assert.ok(evil.startsWith('https://www.walmart.com/search?q='), evil); assert.ok(!/[&]url=|evil\.test\//.test(evil.slice('https://www.walmart.com/search?q='.length)), 'the item is encoded into the search');
+  assert.deepEqual(['en-US', 'en-GB', 'de-DE', 'fr-FR', 'en'].map(K.defaultStore), ['walmart', 'tesco', 'rewe', 'walmart', 'walmart']);
+});
