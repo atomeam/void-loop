@@ -491,6 +491,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:42:15Z",
+   "subject": "Free pictures: loc.gov ids come as http, image addresses carry size fragments; probe records rights fields"
+  },
+  {
+   "at": "2026-10-26T04:41:22Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:41:21Z",
+   "subject": "toolkit test: a page's code may also be a plain module import in its head (the music pages)"
+  },
+  {
+   "at": "2026-10-26T04:41:09Z",
+   "subject": "Music pages open offline: each registers /sw.js after load and preloads its modules, so the worker keeps the page and its code on the…"
+  },
+  {
+   "at": "2026-10-26T04:40:54Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: 10015.io,pdf: pdfcandy.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:40:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:40:07Z",
    "subject": "Free pictures probe: explore loc.gov answer shapes"
   },
@@ -545,30 +569,6 @@
   {
    "at": "2026-10-26T04:19:51Z",
    "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:19:32Z",
-   "subject": "Tower gate: finance,finance: investing.com,finance: finviz.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net measured…"
-  },
-  {
-   "at": "2026-10-26T04:18:47Z",
-   "subject": "Sports and scores pages: a real share picture each (og/scores.png, og/sports.png, drawn by tools/og-sports.mjs) and a Share link button on…"
-  },
-  {
-   "at": "2026-10-26T04:16:40Z",
-   "subject": "Tower gate: finance: stockanalysis.com,finance: tradingview.com,finance: barchart.com,music: virtualpiano.net,music measured against their…"
-  },
-  {
-   "at": "2026-10-26T04:14:11Z",
-   "subject": "Tower gate: music: chordchord.com,music: metronomeonline.com,music: virtualpiano.net,music measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:11:42Z",
-   "subject": "Tower gate: sports: thesportsdb.com,music: chordchord.com,music: metronomeonline.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:09:41Z",
-   "subject": "Tower gate: sports: thesportsdb.com,music: jasperbernaers.com,music: anotherproducer.com measured against their live sites"
   }
  ],
  "builders": {
