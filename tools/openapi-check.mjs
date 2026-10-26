@@ -44,6 +44,7 @@ export const INTERNAL = {
   '/api/film-review': 'the films page review form: members and the owner give a film a verdict and a note (functions/api/film-review.js)',
   '/api/film-views': 'Verse Tube view counts on /films/: one D1 upsert per view, read for the grid (functions/api/film-views.js)',
   '/api/actions': 'the actions record, for the page and the owner',
+  '/api/tower-self': "Versus by itself asks Verse's own model which floor does a site's job and for its feature list (owner only; tools/tower-self.mjs and .github/workflows/tower-self.yml are the only callers)",
   '/api/propose-fix': "Verse proposes the narrowest matcher fix for an ask its own probe missed (owner only, frontier #28 step 3; tools/propose-fix.mjs and its daily workflow are the only callers)",
   '/api/probe-asks': "Verse writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
   '/api/voice-reply': "the owner talks back to Verse on its self card and under any card; Verse answers and keeps the lesson (owner only; functions/api/voice-reply.js, lib/voice.js)",

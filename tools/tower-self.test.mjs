@@ -99,3 +99,12 @@ test('every self-built site is a lane site with its own page, the page its probe
     assert.doesNotMatch(r.name + r.h1 + r.intro + r.does + r.asks.join(' ') + r.path, /\.(?:com|org|net|io)\b/i, r.path + ' names no site');
   }
 });
+
+test('the loop\'s model route takes the owner\'s questions only in shape: system and user messages, bounded', async () => {
+  const { bodyOf } = await import('../void-live-deploy/functions/api/tower-self.js');
+  assert.equal(bodyOf({ messages: [{ role: 'user', content: 'which floor?' }] }).max, 900);
+  assert.equal(bodyOf({ messages: [{ role: 'assistant', content: 'x' }] }), null);
+  assert.equal(bodyOf({ messages: [{ role: 'user', content: 'x'.repeat(24001) }] }), null);
+  assert.equal(bodyOf({ messages: Array(5).fill({ role: 'user', content: 'x' }) }), null);
+  assert.equal(bodyOf({ messages: [{ role: 'user', content: 'x' }], max_tokens: 99999 }).max, 2000);
+});

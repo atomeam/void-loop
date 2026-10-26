@@ -157,15 +157,29 @@ export function messagesOf(site, fams) {
 }
 /** the model's answer as an object, or null. Pure. */
 export function parseAnswer(text) { const s = String(text || ''), a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a < 0 || b <= a) return null; try { return JSON.parse(s.slice(a, b + 1)); } catch (_) { return null; } }
-async function askModel(messages) {
-  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return { error: 'no Workers AI credentials' };
+/** one question to Verse's own model: the site's binding through the owner-only /api/tower-self (VOID_OWNER_TOKEN), else the Workers AI REST API
+ *  (CLOUDFLARE_API_TOKEN with Workers AI scope); the answer's text, or { error } */
+export async function modelText(messages, schema, max = 900) {
+  const own = process.env.VOID_OWNER_TOKEN;
+  if (own) {
+    try {
+      const r = await fetch(SITE_API + '/api/tower-self', { method: 'POST', signal: AbortSignal.timeout(90000), headers: { authorization: 'Bearer ' + own, 'content-type': 'application/json', 'user-agent': 'a2m-tower-self/1.0' }, body: JSON.stringify({ messages, schema, max_tokens: max }) });
+      if (r.ok) return { text: String(((await r.json()) || {}).text || '') };
+      console.log('::warning::Verse\'s model route answered ' + r.status + ': trying the REST API');
+    } catch (e) { console.log('::warning::Verse\'s model route did not answer (' + clip(e && e.message || e, 80) + ')'); }
+  }
+  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return { error: 'no model reachable' };
   try {
-    const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + FREE_MODEL, { method: 'POST', signal: AbortSignal.timeout(90000), headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages, max_tokens: 900, response_format: { type: 'json_schema', json_schema: SCHEMA } }) });
+    const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + FREE_MODEL, { method: 'POST', signal: AbortSignal.timeout(90000), headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages, max_tokens: max, response_format: { type: 'json_schema', json_schema: schema } }) });
     if (!r.ok) return { error: 'the model answered ' + r.status };
-    const j = await r.json(), x = (j && j.result) || {}, text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
-    return parseAnswer(text) || { error: 'the answer was not JSON' };
+    const j = await r.json(), x = (j && j.result) || {};
+    return { text: typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '') };
   } catch (e) { return { error: 'the model did not answer (' + clip(e && e.message || e, 80) + ')' }; }
 }
+async function askModel(messages) { const r = await modelText(messages, SCHEMA); return r.error ? r : parseAnswer(r.text) || { error: 'the answer was not JSON' }; }
+const FEATURES_SCHEMA = { name: 'features', schema: { type: 'object', properties: { features: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, detail: { type: 'string' }, paid: { type: 'boolean' } }, required: ['name', 'detail', 'paid'] } } }, required: ['features'] } };
+/** feature-scan's feature list, asked of Verse's own model (its messages and its parser) */
+async function featuresByModel(host, pages) { const { messagesOf: fm, parseModelFeatures } = await import('./feature-scan.mjs'); const r = await modelText(fm(host, pages), FEATURES_SCHEMA, 2000); return r.error ? null : parseModelFeatures(r.text); }
 
 // ---- state ----
 export const readState = () => readJson(STATE, { note: 'tools/tower-self.mjs: every site Verse took on by itself, what came of it, and one line per run. Written by the loop.', sites: {}, runs: [] });
@@ -184,7 +198,7 @@ async function build(planFile, outFile, maxBuilt) {
     for (const c of plan) {
       if (decision.rows.length >= maxBuilt) break;
       const r = await scanSite(b, c.url).catch((e) => ({ problem: 'not read (' + clip(e && e.message || e, 80) + ')', pages: [] }));
-      if (r.problem || !r.pages.length) { decision.state[c.host] = { at: now(), outcome: 'gone', why: clip(r.problem || 'no page read', 160) }; console.log(c.host + ': ' + decision.state[c.host].why); continue; }
+      if (r.problem || !r.pages.length) { decision.state[c.host] = { at: now(), outcome: /parked|did not load|answered [45]\d\d|no page read/.test(r.problem || 'no page read') ? 'gone' : 'walled', why: clip(r.problem || 'no page read', 160) }; console.log(c.host + ': ' + decision.state[c.host].why); continue; }
       const site = { host: c.host, pages: r.pages }, siteText = r.pages.map((p) => p.title + ' ' + (p.headings || []).join(' ') + ' ' + p.text).join(' ');
       const a = await askModel(messagesOf(site, fams));
       if (a.error) { decision.state[c.host] = { at: now(), outcome: 'not-judged', why: a.error }; console.log(c.host + ': ' + a.error); continue; }
@@ -204,7 +218,7 @@ async function build(planFile, outFile, maxBuilt) {
       const row = { path: p, base: fam.base, page: p + fam.pageTail, ...(fam.askTail !== null ? { ask: p + fam.askTail } : {}), family: fam.id, lane, url: c.url, name: t.name, h1: t.h1, intro: t.intro, does: t.does, asks: t.asks, added: now() };
       // the site's features, read by feature-scan's own code from the pages already read, marked against the family's page
       const floor = floorList.find((f) => f.id === fam.id);
-      if (floor) { try { const res = await scanFloor(b, floor, [{ url: c.url, host: hostOf(c.url) }], { calls: 1, read: async () => r }); decision.features[floor.slug] = { floor: { id: floor.id, slug: floor.slug, page: floor.page }, sites: { ...((decision.features[floor.slug] || {}).sites || {}), ...res.sites } }; } catch (e) { console.log('::warning::features of ' + c.host + ' not read: ' + clip(e && e.message || e, 80)); } }
+      if (floor) { try { const res = await scanFloor(b, floor, [{ url: c.url, host: hostOf(c.url) }], { calls: 1, read: async () => r, model: featuresByModel }); decision.features[floor.slug] = { floor: { id: floor.id, slug: floor.slug, page: floor.page }, sites: { ...((decision.features[floor.slug] || {}).sites || {}), ...res.sites } }; } catch (e) { console.log('::warning::features of ' + c.host + ' not read: ' + clip(e && e.message || e, 80)); } }
       decision.rows.push(row); decision.state[c.host] = { at: now(), outcome: 'built', family: fam.id, id: lane, page: row.page, ...(refused ? { words: 'the family page\'s own (the model\'s were refused: ' + clip(refused, 120) + ')' } : {}) };
       console.log(c.host + ': joins ' + fam.id + ' at ' + row.page + (refused ? ' (its own words refused: ' + refused + ')' : ''));
     }
