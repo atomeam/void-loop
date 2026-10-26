@@ -4,7 +4,7 @@
  * "tell me a cat fact", "cat fact", "random cat fact".
  */
 export function isCatFact(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:fun\s+)?cat\s+fact|(?:another|a|fun|random)\s+cat\s+fact|cat\s+fact(?:\s+please)?|give\s+me\s+a\s+cat\s+fact)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more)\s+cat\s+fact|(?:another|a|random)\s+cat\s+fact|cat\s+fact(?:\s+please)?|give\s+me\s+a\s+cat\s+fact)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 async function run(text, api) {
@@ -19,7 +19,7 @@ async function run(text, api) {
     return 'catfact';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Cat fact</h2><p>The fact service didn\'t answer, so here is mine: A group of cats is called a clowder.</p>';
+    el.innerHTML = '<h2>Cat fact</h2><p>The cat fact service didn\'t answer, so here is mine: Cats spend about 70% of their lives sleeping.</p>';
     return 'catfact';
   }
 }
@@ -27,11 +27,11 @@ async function run(text, api) {
 export default {
   name: 'catfact',
   examples: ['tell me a cat fact', 'cat fact', 'random cat fact', 'another cat fact'],
-  nearMisses: ['what is a cat', 'dog fact', 'facts about cats in general'],
+  nearMisses: ['what is a cat', 'dog fact', 'facts about cats'],
   match(lower, text) { return isCatFact(text); },
   run,
   suite() {
-    const ok = isCatFact('tell me a cat fact') && isCatFact('cat fact') && !isCatFact('what is a cat');
+    const ok = isCatFact('tell me a cat fact') && isCatFact('cat fact') && !isCatFact('dog fact');
     return { ok, got: 'match works' };
   }
 };
