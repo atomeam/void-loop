@@ -1,10 +1,11 @@
 /**
  * advice skill — a random piece of advice from a public API (no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "tell me advice", "random advice", "give me advice".
+ * "give me advice", "random advice", "tell me some advice".
+ * Empty surface stays empty until asked.
  */
 export function isAdvice(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:some|a|another|one\s+more)\s+advice|(?:another|some|a|random)\s+advice|advice(?:\s+please)?|give\s+me\s+(?:some\s+)?advice)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:give\s+(?:me\s+)?(?:some\s+|a\s+|another\s+)?advice|tell\s+me\s+(?:some\s+|a\s+)?advice|(?:another|a|random)\s+advice|advice(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 async function run(text, api) {
@@ -19,19 +20,19 @@ async function run(text, api) {
     return 'advice';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Advice</h2><p>The advice service didn\'t answer, so here is mine: Take one small step today toward something that matters to you.</p>';
+    el.innerHTML = '<h2>Advice</h2><p>The advice service didn\'t answer, so here is mine: The best time to plant a tree was twenty years ago. The second best time is now.</p>';
     return 'advice';
   }
 }
 
 export default {
   name: 'advice',
-  examples: ['tell me advice', 'random advice', 'give me advice', 'another advice'],
+  examples: ['give me advice', 'random advice', 'tell me some advice', 'another advice'],
   nearMisses: ['what is advice', 'legal advice', 'financial advice'],
   match(lower, text) { return isAdvice(text); },
   run,
   suite() {
-    const ok = isAdvice('tell me advice') && isAdvice('random advice') && !isAdvice('legal advice');
+    const ok = isAdvice('give me advice') && isAdvice('random advice') && !isAdvice('what is advice');
     return { ok, got: 'match works' };
   }
 };
