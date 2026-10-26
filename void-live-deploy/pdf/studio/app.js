@@ -1,5 +1,5 @@
 // /pdf/studio/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
-import { mountRelated } from '/lib/toolkit.js';
 import { mountPdf } from '/lib/pdf-ui.js';
-mountPdf(document.getElementById('app'), {"tools":["compress","merge","split","pages","rotate","extract","img2pdf","pdf2img","numbers","watermark","crop","info"]});
-mountRelated(document.getElementById('related'), '/pdf/studio/');
+mountPdf(document.getElementById('app'), {"tools":["compress","merge","split","pages","rotate","extract","order","img2pdf","pdf2img","numbers","watermark","crop","info"]});
+// the related row and the ask bar come after the first paint, so the page itself loads first
+import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/pdf/studio/'));

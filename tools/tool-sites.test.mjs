@@ -18,7 +18,7 @@ test('every lane site of the pdf and kanban floors has a page of its own, and ev
   assert.equal(new Set(SITE_PAGES.map((r) => r.path)).size, SITE_PAGES.length);
 });
 test('every pdf row lists tools the screen has; every kanban row switches on features the screen knows', () => {
-  for (const r of PDF_SITES) { assert.ok(r.tools.length >= 1, r.path); for (const t of r.tools) assert.ok(TOOL_INFO[t], r.path + ' ' + t); assert.equal(new Set(r.tools).size, r.tools.length, r.path); }
+  for (const r of PDF_SITES) { assert.ok(r.tools.length >= 1, r.path); for (const t of [...r.tools, ...(r.also || [])]) assert.ok(TOOL_INFO[t], r.path + ' ' + t); assert.equal(new Set(r.tools).size, r.tools.length, r.path); }
   for (const r of KANBAN_SITES) for (const k of Object.keys(r.features)) assert.ok(k in FEATURES.all, r.path + ' ' + k);
   for (const r of SITE_PAGES) assert.doesNotMatch(r.intro + r.does + r.asks.join(' ') + r.h1, /\.com\b|\.org\b|\.net\b|\.io\b|\.fi\b|trello\b.*\bbetter\b/i, r.path + ' names no other site');
 });
@@ -34,9 +34,9 @@ test('the asks that reach the pages: a tool for each pdf ask, never the stage ca
   for (const ask of ['task board', 'my tasks', 'kanban meaning']) assert.ok(!KANBAN_ASK.test(ask), ask);
 });
 test('each page and its module are what the table makes (tools/tool-site-pages.mjs --check)', async () => {
-  const { pageOf, appOf } = await import('./tool-site-pages.mjs');
+  const { pageOf, appOf, slug } = await import('./tool-site-pages.mjs');
   for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban']]) for (const r of rows) {
     const app = fs.readFileSync(new URL('../void-live-deploy' + r.path + 'app.js', import.meta.url), 'utf8'); assert.equal(app, appOf(r, kind), r.path + 'app.js');
-    const html = fs.readFileSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url), 'utf8'); assert.match(html, /<nav id="related"/); assert.ok(html.includes('<title>' + r.name.replace(/&/g, '&amp;') + ' · Verse</title>'), r.path); assert.ok(pageOf(r, kind).includes(r.path + 'app.js'));
+    const html = fs.readFileSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url), 'utf8'); assert.match(html, /<nav id="related"/); assert.ok(html.includes('<title>' + r.name.replace(/&/g, '&amp;') + ' · Verse</title>'), r.path); assert.ok(pageOf(r, kind).includes(r.path + 'app.js')); assert.ok(html.includes('/og/' + slug(r.path) + '.png'), r.path + ' has its own share picture'); assert.ok(fs.existsSync(new URL('../void-live-deploy/og/' + slug(r.path) + '.png', import.meta.url)), r.path + ' picture is there'); assert.match(html, /og:description/);
   }
 });
