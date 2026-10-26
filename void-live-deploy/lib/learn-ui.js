@@ -50,7 +50,7 @@ function practicePanel(cfg, ctx) {
   function showLevel() { const r = st()[sel.value]; level.textContent = lvName(r && r.level); level.dataset.l = (r && r.level) || 0; runEl.textContent = r && r.run ? t('Right in a row') + ': ' + r.run : ''; }
   function next(id, nums) {
     if (id) sel.value = id; else if (queue.length) sel.value = queue.shift();
-    p = C.problem(sel.value, Math.random, nums); tried = false; hinted = false; shown = 0; hints.textContent = ''; fb.textContent = ''; fb.className = 'fb'; input.value = ''; input.disabled = false;
+    p = C.problem(sel.value, Math.random, nums); tried = false; hinted = false; shown = 0; hints.textContent = ''; fb.textContent = ''; fb.className = 'fb'; input.value = ''; input.readOnly = false;
     qEl.textContent = fmt(p.q); fmtHint.textContent = p.kind === 'frac' ? t('Answer as a fraction like 3/4 or a mixed number like 1 1/2.') : p.kind === 'rem' ? t('Answer like 12 R 3 (12 remainder 3).') : t('Answer with a number.');
     const u = C.UNITS.find((x) => x.id === C.skillOf(sel.value).unit); video.textContent = ''; video.append(t('Want a video for this?') + ' ', out(u.video, 'Khan Academy explains this unit'), ' ' + t('(free, opens in a new tab)'));
     showLevel(); ctx.skill = sel.value; try { const q = new URLSearchParams(location.search); q.set('skill', sel.value); q.delete('p'); q.delete('show'); history.replaceState(null, '', location.pathname + '?' + q + location.hash); } catch (_) { /* no history */ }
@@ -58,14 +58,14 @@ function practicePanel(cfg, ctx) {
   function hint() { if (!p || shown >= p.steps.length) return; hinted = true; hints.append(h('li', {}, fmt(p.steps[shown]))); shown++; }
   function solve() { while (p && shown < p.steps.length) hint(); }
   function checkIt() {
-    if (!p || !input.value.trim()) return; const ok = C.check(p, input.value);
+    if (!p || !input.value.trim() || input.readOnly) return; const ok = C.check(p, input.value);
     if (!tried) { const recs = st(); recs[p.skill] = C.recordAnswer(recs[p.skill], ok, hinted, today()); keep({ skills: recs }); tally(ok); }
     tried = true; fb.className = 'fb ' + (ok ? 'ok' : 'bad');
     fb.textContent = ok ? t('Correct!') + ' ' + p.answer + (hinted ? ' ' + t('(with a hint: it counts as practice, not toward mastery)') : '') : t('Not yet. Try again, or get a hint.');
-    if (ok) input.disabled = true; showLevel(); for (const f of subs) f();
+    if (ok) input.readOnly = true; showLevel(); for (const f of subs) f();
   }
   sel.addEventListener('change', () => next());
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (input.disabled) next(); else checkIt(); } });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (input.readOnly) next(); else checkIt(); } });
   ctx.practice = (id, list) => { queue = list ? list.slice() : []; next(id || queue.shift()); document.getElementById('p-practice').scrollIntoView({ behavior: 'smooth', block: 'start' }); input.focus({ preventScroll: true }); };
   const el = panel('practice', 'Practice', h('div', { class: 'row' }, sel, level, runEl), qEl, fmtHint, h('div', { class: 'row' }, input, btn('Check', checkIt, { class: 'primary', id: 'pr-check' })), fb,
     h('div', { class: 'row' }, btn('Get a hint', hint, { id: 'pr-hint' }), btn('Show the worked solution', solve, { id: 'pr-solve' }), btn('Next problem', () => next(), { id: 'pr-next' })), hints, video);
@@ -117,7 +117,7 @@ function progressPanel() {
 // ---------- printable worksheets with an answer key ----------
 function worksheetPanel(cfg) {
   const ids = cfg.skills || C.SKILLS.map((s) => s.id), sel = h('select', { id: 'ws-skill', 'aria-label': t('Skill') }, ids.map((id) => h('option', { value: id }, skillName(C.skillOf(id))))), n = h('select', { id: 'ws-n', 'aria-label': t('Problems') }, [10, 20, 30].map((x) => h('option', { value: x, selected: x === 20 }, x + ' ' + t('problems'))));
-  const sheet = h('ol', { class: 'sheet', id: 'ws-list' }), key = h('ol', { class: 'key', id: 'ws-key' }); let seed = +q0.get('seed') || 1 + Math.floor(Math.random() * 99999);
+  const sheet = h('ol', { class: 'sheet', id: 'ws-list' }), key = h('ol', { class: 'akey', id: 'ws-key' }); let seed = +q0.get('seed') || 1 + Math.floor(Math.random() * 99999);
   function make() { sheet.textContent = ''; key.textContent = ''; for (const p of C.worksheet(sel.value, +n.value, seed)) { sheet.append(h('li', {}, fmt(p.q))); key.append(h('li', {}, p.answer)); } }
   if (ids.includes(q0.get('ws'))) sel.value = q0.get('ws'); sel.addEventListener('change', make); n.addEventListener('change', make); make();
   const el = panel('worksheet', 'Printable worksheet', h('div', { class: 'row' }, sel, n, btn('New problems', () => { seed = 1 + Math.floor(Math.random() * 99999); make(); }), btn('Print', () => printPanel(el), { id: 'ws-print' })), sheet, h('h3', {}, t('Answer key')), key);

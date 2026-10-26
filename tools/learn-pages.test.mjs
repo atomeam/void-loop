@@ -115,3 +115,9 @@ test('the floor and its lane: every lane site has its own page, row and probe', 
   assert.equal(FLOORS.find((f) => f.id === 'learning').page, '/learn/'); assert.equal(probeFor('learning').verse, '/learn/');
   for (const r of LEARN_SITES) { assert.ok(r.panels.length && r.de && r.de.h1 && r.de.intro, r.path); assert.doesNotMatch(r.intro + r.does + r.asks.join(' ') + r.h1, /\.com\b|\.org\b|\.net\b|khan/i, r.path + ' names no other site'); assert.ok(fs.existsSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url)), r.path); assert.ok(fs.existsSync(new URL('../void-live-deploy/og/' + r.path.replace(/^\/|\/$/g, '').replace(/\//g, '-') + '.png', import.meta.url)), r.path + ' share picture'); }
 });
+test('the stage card (skills/learn-pages.js) takes the page asks, leaves "quiz me" and typed flashcards, and links to the page', async () => {
+  const skill = (await import('../void-live-deploy/skills/learn-pages.js')).default;
+  for (const a of skill.examples) assert.ok(skill.match(a.toLowerCase(), a), a); for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
+  const el = { dataset: {}, innerHTML: '' }, esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  assert.equal(skill.run('times tables', { showPage: (f) => f(el), esc }), 'learn-pages'); assert.equal(el.dataset.page, '/learn/times/'); assert.match(el.innerHTML, /href="\/learn\/times\/"/); assert.match(el.innerHTML, /href="\/learn\/periodic\/"/);
+});
