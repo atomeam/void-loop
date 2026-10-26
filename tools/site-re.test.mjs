@@ -5,9 +5,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { noiseOf, visit, scanEntry, codeFacts, htmlFacts, controlsOf, manifestFacts, swFacts, robotsFacts, sitemapFacts, blockedOf, reportOf, candidatesOf, mergeRe, rowOf, ROW_NOTE, clip, bareUrl, fileOf, slugOf, dueOf, entriesOf, writeReport, mergeAll, servicesOf } from './site-re.mjs';
+import { scrubPersonal, noiseOf, visit, scanEntry, codeFacts, htmlFacts, controlsOf, manifestFacts, swFacts, robotsFacts, sitemapFacts, blockedOf, reportOf, candidatesOf, mergeRe, rowOf, ROW_NOTE, clip, bareUrl, fileOf, slugOf, dueOf, entriesOf, writeReport, mergeAll, servicesOf } from './site-re.mjs';
 import { mergeAuto, putMine, nextJobs } from './feature-scan.mjs';
 import { secretsIn } from './secret-scan.mjs';
+import { findPersonal } from '../void-live-deploy/lib/privacy.js';
+const findPersonalIn = (text) => text.split('\n').flatMap((l) => findPersonal(l));
 
 // a made-up photo tool: its marketing page names three features, its bundle holds more
 const BUNDLE = `!function(){var p=new URLSearchParams(location.search);var q=p.get("lang"),z=p.get("zoom");
@@ -178,4 +180,21 @@ test('advertising, tracking and one-page sections are not candidates, at the sca
   assert.ok(!n('Embeds www.youtube-nocookie.com') && !n('Remembers a setting in the browser: fx.theme') && !n('Section /guides/ (2 pages)') && !n('Print layout'));
   const rows = mergeRe(null, { id: 'f' }, 'site.test', { url: 'u', scanned: '2026-10-26', candidates: [{ name: 'Embeds www.google.com', kind: 'embed', tag: 'observed', evidence: 'iframe' }, { name: 'Print layout', kind: 'export', tag: 'read', evidence: 'a.css' }] }).re.sites['site.test'].features;
   assert.deepEqual(rows.map((r) => r.name), ['Print layout']);
+});
+
+// a page full of contact details (placeholders in the shapes real ones take; privacy:ok on the lines that show them)
+const CONTACT_HTML = `<html lang="en"><head><title>Acme Photo</title></head><body>
+<button aria-label="Email: boss@acme-fixture.org">Mail us</button><a href="mailto:press@acme-fixture.org">press@acme-fixture.org</a> <a href="tel:+14155550134">Call 415-555-0134</a>
+<button aria-label="Call us +44 20 7946 0958">Call us +44 20 7946 0958</button><button aria-label="Open files">Open</button><p>Visit 221 Baker Street</p><input type="file" accept=".jpg"></body></html>`; // privacy:ok
+const CONTACT_JS = `var a="https://api.acme-fixture.org/v1/send?to=boss@acme-fixture.org&x=1";fetch("/api/v1/contact");localStorage.getItem("user.sam@acme-fixture.org");a.download="report-415-555-0134.csv";var c="mailto:ceo@acme-fixture.org";`; // privacy:ok
+test('contact details on a rival page never reach the report: emails, phones, mailto/tel links, street addresses, addresses in query strings and file names', () => {
+  const r = reportOf({ ...got(), html: { mobile: CONTACT_HTML, desktop: CONTACT_HTML }, controls: { mobile: ['Email: boss@acme-fixture.org', 'Call 415-555-0134', 'Open'], desktop: ['Open'] }, // privacy:ok
+    assets: [{ url: 'https://fixture-tool.test/app.js', kind: 'js', bytes: 9, text: CONTACT_JS }], requests: ['https://fixture-tool.test/api/v1/send?to=boss@acme-fixture.org&a@b.co=1', 'https://fixture-tool.test/cdn-cgi/challenge-platform/h/b/orchestrate/jsch/v1?ray=9'], // privacy:ok
+    storage: { local: ['user.sam@acme-fixture.org', 'fx.theme'], session: [], idb: [] } }), text = JSON.stringify(r); // privacy:ok
+  assert.ok(!/@acme-fixture|@b\.co|415-555|555-0134|7946|Baker Street|mailto:|tel:|boss|press@/i.test(text), 'no contact detail: ' + text.match(/.{25}(?:@acme-fixture|@b\.co|415-555|555-0134|7946|Baker Street|mailto:|tel:|boss|press@).{15}/i));
+  assert.ok(text.includes('Open files') && r.controls.some((c) => c.l === 'Open'), 'the feature words stay'); assert.ok(r.candidates.some((c) => /Opens files/.test(c.name)) && r.candidates.some((c) => c.name === 'API path /api/v1/contact'));
+  assert.ok(!(r.requests || []).some((q) => /cdn-cgi|@/.test(q)), 'a challenge path and an address in a query are dropped');
+  const rows = mergeRe(null, { id: 'f' }, 'fixture-tool.test', r).re.sites['fixture-tool.test'].features; assert.ok(!/[\w.-]+@[a-z][\w-]*\.|555|Baker/i.test(JSON.stringify(rows)), 'nor in the folded rows');
+  assert.deepEqual(findPersonalIn(text), [], 'the repo\'s own privacy guard finds nothing in the output');
+  for (const [from, to] of [['Email: a@b.org', ''], ['Call 415-555-0134 now', ''], ['visit 221 Baker Street today', 'visit today'], ['mailto:x@y.io', ''], ['Print layout', 'Print layout']]) assert.equal(scrubPersonal(from), to); // privacy:ok
 });

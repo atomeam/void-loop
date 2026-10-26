@@ -75,6 +75,15 @@
 <link rel="canonical" href="https://a-to-mind.com/metronome/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Metronome","url":"https://a-to-mind.com/metronome/","description":"A free online metronome from 20 to 400 BPM: tap tempo, every time signature from 2/4 to 12/8, an accent on each beat you can set strong, medium, soft or silent, subdivisions (eighths, triplets, sixteenths, swing), nine sounds, a voice count, a visual beat and pendulum, a practice timer, a speed trainer, silent bars and setlists. No account, no ads; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"metronome, online metronome, metronome 120 bpm, tap tempo metronome, metronome with accents, metronome 6/8, free metronome no ads","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/metronome/?bpm={bpm}"},"bpm-input":"required name=bpm"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://a-to-mind.com/metronome/"}]}]}</script>
 <!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/metronome/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main id="app">
@@ -121,8 +130,9 @@
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
-  // the page is whole before this runs; the code that makes the sound lands after the load event (the gate measures the load)
-  addEventListener('load', () => { import('/metronome/app.js').catch(() => { const s = document.getElementById('status'); if (s) s.textContent = 'The page code did not load. Check your connection and reload.'; }); });
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/metronome/app.js';
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>

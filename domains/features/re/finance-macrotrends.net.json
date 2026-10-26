@@ -105,13 +105,8 @@
  ],
  "requests": [
   "https://brunhild.challenges.cloudflare.[token].2.1.[token].7Q2k6TJE2jebYa",
-  "https://brunhild.challenges.cloudflare.[token].Dm1GmII81b4TZflRE-1792987667-1.2.1.[token]",
   "https://challenges.cloudflare.[token].3.1.[token].OvfPmyZCh2kNbqKZmqPkH4xrhuU0y.[token].[token].Z1I5NPtB0chWsYAS.[token]",
-  "https://challenges.cloudflare.[token].c58kRJ.[token].3.1.[token].[token].sR.[token].[token]..CJ07dZJ9.[token].1cb3mEIq3_",
-  "https://challenges.cloudflare.[token]:1792984234:[token].2.1.[token].7Q2k6TJE2jebYa",
-  "https://challenges.cloudflare.[token]:1792984234:[token].Dm1GmII81b4TZflRE-1792987667-1.2.1.[token]",
-  "https://www.macrotrends.[token]:1792984231:[token].2.1.1-yoyMtDXy8e0pJuKe..[token]",
-  "https://www.macrotrends.[token]:1792984231:[token].2.1.[token].Zg9EnY5dYUtU64KG0JZv"
+  "https://challenges.cloudflare.[token].c58kRJ.[token].3.1.[token].[token].sR.[token].[token]..CJ07dZJ9.[token].1cb3mEIq3_"
  ],
  "storage": {
   "local": [],

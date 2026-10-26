@@ -75,6 +75,15 @@
 <link rel="canonical" href="https://a-to-mind.com/piano/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Piano","url":"https://a-to-mind.com/piano/","description":"A free online piano you play with the computer keyboard, the mouse, a touch screen or a MIDI keyboard: twelve instruments, a sustain pedal on the space bar, the computer key shown on each note, reverb, transpose, sheet music in plain letters with public-domain songs, and recording that turns your playing into a sheet. Made in your browser; no account, nothing to download.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"online piano, virtual piano, piano keyboard online, play piano with computer keyboard, piano sheets letters, piano with sustain pedal, midi keyboard online piano","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/piano/?song={song}"},"song-input":"required name=song"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Piano","item":"https://a-to-mind.com/piano/"}]}]}</script>
 <!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/piano/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main id="app">
@@ -109,8 +118,9 @@
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
-  // the page is whole before this runs; the code that makes the sound lands after the load event (the gate measures the load)
-  addEventListener('load', () => { import('/piano/app.js').catch(() => { const s = document.getElementById('status'); if (s) s.textContent = 'The page code did not load. Check your connection and reload.'; }); });
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/piano/app.js';
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>

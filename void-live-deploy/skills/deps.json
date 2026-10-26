@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 873,
+ "counted": 881,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -280,6 +280,13 @@
    "skills": 7,
    "direct": 0,
    "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/tool-sites.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -623,7 +630,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 13
+   "tests": 14
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1631,7 +1638,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/report.js",
@@ -1687,7 +1694,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 20,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/near-miss.js",
@@ -1928,6 +1935,13 @@
    "tests": 1
   },
   {
+   "file": "lib/free-pics.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
@@ -1940,6 +1954,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/kanban.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/lap.js",
@@ -1961,6 +1982,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 0
+  },
+  {
+   "file": "lib/pdf-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/podcasts.js",
@@ -2180,6 +2208,13 @@
    "tests": 1
   },
   {
+   "file": "lib/kanban-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/kitchen.js",
    "skills": 0,
    "direct": 0,
@@ -2230,6 +2265,13 @@
   },
   {
    "file": "lib/password.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/pdf-ui.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2543,7 +2585,9 @@
     "functions/api/card-art.js",
     "functions/api/image.js",
     "lib/daily-art.js",
-    "lib/daily-photo.js"
+    "lib/daily-photo.js",
+    "lib/free-pics.js",
+    "lib/daily-cap.js"
    ],
    "importedBy": []
   },
@@ -3936,7 +3980,8 @@
     "lib/card-subject.js",
     "lib/card-look.js",
     "lib/art-source.js",
-    "lib/card-sections.js"
+    "lib/card-sections.js",
+    "lib/tool-sites.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -4438,12 +4483,12 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/daily-art.js",
     "functions/api/report.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
-    "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/markets.js",
@@ -4907,6 +4952,12 @@
     "skills/forge.js"
    ]
   },
+  "lib/free-pics.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/daily-art.js"
+   ]
+  },
   "lib/fuzzy.js": {
    "imports": [],
    "importedBy": []
@@ -5265,6 +5316,21 @@
    ],
    "importedBy": [
     "functions/api/queue.js"
+   ]
+  },
+  "lib/kanban-ui.js": {
+   "imports": [
+    "lib/kanban.js"
+   ],
+   "external": [
+    ", share: "
+   ],
+   "importedBy": []
+  },
+  "lib/kanban.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/kanban-ui.js"
    ]
   },
   "lib/keep-going.js": {
@@ -6303,6 +6369,18 @@
     "skills/pdf-card.js"
    ]
   },
+  "lib/pdf-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/pdf-ui.js"
+   ]
+  },
+  "lib/pdf-ui.js": {
+   "imports": [
+    "lib/pdf-tools.js"
+   ],
+   "importedBy": []
+  },
   "lib/persona.js": {
    "imports": [],
    "importedBy": [
@@ -7179,7 +7257,9 @@
    ]
   },
   "lib/seo.js": {
-   "imports": [],
+   "imports": [
+    "lib/tool-sites.js"
+   ],
    "importedBy": []
   },
   "lib/service-health.js": {
@@ -8142,8 +8222,31 @@
     "skills/own-parts.js"
    ]
   },
-  "lib/toolkit.js": {
+  "lib/tool-sites.js": {
    "imports": [],
+   "external": [
+    ", "
+   ],
+   "importedBy": [
+    "lib/card-frame.js",
+    "lib/seo.js",
+    "lib/toolkit.js",
+    "skills/kanban-board.js",
+    "skills/pdf-tools.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/toolkit.js": {
+   "imports": [
+    "lib/tool-sites.js"
+   ],
    "importedBy": [
     "skills/toolkit.js"
    ]
@@ -9877,6 +9980,12 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/kanban-board.js": {
+   "imports": [
+    "lib/tool-sites.js"
+   ],
+   "importedBy": []
+  },
   "skills/kept.js": {
    "imports": [
     "skills/notepad.js",
@@ -10723,6 +10832,12 @@
   "skills/pdf-card.js": {
    "imports": [
     "lib/pdf-qa.js"
+   ],
+   "importedBy": []
+  },
+  "skills/pdf-tools.js": {
+   "imports": [
+    "lib/tool-sites.js"
    ],
    "importedBy": []
   },

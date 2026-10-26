@@ -44,7 +44,7 @@ export function rules() {
     const h = inlineHashes(readFileSync(f, 'utf8')); if (!h.length) continue;
     for (const p of pathsOf(relative(root, f))) per.push({ p, h: h.join(' ') });
   }
-  const dirOf = (p) => (p.match(/^\/([^/]+)\/./) || [])[1];
+  const dirOf = (p) => (p.match(/^\/([^/]+)\/./) || p.match(/^\/([^/]+)\/$/) || [])[1]; // a directory's own index counts in it: /x/* covers /x/, so a page there with other scripts must stop the sharing
   const allPages = pages().flatMap((f) => pathsOf(relative(root, f)));
   const sets = new Map(); // directory -> the distinct inline-script sets of every page under it ('' = none)
   for (const p of allPages) { const d = dirOf(p); if (!d) continue; const e = per.find((x) => x.p === p); (sets.get(d) || sets.set(d, new Set()).get(d)).add(e ? e.h : ''); }

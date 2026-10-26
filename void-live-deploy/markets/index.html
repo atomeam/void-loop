@@ -10,7 +10,11 @@
 <meta property="og:title" content="Markets · Verse">
 <meta property="og:description" content="Quotes and charts for stocks, ETFs, indices, currencies and crypto, a watchlist on your device, compare two symbols. No ads, no account.">
 <meta property="og:url" content="https://a-to-mind.com/markets/">
-<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta property="og:image" content="https://a-to-mind.com/og/markets.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Verse Markets: a price chart and the words Stocks, ETFs, indices, currencies and crypto">
+<meta name="twitter:image" content="https://a-to-mind.com/og/markets.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/markets/ (Versus' Yahoo Finance floor): one file and lib/markets.js; the only thing kept on the device is the watchlist and the last quote */
@@ -120,7 +124,7 @@
     <p class="note" id="note" role="status"></p>
     <div class="row">
       <button type="button" id="watch" aria-pressed="false">Add to watchlist</button>
-      <button type="button" id="share">Copy link</button>
+      <button type="button" id="share">Share link</button>
       <a class="lnk" id="cvt" href="/convert/">Convert currency</a>
     </div>
     <div class="row">
@@ -160,6 +164,22 @@
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 
+<script>
+  // the first paint of a quote link that the bundled record can answer (lib/markets-record.js, mirrored here; tools/markets.test.mjs checks they agree): the symbol, its kind and the
+  // close on the day are in the text at once, before the module and the price sources have been asked. Anything else waits for the module.
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search), s = (q.get('s') || '').toUpperCase().trim(), on = q.get('on') || '', $ = function (i) { return document.getElementById(i); };
+      var R = { SPX: ['S&P 500', { '2023-12-29': 4769.83, '2024-12-31': 5881.63 }], DJI: ['Dow Jones Industrial Average', { '2023-12-29': 37689.54, '2024-12-31': 42544.22 }] };
+      if (!/^[A-Z][A-Z0-9.\-]{0,5}$/.test(s)) return;
+      $('qn').textContent = R[s] ? R[s][0] : s; if (R[s]) $('qs').textContent = s + ' · Index';
+      if (R[s] && /^\d{4}-\d{2}-\d{2}$/.test(on) && R[s][1][on] != null) {
+        var m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], d = on.split('-');
+        $('on').value = on; $('onOut').textContent = 'Close on ' + (+d[2]) + ' ' + m[+d[1] - 1] + ' ' + d[0] + ': ' + R[s][1][on].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    } catch (e) {}
+  })();
+</script>
 <script type="module">
   // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
@@ -193,11 +213,11 @@
       if (j.ok) { state.q = j; store.last = j.sym; store.q[j.sym] = { price: j.price, pct: j.pct, change: j.change, name: j.name, currency: j.currency, t: Date.now(), full: j }; for (const k of Object.keys(store.q)) if (k !== j.sym) delete store.q[k].full; keep(); draw(); if (state.cmp) loadCmp(); return; }
       const saved = store.q[sym] && store.q[sym].full;
       if (saved && j.kind === 'offline') { state.q = { ...saved, offline: true, saved: store.q[sym].t }; state.range = saved.range; for (const b of $('ranges').children) b.setAttribute('aria-pressed', String(b.dataset.r === saved.range)); draw(); return; }
-      state.q = null; $('qn').textContent = sym; $('qs').textContent = ''; $('qp').textContent = '–'; $('qm').textContent = ''; $('qm').className = ''; $('qa').textContent = '';
+      state.q = null; { const r0 = M.resolve(sym); $('qn').textContent = (r0 && r0.name) || sym; $('qs').textContent = sym + (r0 ? ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[r0.kind] || '') : ''); } $('qp').textContent = '–'; $('qm').textContent = ''; $('qm').className = ''; $('qa').textContent = '';
       for (const id of ['sPrev', 'sOpen', 'sDay', 's52', 'sVol', 'sCap']) $(id).textContent = '–';
       $('line').setAttribute('d', ''); $('area').setAttribute('d', ''); $('line2').setAttribute('d', ''); $('chNone').hidden = false;
-      $('chNone').textContent = j.kind === 'offline' ? 'You are offline, and no price for ' + sym + ' is saved on this device yet.' : j.say || 'No price just now.';
-      say('note', j.kind === 'offline' ? '' : j.say || '', true); setWatch();
+      const gone = 'Could not load ' + sym + ' right now, try again in a minute.', msg = j.kind === 'offline' ? 'You are offline, and no price for ' + sym + ' is saved on this device yet.' : j.kind === 'none' || j.kind === 'bad' ? j.say || gone : gone;
+      $('chNone').textContent = msg; say('note', msg, true); setWatch();
     }
     function draw() {
       if (!$('rep').hidden && rep.kind === 'why') report();
@@ -284,7 +304,7 @@
     $('wlKeep').addEventListener('click', () => { store.list = M.cleanList(store.list.concat(shared)); keep(); location.href = '/markets/?s=' + encodeURIComponent(state.sym); });
     const copy = async (b, text) => { const w = b.textContent; try { await navigator.clipboard.writeText(text); b.textContent = 'Copied'; } catch (_) { b.textContent = 'Select the address bar'; } setTimeout(() => { b.textContent = w; }, 1200); };
     $('wlShare').addEventListener('click', () => copy($('wlShare'), location.origin + '/markets/?w=' + encodeURIComponent(list().join(','))));
-    $('share').addEventListener('click', () => copy($('share'), location.origin + '/markets/?s=' + encodeURIComponent(state.sym) + '&r=' + state.range + (state.on ? '&on=' + state.on : '')));
+    $('share').addEventListener('click', async () => { const url = location.origin + '/markets/?s=' + encodeURIComponent(state.sym) + '&r=' + state.range + (state.on ? '&on=' + state.on : ''); if (navigator.share) { try { await navigator.share({ title: (state.q && state.q.name || state.sym) + ' · Markets · Verse', url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } copy($('share'), url); });
     if (shared) { $('wlH').textContent = 'Shared watchlist'; }
 
     // ---- the strip and the movers

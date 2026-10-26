@@ -22,6 +22,7 @@ import { probeFor, featureSlug } from './tower-probes.mjs';
 import { siteOf, UA } from './tower-gate.mjs';
 import { robotsAllows } from './feature-scan.mjs';
 import { secretsIn } from './secret-scan.mjs';
+import { redactPersonal } from '../void-live-deploy/lib/privacy.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FEATURES = path.join(root, 'domains', 'features'), RE_DIR = path.join(FEATURES, 're');
@@ -30,15 +31,27 @@ export const ROW_NOTE = 'unbuilt (found by reverse engineering)';
 const today = () => new Date().toISOString().slice(0, 10);
 
 // ---- small pure helpers ----
-/** a short, safe string: whitespace folded, long token-like runs replaced, cut to n characters */
-export const clip = (s, n = 60) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().replace(/[A-Za-z0-9_+/=-]{32,}/g, '[token]').slice(0, n);
+/** personal data taken out of a string (owner's rule: no contact detail is ever stored): mailto:, tel: and sms: links, emails, phone numbers, IPs, card-like
+ *  numbers, street addresses, contact lines ("Email: ...", "Call us ..."), and any query value shaped like an address. What is left is the feature's words. */
+export function scrubPersonal(s) {
+  let t = String(s == null ? '' : s).replace(/\b(?:mailto|tel|sms|callto|whatsapp):[^\s"'<>]*/gi, '').replace(/\b\d{1,5}\s+(?:[A-Z][\w.'-]*\s+){1,3}(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr|Way|Court|Ct|Place|Pl|Strasse|Straße|Str)\b\.?/g, '')
+    .replace(/\b(?:p\.?o\.? box|postfach)\s*\d+/gi, '');
+  const before = t; t = t.replace(/\+?\(?\d[\d\s().-]{6,}\d/g, (m) => (m.replace(/\D/g, '').length >= 7 ? '' : m)); // a phone number in any grouping
+  const wasPhone = t !== before;
+  t = redactPersonal(t).replace(/\[(?:email|phone|ip|number|redacted)\]/g, '');
+  if (wasPhone && /^\s*(?:call|phone|tel|telephone|text|whatsapp|contact|reach|dial)\b[\w\s]{0,12}$/i.test(t)) return '';
+  if (/^\s*(?:e-?mail|mail|phone|tel|telephone|call(?: us)?|contact(?: us)?|fax|address|attn|whatsapp)\s*[:\-]/i.test(t)) return '';
+  return t.replace(/\s+/g, ' ').trim();
+}
+/** a short, safe string: personal data removed, whitespace folded, long token-like runs replaced, cut to n characters */
+export const clip = (s, n = 60) => scrubPersonal(s).replace(/[A-Za-z0-9_+/=-]{32,}/g, '[token]').slice(0, n);
 /** the file name of an asset url: host kept only when it is not the page's own, no query, cut */
 export function fileOf(u, own) {
   try { const x = new URL(u), name = decodeURIComponent(x.pathname.split('/').filter(Boolean).pop() || x.pathname || '/'); return clip((own && x.hostname === own ? '' : x.hostname + '/') + name, 70); } catch (_) { return clip(u, 70); }
 }
 /** a request url as facts: origin + path + the names of its query parameters, never their values */
 export function bareUrl(u) {
-  try { const x = new URL(u), keys = [...new Set([...x.searchParams.keys()])].sort().slice(0, 8); return clip(x.origin + x.pathname + (keys.length ? '?' + keys.join('&') : ''), 120); } catch (_) { return ''; }
+  try { const x = new URL(u); if (/\/cdn-cgi\/|@/.test(x.pathname + x.search) || /\d{8,}/.test(x.pathname)) return ''; const keys = [...new Set([...x.searchParams.keys()])].filter((k) => !/@/.test(k)).sort().slice(0, 8); return clip(x.origin + x.pathname + (keys.length ? '?' + keys.join('&') : ''), 120); } catch (_) { return ''; }
 }
 function hits(re, text, limit = 40) { const out = []; re.lastIndex = 0; let m; while ((m = re.exec(text)) && out.length < limit) { out.push({ m, at: m.index }); if (m[0] === '') re.lastIndex++; } return out; }
 const uniq = (a) => [...new Set(a)];

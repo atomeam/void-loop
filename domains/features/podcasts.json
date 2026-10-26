@@ -1049,7 +1049,7 @@
       "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"instagram\""
      },
      {
-      "name": "contact@castbox.fm",
+      "name": "[email]",
       "detail": "a list item on /",
       "paid": false,
       "verse": "missing",
@@ -1368,7 +1368,7 @@
     ]
    },
    {
-    "name": "contact@castbox.fm",
+    "name": "[email]",
     "sites": [
      "castbox.fm"
     ]

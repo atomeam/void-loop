@@ -1081,35 +1081,35 @@
       "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"follow\", \"sport\", \"schedule\""
      },
      {
-      "name": "For partnerships and business development info: Partners@365scores.com",
+      "name": "For partnerships and business development info: [email]",
       "detail": "a list item on /pages/about",
       "paid": false,
       "verse": "missing",
       "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"partnership\", \"busi\", \"development\", \"info\""
      },
      {
-      "name": "Want to advertise on our app? Advertisers@365scores.com",
+      "name": "Want to advertise on our app? [email]",
       "detail": "a list item on /pages/about",
       "paid": false,
       "verse": "missing",
       "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"want\", \"advertise\", \"our\", \"advertiser\""
      },
      {
-      "name": "For general inquiries and just to say \"howdy\": Info@365scores.com",
+      "name": "For general inquiries and just to say \"howdy\": [email]",
       "detail": "a list item on /pages/about",
       "paid": false,
       "verse": "missing",
       "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"general\", \"inquiry\", \"just\", \"say\""
      },
      {
-      "name": "Care to write something nice about us? Press@365scores.com",
+      "name": "Care to write something nice about us? [email]",
       "detail": "a list item on /pages/about",
       "paid": false,
       "verse": "missing",
       "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"care\", \"write\", \"someth\", \"nice\""
      },
      {
-      "name": "Complaints? Not a problem. Let us know at Abuse@365scores.com",
+      "name": "Complaints? Not a problem. Let us know at [email]",
       "detail": "a list item on /pages/about",
       "paid": false,
       "verse": "partial",
@@ -2521,25 +2521,25 @@
     ]
    },
    {
-    "name": "For partnerships and business development info: Partners@365scores.com",
+    "name": "For partnerships and business development info: [email]",
     "sites": [
      "365scores.com"
     ]
    },
    {
-    "name": "Want to advertise on our app? Advertisers@365scores.com",
+    "name": "Want to advertise on our app? [email]",
     "sites": [
      "365scores.com"
     ]
    },
    {
-    "name": "For general inquiries and just to say \"howdy\": Info@365scores.com",
+    "name": "For general inquiries and just to say \"howdy\": [email]",
     "sites": [
      "365scores.com"
     ]
    },
    {
-    "name": "Care to write something nice about us? Press@365scores.com",
+    "name": "Care to write something nice about us? [email]",
     "sites": [
      "365scores.com"
     ]

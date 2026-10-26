@@ -491,88 +491,92 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T04:05:22Z",
-   "subject": "Site reverse engineering: ad frames, ad and analytics storage keys and one-page sections are not candidates; the first six scans re-folded"
+   "at": "2026-10-26T04:46:29Z",
+   "subject": "Site reverse engineering: no contact detail is ever stored (emails, phones, tel and mailto links, street addresses, contact lines…"
   },
   {
-   "at": "2026-10-26T04:04:33Z",
-   "subject": "Site reverse engineering: kanban-wekan.fi,pdf-10015.io,photos-exif.tools,photos-exifeditor.io,photos-squoosh.app,sports-thesportsdb.com…"
+   "at": "2026-10-26T04:45:44Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: smallpdf.com,pdf measured against their live sites"
   },
   {
-   "at": "2026-10-26T04:03:57Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos,pdf: codeshack.io measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:03:19Z",
+   "at": "2026-10-26T04:44:51Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T04:03:03Z",
-   "subject": "Site reverse engineering: every tower site's client code read once for hidden features (URL parameters, shortcuts, API paths, flags…"
+   "at": "2026-10-26T04:44:36Z",
+   "subject": "Free pictures: first probe results in docs/free-pictures.md"
   },
   {
-   "at": "2026-10-26T04:02:47Z",
-   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance: finviz.com,finance: investing.com,finance measured against…"
+   "at": "2026-10-26T04:44:23Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T04:02:30Z",
-   "subject": "photos e2e: give the WebP re-encode longer on a busy machine"
+   "at": "2026-10-26T04:44:02Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T04:02:23Z",
-   "subject": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\""
+   "at": "2026-10-26T04:43:55Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T04:02:15Z",
-   "subject": "Tower gate: photos: exifeditor.io,finance: companiesmarketcap.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
+   "at": "2026-10-26T04:43:45Z",
+   "subject": "Free pictures: a 403 from loc.gov rests the source; the probe asks loc.gov once (explore only by hand)"
   },
   {
-   "at": "2026-10-26T04:01:46Z",
-   "subject": "Photos: the compress and convert result (formats, quality, size before and after, resize, compare) stays under every tab of every page, a…"
+   "at": "2026-10-26T04:43:23Z",
+   "subject": "Free pictures probe: what each source answered"
   },
   {
-   "at": "2026-10-26T04:00:33Z",
-   "subject": "Tower gate: photos: squoosh.app,photos: photopea.com,photos: iloveimg.com measured against their live sites"
+   "at": "2026-10-26T04:43:07Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
   },
   {
-   "at": "2026-10-26T03:59:30Z",
-   "subject": "Music floor: seo rows take a setting in the link (?bpm=, ?song=, ?tun=), the hub has no asks row"
+   "at": "2026-10-26T04:42:29Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T03:57:07Z",
-   "subject": "Sports page: what it has said in plain text before its code runs (browse, search across Teams, Events, Venues and Players, on this device…"
+   "at": "2026-10-26T04:42:15Z",
+   "subject": "Free pictures: loc.gov ids come as http, image addresses carry size fragments; probe records rights fields"
   },
   {
-   "at": "2026-10-26T03:53:20Z",
-   "subject": "Photos features: drop a contact address the scan read off exifeditor.io (privacy scan)"
+   "at": "2026-10-26T04:41:22Z",
+   "subject": "Free pictures probe: what each source answered"
   },
   {
-   "at": "2026-10-26T03:52:26Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
+   "at": "2026-10-26T04:41:21Z",
+   "subject": "toolkit test: a page's code may also be a plain module import in its head (the music pages)"
   },
   {
-   "at": "2026-10-26T03:50:51Z",
-   "subject": "Tower gate: photos: exifeditor.io,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
+   "at": "2026-10-26T04:41:09Z",
+   "subject": "Music pages open offline: each registers /sw.js after load and preloads its modules, so the worker keeps the page and its code on the…"
   },
   {
-   "at": "2026-10-26T03:48:02Z",
-   "subject": "sw: keep the markets caps and screener pages offline after their first visit"
+   "at": "2026-10-26T04:40:54Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: 10015.io,pdf: pdfcandy.com measured against their live sites"
   },
   {
-   "at": "2026-10-26T03:47:48Z",
-   "subject": "Markets: crypto market-cap page, small-universe screener, the daily illustration on the wrap, a year-end record kept to confirmed figures"
+   "at": "2026-10-26T04:40:24Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T03:47:41Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+   "at": "2026-10-26T04:40:07Z",
+   "subject": "Free pictures probe: explore loc.gov answer shapes"
   },
   {
-   "at": "2026-10-26T03:45:24Z",
+   "at": "2026-10-26T04:39:44Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:39:05Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (pdf and kanban floors, 2026-10-26)",
+    "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
+   },
    {
     "name": "Claude (perchance session)",
     "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
@@ -592,13 +596,13 @@
    {
     "name": "Claude (tower session, 2026-10-25, 07:05)",
     "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 06:55)",
-    "line": "the translate floor: built a /translate/ page (gtx and MyMemory, 99 languages, speech in and out, a vendored on-device reader for photos) in the same hour the main session shipped its own (7c04317: Workers AI, /api/translate, the lane and…"
    }
   ],
   "ladders": [
+   {
+    "name": "A page for every lane site from one table (Claude, 2026-10-26)",
+    "line": "add a row to lib/tool-sites.js (path, card ask, tools or features, asks), add the lane site to LANE_PAGES in lib/tower.js, run node tools/tool-site-pages.mjs && node tools/seo-pages.mjs && node tools/preload.mjs && node tools/sitemap.mjs…"
+   },
    {
     "name": "Parallel builders, one ship (Claude, 2026-10-15)",
     "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node…"
@@ -618,10 +622,6 @@
    {
     "name": "Test the live site like a person",
     "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
-   },
-   {
-    "name": "Ask Verse your own question",
-    "line": "node tools/ask-void.mjs --ask \"…\" logs its answer word for word like the builders' question."
    }
   ],
   "lessons": [

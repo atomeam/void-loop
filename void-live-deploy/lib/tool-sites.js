@@ -1,0 +1,88 @@
+/**
+ * tool-sites: the pages of the PDF and Kanban floors of Versus, one table (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page
+ * and beat them", docs/RULES.md). The floor's leader has /pdf/ and /kanban/; each site of its lane has a page of its own, built to have every feature that
+ * site has and measured against it by the gate (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/toolkit.js (TOOLS,
+ * RELATED) and lib/seo.js (PAGES) read the same rows, so a page is added in one place. Verse's pages name no other site; the table does, in plain text,
+ * only here as `lane`. Pure data.
+ */
+const ALL_PDF = ['merge', 'split', 'pages', 'extract', 'rotate', 'compress', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'];
+export const PDF_SITES = Object.freeze([
+  { path: '/pdf/', card: 'pdf tools', lane: 'pdf', name: 'PDF tools', h1: 'PDF tools', tools: ALL_PDF,
+    intro: 'Merge, split, reorder, rotate and delete pages, compress, turn pictures into a PDF and pages into pictures, number, stamp and crop a PDF. Everything runs on this device: your files are never uploaded, there is no account, and the tools work offline after one visit.',
+    does: 'Merge, split, reorder, rotate and delete the pages of PDFs, compress them, turn images into a PDF and pages into images, add page numbers and a watermark, and crop. Runs on your device: nothing is uploaded, no account, works offline.',
+    asks: ['merge pdf', 'split pdf', 'compress pdf', 'jpg to pdf', 'pdf to jpg', 'rotate pdf', 'delete pdf pages', 'reorder pdf pages'],
+    links: [['Merge PDFs', '/pdf/?tool=merge'], ['Split a PDF', '/pdf/?tool=split'], ['Compress a PDF', '/pdf/?tool=compress'], ['Images to PDF', '/pdf/?tool=img2pdf'], ['PDF to images', '/pdf/?tool=pdf2img'], ['Reorder pages', '/pdf/?tool=pages']] },
+  { path: '/pdf/merge/', card: 'merge pdf', lane: 'pdf: codeshack.io', name: 'Merge PDF files', h1: 'Merge PDF files', tools: ['merge'],
+    intro: 'Choose two or more PDFs, set their order with the arrows, keep only some pages of a file if you like, and save one PDF. Joined on this device: nothing is uploaded and nothing is stored.',
+    does: 'Join two or more PDF files into one, in the order you set, keeping only the pages you choose from each. Done on your device: nothing is uploaded, no account.',
+    asks: ['merge pdf', 'combine pdf files', 'join pdfs', 'merge pdf without uploading', 'merge pdf online free'], links: [] },
+  { path: '/pdf/organize/', card: 'reorder pdf pages', lane: 'pdf: 10015.io', name: 'Organize PDF pages', h1: 'Organize PDF pages', tools: ['pages', 'merge'],
+    intro: 'Open one or several PDFs as pages: drag them into a new order, turn or delete any page, mix pages from different files, then save one PDF. Done on this device; nothing is uploaded.',
+    does: 'Open PDFs as page thumbnails, reorder them by dragging or with the keyboard, rotate or delete pages, combine pages from several files and save one PDF. Done on your device: nothing is uploaded.',
+    asks: ['reorder pdf pages', 'organize pdf', 'rearrange pdf pages', 'delete pdf pages', 'merge and reorder pdf'], links: [] },
+  { path: '/pdf/toolbox/', card: 'free pdf tools', lane: 'pdf: pdfcandy.com', name: 'PDF toolbox', h1: 'PDF toolbox', tools: ['merge', 'split', 'extract', 'rotate', 'compress', 'img2pdf', 'pdf2img', 'watermark', 'numbers', 'crop', 'info', 'pages'],
+    intro: 'A box of PDF tools in one row: merge, split, extract or delete pages, rotate, compress, pictures to PDF and back, watermark, page numbers, crop and document info. No limit on tasks or pages beyond your device\'s memory, no account, and the files never leave this device.',
+    does: 'A PDF toolbox: merge, split, extract and delete pages, rotate, compress, images to PDF and PDF to images, watermark, page numbers, crop and document info. No task limits, no account, nothing uploaded.',
+    asks: ['pdf tools', 'free pdf tools', 'pdf toolbox online', 'watermark pdf', 'add page numbers to pdf', 'pdf tools without limits'], links: [] },
+  { path: '/pdf/editor/', card: 'rotate a pdf', lane: 'pdf: sejda.com', name: 'PDF page editor', h1: 'PDF page editor', tools: ['pages', 'merge', 'split', 'extract', 'rotate', 'crop', 'numbers', 'watermark', 'compress', 'img2pdf', 'pdf2img', 'info'],
+    intro: 'Edit a PDF page by page: see every page, move, turn and delete them, crop margins, number and stamp them, edit the title and author, merge and split. No 200-page or three-tasks-a-day limit, no account, and nothing leaves this device.',
+    does: 'Edit PDFs by page: thumbnails you reorder, rotate and delete, crop, page numbers, watermark, document info, merge, split and compress. No page or task limits, no account, nothing uploaded.',
+    asks: ['pdf page editor', 'edit pdf pages online', 'crop pdf', 'edit pdf title and author', 'pdf editor no limits', 'rearrange pdf pages'], links: [] },
+  { path: '/pdf/suite/', card: 'online pdf tools', lane: 'pdf: tools.pdf24.org', name: 'PDF tools that work offline', h1: 'PDF tools that work offline', tools: ['merge', 'split', 'pages', 'extract', 'rotate', 'compress', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'],
+    intro: 'The whole set of PDF tools on your device, with no server in the middle: open this page once and it keeps working with the network cut. Merge, split, move and delete pages, rotate, compress, pictures to PDF and back, number, stamp, crop. No account, no upload.',
+    does: 'Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.',
+    asks: ['pdf tools offline', 'offline pdf merge', 'pdf tools no upload', 'private pdf tools', 'pdf tools no account'], links: [] },
+  { path: '/pdf/studio/', card: 'compress pdf', lane: 'pdf: smallpdf.com', name: 'PDF studio', h1: 'PDF studio', tools: ['compress', 'merge', 'split', 'pages', 'rotate', 'extract', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'],
+    intro: 'Make a PDF smaller, join it, split it and tidy its pages in a few clicks. Compress with a strength you choose, convert pictures to PDF and PDF pages to pictures, rotate, number, stamp and crop. Every file stays on this device.',
+    does: 'Compress, merge, split, rotate and tidy PDFs, convert images to PDF and PDF to images, number pages, add a watermark and crop. Your files stay on your device: no upload, no account, no daily limit.',
+    asks: ['pdf compressor', 'reduce pdf size', 'pdf to image', 'image to pdf', 'convert jpg to pdf', 'pdf size reducer'], links: [] },
+]);
+
+const KB_ALL = { boards: 1, wip: 1, lanes: 1, labels: 1, due: 1, checklist: 1, comments: 1, assignee: 1, archive: 1, filter: 1, trello: 1, timer: 1, recur: 1, print: 1, csv: 1, share: 1, colour: 1, templates: 1 };
+export const KANBAN_SITES = Object.freeze([
+  { path: '/kanban/', card: 'kanban board', lane: 'kanban', name: 'Kanban board', h1: 'Kanban board', features: KB_ALL,
+    intro: 'Boards with columns and cards you drag (or move with the keyboard), labels, due dates, checklists, comments, WIP limits, swimlanes, a timer, repeats, archive, search and filter. Export and import JSON, bring a Trello board in, print. Kept on this device, no account, works offline.',
+    does: 'Kanban boards on your device: columns, cards, drag and drop or keyboard moves, labels, due dates, checklists, comments, WIP limits, swimlanes, a card timer, repeating cards, archive, search, export and import JSON (Trello too), print. No account, works offline, English and German.',
+    asks: ['kanban board', 'free kanban board', 'kanban board online', 'kanban board no sign up', 'kanban board with checklists and due dates', 'trello alternative no account', 'kanban board offline'],
+    links: [] },
+  { path: '/kanban/simple/', card: 'kanban board', lane: 'kanban: jasperbernaers.com', name: 'Simple kanban board', h1: 'Simple kanban board', features: { filter: 1, due: 1, labels: 1, checklist: 1, archive: 1, csv: 1 },
+    intro: 'One board: columns you name, cards you drag or move with the keyboard, saved as you go. Export and import it as JSON. Kept on this device, no account.',
+    does: 'One simple kanban board on your device: columns, cards, drag and drop or keyboard moves, saved automatically, export and import as JSON. No account, works offline.',
+    asks: ['simple kanban board', 'kanban board html', 'kanban board json export', 'kanban board local storage', 'kanban board no account'], links: [] },
+  { path: '/kanban/quick/', card: 'kanban board', lane: 'kanban: abacktools.com', name: 'Quick kanban board', h1: 'Quick kanban board', features: { filter: 1, due: 1, labels: 1, archive: 1 },
+    intro: 'Add a column, add a card, drag it along. Saved in this browser as you go, no sign-up, no limits.',
+    does: 'A quick kanban board in the browser: add columns and cards, drag them along or move with the keyboard, saved automatically. No sign-up, no limits, works offline.',
+    asks: ['quick kanban board', 'kanban board no sign up', 'kanban board free no limits', 'online kanban tool', 'personal kanban board'], links: [] },
+  { path: '/kanban/teams/', card: 'kanban board', lane: 'kanban: wekan.fi', name: 'Kanban board with WIP limits and swimlanes', h1: 'Kanban with WIP limits and swimlanes', features: { boards: 1, wip: 1, lanes: 1, labels: 1, due: 1, checklist: 1, comments: 1, assignee: 1, archive: 1, filter: 1, trello: 1, csv: 1, share: 1, templates: 1, colour: 1 },
+    intro: 'Several boards, work-in-progress limits that warn when a column is full, swimlanes by label or person, labels, due dates, checklists, comments, assignees, an archive and filters. Bring in a Trello export; share a board as a link. No server, no account.',
+    does: 'Kanban boards with WIP limits, swimlanes by label or person, labels, due dates, checklists, comments, assignees, archive, filters, Trello import, export, and a share link. Kept on your device: no server, no account.',
+    asks: ['kanban board with wip limits', 'kanban swimlanes', 'open source kanban alternative', 'import trello board', 'kanban board with comments and assignees', 'self hosted kanban alternative no server'], links: [] },
+  { path: '/kanban/flow/', card: 'kanban board', lane: 'kanban: kanbanflow.com', name: 'Personal kanban with a timer', h1: 'Personal kanban with a timer', features: { boards: 1, wip: 1, lanes: 1, labels: 1, due: 1, checklist: 1, archive: 1, filter: 1, timer: 1, recur: 1, print: 1, colour: 1, csv: 1, templates: 1 },
+    intro: 'A kanban board that keeps the time you spend: start a timer or a Pomodoro on a card, see the total on it, repeat cards daily, weekly or monthly, limit work in progress, group by label, colour cards, print the board. Kept on this device, no account.',
+    does: 'A personal kanban board with a card timer and Pomodoro, repeating cards, WIP limits, swimlanes, subtask checklists, colours, filters and print. Kept on your device: no account, works offline.',
+    asks: ['kanban board with timer', 'kanban pomodoro', 'personal kanban', 'kanban recurring tasks', 'kanban board with wip limit', 'kanban board print'], links: [] },
+]);
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES]);
+
+// ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
+const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;
+export const PDF_ASK = new RegExp('^(?:please\\s+)?(?:'
+  + String.raw`(?:merge|combine|join|unite)\s+` + THE + String.raw`(?:${T}\s+(?:files|documents)|${T}|files\s+into\s+(?:one\s+)?${T})(?:\s+(?:together|into\s+one|into\s+one\s+pdf|online|for\s+free|free))*`
+  + String.raw`|(?:split|cut|divide|separate)\s+(?:up\s+)?` + THE + String.raw`${T}(?:\s+(?:file|into\s+pages|by\s+pages))?`
+  + String.raw`|(?:compress|shrink|reduce|optimi[sz]e)\s+(?:the\s+size\s+of\s+)?` + THE + String.raw`${T}(?:\s+(?:file|size))?|(?:make\s+)?${T}\s+(?:smaller|compressor|size\s+reducer)|reduce\s+${T}\s+size`
+  + String.raw`|(?:jpe?g|png|webp|images?|photos?|pictures?)\s+to\s+${T}|${T}\s+to\s+(?:jpe?g|png|images?|pictures?)`
+  + String.raw`|(?:rotate|reorder|rearrange|crop|watermark|organi[sz]e|number|edit\s+the\s+pages\s+of)\s+` + THE + String.raw`${T}(?:\s+pages)?|(?:add\s+page\s+numbers\s+to|delete\s+pages\s+(?:from|of|in)|remove\s+pages\s+from|extract\s+pages\s+from)\s+` + THE + String.raw`${T}`
+  + String.raw`|(?:free\s+)?${T}\s+(?:tools?|merger|splitter|editor|toolbox|page\s+editor)|(?:free\s+)?online\s+${T}\s+tools?`
+  + ')(?:\\s+please)?$', 'i');
+/** which tool of /pdf/ an ask names. Pure. */
+export function pdfToolOf(lower) {
+  const t = String(lower || '').toLowerCase();
+  if (/(?:jpe?g|png|webp|images?|photos?|pictures?)\s+to\s+(?:pdf|\.pdf)/.test(t)) return 'img2pdf';
+  if (/(?:pdf|\.pdf)\s+to\s+(?:jpe?g|png|images?|pictures?)/.test(t)) return 'pdf2img';
+  if (/\b(?:merge|combine|join|unite)\b/.test(t)) return 'merge'; if (/\b(?:split|cut|divide|separate)\b/.test(t)) return 'split';
+  if (/\b(?:compress|shrink|reduce|smaller|compressor)\b/.test(t)) return 'compress'; if (/\brotate\b/.test(t)) return 'rotate';
+  if (/\b(?:reorder|rearrange|organi[sz]e|page editor|edit the pages)\b/.test(t)) return 'pages'; if (/\b(?:delete|remove|extract)\s+pages\b/.test(t)) return 'extract';
+  if (/\bcrop\b/.test(t)) return 'crop'; if (/\bwatermark\b/.test(t)) return 'watermark'; if (/\bnumbers?\b/.test(t)) return 'numbers';
+  return '';
+}
+export const KANBAN_ASK = /^(?:please\s+)?(?:(?:open|show|make|start|create|new|build|give\s+me|i\s+want|i\s+need)(?:\s+me)?\s+(?:a\s+|an\s+|my\s+|the\s+|another\s+)?)?(?:free\s+|online\s+|simple\s+|personal\s+|new\s+)*kanban(?:\s+(?:board|tool|app|boards))?(?:\s+(?:online|free|please))*$|^(?:a\s+)?trello\s+(?:like|style)\s+board$/i;
