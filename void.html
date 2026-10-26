@@ -2902,6 +2902,14 @@ say('nothing selected to remove');
             if (person) hit = { title: person.title };
           } catch (_) {}
         }
+        // the page that bears the name comes first (a redirect is followed): "black widow" is its own page or its list of meanings, not whatever the search ranks top
+        // (that was a spider genus). Only a name of up to four words; a real article, or a disambiguation page that the chooser below lists
+        if (!hit && topic.trim().split(/\s+/).length <= 4) {
+          const sentence = topic.trim().replace(/\s+/g, '_').replace(/^./, (c) => c.toUpperCase()), title = topic.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+          for (const t of [...new Set([sentence, title])]) {
+            try { const x = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t)); if (!x.ok) continue; const y = await x.json(); if (y && y.title && (y.type === 'standard' || y.type === 'disambiguation')) { hit = { title: y.title }; break; } } catch (_) {}
+          }
+        }
         if (!hit) {
           const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch=' + encodeURIComponent(topic));
           const sj = await sr.json();
