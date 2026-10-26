@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 891,
+ "counted": 897,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -235,6 +235,13 @@
   },
   {
    "file": "lib/flight-sites.js",
+   "skills": 8,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/learn-sites.js",
    "skills": 8,
    "direct": 1,
    "dependants": 13,
@@ -651,7 +658,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 16
+   "tests": 17
   },
   {
    "file": "lib/chat-calendar.js",
@@ -2012,6 +2019,27 @@
    "tests": 1
   },
   {
+   "file": "lib/learn-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/learn-data.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/learn-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/misskey.js",
    "skills": 0,
    "direct": 0,
@@ -2276,6 +2304,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/learn-ui.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/matchgfx.js",
@@ -5649,6 +5684,52 @@
     "functions/api/will.js"
    ]
   },
+  "lib/learn-core.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/learn-ui.js"
+   ]
+  },
+  "lib/learn-data.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/learn-ui.js"
+   ]
+  },
+  "lib/learn-de.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/learn-ui.js"
+   ]
+  },
+  "lib/learn-sites.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tool-sites.js",
+    "lib/toolkit.js",
+    "skills/learn-pages.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/seo.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/kanban-board.js",
+    "skills/merge.js",
+    "skills/pdf-tools.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/learn-ui.js": {
+   "imports": [
+    "lib/learn-core.js",
+    "lib/learn-data.js",
+    "lib/learn-de.js"
+   ],
+   "importedBy": []
+  },
   "lib/learn.js": {
    "imports": [
     "lib/actions.js",
@@ -8450,7 +8531,8 @@
   },
   "lib/tool-sites.js": {
    "imports": [
-    "lib/flight-sites.js"
+    "lib/flight-sites.js",
+    "lib/learn-sites.js"
    ],
    "external": [
     ", "
@@ -8474,7 +8556,8 @@
   "lib/toolkit.js": {
    "imports": [
     "lib/tool-sites.js",
-    "lib/flight-sites.js"
+    "lib/flight-sites.js",
+    "lib/learn-sites.js"
    ],
    "importedBy": [
     "skills/toolkit.js"
@@ -10272,6 +10355,12 @@
     "skills/forge-table.js",
     "skills/whisper-network.js"
    ]
+  },
+  "skills/learn-pages.js": {
+   "imports": [
+    "lib/learn-sites.js"
+   ],
+   "importedBy": []
   },
   "skills/lift3d.js": {
    "imports": [

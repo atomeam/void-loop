@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES } from '../void-live-deploy/lib/tool-sites.js';
+import { PDF_SITES, KANBAN_SITES, FLIGHT_SITES, LEARN_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -54,6 +54,43 @@ const FLCSS = `
   .seg { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 8px 0; } .warn { color: #b45309; font-size: 13px; margin: 2px 0; } @media (prefers-color-scheme: dark) { .warn { color: #fbbf24; } } .gap { list-style: none; color: var(--soft); font-size: 14px; } .leg { margin: 8px 0; } .stay { color: var(--soft); margin: 4px 0; } .ok { color: var(--ok); } .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; }
   .pick { position: absolute; left: -9999px; } input[type=range] { width: 100%; min-height: 40px; accent-color: var(--accent); } output { font-weight: 600; }
   @media print { button, .sug, footer, .tk-row, .tk-ask, #related, .notice, #controls, #fl-err, .field:has(#i-paste), #i-help, #a-help, .grid3:has(#w-h), input[type=range], .chk, .pick, label.btn { display: none !important; } body { background: #fff; color: #000; } #app { min-height: 0 !important; } main { max-width: none; padding: 0; } .panel { border: 0; padding: 0; margin: 0 0 12px; break-inside: auto; } .seg { break-inside: avoid; } .seg input { border: 0; padding: 0; min-height: 0; } .alist li, .plain li, .dl > div { break-inside: avoid; } a { color: #000; text-decoration: none; } .soft { color: #333; } }`;
+const LRCSS = `
+  :root { --c1: #ffd9d6; --c2: #ffe8c7; --c3: #fff5bf; --c4: #dff3d2; --c5: #d2efe9; --c6: #d6e6ff; --c7: #e4dcff; --c8: #f6d9f0; --c9: #e8e6ef; --c10: #d9f0ff; }
+  @media (prefers-color-scheme: dark) { :root { --c1: #4a1f1c; --c2: #4a3216; --c3: #433c12; --c4: #24401c; --c5: #173f38; --c6: #1d2f52; --c7: #33275a; --c8: #4a1f42; --c9: #2d2b36; --c10: #163a4f; } }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } .panel h2 { margin: 0 0 6px; } h3 { margin: 14px 0 4px; font-size: 15px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .soft { color: var(--soft); font-size: 14px; } [hidden] { display: none !important; }
+  .primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .primary { color: #0b0a10; } }
+  .btn { display: inline-flex; align-items: center; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; min-height: 40px; cursor: pointer; } .pick { position: absolute; left: -9999px; }
+  .big { font-size: 28px; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; } .q { min-height: 1.4em; }
+  .fb { min-height: 1.5em; font-weight: 600; margin: 6px 0; } .fb.ok, .ok { color: var(--ok); } .fb.bad { color: var(--bad); }
+  .steps { margin: 6px 0; padding-left: 22px; } .steps li { margin: 4px 0; } .badge { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; white-space: nowrap; }
+  .badge[data-l="2"] { background: var(--c3); } .badge[data-l="3"] { background: var(--c6); } .badge[data-l="4"] { background: var(--c4); font-weight: 700; }
+  .meter { height: 10px; border-radius: 99px; background: var(--line); overflow: hidden; margin: 8px 0; } .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .1s linear; } .timer { height: 8px; }
+  .skills { list-style: none; padding: 0; margin: 4px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; } .skill { width: 100%; display: flex; justify-content: space-between; gap: 8px; text-align: left; border-radius: 12px; }
+  .dl { margin: 8px 0; } .dl > div { display: flex; flex-wrap: wrap; gap: 2px 12px; padding: 4px 0; border-bottom: 1px solid var(--line); } .dl dt { color: var(--soft); flex: 0 0 11em; font-size: 14px; } .dl dd { margin: 0; flex: 1 1 12em; min-width: 0; overflow-wrap: anywhere; }
+  .cal { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; max-width: 360px; margin: 8px 0; } .cal span { aspect-ratio: 1; border-radius: 3px; background: var(--line); } .cal span.on { background: var(--accent); }
+  .sheet { columns: 2 220px; padding-left: 26px; } .sheet li { margin: 6px 0 12px; break-inside: avoid; } .key { columns: 4 90px; font-size: 14px; color: var(--soft); padding-left: 26px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; } .chip { min-width: 44px; } .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .chip.on { color: #0b0a10; } }
+  .tablewrap { overflow-x: auto; max-width: 100%; } .tgrid { display: grid; grid-template-columns: repeat(13, minmax(26px, 1fr)); gap: 2px; min-width: 360px; font-size: 12px; } .tgrid .hd { text-align: center; font-weight: 700; color: var(--soft); align-self: center; }
+  .tgrid .cell { min-height: 26px; min-width: 26px; padding: 0; border-radius: 6px; font-size: 11px; } .tgrid .seen { background: var(--c3); } .tgrid .known { background: var(--c4); font-weight: 700; }
+  .ptable { display: grid; grid-template-columns: repeat(18, 40px); grid-template-rows: repeat(7, 46px) 12px repeat(2, 46px); gap: 2px; width: max-content; } .ptable .pt { padding: 0; min-height: 0; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; border-color: transparent; }
+  .pt small { font-size: 9px; } .pt b { font-size: 15px; } .pt.on { outline: 3px solid var(--ink); } .ph { font-size: 9px; color: var(--soft); align-self: center; text-align: center; } .ptable .pt[data-c] { color: var(--ink); }
+  [data-c=alkali], [data-c=bs] { background: var(--c1); } [data-c=alkaline], [data-c=bp] { background: var(--c2); } [data-c=transition], [data-c=bd] { background: var(--c6); } [data-c=post] { background: var(--c5); } [data-c=metalloid] { background: var(--c3); } [data-c=nonmetal] { background: var(--c4); }
+  [data-c=halogen], [data-c=sliquid] { background: var(--c10); } [data-c=noble], [data-c=sgas] { background: var(--c7); } [data-c=lanthanide], [data-c=bf] { background: var(--c8); } [data-c=actinide] { background: var(--c2); } [data-c=ssolid] { background: var(--c9); } [data-c=sunknown] { background: var(--line); }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px; font-size: 12px; } .lg { padding: 1px 8px; border-radius: 6px; color: var(--ink); }
+  .el-card { display: flex; gap: 12px; align-items: flex-start; min-height: 300px; margin: 8px 0; } .el-card .dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; } .el-card .dl > div { flex-direction: column; gap: 0; } .el-card .dl dt { flex: none; font-size: 12px; } .el-card .dl dd { flex: none; } .el-card > div:last-child { flex: 1; min-width: 0; } .el-big { flex: 0 0 82px; height: 92px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ink); } .el-big b { font-size: 34px; } .el-card h3 { margin: 0; font-size: 20px; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 8px 0; } .choices button { border-radius: 12px; min-height: 48px; text-align: left; } .right { background: var(--c4) !important; } .wrong { background: var(--c1) !important; }
+  .plain { list-style: none; padding: 0; margin: 6px 0; max-height: 360px; overflow: auto; } .plain li { display: flex; align-items: center; gap: 6px; padding: 3px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; } .plain .ff { font-weight: 600; } .plain .soft { flex: 1; } .mini { min-width: 40px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; font-size: 14px; } .field label { color: var(--soft); font-size: 13px; } .study { min-height: 140px; } .front { margin: 6px 0; } .back { font-size: 20px; margin: 6px 0; }
+  .match { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; } .match button { border-radius: 10px; min-height: 52px; } .match .sel { outline: 3px solid var(--accent); }
+  .typetext { font: 22px/1.6 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; background: var(--bg); border-radius: 10px; padding: 8px 10px; min-height: 3.4em; } .typetext .done { color: var(--soft); } .typetext .cur { background: var(--accent); color: #fff; border-radius: 3px; } @media (prefers-color-scheme: dark) { .typetext .cur { color: #0b0a10; } }
+  #ty-in { width: 100%; font-size: 18px; } .keys { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; } .krow { display: flex; gap: 4px; } .krow:nth-child(2) { padding-left: 12px; } .krow:nth-child(3) { padding-left: 28px; }
+  .key { width: 28px; height: 32px; border-radius: 6px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: ui-monospace, monospace; color: var(--soft); } .key.open { color: var(--ink); } .key[data-s=fast] { background: var(--c4); } .key[data-s=mid] { background: var(--c3); } .key[data-s=slow] { background: var(--c1); }
+  .chart svg { width: 100%; max-width: 420px; height: auto; color: var(--accent); display: block; } .frow { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 6px; align-items: center; } .frow input { width: 100%; min-width: 0; } .result { min-height: 150px; }
+  .more { display: block; border-radius: 12px; text-decoration: none; color: inherit; height: 100%; } .more b { color: var(--accent); } .cardsprint { display: none; } .cert { text-align: center; }
+  @media print { body { background: #fff; color: #000; } button, select, .tk-row, .tk-ask, footer, #related, input, textarea, label.btn { display: none !important; } .tablewrap { overflow: visible; }
+    body[data-print] * { visibility: hidden; } body[data-print] .pr, body[data-print] .pr * { visibility: visible; } body[data-print] .pr { position: absolute; left: 0; top: 0; width: 100%; border: 0; }
+    .cardsprint.pr { display: grid !important; grid-template-columns: 1fr 1fr; } .pc { border: 1px dashed #999; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; break-inside: avoid; } .pc span { color: #444; } }`;
 const KBCSS = `
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
@@ -70,9 +107,9 @@ const KBCSS = `
 
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
-  const pdf = kind === 'pdf', fl = kind === 'flights';
-  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : fl ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl ? '80vh' : '520px');
-  const foot = fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
+  const pdf = kind === 'pdf', fl = kind === 'flights', ln = kind === 'learn';
+  const css = (CSS + (pdf ? PDFCSS : fl ? FLCSS : ln ? LRCSS : KBCSS)).replace('__MAX__', pdf || fl || ln ? '860px' : '1180px').replace('__APPMIN__', pdf ? '760px' : fl || ln ? '80vh' : '520px');
+  const foot = ln ? 'Every exercise is made on this device and checked here; your progress, decks and statistics stay in this browser, and the page works offline after one visit. Element weights are IUPAC\u2019s; the words and their meanings are Verse\u2019s own. Verse has no video library and no teacher or class accounts: where a video explains best, the page links to Khan Academy\u2019s free lessons. There is no account and there are no ads.' : fl ? 'Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.' : pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
   return `<!doctype html>
@@ -116,6 +153,12 @@ export function pageOf(row, kind) {
 export function appOf(row, kind) {
   const pdf = kind === 'pdf', fl = kind === 'flights', cfg = pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
   const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
+  if (kind === 'learn') return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), ${JSON.stringify({ panels: row.panels, ...(row.skills ? { skills: row.skills } : {}), de: row.de })}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+`;
   if (fl) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
 // the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
 const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), ${JSON.stringify(cfg)}))
@@ -134,7 +177,7 @@ const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
-  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights']]) for (const row of rows) {
+  for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights'], [LEARN_SITES, 'learn']]) for (const row of rows) {
     const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
     if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
     const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);

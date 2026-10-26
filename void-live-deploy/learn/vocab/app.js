@@ -1,0 +1,5 @@
+// /learn/vocab/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["vocab"],"de":{"h1":"Wortschatz-Quiz","intro":"Wählen Sie die Bedeutung jedes englischen Wortes aus vier. Drei richtig in Folge, und die Wörter werden schwerer; ein Fehler, und sie werden leichter, über fünf Stufen. Verpasste Wörter kommen später wieder, bis Sie sie können, und die Liste der gelernten Wörter bleibt auf diesem Gerät. Ein deutscher Modus fragt nach jedem Wort auf Deutsch."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/vocab/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

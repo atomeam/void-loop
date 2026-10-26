@@ -1,0 +1,5 @@
+// /learn/periodic/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["periodic"],"de":{"h1":"Periodensystem","intro":"Alle 118 Elemente auf einer Tafel. Tippen Sie eines an für Ordnungszahl, Atommasse, Gruppe, Periode, Block, Elektronenkonfiguration und Zustand bei Raumtemperatur, und seinen Namen auf Deutsch und Englisch. Färben Sie die Tafel nach Familie, Block oder Zustand, suchen Sie nach Name oder Symbol, und lernen Sie die Symbole mit einem Quiz, das die verpassten zurückbringt."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/periodic/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

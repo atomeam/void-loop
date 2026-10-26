@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Times tables · Verse</title>
+<meta name="description" content="A times tables trainer on your device: tables 1 to 12 in order or mixed, instant feedback with a hint for every fact, a ten-second speed test with points, a 12 by 12 grid of the facts you know, printable worksheets and a certificate. No account, works offline, English and German.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Times tables · Verse">
+<meta property="og:description" content="A times tables trainer on your device: tables 1 to 12 in order or mixed, instant feedback with a hint for every fact, a ten-second speed test with points, a 12 by 12 grid of the facts you know, printable worksheets and a certificate. No account, works offline, English and German.">
+<meta property="og:url" content="https://a-to-mind.com/learn/times/">
+<meta property="og:image" content="https://a-to-mind.com/og/learn-times.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Times tables on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Times tables · Verse">
+<meta name="twitter:description" content="A times tables trainer on your device: tables 1 to 12 in order or mixed, instant feedback with a hint for every fact, a ten-second speed test with points, a 12 by 12 grid of the facts you know, printable worksheets and a certificate. No account, works offline, English and German.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/learn-times.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  :root { --c1: #ffd9d6; --c2: #ffe8c7; --c3: #fff5bf; --c4: #dff3d2; --c5: #d2efe9; --c6: #d6e6ff; --c7: #e4dcff; --c8: #f6d9f0; --c9: #e8e6ef; --c10: #d9f0ff; }
+  @media (prefers-color-scheme: dark) { :root { --c1: #4a1f1c; --c2: #4a3216; --c3: #433c12; --c4: #24401c; --c5: #173f38; --c6: #1d2f52; --c7: #33275a; --c8: #4a1f42; --c9: #2d2b36; --c10: #163a4f; } }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } .panel h2 { margin: 0 0 6px; } h3 { margin: 14px 0 4px; font-size: 15px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .soft { color: var(--soft); font-size: 14px; } [hidden] { display: none !important; }
+  .primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .primary { color: #0b0a10; } }
+  .btn { display: inline-flex; align-items: center; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; min-height: 40px; cursor: pointer; } .pick { position: absolute; left: -9999px; }
+  .big { font-size: 28px; font-weight: 700; margin: 8px 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; } .q { min-height: 1.4em; }
+  .fb { min-height: 1.5em; font-weight: 600; margin: 6px 0; } .fb.ok, .ok { color: var(--ok); } .fb.bad { color: var(--bad); }
+  .steps { margin: 6px 0; padding-left: 22px; } .steps li { margin: 4px 0; } .badge { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; white-space: nowrap; }
+  .badge[data-l="2"] { background: var(--c3); } .badge[data-l="3"] { background: var(--c6); } .badge[data-l="4"] { background: var(--c4); font-weight: 700; }
+  .meter { height: 10px; border-radius: 99px; background: var(--line); overflow: hidden; margin: 8px 0; } .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .1s linear; } .timer { height: 8px; }
+  .skills { list-style: none; padding: 0; margin: 4px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; } .skill { width: 100%; display: flex; justify-content: space-between; gap: 8px; text-align: left; border-radius: 12px; }
+  .dl { margin: 8px 0; } .dl > div { display: flex; flex-wrap: wrap; gap: 2px 12px; padding: 4px 0; border-bottom: 1px solid var(--line); } .dl dt { color: var(--soft); flex: 0 0 11em; font-size: 14px; } .dl dd { margin: 0; flex: 1 1 12em; min-width: 0; overflow-wrap: anywhere; }
+  .cal { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; max-width: 360px; margin: 8px 0; } .cal span { aspect-ratio: 1; border-radius: 3px; background: var(--line); } .cal span.on { background: var(--accent); }
+  .sheet { columns: 2 220px; padding-left: 26px; } .sheet li { margin: 6px 0 12px; break-inside: avoid; } .key { columns: 4 90px; font-size: 14px; color: var(--soft); padding-left: 26px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; } .chip { min-width: 44px; } .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .chip.on { color: #0b0a10; } }
+  .tablewrap { overflow-x: auto; max-width: 100%; } .tgrid { display: grid; grid-template-columns: repeat(13, minmax(26px, 1fr)); gap: 2px; min-width: 360px; font-size: 12px; } .tgrid .hd { text-align: center; font-weight: 700; color: var(--soft); align-self: center; }
+  .tgrid .cell { min-height: 26px; min-width: 26px; padding: 0; border-radius: 6px; font-size: 11px; } .tgrid .seen { background: var(--c3); } .tgrid .known { background: var(--c4); font-weight: 700; }
+  .ptable { display: grid; grid-template-columns: repeat(18, 40px); grid-template-rows: repeat(7, 46px) 12px repeat(2, 46px); gap: 2px; width: max-content; } .ptable .pt { padding: 0; min-height: 0; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; border-color: transparent; }
+  .pt small { font-size: 9px; } .pt b { font-size: 15px; } .pt.on { outline: 3px solid var(--ink); } .ph { font-size: 9px; color: var(--soft); align-self: center; text-align: center; } .ptable .pt[data-c] { color: var(--ink); }
+  [data-c=alkali], [data-c=bs] { background: var(--c1); } [data-c=alkaline], [data-c=bp] { background: var(--c2); } [data-c=transition], [data-c=bd] { background: var(--c6); } [data-c=post] { background: var(--c5); } [data-c=metalloid] { background: var(--c3); } [data-c=nonmetal] { background: var(--c4); }
+  [data-c=halogen], [data-c=sliquid] { background: var(--c10); } [data-c=noble], [data-c=sgas] { background: var(--c7); } [data-c=lanthanide], [data-c=bf] { background: var(--c8); } [data-c=actinide] { background: var(--c2); } [data-c=ssolid] { background: var(--c9); } [data-c=sunknown] { background: var(--line); }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px; font-size: 12px; } .lg { padding: 1px 8px; border-radius: 6px; color: var(--ink); }
+  .el-card { display: flex; gap: 12px; align-items: flex-start; min-height: 300px; margin: 8px 0; } .el-card .dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; } .el-card .dl > div { flex-direction: column; gap: 0; } .el-card .dl dt { flex: none; font-size: 12px; } .el-card .dl dd { flex: none; } .el-card > div:last-child { flex: 1; min-width: 0; } .el-big { flex: 0 0 82px; height: 92px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ink); } .el-big b { font-size: 34px; } .el-card h3 { margin: 0; font-size: 20px; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 8px 0; } .choices button { border-radius: 12px; min-height: 48px; text-align: left; } .right { background: var(--c4) !important; } .wrong { background: var(--c1) !important; }
+  .plain { list-style: none; padding: 0; margin: 6px 0; max-height: 360px; overflow: auto; } .plain li { display: flex; align-items: center; gap: 6px; padding: 3px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; } .plain .ff { font-weight: 600; } .plain .soft { flex: 1; } .mini { min-width: 40px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; font-size: 14px; } .field label { color: var(--soft); font-size: 13px; } .study { min-height: 140px; } .front { margin: 6px 0; } .back { font-size: 20px; margin: 6px 0; }
+  .match { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; } .match button { border-radius: 10px; min-height: 52px; } .match .sel { outline: 3px solid var(--accent); }
+  .typetext { font: 22px/1.6 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; background: var(--bg); border-radius: 10px; padding: 8px 10px; min-height: 3.4em; } .typetext .done { color: var(--soft); } .typetext .cur { background: var(--accent); color: #fff; border-radius: 3px; } @media (prefers-color-scheme: dark) { .typetext .cur { color: #0b0a10; } }
+  #ty-in { width: 100%; font-size: 18px; } .keys { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; } .krow { display: flex; gap: 4px; } .krow:nth-child(2) { padding-left: 12px; } .krow:nth-child(3) { padding-left: 28px; }
+  .key { width: 28px; height: 32px; border-radius: 6px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: ui-monospace, monospace; color: var(--soft); } .key.open { color: var(--ink); } .key[data-s=fast] { background: var(--c4); } .key[data-s=mid] { background: var(--c3); } .key[data-s=slow] { background: var(--c1); }
+  .chart svg { width: 100%; max-width: 420px; height: auto; color: var(--accent); display: block; } .frow { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 6px; align-items: center; } .frow input { width: 100%; min-width: 0; } .result { min-height: 150px; }
+  .more { display: block; border-radius: 12px; text-decoration: none; color: inherit; height: 100%; } .more b { color: var(--accent); } .cardsprint { display: none; } .cert { text-align: center; }
+  @media print { body { background: #fff; color: #000; } button, select, .tk-row, .tk-ask, footer, #related, input, textarea, label.btn { display: none !important; } .tablewrap { overflow: visible; }
+    body[data-print] * { visibility: hidden; } body[data-print] .pr, body[data-print] .pr * { visibility: visible; } body[data-print] .pr { position: absolute; left: 0; top: 0; width: 100%; border: 0; }
+    .cardsprint.pr { display: grid !important; grid-template-columns: 1fr 1fr; } .pc { border: 1px dashed #999; padding: 18px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; break-inside: avoid; } .pc span { color: #444; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/learn/times/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Times tables","url":"https://a-to-mind.com/learn/times/","description":"A times tables trainer on your device: tables 1 to 12 in order or mixed, instant feedback with a hint for every fact, a ten-second speed test with points, a 12 by 12 grid of the facts you know, printable worksheets and a certificate. No account, works offline, English and German.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"times tables, times tables practice, multiplication practice, times table quiz, times tables speed test, learn multiplication tables, multiplication worksheet","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/learn/times/?t={table}"},"table-input":"required name=table"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Times tables","item":"https://a-to-mind.com/learn/times/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Times tables</h1>
+  <p class="intro">Learn the times tables from 1 to 12. Pick the tables, practise them in order or mixed with a hint for every fact, then take the speed test: ten seconds a question, points for every second left. The grid shows which facts you know; print a worksheet or your certificate. Kept on this device.</p>
+  <div id="app"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/learn/times/?t=7">The 7 times table</a><a href="/learn/times/?q=7x8">7 × 8</a><a href="/learn/times/?mode=speed">Speed test</a><a href="/learn/times/?t=12">The 12 times table</a><a href="/learn/times/?mode=sheet">Worksheet</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+  <footer>Every exercise is made on this device and checked here; your progress, decks and statistics stay in this browser, and the page works offline after one visit. Element weights are IUPAC’s; the words and their meanings are Verse’s own. Verse has no video library and no teacher or class accounts: where a video explains best, the page links to Khan Academy’s free lessons. There is no account and there are no ads.</footer>
+</main>
+<script type="module" src="/learn/times/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

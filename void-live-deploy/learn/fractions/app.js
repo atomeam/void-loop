@@ -1,0 +1,5 @@
+// /learn/fractions/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["fractions","practice","worksheet"],"skills":["fadd","fsub","fmul","fdiv","fsimp","fof","f2p"],"de":{"h1":"Bruchrechner","intro":"Addieren, subtrahieren, multiplizieren und dividieren Sie Brüche und gemischte Zahlen und sehen Sie jeden Schritt: den gemeinsamen Nenner, die erweiterten Brüche, das Kürzen. Das Ergebnis kommt als gekürzter Bruch, als gemischte Zahl und als Dezimalzahl. Dazu: einen Bruch kürzen, eine Dezimalzahl in einen Bruch verwandeln und mit neuen Aufgaben und einem Arbeitsblatt üben."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/fractions/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

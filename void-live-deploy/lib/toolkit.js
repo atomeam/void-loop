@@ -9,6 +9,7 @@
  */
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
+import { learnAskOf } from './learn-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -73,6 +74,14 @@ export const RELATED = Object.freeze({
   '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
   '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
   '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
+  // the learning pages (owner, 2026-10-26): the hub reaches each practice page; each page its closest sisters
+  '/learn/': ['/learn/fractions/', '/learn/times/', '/learn/cards/', '/learn/typing/', '/calculator/'],
+  '/learn/periodic/': ['/learn/cards/', '/learn/', '/convert/'],
+  '/learn/times/': ['/learn/', '/learn/fractions/', '/learn/cards/', '/calculator/'],
+  '/learn/vocab/': ['/learn/cards/', '/translate/', '/word-count/'],
+  '/learn/cards/': ['/learn/vocab/', '/learn/periodic/', '/learn/times/', '/notes/'],
+  '/learn/typing/': ['/word-count/', '/learn/vocab/', '/learn/'],
+  '/learn/fractions/': ['/learn/', '/calculator/', '/learn/times/', '/convert/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
@@ -154,6 +163,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
+  // learning (owner, 2026-10-26): 'periodic table', 'times tables', 'typing practice', 'flashcards', 'fraction calculator', 'vocabulary quiz', 'math practice' open that page
+  [{ exec: (t) => (learnAskOf(t) ? [t] : null) }, (m, t) => learnAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

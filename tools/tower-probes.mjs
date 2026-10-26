@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { deckToken } from '../void-live-deploy/lib/learn-core.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -79,6 +80,8 @@ export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('
 export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 // the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
 const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
+// the deck the flashcards page is asked about: four capitals, shared by link
+const ASK_DECK = deckToken({ name: 'Capitals', cards: [{ f: 'France', b: 'Paris' }, { f: 'Spain', b: 'Madrid' }, { f: 'Italy', b: 'Rome' }, { f: 'Japan', b: 'Tokyo' }] });
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -397,6 +400,20 @@ export const PROBES = Object.freeze({
   // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
   // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
   // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.
+  // learning (owner, 2026-10-26: "the objective is to literally go through every site"): Khan Academy is the floor; Verse has no video library or teacher accounts and says so,
+  // and links to Khan Academy's free lessons where a video is the best answer. The question is one exact problem with its worked solution shown: 3/4 + 1/6. Truth worked
+  // out by hand: the least common multiple of 4 and 6 is 12, 3/4 = 9/12, 1/6 = 2/12, 9 + 2 = 11, so 11/12. Judged on Verse alone.
+  learning: {
+    site: 'https://www.khanacademy.org/', verse: '/learn/',
+    ask: { verse: '/learn/?skill=fadd&p=3,4,1,6&show=1' },
+    truth: [['the problem 3/4 + 1/6', /3\/4 \+ 1\/6 = \?/], ['the common denominator 12', /least common multiple of 4 and 6 is 12/], ['3/4 as 9/12 and 1/6 as 2/12', /3\/4 = 9\/12 and 1\/6 = 2\/12/], ['the answer 11/12', /the answer is 11\/12/]],
+    askParts: {
+      courses: [['a course of skills', /Course:/], ['units from number facts to equations', /Number facts[\s\S]*Fractions[\s\S]*Equations/], ['a video for each unit', /Videos for this unit on Khan Academy/]],
+      'progress tracking': [['mastery levels', /Familiar[\s\S]{0,200}Proficient[\s\S]{0,200}Mastered/], ['course mastery', /Course mastery/], ['a streak', /Streak/], ['progress export', /Export progress/]],
+      practice: [['an answer checked', /\bCheck\b/], ['a hint ladder', /Get a hint/], ['a worked solution', /worked solution/i], ['spaced review', /Spaced review/], ['a printable worksheet', /Printable worksheet/]],
+    },
+    facts: [['many skills', /25 maths skills/], ['generated problems', /Every problem is new|generated/i], ['instant checking', /checked the moment you answer|\bCheck\b/], ['hints', /Get a hint/], ['worked solutions', /worked solution/i], ['mastery levels', /Mastered/], ['spaced review', /Spaced review/], ['a mastery challenge', /Mastery challenge/], ['a streak', /Streak/], ['course progress', /Course mastery/], ['printable worksheets', /Printable worksheet/], ['an answer key', /Answer key/], ['videos linked', /Khan Academy/], ['progress export', /Export progress/], ['on this device', /on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
+  },
   travel: {
     site: 'https://www.google.com/travel/flights', verse: '/flights/',
     ask: { verse: '/flights/?from=JFK&to=LIS&d=' + inDays(30) + '&r=' + inDays(37) },
@@ -641,6 +658,54 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
 // them (teams, events, venues, players), lists who was born on this day and says its API is free; the question is a search for Arsenal, which any sports database answers
 // with the club, its league and its sport. Truth worked out by hand, judged on Verse alone.
 const LANE_PROBES = Object.freeze({
+  // the learning lane (owner, 2026-10-26): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand: iron is element 26
+  // with a standard atomic weight of 55.845, in group 8 and period 4, [Ar] 3d6 4s2; 7 × 8 = 7 × 5 + 7 × 3 = 35 + 21 = 56; "candid" means frank
+  // and honest; 3/4 + 1/6 = 9/12 + 2/12 = 11/12 = 0.9167; "the quick brown fox" is 19 characters.
+  'learning: ptable.com': {
+    ask: { verse: '/learn/periodic/?el=Fe' },
+    truth: [['Fe is iron', /\bIron\b/], ['atomic number 26', /Atomic number\s*26\b/], ['atomic weight 55.845', /55\.845/], ['group 8 and period 4', /Group\s*8\b[\s\S]{0,80}Period\s*4\b/], ['[Ar] 3d6 4s2', /\[Ar\] 3d6 4s2/]],
+    askParts: { 'element details': [['the atomic weight', /Atomic weight/], ['the family', /Family/], ['the state', /State at 20/]], 'electron configuration': [['the configuration', /Electron configuration/]], 'colour by property': [['colour by family, block or state', /Colour by/]],
+      'search elements': [['a search by name, symbol or number', /Name, symbol or number/]], 'element quiz': [['a symbol quiz', /Symbol quiz/]], 'printable table': [['print', /\bPrint\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['all 118 elements', /118/], ['atomic number', /Atomic number/], ['atomic weight', /Atomic weight/], ['family', /Family/], ['group and period', /Group[\s\S]{0,60}Period/], ['block', /Block/], ['electron configuration', /Electron configuration/], ['state at room temperature', /State at 20/], ['names in two languages', /German/], ['colour by property', /Colour by/], ['search', /Name, symbol or number/], ['a quiz', /Symbol quiz/], ['print', /\bPrint\b/], ['a link to read more', /Read more on Wikipedia/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'learning: timestables.com': {
+    ask: { verse: '/learn/times/?q=7x8&show=1' },
+    truth: [['the question 7 × 8', /7 × 8 = \?/], ['the answer 56', /= 56\b/], ['a hint that splits 8 into 5 + 3', /Split 8 into 5 \+ 3/]],
+    askParts: { 'tables 1 to 12': [['tables 1 to 12', /Times tables 1 to 12/]], 'speed test': [['a speed test', /Speed test/], ['ten seconds a question', /ten seconds a question/]], hints: [['a hint', /Get a hint/]], 'facts grid': [['the facts you know', /Facts you know/]],
+      'printable worksheet': [['a worksheet to print', /Print the worksheet/], ['its answers', /Answer key/]], certificate: [['a certificate', /certificate/i]] },
+    pageParts: {}, parts: {},
+    facts: [['pick the tables', /Pick the tables/], ['practise in order', /Practise in order/], ['mixed practice', /\bMixed\b/], ['a speed test', /Speed test/], ['points for speed', /every second left/], ['instant feedback', /\bCheck\b/], ['hints', /Get a hint/], ['a facts grid', /Facts you know/], ['a worksheet', /Worksheet/], ['an answer key', /Answer key/], ['a certificate', /certificate/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'learning: freerice.com': {
+    ask: { verse: '/learn/vocab/?word=candid' },
+    truth: [['the word candid', /\bcandid\b/], ['its meaning among the choices', /frank and honest/], ['a level', /Level \d \/ 5/]],
+    askParts: { 'meaning from four choices': [['choose the meaning', /Choose the meaning/]], 'adaptive level': [['a level', /Level \d/], ['five levels', /five levels/]], 'review missed words': [['missed words come back', /come back/]], 'words learned': [['the words learned', /Words you learned/]], 'translation mode': [['German mode', /Word in German/]] },
+    pageParts: {}, parts: {},
+    facts: [['four choices', /from four/], ['levels', /five levels/], ['the level rises', /harder/], ['missed words come back', /come back/], ['words learned', /Words you learned/], ['a score', /right \d+ \/ \d+/], ['a German mode', /German/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'learning: studystack.com': {
+    ask: { verse: '/learn/cards/#deck=' + ASK_DECK },
+    truth: [['the shared deck', /Capitals \(4\)/], ['four cards', /\b4 cards\b/], ['all four due', /Due today: 4\b/], ['the cards listed', /France[\s\S]{0,40}Paris/]],
+    askParts: { 'make a deck': [['a new deck', /New deck/]], 'import cards': [['import a file', /Import a file/]], 'spaced repetition': [['spaced repetition', /spaced repetition/i], ['show the answer', /Show the answer/]], 'multiple choice': [['multiple choice', /Multiple choice/]],
+      'matching game': [['a matching game', /Matching game/]], 'typed answers': [['type the answer', /Type the answer/]], 'print cards': [['print the cards', /Print the cards/]], 'share a deck': [['share a deck', /Share this deck/]] },
+    pageParts: {}, parts: {},
+    facts: [['decks', /Your decks/], ['paste cards', /Add cards/], ['import', /Import a file/], ['export', /\bExport\b/], ['spaced repetition', /spaced repetition/i], ['again, hard, good, easy', /Again, Hard, Good or Easy/], ['multiple choice', /Multiple choice/], ['typed answers', /Type the answer/], ['a matching game', /Matching game/], ['print', /Print the cards/], ['a share link', /Share this deck/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'learning: keybr.com': {
+    ask: { verse: '/learn/typing/?text=the%20quick%20brown%20fox' },
+    truth: [['the text to type', /the quick brown fox/], ['its 19 characters', /0 \/ 19\b/], ['speed in words a minute', /\bWPM\b/], ['accuracy', /Accuracy/]],
+    askParts: { 'adaptive lessons': [['adaptive lessons', /Adaptive lessons/]], 'words a minute': [['WPM', /\bWPM\b/]], accuracy: [['accuracy', /Accuracy/]], 'per-key speed': [['your keys', /Your keys/]], 'keyboard heat map': [['a keyboard', /QWERTY/]], 'progress chart': [['a chart', /chart/i]], 'own text': [['practise your own text', /Practise this text/]], 'other languages': [['German words', /German words/]] },
+    pageParts: {}, parts: {},
+    facts: [['letters open as you improve', /open the next one/], ['words a minute', /\bWPM\b/], ['accuracy', /Accuracy/], ['per-key speed', /Your keys/], ['a keyboard', /QWERTY/], ['a progress chart', /chart/i], ['your own text', /Practise this text/], ['English and German', /German words/], ['QWERTZ', /QWERTZ/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  'learning: calculatorsoup.com': {
+    ask: { verse: '/learn/fractions/?a=3/4&op=add&b=1/6' },
+    truth: [['3/4 + 1/6 = 11/12', /3\/4 \+ 1\/6 = 11\/12/], ['the common denominator 12', /least common multiple of 4 and 6 is 12/], ['as a decimal 0.9167', /0\.9167/], ['the steps', /Step by step/]],
+    askParts: { 'four operations': [['add, subtract, multiply and divide', /Add, subtract, multiply and divide/]], 'mixed numbers': [['a mixed number', /As a mixed number/]], 'steps shown': [['step by step', /Step by step/]], simplify: [['simplify a fraction', /Simplify a fraction/]], 'decimal to fraction': [['decimal to fraction', /Decimal to fraction/]], 'decimal answer': [['as a decimal', /As a decimal/]] },
+    pageParts: {}, parts: {},
+    facts: [['four operations', /Add, subtract, multiply and divide/], ['mixed numbers', /mixed number/i], ['steps', /Step by step/], ['lowest terms', /In lowest terms/], ['a decimal answer', /As a decimal/], ['simplify', /Simplify a fraction/], ['decimal to fraction', /Decimal to fraction/], ['practice problems', /Practice/], ['a worksheet', /Printable worksheet/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
   // the travel lane (owner, 2026-10-26: "need a flights page"): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand
   // (London to New York is 5,540 km and 3,442 miles; London to Singapore 10,880 km; a 40 minute wait is under 45 minutes; Lisbon's ICAO code is LPPT).
   'travel: tripwaffle.com': {

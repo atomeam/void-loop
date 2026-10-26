@@ -1,7 +1,7 @@
 {
  "floor": "learning",
- "verse_page": null,
- "researched": "2026-10-25",
+ "verse_page": "/learn/",
+ "researched": "2026-10-26",
  "sites": {
   "khanacademy.org": {
    "sources": [
@@ -16,16 +16,17 @@
      "name": "Course catalogue",
      "detail": "Math K-12 through calculus, science, computing, economics, humanities, test prep, by grade",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/learn/ is a course of 25 maths skills in 7 units (number facts to equations and area); no science, computing or humanities",
+     "shows": "Course:"
     },
     {
      "group": "core",
      "name": "Video lessons",
      "detail": "Short explainer videos per skill",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "no video library (said on every learning page); each unit links to Khan Academy’s free videos for that unit"
     },
     {
      "group": "core",
@@ -33,15 +34,16 @@
      "detail": "Written explanations and worked examples",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "explainer cards (gears, Moon) and the answer engine; no curriculum"
+     "verse_evidence": "each problem has its worked solution written step by step; no articles"
     },
     {
      "group": "core",
      "name": "Practice exercises",
      "detail": "Auto-graded problems with hints and step-by-step solutions",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/study-cards.js: flashcards with Leitner spaced repeat, quiz from a list, language drill, glossary, formula cards (device only); skills/quiz.js: quiz from an explainer card"
+     "verse": "has",
+     "verse_evidence": "endless generated problems for every skill, checked at once, with a hint ladder and a step-by-step solution",
+     "shows": "Get a hint"
     },
     {
      "group": "core",
@@ -49,31 +51,34 @@
      "detail": "Quizzes mid-unit, unit tests at the end",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/quiz.js asks one question at a time from a card's own observations"
+     "verse_evidence": "a mastery challenge of six mixed questions from the skills practised; no graded unit test",
+     "shows": "Mastery challenge"
     },
     {
      "group": "core",
      "name": "Mastery system",
      "detail": "Skills move Familiar, Proficient, Mastered; mastery points; course %",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "Attempted, Familiar, Proficient, Mastered per skill (3, 6, 10 right in a row; Mastered needs two different days) and a course mastery percent",
+     "shows": "Course mastery"
     },
     {
      "group": "core",
      "name": "Course challenge",
      "detail": "Test across the whole course to level up skills",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "the mastery challenge mixes the skills practised; it does not level skills up by itself"
     },
     {
      "group": "core",
      "name": "Progress dashboard",
      "detail": "Activity, time, skills progress per course",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "streak, today, all time, course mastery and the last 28 days on the device; export and import",
+     "shows": "Your progress"
     },
     {
      "group": "power",
@@ -81,23 +86,25 @@
      "detail": "Mastery challenges resurface old skills",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "study-cards.js Leitner boxes by local day"
+     "verse_evidence": "skills come back after 1, 2, 5 or 14 days by level; the review panel lists what is due",
+     "shows": "Spaced review"
     },
     {
      "group": "power",
      "name": "Hints and worked solutions",
      "detail": "Hint ladder per problem, \"watch a video\" link",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "a hint ladder (one step at a time) and the whole worked solution; a video link per unit",
+     "shows": "worked solution"
     },
     {
      "group": "power",
      "name": "Course mastery goals and streaks",
      "detail": "Weekly goals, streaks, energy points, badges, avatars",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "a daily streak and course mastery; no goals, points or badges"
     },
     {
      "group": "power",
@@ -120,16 +127,16 @@
      "name": "Teacher tools",
      "detail": "Classes, assignments, reports, roster sync (Google Classroom, Clever)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "no teacher dashboards or class accounts (said on the page); progress exports as a file"
     },
     {
      "group": "power",
      "name": "Parent tools",
      "detail": "Child accounts, progress emails",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "skipped",
+     "verse_evidence": "no accounts"
     },
     {
      "group": "power",
@@ -137,15 +144,15 @@
      "detail": "Site in many languages",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/translate.js and skills/spanish.js"
+     "verse_evidence": "English and German"
     },
     {
      "group": "power",
      "name": "Khanmigo tutor (free for teachers)",
      "detail": "AI tutor that asks guiding questions instead of answering",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "the answer engine (functions/api/answer.js) answers directly; no Socratic tutor mode"
+     "verse": "missing",
+     "verse_evidence": "no AI tutor; the hint ladder gives one step at a time"
     },
     {
      "group": "sharing",
@@ -160,16 +167,16 @@
      "name": "Mobile apps and Khan Academy Kids",
      "detail": "Apps; Kids app with offline books",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "the pages work on phones and offline after one visit; no app"
     },
     {
      "group": "accessibility",
      "name": "Captions, transcripts, screen-reader math",
      "detail": "Captions on videos, accessible math (MathML), keyboard input",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "problems are plain text a screen reader reads; no videos to caption"
     },
     {
      "group": "paid",
@@ -179,21 +186,431 @@
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
     }
+   ],
+   "uses": [
+    {
+     "what": "deep links to the free lessons of each unit (khanacademy.org/math/arithmetic, /math/arithmetic/fraction-arithmetic, /math/pre-algebra, /math/algebra-basics, /math/basic-geo)",
+     "how": "a link per unit and per practice problem (\"Khan Academy explains this unit\"), opened in a new tab",
+     "terms": "links only; its videos are CC BY-NC-SA and are not embedded or copied"
+    }
+   ]
+  },
+  "ptable.com": {
+   "sources": [
+    "https://www.commonsense.org/education/reviews/ptable",
+    "https://iste.web.unc.edu/edtech-resource/ptable/",
+    "https://www.educatorstechnology.com/2023/03/ptable-interactive-periodic-table-for.html"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Interactive table of 118 elements",
+     "detail": "tap an element for its data",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/periodic/: all 118 on an 18-column grid, tap for details",
+     "shows": "118"
+    },
+    {
+     "group": "core",
+     "name": "Properties per element",
+     "detail": "mass, family, group, period, block",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "atomic number, standard atomic weight, family, group, period, block, state",
+     "shows": "Atomic weight"
+    },
+    {
+     "group": "core",
+     "name": "Electron configuration and orbitals",
+     "detail": "ground state, 3D orbitals",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the ground-state configuration with the measured exceptions; no 3D orbitals",
+     "shows": "Electron configuration"
+    },
+    {
+     "group": "core",
+     "name": "Trends colouring",
+     "detail": "colour by a property",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "colour by family, block or state; no numeric trends (melting point, electronegativity)",
+     "shows": "Colour by"
+    },
+    {
+     "group": "power",
+     "name": "Isotopes, compounds, time machine",
+     "detail": "isotope view, compound mixing, discovery year",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built"
+    },
+    {
+     "group": "power",
+     "name": "Many languages",
+     "detail": "46 languages",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "English and German names and screen"
+    },
+    {
+     "group": "power",
+     "name": "Printable",
+     "detail": "print the table",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Print button",
+     "shows": "Print"
+    },
+    {
+     "group": "power",
+     "name": "Links to an encyclopedia",
+     "detail": "each element links out",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Read more on Wikipedia (English or German)",
+     "shows": "Wikipedia"
+    }
+   ],
+   "uses": [
+    {
+     "what": "Wikipedia articles per element (CC BY-SA)",
+     "how": "a deep link per element; no text copied",
+     "terms": "link only"
+    },
+    {
+     "what": "IUPAC standard atomic weights",
+     "how": "the abridged values, written into lib/learn-data.js as facts",
+     "terms": "facts, credited on the page"
+    }
+   ]
+  },
+  "timestables.com": {
+   "sources": [
+    "https://www.timestables.com/",
+    "https://www.timestables.com/speed-test/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Pick the tables",
+     "detail": "tables 1 to 12",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/times/: chips for 1 to 12",
+     "shows": "Pick the tables"
+    },
+    {
+     "group": "core",
+     "name": "Practise in order then mixed",
+     "detail": "learning order",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Practise in order, Mixed",
+     "shows": "Practise in order"
+    },
+    {
+     "group": "core",
+     "name": "Speed test",
+     "detail": "10 seconds a question, 10 points plus seconds left",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the same rule, with a timer bar and a best score",
+     "shows": "Speed test"
+    },
+    {
+     "group": "power",
+     "name": "Diploma",
+     "detail": "after all tables",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a printable certificate when all 144 facts are known",
+     "shows": "certificate"
+    },
+    {
+     "group": "power",
+     "name": "Printable worksheets",
+     "detail": "worksheets",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "30 facts of the chosen tables with an answer key",
+     "shows": "Print the worksheet"
+    },
+    {
+     "group": "power",
+     "name": "Multiplayer and games",
+     "detail": "play others, many games",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built (no server for live play)"
+    }
+   ],
+   "uses": [
+    {
+     "what": "its speed-test page (timestables.com/speed-test/)",
+     "how": "not linked from the page: Verse has its own speed test",
+     "terms": "nothing used"
+    }
+   ]
+  },
+  "freerice.com": {
+   "sources": [
+    "https://www.csmonitor.com/2007/1203/p13s02-lign.html",
+    "https://cubeforteachers.com/post/Freerice-Free-Online-Vocabulary-quizzes-1x4ysjgjxvymvkkh"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Word and four meanings",
+     "detail": "pick the meaning",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/vocab/: four choices",
+     "shows": "Choose the meaning"
+    },
+    {
+     "group": "core",
+     "name": "Adaptive difficulty",
+     "detail": "harder after right answers",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "five levels: up after three right, down after a miss",
+     "shows": "five levels"
+    },
+    {
+     "group": "power",
+     "name": "Other subjects",
+     "detail": "art, chemistry, geography, maths",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "element symbols on /learn/periodic/, maths on /learn/; no art or geography quiz"
+    },
+    {
+     "group": "power",
+     "name": "Rice donation per right answer",
+     "detail": "UN WFP sponsorship",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "money is out of scope"
+    }
+   ],
+   "uses": [
+    {
+     "what": "nothing: its words and meanings are not copied",
+     "how": "Verse wrote its own 100 words and meanings",
+     "terms": "none"
+    }
+   ]
+  },
+  "studystack.com": {
+   "sources": [
+    "https://edtechbooks.org/onlinetools/studystack",
+    "https://www.commonsense.org/education/reviews/studystack"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Make and share decks",
+     "detail": "flashcard sets",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/cards/: decks typed or pasted, kept on the device, a share link",
+     "shows": "Share this deck"
+    },
+    {
+     "group": "core",
+     "name": "Games from a deck",
+     "detail": "matching, crosswords, hangman, quizzes",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "multiple choice, typed answers and a matching game; no crossword or hangman",
+     "shows": "Matching game"
+    },
+    {
+     "group": "core",
+     "name": "Library of other people’s sets",
+     "detail": "shared sets by subject",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no shared library (no server); three ready decks"
+    },
+    {
+     "group": "power",
+     "name": "Import and export",
+     "detail": "text import",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": ".txt, .csv, .tsv import (tab, comma, = or -), export as text",
+     "shows": "Import a file"
+    },
+    {
+     "group": "power",
+     "name": "Spaced repetition",
+     "detail": "study what is due",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Again, Hard, Good, Easy with growing intervals",
+     "shows": "spaced repetition"
+    },
+    {
+     "group": "power",
+     "name": "Print cards",
+     "detail": "printable",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Print the cards",
+     "shows": "Print the cards"
+    }
+   ],
+   "uses": [
+    {
+     "what": "its own exported text files",
+     "how": "a deck exported as text (tab between front and back) imports as it is",
+     "terms": "the visitor’s own file"
+    }
+   ]
+  },
+  "keybr.com": {
+   "sources": [
+    "https://dyslexiahelp.umich.edu/latest/keybrcom-simple-online-game-help-improve-typing-skills/",
+    "https://www.educationalappstore.com/website/keybr"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Adaptive lessons",
+     "detail": "letters open as you master them",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/typing/: six letters, the next opens at 30 WPM and 92% on every open letter",
+     "shows": "Adaptive lessons"
+    },
+    {
+     "group": "core",
+     "name": "Speed and accuracy",
+     "detail": "WPM live",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "WPM and accuracy as you type",
+     "shows": "WPM"
+    },
+    {
+     "group": "core",
+     "name": "Per-key statistics",
+     "detail": "speed per key",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "per-key speed coloured on the keyboard",
+     "shows": "Your keys"
+    },
+    {
+     "group": "power",
+     "name": "Progress charts",
+     "detail": "history",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a chart of the last 30 lessons and the best",
+     "shows": "chart"
+    },
+    {
+     "group": "power",
+     "name": "Custom text and languages",
+     "detail": "own text, layouts",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "own text, English or German words, QWERTY or QWERTZ",
+     "shows": "Practise this text"
+    },
+    {
+     "group": "power",
+     "name": "Multiplayer race",
+     "detail": "typing races",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built"
+    }
+   ],
+   "uses": [
+    {
+     "what": "nothing",
+     "how": "Verse makes its own lessons from common words",
+     "terms": "none"
+    }
+   ]
+  },
+  "calculatorsoup.com": {
+   "sources": [
+    "https://www.calculatorsoup.com/calculators/math/fractions.php"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Four operations on fractions",
+     "detail": "add, subtract, multiply, divide",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/learn/fractions/",
+     "shows": "Add, subtract, multiply and divide"
+    },
+    {
+     "group": "core",
+     "name": "Mixed numbers",
+     "detail": "in and out",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mixed numbers typed and shown",
+     "shows": "As a mixed number"
+    },
+    {
+     "group": "core",
+     "name": "Steps shown",
+     "detail": "work shown",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "common denominator, rewriting, simplifying",
+     "shows": "Step by step"
+    },
+    {
+     "group": "power",
+     "name": "Simplify and decimal to fraction",
+     "detail": "other fraction tools",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "both on the page",
+     "shows": "Decimal to fraction"
+    },
+    {
+     "group": "power",
+     "name": "Decimal answer",
+     "detail": "decimal form",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "As a decimal",
+     "shows": "As a decimal"
+    }
+   ],
+   "uses": [
+    {
+     "what": "nothing",
+     "how": "the arithmetic is Verse’s own",
+     "terms": "none"
+    }
    ]
   }
  },
  "gaps": [
-  "a course path with mastery levels per skill",
-  "practice problems generated with hints and checked answers",
-  "progress kept on the device",
-  "short explainer per skill",
-  "unit test that levels skills up",
-  "tutor mode that asks before it tells"
+  "a video library (linked to Khan Academy instead)",
+  "science, computing and humanities courses",
+  "an AI tutor that asks before it tells",
+  "typing races and multiplayer times tables (need a server)",
+  "element isotopes and numeric trends",
+  "a shared library of other people’s decks"
  ],
  "verse_extra": [
   "flashcards with spaced repeat from one line of typed words",
   "quiz on any explainer on the stage",
   "nothing to sign up for"
  ],
- "first_page": "Practice page /learn/ for a learner who wants to practise one skill until it sticks. First: arithmetic to algebra skills with generated problems, checked answers, a hint ladder and a worked solution, mastery levels (Familiar to Mastered) and spaced review kept on the device, plus \"quiz me\" decks from study-cards. Will not build: video library, teacher/class accounts, test-prep content or an AI tutor."
+ "first_page": "Built 2026-10-26: /learn/ (25 maths skills in 7 units, generated problems checked at once, hint ladder, worked solutions, mastery levels, spaced review, mastery challenge, streak, worksheets, progress export) and a page per lane site: /learn/periodic/, /learn/times/, /learn/vocab/, /learn/cards/, /learn/typing/, /learn/fractions/. Will not build: a video library (links to Khan Academy’s free lessons instead), teacher or class accounts, test-prep content."
 }

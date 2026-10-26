@@ -1,0 +1,5 @@
+// /learn/typing/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["typing"],"de":{"h1":"Tippen lernen","intro":"Lernen Sie das Zehnfingersystem. Die Lektionen beginnen mit sechs Buchstaben und öffnen den nächsten, wenn jeder Buchstabe schnell und genau sitzt, so üben Sie die Tasten, die Sie brauchen. Ihr Tempo in Wörtern pro Minute und Ihre Genauigkeit erscheinen beim Tippen, jede Taste hat ihr eigenes Tempo und eine Farbe auf der Tastatur, und jede Lektion kommt in ein Diagramm. Deutsche oder englische Wörter, QWERTZ oder QWERTY. Bleibt auf diesem Gerät."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/typing/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

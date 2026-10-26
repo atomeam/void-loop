@@ -491,6 +491,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:07:54Z",
+   "subject": "RULES: an owner chore is worked around or gathered, never dropped (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:07:42Z",
+   "subject": "Launch drafts: AlternativeTo listings and community posts for review"
+  },
+  {
+   "at": "2026-10-26T06:07:27Z",
+   "subject": "RULES: Verse is autonomous (owner, 2026-10-26)"
+  },
+  {
+   "at": "2026-10-26T06:05:58Z",
+   "subject": "Tower gate: jobs measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T06:05:51Z",
+   "subject": "Versus: every entry names its own Verse page, side by side opens it"
+  },
+  {
+   "at": "2026-10-26T06:03:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T06:03:00Z",
    "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
   },
@@ -545,30 +569,6 @@
   {
    "at": "2026-10-26T05:37:15Z",
    "subject": "Tower gate: travel: tripwaffle.com,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:35:51Z",
-   "subject": "Tower gate: travel: tripwaffle.com,travel: aruljohn.com,travel: clock7.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:35:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:34:47Z",
-   "subject": "Flights: the stage card skill, the map above its table so the page does not jump"
-  },
-  {
-   "at": "2026-10-26T05:34:44Z",
-   "subject": "Tower gate: finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:33:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:33:02Z",
-   "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
   }
  ],
  "builders": {

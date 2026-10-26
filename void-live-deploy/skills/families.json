@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 10,
+  "experiment": 11,
   "tested": 26,
   "checked": 18,
   "proven": 297
@@ -1449,7 +1449,7 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 4,
+    "experiment": 5,
     "tested": 2,
     "checked": 1,
     "proven": 29
@@ -1468,6 +1468,14 @@
     "words": "Source reliability: 24 skills answer from outside sources; 22 name the source on the card, 13 have a second source, 0 have a kept live answer from it (1.46 of 3 on average). One kept live answer each would make 3 more proven: gh-file, fact, scores."
    },
    "skills": [
+    {
+     "name": "learn-pages",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
+    },
     {
      "name": "repo",
      "tier": "proven",

@@ -1,0 +1,5 @@
+// /learn/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["practice","course","review","progress","worksheet","more"],"de":{"h1":"Mathe lernen","intro":"Ein Kurs mit 25 Mathe-Fertigkeiten, vom Einmaleins über Brüche, Prozent und negative Zahlen bis zu Gleichungen und Flächen. Jede Aufgabe ist neu, wird sofort geprüft, mit Tipps Schritt für Schritt und dem ganzen Lösungsweg. Fertigkeiten steigen von Vertraut über Geübt bis Gemeistert und kommen zur Wiederholung zurück. Der Fortschritt bleibt auf diesem Gerät: kein Konto, keine Werbung."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

@@ -1,0 +1,5 @@
+// /learn/cards/: written by tools/tool-site-pages.mjs from lib/learn-sites.js; edit the row, not this file
+// the learning screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/learn-ui.js').then(({ mountLearn }) => mountLearn(document.getElementById('app'), {"panels":["cards"],"de":{"h1":"Karteikarten","intro":"Erstellen Sie einen Stapel, indem Sie Karten tippen oder einfügen (Vorderseite, dann Rückseite, eine Karte pro Zeile), oder beginnen Sie mit einem fertigen Stapel. Lernen Sie mit verteilter Wiederholung: Bewerten Sie jede Karte mit Nochmal, Schwer, Gut oder Leicht, und sie kommt zurück, kurz bevor Sie sie vergessen. Prüfen Sie sich mit Auswahlfragen, getippten Antworten oder einem Zuordnungsspiel, drucken Sie die Karten und teilen Sie einen Stapel als Link. Bleibt auf diesem Gerät."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/learn/cards/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
