@@ -67,8 +67,8 @@
      "name": "Find a time / see guests' availability",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Find a time pane: free slots of a chosen length inside your working hours across every calendar switched on, \"Book\" opens the editor on one; add someone else's calendar (subscribe to its address, or open a shared one) to find times free for both (lib/calendar.js freeSlots; tools/calendar.test.mjs); no live view of guests' own calendars"
     },
     {
      "name": "Appointment schedules (booking pages)",
@@ -244,8 +244,8 @@
      "name": "Scheduling assistant (find a time)",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Find a time across the calendars you have switched on, including a subscribed or shared one; no live view of guests' availability"
     },
     {
      "name": "Categories with colours",

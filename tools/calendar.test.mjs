@@ -181,3 +181,12 @@ test('time zones: names checked, wall times to instants and back with daylight s
   const t = C.icsOf([C.normalize(e)]); assert.match(t, /DTSTART;TZID=America\/New_York:20260305T100000/); const back = C.parseIcs(t)[0]; assert.equal(back.tz, 'America/New_York'); assert.equal(back.start, '2026-03-05T10:00');
   assert.equal(C.parseIcs('BEGIN:VCALENDAR\nBEGIN:VEVENT\nSUMMARY:x\nDTSTART;TZID=W. Europe Standard Time:20260305T100000\nEND:VEVENT\nEND:VCALENDAR')[0].tz, undefined, 'a Windows zone name is not guessed');
 });
+
+test('free slots: gaps between timed events inside the working day, none before now, weekends skipped, an all-day event does not block', () => {
+  const ev = [{ title: 'a', start: '2026-10-26T10:00', end: '2026-10-26T11:30' }, { title: 'b', start: '2026-10-26T13:00', end: '2026-10-26T14:00' }, { title: 'allday', start: '2026-10-27', end: '2026-10-27', allDay: true }, { title: 'sat', start: '2026-10-31T10:00', end: '2026-10-31T11:00' }];
+  const at = (r) => r.map((x) => x.start.slice(5) + '-' + x.end.slice(11));
+  assert.deepEqual(at(C.freeSlots(ev, { from: new Date(2026, 9, 26), now: new Date(2026, 9, 26, 8), days: 2, minutes: 60 })), ['10-26T09:00-10:00', '10-26T11:30-12:30', '10-26T14:00-15:00', '10-27T09:00-10:00', '10-27T10:00-11:00', '10-27T11:00-12:00']);
+  assert.deepEqual(C.freeSlots(ev, { from: new Date(2026, 9, 26), now: new Date(2026, 9, 26, 12), days: 1, minutes: 60 }).map((x) => x.start.slice(11)), ['12:00', '14:00', '15:00'], 'nothing before now');
+  assert.deepEqual(C.freeSlots(ev, { from: new Date(2026, 9, 31), now: new Date(2026, 9, 26), days: 2, minutes: 60 }), [], 'a weekend, weekdays only'); assert.equal(C.freeSlots(ev, { from: new Date(2026, 9, 31), now: new Date(2026, 9, 26), days: 2, minutes: 60, weekdaysOnly: false }).length, 6);
+  assert.deepEqual(C.freeSlots([], { minutes: 600 }), [], 'longer than the working day'); assert.equal(C.freeSlots(ev, { from: new Date(2026, 9, 26), now: new Date(2026, 9, 26, 8), days: 30, minutes: 30, max: 5 }).length, 5);
+});

@@ -133,12 +133,26 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       <button type="button" id="searchBtn" aria-expanded="false" aria-controls="sf">Search</button>
       <button type="button" id="calsBtn" aria-expanded="false" aria-controls="cals">Calendars</button>
       <button type="button" id="tasksBtn" aria-expanded="false" aria-controls="tasks">Tasks</button>
+      <button type="button" id="findBtn" aria-expanded="false" aria-controls="find">Find a time</button>
       <button type="button" id="allow" hidden>Allow notifications</button>
     </div>
     <div class="note" id="note" role="status"></div>
   </form>
   <form id="sf" hidden role="search"><label class="vh" for="sq" id="sqL">Search events</label><input type="search" id="sq" placeholder="Search events" maxlength="100"></form>
   <ul class="list" id="results" hidden></ul>
+  <section class="pane" id="find" hidden aria-labelledby="findH" style="margin-top:8px">
+    <h2 id="findH" style="margin:0 0 4px">Find free times</h2>
+    <div class="row">
+      <label for="fLen" id="fLenL" style="font-size:14px;color:var(--soft)">Length</label><select id="fLen"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 h</option><option value="90">1.5 h</option><option value="120">2 h</option></select>
+      <label for="fDays" id="fDaysL" style="font-size:14px;color:var(--soft)">Within the next</label><select id="fDays"><option value="3">3</option><option value="7" selected>7</option><option value="14">14</option><option value="30">30</option></select><span id="fDaysW" style="font-size:14px;color:var(--soft)">days</span>
+    </div>
+    <div class="row">
+      <label for="fFrom" id="fFromL" style="font-size:14px;color:var(--soft)">From</label><input type="time" id="fFrom" value="09:00"><label for="fTo" id="fToL" style="font-size:14px;color:var(--soft)">To</label><input type="time" id="fTo" value="17:00">
+      <div class="checks" style="margin:0"><label><input type="checkbox" id="fWeek" checked><span id="fWeekL">Weekdays only</span></label></div>
+    </div>
+    <ul class="list" id="slots"></ul>
+    <p class="note" id="findNote"></p>
+  </section>
   <section class="pane" id="tasks" hidden aria-labelledby="tasksH" style="margin-top:8px">
     <h2 id="tasksH" style="margin:0 0 4px">Tasks</h2>
     <ul class="list" id="taskList"></ul>
@@ -263,7 +277,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', detMoveL: 'moveTo', lLoc: 'location', lTz: 'tz', tz2L: 'tz2', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', detMoveL: 'moveTo', lLoc: 'location', lTz: 'tz', tz2L: 'tz2', weekStartL: 'weekStarts', weekNumsL: 'weekNums', findBtn: 'findTime', findH: 'findH', fLenL: 'length', fDaysL: 'within', fDaysW: 'daysWord', fFromL: 'from', fToL: 'to', fWeekL: 'weekdaysOnly', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
       $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('eTz').placeholder = W.tzPh; $('tz2').placeholder = W.tz2Ph; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
@@ -312,6 +326,17 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     $('taskAdd').addEventListener('submit', (e) => { e.preventDefault(); const title = $('taskT').value.trim(); if (!title) { $('taskT').focus(); return; }
       setTasks(C.withTask(tasks(), { title, due: $('taskD').value })); $('taskT').value = ''; $('taskD').value = ''; drawTasks(); render(); $('taskNote').textContent = W.taskAdded + ': ' + title; });
     $('taskClear').addEventListener('click', () => { setTasks(tasks().filter((t) => !t.done)); drawTasks(); render(); });
+    // finding a time: free slots across every calendar that is switched on (lib/calendar.js freeSlots); "Book" opens the editor on the slot
+    function drawSlots() {
+      const ul = $('slots'); ul.replaceChildren(); $('findNote').textContent = W.findHint;
+      const r = C.freeSlots(shown(), { from: now(), now: now(), days: +$('fDays').value, minutes: +$('fLen').value, dayStart: $('fFrom').value || '09:00', dayEnd: $('fTo').value || '17:00', weekdaysOnly: $('fWeek').checked });
+      if (!r.length) ul.append(el('li', 'empty', W.noSlots));
+      for (const x of r) { const li = el('li'), s0 = C.parseLocal(x.start), e0 = C.parseLocal(x.end), b = el('button', '', W.pickSlot); b.type = 'button'; b.setAttribute('aria-label', W.pickSlot + ': ' + C.fmtDay(s0, lang, { year: false }) + ', ' + C.fmtTime(s0, lang));
+        li.append(el('span', 'name', C.fmtDay(s0, lang, { year: false }) + ', ' + C.fmtTime(s0, lang) + ' – ' + C.fmtTime(e0, lang)), b);
+        b.addEventListener('click', () => { openEditor(null, C.startOfDay(s0)); $('eSd').value = C.dayKey(s0); $('eSt').value = x.start.slice(11); $('eEd').value = C.dayKey(e0); $('eEt').value = x.end.slice(11); $('eAll').checked = false; syncEditor(); $('eTitle').focus(); }); ul.append(li); }
+    }
+    $('findBtn').addEventListener('click', () => { const open = $('find').hidden; $('find').hidden = !open; $('findBtn').setAttribute('aria-expanded', String(open)); if (open) drawSlots(); });
+    for (const id of ['fLen', 'fDays', 'fFrom', 'fTo', 'fWeek']) $(id).addEventListener('change', drawSlots);
     const shown = () => C.shownEvents(store.events, cals(), [...extra(), ...sharedEvents(), ...feedEvents()]);
     const callShare = (method, share, { body, op } = {}) => fetch('/api/calshare' + (share ? '?id=' + share.id + (op ? '&op=' + op : '') : ''), { method, headers: { ...(share ? { 'x-cal-key': share.key } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
       .then(async (r) => ({ status: r.status, j: await r.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
