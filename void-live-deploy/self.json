@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:23:01Z",
+   "subject": "Scores: Next games on every team page and day view, the page's code in scores/app.js after the load event (16 KB of HTML), words that…"
+  },
+  {
    "at": "2026-10-26T03:20:33Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T03:10:03Z",
    "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
-  },
-  {
-   "at": "2026-10-26T03:08:43Z",
-   "subject": "Rules: every tower site gets its own page, even where we already stomp it (owner's words)"
   }
  ],
  "builders": {

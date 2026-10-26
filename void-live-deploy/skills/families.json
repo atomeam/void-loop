@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 4,
+  "experiment": 5,
   "tested": 26,
   "checked": 17,
   "proven": 297
@@ -1425,7 +1425,7 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 2,
     "checked": 1,
     "proven": 29
@@ -1889,6 +1889,14 @@
       "next": "live",
       "words": "source 2 of 3: espn.com, jolpi.ca, openligadb.de; named on the card; a second source; no kept live answer yet. One kept live answer from espn.com would make it proven"
      }
+    },
+    {
+     "name": "sports-browse",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
     },
     {
      "name": "pdf-card",
