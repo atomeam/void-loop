@@ -2631,12 +2631,31 @@ say('nothing selected to remove');
       lastNear = j && j.near && !page ? { ask: text, near: j.near } : null; // the skill this ask nearly was, for the "Did you mean" line if nothing answers
       await mdReady;
       if (vpageEl !== el) return 'answer';
-      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
-      const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
+      // a refusal from the model is no answer (lib/no-answer.js): an honest not-found card that offers the closest guess as a question, with no sources, no stats and no "Adds to Verse"
+      if (j && j.noAnswer && !page) {
+        const g = String(j.guess || '').slice(0, 120);
+        el.dataset.notFound = '1';
+        el.innerHTML = '<h2>' + esc(text) + '</h2><p>I could not find \u201c' + esc(String(text).replace(/[?!.]+$/, '').slice(0, 120)) + '\u201d.</p>'
+          + (g ? '<p>Did you mean <a href="#" data-ask="' + esc('tell me about ' + g) + '">' + esc(g) + '</a>?</p>' : '')
+          + '<p class="thin" style="color:#8a8a8a;font-size:13px">A clue helps: where you saw it, who is in it, what it is.</p>';
+        say(''); reportMiss(text, 'none'); return 'answer';
+      }
+      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text, true); }
+      const srcs = (j.sources || []).filter((s) => /^https:\/\/[^\s"'<>]+$/i.test(String(s.url || ''))).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
-      el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
+      const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, ''), shown = j.name && flat(j.name).length > 2 && (flat(text).includes(flat(j.name)) || flat(j.name).includes(flat(text))) ? String(j.name) : text; // the thing's own name, cased, when it is what was asked
+      el.innerHTML = '<h2>' + esc(shown) + '</h2>' + about + (j.fuzzy ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">A guess: nothing I read names \u201c' + esc(String(text).slice(0, 80)) + '\u201d exactly.</p>' : '') + fixHtml(j.answer)
         + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Verse' : j.told ? 'from what you told me · written by Verse' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Verse' : 'written by Verse, from what it knows') + '</div>';
+      // a real, licensed picture of a real place, animal, event or work (lib/free-pics.js, chosen by the server from the fetched source): the art box shows it, with its credit and an "archive photo" label; never for a character or a person
+      if (j.pic && /^https:\/\//i.test(String(j.pic.url || '')) && !page) {
+        const im = document.createElement('img'); im.alt = String(j.pic.alt || '').slice(0, 140); im.src = j.pic.url; im.referrerPolicy = 'no-referrer'; im.style.cssText = 'position:absolute;width:0;height:0;opacity:0;pointer-events:none'; /* the art box shows it */ im.addEventListener('error', () => { im.remove(); const c0 = el.querySelector('.vc-credit'); if (c0) c0.remove(); });
+        const h2e = el.querySelector('h2'); if (h2e) h2e.after(im);
+        const cr = document.createElement('p'); cr.className = 'vc-credit'; cr.style.cssText = 'font-size:11px;color:#9aa;margin:4px 18px 0'; cr.append('Archive photo \u00b7 ');
+        import('/lib/daily-art.js').then((M) => { const sp = document.createElement('span'); M.mountCredit(sp, { credit: j.pic.credit, source: j.pic.source }); cr.append(sp); }).catch(() => cr.remove());
+        const srcEl = el.querySelector('.src'); if (srcEl) srcEl.after(cr); else el.append(cr);
+      }
+      if (j.desc) { el.dataset.cardDesc = String(j.desc).slice(0, 160); el.dataset.cardExtract = String(j.answer).slice(0, 160); if (j.series) el.dataset.cardSeries = String(j.series).slice(0, 60); keepCard(el); } // the kind the source says it is types the card (lib/card-kinds.js)
       addCopy(el, false);
       say('');
       return 'answer';
@@ -2861,7 +2880,7 @@ say('nothing selected to remove');
     // reading them means no referent was found; one with none read means nothing was looked up (owner, 2026-10-16: tell them apart)
     let lookedIn = [];
     const lookedUp = () => (lookedIn.length ? 'none:' + lookedIn.join(',') : 'unreached');
-    async function showArticle(query) {
+    async function showArticle(query, fromAnswer = false) {
       const topic = topicFrom(query);
       lookedIn = [];
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">…</div>'; });
@@ -2896,6 +2915,8 @@ say('nothing selected to remove');
         const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
         const j = await r.json();
         if (vpageEl !== el) return;
+        // only a fuzzy neighbour came back (a name that lives in a section of a list page, "Happy Time Harry", finds "Happy Harry's"): the answer route reads the section, or says it found nothing
+        if (!fromAnswer && !corrected && j.type !== 'disambiguation') { const NA = await import('/lib/no-answer.js').catch(() => null); if (vpageEl !== el) return; if (NA && NA.isNameAsk(topic) && !NA.sourcesMatch(topic, [{ title: j.title || hit.title, text: (j.description || '') + ' ' + (j.extract || '') }])) return showAnswer(topic); }
         // a name with several meanings (Mercury, Springfield): list them and let the person pick, never guess one
         if (j.type === 'disambiguation') {
           let opts = [];
@@ -3011,6 +3032,8 @@ say('nothing selected to remove');
           return 'wiktionary';
         } catch (__) {
           if (vpageEl !== el) return 'none';
+          // a name no article holds may sit in a section of a list page: the answer route reads it, or says it found nothing
+          if (!fromAnswer && lookedIn.includes('wikipedia')) { const NA = await import('/lib/no-answer.js').catch(() => null); if (NA && NA.isNameAsk(topic) && vpageEl === el) return showAnswer(topic); }
           el.innerHTML = '<h2>' + esc(topic) + '</h2><p>' + (lookedIn.length ? 'I don\'t know this yet. I\'ve noted it, so I can learn it.' : 'I couldn\'t look this up just now: none of my sources answered. I\'ve noted it; try again in a moment.') + '</p>';
           return 'none';
         }

@@ -18,13 +18,15 @@ export const TITLE_MAX = 600; // the whole ask shows as the title (owner, 2026-1
 /** the facts a card carries, cleaned and capped: { v, t, k, b, src: [{ t, u }] }. Pure. */
 export function dataOf({ title, kind, body, sources, n } = {}) {
   const gen = Math.floor(+n); // version history: how many times this card has been copied on from a pasted one (2 = the copy of a pasted card); only 2..99 ride along
-  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: clip(title, TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.t || s.u) };
+  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: clip(title, TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.u) }; // a source with no https link cannot be checked, so it is not carried (owner, 2026-10-26)
 }
 /** the code line for a card. Pure. */
 // short on purpose (owner, 2026-10-17: "are the letters necessary to copy along with the card?"): the readable text above it already holds the
 // whole card, so the code carries only enough to reopen it by itself (title, kind, the start of the body, two sources); a paste of the whole copied
 // text gets the full body back from the readable part
-export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n }); return MARK + b64(JSON.stringify({ ...x, b: x.b.slice(0, 200), src: x.src.slice(0, 2) })); };
+// the code line's body ends at a word, never mid-word ("founded by entrepreneur Har"), and only a source with a real https link rides in it
+export const cutAtWord = (t, n) => { const s = String(t || ''); if (s.length <= n) return s; const cut = s.slice(0, n), sp = cut.search(/\s\S*$/); return (sp > n * 0.5 ? cut.slice(0, sp) : cut).trim(); };
+export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n }); return MARK + b64(JSON.stringify({ ...x, b: cutAtWord(x.b, 200), src: x.src.slice(0, 2) })); };
 /** the text a person copies or saves: readable, then the code. Pure. */
 export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
