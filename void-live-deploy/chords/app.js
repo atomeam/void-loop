@@ -1,5 +1,5 @@
 // /chords/ (Versus' chord and scale finder lane site): chords, scales and keys from lib/music-tools.js, drawn as piano keys and guitar fingerings, and played.
-import { CHORD_TYPES, SCALE_TYPES, NOTE_NAMES, chordOf, chordMidi, guitarVoicings, scaleOf, scalesWith, identifyChord, chordsInKey, nextChords, PROGRESSIONS, keySignature, circleOfFifths, transposeSymbol, isBlack, pitchClass, STRINGS_STANDARD, noteName } from '/lib/music-tools.js';
+import { CHORD_TYPES, SCALE_TYPES, NOTE_NAMES, chordOf, chordMidi, guitarVoicings, scaleOf, scalesWith, identifyChord, chordsInKey, nextChords, PROGRESSIONS, keySignature, circleOfFifths, transposeSymbol, isBlack, pitchClass, STRINGS_STANDARD, noteName, fretboardMap, fretsToPcs } from '/lib/music-tools.js';
 import { audio, startNote } from '/lib/music-audio.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { $, boot, t, wire, num } from '/lib/music-ui.js';
@@ -47,6 +47,32 @@ function scaleView() {
     for (const [prog, name] of PROGRESSIONS) { const syms = prog.split(' ').map((r) => lookup[r]); if (syms.some((x) => !x)) continue; const li = document.createElement('li'); li.textContent = prog + ' = ' + syms.join(' ') + ' · ' + name; ul.append(li); }
     if (!ul.children.length) { const li = document.createElement('li'); li.textContent = t('No common progression fits this mode.'); ul.append(li); }
   }
+  neckView();
+}
+const NS = 'http://www.w3.org/2000/svg', NECK = { x0: 26, fw: 29, sh: 22, top: 14, frets: 12 };
+/** a neck drawn as an SVG into `box`: strings lowest at the bottom, frets 0 to 12 left to right; cell(string, fret) gives { fill, label } for a dot or null. */
+function drawNeck(box, cell, onPress) {
+  box.textContent = ''; const { x0, fw, sh, top, frets } = NECK, W = x0 + frets * fw + 6, H = top + 5 * sh + 26, svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('role', 'img');
+  const el = (n, a, tx) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (tx != null) e.textContent = tx; svg.append(e); return e; };
+  for (let f = 0; f <= frets; f++) el('line', { x1: x0 + f * fw, y1: top, x2: x0 + f * fw, y2: top + 5 * sh, stroke: 'currentColor', 'stroke-width': f === 0 ? 3 : 1, opacity: f === 0 ? 0.9 : 0.4 });
+  for (const f of [3, 5, 7, 9, 12]) el('text', { x: x0 + (f - 0.5) * fw, y: H - 6, 'text-anchor': 'middle' }, String(f));
+  for (let i = 0; i < 6; i++) { const y = top + (5 - i) * sh; el('line', { x1: x0, y1: y, x2: x0 + frets * fw, y2: y, stroke: 'currentColor', 'stroke-width': 0.6 + (5 - i) * 0.0 + (i === 0 ? 1.4 : i === 1 ? 1.1 : i === 2 ? 0.9 : 0.6), opacity: 0.55 }); el('text', { x: 2, y: y + 3 }, noteName(STRINGS_STANDARD[i]).replace(/\d/, ''));
+    for (let f = 0; f <= frets; f++) { const c = cell(i, f), cx = f === 0 ? x0 - 11 : x0 + (f - 0.5) * fw; if (c) { el('circle', { cx, cy: y, r: 8, fill: c.fill, stroke: 'var(--accent)', 'stroke-width': 1.2 }); if (c.label) el('text', { x: cx, y: y + 3, 'text-anchor': 'middle', style: c.fill === 'var(--accent)' ? 'fill:var(--on-accent)' : '' }, c.label); }
+      if (onPress) { const hit = el('rect', { x: f === 0 ? x0 - 22 : x0 + (f - 1) * fw, y: y - sh / 2, width: f === 0 ? 22 : fw, height: sh, fill: 'transparent', style: 'cursor:pointer' }); hit.addEventListener('click', () => onPress(i, f)); } } }
+  box.append(svg); return svg;
+}
+function neckView() {
+  const s = scaleOf($('sRoot').value, $('sType').value); if (!s) return; const m = fretboardMap(s.pcs, s.root);
+  const svg = drawNeck($('neck'), (i, f) => (m[i][f] ? { fill: m[i][f] === 2 ? 'var(--accent)' : 'var(--tint)', label: NOTE_NAMES[(STRINGS_STANDARD[i] + f) % 12] } : null)); svg.setAttribute('aria-label', s.name + ' on a guitar neck: ' + s.notes.join(' '));
+}
+const held = [null, null, null, null, null, null];
+function pickNeck() {
+  drawNeck($('pickNeck'), (i, f) => (held[i] === f ? { fill: 'var(--accent)', label: NOTE_NAMES[(STRINGS_STANDARD[i] + f) % 12] } : null), (i, f) => { held[i] = held[i] === f ? null : f; neckSync(); });
+}
+function neckSync() {
+  for (const sel of $('neckSel').querySelectorAll('select')) { const v = held[+sel.dataset.s]; sel.value = v === null ? 'x' : String(v); }
+  pickNeck(); const pcs = fretsToPcs(held), ids = identifyChord(pcs);
+  $('neckOut').textContent = pcs.length < 2 ? t('Tap the neck or use the lists to hold frets; the chord is named here.') : (ids.length ? t('This is') + ' ' + ids.slice(0, 4).map((c) => c.symbol + ' (' + c.name + ')').join(', ') + '.' : t('No chord has exactly these notes.')) + ' ' + t('Notes') + ': ' + pcs.map((p) => NOTE_NAMES[p]).join(' ') + '.';
 }
 const picked = new Set();
 function pickView() {
@@ -70,4 +96,6 @@ wire($('cPlay'), 'click', () => playMidis(chordMidi($('cRoot').value, $('cType')
 wire($('sPlay'), 'click', () => { const s = scaleOf($('sRoot').value, $('sType').value); if (s) playMidis([...s.intervals.map((i) => 60 + s.root + i), 72 + s.root], 0.28); });
 for (const b of $('pickNotes').children) wire(b, 'click', () => { const pc = pitchClass(b.dataset.pc); if (picked.has(pc)) picked.delete(pc); else picked.add(pc); b.setAttribute('aria-pressed', String(picked.has(pc))); pickView(); });
 wire($('trIn'), 'input', transposeView); wire($('trBy'), 'change', transposeView);
-chordView(); scaleView(); pickView(); circle(); transposeView();
+for (const sel of $('neckSel').querySelectorAll('select')) wire(sel, 'change', () => { held[+sel.dataset.s] = sel.value === 'x' ? null : +sel.value; neckSync(); });
+wire($('neckClear'), 'click', () => { held.fill(null); neckSync(); });
+chordView(); scaleView(); pickView(); circle(); transposeView(); neckView(); pickNeck();

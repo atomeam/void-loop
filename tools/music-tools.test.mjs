@@ -75,3 +75,9 @@ test('a recording becomes a sheet', () => {
   const ev = [{ t: 0, midi: 60, down: true }, { t: 600, midi: 60, down: false }, { t: 600, midi: 64, down: true }, { t: 600, midi: 67, down: true }, { t: 1200, midi: 64, down: false }, { t: 1200, midi: 67, down: false }, { t: 2400, midi: 62, down: true }, { t: 3000, midi: 62, down: false }];
   assert.equal(M.recordingToSheet(ev, 100), 'C4 [E4 G4] -:2 D4'); assert.equal(M.recordingToSheet([], 100), ''); assert.deepEqual(M.parseSheet(M.recordingToSheet(ev, 100)).bad, []);
 });
+test('polyrhythm, strobe and the neck', () => {
+  const p = M.polyTicks(120, '4/4', 3); assert.equal(p.length, 3); assert.equal(p[1].at, 2 / 3); assert.equal(p[0].level, 3); assert.deepEqual(M.polyTicks(120, '4/4', 1), []); assert.equal(M.polyTicks(60, '3/4', 4)[2].at, 1.5);
+  assert.equal(M.strobeStep(0), 0); assert.equal(M.strobeStep(1), 0); assert.ok(M.strobeStep(20) > 0 && M.strobeStep(-20) < 0); assert.equal(M.strobeStep(500), 14); assert.equal(M.strobeStep(NaN), 0);
+  const m = M.fretboardMap(M.scaleOf('A', 'minorPentatonic').pcs, 9); assert.equal(m.length, 6); assert.equal(m[0].length, 13); assert.equal(m[0][5], 2); assert.equal(m[0][0], 1); assert.equal(m[0][1], 0); // low E string: fret 5 is A (root), open E is in the scale, fret 1 (F) is not
+  assert.deepEqual(M.fretsToPcs([null, 3, 2, 0, 1, 0]).sort((a, b) => a - b), [0, 4, 7]); assert.equal(M.identifyChord(M.fretsToPcs([null, 3, 2, 0, 1, 0]))[0].symbol, 'C');
+});
