@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES } from '../void-live-deploy/lib/markets.js';
+import { capsRows, scanRows, screen, resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES } from '../void-live-deploy/lib/markets.js';
 import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP } from '../void-live-deploy/functions/api/markets.js';
 import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
@@ -100,9 +100,9 @@ test('the endpoint: bounds, closed lists, a rate limit, and the old crypto list 
 });
 test('every source down: a day in the bundled record still has its close, said to be from the record; any other day is honestly nothing', async () => {
   const down = fake({ down: ['stooq.com', 'query1.finance.yahoo.com', 'api.coingecko.com', 'api.frankfurter.dev'] });
-  const q = await lookQuote(resolve('aapl'), '5y', '2024-12-31', down, NOW);
-  assert.equal(q.ok, true); assert.equal(q.partial, true); assert.deepEqual(q.closeOn, { date: '2024-12-31', close: 250.42 }); assert.equal(q.source, 'Verse year-end record'); assert.equal(q.currency, 'USD'); assert.equal(q.price, null); assert.match(q.note, /did not answer/);
-  assert.equal((await lookQuote(resolve('aapl'), '5y', '2024-12-30', down, NOW)).ok, false, 'a day that is not in the record'); assert.equal((await lookQuote(resolve('aapl'), '5y', null, down, NOW)).ok, false, 'no day asked, no record used');
+  const q = await lookQuote(resolve('spx'), '5y', '2024-12-31', down, NOW);
+  assert.equal(q.ok, true); assert.equal(q.partial, true); assert.deepEqual(q.closeOn, { date: '2024-12-31', close: 5881.63 }); assert.equal(q.source, 'Verse year-end record (AP market reports)'); assert.equal(q.currency, 'pts'); assert.equal(q.price, null); assert.match(q.note, /did not answer/);
+  assert.equal((await lookQuote(resolve('spx'), '5y', '2024-12-30', down, NOW)).ok, false, 'a day that is not in the record'); assert.equal((await lookQuote(resolve('spx'), '5y', null, down, NOW)).ok, false, 'no day asked, no record used'); assert.equal((await lookQuote(resolve('aapl'), '5y', '2024-12-31', down, NOW)).ok, false, 'a share close that could not be confirmed is not kept');
 });
 test('the strip and the watchlist cannot starve the quote: each counts against its own bucket, once per fresh lookup, and a repeat from the edge cache counts nothing', async () => {
   const kept = new Map(); const had = globalThis.caches;
@@ -115,6 +115,17 @@ test('the strip and the watchlist cannot starve the quote: each counts against i
     assert.equal((await ask('?s=aapl&r=1y')).status, 200); assert.deepEqual([...bucketsUsed()].sort(), ['markets', 'markets-batch']);
     const before = kept.size; await ask('?strip=1'); await ask('?s=aapl&r=1y'); assert.equal(kept.size, before, 'repeats are answered from the cache and count nothing');
   } finally { globalThis.caches = had; }
+});
+test('the coin table and the screener: rows, filters and the endpoint', async () => {
+  const ask = (qs) => onRequestGet({ request: new Request('https://a-to-mind.com/api/markets' + qs), env: {}, fetchFn: fake() });
+  const caps = await (await ask('?caps=1')).json(); assert.equal(caps.ok, true); assert.equal(caps.coins.length, 50); assert.deepEqual([caps.coins[0].rank, caps.coins[0].name, caps.coins[0].sym], [1, 'Bitcoin', 'BTC']); assert.ok(caps.total > 1e12); assert.equal(caps.source, 'CoinGecko');
+  assert.deepEqual(capsRows([{ id: 'x', symbol: 'x', name: 'X', current_price: 1 }, { nothing: 1 }, null]).map((r) => r.sym), ['X']);
+  const scan = await (await ask('?scan=1')).json(); assert.equal(scan.ok, true); assert.equal(scan.universe.coins, 30); assert.ok(scan.rows.filter((r) => r.group === 'stocks').length === 12 && scan.rows.filter((r) => r.group === 'indices').length === 4);
+  const a = scan.rows.find((r) => r.sym === 'AAPL'); assert.equal(a.pct.toFixed(2), '4.72'); assert.equal(a.below.toFixed(1), '18.0'); assert.ok(a.volX > 0.5 && a.volX < 2); assert.equal(a.basis, '52-week high');
+  const rows = [{ sym: 'A', group: 'stocks', pct: 3, below: 2, volX: 2.5 }, { sym: 'B', group: 'stocks', pct: -4, below: 30, volX: 0.8 }, { sym: 'C', group: 'coins', pct: 1, below: 50, volX: null }, { sym: 'D', group: 'indices', pct: 0.2, below: 0.5, volX: 1 }];
+  const syms = (f) => screen(rows, f).map((r) => r.sym).join('');
+  assert.equal(syms({}), 'ABCD'); assert.equal(syms({ group: 'coins' }), 'C'); assert.equal(syms({ minPct: 1 }), 'AC'); assert.equal(syms({ maxPct: 0 }), 'B'); assert.equal(syms({ nearHigh: 5 }), 'AD'); assert.equal(syms({ minVolX: 2 }), 'A', 'a coin has no volume ratio, so it never passes a volume filter');
+  assert.equal(syms({ sort: 'pct' }), 'ACDB'); assert.equal(syms({ sort: '-pct' }), 'BDCA'); assert.equal(syms({ sort: 'below' }), 'DABC'); assert.equal(syms({ group: 'junk', minPct: 'abc' }), 'ABCD', 'nonsense is ignored');
 });
 test('registered everywhere a page must be: the ask bar, the service worker, the SEO list, the page itself', () => {
   assert.ok(TOOLS['/markets/']); assert.ok(RELATED['/markets/'] && RELATED['/markets/'].includes('/convert/'));

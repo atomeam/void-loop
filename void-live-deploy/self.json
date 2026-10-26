@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:59:30Z",
+   "subject": "Music floor: seo rows take a setting in the link (?bpm=, ?song=, ?tun=), the hub has no asks row"
+  },
+  {
+   "at": "2026-10-26T03:43:23Z",
+   "subject": "Music floor: generated files after the merge (skill index, deps, families, what, self, sitemap)"
+  },
+  {
    "at": "2026-10-26T03:41:15Z",
    "subject": "Music floor: a page for every lane site (/metronome/, /piano/, /tuner/, /bpm/, /chords/) and the hub /music/"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T03:29:23Z",
    "subject": "Tower gate: sports: cbssports.com,sports: bbc.com,sports: sofascore.com,sports: flashscore.com,sports: livescore.com,sports measured…"
-  },
-  {
-   "at": "2026-10-26T03:28:48Z",
-   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:28:42Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com measured against their live sites"
   }
  ],
  "builders": {

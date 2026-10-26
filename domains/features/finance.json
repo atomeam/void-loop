@@ -34,7 +34,7 @@
      "detail": "Indices, top gainers/losers, most active, trending tickers, sectors",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending; plus the Verse reports daily wrap"
+     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending; plus the Verse reports daily wrap; /markets/caps/ ranks the 50 largest coins by market cap"
     },
     {
      "group": "core",
@@ -105,8 +105,8 @@
      "name": "Stock screener",
      "detail": "Prebuilt screeners and custom saved screeners by filters",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/markets/screener/: filters over a small fixed universe (12 large US stocks, 4 indices, 30 coins) by the move, distance from the high and volume against average, with a chart and a watchlist star on every row; not every listed company"
     },
     {
      "group": "power",
@@ -235,9 +235,9 @@
   "historical data table with CSV download",
   "portfolio with cost basis and gain",
   "per-ticker headlines and partner news (no free feed is permitted for this use; Verse reports covers what the data shows)",
-  "screener",
   "price alerts",
-  "financial statements, P/E and other fundamentals (no free, reliable, permitted source)"
+  "financial statements, P/E and other fundamentals (no free, reliable, permitted source)",
+  "company market-cap ranking and a screener over every listed company (no free keyless source for share counts or the full list)"
  ],
  "verse_extra": [
   "read-only Bitcoin address lookup (mempool.space)",
@@ -246,7 +246,9 @@
   "data source and delay said on every quote",
   "close on any chosen day",
   "works with the last saved prices offline",
-  "Verse reports: a daily wrap and a data-only 'why is it moving' line, validated so it never invents a number or a cause"
+  "Verse reports: a daily wrap and a data-only 'why is it moving' line, validated so it never invents a number or a cause",
+  "/markets/caps/: the 50 largest coins by market cap, sortable, with 24h and 7d moves, volume and a 7d chart (coins only: no free source for company market caps)",
+  "/markets/screener/: a screener over a small, plainly labelled universe"
  ],
  "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades.",
  "auto": {

@@ -11,6 +11,10 @@ export const SITE = 'https://a-to-mind.com';
 /** one row per tool page: path (as lib/toolkit.js TOOLS names it), name, what it does (true of the page), the phrases people search, the setting
  *  the link takes (an EntryPoint urlTemplate with one placeholder, or none) and the common asks shown as links on the page */
 export const PAGES = Object.freeze([
+  { path: '/photos/', name: 'Photo tools: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
+    asks: ['compress image online', 'convert png to webp', 'photo editor online', 'crop photo online', 'remove exif data from photo', 'image compressor no upload', 'compress images in bulk to zip'],
+    action: { template: '/photos/?tab={tab}', input: 'tab' },
+    links: [['Compress images', '/photos/?tab=out'], ['Crop a photo', '/photos/?tab=crop'], ['Brightness and filters', '/photos/?tab=adj'], ['Check a photo for GPS', '/photos/?tab=info'], ['Deutsch', '/photos/?lang=de']] },
   { path: '/color/', name: 'Colour codes, shades and schemes', does: 'Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.',
     asks: ['hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour shades and tints', 'colour scheme generator'],
     action: { template: '/color/?c={color}', input: 'color' },
@@ -79,7 +83,7 @@ export const PAGES = Object.freeze([
   { path: '/markets/', name: 'Markets', does: 'Quotes and charts for stocks, ETFs, indices, currencies and crypto by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, the close on any day, a watchlist on your device, compare two symbols, top movers. Prices may be delayed. No ads, no account.',
     asks: ['stock price', 'stock quote', 'stock chart', 'aapl stock price', 'bitcoin price chart', 'eur usd exchange rate chart', 'compare two stocks', 'stock watchlist no account'],
     action: { template: '/markets/?s={symbol}', input: 'symbol' },
-    links: [['Apple (AAPL)', '/markets/?s=AAPL'], ['Tesla', '/markets/?s=TSLA'], ['S&P 500', '/markets/?s=SPX'], ['Bitcoin', '/markets/?s=BTC'], ['Euro to US dollar', '/markets/?s=EURUSD'], ['Apple on 31 Dec 2024', '/markets/?s=AAPL&r=5y&on=2024-12-31'], ['Nvidia over five years', '/markets/?s=NVDA&r=5y'], ['Apple against Microsoft', '/markets/?s=AAPL&c=MSFT']] },
+    links: [['Apple (AAPL)', '/markets/?s=AAPL'], ['Tesla', '/markets/?s=TSLA'], ['S&P 500', '/markets/?s=SPX'], ['Bitcoin', '/markets/?s=BTC'], ['Euro to US dollar', '/markets/?s=EURUSD'], ['The S&P 500 on 31 Dec 2024', '/markets/?s=SPX&r=5y&on=2024-12-31'], ['Nvidia over five years', '/markets/?s=NVDA&r=5y'], ['Apple against Microsoft', '/markets/?s=AAPL&c=MSFT']] },
   { path: '/calendar/', name: 'Calendar', does: 'A calendar on your device: month, week and day views, events that repeat (daily, weekly, monthly, yearly, chosen weekdays), reminders that fire on the device, invites as a link or an email with the .ics, import and export .ics, quick add in plain words, search and keyboard arrows. Nothing goes to a server; it works offline.',
     asks: ['online calendar', 'calendar with reminders', 'recurring events calendar', 'calendar invite link', 'import ics file', 'week view calendar', 'free calendar app no account'],
     action: { template: '/calendar/?q={event}', input: 'event' },

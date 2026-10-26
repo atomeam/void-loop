@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 870,
+ "counted": 873,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -686,7 +686,7 @@
    "skills": 3,
    "direct": 3,
    "dependants": 3,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/stage-port.js",
@@ -836,6 +836,13 @@
    "tests": 2
   },
   {
+   "file": "lib/photo-ask.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 0
+  },
+  {
    "file": "lib/template-list.js",
    "skills": 2,
    "direct": 1,
@@ -850,14 +857,14 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
+   "file": "lib/pay-share.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
-   "file": "lib/pay-share.js",
+   "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
    "dependants": 24,
@@ -2223,6 +2230,13 @@
   },
   {
    "file": "lib/password.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/photo-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6255,6 +6269,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/store/[[path]].js",
+    "lib/photo-edit.js",
     "lib/store.js"
    ],
    "reachedBy": [
@@ -6324,6 +6339,19 @@
     "lib/bench-asks.js",
     "lib/built-detail.js"
    ]
+  },
+  "lib/photo-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/imgfit.js",
+    "skills/photo-tools.js"
+   ]
+  },
+  "lib/photo-edit.js": {
+   "imports": [
+    "lib/pay-share.js"
+   ],
+   "importedBy": []
   },
   "lib/photo-library.js": {
    "imports": [],
@@ -9784,7 +9812,8 @@
   },
   "skills/imgfit.js": {
    "imports": [
-    "lib/imgfit.js"
+    "lib/imgfit.js",
+    "lib/photo-ask.js"
    ],
    "importedBy": []
   },
@@ -10713,6 +10742,12 @@
    "imports": [
     "lib/stage-pack.js",
     "lib/safety.js"
+   ],
+   "importedBy": []
+  },
+  "skills/photo-tools.js": {
+   "imports": [
+    "lib/photo-ask.js"
    ],
    "importedBy": []
   },

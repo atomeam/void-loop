@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-25",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 6,
+  "experiment": 7,
   "tested": 26,
   "checked": 17,
   "proven": 297
@@ -24,7 +24,7 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 2,
+    "experiment": 3,
     "tested": 10,
     "checked": 2,
     "proven": 36
@@ -39,6 +39,14 @@
      "success_rate": 1,
      "promoted": "2026-10-24",
      "streak": 2
+    },
+    {
+     "name": "photo-tools",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-25",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-26"
     },
     {
      "name": "gradient",

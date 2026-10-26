@@ -10,6 +10,7 @@
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
+  '/photos/': 'Photo tools',
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
@@ -17,6 +18,7 @@ export const TOOLS = Object.freeze({
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 export const RELATED = Object.freeze({
+  '/photos/': ['/resize-image/', '/color/', '/convert/'],
   '/color/': ['/gradient/', '/wheel/', '/base-converter/'],
   '/gradient/': ['/color/', '/wheel/'],
   '/wheel/': ['/random/', '/random-user/', '/flip/', '/gradient/', '/color/'],
@@ -57,6 +59,7 @@ export const RELATED = Object.freeze({
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 export const CARD_ASK = Object.freeze({
+  '/photos/': 'edit a photo',
   '/color/': 'color #ff5733', '/gradient/': 'gradient from red to blue', '/wheel/': 'spin the wheel with ann, bob and cat', '/random-user/': 'fake name generator',
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
@@ -188,6 +191,11 @@ const ROUTES = [
   [/^(?:0x[0-9a-f]+|0b[01]+|\d+) (?:in|to|as) (binary|hex(?:adecimal)?|octal|decimal|base \d+)$/i, (m, t) => { const v = t.split(/\s/)[0], b = /^bin/i.test(m[1]) ? 2 : /^hex/i.test(m[1]) ? 16 : /^oct/i.test(m[1]) ? 8 : /^dec/i.test(m[1]) ? 10 : +m[1].replace(/\D/g, ''); return '/base-converter/?v=' + encodeURIComponent(v) + '&b=' + b; }],
   [/^#?[0-9a-f]{6}$|^#?[0-9a-f]{3}$|^rgba?\(.+\)$|^hsla?\(.+\)$/i, (m, t) => '/color/?c=' + encodeURIComponent(t.replace(/^#/, ''))],
   [/^(?:a )?gradient(?: from (.+))?$/i, () => '/gradient/'],
+  // photo tools: 'compress image', 'crop photo', 'convert png to webp', 'view exif', 'strip exif', 'squoosh' (lib/photo-ask.js); a sized ask stays with the resizer below
+  [/^(?:please )?(?:strip|remove|clean|scrub) (?:the )?(?:exif|metadata|gps|location)(?: (?:from|off|of|in) (?:an? |my |the |this )?(?:photo|picture|image|pic|jpe?g|png)s?)?$|^(?:exif|metadata) (?:stripper|remover|cleaner)$/i, () => '/photos/?tab=info'],
+  [/^(?:please )?(?:compress|optimi[sz]e|convert|crop|rotate|flip|edit|annotate) (?:an? |my |the |this )?(?:image|photo|picture|pic|jpe?g|png|webp|avif)s?(?: (?:to|into) (?:jpe?g|png|webp|avif))?$|^(?:png|jpe?g|webp|avif) to (?:png|jpe?g|webp|avif)$|^(?:photo|image) (?:editor|compressor)$/i, (m, t) => '/photos/' + (/^(?:please )?(?:crop|rotate|flip)/i.test(t) ? '?tab=crop' : '')],
+  [/^(?:view |see |check )?(?:the )?(?:exif|metadata)(?: viewer| of (?:an? |my |the )?(?:photo|picture|image))?$/i, () => '/photos/exif/'],
+  [/^(squoosh|tinypng|photopea|iloveimg)$/i, (m) => '/photos/' + m[1].toLowerCase() + '/'],
   [/^(?:resize|shrink|crop) (?:an? |my |the )?(?:image|photo|picture|signature)(?: to (.+))?$/i, () => '/resize-image/'],
   [/^(?:count (?:the )?words(?: in)?|how many words(?: in)?|word count(?: of)?) (.+)$/i, (m) => '/word-count/?t=' + encodeURIComponent(m[1])],
   [/^(?:start (?:a )?)?(?:stopwatch|timer|countdown)(?: (?:for|of) (.+))?$|^(\d+ ?(?:min(?:ute)?s?|sec(?:ond)?s?|hours?)) timer$/i, (m) => '/stopwatch/' + (m[1] || m[2] ? '?t=' + encodeURIComponent(m[1] || m[2]) : '')],

@@ -181,7 +181,7 @@ export function mergeAuto(file, floor, scanned, date = today()) {
   const own = !file || file.source === 'auto';
   if (own) {
     const sites = { ...((file && file.sites) || {}), ...scanned };
-    return { floor: floor.id, verse_page: floor.page, researched: date, source: 'auto', method: 'tools/feature-scan.mjs: each site\'s own pages read at phone width; features by the model or the page\'s headings, lists, buttons and pricing rows; Verse\'s page matched by key words (a builder should confirm on the live site)', sites, gaps: gapsOf(sites), verse_extra: (file && file.verse_extra) || [], auto: { scanned: date, queued: (file && file.auto && file.auto.queued) || [] } };
+    return { floor: floor.id, verse_page: floor.page, researched: date, source: 'auto', method: 'tools/feature-scan.mjs: each site\'s own pages read at phone width; features by the model or the page\'s headings, lists, buttons and pricing rows; Verse\'s page matched by key words (a builder should confirm on the live site)', sites, gaps: gapsOf(sites), verse_extra: (file && file.verse_extra) || [], auto: { scanned: date, queued: (file && file.auto && file.auto.queued) || [] }, ...(file && file.re ? { re: file.re } : {}) };
   }
   const prev = file.auto || {}, sites = { ...(prev.sites || {}), ...scanned };
   return { ...file, auto: { ...prev, scanned: date, sites, gaps: gapsOf(sites), queued: prev.queued || [] } };
@@ -199,7 +199,7 @@ export function putMine(current, mine) {
   if (!current) return m;
   if (current.source === 'auto' && m && m.source === 'auto') {
     const sites = newerSites(current.sites, m.sites);
-    return { ...current, ...m, researched: later(current.researched, m.researched), sites, gaps: gapsOf(sites), auto: { ...(current.auto || {}), ...(m.auto || {}), scanned: later(current.auto && current.auto.scanned, m.auto && m.auto.scanned), queued: queuedOf((current.auto || {}).queued, (m.auto || {}).queued) } };
+    return { ...current, ...m, researched: later(current.researched, m.researched), sites, ...(current.re ? { re: current.re } : {}), gaps: gapsOf(sites), auto: { ...(current.auto || {}), ...(m.auto || {}), scanned: later(current.auto && current.auto.scanned, m.auto && m.auto.scanned), queued: queuedOf((current.auto || {}).queued, (m.auto || {}).queued) } };
   }
   if (!ma) return current;
   if (current.source === 'auto') return { ...current, auto: { ...(current.auto || {}), queued: queuedOf((current.auto || {}).queued, ma.queued) } };
@@ -225,7 +225,8 @@ export function nextJobs({ order, floors, files, max = 3 }) {
   const floorOf = new Map(); for (const fl of floors) for (const s of fl.sites) floorOf.set(s.id, { fl, s });
   for (const id of order) {
     const hit = floorOf.get(id); if (!hit) continue; const file = files[hit.fl.slug]; if (!file) continue;
-    const entries = [file.sites && file.sites[hit.s.host], file.auto && file.auto.sites && file.auto.sites[hit.s.host]].filter(Boolean);
+    const re = file.re && file.re.sites && file.re.sites[hit.s.host], // found by reverse engineering (tools/site-re.mjs): read or observed in the site's code, never a guess, and after hand research and the scan
+      entries = [file.sites && file.sites[hit.s.host], file.auto && file.auto.sites && file.auto.sites[hit.s.host], re && { features: (re.features || []).filter((f) => f.tag !== 'inferred') }].filter(Boolean);
     for (const e of entries) for (const f of e.features || []) {
       if (f.verse !== 'missing' || f.paid) continue; const job = jobOf(hit.fl.id, hit.s.host, f, file.verse_page || hit.fl.page);
       if (queued.has(job.target)) continue; queued.add(job.target); out.push({ ...job, slug: hit.fl.slug, host: hit.s.host, feature: f.name });

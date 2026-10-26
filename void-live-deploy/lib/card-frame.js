@@ -213,7 +213,7 @@ export const PAGE_OF = Object.freeze({ calendar: ['/calendar/', 'Calendar'], 'ca
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
   password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
-  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'],
+  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], 'photo-tools': ['/photos/', 'Photo tools'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'],
   podcast: ['/podcasts/', 'Podcasts'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], markets: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'] });
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")

@@ -168,3 +168,29 @@ export function cleanList(raw) {
   for (const s of arr) { const r = resolve(s); if (r && !out.includes(r.sym)) out.push(r.sym); if (out.length >= 20) break; }
   return out;
 }
+
+// ---- the crypto market-cap table and the small-universe screener (/markets/caps/, /markets/screener/)
+/** at most 40 values of a series, for a small chart. Pure. */
+export const sparkOf = (v) => (Array.isArray(v) && v.length > 1 ? thin(v.filter(Number.isFinite), 40).map((x) => +x.toPrecision(5)) : []);
+/** an SVG path for a series in a w by h box. Pure. */
+export function sparkD(v, w = 80, h = 24) { const a = (v || []).filter(Number.isFinite); if (a.length < 2) return ''; const lo = Math.min(...a), sp = Math.max(...a) - lo || 1; return a.map((x, i) => (i ? 'L' : 'M') + (i * w / (a.length - 1)).toFixed(1) + ' ' + (h - 1 - (x - lo) / sp * (h - 2)).toFixed(1)).join(' '); }
+/** CoinGecko's markets rows cut to the table: rank, name, price, 24 hour and 7 day moves, market cap, volume, and the distance below the all-time high. Pure. */
+export function capsRows(rows) {
+  return (Array.isArray(rows) ? rows : []).filter((r) => r && r.id && Number.isFinite(r.current_price)).map((r) => ({ rank: r.market_cap_rank, id: r.id, sym: String(r.symbol || '').toUpperCase(), name: r.name, price: r.current_price, pct24: num(r.price_change_percentage_24h_in_currency != null ? r.price_change_percentage_24h_in_currency : r.price_change_percentage_24h), pct7: num(r.price_change_percentage_7d_in_currency), cap: num(r.market_cap), vol: num(r.total_volume), athPct: num(r.ath_change_percentage), spark: sparkOf(r.sparkline_in_7d && r.sparkline_in_7d.price) }));
+}
+/** The screener's rows: shares and indices from their quotes (the move, the distance below the 52-week high, volume against the 30-day average), coins from CoinGecko
+ *  (the 24 hour move, the distance below the all-time high, no volume ratio). `from` is 'stocks', 'indices' or 'coins'. Pure. */
+export function scanRows(quotes, coins) {
+  const out = [];
+  for (const q of quotes || []) if (q && q.ok && q.pct != null) out.push({ sym: q.sym, name: q.name, group: q.kind === 'index' ? 'indices' : 'stocks', price: q.price, pct: q.pct, below: q.hi52 ? Math.max(0, (1 - q.price / q.hi52) * 100) : null, basis: '52-week high', volX: q.avgVol && q.volume ? q.volume / q.avgVol : null, spark: sparkOf((q.points || []).map((p) => p[1])) });
+  for (const c of coins || []) if (c.pct24 != null) out.push({ sym: c.sym, name: c.name, group: 'coins', price: c.price, pct: c.pct24, below: c.athPct != null ? Math.abs(c.athPct) : null, basis: 'all-time high', volX: null, spark: c.spark || [] });
+  return out;
+}
+/** Filter and sort rows: { group: 'all'|'stocks'|'indices'|'coins', minPct, maxPct (the move, signed), nearHigh (within this many percent of the high), minVolX, sort: 'pct'|'-pct'|'below'|'volX'|'sym' }. Pure. */
+export function screen(rows, f = {}) {
+  const n = (v) => (v === '' || v == null || !Number.isFinite(Number(v)) ? null : Number(v));
+  const g = ['stocks', 'indices', 'coins'].includes(f.group) ? f.group : 'all', lo = n(f.minPct), hi = n(f.maxPct), near = n(f.nearHigh), vx = n(f.minVolX);
+  const keep = rows.filter((r) => (g === 'all' || r.group === g) && (lo == null || r.pct >= lo) && (hi == null || r.pct <= hi) && (near == null || (r.below != null && r.below <= near)) && (vx == null || (r.volX != null && r.volX >= vx)));
+  const key = { pct: (r) => -r.pct, '-pct': (r) => r.pct, below: (r) => (r.below == null ? 1e9 : r.below), volX: (r) => (r.volX == null ? 1e9 : -r.volX) }[f.sort];
+  return key ? keep.sort((a, b) => key(a) - key(b)) : keep.sort((a, b) => (a.sym < b.sym ? -1 : 1));
+}

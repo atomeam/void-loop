@@ -5,6 +5,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { isAsk, sizeIn } from '../lib/imgfit.js';
+import { photoAsk } from '../lib/photo-ask.js'; // a bare "compress an image" or "crop a photo" (no size) is the photo tools' (skills/photo-tools.js)
 
 function run(text, api) {
   const { showPage, esc } = api, s = sizeIn(text), q = [];
@@ -24,6 +25,6 @@ export default {
   name: 'imgfit',
   examples: ['resize a photo to 3.5 x 2.5 cm under 50 kb', 'compress my image to 100kb', 'image resizer', 'resize my signature', 'reduce the size of my photo'],
   nearMisses: ['strip the exif from a photo', 'my photos', 'draw a picture of a cat', 'resize the stage', 'what is the size of the moon', 'make a cartoon image'],
-  match(lower, text) { return isAsk(text || lower); },
+  match(lower, text) { return isAsk(text || lower) && !photoAsk(text || lower); },
   run
 };
