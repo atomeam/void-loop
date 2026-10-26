@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:38:40Z",
+   "subject": "Free pictures: fix Commons thumbnail host and loc.gov result path from the first probe; probe records result shapes"
+  },
+  {
+   "at": "2026-10-26T04:37:38Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:36:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:35:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T04:08:09Z",
    "subject": "Sports pictures: what Verse can actually do, source by source, with licence and limit (asked by the owner)"
-  },
-  {
-   "at": "2026-10-26T04:07:40Z",
-   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com,photos: squoosh.app,photos: photopea.com,photos: iloveimg.com…"
-  },
-  {
-   "at": "2026-10-26T04:07:11Z",
-   "subject": "Site reverse engineering: codebase,pdf-codeshack.io,pdf-pdfcandy.com,pdf-sejda.com,photos-iloveimg.com,photos-photopea.com,photos-tinypng.c…"
-  },
-  {
-   "at": "2026-10-26T04:06:08Z",
-   "subject": "Tower gate: photos measured against their live sites"
   }
  ],
  "builders": {
