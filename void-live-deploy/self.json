@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:31:57Z",
+   "subject": "A redirect into a list section leads the sources; the page hands such names to the answer route"
+  },
+  {
+   "at": "2026-10-26T05:30:30Z",
+   "subject": "Subject eval: 53 of 54 live"
+  },
+  {
+   "at": "2026-10-26T05:27:58Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:23:52Z",
    "subject": "Live eval fixes: title-matching page first, plural place words, The_X first, adaptive wait, candidate list pages probed"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-26T05:13:28Z",
    "subject": "Tower gate: kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,finance…"
-  },
-  {
-   "at": "2026-10-26T05:12:42Z",
-   "subject": "Subject eval: 33 of 42 live"
-  },
-  {
-   "at": "2026-10-26T05:11:20Z",
-   "subject": "Tower gate: pdf,pdf: codeshack.io,pdf: 10015.io,pdf: pdfcandy.com,pdf: tools.pdf24.org,pdf: smallpdf.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:11:01Z",
-   "subject": "Tower gate: pdf: 10015.io,travel: gcmap.com,travel: co2.myclimate.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:10:48Z",
-   "subject": "Tower gate: finance: finviz.com measured against their live sites"
   }
  ],
  "builders": {
