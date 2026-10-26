@@ -485,7 +485,11 @@
     "Hank Azaria"
    ],
    "notice": true,
-   "sources": 1
+   "sources": 1,
+   "liveExpect": {
+    "type": "Answer",
+    "about": "raheem"
+   }
   }
  },
  {
@@ -875,6 +879,136 @@
    "guess": false,
    "notFound": false,
    "about": "bread"
+  }
+ },
+ {
+  "ask": "snake jailbird",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "cletus spuckler",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "lindsey naegle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "disco stu",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "superintendent chalmers",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "sideshow mel",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "kirk van houten",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "rainier wolfcastle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "itchy and scratchy",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "frylock",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "meatwad",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "master shake",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
   }
  }
 ]

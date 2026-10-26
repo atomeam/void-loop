@@ -48,7 +48,7 @@ test('a how-to is not a name ask', () => { assert.equal(isNameAsk('how to bake b
 // the route half of every fixture: what /api/answer returns, with Wikipedia and the model stubbed
 const FX = JSON.parse(fs.readFileSync(new URL('./fixtures/subject-eval.json', import.meta.url), 'utf8'));
 test('the fixture set covers 30 or more asks of every kind', () => { assert.ok(FX.length >= 30, String(FX.length)); const kinds = new Set(FX.map((f) => (f.expect || {}).type).filter(Boolean)); for (const k of ['Person', 'Band', 'Song', 'Album', 'Film', 'Book', 'Game', 'Place', 'Creature', 'Food', 'Vehicle', 'Myth', 'Concept', 'Event', 'Organisation', 'Character', 'Not found']) assert.ok([...kinds].some((x) => x.includes(k)), 'no fixture for ' + k); });
-for (const fx of FX) test('route: ' + fx.ask, async () => {
+for (const fx of FX.filter((f) => !f.liveOnly)) test('route: ' + fx.ask, async () => {
   const { json: j } = await answerFor(fx), e = fx.expect || {};
   if (e.type === 'Not found') { assert.equal(j.answer, null); assert.equal(j.noAnswer, true); assert.deepEqual(j.sources, []); if (e.didYouMean) assert.equal(j.guess, e.didYouMean); else assert.equal(j.guess, undefined); return; }
   assert.ok(j.answer, 'an answer'); assert.ok(!j.noAnswer);

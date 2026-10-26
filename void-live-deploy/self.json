@@ -491,8 +491,72 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T05:14:43Z",
-   "subject": "Flights: /flights/ and a page for each travel lane site (/flights/trip/, /airports/, /time/, /distance/, /map/, /co2/, /routes/) on a…"
+   "at": "2026-10-26T05:31:57Z",
+   "subject": "A redirect into a list section leads the sources; the page hands such names to the answer route"
+  },
+  {
+   "at": "2026-10-26T05:30:30Z",
+   "subject": "Subject eval: 53 of 54 live"
+  },
+  {
+   "at": "2026-10-26T05:27:58Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T05:23:52Z",
+   "subject": "Live eval fixes: title-matching page first, plural place words, The_X first, adaptive wait, candidate list pages probed"
+  },
+  {
+   "at": "2026-10-26T05:23:07Z",
+   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:22:43Z",
+   "subject": "Tower gate: finance: finviz.com,finance: companiesmarketcap.com,kanban: abacktools.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:22:32Z",
+   "subject": "Subject eval: 2 of 13 live"
+  },
+  {
+   "at": "2026-10-26T05:21:46Z",
+   "subject": "Tower gate: word count,time zones,wheel,recipes: food52.com,tildegit,codebase measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:21:15Z",
+   "subject": "Tower gate: kanban: abacktools.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:20:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T05:20:37Z",
+   "subject": "Live eval keeps what the page saw for a failing ask; 'the X' tries The_X first"
+  },
+  {
+   "at": "2026-10-26T05:19:38Z",
+   "subject": "Subject eval: 30 of 42 live"
+  },
+  {
+   "at": "2026-10-26T05:18:39Z",
+   "subject": "Screener keeps the snapshot's coins when the live answer has none; a Share link on the coin pages"
+  },
+  {
+   "at": "2026-10-26T05:18:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-26T05:18:17Z",
+   "subject": "Kanban quick page: checklists on its cards (items, ticks, n of m on the card, kept in the board JSON), said in its page text"
+  },
+  {
+   "at": "2026-10-26T05:17:54Z",
+   "subject": "Tower gate: kanban: abacktools.com,travel: flightconnections.com measured against their live sites"
   },
   {
    "at": "2026-10-26T05:14:42Z",
@@ -505,70 +569,6 @@
   {
    "at": "2026-10-26T05:13:28Z",
    "subject": "Tower gate: kanban,kanban: jasperbernaers.com,kanban: abacktools.com,kanban: wekan.fi,kanban: kanbanflow.com,finance…"
-  },
-  {
-   "at": "2026-10-26T05:12:42Z",
-   "subject": "Subject eval: 33 of 42 live"
-  },
-  {
-   "at": "2026-10-26T05:11:20Z",
-   "subject": "Tower gate: pdf,pdf: codeshack.io,pdf: 10015.io,pdf: pdfcandy.com,pdf: tools.pdf24.org,pdf: smallpdf.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:11:01Z",
-   "subject": "Tower gate: pdf: 10015.io,travel: gcmap.com,travel: co2.myclimate.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:10:48Z",
-   "subject": "Tower gate: finance: finviz.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:07:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:07:14Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:06:59Z",
-   "subject": "Tower gate: pdf: codeshack.io,travel: clock7.com,travel: airmilescalculator.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:06:59Z",
-   "subject": "Subject eval workflow: the 42 asks against the live sites, screenshots as artifacts, a small record committed"
-  },
-  {
-   "at": "2026-10-26T05:06:15Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:06:01Z",
-   "subject": "Colour words alone no longer recolour the clock: red panda, white house and orange juice reach the answer path"
-  },
-  {
-   "at": "2026-10-26T05:03:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:02:53Z",
-   "subject": "PDF and Kanban pages: a share link button and a share picture of their own on every page, page tools and images to PDF under the merge…"
-  },
-  {
-   "at": "2026-10-26T05:02:49Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:02:34Z",
-   "subject": "Keep the art ratchet: the neutral portrait plate takes the family hue"
-  },
-  {
-   "at": "2026-10-26T05:01:52Z",
-   "subject": "Incident: the browser suite failed on cee2d819 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-26T05:00:00Z",
-   "subject": "Tower gate: pdf: codeshack.io,travel: tripwaffle.com,travel: aruljohn.com measured against their live sites"
   }
  ],
  "builders": {

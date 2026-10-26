@@ -17,6 +17,7 @@ test('the snapshot: dated, sourced, the top 50 and the screener coins; short ans
 });
 test('the committed file is a valid snapshot or the honest placeholder; the pages read it, say it is a snapshot, and never call it live', () => {
   const j = JSON.parse(fs.readFileSync(path.join(root, 'data', 'coins.json'), 'utf8')); assert.ok(j.ok === false || (j.ok && j.caps.length >= 30 && /^\d{4}-\d{2}-\d{2}$/.test(j.day)));
-  for (const pg of ['caps', 'screener']) { const h = fs.readFileSync(path.join(root, 'markets', pg, 'index.html'), 'utf8'); assert.match(h, /\/data\/coins\.json/, pg); assert.match(h, /[Ss]napshot of/, pg + ' labels it'); assert.match(h, /not live/, pg + ' says plainly that the snapshot is not live'); }
+  for (const pg of ['caps', 'screener']) { const h = fs.readFileSync(path.join(root, 'markets', pg, 'index.html'), 'utf8'); assert.match(h, /\/data\/coins\.json/, pg); assert.match(h, /[Ss]napshot of/, pg + ' labels it'); assert.match(h, /not live/, pg + ' says plainly that the snapshot is not live'); assert.match(h, /id="share">Share link</, pg + ' has a visible share control'); assert.match(h, /og:image" content="https:\/\/a-to-mind\.com\/og\/markets\.png/, pg); }
+  const sc = fs.readFileSync(path.join(root, 'markets', 'screener', 'index.html'), 'utf8'); assert.match(sc, /!all\.some\(\(r\) => r\.group === 'coins'\)/, 'a live answer without coins keeps the snapshot coins');
   const wf = fs.readFileSync(path.join(root, '..', '.github', 'workflows', 'coins-snapshot.yml'), 'utf8'); assert.match(wf, /cron:/); assert.match(wf, /workflow_dispatch/); assert.match(wf, /contents: write/); assert.doesNotMatch(wf, /secrets\./);
 });

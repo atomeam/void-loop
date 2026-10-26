@@ -92,6 +92,10 @@ await page.click('button.lang'); ok(/Karte hinzufügen|Exportieren|Importieren/.
 await page.click('button.lang');
 for (const p of ['/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/']) { await page.goto(base + p); await page.waitForSelector('.col'); const w = await page.evaluate(() => document.documentElement.scrollWidth); ok(w <= 391, p + ' has no horizontal scroll at 390 px (' + w + ')'); }
 await page.goto(base + '/kanban/simple/'); await page.waitForSelector('.col'); const st2 = await page.locator('main').innerText(); ok(/Add a board/.test(st2) && /several boards/.test(st2) && /Drag and drop cards between columns/.test(st2) && /cards with a title and description/.test(st2) && /Share link/.test(st2), 'the simple page says and has several boards, cards with a title and description, drag and drop, a share link');
+await page.evaluate(() => localStorage.clear()); await page.goto(base + '/kanban/quick/'); await page.waitForSelector('.col'); ok(/checklists/.test(await page.locator('main').innerText()), '/kanban/quick/ says checklists');
+await add(0, 'Pack'); await page.locator('.card').first().click(); await page.waitForSelector('dialog[open]'); await page.locator('dialog input[placeholder="Add an item"]').fill('passport'); await page.locator('dialog input[placeholder="Add an item"]').press('Enter'); await page.locator('dialog input[type=checkbox]').first().check();
+await page.click('dialog button.go'); await page.waitForTimeout(150); ok(/1 of 1/.test(await page.locator('.card').first().innerText()), 'quick page: a checklist item ticked shows 1 of 1 on the card');
+const kept = await page.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.kanban.v1')).boards[0].columns[0].cards[0].checklist); ok(kept.length === 1 && kept[0].done === true, 'the checklist is kept in the board JSON');
 await page.goto(base + '/kanban/'); await shot('kanban-home');
 ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
 await browser.close(); server.close(); console.log(bad ? bad + ' FAILED' : 'all ok'); process.exit(bad ? 1 : 0);

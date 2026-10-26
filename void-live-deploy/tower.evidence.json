@@ -340,59 +340,59 @@
   "word count": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 123,
-    "best": 1053,
-    "evidence": "Verse (/word-count/) 123 ms to the load event (median of 3, phone width) vs wordcounter.net 1053 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T17:45:35.609Z"
+    "verse": 139,
+    "best": 1029,
+    "evidence": "Verse (/word-count/) 139 ms to the load event (median of 3, phone width) vs wordcounter.net 1029 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/word-count/) 3 of 3 loads answered vs wordcounter.net 3 of 3 loads answered",
-    "at": "2026-10-25T17:45:35.609Z"
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/word-count/) 0 px sideways overflow at 390 px vs wordcounter.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T17:45:35.609Z"
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/word-count/) 0 unnamed controls or images vs wordcounter.net 2 unnamed controls or images",
-    "at": "2026-10-25T17:45:35.609Z"
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/word-count/) 1 (1: the page shows itself again with the network cut) vs wordcounter.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T17:45:35.609Z"
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/word-count/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wordcounter.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T17:45:35.609Z"
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 31,
-    "evidence": "Verse (/word-count/) 1 design defects vs wordcounter.net 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.15), wordcounter.net (8 low-contrast texts, 23 small tap targets, layout shift 0.02)",
-    "at": "2026-10-25T17:45:35.609Z"
+    "evidence": "Verse (/word-count/) 0 design defects vs wordcounter.net 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wordcounter.net (8 low-contrast texts, 23 small tap targets, layout shift 0.02)",
+    "at": "2026-10-26T05:18:46.478Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/word-count/) 2 of 2 right against the worked-out answer; judged against the standard, not wordcounter.net (the site is not asked)",
-    "at": "2026-10-25T17:45:35.609Z",
+    "at": "2026-10-26T05:18:46.478Z",
     "of": 2
    },
    "live counting": {
@@ -400,7 +400,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/word-count/) 1 of 1 shown vs wordcounter.net 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T17:45:35.609Z",
+    "at": "2026-10-26T05:18:46.478Z",
     "of": 1,
     "part": true
    },
@@ -409,17 +409,16 @@
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/word-count/) 4 of 4 shown vs wordcounter.net 3 of 4 shown (Verse lacks: none; site lacks: characters without spaces)",
-    "at": "2026-10-25T17:45:35.609Z",
+    "at": "2026-10-26T05:18:46.478Z",
     "of": 4,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 13,
+    "verdict": "equal-and-better",
+    "verse": 14,
     "best": 14,
-    "evidence": "Verse (/word-count/) 13 of 14 things a full answer shows vs wordcounter.net 14 of 14 things a full answer shows (Verse lacks: Keyword density panel (1, 2 and 3 word phrases); site lacks: none)",
-    "at": "2026-10-25T17:45:35.609Z",
-    "was": "equal-and-better",
+    "evidence": "Verse (/word-count/) 14 of 14 things a full answer shows vs wordcounter.net 14 of 14 things a full answer shows (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-26T05:18:46.478Z",
     "of": 14
    }
   },
@@ -860,52 +859,52 @@
   "time zones": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 157,
+    "verse": 172,
     "best": 200,
-    "evidence": "Verse (/time/?c=Tokyo) 157 ms to the load event (median of 3, phone width) vs the bar (timeanddate.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:38:02.412Z"
+    "evidence": "Verse (/time/?c=Tokyo) 172 ms to the load event (median of 3, phone width) vs the bar (timeanddate.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 3 of 3 loads answered vs timeanddate.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T11:38:02.412Z"
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 0 px sideways overflow at 390 px vs the bar (timeanddate.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:38:02.412Z"
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 0 unnamed controls or images vs the bar (timeanddate.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T11:38:02.412Z"
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/time/?c=Tokyo) 1 (1: the page shows itself again with the network cut) vs the bar (timeanddate.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:38:02.412Z"
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/time/?c=Tokyo) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (timeanddate.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:38:02.412Z"
+    "at": "2026-10-26T05:19:12.904Z"
    },
    "design polish": {
     "verdict": "worse",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/time/?c=Tokyo) 1 design defects vs the bar (timeanddate.com unreachable) 0 design defects",
-    "at": "2026-10-25T11:38:02.412Z",
+    "at": "2026-10-26T05:19:12.904Z",
     "was": "better"
    },
    "accuracy": {
@@ -913,7 +912,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/time/?c=Tokyo) 3 of 3 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T11:38:02.412Z",
+    "at": "2026-10-26T05:19:12.904Z",
     "of": 3
    },
    "world time": {
@@ -921,7 +920,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/time/?c=Tokyo) 2 of 2 shown vs the bar (timeanddate.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T11:38:02.412Z",
+    "at": "2026-10-26T05:19:12.904Z",
     "of": 2,
     "part": true
    },
@@ -930,68 +929,68 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/time/?c=Tokyo) 2 of 2 shown vs the bar (timeanddate.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-25T11:38:02.412Z",
+    "at": "2026-10-26T05:19:12.904Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "equal-and-better",
-    "verse": 13,
-    "best": 13,
-    "evidence": "Verse (/time/?c=Tokyo) 13 of 13 things a full answer shows vs the bar (timeanddate.com unreachable) 13 of 13 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-25T11:38:02.412Z",
-    "of": 13
+    "verse": 19,
+    "best": 19,
+    "evidence": "Verse (/time/?c=Tokyo) 19 of 19 things a full answer shows vs the bar (timeanddate.com unreachable) 19 of 19 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T05:19:12.904Z",
+    "of": 19
    }
   },
   "codebase": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 93,
-    "best": 386,
-    "evidence": "Verse (/g/) 93 ms to the load event (median of 3, phone width) vs codebasehq.com 386 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:41:43.735Z"
+    "verse": 114,
+    "best": 369,
+    "evidence": "Verse (/g/) 114 ms to the load event (median of 3, phone width) vs codebasehq.com 369 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 3 loads answered vs codebasehq.com 3 of 3 loads answered",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs codebasehq.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/g/) 0 unnamed controls or images vs codebasehq.com 8 unnamed controls or images",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs codebasehq.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/g/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codebasehq.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 20,
     "evidence": "Verse (/g/) 1 design defects vs codebasehq.com 20 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.25), codebasehq.com (9 low-contrast texts, 10 small tap targets, layout shift 0.30)",
-    "at": "2026-10-25T11:41:43.735Z"
+    "at": "2026-10-26T05:21:26.361Z"
    }
   },
   "password strength": {
@@ -1364,52 +1363,52 @@
   "tildegit": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 73,
-    "best": 215,
-    "evidence": "Verse (/g/) 73 ms to the load event (median of 3, phone width) vs tildegit.org 215 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T11:41:42.897Z"
+    "verse": 100,
+    "best": 276,
+    "evidence": "Verse (/g/) 100 ms to the load event (median of 3, phone width) vs tildegit.org 276 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 3 loads answered vs tildegit.org 3 of 3 loads answered",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/g/) 0 px sideways overflow at 390 px vs tildegit.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/g/) 0 unnamed controls or images vs tildegit.org 1 unnamed controls or images",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/g/) 1 (1: the page shows itself again with the network cut) vs tildegit.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "sharing": {
     "verdict": "equal",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/g/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs tildegit.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 9,
     "evidence": "Verse (/g/) 1 design defects vs tildegit.org 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.25), tildegit.org (4 low-contrast texts, 5 small tap targets, layout shift 0.00)",
-    "at": "2026-10-25T11:41:42.897Z"
+    "at": "2026-10-26T05:21:04.599Z"
    }
   },
   "gradient": {
@@ -1509,59 +1508,59 @@
   "wheel": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 145,
-    "best": 340,
-    "evidence": "Verse (/wheel/) 145 ms to the load event (median of 3, phone width) vs wheelofnames.com 340 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T18:03:58.519Z"
+    "verse": 170,
+    "best": 347,
+    "evidence": "Verse (/wheel/) 170 ms to the load event (median of 3, phone width) vs wheelofnames.com 347 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/wheel/) 3 of 3 loads answered vs wheelofnames.com 3 of 3 loads answered",
-    "at": "2026-10-25T18:03:58.519Z"
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/wheel/) 0 px sideways overflow at 390 px vs wheelofnames.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T18:03:58.519Z"
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/wheel/) 0 unnamed controls or images vs wheelofnames.com 2 unnamed controls or images",
-    "at": "2026-10-25T18:03:58.519Z"
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/wheel/) 1 (1: the page shows itself again with the network cut) vs wheelofnames.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T18:03:58.519Z"
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/wheel/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wheelofnames.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T18:03:58.519Z"
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 2,
-    "best": 13,
-    "evidence": "Verse (/wheel/) 2 design defects vs wheelofnames.com 13 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 12 small tap targets, layout shift 0.04)",
-    "at": "2026-10-25T18:03:58.519Z"
+    "best": 14,
+    "evidence": "Verse (/wheel/) 2 design defects vs wheelofnames.com 14 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), wheelofnames.com (1 low-contrast texts, 13 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:19:45.664Z"
    },
    "entries list": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T18:03:58.519Z",
+    "at": "2026-10-26T05:19:45.664Z",
     "of": 1,
     "part": true
    },
@@ -1570,7 +1569,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown vs wheelofnames.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-25T18:03:58.519Z",
+    "at": "2026-10-26T05:19:45.664Z",
     "of": 1,
     "part": true
    },
@@ -1579,7 +1578,7 @@
     "verse": 12,
     "best": 13,
     "evidence": "Verse (/wheel/) 12 of 15 things a full answer shows vs wheelofnames.com 13 of 15 things a full answer shows (Verse lacks: Entries list, Weights (advanced mode), Images as entries; site lacks: Entries list, Images as entries)",
-    "at": "2026-10-25T18:03:58.519Z",
+    "at": "2026-10-26T05:19:45.664Z",
     "was": "equal-and-better",
     "of": 15
    },
@@ -1588,7 +1587,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/wheel/) 2 of 2 right against the worked-out answer; judged against the standard, not wheelofnames.com (the site is not asked)",
-    "at": "2026-10-25T18:03:58.519Z",
+    "at": "2026-10-26T05:19:45.664Z",
     "of": 2
    },
    "remove the winner": {
@@ -1596,7 +1595,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/wheel/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-25T18:03:58.519Z",
+    "at": "2026-10-26T05:19:45.664Z",
     "of": 1,
     "part": true
    }
@@ -5721,52 +5720,52 @@
   "recipes: food52.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 88,
+    "verse": 107,
     "best": 200,
-    "evidence": "Verse (/recipes/?q=pancakes) 88 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-25T17:49:26.004Z"
+    "evidence": "Verse (/recipes/?q=pancakes) 107 ms to the load event (median of 3, phone width) vs the bar (food52.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs food52.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs the bar (food52.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs the bar (food52.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs the bar (food52.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (food52.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-25T17:49:26.004Z",
+    "at": "2026-10-26T05:20:42.538Z",
     "of": 5
    },
    "design polish": {
@@ -5774,14 +5773,14 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs the bar (food52.com unreachable) 0 design defects",
-    "at": "2026-10-25T17:49:26.004Z"
+    "at": "2026-10-26T05:20:42.538Z"
    },
    "search by ingredient": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T17:49:26.004Z",
+    "at": "2026-10-26T05:20:42.538Z",
     "of": 1,
     "part": true
    },
@@ -5790,7 +5789,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T17:49:26.004Z",
+    "at": "2026-10-26T05:20:42.538Z",
     "of": 1,
     "part": true
    },
@@ -5799,17 +5798,16 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs the bar (food52.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-25T17:49:26.004Z",
+    "at": "2026-10-26T05:20:42.538Z",
     "of": 1,
     "part": true
    },
    "completeness": {
-    "verdict": "worse",
-    "verse": 17,
+    "verdict": "equal-and-better",
+    "verse": 20,
     "best": 20,
-    "evidence": "Verse (/recipes/?q=pancakes) 17 of 20 things a full answer shows vs the bar (food52.com unreachable) 20 of 20 things a full answer shows (Verse lacks: Ingredient search, include and exclude, Nutrition facts per serving, Save recipes into collections)",
-    "at": "2026-10-25T17:49:26.004Z",
-    "was": "equal-and-better",
+    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs the bar (food52.com unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
+    "at": "2026-10-26T05:20:42.538Z",
     "of": 20
    }
   },
@@ -11874,52 +11872,52 @@
   "finance: companiesmarketcap.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 140,
-    "best": 994,
-    "evidence": "Verse (/markets/caps/) 140 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 994 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:11:14.373Z"
+    "verse": 118,
+    "best": 760,
+    "evidence": "Verse (/markets/caps/) 118 ms to the load event (median of 3, phone width) vs companiesmarketcap.com 760 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/caps/) 3 of 3 loads answered vs companiesmarketcap.com 3 of 3 loads answered",
-    "at": "2026-10-26T05:11:14.373Z"
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 0 px sideways overflow at 390 px vs companiesmarketcap.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:11:14.373Z"
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/caps/) 0 unnamed controls or images vs companiesmarketcap.com 1 unnamed controls or images",
-    "at": "2026-10-26T05:11:14.373Z"
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 1 (1: the page shows itself again with the network cut) vs companiesmarketcap.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:11:14.373Z"
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "sharing": {
-    "verdict": "equal",
-    "verse": 3,
+    "verdict": "better",
+    "verse": 4,
     "best": 3,
-    "evidence": "Verse (/markets/caps/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:11:14.373Z"
+    "evidence": "Verse (/markets/caps/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs companiesmarketcap.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/markets/caps/) 4 of 4 right against the worked-out answer; judged against the standard, not companiesmarketcap.com (the site is not asked)",
-    "at": "2026-10-26T05:11:14.373Z",
+    "at": "2026-10-26T05:26:36.084Z",
     "of": 4
    },
    "design polish": {
@@ -11927,14 +11925,14 @@
     "verse": 50,
     "best": 66,
     "evidence": "Verse (/markets/caps/) 50 design defects vs companiesmarketcap.com 66 design defects: Verse (0 low-contrast texts, 50 small tap targets, layout shift 0.02), companiesmarketcap.com (46 low-contrast texts, 20 small tap targets, layout shift 0.04)",
-    "at": "2026-10-26T05:11:14.373Z"
+    "at": "2026-10-26T05:26:36.084Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 3 of 3 shown vs companiesmarketcap.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T05:11:14.373Z",
+    "at": "2026-10-26T05:26:36.084Z",
     "of": 3,
     "part": true
    },
@@ -11943,7 +11941,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T05:11:14.373Z",
+    "at": "2026-10-26T05:26:36.084Z",
     "of": 2,
     "part": true
    },
@@ -11952,7 +11950,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/caps/) 2 of 2 shown vs companiesmarketcap.com 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-26T05:11:14.373Z",
+    "at": "2026-10-26T05:26:36.084Z",
     "of": 2,
     "part": true
    },
@@ -11961,7 +11959,7 @@
     "verse": 14,
     "best": 4,
     "evidence": "Verse (/markets/caps/) 14 of 17 things a full answer shows vs companiesmarketcap.com 4 of 17 things a full answer shows (Verse lacks: Compare symbols, Stock Market News, Sources & Further Reading; site lacks: rank, 24 hour change, 7 day change, 24 hour volume, a total market cap, a coin search, sorting, a 7 day chart, company market caps said to be absent, and why, Watchlists, Compare symbols, Share quote or article, Sources & Further Reading)",
-    "at": "2026-10-26T05:11:14.373Z",
+    "at": "2026-10-26T05:26:36.084Z",
     "of": 17
    }
   },
@@ -13096,52 +13094,52 @@
   "finance: finviz.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 95,
-    "best": 3779,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 95 ms to the load event (median of 3, phone width) vs finviz.com 3779 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:09:31.631Z"
+    "verse": 110,
+    "best": 4060,
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 110 ms to the load event (median of 3, phone width) vs finviz.com 4060 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 2,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 3 loads answered vs finviz.com 2 of 3 loads answered",
-    "at": "2026-10-26T05:09:31.631Z"
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 815,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 px sideways overflow at 390 px vs finviz.com 815 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:09:31.631Z"
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 0 unnamed controls or images vs finviz.com 1 unnamed controls or images",
-    "at": "2026-10-26T05:09:31.631Z"
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 1 (1: the page shows itself again with the network cut) vs finviz.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:09:31.631Z"
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs finviz.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:09:31.631Z"
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "accuracy": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 3 of 4 right against the worked-out answer (missed: a coin row); judged against the standard, not finviz.com (the site is not asked). The page showed: \"Screener Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account. Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, \"",
-    "at": "2026-10-26T05:09:31.631Z",
+    "at": "2026-10-26T05:19:55.472Z",
     "was": "equal-and-better",
     "of": 4
    },
@@ -13149,15 +13147,15 @@
     "verdict": "better",
     "verse": 16,
     "best": 253,
-    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 253 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (4 low-contrast texts, 249 small tap targets, layout shift 0.08)",
-    "at": "2026-10-26T05:09:31.631Z"
+    "evidence": "Verse (/markets/screener/?near=100&sort=pct) 16 design defects vs finviz.com 253 design defects: Verse (0 low-contrast texts, 16 small tap targets, layout shift 0.02), finviz.com (4 low-contrast texts, 249 small tap targets, layout shift 0.06)",
+    "at": "2026-10-26T05:19:55.472Z"
    },
    "live quotes": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-26T05:09:31.631Z",
+    "at": "2026-10-26T05:19:55.472Z",
     "of": 2,
     "part": true
    },
@@ -13166,7 +13164,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 0 of 2 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-26T05:09:31.631Z",
+    "at": "2026-10-26T05:19:55.472Z",
     "of": 2,
     "part": true
    },
@@ -13175,7 +13173,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 2 of 2 shown vs finviz.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-    "at": "2026-10-26T05:09:31.631Z",
+    "at": "2026-10-26T05:19:55.472Z",
     "of": 2,
     "part": true
    },
@@ -13184,7 +13182,7 @@
     "verse": 12,
     "best": 4,
     "evidence": "Verse (/markets/screener/?near=100&sort=pct) 12 of 15 things a full answer shows vs finviz.com 4 of 15 things a full answer shows (Verse lacks: Compare symbols, Links, Sources & Further Reading; site lacks: a move filter, a distance from the high filter, a volume filter, a group filter, sorting, a match count, volume against the average, the universe said plainly, a chart on each row, Compare symbols, Sources & Further Reading)",
-    "at": "2026-10-26T05:09:31.631Z",
+    "at": "2026-10-26T05:19:55.472Z",
     "of": 15
    }
   },
@@ -16163,53 +16161,53 @@
   },
   "kanban: abacktools.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 164,
-    "best": 539,
-    "evidence": "Verse (/kanban/quick/) 164 ms to the load event (median of 3, phone width) vs abacktools.com 539 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T05:10:11.381Z"
+    "verdict": "better",
+    "verse": 239,
+    "best": 412,
+    "evidence": "Verse (/kanban/quick/) 239 ms to the load event (median of 3, phone width) vs abacktools.com 412 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/kanban/quick/) 3 of 3 loads answered vs abacktools.com 3 of 3 loads answered",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 0 px sideways overflow at 390 px vs abacktools.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 0 unnamed controls or images vs abacktools.com 1 unnamed controls or images",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/kanban/quick/) 1 (1: the page shows itself again with the network cut) vs abacktools.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/quick/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs abacktools.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/kanban/quick/) 4 of 4 right against the worked-out answer; judged against the standard, not abacktools.com (the site is not asked)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 4
    },
    "design polish": {
@@ -16217,23 +16215,23 @@
     "verse": 0,
     "best": 25,
     "evidence": "Verse (/kanban/quick/) 0 design defects vs abacktools.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), abacktools.com (0 low-contrast texts, 25 small tap targets, layout shift 0.07)",
-    "at": "2026-10-26T05:10:11.381Z"
+    "at": "2026-10-26T05:22:20.882Z"
    },
    "boards and columns": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 2,
     "part": true
    },
    "card details": {
-    "verdict": "equal",
-    "verse": 2,
+    "verdict": "better",
+    "verse": 3,
     "best": 2,
-    "evidence": "Verse (/kanban/quick/) 2 of 3 shown vs abacktools.com 2 of 3 shown (Verse lacks: checklists; site lacks: due dates)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "evidence": "Verse (/kanban/quick/) 3 of 3 shown vs abacktools.com 2 of 3 shown (Verse lacks: none; site lacks: due dates)",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 3,
     "part": true
    },
@@ -16242,7 +16240,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 2,
     "part": true
    },
@@ -16251,16 +16249,16 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/kanban/quick/) 2 of 2 shown vs abacktools.com 1 of 2 shown (Verse lacks: none; site lacks: import)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 2,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 18,
+    "verse": 19,
     "best": 14,
-    "evidence": "Verse (/kanban/quick/) 18 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: checklists, Several boards, Columns (lists) you name, add, move and delete; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
-    "at": "2026-10-26T05:10:11.381Z",
+    "evidence": "Verse (/kanban/quick/) 19 of 21 things a full answer shows vs abacktools.com 14 of 21 things a full answer shows (Verse lacks: Several boards, Columns (lists) you name, add, move and delete; site lacks: due dates, archive, import, keyboard moves, works offline, Several boards, Keyboard shortcuts and keyboard moves)",
+    "at": "2026-10-26T05:22:20.882Z",
     "of": 21
    }
   },
@@ -16878,6 +16876,57 @@
     "evidence": "Verse (/flights/co2/) 0 design defects vs co2.myclimate.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), co2.myclimate.org (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
     "at": "2026-10-26T05:10:28.671Z"
    }
+  },
+  "travel: flightconnections.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 145,
+    "best": 798,
+    "evidence": "Verse (/flights/routes/) 145 ms to the load event (median of 3, phone width) vs flightconnections.com 798 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "reliability": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/routes/) 0 of 3 loads answered vs flightconnections.com 3 of 3 loads answered",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/routes/) 0 px sideways overflow at 390 px vs flightconnections.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2,
+    "evidence": "Verse (/flights/routes/) 0 unnamed controls or images vs flightconnections.com 2 unnamed controls or images",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/routes/) 0 (1: the page shows itself again with the network cut) vs flightconnections.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "sharing": {
+    "verdict": "worse",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/flights/routes/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs flightconnections.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-26T05:17:20.388Z"
+   },
+   "design polish": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/flights/routes/) 0 design defects vs flightconnections.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), flightconnections.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-26T05:17:20.388Z"
+   }
   }
  },
  "icons": {
@@ -17051,6 +17100,7 @@
   "aruljohn.com": "tower.icons/aruljohn.com.ico",
   "clock7.com": "tower.icons/clock7.com.png",
   "co2.myclimate.org": "tower.icons/co2.myclimate.org.png",
-  "abacktools.com": "tower.icons/abacktools.com.png"
+  "abacktools.com": "tower.icons/abacktools.com.png",
+  "flightconnections.com": "tower.icons/flightconnections.com.png"
  }
 }

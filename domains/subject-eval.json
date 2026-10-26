@@ -1,8 +1,8 @@
 {
- "at": "2026-10-26T05:12:38.685Z",
+ "at": "2026-10-26T05:30:27.460Z",
  "mode": "live",
- "pass": 33,
- "total": 42,
+ "pass": 53,
+ "total": 54,
  "results": [
   {
    "ask": "albert einstein",
@@ -10,7 +10,20 @@
    "kind": "Person — 1879",
    "title": "Albert Einstein",
    "theme": "portrait",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Albert Einstein",
+    "desc": "German-born theoretical physicist (1879–1955)",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Albert Einstein"
+    ],
+    "answer": "Albert Einstein was a German-born theoretical physicist best known for developing the theo"
+   },
+   "redirect": "none"
   },
   {
    "ask": "ada lovelace",
@@ -18,7 +31,20 @@
    "kind": "Person — 1815",
    "title": "Ada Lovelace",
    "theme": "portrait",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Ada Lovelace",
+    "desc": "English mathematician (1815–1852)",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Ada Lovelace"
+    ],
+    "answer": "Augusta Ada King, Countess of Lovelace, also known as Ada Lovelace, was an English mathema"
+   },
+   "redirect": "none"
   },
   {
    "ask": "serena williams",
@@ -26,7 +52,20 @@
    "kind": "Person — 1981",
    "title": "Serena Williams",
    "theme": "portrait",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Serena Williams",
+    "desc": "American tennis player (born 1981)",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Serena Williams"
+    ],
+    "answer": "Serena Jameka Williams is an American professional tennis player. She was ranked as the wo"
+   },
+   "redirect": "none"
   },
   {
    "ask": "the beatles",
@@ -34,7 +73,20 @@
    "kind": "Band · Album — 1960",
    "title": "The Beatles",
    "theme": "sleeve",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "The Beatles",
+    "desc": "English rock band (1960–1970)",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "The Beatles"
+    ],
+    "answer": "The Beatles were an English rock band formed in Liverpool in 1960. The band comprised John"
+   },
+   "redirect": "none"
   },
   {
    "ask": "bohemian rhapsody",
@@ -42,7 +94,20 @@
    "kind": "Song · Film · Album — 1975 · Queen",
    "title": "Bohemian Rhapsody",
    "theme": "sleeve",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Bohemian Rhapsody",
+    "desc": "1975 single by Queen",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Bohemian Rhapsody"
+    ],
+    "answer": "\"Bohemian Rhapsody\" is a song by British rock band Queen from their fourth studio album, A"
+   },
+   "redirect": "none"
   },
   {
    "ask": "abbey road",
@@ -50,7 +115,20 @@
    "kind": "Album — 1969",
    "title": "Abbey Road",
    "theme": "sleeve",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Abbey Road",
+    "desc": "1969 studio album by the Beatles",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Abbey Road"
+    ],
+    "answer": "Abbey Road is the eleventh studio album by the English rock band the Beatles, released on "
+   },
+   "redirect": "none"
   },
   {
    "ask": "the godfather",
@@ -58,7 +136,20 @@
    "kind": "Film · Book · Game · Album — 1972 · Francis Ford Coppola",
    "title": "The Godfather",
    "theme": "cinema",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "The Godfather",
+    "desc": "1972 film by Francis Ford Coppola",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "The Godfather"
+    ],
+    "answer": "The Godfather is a 1972 American epic gangster film directed by Francis Ford Coppola, who "
+   },
+   "redirect": "none"
   },
   {
    "ask": "pride and prejudice",
@@ -66,7 +157,20 @@
    "kind": "Book — 1813 · Jane Austen",
    "title": "Pride and Prejudice",
    "theme": "plain",
-   "photo": false
+   "photo": false,
+   "api": {
+    "name": "Pride and Prejudice",
+    "desc": "1813 novel by Jane Austen",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Pride and Prejudice"
+    ],
+    "answer": "Pride and Prejudice is a novel by English author Jane Austen. Written when she was aged 20"
+   },
+   "redirect": "Pride and Prejudice"
   },
   {
    "ask": "tetris",
@@ -74,7 +178,20 @@
    "kind": "Game · Film",
    "title": "Tetris",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Tetris",
+    "desc": "Puzzle video game",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Tetris"
+    ],
+    "answer": "Tetris is a puzzle video game created by Alexey Pajitnov, a Soviet software engineer, in t"
+   },
+   "redirect": "none"
   },
   {
    "ask": "paris",
@@ -82,7 +199,20 @@
    "kind": "Place",
    "title": "Paris",
    "theme": "postcard",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Paris",
+    "desc": "Capital and largest city of France",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Paris"
+    ],
+    "answer": "Paris is the capital and largest city of France, with an estimated city population of 2.04"
+   },
+   "redirect": "none"
   },
   {
    "ask": "mount everest",
@@ -90,7 +220,20 @@
    "kind": "Place",
    "title": "Mount Everest",
    "theme": "postcard",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Mount Everest",
+    "desc": "Earth's highest mountain",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Mount Everest"
+    ],
+    "answer": "Mount Everest is the highest mountain on Earth above sea level. It lies in the Mahalangur "
+   },
+   "redirect": "none"
   },
   {
    "ask": "snow leopard",
@@ -98,7 +241,20 @@
    "kind": "Creature",
    "title": "Snow leopard",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Snow leopard",
+    "desc": "Species of large felid",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Snow leopard"
+    ],
+    "answer": "The snow leopard is a felid species in the genus Panthera. It has a thick whitish to grey "
+   },
+   "redirect": "Snow leopard"
   },
   {
    "ask": "okapi",
@@ -106,7 +262,20 @@
    "kind": "Creature",
    "title": "Okapi",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Okapi",
+    "desc": "Species of mammal",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Okapi"
+    ],
+    "answer": "The okapi, also known as forest giraffe and zebra giraffe, is an artiodactyl mammal that i"
+   },
+   "redirect": "none"
   },
   {
    "ask": "komodo dragon",
@@ -114,7 +283,20 @@
    "kind": "Creature",
    "title": "Komodo dragon",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Komodo dragon",
+    "desc": "Largest living species of lizard",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Komodo dragon"
+    ],
+    "answer": "The Komodo dragon, also known as the Komodo monitor, is a large reptile of the monitor liz"
+   },
+   "redirect": "Komodo dragon"
   },
   {
    "ask": "pizza",
@@ -122,7 +304,20 @@
    "kind": "Food",
    "title": "Pizza",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Pizza",
+    "desc": "Italian dish",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Pizza"
+    ],
+    "answer": "Pizza is an Italian dish typically consisting of a flat base of leavened wheat-based dough"
+   },
+   "redirect": "none"
   },
   {
    "ask": "boeing 747",
@@ -130,20 +325,41 @@
    "kind": "Vehicle",
    "title": "Boeing 747",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Boeing 747",
+    "desc": "American wide-body four-engined jet long-range aircraft",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Boeing 747"
+    ],
+    "answer": "The Boeing 747 is a long-range wide-body airliner designed and manufactured by Boeing Comm"
+   },
+   "redirect": "none"
   },
   {
    "ask": "zeus",
-   "ok": false,
-   "kind": "Answer — from Verse",
-   "title": "zeus",
-   "theme": "",
-   "photo": false,
-   "problems": [
-    "type line \"Answer — from Verse\" does not match /Myth/",
-    "is missing its \"Adds to Verse\" line",
-    "theme \"\", wanted collectible"
-   ]
+   "ok": true,
+   "kind": "Myth",
+   "title": "Zeus",
+   "theme": "collectible",
+   "photo": true,
+   "api": {
+    "name": "Zeus",
+    "desc": "Greek god of the sky and king of the gods",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Zeus"
+    ],
+    "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
+   },
+   "redirect": "none"
   },
   {
    "ask": "pythagorean theorem",
@@ -151,7 +367,20 @@
    "kind": "Concept",
    "title": "Pythagorean theorem",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Pythagorean theorem",
+    "desc": "Relation between sides of a right triangle",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Pythagorean theorem"
+    ],
+    "answer": "In mathematics, the Pythagorean theorem or Pythagoras's theorem is a fundamental relation "
+   },
+   "redirect": "Pythagorean theorem"
   },
   {
    "ask": "world war ii",
@@ -159,7 +388,20 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "World War II",
+    "desc": "Global conflict from 1939 to 1945",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "World War II"
+    ],
+    "answer": "World War II, or the Second World War, was a global conflict between two coalitions: the A"
+   },
+   "redirect": "World War II"
   },
   {
    "ask": "apple inc",
@@ -167,7 +409,20 @@
    "kind": "Organisation",
    "title": "Apple Inc.",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Apple Inc.",
+    "desc": "American multinational technology company",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Apple Inc."
+    ],
+    "answer": "Apple Inc. is an American multinational technology company headquartered in Cupertino, Cal"
+   },
+   "redirect": "Apple Inc."
   },
   {
    "ask": "manchester united",
@@ -175,7 +430,20 @@
    "kind": "Team",
    "title": "Manchester United F.C.",
    "theme": "plain",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Manchester United F.C.",
+    "desc": "Association football club in England",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Manchester United F.C."
+    ],
+    "answer": "Manchester United Football Club, commonly referred to as Man United or simply United, is a"
+   },
+   "redirect": "Manchester United F.C."
   },
   {
    "ask": "happy time harry",
@@ -183,7 +451,20 @@
    "kind": "Character",
    "title": "Happy Time Harry",
    "theme": "collectible",
-   "photo": false
+   "photo": false,
+   "api": {
+    "name": "Happy Time Harry",
+    "desc": "fictional character from Aqua Teen Hunger Force",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of Aqua Teen Hunger Force characters § Happy Time Harry"
+    ],
+    "answer": "Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Me"
+   },
+   "redirect": "List of Aqua Teen Hunger Force characters"
   },
   {
    "ask": "sideshow raheem",
@@ -192,6 +473,30 @@
    "title": "sideshow raheem",
    "theme": "",
    "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "I Love Lisa"
+    ],
+    "answer": "\"I Love Lisa\" is the fifteenth episode of the fourth season of the American animated telev"
+   },
+   "redirect": "I Love Lisa",
+   "seen": {
+    "called": 1,
+    "failed": [
+     "http://127.0.0.1:42071/build.json?v=1792992432146 net::ERR_ABORTED",
+     "http://127.0.0.1:42071/ net::ERR_ABORTED"
+    ],
+    "bad": [
+     "404 en.wikipedia.org/api/rest_v1/page/summary/Sideshow_raheem"
+    ],
+    "text": "sideshow raheem ANSWER — FROM A SOURCE \"I Love Lisa\" is the fifteenth episode of the fourth season of the American animated television serie … id not have to be taught: fetched, sourced and dated. COPY CARD SAVE CARD SHARE ☆ SAVE COPY TEXT SAVE TEXT VERSE P 1 R 1"
+   },
    "problems": [
     "type line \"Answer — from a source\" does not match /Character/",
     "theme \"\", wanted collectible",
@@ -200,14 +505,24 @@
   },
   {
    "ask": "orangutan opening",
-   "ok": false,
+   "ok": true,
    "kind": "Concept",
    "title": "Sokolsky Opening",
    "theme": "plain",
    "photo": false,
-   "problems": [
-    "title is \"Sokolsky Opening\", wanted \"Orangutan Opening\""
-   ]
+   "api": {
+    "name": "Sokolsky Opening",
+    "desc": "Chess opening",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Sokolsky Opening"
+    ],
+    "answer": "The Sokolsky Opening, also known as the Orangutan Opening and the Polish Opening, is an un"
+   },
+   "redirect": "Sokolsky Opening"
   },
   {
    "ask": "champagne supernova track",
@@ -215,7 +530,20 @@
    "kind": "Song — 1996 · Oasis",
    "title": "Champagne Supernova",
    "theme": "sleeve",
-   "photo": false
+   "photo": false,
+   "api": {
+    "name": "Champagne Supernova",
+    "desc": "1996 single by Oasis",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Champagne Supernova"
+    ],
+    "answer": "\"Champagne Supernova\" is a song by English rock band Oasis, written by Noel Gallagher. It "
+   },
+   "redirect": "none"
   },
   {
    "ask": "ignignokt",
@@ -223,7 +551,20 @@
    "kind": "Character",
    "title": "ignignokt",
    "theme": "collectible",
-   "photo": false
+   "photo": false,
+   "api": {
+    "name": "The Mooninites",
+    "desc": "fictional character from Aqua Teen Hunger Force",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of Aqua Teen Hunger Force characters § The Mooninites"
+    ],
+    "answer": "Ignignokt, who is voiced by Dave Willis, and Err, who is voiced by Matt Maiellaro, are two"
+   },
+   "redirect": "List of Aqua Teen Hunger Force characters#The Mooninites"
   },
   {
    "ask": "albert eintsein",
@@ -231,18 +572,39 @@
    "kind": "Person — 1879",
    "title": "Albert Einstein",
    "theme": "portrait",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": true,
+    "guess": "",
+    "pic": false,
+    "sources": [],
+    "answer": ""
+   },
+   "redirect": "none"
   },
   {
    "ask": "the great wall of chinna",
-   "ok": false,
+   "ok": true,
    "kind": "Answer — from a source",
    "title": "the great wall of chinna",
    "theme": "",
    "photo": false,
-   "problems": [
-    "a fuzzy match is not marked as a guess"
-   ]
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": true,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Rahul Dravid"
+    ],
+    "answer": "Rahul Sharad Dravid is an Indian former cricket player who captained and head-coached the "
+   },
+   "redirect": "none"
   },
   {
    "ask": "blorptastic quibble frobnitz",
@@ -250,44 +612,81 @@
    "kind": "Not found",
    "title": "blorptastic quibble frobnitz",
    "theme": "",
-   "photo": false
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": true,
+    "guess": "",
+    "pic": false,
+    "sources": [],
+    "answer": ""
+   },
+   "redirect": "none"
   },
   {
    "ask": "harry's happy hour",
-   "ok": false,
+   "ok": true,
    "kind": "Answer — from a source",
    "title": "harry's happy hour",
    "theme": "",
    "photo": false,
-   "problems": [
-    "type line \"Answer — from a source\" does not match /Not found/",
-    "has an \"Adds to Verse\" line on a card that should not",
-    "no \"Did you mean Happy Harry's?\""
-   ]
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": true,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "The Drunk and On Drugs Happy Funtime Hour"
+    ],
+    "answer": "The Drunk and On Drugs Happy Funtime Hour is a Canadian television sketch comedy series, w"
+   },
+   "redirect": "none"
   },
   {
    "ask": "jon f kenedy",
-   "ok": false,
+   "ok": true,
    "kind": "Answer — from a source",
    "title": "jon f kenedy",
    "theme": "",
    "photo": false,
-   "problems": [
-    "type line \"Answer — from a source\" does not match /Not found/",
-    "has an \"Adds to Verse\" line on a card that should not",
-    "no \"Did you mean John F. Kennedy?\""
-   ]
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": true,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "John F. Kennedy"
+    ],
+    "answer": "John Fitzgerald Kennedy, also known as JFK, was the 35th president of the United States, s"
+   },
+   "redirect": "none"
   },
   {
    "ask": "great barrier reef australia",
-   "ok": false,
-   "kind": "Idea",
+   "ok": true,
+   "kind": "Place",
    "title": "Great Barrier Reef",
-   "theme": "",
-   "photo": false,
-   "problems": [
-    "type line \"Idea\" does not match /Place/"
-   ]
+   "theme": "postcard",
+   "photo": true,
+   "api": {
+    "name": "Great Barrier Reef",
+    "desc": "Coral reef system in Queensland, Australia",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Great Barrier Reef"
+    ],
+    "answer": "The Great Barrier Reef is the world's largest coral reef system, composed of over 2,900 in"
+   },
+   "redirect": "none"
   },
   {
    "ask": "african forest elephant species",
@@ -295,19 +694,41 @@
    "kind": "Creature",
    "title": "African forest elephant",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "African forest elephant",
+    "desc": "African elephant species",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "African forest elephant"
+    ],
+    "answer": "The African forest elephant is an elephant species native to humid tropical forests in Wes"
+   },
+   "redirect": "none"
   },
   {
    "ask": "marie curie physicist chemist",
-   "ok": false,
-   "kind": "Answer — from a source",
-   "title": "marie curie physicist chemist",
-   "theme": "",
+   "ok": true,
+   "kind": "Person — 1867",
+   "title": "Marie Curie",
+   "theme": "portrait",
    "photo": false,
-   "problems": [
-    "title is \"marie curie physicist chemist\", wanted \"Marie Curie\"",
-    "type line \"Answer — from a source\" does not match /Person/"
-   ]
+   "api": {
+    "name": "Marie Curie",
+    "desc": "Polish-French physicist and chemist (1867–1934)",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Marie Curie"
+    ],
+    "answer": "Maria Salomea Skłodowska Curie, better known as Marie Curie, was a Polish and naturalised-"
+   },
+   "redirect": "none"
   },
   {
    "ask": "red panda",
@@ -315,15 +736,41 @@
    "kind": "Creature",
    "title": "Red panda",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Red panda",
+    "desc": "Species of mammal in Asia",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Red panda"
+    ],
+    "answer": "The red panda, also known as the lesser panda, is a small mammal native to the eastern Him"
+   },
+   "redirect": "none"
   },
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature",
+   "kind": "Creature · Show",
    "title": "Blue whale",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Blue whale",
+    "desc": "Species of whale; largest animal known",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Blue whale"
+    ],
+    "answer": "The blue whale is a species of baleen whale and the largest marine mammal in the rorqual f"
+   },
+   "redirect": "Blue whale"
   },
   {
    "ask": "green turtle",
@@ -331,15 +778,41 @@
    "kind": "Creature",
    "title": "Green sea turtle",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Green sea turtle",
+    "desc": "Species of large sea reptile",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Green sea turtle"
+    ],
+    "answer": "The green sea turtle, also known as the green turtle, black sea turtle, and Pacific green "
+   },
+   "redirect": "Green sea turtle"
   },
   {
    "ask": "black widow",
    "ok": true,
    "kind": "Creature",
-   "title": "Badumna",
+   "title": "Latrodectus",
    "theme": "specimen",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Black Widow (2021 film)",
+    "desc": "Marvel Studios film",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Black Widow (2021 film)"
+    ],
+    "answer": "Black Widow is a 2021 American superhero film based on Marvel Comics featuring the charact"
+   },
+   "redirect": "none"
   },
   {
    "ask": "golden gate bridge",
@@ -347,7 +820,20 @@
    "kind": "Place",
    "title": "Golden Gate Bridge",
    "theme": "postcard",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "Golden Gate Bridge",
+    "desc": "Bridge in the San Francisco Bay Area",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Golden Gate Bridge"
+    ],
+    "answer": "The Golden Gate Bridge is a suspension bridge spanning the Golden Gate, the one-mile-wide "
+   },
+   "redirect": "none"
   },
   {
    "ask": "white house",
@@ -355,18 +841,41 @@
    "kind": "Place",
    "title": "White House",
    "theme": "postcard",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "White House",
+    "desc": "Residence and workplace of the US president",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "White House"
+    ],
+    "answer": "The White House is the official residence and workplace of the president of the United Sta"
+   },
+   "redirect": "none"
   },
   {
    "ask": "orange juice",
-   "ok": false,
-   "kind": "Creature · Band",
+   "ok": true,
+   "kind": "Food · Band",
    "title": "Orange juice",
    "theme": "specimen",
    "photo": true,
-   "problems": [
-    "type line \"Creature · Band\" does not match /Food/"
-   ]
+   "api": {
+    "name": "Orange juice",
+    "desc": "Juice made from oranges",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": true,
+    "sources": [
+     "Orange juice"
+    ],
+    "answer": "Orange juice is a primarily liquid extract of the orange tree fruit, produced by squeezing"
+   },
+   "redirect": "Orange juice"
   },
   {
    "ask": "how to bake bread",
@@ -374,7 +883,272 @@
    "kind": "Skill — Words and the world",
    "title": "Rye bread",
    "theme": "",
-   "photo": true
+   "photo": true,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Bread"
+    ],
+    "answer": "Bread is a baked food product made from water, flour, and often yeast. It is a staple food"
+   },
+   "redirect": "none"
+  },
+  {
+   "ask": "snake jailbird",
+   "ok": true,
+   "kind": "Character",
+   "title": "Snake",
+   "theme": "collectible",
+   "photo": false,
+   "api": {
+    "name": "Snake",
+    "desc": "fictional character from Simpsons",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters § Snake"
+    ],
+    "answer": "Chester Turley or Albert Knickerbocker Aloysius Snake (voiced by Hank Azaria), better know"
+   },
+   "redirect": "List of recurring The Simpsons characters#Snake"
+  },
+  {
+   "ask": "cletus spuckler",
+   "ok": true,
+   "kind": "Character",
+   "title": "Cletus Spuckler",
+   "theme": "collectible",
+   "photo": false,
+   "api": {
+    "name": "Cletus Spuckler",
+    "desc": "fictional character from Simpsons",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters § Cletus Spuckler"
+    ],
+    "answer": "Cletus Del Roy Montfort Bigglesworth Spuckler (voiced by Hank Azaria), commonly called Cle"
+   },
+   "redirect": "List of recurring The Simpsons characters#Cletus Spuckler"
+  },
+  {
+   "ask": "lindsey naegle",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "lindsey naegle",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters"
+    ],
+    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+   },
+   "redirect": "List of recurring The Simpsons characters#Lindsey Naegle"
+  },
+  {
+   "ask": "disco stu",
+   "ok": true,
+   "kind": "Character",
+   "title": "Disco Stu",
+   "theme": "collectible",
+   "photo": false,
+   "api": {
+    "name": "Disco Stu",
+    "desc": "fictional character from Simpsons",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters § Disco Stu"
+    ],
+    "answer": "Stuart \"Disco Stu\" Discothèque (voiced by Hank Azaria), is a man who is mentally stuck in "
+   },
+   "redirect": "List of recurring The Simpsons characters#Disco Stu"
+  },
+  {
+   "ask": "superintendent chalmers",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "superintendent chalmers",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters"
+    ],
+    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+   },
+   "redirect": "List of recurring The Simpsons characters#Superintendent Chalmers"
+  },
+  {
+   "ask": "sideshow mel",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "sideshow mel",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Sideshow Bob"
+    ],
+    "answer": "Dr. Robert Underdunk \"Bob\" Terwilliger Jr., PhD, better known as Sideshow Bob, is a recurr"
+   },
+   "redirect": "List of recurring The Simpsons characters#Sideshow Mel"
+  },
+  {
+   "ask": "kirk van houten",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "kirk van houten",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "Hostile Kirk Place"
+    ],
+    "answer": "\"Hostile Kirk Place\" is the sixteenth episode of the thirty-fourth season of the American "
+   },
+   "redirect": "List of recurring The Simpsons characters#Kirk Van Houten"
+  },
+  {
+   "ask": "rainier wolfcastle",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "rainier wolfcastle",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of recurring The Simpsons characters"
+    ],
+    "answer": "The American animated television series The Simpsons contains a wide range of minor and su"
+   },
+   "redirect": "List of recurring The Simpsons characters#Rainier Wolfcastle"
+  },
+  {
+   "ask": "itchy and scratchy",
+   "ok": true,
+   "kind": "Idea",
+   "title": "itchy and scratchy",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "The Itchy & Scratchy Show",
+    "desc": "Fictional animated series on The Simpsons",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "The Itchy & Scratchy Show"
+    ],
+    "answer": "The Itchy & Scratchy Show is a fictional animated series featured on The Simpsons. The car"
+   },
+   "redirect": "none"
+  },
+  {
+   "ask": "frylock",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "frylock",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of Aqua Teen Hunger Force characters"
+    ],
+    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+   },
+   "redirect": "List of Aqua Teen Hunger Force characters#Frylock"
+  },
+  {
+   "ask": "meatwad",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "meatwad",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of Aqua Teen Hunger Force characters"
+    ],
+    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+   },
+   "redirect": "List of Aqua Teen Hunger Force characters#Meatwad"
+  },
+  {
+   "ask": "master shake",
+   "ok": true,
+   "kind": "Answer — from a source",
+   "title": "master shake",
+   "theme": "",
+   "photo": false,
+   "api": {
+    "name": "",
+    "desc": "",
+    "fuzzy": false,
+    "noAnswer": false,
+    "guess": "",
+    "pic": false,
+    "sources": [
+     "List of Aqua Teen Hunger Force characters"
+    ],
+    "answer": "This is a list of characters featured in the Adult Swim animated television series Aqua Te"
+   },
+   "redirect": "List of Aqua Teen Hunger Force characters#Master Shake"
   }
  ]
 }

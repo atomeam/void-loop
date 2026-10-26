@@ -2904,12 +2904,15 @@ say('nothing selected to remove');
         }
         // the page that bears the name comes first (a redirect is followed): "black widow" is its own page or its list of meanings, not whatever the search ranks top
         // (that was a spider genus). Only a name of up to four words; a real article, or a disambiguation page that the chooser below lists
+        let listPage = false;
         if (!hit && topic.trim().split(/\s+/).length <= 4) {
           const sentence = topic.trim().replace(/\s+/g, '_').replace(/^./, (c) => c.toUpperCase()), title = topic.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
-          for (const t of [...new Set([sentence, title])]) {
-            try { const x = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t)); if (!x.ok) continue; const y = await x.json(); if (y && y.title && (y.type === 'standard' || y.type === 'disambiguation')) { hit = { title: y.title }; break; } } catch (_) {}
+          const bare = query.trim().replace(/^(?:please\s+)?(?:tell me about|what(?:'s| is| are| was)|who(?:'s| is| was| are)|define|explain)\s+/i, ''), lead = /^the\s/i.test(bare) ? bare.split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_') : ''; // "the godfather" is The_Godfather, not the list of meanings of Godfather
+          for (const t of [...new Set([lead, sentence, title].filter(Boolean))]) {
+            try { const x = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t)); if (!x.ok) continue; const y = await x.json(); if (y && /^List of /i.test(y.title || '') && !/^list\b/i.test(topic.trim())) { listPage = true; break; } /* the name is a section of a list page: the answer route reads that section */ if (y && y.title && (y.type === 'standard' || y.type === 'disambiguation')) { hit = { title: y.title }; break; } } catch (_) {}
           }
         }
+        if (listPage && !fromAnswer) return showAnswer(topic);
         if (!hit) {
           const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch=' + encodeURIComponent(topic));
           const sj = await sr.json();
