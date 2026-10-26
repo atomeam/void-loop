@@ -168,7 +168,7 @@ PANELS.time = () => {
 
 /** route: a chain of airports, leg by leg, on a map. */
 PANELS.route = () => {
-  const s = pane('Chain of airports', 'route'); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="r-in">' + esc(t('Airports in order, with a dash or a space')) + '</label><input type="text" id="r-in" value="JFK-LHR-SIN" autocomplete="off" spellcheck="false"></div><div id="r-out" aria-live="polite"></div><div class="map" id="r-map"></div>');
+  const s = pane('Chain of airports', 'route'); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="r-in">' + esc(t('Airports in order, with a dash or a space')) + '</label><input type="text" id="r-in" value="JFK-LHR-SIN" autocomplete="off" spellcheck="false"></div><div class="map" id="r-map"></div><div id="r-out" aria-live="polite"></div>');
   const inp = $(s, '#r-in'), out = $(s, '#r-out'), map = $(s, '#r-map'); out.style.minHeight = '230px'; map.style.minHeight = '195px'; const q = new URLSearchParams(location.search).get('route'); if (q) inp.value = q;
   const upd = () => {
     if (!idx) return; const { ports, bad } = C.parseRoute(idx, inp.value);
