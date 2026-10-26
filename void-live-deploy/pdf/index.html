@@ -40,13 +40,6 @@
 <link rel="canonical" href="https://a-to-mind.com/pdf/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"PDF tools","url":"https://a-to-mind.com/pdf/","description":"Merge, split, reorder, rotate and delete the pages of PDFs, compress them, turn images into a PDF and pages into images, add page numbers and a watermark, and crop. Runs on your device: nothing is uploaded, no account, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"merge pdf, split pdf, compress pdf, jpg to pdf, pdf to jpg, rotate pdf, delete pdf pages, reorder pdf pages","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/pdf/?tool={tool}"},"tool-input":"required name=tool"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"PDF tools","item":"https://a-to-mind.com/pdf/"}]}]}</script>
 <!-- /seo -->
-
-<!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/toolkit.js">
-<link rel="modulepreload" href="/lib/tool-sites.js">
-<link rel="modulepreload" href="/lib/pdf-ui.js">
-<link rel="modulepreload" href="/lib/pdf-tools.js">
-<!-- /modulepreload -->
 </head>
 <body>
 <main>
@@ -59,12 +52,7 @@
 <nav id="related" aria-label="Related tools"></nav>
   <footer>Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.</footer>
 </main>
-<script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
-  import { mountPdf } from '/lib/pdf-ui.js';
-  mountPdf(document.getElementById('app'), {"tools":["merge","split","pages","extract","rotate","compress","img2pdf","pdf2img","numbers","watermark","crop","info"]});
-  mountRelated(document.getElementById('related'), '/pdf/');
-</script>
+<script type="module" src="/pdf/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

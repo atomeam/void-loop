@@ -287,7 +287,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 11,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/card-image.js",
@@ -630,7 +630,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 13
+   "tests": 14
   },
   {
    "file": "lib/chat-calendar.js",
@@ -2205,7 +2205,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/kitchen.js",
@@ -2268,7 +2268,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/photo-edit.js",

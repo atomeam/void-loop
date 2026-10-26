@@ -27,6 +27,7 @@ const S = {
     h1: 'Karten am Griff ziehen oder eine Karte fokussieren und Alt+←, Alt+→, Alt+↑ oder Alt+↓ drücken: auch die Tastatur geht.', h2: 'Was es gibt: ', h3: 'JSON exportieren und importieren', h4: ' (auch Trello-Exporte)', h5: '. Bleibt auf diesem Gerät, kein Konto, funktioniert offline.',
     checks: '{d} von {t}', onBoard: '{n} Karten', limit: 'Limit {n}', cardOpen: 'Karte öffnen', moved: 'Verschoben nach {c}', repeated: 'Eine neue Kopie wartet in {c}.', oneBoard: 'Boards', untitled: 'Ohne Titel', dueOn: 'fällig {d}' },
 };
+export const STRINGS = S;
 const KEY = 'a2m.void.kanban.v1', LANG = 'a2m.void.kanban.lang';
 const h = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);

@@ -53,12 +53,7 @@
   <nav id="related" aria-label="Related tools"></nav>
   <footer>Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.</footer>
 </main>
-<script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
-  import { mountKanban } from '/lib/kanban-ui.js';
-  mountKanban(document.getElementById('app'), {"features":{"filter":1,"due":1,"labels":1,"checklist":1,"archive":1,"csv":1}});
-  mountRelated(document.getElementById('related'), '/kanban/simple/');
-</script>
+<script type="module" src="/kanban/simple/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

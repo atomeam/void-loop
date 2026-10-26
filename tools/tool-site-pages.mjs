@@ -49,9 +49,8 @@ const KBCSS = `
 
 /** the page for a row: kind 'pdf' or 'kanban' */
 export function pageOf(row, kind) {
-  const pdf = kind === 'pdf', cfg = pdf ? { tools: row.tools } : { features: row.features };
+  const pdf = kind === 'pdf';
   const css = (CSS + (pdf ? PDFCSS : KBCSS)).replace('__MAX__', pdf ? '860px' : '1180px');
-  const mod = pdf ? "import { mountPdf } from '/lib/pdf-ui.js';\n  mountPdf(document.getElementById('app'), " + JSON.stringify(cfg) + ");" : "import { mountKanban } from '/lib/kanban-ui.js';\n  mountKanban(document.getElementById('app'), " + JSON.stringify(cfg) + ");";
   const foot = pdf
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
@@ -80,14 +79,20 @@ export function pageOf(row, kind) {
   <nav id="related" aria-label="Related tools"></nav>
   <footer>${foot}</footer>
 </main>
-<script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
-  ${mod}
-  mountRelated(document.getElementById('related'), '${row.path}');
-</script>
+<script type="module" src="${row.path}app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
+`;
+}
+/** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
+export function appOf(row, kind) {
+  const pdf = kind === 'pdf', cfg = pdf ? { tools: row.tools } : { features: row.features };
+  return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+import { mountRelated } from '/lib/toolkit.js';
+import { ${pdf ? 'mountPdf' : 'mountKanban'} } from '/lib/${pdf ? 'pdf-ui' : 'kanban-ui'}.js';
+${pdf ? 'mountPdf' : 'mountKanban'}(document.getElementById('app'), ${JSON.stringify(cfg)});
+mountRelated(document.getElementById('related'), '${row.path}');
 `;
 }
 const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/asks -->\n?|<!-- modulepreload: tools\/preload\.mjs -->[\s\S]*?<!-- \/modulepreload -->\n?/g;
@@ -96,6 +101,8 @@ export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
   for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban']]) for (const row of rows) {
+    const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
+    if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
     const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);
     const have = existsSync(file) ? readFileSync(file, 'utf8') : null;
     if (have !== null && bare(have) === bare(want)) continue;

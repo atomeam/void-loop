@@ -49,12 +49,7 @@
   <nav id="related" aria-label="Related tools"></nav>
   <footer>Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.</footer>
 </main>
-<script type="module">
-  import { mountRelated } from '/lib/toolkit.js';
-  import { mountPdf } from '/lib/pdf-ui.js';
-  mountPdf(document.getElementById('app'), {"tools":["merge"]});
-  mountRelated(document.getElementById('related'), '/pdf/merge/');
-</script>
+<script type="module" src="/pdf/merge/app.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>

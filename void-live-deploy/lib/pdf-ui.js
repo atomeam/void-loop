@@ -120,7 +120,7 @@ export function mountPdf(root, cfg) {
       const mode = sel([['tidy', 'Tidy (keeps text and quality)'], ['pictures', 'Smaller pictures (pages become pictures; text is no longer selectable)']], 'tidy'), lvl = sel([['0.75|130', 'Light'], ['0.6|110', 'Medium'], ['0.4|80', 'Strong']], '0.6|110');
       const go = h('button', { type: 'button', class: 'go', disabled: true, onclick: () => busy(go, async () => {
         const t = await tools(), f = p.files[0]; status('Compressing…'); let out;
-        if (mode.value === 'tidy') out = await t.optimize(f.bytes); else { const [quality, dpi] = lvl.value.split('|').map(Number); out = await compressByPictures(f.bytes, { quality, dpi }, (i, n) => status('Page ' + i + ' of ' + n + '…')); }
+        if (mode.value === 'tidy') out = await t.optimize(f.bytes); else { const [quality, dpi] = lvl.value.split('|').map(Number); out = await compressByPictures(f.bytes, { quality, dpi }, (i, n) => status('Page ' + i + ' of ' + n)); }
         if (!out || out.length >= f.bytes.length) { status('This file is already as small as this method can make it (' + sizeText(f.bytes.length) + '). Try Smaller pictures.', false); return; }
         offer(baseOf(f.name) + '-compressed.pdf', out, 'application/pdf', 'from ' + sizeText(f.bytes.length) + ', ' + Math.round((1 - out.length / f.bytes.length) * 100) + '% smaller'); status('Done.');
       }) }, 'Compress PDF');
@@ -139,7 +139,7 @@ export function mountPdf(root, cfg) {
       const p = picker({ accept: 'application/pdf,.pdf', label: 'Choose a PDF', onChange: () => { go.disabled = !p.files.length; } });
       const type = sel([['image/png', 'PNG'], ['image/jpeg', 'JPG']], 'image/png'), dpi = sel([['72', '72 dpi (screen)'], ['150', '150 dpi'], ['300', '300 dpi (print)']], '150'), spec = h('input', { type: 'text', placeholder: 'all pages', 'aria-label': 'Pages, empty for all' });
       const go = h('button', { type: 'button', class: 'go', disabled: true, onclick: () => busy(go, async () => {
-        const f = p.files[0], imgs = await pagesToImages(f.bytes, { type: type.value, dpi: +dpi.value, spec: spec.value }, (i, n) => status('Page ' + i + ' of ' + n + '…'));
+        const f = p.files[0], imgs = await pagesToImages(f.bytes, { type: type.value, dpi: +dpi.value, spec: spec.value }, (i, n) => status('Page ' + i + ' of ' + n));
         if (!imgs.length) throw new Error('No such pages'); for (const x of imgs.slice(0, 12)) offer(x.name, x.bytes, type.value); if (imgs.length > 12) results.append(h('p', { class: 'note' }, '…and ' + (imgs.length - 12) + ' more, in the ZIP.'));
         if (imgs.length > 1) offer(baseOf(f.name) + '-pages.zip', zip(imgs), 'application/zip', imgs.length + ' pictures'); status('Done.');
       }) }, 'PDF to images');

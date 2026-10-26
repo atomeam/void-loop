@@ -495,80 +495,80 @@
    "subject": "PDF and Kanban pages: a chosen file is copied before the picker clears, pdf.js gets the Map methods older browsers lack, a draw asked for…"
   },
   {
-   "at": "2026-10-26T03:50:22Z",
-   "subject": "PDF tools and Kanban: /pdf/ and /kanban/ with a page of its own for every site of both lanes, on the device (pdf-lib vendored), EN+DE…"
+   "at": "2026-10-26T04:11:42Z",
+   "subject": "Tower gate: sports: thesportsdb.com,music: chordchord.com,music: metronomeonline.com measured against their live sites"
   },
   {
-   "at": "2026-10-26T03:20:33Z",
+   "at": "2026-10-26T04:09:41Z",
+   "subject": "Tower gate: sports: thesportsdb.com,music: jasperbernaers.com,music: anotherproducer.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:08:51Z",
+   "subject": "Site reverse engineering: kanban-abacktools.com,kanban-jasperbernaers.com,kanban-kanbanflow.com,music-anotherproducer.com,music-chordchord.…"
+  },
+  {
+   "at": "2026-10-26T04:08:49Z",
+   "subject": "Site reverse engineering: finance-barchart.com,finance-companiesmarketcap.com,finance-finviz.com,finance-investing.com,finance-macrotrends.…"
+  },
+  {
+   "at": "2026-10-26T04:08:09Z",
+   "subject": "Sports pictures: what Verse can actually do, source by source, with licence and limit (asked by the owner)"
+  },
+  {
+   "at": "2026-10-26T04:07:40Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos: exif.tools,photos: tinypng.com,photos: squoosh.app,photos: photopea.com,photos: iloveimg.com…"
+  },
+  {
+   "at": "2026-10-26T04:07:11Z",
+   "subject": "Site reverse engineering: codebase,pdf-codeshack.io,pdf-pdfcandy.com,pdf-sejda.com,photos-iloveimg.com,photos-photopea.com,photos-tinypng.c…"
+  },
+  {
+   "at": "2026-10-26T04:06:08Z",
+   "subject": "Tower gate: photos measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:06:01Z",
+   "subject": "Markets: the day move is never Yahoo's chartPreviousClose (a year ago), and the header names the symbol and its kind first"
+  },
+  {
+   "at": "2026-10-26T04:05:35Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T03:20:04Z",
+   "at": "2026-10-26T04:05:22Z",
+   "subject": "Site reverse engineering: ad frames, ad and analytics storage keys and one-page sections are not candidates; the first six scans re-folded"
+  },
+  {
+   "at": "2026-10-26T04:04:33Z",
+   "subject": "Site reverse engineering: kanban-wekan.fi,pdf-10015.io,photos-exif.tools,photos-exifeditor.io,photos-squoosh.app,sports-thesportsdb.com…"
+  },
+  {
+   "at": "2026-10-26T04:03:57Z",
+   "subject": "Tower gate: photos: exifeditor.io,photos,pdf: codeshack.io measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:03:19Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T03:19:45Z",
-   "subject": "Podcasts: the page registers the service worker (it read 0 offline), keeps its two modules and the Verse show offline; Show pages names…"
+   "at": "2026-10-26T04:03:03Z",
+   "subject": "Site reverse engineering: every tower site's client code read once for hidden features (URL parameters, shortcuts, API paths, flags…"
   },
   {
-   "at": "2026-10-26T03:18:30Z",
-   "subject": "Markets: the strip no longer starves the quote, a retry on a busy moment, and a bundled year-end record for the close on a day"
+   "at": "2026-10-26T04:02:47Z",
+   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance: finviz.com,finance: investing.com,finance measured against…"
   },
   {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Fix three red checks: scores owns sports-score asks (calendar leaves them), /fix/ pages share one CSP splat rule (83 -> 66 rules), real…"
+   "at": "2026-10-26T04:02:30Z",
+   "subject": "photos e2e: give the WebP re-encode longer on a busy machine"
   },
   {
-   "at": "2026-10-26T03:18:08Z",
-   "subject": "Versus: PDF tools and kanban floors with lanes, feature maps, probes, and a page of its own per lane site (LANE_PAGES)"
+   "at": "2026-10-26T04:02:23Z",
+   "subject": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\""
   },
   {
-   "at": "2026-10-26T03:18:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:17:38Z",
-   "subject": "Daily art helper for the reports: an illustration by Verse per league, section or wrap each day inside its own budget, a deterministic SVG…"
-  },
-  {
-   "at": "2026-10-26T03:17:08Z",
-   "subject": "News: a one-line headline link is a 26 px tap target"
-  },
-  {
-   "at": "2026-10-26T03:14:09Z",
-   "subject": "Tower gate: news: euronews.com,news: aljazeera.com,news: npr.org,news: apnews.com,news: theguardian.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:13:34Z",
-   "subject": "Tower gate: podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts: podbean.com,podcasts: castbox.fm measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:57Z",
-   "subject": "Tower gate: finance: macrotrends.net,finance: companiesmarketcap.com,finance: stockanalysis.com,finance: finviz.com,finance: barchart.com…"
-  },
-  {
-   "at": "2026-10-26T03:12:22Z",
-   "subject": "Tower gate: news: allsides.com,news: thelocal.com,news: rnz.co.nz,news: channelnewsasia.com,news: france24.com,news: dw.com measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:14Z",
-   "subject": "Rules: the objective is to go through every tower site (owner's words)"
-  },
-  {
-   "at": "2026-10-26T03:11:15Z",
-   "subject": "Tower gate: finance,news,podcasts,finance: stockq.org,finance: stooq.com,podcasts: podcastindex.org measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:34Z",
-   "subject": "Tower gate: finance: investing.com,finance: tradingview.com,finance: marketwatch.com,finance: google.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:29Z",
-   "subject": "Tower gate: finance: stockq.org,finance: companiesmarketcap.com,finance: stockanalysis.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:10:26Z",
-   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com,sports: onefootball.com,sports: 365scores.com,sports…"
+   "at": "2026-10-26T04:02:15Z",
+   "subject": "Tower gate: photos: exifeditor.io,finance: companiesmarketcap.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
   }
  ],
  "builders": {

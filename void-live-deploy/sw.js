@@ -11,7 +11,7 @@ const TOOLS = ['/photos/', '/stopwatch/', '/word-count/', '/color/', '/gradient/
 // the six music pages (2026-10-26) are kept the first time each is opened, with their app.js, for the same reason
 const LATER = ['/music/', '/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/caps/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
 const isTool = (p) => TOOLS.includes(p) || LATER.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|sports\/app|(?:music|metronome|piano|tuner|bpm|chords)\/app)\.js$/.test(p);
+const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|sports\/app|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban)(?:\/[a-z]+)?\/app)\.js$/.test(p);
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML

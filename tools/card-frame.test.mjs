@@ -127,5 +127,5 @@ test('a card from a skill with a full page links to it (owner, 2026-10-25)', asy
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   assert.match(pageLinkHtml('calendar', esc), /href="\/calendar\/"[^>]*>Open the full Calendar page →<\/a>$/);
   assert.equal(pageLinkHtml('nope', esc), '');
-  for (const [, [href]] of Object.entries(PAGE_OF)) assert.match(href, /^\/[a-z0-9-]+\/(?:[a-z-]+)?$/);
+  for (const [, [href]] of Object.entries(PAGE_OF)) assert.match(href, /^(?:\/[a-z0-9-]+)+\/(?:[a-z-]+)?$/);
 });
