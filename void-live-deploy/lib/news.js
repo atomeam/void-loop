@@ -58,7 +58,8 @@ export function plain(s) {
   t = decode(t); // entity-encoded markup (&lt;p&gt;) becomes tags here and is stripped next
   return decode(t.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
-const clip = (s, n) => (s.length <= n ? s : s.slice(0, n).replace(/\s+\S*$/, '') + '…');
+// cut at the last sentence end, else the last word, inside n characters; no ellipsis is ever added (owner, 2026-10-21)
+const clip = (s, n) => { if (s.length <= n) return s; const c = s.slice(0, n), d = Math.max(c.lastIndexOf('. '), c.lastIndexOf('! '), c.lastIndexOf('? ')); return d > n / 3 ? c.slice(0, d + 1) : c.replace(/\s+\S*$/, '').replace(/[,;:\s-]+$/, ''); };
 const tagOf = (block, name) => { const m = block.match(new RegExp('<' + name + '(?:\\s[^>]*)?>([\\s\\S]*?)</' + name + '>', 'i')); return m ? m[1] : ''; };
 /** the stories in an RSS 2.0, RSS 1.0 (RDF) or Atom document: [{ title, link (https only), summary, t (ms, 0 when unknown) }]. Pure. */
 export function parseFeed(xml, now = Date.now()) {
