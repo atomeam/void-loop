@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T03:35:38Z",
+   "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
+  },
+  {
+   "at": "2026-10-26T03:34:58Z",
+   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T03:33:37Z",
+   "subject": "Gate: a lane site with a page of its own can ask its own question (LANE_PROBES, LANE_EXTRAS); sports: thesportsdb.com is gated against…"
+  },
+  {
    "at": "2026-10-26T03:31:35Z",
    "subject": "Tower rank: every Versus site ranked by the Tranco top million"
   },
@@ -557,18 +569,6 @@
   {
    "at": "2026-10-26T03:24:49Z",
    "subject": "News: the day's illustration for each section and the brief (lib/daily-art.js), after the first draw, in a reserved box"
-  },
-  {
-   "at": "2026-10-26T03:24:33Z",
-   "subject": "Tower gate: podcasts: podcastindex.org,podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts…"
-  },
-  {
-   "at": "2026-10-26T03:24:25Z",
-   "subject": "Feature scan: finance,photos,podcasts,sports researched by Verse"
-  },
-  {
-   "at": "2026-10-26T03:23:01Z",
-   "subject": "Scores: Next games on every team page and day view, the page's code in scores/app.js after the load event (16 KB of HTML), words that…"
   }
  ],
  "builders": {
