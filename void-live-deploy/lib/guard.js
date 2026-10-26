@@ -18,6 +18,7 @@ export const LIMITS = {
   calshare: { rpm: 60, body: 200000 }, // a whole calendar shared by link (functions/api/calshare.js): one document of up to 1,000 events; 30 a minute and daily ceilings in the route itself
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
+  news: { rpm: 30, body: 0 }, // GET only: a section and a language from two closed lists in, grouped headlines from fixed public feeds out, edge-cached seven minutes; 20 misses a minute in the route itself (functions/api/news.js)
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)
   scores: { rpm: 60, body: 0 }, // GET only: a league from a closed list and a day in, public scores out (functions/api/scores.js), edge-cached 20 s live to 6 h final; 30 misses a minute in the route itself
   miss: { rpm: 30, body: 1000 },
