@@ -30,13 +30,13 @@ export function slim(row) {
     change24h: row.price_change_percentage_24h, cap: row.market_cap, rank: row.market_cap_rank,
     spark: sp.filter((_, i) => i % step === 0).map((v) => +Number(v).toPrecision(6)), updated: row.last_updated };
 }
-export const RL_MAX = 60, RL_BATCH = 240, UA = 'Verse (a-to-mind.com)';
+export const RL_MAX = 90, RL_BATCH = 240, UA = 'Verse (a-to-mind.com)';
 const DAY = 86400000, iso = (ms) => new Date(ms).toISOString().slice(0, 10), compact = (ms) => iso(ms).replace(/-/g, '');
 const DAYS = { '1d': 1, '5d': 5, '1m': 31, '6m': 183, '1y': 366, '5y': 5 * 366 };
 const YAHOO = { '1d': ['1d', '5m'], '5d': ['5d', '15m'], '1m': ['1mo', '1d'], '6m': ['6mo', '1d'], ytd: ['ytd', '1d'], '1y': ['1y', '1d'], '5y': ['5y', '1wk'], max: ['max', '1mo'] };
 export const MOVERS = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'META', 'TSLA', 'JPM', 'V', 'WMT', 'NFLX', 'AMD'];
 export const STRIP = ['SPX', 'DJI', 'NDX', 'BTC', 'ETH', 'EUR/USD'];
-const get = async (f, url, text) => { const r = await f(url, { headers: { accept: text ? 'text/csv,*/*' : 'application/json', 'user-agent': UA }, signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(7000) : undefined }); if (!r.ok) throw new Error('status ' + r.status); return text ? r.text() : r.json(); };
+const get = async (f, url, text) => { const r = await f(url, { headers: { accept: text ? 'text/csv,*/*' : 'application/json', 'user-agent': UA }, signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined }); if (!r.ok) throw new Error('status ' + r.status); return text ? r.text() : r.json(); };
 
 /** how far back the daily rows must reach for a range (a year at least: the 52 weeks come from them). Pure. */
 export function wantFrom(range, now) { return range === 'max' ? 0 : range === 'ytd' ? Math.min(Date.UTC(new Date(now).getUTCFullYear(), 0, 1), now - 400 * DAY) : now - Math.max(DAYS[range] + 10, 400) * DAY; }
@@ -45,17 +45,18 @@ async function stooqRows(r, from, to, f) { const u = 'https://stooq.com/q/d/l/?s
 async function yahoo(r, range, f) { const [rg, iv] = YAHOO[range]; return parseYahoo(await get(f, 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(r.yahoo) + '?range=' + rg + '&interval=' + iv)); }
 const withChart = (s, rows) => { const c = rows && rows.length > 1 ? summarize(rows, 'max', {}, false) : null; if (c) { s.points = c.points; s.rangeChange = c.rangeChange; s.rangePct = c.rangePct; } return s; };
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function stooqQuote(r, range, f, now) { const rows = await stooqRows(r, wantFrom(range, now), now, f); if (rows.length < 2) throw new Error('no rows'); return { ...summarize(rows, range), source: 'Stooq', rows }; }
+async function yahooQuote(r, range, f) { // Yahoo's unofficial endpoint: daily rows for the change and the 52 weeks, a second call for a chart it alone has (one day) or a longer one
+  const base = await yahoo(r, '1y', f); if (!base || base.rows.length < 2) throw new Error('no rows');
+  const s = summarize(base.rows, range === '1d' || range === '5y' || range === 'max' ? '1y' : range, base.meta);
+  if (range === '1d' || range === '5y' || range === 'max') { const more = await yahoo(r, range, f).catch(() => null); if (more) withChart(s, more.rows); if (!more || more.rows.length < 2) s.note = 'The ' + range + ' chart is not available now; showing one year.'; }
+  return { ...s, name: base.meta.name || undefined, currency: base.meta.currency || undefined, source: 'Yahoo Finance (unofficial)', rows: base.rows };
+}
+// Stooq first; Yahoo joins after 1.8 s (or at once when Stooq fails), and the first answer wins: a slow or refusing source costs a couple of seconds, not both timeouts one after the other
 async function stockQuote(r, range, f, now) {
-  if (range !== '1d') {
-    try { const rows = await stooqRows(r, wantFrom(range, now), now, f); if (rows.length >= 2) return { ...summarize(rows, range), source: 'Stooq', rows }; } catch (_) {}
-  }
-  try { // Yahoo's unofficial endpoint: daily rows for the change and the 52 weeks, a second call for a chart it alone has (one day) or a longer one
-    const base = await yahoo(r, '1y', f); if (base && base.rows.length >= 2) {
-      const s = summarize(base.rows, range === '1d' || range === '5y' || range === 'max' ? '1y' : range, base.meta);
-      if (range === '1d' || range === '5y' || range === 'max') { const more = await yahoo(r, range, f).catch(() => null); if (more) withChart(s, more.rows); if (!more || more.rows.length < 2) s.note = 'The ' + range + ' chart is not available now; showing one year.'; }
-      return { ...s, name: base.meta.name || undefined, currency: base.meta.currency || undefined, source: 'Yahoo Finance (unofficial)', rows: base.rows };
-    }
-  } catch (_) {}
+  let yp; const y = () => (yp = yp || yahooQuote(r, range, f));
+  try { return await (range === '1d' ? y() : Promise.any([stooqQuote(r, range, f, now).catch(() => y()), sleep(1800).then(y)])); } catch (_) {}
   if (range === '1d') { try { const rows = await stooqRows(r, now - 20 * DAY, now, f); if (rows.length >= 2) return { ...summarize(rows, '5d'), note: 'Intraday prices are not available now; showing the last five days.', source: 'Stooq', rows }; } catch (_) {} }
   return null;
 }
@@ -78,7 +79,12 @@ async function fxQuote(r, range, f, now) {
 }
 /** the close on or before a day, from the source that has it: { date, close } or null */
 async function dayClose(r, rows, on, f) {
-  const rec = recordClose(r.sym, on), live = await dayCloseLive(r, rows, on, f); return live || rec;
+  const rec = recordClose(r.sym, on); if (rec) return rec; // the bundled record: no network, no limiter
+  const cache = typeof caches !== 'undefined' ? caches.default : null, ck = new Request('https://a-to-mind.com/__markets/day/' + encodeURIComponent(r.sym) + '/' + on);
+  if (cache) { try { const hit = await cache.match(ck); if (hit) return await hit.json(); } catch (_) {} }
+  const live = await dayCloseLive(r, rows, on, f);
+  if (cache && live) { try { await cache.put(ck, new Response(JSON.stringify(live), { headers: { 'cache-control': 'max-age=86400' } })); } catch (_) {} } // a past day's close never changes
+  return live;
 }
 async function dayCloseLive(r, rows, on, f) {
   try {
@@ -88,6 +94,8 @@ async function dayCloseLive(r, rows, on, f) {
     return closeOn(rows || [], on);
   } catch (_) { return null; }
 }
+/** the answer when only the bundled record has the day: the close, no price (the sources did not answer, or the caller was asked to wait). */
+export const recordAnswer = (r, range, on, rec, now) => ({ ok: true, partial: true, sym: r.sym, kind: r.kind, name: r.name || r.sym, currency: r.currency, range, price: null, change: null, pct: null, points: [], closeOn: rec, on, source: RECORD_NAME, delayed: true, at: new Date(now).toISOString(), note: 'The live price sources did not answer; this is the close from Verse\'s year-end record.' });
 /** one quote, shaped for the page: { ok, sym, kind, name, currency, range, price, change, pct, ..., points, source, delayed, at }. fetchFn and now are for tests. */
 export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now()) {
   let q = null;
@@ -95,7 +103,7 @@ export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now())
   if (!q) {
     // the sources did not answer: a day inside the bundled record still has its close (lib/markets-record.js), said to be from it
     const rec = on ? recordClose(r.sym, on) : null;
-    if (rec) return { ok: true, partial: true, sym: r.sym, kind: r.kind, name: r.name || r.sym, currency: r.currency, range: range, price: null, change: null, pct: null, points: [], closeOn: rec, on, source: RECORD_NAME, delayed: true, at: new Date(now).toISOString(), note: 'The live price sources did not answer; this is the close from Verse\'s year-end record.' };
+    if (rec) return recordAnswer(r, range, on, rec, now);
     return { ok: false, kind: 'none', sym: r.sym, say: 'No price for ' + r.sym + ' from the free sources just now. Check the symbol, or try again in a minute.' };
   }
   const { rows, ...rest } = q, out = { ok: true, sym: r.sym, kind: r.kind, name: rest.name || r.name || r.sym, currency: rest.currency || r.currency, range: r.kind === 'fx' && range === '1d' ? '5d' : range, ...rest, delayed: true, at: new Date(now).toISOString() };
@@ -107,16 +115,25 @@ export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now())
 const validDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && iso(Date.parse(s + 'T00:00:00Z')) === s && Date.parse(s + 'T00:00:00Z') <= Date.now() && Date.parse(s + 'T00:00:00Z') >= Date.UTC(1970, 0, 1);
 const json = (o, status = 200, cc = 'no-store') => Response.json(o, { status, headers: { 'cache-control': cc } });
 const slimQ = (q) => (q && q.ok ? { ok: true, sym: q.sym, name: q.name, price: q.price, change: q.change, pct: q.pct, currency: q.currency, kind: q.kind, asOf: q.asOf, source: q.source } : null);
-/** a body from the edge cache, or made (one to three upstream calls, counted against the caller's own bucket) and kept; a failure is never kept. */
-async function cachedBody(request, env, key, ttl, make, bucket = 'markets', max = RL_MAX) {
-  const cache = typeof caches !== 'undefined' ? caches.default : null, ck = new Request(new URL(request.url).origin + '/__markets/' + key);
-  if (cache) { try { const hit = await cache.match(ck); if (hit) return await hit.json(); } catch (_) {} }
-  if (await rateLimited(request, env || {}, bucket, max)) return { ok: false, kind: 'limited', say: 'That is a lot of price lookups in a minute. Give it a moment.' };
+/** a body from the edge cache, or made (one to three upstream calls, counted against the caller's own bucket) and kept. A good answer is also kept for a day as the
+ *  stale copy, served (and said to be old) when the sources fail or the caller is asked to wait; a failure is remembered for 45 seconds so a burst of loads does not wait
+ *  on the sources one after the other. `fallback()` is an answer that costs nothing (the bundled record), tried before telling anyone to wait. */
+async function cachedBody(request, env, key, ttl, make, bucket = 'markets', max = RL_MAX, fallback = null) {
+  const cache = typeof caches !== 'undefined' ? caches.default : null, origin = new URL(request.url).origin, at = (k) => new Request(origin + '/__markets/' + k), ck = at(key);
+  const read = async (k) => { if (!cache) return null; try { const hit = await cache.match(at(k)); return hit ? await hit.json() : null; } catch (_) { return null; } };
+  const keep = async (k, v, age) => { if (cache) { try { await cache.put(at(k), new Response(JSON.stringify(v), { headers: { 'cache-control': 'max-age=' + age } })); } catch (_) {} } };
+  const fresh = await read(key); if (fresh) return fresh;
+  const stale = async () => { const v = await read('stale/' + key); return v && v.ok ? { ...v, stale: true, note: 'The live sources did not answer; this is the last answer saved, from ' + String(v.at || '').slice(0, 16).replace('T', ' ') + ' UTC.' } : null; };
+  const neg = await read('neg/' + key); if (neg) return (await stale()) || fallback && fallback() || neg;
+  if (await rateLimited(request, env || {}, bucket, max)) return (await stale()) || (fallback && fallback()) || { ok: false, kind: 'limited', say: 'That is a lot of price lookups in a minute. Give it a moment.' };
   const body = await make();
-  if (cache && body && body.ok) { try { await cache.put(ck, new Response(JSON.stringify(body), { headers: { 'cache-control': 'max-age=' + ttl } })); } catch (_) {} }
+  if (body && body.ok && body.partial) return (await stale()) || (await keep(key, body, 120), body); // only the record: the last full answer is better when there is one
+  if (body && body.ok) { await keep(key, body, ttl); await keep('stale/' + key, body, 86400); return body; }
+  const old = await stale(); if (old) return old;
+  if (body && (body.kind === 'none' || body.kind === 'away')) await keep('neg/' + key, body, 45);
   return body;
 }
-export const quoteBody = (request, env, r, range, on, f, many = false) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f), many ? 'markets-batch' : 'markets', many ? RL_BATCH : RL_MAX);
+export const quoteBody = (request, env, r, range, on, f, many = false) => cachedBody(request, env, 'q/' + encodeURIComponent(r.sym) + '/' + range + '/' + on, r.kind === 'fx' ? 3600 : 120, () => lookQuote(r, range, on || null, f), many ? 'markets-batch' : 'markets', many ? RL_BATCH : RL_MAX, () => { const rec = on ? recordClose(r.sym, on) : null; return rec ? recordAnswer(r, range, on, rec, Date.now()) : null; });
 const reply = (body, ttl) => json(body, body.ok ? 200 : body.kind === 'none' ? 404 : body.kind === 'limited' ? 429 : 503, body.ok ? 'public, max-age=' + ttl : 'no-store'); // 503, not 502: Cloudflare swaps a Function's 502 for its own page
 /** at most 12 symbols in one call, each from the same cache as a single quote */
 export async function batch(request, env, list, f) {

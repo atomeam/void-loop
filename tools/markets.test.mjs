@@ -133,6 +133,38 @@ test('the coin table and the screener: rows, filters and the endpoint', async ()
   assert.equal(syms({}), 'ABCD'); assert.equal(syms({ group: 'coins' }), 'C'); assert.equal(syms({ minPct: 1 }), 'AC'); assert.equal(syms({ maxPct: 0 }), 'B'); assert.equal(syms({ nearHigh: 5 }), 'AD'); assert.equal(syms({ minVolX: 2 }), 'A', 'a coin has no volume ratio, so it never passes a volume filter');
   assert.equal(syms({ sort: 'pct' }), 'ACDB'); assert.equal(syms({ sort: '-pct' }), 'BDCA'); assert.equal(syms({ sort: 'below' }), 'DABC'); assert.equal(syms({ group: 'junk', minPct: 'abc' }), 'ABCD', 'nonsense is ignored');
 });
+test('a burst of 20 loads from one address: one upstream try, none refused, and a bad moment is answered from the record or the last good answer', async () => {
+  const kept = new Map(), had = globalThis.caches, up = [];
+  globalThis.caches = { default: { match: async (r) => { const v = kept.get(r.url); return v ? new Response(v.body, v.init) : undefined; }, put: async (r, res) => { kept.set(r.url, { body: await res.text(), init: { headers: [...res.headers] } }); } } };
+  const ip = { 'cf-connecting-ip': '9.9.9.9' }, hosts = ['stooq.com', 'query1.finance.yahoo.com', 'api.coingecko.com', 'api.frankfurter.dev'];
+  const load = (qs, f) => onRequestGet({ request: new Request('https://a-to-mind.com/api/markets' + qs, { headers: ip }), env: { SALT: 'x' }, fetchFn: async (u, o) => { up.push(u); return f(u, o); } });
+  try {
+    const live = fake(), down = fake({ down: hosts });
+    let bad = 0; for (let i = 0; i < 20; i++) { const r = await load('?s=SPX&r=5y&on=2024-12-31', live); const j = await r.json(); if (r.status !== 200 || !j.ok || j.closeOn.close !== 5881.63) bad++; }
+    assert.equal(bad, 0, 'twenty loads, twenty answers with the close'); assert.ok(up.length <= 3, 'one live try, then the edge cache: ' + up.length); const n = up.length;
+    // the limiter's own count never reached its limit: only the fresh lookup counted
+    const bucket = [...kept.keys()].find((k) => k.includes('/__void-markets/rl/')); assert.equal(Number(kept.get(bucket).body), 1);
+    // the sources down and the two minutes over: the last good answer (said to be old) is served, not an error
+    for (const k of [...kept.keys()]) if (k.includes('/__markets/q/') && !k.includes('/stale/')) kept.delete(k);
+    const old = await (await load('?s=SPX&r=5y&on=2024-12-31', down)).json(); assert.equal(old.ok, true); assert.equal(old.stale, true); assert.match(old.note, /last answer saved/); assert.equal(old.closeOn.close, 5881.63);
+    // a symbol never seen, the sources down: the failure is remembered 45 seconds, so a burst does not try the sources again each time
+    const before = up.length; for (let i = 0; i < 5; i++) assert.equal((await load('?s=ZZZ&r=1y', down)).status, 404); assert.ok(up.length - before <= 4, 'one try of the sources, not five: ' + (up.length - before));
+    // asked to wait (the limiter full) and the day is in the record: the record answers; a plain quote is told to wait
+    for (const k of [...kept.keys()]) if (k.includes('/__void-markets/rl/')) kept.set(k, { body: '9999', init: { headers: [] } });
+    for (const k of [...kept.keys()]) if (k.includes('/__markets/q/DJI') || k.includes('/stale/q/DJI')) kept.delete(k);
+    const rec = await (await load('?s=DJI&r=5y&on=2024-12-31', down)).json(); assert.equal(rec.ok, true); assert.equal(rec.partial, true); assert.equal(rec.closeOn.close, 42544.22);
+    assert.equal((await load('?s=MSFT&r=1y', down)).status, 429);
+  } finally { globalThis.caches = had; }
+});
+test('a slow Stooq does not hold the answer: Yahoo joins and the first answer wins', async () => {
+  const slowStooq = async (u) => { if (new URL(u).host === 'stooq.com') await new Promise((r) => setTimeout(r, 2600)); return fake({ yahoo: { chart: { result: [{ meta: { currency: 'USD', regularMarketPrice: 200, fiftyTwoWeekHigh: 220, fiftyTwoWeekLow: 100 }, timestamp: Array.from({ length: 60 }, (_, i) => Math.floor((NOW - (60 - i) * DAYMS) / 1000)), indicators: { quote: [{ close: Array.from({ length: 60 }, (_, i) => 150 + i) }] } }] } } })(u); };
+  const t0 = Date.now(); const q = await lookQuote(resolve('aapl'), '1m', null, slowStooq, NOW); assert.equal(q.ok, true); assert.match(q.source, /Yahoo/); assert.ok(Date.now() - t0 < 2400, 'answered in ' + (Date.now() - t0) + ' ms, not after the slow source');
+});
+test('the first paint carries the record: the page\'s inline copy of the year-end record agrees with lib/markets-record.js', async () => {
+  const { RECORD } = await import('../void-live-deploy/lib/markets-record.js'); const html = fs.readFileSync(path.join(root, 'markets', 'index.html'), 'utf8');
+  const m = html.match(/var R = (\{ SPX:[^;]*\});/); assert.ok(m, 'the inline copy is there'); const R = Function('return ' + m[1])();
+  for (const sym of Object.keys(RECORD)) assert.deepEqual(R[sym][1], RECORD[sym], sym); assert.deepEqual(Object.keys(R).sort(), Object.keys(RECORD).sort());
+});
 test('registered everywhere a page must be: the ask bar, the service worker, the SEO list, the page itself', () => {
   assert.ok(TOOLS['/markets/']); assert.ok(RELATED['/markets/'] && RELATED['/markets/'].includes('/convert/'));
   for (const a of ['aapl stock price', 'stock price of apple', 'tesla stock', 'stock market']) { const r = routeAsk(a); assert.ok(r && /^\/markets\//.test(r.path || r), a + ' -> ' + JSON.stringify(r)); }

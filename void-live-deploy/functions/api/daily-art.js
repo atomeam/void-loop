@@ -32,6 +32,8 @@ import { FREE_CAP } from './card-art.js';
 import { paintAi, paintFree } from './image.js';
 import * as A from '../../lib/daily-art.js';
 import * as P from '../../lib/daily-photo.js';
+import * as FP from '../../lib/free-pics.js';
+import { cap as dayCap } from '../../lib/daily-cap.js';
 
 export const PHOTO_LOOKUPS_DAY = 120, PHOTO_CONN_DAY = 6, PHOTO_ROWS_DAY = 40, NONE_TTL_MS = 6 * 3600e3, LIMITED_TTL_MS = 30 * 60e3, FETCH_MS = 5000, DEADLINE_MS = 16000;
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
@@ -120,7 +122,7 @@ const blockedSet = async (env) => { try { const { results } = await env.DB.prepa
 
 /** walk the sources in order and return the first photo that passes every filter: { found, report[], limited }. `bytes` says whether to fetch the thumbnail (the real lookup
  *  does; the owner's diag does only with try=1). Each source's refusals are kept in the report so the owner can see why. */
-export async function lookup(env, fetchFn, origin, { q, date, bytes = true, now = Date.now() }) {
+export async function lookup(env, fetchFn, origin, { q, date, bytes = true, now = Date.now(), key = '' }) {
   const report = [], blocked = await blockedSet(env), t0 = Date.now(); let limited = false;
   for (const src of SOURCES) {
     if (Date.now() - t0 > DEADLINE_MS) { report.push({ source: src, skipped: 'out of time' }); continue; }
@@ -139,11 +141,23 @@ export async function lookup(env, fetchFn, origin, { q, date, bytes = true, now 
       catch (e) { if (e instanceof Limited) { limited = true; await setLimit(env, src, now + e.retry * 1000); row.error = 'image rate limited (429)'; break; } row.rejected.push({ title: c.title, why: 'the picture could not be fetched: ' + why(e) }); }
     }
   }
+  // the wider registry (lib/free-pics.js): public-domain and open-access sources, asked with the league's own closed subject (never the visitor's words), only when the sources above found nothing
+  if (FP.resolveSubject(key)) {
+    try {
+      const fp = await FP.findPicturesDetailed(key, { kind: 'league', sources: FP.orderFor('league').filter((id) => !['commons', 'openverse', 'flickr'].includes(id)), date, max: 3, env, fetch: fetchFn, cap: (k, l) => dayCap(env, k, l), timeoutMs: FETCH_MS, now });
+      report.push(...fp.report.map((r) => ({ ...r, source: 'fp:' + r.source })));
+      for (const p of fp.pics) {
+        const c = { source: 'fp-' + p.source, title: p.credit.title, author: p.credit.author, authorUrl: p.authorUrl, lic: { code: p.licence, name: p.credit.licence, url: p.credit.licenceUrl }, sourcePage: p.sourcePage, taken: p.taken, provider: '', link: '', credit: FP.creditSegments(p) };
+        if (!bytes) return { found: c, report, limited };
+        try { return { found: { ...c, img: await bytesFrom(fetchFn, 'fp', p.thumb) }, report, limited }; } catch (e) { if (e instanceof Limited) { limited = true; break; } }
+      }
+    } catch (e) { report.push({ source: 'fp', error: why(e) }); }
+  }
   return { found: null, report, limited };
 }
 
 /** the stored form of a photo: the candidate without its bytes, the credit already worked out (a photo without a full credit is never stored). */
-const metaOf = (c, date, id) => ({ source: c.source, title: c.title, author: c.author || '', authorUrl: c.authorUrl || '', lic: c.lic ? { code: c.lic.code, name: c.lic.name, url: c.lic.url } : null, sourcePage: c.sourcePage, provider: c.provider || '', taken: c.taken || '', link: c.link || '', id, credit: P.creditFor(c, { date, id }) });
+const metaOf = (c, date, id) => ({ source: c.source, title: c.title, author: c.author || '', authorUrl: c.authorUrl || '', lic: c.lic ? { code: c.lic.code, name: c.lic.name, url: c.lic.url } : null, sourcePage: c.sourcePage, provider: c.provider || '', taken: c.taken || '', link: c.link || '', id, credit: c.credit ? [...c.credit, { t: ' · ' }, { t: 'Report or request removal', href: P.reportHref(id) }] : P.creditFor(c, { date, id }) });
 
 // ---- the photo path ----
 async function photoFor(env, fetchFn, origin, Q, conn, now) {
@@ -158,7 +172,7 @@ async function photoFor(env, fetchFn, origin, Q, conn, now) {
   const got = await env.DB.prepare("INSERT INTO void_daily_photo (k, day, state, meta, img, at, id) VALUES (?, ?, 'pending', '{}', '', ?, '') ON CONFLICT(k) DO UPDATE SET state = 'pending', at = excluded.at WHERE state <> 'pending' OR at < ?").bind(k, day, now, now - A.PENDING_MS).run();
   if (!Number(got && got.meta && got.meta.changes)) return { none: 'a lookup is in flight', k };
   await tick(env, 'photo-look', day); await tick(env, 'pl:' + conn, day);
-  const res = await lookup(env, fetchFn, origin, { q: qn, date: Q.date, now });
+  const res = await lookup(env, fetchFn, origin, { q: qn, date: Q.date, now, key: Q.key });
   if (res.found) {
     if ((await used(env, 'photo-rows', day)) >= PHOTO_ROWS_DAY) { await env.DB.prepare('DELETE FROM void_daily_photo WHERE k = ?').bind(k).run(); return { none: 'the day\'s photos are used up' }; }
     let meta; const id = P.photoId(res.found.sourcePage);

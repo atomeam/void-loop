@@ -275,9 +275,10 @@ export function pageHtml(key) {
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
-  // the page is whole before this runs; the code that makes the sound lands after the load event (the gate measures the load)
-  addEventListener('load', () => { import('${dir}app.js').catch(() => { const s = document.getElementById('status'); if (s) s.textContent = 'The page code did not load. Check your connection and reload.'; }); });
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '${dir}app.js';
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>
 `;

@@ -109,8 +109,9 @@ test('caching: the same question the same day costs nothing, a miss too; the loo
   const e = world(); assert.equal((await info(e.env, net({}), '&q=ab')).source, 'illustration'); assert.equal((await get(e.env, 'kind=sports&key=epl&day=' + today + '&photo=1&q=nude%20arsenal%20fans', net({}))).headers.get('x-art-source'), 'workers-ai');
 });
 test('hosts: only the fixed ones are asked, whatever the query; Flickr and TheSportsDB are not asked until their keys are set', async () => {
+  (await import('../void-live-deploy/lib/free-pics.js')).resetState(); // an earlier test may have rested a registry source
   const { env } = world(); const f = net({ 'commons.wikimedia.org': commons(), 'api.openverse.org': { results: [] } }); await get(env, 'kind=sports&key=epl&day=' + today + '&photo=1&q=' + encodeURIComponent('https://evil.example/x?y=1 Arsenal Chelsea'), f);
-  const hosts = new Set(f.seen.map((x) => x.split('/')[0])); assert.deepEqual([...hosts].sort(), ['api.openverse.org', 'commons.wikimedia.org']);
+  const hosts = new Set(f.seen.map((x) => x.split('/')[0])); assert.deepEqual([...hosts].sort(), ['api.openverse.org', 'archive.org', 'commons.wikimedia.org', 'www.loc.gov'], 'the three sources, then the open-pictures registry (lib/free-pics.js: the keyless ones), nothing the query names');
   const w = world({ extra: { FLICKR_API_KEY: 'k-flickr', THESPORTSDB_KEY: 'k-sdb' } }); const g = net({ 'commons.wikimedia.org': commons(), 'api.openverse.org': { results: [] }, 'api.flickr.com': flickr(), 'www.thesportsdb.com': sportsdb });
   const j = await info(w.env, g); assert.equal(j.source, 'photo'); assert.equal(j.photoSource, 'flickr'); assert.equal(j.label, 'Photo: Pat Photo, CC BY 2.0, via Flickr'); assert.ok(!JSON.stringify(j).includes('k-flickr'), 'the key never leaves');
   const r = await get(w.env, sq(), g); assert.equal(r.status, 302); assert.match(r.headers.get('location'), /^https:\/\/live\.staticflickr\.com\//); assert.equal(g.seen.includes('www.thesportsdb.com/api/v1/json/k-sdb/searchevents.php'), false, 'flickr answered first');
