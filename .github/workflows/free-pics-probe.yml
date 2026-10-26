@@ -1,0 +1,47 @@
+# The free picture sources, asked once each from a runner (the build sandbox cannot reach them): tools/free-pics-probe.mjs writes domains/free-pics.probe.json (status, latency,
+# rate-limit headers, licence field shapes, accepted and refused counts with reasons; no picture bytes, no key) and commits it. docs/free-pics.md, docs/playbooks/free-pics.md.
+# Weekly and by hand. Optional secrets (a source without its key is reported as "needs key"): PEXELS_API_KEY, PIXABAY_API_KEY, UNSPLASH_ACCESS_KEY, SMITHSONIAN_API_KEY,
+# EUROPEANA_API_KEY, FLICKR_API_KEY, OPENVERSE_CLIENT_ID, OPENVERSE_CLIENT_SECRET.
+name: Free pictures probe
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 * * 1'
+
+concurrency:
+  group: free-pics-probe
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Ask each source once
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          SMITHSONIAN_API_KEY: ${{ secrets.SMITHSONIAN_API_KEY }}
+          EUROPEANA_API_KEY: ${{ secrets.EUROPEANA_API_KEY }}
+          FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+          OPENVERSE_CLIENT_ID: ${{ secrets.OPENVERSE_CLIENT_ID }}
+          OPENVERSE_CLIENT_SECRET: ${{ secrets.OPENVERSE_CLIENT_SECRET }}
+        run: |
+          node tools/free-pics-probe.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit the result
+        run: |
+          git config user.name "verse-bot"
+          git config user.email "verse-bot@users.noreply.github.com"
+          git add domains/free-pics.probe.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "Free pictures probe: what each source answered"
+          for i in 1 2 3; do git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
