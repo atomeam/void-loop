@@ -491,6 +491,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T06:03:00Z",
+   "subject": "Flights: 24 px checkboxes and radios, the departure time in the link, a print layout for the trip and the routes"
+  },
+  {
+   "at": "2026-10-26T06:01:53Z",
+   "subject": "Tower gate: travel: aruljohn.com,travel: airmilescalculator.com,travel: co2.myclimate.org,travel: flightconnections.com measured against…"
+  },
+  {
+   "at": "2026-10-26T05:55:16Z",
+   "subject": "Tower gate: travel: tripwaffle.com,travel measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:52:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:52:01Z",
    "subject": "Flights card leaves distance asks to the distance skill; a test for the card"
   },
@@ -553,22 +569,6 @@
   {
    "at": "2026-10-26T05:33:02Z",
    "subject": "Flights pages: share pictures, shared module script, five asks per page, travel features, MAP lines, lane-pages guard in checks"
-  },
-  {
-   "at": "2026-10-26T05:32:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:31:57Z",
-   "subject": "A redirect into a list section leads the sources; the page hands such names to the answer route"
-  },
-  {
-   "at": "2026-10-26T05:30:30Z",
-   "subject": "Subject eval: 53 of 54 live"
-  },
-  {
-   "at": "2026-10-26T05:27:58Z",
-   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
   }
  ],
  "builders": {
