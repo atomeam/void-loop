@@ -190,3 +190,9 @@ test('free slots: gaps between timed events inside the working day, none before 
   assert.deepEqual(C.freeSlots(ev, { from: new Date(2026, 9, 31), now: new Date(2026, 9, 26), days: 2, minutes: 60 }), [], 'a weekend, weekdays only'); assert.equal(C.freeSlots(ev, { from: new Date(2026, 9, 31), now: new Date(2026, 9, 26), days: 2, minutes: 60, weekdaysOnly: false }).length, 6);
   assert.deepEqual(C.freeSlots([], { minutes: 600 }), [], 'longer than the working day'); assert.equal(C.freeSlots(ev, { from: new Date(2026, 9, 26), now: new Date(2026, 9, 26, 8), days: 30, minutes: 30, max: 5 }).length, 5);
 });
+
+test('travel time: minutes on a timed event, kept in the .ics the way Apple writes it and read back; none on an all-day event', () => {
+  const e = C.normalize({ title: 'Dentist', start: '2026-11-05T15:00', travel: '25' }); assert.equal(e.travel, 25);
+  assert.equal(C.normalize({ title: 'x', start: '2026-11-05T15:00', travel: 0 }).travel, undefined); assert.equal(C.normalize({ title: 'x', start: '2026-11-05', allDay: true, travel: 20 }).travel, undefined); assert.equal(C.normalize({ title: 'x', start: '2026-11-05T15:00', travel: 9999 }).travel, 300);
+  const t = C.icsOf([e]); assert.match(t, /X-APPLE-TRAVEL-DURATION;VALUE=DURATION:PT25M/); assert.equal(C.parseIcs(t)[0].travel, 25);
+});

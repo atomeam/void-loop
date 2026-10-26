@@ -737,7 +737,7 @@
      "detail": "",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "2026-10-25: location with a map link; no travel time"
+     "verse_evidence": "2026-10-25: a location with a Map and a Directions link (OpenStreetMap), and a travel time you set on the event: \"Leave by\" is worked out from it, kept in the .ics as X-APPLE-TRAVEL-DURATION both ways (lib/calendar.js; tools/calendar.test.mjs); the time is not looked up automatically (no routing service)"
     },
     {
      "name": "Several calendars with colours",
@@ -878,7 +878,6 @@
  },
  "union_gaps": [
   "Tasks with priority, sub-tasks and shared to-dos (tasks with a due day are built, 2026-10-25): calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
-  "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
   "World clock (time zones per event and a second zone are built, 2026-10-25): calendar.google.com",
   "Resize events and drag between times (drag to another day is built, 2026-10-25): calendar.google.com, outlook.live.com",
   "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",
