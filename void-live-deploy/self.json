@@ -491,6 +491,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:06:59Z",
+   "subject": "Subject eval workflow: the 42 asks against the live sites, screenshots as artifacts, a small record committed"
+  },
+  {
+   "at": "2026-10-26T05:06:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:06:01Z",
    "subject": "Colour words alone no longer recolour the clock: red panda, white house and orange juice reach the answer path"
   },
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T04:52:12Z",
    "subject": "Music: a polyrhythm layer, a strobe tuner display, scales and chords on a guitar neck with tap-to-hold chord naming"
-  },
-  {
-   "at": "2026-10-26T04:50:59Z",
-   "subject": "Tower gate: travel measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:49:57Z",
-   "subject": "toolkit test follows a page's external start file to the code it imports"
   }
  ],
  "builders": {
