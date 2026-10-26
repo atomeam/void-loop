@@ -121,3 +121,9 @@ test('a host that is not the source\'s own is refused', async () => {
   const r = await F.findPicturesDetailed('football', { sources: ['commons'], fetch: fakeFetch([[/commons/, J(bad)]]), cache: null });
   assert.equal(r.pics.length, 0); assert.match(r.report[0].rejected[0].why, /image host/);
 });
+
+test('loc: a 403 (its one-hour block) rests the source like a 429', async () => {
+  F.resetState(); let n = 0; const f = async () => { n++; return new Response('blocked', { status: 403 }); };
+  const o = { sources: ['loc'], fetch: f, cache: null }; const a = await F.findPicturesDetailed('baseball', o);
+  assert.match(a.report[0].error, /429/); await F.findPicturesDetailed('baseball', o); assert.equal(n, 1);
+});

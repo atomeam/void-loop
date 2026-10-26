@@ -347,6 +347,7 @@ export async function fetchSource(id, q, ctx) {
   const rate = {}; for (const h of RATE_HEADERS) { const v = r.headers.get(h); if (v != null) rate[h] = v; }
   const meta = { status: r.status, ms: Date.now() - t0, rate, via };
   if (r.status === 429) { const e = new Limited(id, Math.max(60, Math.min(86400, parseInt(r.headers.get('retry-after') || '3600', 10) || 3600))); e.meta = meta; throw e; }
+  if (r.status === 403 && s.perMinute) { const e = new Limited(id, 3600); e.meta = meta; throw e; } // loc.gov blocks a caller for an hour when it is over its limit: leave it alone
   if (!r.ok) { const e = new Error(id + ' answered ' + r.status); e.meta = meta; throw e; }
   let json; try { json = await r.json(); } catch (_) { if (s.perMinute) { const e = new Limited(id, 3600); e.meta = meta; throw e; } throw new Error(id + ' answered something that is not JSON'); } // loc.gov answers a CAPTCHA page when it is busy: stop for an hour
   let cands = s.parse(json, ctx); if (s.expand) cands = await s.expand(json, ctx);

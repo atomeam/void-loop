@@ -9,6 +9,7 @@ const arg = (n) => { const i = process.argv.indexOf(n); return i > 0 ? process.a
 const out = arg('--out') || 'domains/free-pics.probe.json', only = (arg('--only') || '').split(',').filter(Boolean);
 const QUERY = { nasa: 'moon', met: 'horse', aic: 'horse', cleveland: 'horse', smithsonian: 'baseball', archive: 'football', loc: 'baseball' };
 const KIND = { nasa: 'space', met: 'art', aic: 'art', cleveland: 'art', smithsonian: 'history', loc: 'history' };
+const arr1 = (v) => (Array.isArray(v) ? v : []);
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const count = (rej) => { const o = {}; for (const r of rej) o[r.why.replace(/[:(].*$/, '').slice(0, 60)] = (o[r.why.replace(/[:(].*$/, '').slice(0, 60)] || 0) + 1; return o; };
 const shapes = (cands) => cands.slice(0, 3).map((c) => ({ licRaw: c.licRaw, licVersion: c.licVersion, licUrl: c.licUrl, own: !!c.own, hasAuthor: !!c.author, hasSourcePage: !!c.sourcePage, thumbHost: (() => { try { return new URL(c.thumb).hostname; } catch (_) { return ''; } })(), taken: c.taken }));
@@ -33,6 +34,8 @@ for (const id of Object.keys(F.SOURCES)) {
     const r = await F.fetchSource(id, q, await F.probeContext(mk()));
     const j = F.judge(r.cands, { sourceId: id, q, kind, date: '' });
     Object.assign(row, { state: 'works', query: q, status: r.meta.status, ms: r.meta.ms, via: r.meta.via, rate: r.meta.rate, topKeys: Object.keys(r.json || {}).slice(0, 40), resultShape: resultShape(r.json), found: r.cands.length, accepted: j.ok.length, refused: count(j.rejected), licenceShapes: shapes(r.cands) });
+    const f0 = r.json && (arr1(r.json.results)[0] || arr1(r.json.content && r.json.content.results)[0]);
+    if (id === 'loc' && f0) { const it = f0.item || {}; row.rightsFields = Object.fromEntries([...Object.entries(f0), ...Object.entries(it).map(([k, v]) => ['item.' + k, v])].filter(([k]) => /right|restrict|licen|access/i.test(k)).map(([k, v]) => [k, JSON.stringify(v).slice(0, 240)])); row.itemKeys = Object.keys(it).slice(0, 60); }
     if (!r.cands.length) row.state = 'answered, no candidates (parser or query?)';
   } catch (e) {
     Object.assign(row, { state: e && e.status === 429 ? 'rate limited (429)' : 'blocked or failed', status: e && e.meta ? e.meta.status : 0, rate: e && e.meta ? e.meta.rate : {}, error: redact(e && e.name === 'AbortError' ? 'timed out' : e && e.message) });
@@ -40,7 +43,7 @@ for (const id of Object.keys(F.SOURCES)) {
   await wait(1200);
 }
 // loc.gov: the shape of its answers is not documented well, so a few variants are asked once each (3 s apart, far under its 20 a minute) and the shapes recorded; the parser follows what answers
-if (!only.length || only.includes('loc')) {
+if (process.argv.includes('--explore')) { // by hand only: loc.gov blocks a caller for an hour above 20 requests a minute, and this asks it four more times
   res.explore = {}; const ctxl = await F.probeContext(mk());
   for (const [name, url] of Object.entries({ photos: 'https://www.loc.gov/photos/?q=baseball&fo=json&c=5', search: 'https://www.loc.gov/search/?q=baseball&fo=json&fa=online-format:image&c=5', pictures: 'https://www.loc.gov/pictures/search/?q=baseball&fo=json', freeToUse: 'https://www.loc.gov/free-to-use/?fo=json' })) {
     await wait(3000);
