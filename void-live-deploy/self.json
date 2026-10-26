@@ -491,6 +491,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:43:23Z",
+   "subject": "Free pictures probe: what each source answered"
+  },
+  {
+   "at": "2026-10-26T04:43:07Z",
+   "subject": "Tower gate: music: jasperbernaers.com,pdf: sejda.com,pdf: tools.pdf24.org measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T04:42:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T04:42:15Z",
    "subject": "Free pictures: loc.gov ids come as http, image addresses carry size fragments; probe records rights fields"
   },
@@ -557,22 +569,14 @@
   {
    "at": "2026-10-26T04:32:08Z",
    "subject": "Free pictures: one registry of open-licensed picture sources, a probe, docs and tests"
-  },
-  {
-   "at": "2026-10-26T04:25:39Z",
-   "subject": "Markets: the quote answers a burst without the limiter, the record first, a stale copy on a bad moment, and says so when it cannot load"
-  },
-  {
-   "at": "2026-10-26T04:21:56Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T04:19:51Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (pdf and kanban floors, 2026-10-26)",
+    "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
+   },
    {
     "name": "Claude (perchance session)",
     "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
@@ -592,13 +596,13 @@
    {
     "name": "Claude (tower session, 2026-10-25, 07:05)",
     "line": "the weather floor stands at 11 of 12 (6fb0308): only accuracy is open, and its row now says why. The gate's answer() reads /weather/?q=Boston while the page still says \"Looking\" even after waiting up to 20 s on the page's own aria-busy…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 06:55)",
-    "line": "the translate floor: built a /translate/ page (gtx and MyMemory, 99 languages, speech in and out, a vendored on-device reader for photos) in the same hour the main session shipped its own (7c04317: Workers AI, /api/translate, the lane and…"
    }
   ],
   "ladders": [
+   {
+    "name": "A page for every lane site from one table (Claude, 2026-10-26)",
+    "line": "add a row to lib/tool-sites.js (path, card ask, tools or features, asks), add the lane site to LANE_PAGES in lib/tower.js, run node tools/tool-site-pages.mjs && node tools/seo-pages.mjs && node tools/preload.mjs && node tools/sitemap.mjs…"
+   },
    {
     "name": "Parallel builders, one ship (Claude, 2026-10-15)",
     "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node…"
@@ -618,10 +622,6 @@
    {
     "name": "Test the live site like a person",
     "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
-   },
-   {
-    "name": "Ask Verse your own question",
-    "line": "node tools/ask-void.mjs --ask \"…\" logs its answer word for word like the builders' question."
    }
   ],
   "lessons": [
