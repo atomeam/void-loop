@@ -491,8 +491,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T03:27:06Z",
+   "at": "2026-10-26T03:28:02Z",
+   "subject": "Sports: common asks that each take a setting in the link"
+  },
+  {
+   "at": "2026-10-26T03:28:02Z",
    "subject": "Sports: a page of its own (42-sport grid, one search across teams, events, venues and players, born on this day, the free API), its stage…"
+  },
+  {
+   "at": "2026-10-26T03:27:57Z",
+   "subject": "Incident: the browser suite failed on 086da994 (void-live-deploy/incidents.json)"
   },
   {
    "at": "2026-10-26T03:26:30Z",
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T03:13:34Z",
    "subject": "Tower gate: podcasts: player.fm,podcasts: listennotes.com,podcasts: podchaser.com,podcasts: podbean.com,podcasts: castbox.fm measured…"
-  },
-  {
-   "at": "2026-10-26T03:12:57Z",
-   "subject": "Tower gate: finance: macrotrends.net,finance: companiesmarketcap.com,finance: stockanalysis.com,finance: finviz.com,finance: barchart.com…"
-  },
-  {
-   "at": "2026-10-26T03:12:22Z",
-   "subject": "Tower gate: news: allsides.com,news: thelocal.com,news: rnz.co.nz,news: channelnewsasia.com,news: france24.com,news: dw.com measured…"
   }
  ],
  "builders": {
