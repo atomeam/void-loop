@@ -705,5 +705,46 @@
    "verse": "missing"
   }
  ],
- "verse_extra": []
+ "verse_extra": [],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "wekan.fi": {
+    "url": "https://wekan.fi/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css"
+     },
+     {
+      "name": "RSS or Atom feed",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type$=xml]"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css@2181"
+     }
+    ]
+   }
+  }
+ }
 }
