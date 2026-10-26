@@ -1,0 +1,1 @@
+{"about":"A snapshot of remote job listings, not live: Remotive (remotive.com), Jobicy (jobicy.com) and Himalayas (himalayas.app), each listing linking to its original posting. Written by tools/jobs-snapshot.mjs once a day; the first one is made by .github/workflows/jobs-snapshot.yml on the push that adds it.","at":null,"sources":{},"jobs":[]}
