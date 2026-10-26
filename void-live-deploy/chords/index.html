@@ -75,6 +75,15 @@
 <link rel="canonical" href="https://a-to-mind.com/chords/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Chords and scales","url":"https://a-to-mind.com/chords/","description":"A free chord and scale finder for piano and guitar: the notes, piano keys and guitar fingerings of 28 chord types, the chord named from the notes you pick, every scale that holds them, 22 scales, the chords of any major or minor key with roman numerals and what they lead to, common progressions, the circle of fifths and a chord transposer. It plays what it shows.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"chord finder, scale finder, guitar chords, piano chords, what chord is this, circle of fifths, chords in a key, transpose chords","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/chords/?chord={chord}"},"chord-input":"required name=chord"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Chords and scales","item":"https://a-to-mind.com/chords/"}]}]}</script>
 <!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/chords/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main id="app">
@@ -127,8 +136,9 @@
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
-  // the page is whole before this runs; the code that makes the sound lands after the load event (the gate measures the load)
-  addEventListener('load', () => { import('/chords/app.js').catch(() => { const s = document.getElementById('status'); if (s) s.textContent = 'The page code did not load. Check your connection and reload.'; }); });
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/chords/app.js';
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
 </body>
 </html>
