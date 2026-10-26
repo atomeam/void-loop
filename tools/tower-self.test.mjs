@@ -42,6 +42,7 @@ test('the pick: easiest frontier sites first, never a floor, a blocked site or o
   const at = Date.parse('2026-10-26T00:00:00Z');
   assert.deepEqual(pickCandidates(frontier, {}, { at }).map((x) => x.host), ['a.test', 'b.test', 'd.test']);
   const state = { sites: { 'a.test': { at: '2026-10-25T00:00:00Z', outcome: 'built' }, 'b.test': { at: '2026-10-25T00:00:00Z', outcome: 'no-family' }, 'd.test': { at: '2026-01-01T00:00:00Z', outcome: 'no-family' } } };
+  assert.deepEqual(pickCandidates(frontier, { sites: { 'a.test': { at: '2026-10-25T00:00:00Z', outcome: 'not-judged' } } }, { at }).map((x) => x.host)[0], 'a.test', 'a site the model never judged is read again');
   assert.deepEqual(pickCandidates(frontier, state, { at }).map((x) => x.host), ['d.test'], 'no-family comes back after ' + RETRY_DAYS + ' days');
   assert.equal(pickCandidates(frontier, {}, { at, max: 1 }).length, 1);
 });

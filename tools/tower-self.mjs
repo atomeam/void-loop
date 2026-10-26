@@ -79,7 +79,7 @@ export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date
   const tried = (state && state.sites) || {}, out = [];
   for (const x of frontierOf(frontier, floors)) {
     if (x.blocked) continue; const t = tried[x.host];
-    if (t && (t.outcome !== 'no-family' || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue;
+    if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
     out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness }); if (out.length >= max) break;
   }
   return out;
