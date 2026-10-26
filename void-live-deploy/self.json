@@ -491,12 +491,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T07:22:44Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T07:22:36Z",
    "subject": "Versus by itself: the model answers without thinking first (its thinking spent the whole budget and left the answer empty)"
   },
   {
    "at": "2026-10-26T07:22:36Z",
    "subject": "Verse fixes its print-file skill: learn to handle \"get the stl for the motor\""
+  },
+  {
+   "at": "2026-10-26T07:22:03Z",
+   "subject": "Jobs: /api/jobs in the OpenAPI check (Verse's own) and its rate in lib/guard.js; one visit beacon on the jobs pages (the shared template…"
   },
   {
    "at": "2026-10-26T07:21:45Z",
@@ -561,14 +569,6 @@
   {
    "at": "2026-10-26T07:07:25Z",
    "subject": "Every page counts its visits: /visit.js on every sitemap page, and a check that fails without it"
-  },
-  {
-   "at": "2026-10-26T06:56:32Z",
-   "subject": "Tower gate: shopping,jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T06:55:30Z",
-   "subject": "Regenerate the dependency map after the merge"
   }
  ],
  "builders": {

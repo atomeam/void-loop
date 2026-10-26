@@ -710,6 +710,58 @@ const LANE_PROBES = Object.freeze({
     pageParts: {}, parts: {},
     facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable|may be out of date/i], ['nonstop routes', /nonstop/i], ['the routes\' date and source', /June 2014[\s\S]{0,200}OpenFlights|OpenFlights[\s\S]{0,200}June 2014/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
+  // the jobs lane (owner, 2026-10-26: "we have to have everything all the sites have"): each board has a page of its own (LANE_PAGES) on the same live listings; the
+  // question each is asked is the job that board is known for. Truth is what a right answer shows whatever the day's listings are (counts, the filter applied, the source
+  // credited and Apply on the original posting); judged on Verse alone.
+  'jobs: jobicy.com': {
+    ask: { verse: '/jobs/regions/?region=usa' },
+    truth: [['jobs counted for the region', /\b\d[\d,.]* jobs? · USA/], ['region chips with counts', /USA \d+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'jobs by region': [['regions', /Where you may work from/], ['anywhere', /Anywhere \d+/]], 'industry filter': [['a category filter', /Category/]], 'job level': [['a level filter', /\bLevel\b/]], 'salary when given': [['a salary filter', /Minimum salary/]], 'RSS feed': [['a feed', /RSS feed of this search/]] },
+    pageParts: {}, parts: {},
+    facts: [['region', /Work from/], ['industry', /Category/], ['level', /\bLevel\b/], ['job type', /Job type/], ['salary', /salary/i], ['keyword', /Keyword/], ['RSS', /RSS/], ['date posted', /Posted/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: workingnomads.com': {
+    ask: { verse: '/jobs/alerts/?q=developer' },
+    truth: [['jobs counted for the search', /\b\d[\d,.]* jobs? · “developer”/], ['a way to save it as an alert', /Save this search as an alert/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'saved searches': [['save a search', /Save this search as an alert/]], 'new since last visit': [['new since your last visit', /new since your last visit|each time you come back/i]], 'no email needed': [['no email', /No email/i]], categories: [['categories', /Category/]], 'RSS feed': [['a feed', /RSS/]] },
+    pageParts: {}, parts: {},
+    facts: [['alerts', /Alerts/], ['saved searches', /saved search/i], ['new matches marked', /new since/i], ['notifications', /Notify me/i], ['RSS', /RSS/], ['categories', /Category/], ['keyword', /Keyword/], ['no email', /No email/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: arbeitnow.com': {
+    ask: { verse: '/jobs/europe/?region=germany' },
+    truth: [['jobs counted for Germany', /\b\d[\d,.]* jobs? · Germany/], ['Germany counted', /Germany \d+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'jobs open in Germany': [['Germany', /Germany \d+/]], 'visa sponsorship filter': [['a visa filter', /Visa sponsorship mentioned/]], 'remote filter': [['where you may work from', /Work from/]], 'German and English': [['German said', /English and German|German/]] },
+    pageParts: {}, parts: {},
+    facts: [['Germany', /Germany/], ['Europe', /Europe/], ['visa sponsorship', /visa sponsorship/i], ['place', /\bPlace\b/], ['keyword', /Keyword/], ['salary', /salary/i], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['German', /German/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: himalayas.app': {
+    ask: { verse: '/jobs/salary/?min=100000' },
+    truth: [['jobs counted over the minimum', /\b\d[\d,.]* jobs? · ≥ 100,000/], ['highest paid first', /Highest salary/], ['a salary on each job', /(?:USD|EUR|GBP|CAD|AUD) [\d,]+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'salary filter': [['a minimum salary', /Minimum salary a year/]], 'highest paid first': [['sort by salary', /Highest salary/]], seniority: [['a level filter', /\bLevel\b/]], 'time zones': [['time zones', /Time zones/]] },
+    pageParts: {}, parts: {},
+    facts: [['minimum salary', /Minimum salary/], ['sort by pay', /Highest salary/], ['pay as a year', /a year/], ['level', /\bLevel\b/], ['job type', /Job type/], ['time zones', /Time zones/], ['keyword', /Keyword/], ['saved jobs', /Saved jobs/], ['tracker', /Applications/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: remotive.com': {
+    ask: { verse: '/jobs/categories/' },
+    truth: [['categories listed with counts', /Categories[\s\S]{0,200}\w \d+/], ['jobs counted', /\b\d[\d,.]* jobs? · /], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'categories with counts': [['categories', /Categories/]], 'keyword search': [['keyword', /Keyword/]], 'job type': [['job type', /Job type/]], 'source credited': [['Remotive named', /Remotive/]] },
+    pageParts: {}, parts: {},
+    facts: [['categories', /Categories/], ['keyword', /Keyword/], ['place', /\bPlace\b/], ['job type', /Job type/], ['salary', /salary/i], ['date posted', /Posted/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: remoteok.com': {
+    ask: { verse: '/jobs/tags/?sort=salary' },
+    truth: [['tags listed with counts', /Tags[\s\S]{0,200}\w \d+/], ['highest paid first', /Highest salary/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'tag cloud': [['tags', /Tags/]], salary: [['salaries', /salary/i]], 'sort by pay or date': [['sort', /\bSort\b/], ['newest', /Newest/]], 'RSS feed': [['a feed', /RSS/]] },
+    pageParts: {}, parts: {},
+    facts: [['tags', /Tags/], ['salary', /salary/i], ['sort', /\bSort\b/], ['region', /Work from/], ['keyword', /Keyword/], ['RSS', /RSS/], ['share link', /Share link/i], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
+  'jobs: weworkremotely.com': {
+    ask: { verse: '/jobs/companies/' },
+    truth: [['companies listed with their jobs counted', /Companies hiring[\s\S]{0,300}\w \d+/], ['most jobs first', /Most jobs first/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
+    askParts: { 'companies hiring': [['companies', /Companies hiring/]], 'jobs of one company': [['a company filter', /A to Z/]], categories: [['categories', /Category/]], 'saved jobs': [['saved jobs', /Saved jobs/]] },
+    pageParts: {}, parts: {},
+    facts: [['companies', /Companies hiring/], ['A to Z', /A to Z/], ['categories', /Category/], ['keyword', /Keyword/], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['tracker', /Applications/], ['RSS', /RSS/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
   'sports: thesportsdb.com': {
     ask: { verse: '/sports/?q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
