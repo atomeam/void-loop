@@ -101,8 +101,8 @@
      "name": "Submit your own recipe",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own recipes by pasted text, a link or a photo, kept in My recipes on this device; not published to other people"
     },
     {
      "name": "Cook mode (screen stays on)",
@@ -309,8 +309,8 @@
      "name": "Post your own recipes, public or private",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: private only: kept on this device (My recipes); sharing a recipe is a link that carries it"
     },
     {
      "name": "Cooksnaps",
@@ -332,14 +332,14 @@
      "detail": "",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse_evidence": "2026-10-25: not built: a social video has no recipe data to read; a recipe page's link, pasted text and a photo of a card are (Import pane)"
     },
     {
      "name": "Photo of a handwritten recipe or cookbook page to a digital recipe",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Import > From a photo: shrunk in the browser, read by a vision model on Verse's server (6 a minute, dropped after), the text put in a box to check, then Import text makes it a recipe in My recipes (functions/api/recipeimport.js POST, lib/recipeimport.js parseRecipeText; tools/recipeimport.test.mjs); the pane says plainly where the photo goes"
     },
     {
      "name": "AI recipe assistant for writing recipes",
@@ -888,12 +888,12 @@
   }
  },
  "union_gaps": [
-  "Public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com",
+  "SKIPPED ON PURPOSE (2026-10-25): public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com -- needs stored strangers' text and pictures, moderation and a way to take them down, which is not cheap or safe to bolt on; your own stars and notes stay on the device",
   "Browse by holiday and by difficulty (cuisine, category, diet, occasion and time are built, 2026-10-25): allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
   "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
   "Cost per serving in your currency and from your own prices (a rough US estimate is built, 2026-10-25): budgetbytes.com",
   "Post your own recipe, cooksnaps: cookpad.com, allrecipes.com, food52.com",
-  "Import a recipe from a link, social video or photo of a handwritten card: cookpad.com",
+  "Import a recipe from a social video (a recipe page's link, pasted text and a photo of a card are built, 2026-10-25): cookpad.com",
   "Recommendations by time of day or taste: tasty.co, yummly.com, delish.com (dinner quiz)",
   "Technique explainers and equipment reviews: seriouseats.com",
   "Q&A / comments: food52.com, recipetineats.com",

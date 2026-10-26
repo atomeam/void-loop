@@ -120,7 +120,17 @@
     <button type="button" id="filtBtn" aria-expanded="false" aria-controls="filt">Diets</button>
     <button type="button" id="planBtn" aria-expanded="false" aria-controls="planPane">Meal plan</button>
     <button type="button" id="browseBtn" aria-expanded="false" aria-controls="browse">Browse</button>
+    <button type="button" id="impBtn" aria-expanded="false" aria-controls="imp">Import</button>
   </div>
+  <section class="pane" id="imp" hidden aria-labelledby="impH" style="margin-top:8px;min-height:0">
+    <h2 id="impH" style="margin:0 0 4px">Import a recipe</h2>
+    <form id="impLink" class="row" autocomplete="off"><label class="vh" for="impUrl" id="impUrlL">Address of a recipe page</label><input class="box" type="url" id="impUrl" inputmode="url" maxlength="500" placeholder="Address of a recipe page (https://…)" style="flex:1 1 200px"><button type="submit" class="go" id="impGo">Import</button></form>
+    <div class="row"><input type="file" id="impFile" accept="image/*" hidden><button type="button" id="impPhoto">From a photo</button></div>
+    <label class="vh" for="impText" id="impTextL">Or paste the text</label><textarea class="box" id="impText" maxlength="12000" placeholder="Title, then Ingredients, then Method" style="margin-top:6px;min-height:96px"></textarea>
+    <div class="row"><button type="button" id="impTextGo">Import text</button></div>
+    <p class="note" id="impNote" role="status"></p>
+    <p class="note" id="impNotes"></p>
+  </section>
   <section class="pane" id="browse" hidden aria-labelledby="browseH" style="margin-top:8px;min-height:0">
     <h2 id="browseH" style="margin:0 0 4px">Browse</h2>
     <div class="row"><label class="vh" for="bArea" id="bAreaL">Cuisine</label><select class="box" id="bArea"></select><label class="vh" for="bCat" id="bCatL">Category</label><select class="box" id="bCat"></select></div>
@@ -227,12 +237,12 @@
 <script type="module">
   // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, R, K] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js')]);
+    const [{ mountRelated }, R, K, RI] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
-    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, bOccL: KW.occasion, bTimeL: KW.time, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
-      if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('myNote').placeholder = KW.notesPh; }
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, impBtn: KW.impBtn, impH: KW.impH, impGo: KW.impGo, impPhoto: KW.fromPhoto, impUrlL: KW.linkPh, impTextL: KW.pasteL, impTextGo: KW.impText, bOccL: KW.occasion, bTimeL: KW.time, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+      if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('impUrl').placeholder = KW.linkPh; $('impText').placeholder = KW.pastePh; $('myNote').placeholder = KW.notesPh; }
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
       $('title').textContent = W.title; $('sub').textContent = W.sub; $('q').placeholder = W.placeholder; $('qL').textContent = W.placeholder; $('go').textContent = W.search;
@@ -440,8 +450,29 @@
     $('shopCopy').addEventListener('click', () => copy($('shopCopy'), K.listText(store.shop)));
     $('shopDone').addEventListener('click', () => { store.shop = store.shop.filter((x) => !x.done); keep(); drawShop(); });
     $('shopAll').addEventListener('click', () => { if (store.shop.length && !confirm(KW.clearAll + '?')) return; store.shop = []; keep(); drawShop(); });
-    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan); pane('browseBtn', 'browse', drawBrowse);
+    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan); pane('impBtn', 'imp', () => { $('impNotes').textContent = KW.linkNote + ' ' + KW.photoNote; }); pane('browseBtn', 'browse', drawBrowse);
     // browsing TheMealDB by cuisine or by category (its own closed lists, lib/recipes.js): the meals as a list to open
+    // importing: a recipe page's own recipe data (read by /api/recipeimport), a photo of a card (read by a vision model there, then dropped, and put in the box to check), or pasted text
+    // (lib/recipeimport.js); the recipe joins My recipes and opens, said to be checked
+    const note2 = (t, bad) => { $('impNote').textContent = t || ''; $('impNote').className = 'note' + (bad ? ' bad' : ''); };
+    function takeIn(r, from) {
+      if (!r) return note2(KW.noRecipe, true);
+      let id = r.id, n = 2; const same = store.mine.find((x) => x.recipe && r.source && x.recipe.source === r.source);
+      if (same) id = same.id; else while (store.mine.some((x) => x.id === id) || R.BUILT_IN.some((x) => x.id === id)) id = r.id + '-' + n++;
+      const rec = { ...r, id }; store.mine = [{ id, name: rec.name, recipe: rec }, ...store.mine.filter((x) => x.id !== id)].slice(0, 200); keep(); lists();
+      history.replaceState(null, '', '/recipes/?q=' + encodeURIComponent(rec.name)); state.q = rec.name; state.i = ''; state.id = ''; $('q').value = rec.name; open(rec, { note: KW.imported + (from ? ': ' + from : '') + '. ' + KW.checkIt + '.' }); note2(KW.imported + ': ' + rec.name); $('panes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+    $('impLink').addEventListener('submit', async (e) => { e.preventDefault(); const u = $('impUrl').value.trim(); if (!u) return $('impUrl').focus(); if (!navigator.onLine) return note2(W.offline, true); note2(KW.reading);
+      const r = await fetch('/api/recipeimport?url=' + encodeURIComponent(u)).then(async (x) => ({ s: x.status, j: await x.json().catch(() => ({})) }), () => ({ s: 0, j: {} }));
+      if (!r.j.ok) return note2(r.j.error || W.none, true); takeIn(r.j.recipe, r.j.recipe.from); });
+    $('impTextGo').addEventListener('click', () => { const r = RI.parseRecipeText($('impText').value); if (!r) return note2(KW.noRecipe + ': ' + KW.pastePh, true); takeIn(r, ''); $('impText').value = ''; });
+    $('impPhoto').addEventListener('click', () => $('impFile').click());
+    $('impFile').addEventListener('change', async () => { const f = $('impFile').files[0]; $('impFile').value = ''; if (!f) return; if (!navigator.onLine) return note2(W.offline, true); note2(KW.reading);
+      try { const bmp = await createImageBitmap(f), k = Math.min(1, 1000 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bmp.width * k)); c.height = Math.max(1, Math.round(bmp.height * k)); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+        let url = c.toDataURL('image/jpeg', 0.82); if (url.length > 1000000) url = c.toDataURL('image/jpeg', 0.6);
+        const r = await fetch('/api/recipeimport', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image: url }) }).then(async (x) => ({ s: x.status, j: await x.json().catch(() => ({})) }));
+        if (!r.j.ok) return note2(r.j.error || KW.photoFail, true); $('impText').value = r.j.text; note2(KW.photoRead); $('impText').focus(); $('impText').scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch (_) { note2(KW.photoFail, true); } });
     // time and occasion: a time works over the recipes whose time Verse knows; an occasion is a TheMealDB category (or the quick-weeknight time)
     const known = () => [...R.BUILT_IN, ...store.saved.map((x) => x.recipe), ...store.mine.map((x) => x.recipe), ...store.hist.map((x) => x.recipe)].filter(Boolean);
     const timeRows = (max, head) => { const rs = K.byTime(known(), max); results(rs.map((r) => ({ name: r.name, href: linkTo(r), small: r.time + ' ' + KW.min, recipe: r })), rs.length ? head : KW.timeNone); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' }); };
