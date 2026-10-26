@@ -491,6 +491,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:45:24Z",
+   "subject": "Flights: coastlines under the great-circle map (Natural Earth, 11 KB), nonstop routes on /flights/routes/ (OpenFlights ODbL, June 2014…"
+  },
+  {
+   "at": "2026-10-26T05:44:48Z",
+   "subject": "Tower floors: wheel advanced-mode weights, time zones skeleton (no layout shift), gist Share link"
+  },
+  {
+   "at": "2026-10-26T05:44:00Z",
+   "subject": "Site reverse engineering: travel-airmilescalculator.com,travel-aruljohn.com,travel-clock7.com,travel-co2.myclimate.org,travel-flightconnect…"
+  },
+  {
+   "at": "2026-10-26T05:41:27Z",
+   "subject": "Tower gate: travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:38:54Z",
+   "subject": "Subject eval: 54 of 54 live"
+  },
+  {
+   "at": "2026-10-26T05:37:15Z",
+   "subject": "Tower gate: travel: tripwaffle.com,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:35:51Z",
+   "subject": "Tower gate: travel: tripwaffle.com,travel: aruljohn.com,travel: clock7.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T05:35:03Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T05:34:47Z",
    "subject": "Flights: the stage card skill, the map above its table so the page does not jump"
   },
@@ -537,38 +569,6 @@
   {
    "at": "2026-10-26T05:22:43Z",
    "subject": "Tower gate: finance: finviz.com,finance: companiesmarketcap.com,kanban: abacktools.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:22:32Z",
-   "subject": "Subject eval: 2 of 13 live"
-  },
-  {
-   "at": "2026-10-26T05:21:46Z",
-   "subject": "Tower gate: word count,time zones,wheel,recipes: food52.com,tildegit,codebase measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:21:15Z",
-   "subject": "Tower gate: kanban: abacktools.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T05:20:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T05:20:37Z",
-   "subject": "Live eval keeps what the page saw for a failing ask; 'the X' tries The_X first"
-  },
-  {
-   "at": "2026-10-26T05:19:38Z",
-   "subject": "Subject eval: 30 of 42 live"
-  },
-  {
-   "at": "2026-10-26T05:18:39Z",
-   "subject": "Screener keeps the snapshot's coins when the live answer has none; a Share link on the coin pages"
-  },
-  {
-   "at": "2026-10-26T05:18:34Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
