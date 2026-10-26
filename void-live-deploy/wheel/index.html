@@ -38,6 +38,11 @@
   button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
   #count, #fair { font-size: 13px; color: var(--soft); }
   ol { margin: 4px 0 0; padding-left: 1.4em; font-size: 14px; max-height: 12em; overflow: auto; }
+  /* advanced mode (wheelofnames.com's): each entry's weight in its own box, its chance beside it */
+  #weights { margin: 4px 0 8px; display: grid; gap: 4px; max-height: 16em; overflow: auto; } #weights[hidden] { display: none; }
+  #weights label { display: grid; grid-template-columns: minmax(0, 1fr) 64px 3.6em; align-items: center; gap: 8px; color: var(--ink); }
+  #weights label span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #weights label small { color: var(--soft); font-size: 12px; text-align: right; }
+  #weights input { font: inherit; font-size: 14px; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; min-height: 32px; box-sizing: border-box; width: 64px; }
   footer { grid-column: 1 / -1; font-size: 12px; color: var(--soft); text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
@@ -61,12 +66,14 @@
     <div class="row" style="justify-content:center"><button type="button" id="remove" hidden>Remove the winner</button><button type="button" id="again" hidden>Spin again</button></div>
   </section>
   <section>
-    <label for="entries">Names or choices, one a line (Pizza*3 is three times as likely)</label>
+    <label for="entries">Entry list: names or choices, one a line (Pizza*3 is three times as likely)</label>
     <textarea id="entries" spellcheck="false"></textarea>
     <div id="count"></div>
+    <div class="row"><button type="button" id="advanced" aria-pressed="false" aria-controls="weights">Advanced mode: weights</button></div>
+    <div id="weights" hidden aria-label="Each entry's weight"></div>
     <div class="row"><button type="button" id="shuffle">Shuffle</button><button type="button" id="sort">Sort A–Z</button><button type="button" id="link">Copy link</button><button type="button" id="sound" aria-pressed="true">Sound on</button></div>
-    <div class="row"><label class="filebtn">Add pictures<input type="file" id="pics" accept="image/*" multiple></label><button type="button" id="clearpics" hidden>Remove the pictures</button></div>
-    <p class="hint" id="pichint">A picture becomes an entry named after its file (rename the line, the picture follows it). Pictures stay on this device; the link carries the names.</p>
+    <div class="row"><label class="filebtn">Add images as entries<input type="file" id="pics" accept="image/*" multiple></label><button type="button" id="clearpics" hidden>Remove the pictures</button></div>
+    <p class="hint" id="pichint">An image becomes an entry named after its file (rename the line, the image follows it). Images stay on this device; the link carries the names.</p>
     <div class="opts">
       <label>Spin time <select id="spintime"><option value="2000">2 s</option><option value="3500">3.5 s</option><option value="5200" selected>5 s</option><option value="8000">8 s</option><option value="12000">12 s</option><option value="20000">20 s</option></select></label>
       <label><input type="checkbox" id="party" checked> Confetti and a cheer for the winner</label>
@@ -88,7 +95,7 @@
   let entries = open(location.hash.slice(1)) || open(lastKept) || entriesOf(START), rot = 0, spinning = false, last = -1, sound = true, actx = null, won = -1;
   // the settings and the pictures are kept on this device: { spin ms, party, autoremove }, and { label: a small JPEG data URL }
   const OPT = 'a2m.void.wheel.opts.v1', PICS = 'a2m.void.wheel.pics.v1';
-  let opts = { spin: 5200, party: true, autoremove: false }; try { opts = { ...opts, ...JSON.parse(localStorage.getItem(OPT) || '{}') }; } catch (_) {}
+  let opts = { spin: 5200, party: true, autoremove: false, advanced: false }; try { opts = { ...opts, ...JSON.parse(localStorage.getItem(OPT) || '{}') }; } catch (_) {}
   let pics = {}; try { pics = JSON.parse(localStorage.getItem(PICS) || '{}') || {}; } catch (_) {}
   const imgs = new Map(); // label -> a loaded Image, made once
   const imgOf = (label) => { const u = pics[label]; if (!u) return null; let im = imgs.get(u); if (!im) { im = new Image(); im.onload = () => draw(); im.src = u; imgs.set(u, im); } return im.complete && im.naturalWidth ? im : null; };
@@ -135,7 +142,20 @@
   }
   const keepOpts = () => { try { localStorage.setItem(OPT, JSON.stringify(opts)); } catch (_) {} };
   const keepPics = () => { const used = new Set(entries.map((e) => e.label)); for (const k of Object.keys(pics)) if (!used.has(k)) delete pics[k]; try { localStorage.setItem(PICS, JSON.stringify(pics)); } catch (_) { $('pichint').textContent = 'This browser is full: the newest pictures are not kept after a reload.'; } $('clearpics').hidden = !Object.keys(pics).length; };
-  function sync(fromText, keepWinner) {
+  // advanced mode: one box a entry for its weight (1 to 100), and its chance in percent; a weight typed here is written into the list as Name *3
+  function weighs(rebuild) {
+    const box = $('weights'); box.hidden = !opts.advanced; $('advanced').setAttribute('aria-pressed', String(!!opts.advanced)); if (!opts.advanced) return;
+    const total = entries.reduce((a, e) => a + e.weight, 0) || 1, pct = (e) => { const v = (e.weight / total) * 100; return (v >= 10 || v === 0 ? Math.round(v) : v.toFixed(1)) + '%'; };
+    if (rebuild || box.children.length !== entries.length) {
+      box.replaceChildren(...entries.map((e, i) => { const l = document.createElement('label'), name = document.createElement('span'), inp = document.createElement('input'), ch = document.createElement('small');
+        name.textContent = e.label; inp.type = 'number'; inp.min = '1'; inp.max = '100'; inp.step = '1'; inp.value = String(e.weight); inp.dataset.i = String(i); inp.setAttribute('aria-label', 'Weight of ' + e.label); ch.textContent = pct(e); l.append(name, inp, ch); return l; }));
+    } else [...box.children].forEach((l, i) => { l.querySelector('small').textContent = pct(entries[i]); });
+  }
+  $('weights').addEventListener('input', (ev) => { const inp = ev.target, i = +inp.dataset.i, e = entries[i]; if (!e) return; const w = Math.round(+inp.value);
+    if (!Number.isFinite(w) || w < 1) return; e.weight = Math.min(100, w); sync(false, false, true); });
+  $('weights').addEventListener('change', (ev) => { const e = entries[+ev.target.dataset.i]; if (e) ev.target.value = String(e.weight); });
+  $('advanced').addEventListener('click', () => { opts.advanced = !opts.advanced; keepOpts(); weighs(true); });
+  function sync(fromText, keepWinner, fromWeights) {
     if (fromText) entries = entriesOf($('entries').value); else $('entries').value = textOf(entries);
     // a changed wheel has no winner yet: the last one belonged to the old wheel
     if (fromText) { // a renamed line keeps its picture: a picture whose name is gone goes to the new name in the same place
@@ -144,7 +164,7 @@
     prevLabels = entries.map((e) => e.label);
     if (!spinning && !keepWinner) { $('winner').replaceChildren(WINPIC); WINPIC.hidden = true; $('remove').hidden = $('again').hidden = true; won = -1; }
     const n = entries.length; $('count').textContent = n + (n === 1 ? ' entry' : ' entries') + (n < 2 ? ': add at least two to spin' : '');
-    $('spin').disabled = spinning || n < 2; draw();
+    $('spin').disabled = spinning || n < 2; draw(); weighs(!fromWeights);
     try { history.replaceState(null, '', n ? '#' + pack(entries) : location.pathname); if (n) localStorage.setItem('a2m.void.wheel.last.v1', pack(entries)); } catch (_) {}
   }
   function spin() {

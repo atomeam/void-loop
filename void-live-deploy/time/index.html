@@ -39,7 +39,7 @@
   .dates { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .dates input[type=number] { width: 5em; } #event[hidden] { display: none; }
   [hidden] { display: none !important; }
   /* the lines under the clock are written by the script: their room is kept from the first paint so nothing below moves (it shifted 0.8) */
-  #clocks:empty { min-height: 340px; } #sunmoon:empty { min-height: 3.3em; }
+  #clocks:empty { min-height: 340px; } 
   .hero-lines { min-height: 9.5em; } @media (min-width: 600px) { .hero-lines { min-height: 6.4em; } }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
@@ -72,7 +72,7 @@
   <div class="row"><button type="button" id="h24" aria-pressed="false">24-hour</button><button type="button" id="link">Copy link</button></div>
 
   <section aria-labelledby="sh"><h2 id="sh">Sun and moon today</h2>
-    <dl class="sm" id="sunmoon"></dl>
+    <dl class="sm" id="sunmoon"><dt>Sunrise</dt><dd>--:-- --</dd><dt>Sunset</dt><dd>--:-- --</dd><dt>Solar noon</dt><dd>--:-- -- (the sun --° high)</dd><dt>Day length</dt><dd>-- h -- min</dd><dt>Civil dawn and dusk</dt><dd>--:-- -- to --:-- --</dd><dt>Nautical dawn and dusk</dt><dd>--:-- -- to --:-- --</dd><dt>Astronomical dawn and dusk</dt><dd>--:-- -- to --:-- --</dd><dt>Golden hour</dt><dd>--:-- -- to --:-- -- and --:-- -- to --:-- --</dd><dt>Moonrise</dt><dd>--:-- --</dd><dt>Moonset</dt><dd>--:-- --</dd><dt>Moon phase</dt><dd>------- --------, --% lit</dd></dl>
     <p class="note">Worked out on this device from the sun's and moon's positions for where the city stands. Twilight: civil (sun 6° below the horizon), nautical (12°), astronomical (18°). Golden hour: the sun between 4° below and 6° above the horizon.</p>
   </section>
 
@@ -137,6 +137,7 @@
   const abbr = (tz, d) => { try { return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' }).formatToParts(d).find((x) => x.type === 'timeZoneName').value; } catch (_) { return ''; } };
 
   // sunrise, sunset and the day's length where the shown city stands, worked out once a day per city (lib/zones.js sunDay)
+  const SUNMOON = [...$('sunmoon').children].map((n) => n.cloneNode(true)); // the rows as the page first paints them, dashes for every time
   let sunKey = '', sunDay = null; // lib/sun-day.js, fetched after the page has loaded (the clock shows first)
   function drawSun(p, ymd) {
     const k = p.name + '|' + p.tz + '|' + ymd.join('-') + '|' + h24; if (k === sunKey) return; sunKey = k;
@@ -148,9 +149,12 @@
       : s.state === 'always up' ? 'No sunset today: the sun stays up all day (midnight sun). Day length 24 hours.'
       : s.state === 'always down' ? 'No sunrise today: the sun stays below the horizon all day (polar night).'
       : (s.rise ? 'Sunrise ' + at(s.rise) : 'No sunrise today') + ' · ' + (s.set ? 'Sunset ' + at(s.set) : 'no sunset today') + (s.dayMin !== null ? ' · day length ' + lengthText(s.dayMin) : '');
-    $('sh').textContent = 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1');
+    $('sh').textContent = s ? 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1') : 'Sun and moon: not known for a time zone with no city';
     const t = (d, none) => (d ? at(d) : none), pair = (a, b, none) => (a || b ? t(a, '(none)') + ' to ' + t(b, '(none)') : none);
-    const rows = !s ? [['Sun and moon', 'not known for a time zone with no city: add a city to see them']] : [
+    // the list's rows are in the page from the first paint (SUNMOON, dashes), so nothing below moves when they are filled; a time zone with no
+    // city keeps the dashes, its heading and the line under the clock saying why
+    if (!s) { $('sunmoon').replaceChildren(...SUNMOON.map((n) => n.cloneNode(true))); return; }
+    const rows = [
       ['Sunrise', t(s.rise, s.state === 'always up' ? 'up all day' : 'none today')], ['Sunset', t(s.set, s.state === 'always up' ? 'up all day' : 'none today')],
       ['Solar noon', at(s.noon) + ' (the sun ' + s.noonAlt + '° high)'], ['Day length', s.dayMin === null ? 'not a whole day of sun' : lengthText(s.dayMin)],
       ['Civil dawn and dusk', pair(s.civil.dawn, s.civil.dusk, 'not dark enough today')], ['Nautical dawn and dusk', pair(s.nautical.dawn, s.nautical.dusk, 'not dark enough today')],

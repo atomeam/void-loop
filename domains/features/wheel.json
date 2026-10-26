@@ -16,7 +16,7 @@
           "detail": "type or paste names, one per line",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "wheel/index.html \"Names or choices, one a line\""
+          "verse_evidence": "wheel/index.html \"Entry list: names or choices, one a line\""
         },
         {
           "name": "Spin by click or keyboard",
@@ -51,7 +51,7 @@
           "detail": "set each slice's size so it is likelier",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "inline \"Pizza*3\""
+          "verse_evidence": "inline \"Pizza*3\", and Advanced mode: weights, a box for each entry's weight with its chance in percent"
         },
         {
           "name": "Per-entry colours (advanced mode)",
@@ -65,7 +65,7 @@
           "detail": "a picture on a slice instead of text",
           "paid": false,
           "verse": "has",
-          "verse_evidence": "Add pictures: each picture is an entry named after its file, drawn on its slice and shown with the winner; kept on the device (the link carries the names)"
+          "verse_evidence": "Add images as entries: each image is an entry named after its file, drawn on its slice and shown with the winner; kept on the device (the link carries the names)"
         },
         {
           "name": "Image in the centre / wheel background",

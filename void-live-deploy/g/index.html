@@ -121,6 +121,11 @@
   function meter() { const m = $('meter'); if (m) m.textContent = total().toLocaleString() + ' of ' + MAX_TEXT.toLocaleString() + ' characters'; }
   const download = (name, text) => { const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = cleanName(name); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
   const copy = (t, done) => { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => note(done), () => note('Select the text and copy it by hand.')); };
+  // Share link: the phone's own share sheet (navigator.share), and where there is none the link is copied (as /markets/caps/ does)
+  async function share() {
+    const url = location.href; if (navigator.share) { try { await navigator.share({ title: document.title, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    copy(url, 'Link copied: it holds the whole gist.');
+  }
   function bar() {
     const b = $('bar'); b.textContent = ''; $('new').hidden = !view;
     if (view) {
@@ -129,7 +134,8 @@
       const dl = el('button', null, 'Download'); dl.onclick = () => download(files[at][0], files[at][1]);
       const lk = el('button', 'go', 'Copy link'); lk.onclick = () => copy(location.href, 'Link copied. It holds the whole gist.');
       const ed = el('button', null, 'Edit a copy'); ed.onclick = () => { prev = files.map((f) => f.slice()); diff = false; view = false; history.replaceState(null, '', '/g/'); draw(); note('This is your own copy: change it and get a new link. The original link stays as it was, and the new one shows what you changed.'); };
-      b.append(cp, raw, dl, lk, ed);
+      const sh = el('button', null, 'Share link'); sh.id = 'share'; sh.onclick = () => share();
+      b.append(cp, raw, dl, lk, sh, ed);
       if (prev) { const ch = el('button', null, diff ? 'Show the files' : 'What changed'); ch.id = 'changed'; ch.onclick = () => { diff = !diff; draw(); }; b.appendChild(ch); }
       if (pass) b.appendChild(el('span', null, 'Locked: the link opens only with the passphrase.'));
     } else {
@@ -137,12 +143,15 @@
       const rm = el('button', null, 'Remove file'); rm.hidden = files.length < 2; rm.onclick = () => { files.splice(at, 1); at = Math.max(0, at - 1); draw(); };
       const pw = el('input', 'name'); pw.id = 'lockpw'; pw.type = 'password'; pw.placeholder = 'Passphrase (optional)'; pw.autocomplete = 'new-password'; pw.value = pass; pw.setAttribute('aria-label', 'Lock it with a passphrase (optional)'); pw.oninput = () => { pass = pw.value; };
       const go = el('button', 'go', 'Get link'); go.id = 'get';
-      go.onclick = async () => {
-        keep(); if (!files.some((f) => f[1].trim())) { note('Write something first.'); return; }
-        const s = await pack(files, { pass, prev }); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return; }
-        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it' + (pass ? ', locked: send the passphrase another way.' : '.'));
+      // the gist made into its link: true when it was (the page then shows it), false with the reason said when not
+      const make = async () => {
+        keep(); if (!files.some((f) => f[1].trim())) { note('Write something first.'); return false; }
+        const s = await pack(files, { pass, prev }); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return false; }
+        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); return true;
       };
-      b.append(nm, rm, pw, go, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
+      go.onclick = async () => { if (await make()) copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it' + (pass ? ', locked: send the passphrase another way.' : '.')); };
+      const sh = el('button', null, 'Share link'); sh.id = 'share'; sh.onclick = async () => { if (await make()) share(); };
+      b.append(nm, rm, pw, go, sh, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
     }
   }
   addEventListener('hashchange', async () => {
