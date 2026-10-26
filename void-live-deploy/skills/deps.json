@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 891,
+ "counted": 893,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -97,7 +97,7 @@
    "file": "lib/reactions.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 1
   },
   {
@@ -1546,8 +1546,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
-   "tests": 24
+   "dependants": 66,
+   "tests": 25
   },
   {
    "file": "lib/models.js",
@@ -2097,6 +2097,13 @@
   },
   {
    "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3150,6 +3157,14 @@
   "functions/api/video.js": {
    "imports": [
     "lib/video.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/visit.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js",
+    "lib/visits.js"
    ],
    "importedBy": []
   },
@@ -5234,6 +5249,7 @@
     "functions/api/support.js",
     "functions/api/tally.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/will.js",
@@ -7011,6 +7027,7 @@
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/rsvp.js",
+    "functions/api/visit.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
     "lib/tally.js",
@@ -8549,6 +8566,12 @@
     "functions/api/video.js",
     "skills/video-play.js",
     "skills/video.js"
+   ]
+  },
+  "lib/visits.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/visit.js"
    ]
   },
   "lib/voice.js": {
