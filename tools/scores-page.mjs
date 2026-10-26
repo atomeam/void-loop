@@ -28,15 +28,17 @@ ok(/Arsenal\s+2/.test(txt) && /Southampton\s+1/.test(txt), 'a final: Arsenal 2, 
 ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), 'no sideways overflow at 390 px'); ok(await p.evaluate(() => [...document.querySelectorAll('button')].every((x) => (x.getAttribute('aria-label') || x.textContent).trim())), 'every button is named');
 await p.screenshot({ path: path.join(out, 'scores-day.png') });
 await p.click('button.gm >> nth=0'); await p.waitForSelector('.big', { timeout: 5000 }); txt = await p.evaluate(() => document.body.innerText); ok(/Test Striker/.test(txt) && /Possession/.test(txt), 'game detail: goal scorer and team stats'); await p.screenshot({ path: path.join(out, 'scores-game.png') });
-await p.click('text=‹ Back'); await p.waitForSelector('ul.games li');
+ok(/Play by play/.test(txt) && /Earlier meetings/.test(txt) && /Last five/.test(txt), 'game detail: play by play, earlier meetings, last five'); await p.click('text=‹ Back'); await p.waitForSelector('ul.games li');
+await p.click('#vWeek'); await p.waitForSelector('ul.games li'); txt = await p.evaluate(() => document.body.innerText); ok(/Arsenal/.test(txt) && await p.locator('h2').count() >= 1, 'week view groups games under day headings'); await p.click('#vDay'); await p.waitForSelector('ul.games li');
 await p.click('button[aria-label="Follow Chelsea"]'); await p.reload({ waitUntil: 'load' }); await p.waitForSelector('ul.games li');
 ok(await p.locator('button[aria-label="Unfollow Chelsea"]').count() === 1, 'a followed team is still followed after a reload'); ok(await p.evaluate(() => document.querySelector('ul.games li').classList.contains('fav')), 'its game floats to the top');
 await p.click('#tMine'); await p.waitForSelector('ul.games li'); txt = await p.evaluate(() => document.body.innerText); ok(/Chelsea/.test(txt) && !/Liverpool/.test(txt), 'My teams shows only the followed team\'s game');
-await p.click('#tTable'); await p.waitForSelector('table'); txt = await p.evaluate(() => document.body.innerText); ok(/Liverpool/.test(txt) && /84/.test(txt) && /\bPts\b/.test(txt), 'standings table with points'); ok(!/do not add up/.test(txt), 'the table adds up');
+await p.click('#tTable'); await p.waitForSelector('table'); txt = await p.evaluate(() => document.body.innerText); ok(/Liverpool/.test(txt) && /84/.test(txt) && /\bPts\b/.test(txt), 'standings table with points'); ok(!/do not add up/.test(txt), 'the table adds up'); await p.waitForSelector('.fd', { timeout: 5000 }); ok(await p.locator('.fd.W').count() > 0, 'form dots (last five results) beside each club'); ok(/Table key: Champions League/.test(await p.evaluate(() => document.body.innerText)), 'a cut-line key under the table');
 await p.click('button.srt >> nth=0'); ok(true, 'a column sorts'); await p.fill('#find', 'arse'); txt = await p.evaluate(() => document.querySelector('tbody').innerText); ok(/Arsenal/.test(txt) && !/Liverpool/.test(txt), 'search narrows the table'); await p.fill('#find', '');
 await p.screenshot({ path: path.join(out, 'scores-table.png') });
 // the page was visited, so a worker may now keep it: reload with the network cut, the saved copy shows with its time
 await p.waitForTimeout(1500); await p.click('#tScores'); await p.waitForSelector('ul.games li');
+ok(await p.evaluate(async () => { const c = await caches.open('void-scores-v1'); return (await c.keys()).length > 0; }), 'the worker keeps the last scores JSON in its own cache'); ok(await p.evaluate(() => !!navigator.serviceWorker.controller), 'the page runs under the worker');
 await ctx.setOffline(true); await p.evaluate(() => location.reload()).catch(() => {}); await p.waitForTimeout(2500);
 txt = await p.evaluate(() => document.body.innerText); ok(/Arsenal\s+2/.test(txt) && /saved result|offline/i.test(txt), 'offline reload: the last scoreboard and a banner saying it is a saved copy');
 await p.screenshot({ path: path.join(out, 'scores-offline.png') });

@@ -60,12 +60,21 @@
   td.nm .star { min-width: 30px; min-height: 30px; font-size: 18px; } td.nm { white-space: normal; }
   .srt { border: 0; border-radius: 6px; padding: 0 4px; min-height: 30px; min-width: 26px; font-size: 12px; font-weight: 600; color: var(--soft); background: transparent; }
   th[aria-sort=ascending] .srt::after { content: ' ▲'; } th[aria-sort=descending] .srt::after { content: ' ▼'; }
+  .fd { display: inline-block; width: 18px; height: 18px; line-height: 18px; margin-left: 2px; border-radius: 50%; text-align: center; font-size: 10px; font-weight: 700; color: #fff; background: var(--soft); } .fd.W { background: #1f8f4e; } .fd.L { background: #c2162f; } .fd.D { background: #7a7788; } td.frm { white-space: nowrap; }
   [hidden] { display: none !important; }
   .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
   .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
+<script>
+// the day's scores are asked for while the page loads, not after it (a first visit then draws real rows as soon as the module lands); same address the module builds
+(function () { try { var q = new URLSearchParams(location.search), m = {}; try { m = JSON.parse(localStorage.getItem('a2m.void.scores.v1')) || {}; } catch (e) {}
+  if (q.get('team') || q.get('game') || q.get('tab') === 'mine' || q.get('span') === '7') return;
+  var p = new URLSearchParams({ league: q.get('league') || m.last || (/^de\b/i.test(navigator.language) ? 'bundesliga' : 'epl') });
+  if (q.get('tab') === 'standings') p.set('view', 'standings'); else { var d = new Date(); p.set('date', q.get('date') || (d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'))); }
+  var qs = p.toString(); window.__early = { qs: qs, p: fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }).then(function (r) { return r.json(); }) }; } catch (e) {} })();
+</script>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/scores/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Scores","url":"https://a-to-mind.com/scores/","description":"Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1, with box scores, team pages and favourite teams kept on your device. No ads, no betting.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"live scores, nba scores, premier league table, bundesliga results, nfl scores today, f1 standings, football scores yesterday","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/scores/?league={league}"},"league-input":"required name=league"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Scores","item":"https://a-to-mind.com/scores/"}]}]}</script>
@@ -90,6 +99,7 @@
     <button type="button" id="prev" aria-label="Previous day">‹</button>
     <label class="vh" for="date">Day</label><input type="date" id="date">
     <button type="button" id="next" aria-label="Next day">›</button>
+    <span class="seg" role="group" aria-label="Range"><button type="button" id="vDay" aria-pressed="true" data-k="dayView">Day</button><button type="button" id="vWeek" aria-pressed="false" data-k="week">Week</button></span>
     <button type="button" id="dYes" data-k="yesterday">Yesterday</button><button type="button" id="dToday" data-k="today">Today</button><button type="button" id="dTom" data-k="tomorrow">Tomorrow</button>
     <button type="button" id="share" data-k="share">Share link</button>
   </div>
@@ -121,11 +131,11 @@
     // ---- state, kept in the address so a link holds the league, the day and the open game or team ----
     const q = new URLSearchParams(location.search), today = () => S.localDay();
     const state = { league: S.leagueOf(q.get('league')) ? q.get('league') : (S.leagueOf(mem.last) ? mem.last : (de ? 'bundesliga' : 'epl')), date: S.dateOk(q.get('date') || '') ? q.get('date') : today(),
-      tab: ['scores', 'standings', 'mine'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
+      span: q.get('span') === '7' ? 7 : 1, tab: ['scores', 'standings', 'mine'].includes(q.get('tab')) ? q.get('tab') : 'scores', game: /^[\w-]{1,24}$/.test(q.get('game') || '') ? q.get('game') : '', team: /^\d{1,12}$/.test(q.get('team') || '') ? q.get('team') : '', tn: (q.get('tn') || '').slice(0, 60) };
     let timer = 0, token = 0, again = () => {}, sort = { c: -1, up: false };
     const needle = () => ($('find').value || '').trim().toLowerCase();
     const hit = (g) => !needle() || [g.home && g.home.name, g.away && g.away.name, g.name, g.home && g.home.abbr, g.away && g.away.abbr].some((x) => x && String(x).toLowerCase().includes(needle()));
-    const url = () => { const p = new URLSearchParams({ league: state.league }); if (state.date !== today()) p.set('date', state.date); if (state.tab !== 'scores') p.set('tab', state.tab); if (state.game) p.set('game', state.game); if (state.team) { p.set('team', state.team); p.set('tn', state.tn); } return '/scores/?' + p; };
+    const url = () => { const p = new URLSearchParams({ league: state.league }); if (state.date !== today()) p.set('date', state.date); if (state.tab !== 'scores') p.set('tab', state.tab); if (state.span === 7) p.set('span', '7'); if (state.game) p.set('game', state.game); if (state.team) { p.set('team', state.team); p.set('tn', state.tn); } return '/scores/?' + p; };
     const push = () => { try { history.replaceState(null, '', url()); } catch (_) {} };
     const say = (t, bad) => { note.textContent = t || ''; note.classList.toggle('bad', !!bad); };
     // ---- data: the API, the last good answer kept on the device ----
@@ -133,7 +143,7 @@
       const qs = new URLSearchParams(p).toString(), ck = load(CKEY, {});
       if (early && ck[qs]) early({ j: ck[qs].j, from: ck[qs].t, saved: true }); // the last good copy is on screen at once, with its time, while the feed is asked
       try {
-        const r = await fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }), j = await r.json();
+        let j; const ea = window.__early; if (ea && ea.qs === qs) { window.__early = null; j = await ea.p; } else j = await (await fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } })).json();
         if (!j.ok) throw new Error(j.kind || 'away');
         ck[qs] = { t: Date.now(), j }; const keys = Object.keys(ck).sort((a, b) => ck[b].t - ck[a].t); for (const k of keys.slice(40)) delete ck[k]; save(CKEY, ck);
         return { j, from: j.stale ? Date.parse(j.at) : 0 };
@@ -157,7 +167,7 @@
       const fav = isFav(lg, g.home) || isFav(lg, g.away);
       return h('li', { class: fav ? 'fav' : null }, stOf(g), h('div', null, teamLine(lg, g, 'home', redraw), teamLine(lg, g, 'away', redraw)), g.id && !g.id.startsWith('ol') ? h('button', { type: 'button', class: 'gm', text: W.details, onclick: () => { state.game = g.id; run(); } }) : h('span'));
     };
-    const gamesList = (lg, games, redraw) => { const s = games.filter(hit).sort((a, b) => ((isFav(lg, b.home) || isFav(lg, b.away)) - (isFav(lg, a.home) || isFav(lg, a.away))) || ({ live: 0, pre: 1, final: 2 }[a.state] - { live: 0, pre: 1, final: 2 }[b.state]) || String(a.start).localeCompare(String(b.start))); return h('ul', { class: 'games' }, s.map((g) => gameLi(lg, g, redraw))); };
+    const gamesList = (lg, games, redraw, byTime) => { const s = games.filter(hit).sort((a, b) => (byTime ? 0 : ((isFav(lg, b.home) || isFav(lg, b.away)) - (isFav(lg, a.home) || isFav(lg, a.away))) || ({ live: 0, pre: 1, final: 2 }[a.state] - { live: 0, pre: 1, final: 2 }[b.state])) || String(a.start).localeCompare(String(b.start))); return h('ul', { class: 'games' }, s.map((g) => gameLi(lg, g, redraw))); };
     const setNote = (r) => {
       const bits = [];
       if (!navigator.onLine) bits.push(W.offline.trim());
@@ -168,27 +178,36 @@
     const sorry = () => { out.replaceChildren(h('p', { class: 'empty', text: W.failed })); say(W.failed, true); };
     const anyLive = (list) => list.some((g) => g.state === 'live');
     // the three views
+    const weekDraw = (lg, games, redraw) => { const days = new Map(); for (const g of games.filter(hit).sort((x, y) => String(x.start).localeCompare(String(y.start)))) { const d = S.localDay(new Date(g.start)); (days.get(d) || days.set(d, []).get(d)).push(g); }
+      return [...days].flatMap(([d, list]) => [h('h2', { text: dayLabel(d) }), gamesList(lg, list, redraw, true)]); };
     async function scoresView(tk) {
-      const lg = state.league;
-      const paint = (r) => { const games = r.j.games || []; again = () => paint(r); setNote(r); const l = games.filter(hit); out.replaceChildren(l.length ? gamesList(lg, games, () => paint(r)) : h('p', { class: 'empty', text: needle() ? W.none : W.none })); return anyLive(games); };
-      const r = await api({ league: lg, date: state.date }, (c) => { if (tk === token) paint(c); }); if (tk !== token) return;
+      const lg = state.league, week = state.span === 7, from = week ? S.weekStart(state.date, lg) : state.date;
+      const paint = (r) => { const games = r.j.games || []; again = () => paint(r); setNote(r);
+        const body = !games.filter(hit).length ? [h('p', { class: 'empty', text: W.none })] : week ? weekDraw(lg, games, () => paint(r)) : [gamesList(lg, games, () => paint(r))];
+        out.replaceChildren(...body); if (r.j.revalidating && !paint.again) { paint.again = true; setTimeout(() => { if (tk === token) run(true); }, 2500); } return anyLive(games); };
+      const r = await api(week ? { league: lg, date: from, span: 7 } : { league: lg, date: from }, (c) => { if (tk === token) paint(c); }); if (tk !== token) return;
       if (!r) return sorry();
       return paint(r);
     }
     async function tableView(tk) {
       const lg = state.league, grp = S.leagueOf(lg).grp;
+      let form = {}, asked = false;
       const paint = (r) => {
         const groups = r.j.groups || []; again = () => paint(r); setNote(r);
+        const hasForm = Object.keys(form).length > 0;
         const bad = groups.flatMap((g) => S.rowIssues(g, grp));
         const draw = () => out.replaceChildren(...(groups.length ? groups.map((g) => { const rows = g.rows.filter((x) => !needle() || x.name.toLowerCase().includes(needle()) || x.abbr.toLowerCase() === needle());
           if (sort.c >= 0 && sort.c < g.cols.length) rows.sort((a, b) => ((parseFloat(String(a.cells[sort.c]).replace('+', '')) || 0) - (parseFloat(String(b.cells[sort.c]).replace('+', '')) || 0)) * (sort.up ? 1 : -1));
           return h('div', null, g.name ? h('h2', { text: g.name }) : null, h('div', { class: 'tbl' }, h('table', { 'data-tab': 'standings' },
-            h('thead', null, h('tr', null, h('th', { text: '#' }), h('th', { text: W.team }), g.cols.map((c, ci) => h('th', { 'aria-sort': sort.c === ci ? (sort.up ? 'ascending' : 'descending') : 'none' }, h('button', { type: 'button', class: 'srt', text: c, 'aria-label': 'Sort by ' + c, onclick: () => { sort = { c: ci, up: sort.c === ci ? !sort.up : false }; draw(); } }))))),
-            h('tbody', null, rows.map((row) => h('tr', { class: isFav(lg, row) ? 'fav' : null }, h('td', { text: String(row.rank) }),
+            h('thead', null, h('tr', null, h('th', { text: '#' }), h('th', { text: W.team }), g.cols.map((c, ci) => h('th', { 'aria-sort': sort.c === ci ? (sort.up ? 'ascending' : 'descending') : 'none' }, h('button', { type: 'button', class: 'srt', text: c, 'aria-label': 'Sort by ' + c, onclick: () => { sort = { c: ci, up: sort.c === ci ? !sort.up : false }; draw(); } })), hasForm ? h('th', { text: W.form }) : null))),
+            h('tbody', null, rows.map((row) => h('tr', { class: isFav(lg, row) ? 'fav' : null }, h('td', { text: String(row.rank), class: row.note ? 'cut' : null, style: row.note && row.note.color ? 'box-shadow: inset 4px 0 0 #' + row.note.color : null, title: row.note ? row.note.text : null }),
               h('td', { class: 'nm' }, row.id && S.leagueOf(lg).kind === 'espn' ? [favBtn(lg, row, draw), h('a', { href: '/scores/?league=' + lg + '&team=' + row.id + '&tn=' + encodeURIComponent(row.name), text: row.name, onclick: (e) => { e.preventDefault(); state.team = row.id; state.tn = row.name; run(); } })] : row.name),
-              row.cells.map((c) => h('td', { text: c }))))))));
+              row.cells.map((c) => h('td', { text: c })), hasForm ? h('td', { class: 'frm' }, (form[row.id] || []).slice().reverse().map((f) => h('span', { class: 'fd ' + f.r, title: f.r + ' ' + f.score + ' ' + f.opp, text: f.r }))) : null)))),
+            g.legend && g.legend.length ? h('p', { class: 'note', style: 'min-height:0;margin:6px 8px', text: W.cut + ': ' + g.legend.map((l) => l.text).join(' · ') }) : null));
         }) : [h('p', { class: 'empty', text: W.none })]), ...(bad.length ? [h('p', { class: 'note bad', text: W.badTable + ' ' + bad.slice(0, 4).map((b) => b.name + ' (' + b.why + ')').join('; ') })] : []));
-        again = draw; draw(); return false;
+        again = draw; draw();
+        if (!asked && S.leagueOf(lg).kind === 'espn' && S.leagueOf(lg).grp === 'soccer') { asked = true; api({ league: lg, view: 'form', date: S.localDay() }).then((f) => { if (f && f.j.form && tk === token) { form = f.j.form; paint(r); } }); } // the last five results, drawn when they arrive
+        return false;
       };
       const r = await api({ league: lg, view: 'standings' }, (c) => { if (tk === token) paint(c); }); if (tk !== token) return;
       if (!r) return sorry();
@@ -221,6 +240,9 @@
       if (g && g.state === 'pre' && g.start) kids.push(h('div', { class: 'row' }, h('button', { type: 'button', text: W.cal, onclick: () => { const f = S.icsOf(g, S.leagueOf(lg)); if (!f) return; const a = h('a', { href: URL.createObjectURL(new Blob([f], { type: 'text/calendar' })), download: 'game.ics' }); document.body.append(a); a.click(); a.remove(); } })));
       const ev = j.events.length ? j.events : (g && g.events) || [];
       if (ev.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.events, style: 'margin-top:0' }), h('ul', { class: 'ev' }, ev.map((e) => h('li', null, h('span', { class: 'm', text: e.min }), h('span', { text: (e.kind === 'red' ? '🟥 ' : e.kind === 'yellow' ? '🟨 ' : '⚽ ') + (e.who || e.text) + (e.team ? ' (' + e.team + ')' : '') }))))));
+      if (j.last5 && j.last5.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.last5, style: 'margin-top:0' }), j.last5.map((t) => h('p', { class: 'note', style: 'min-height:0;margin:2px 0' }, t.team + ' ', t.games.map((x) => h('span', { class: 'fd ' + x.r, title: x.r + ' ' + x.score + ' ' + x.opp, text: x.r }))))));
+      if (j.h2h && j.h2h.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.h2h, style: 'margin-top:0' }), h('ul', { class: 'ev' }, j.h2h.map((x) => h('li', null, h('span', { class: 'm', text: x.date ? new Date(x.date).toLocaleDateString(lang, { day: 'numeric', month: 'short', year: '2-digit' }) : '' }), h('span', { text: (x.who.trim() ? x.who.trim() + ' ' : '') + x.text }))))));
+      if (j.plays && j.plays.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.plays, style: 'margin-top:0' }), h('ul', { class: 'ev' }, j.plays.map((x) => h('li', null, h('span', { class: 'm', text: (x.period ? 'P' + x.period + ' ' : '') + x.clock }), h('span', { text: x.text + (x.scoring && x.home !== '' ? ' (' + x.home + '-' + x.away + ')' : ''), style: x.scoring ? 'font-weight:700' : null }))))));
       if (j.stats.length === 2 && j.stats[0].stats.length) { const [a, b] = j.stats, cells = []; a.stats.forEach((s, i) => { const o = b.stats.find((x) => x.label === s.label); if (o) cells.push(h('span', { text: s.value }), h('span', { text: s.label }), h('span', { text: o.value })); });
         kids.push(h('div', { class: 'pane' }, h('h2', { text: W.teamStats + ' · ' + a.team + ' / ' + b.team, style: 'margin-top:0' }), h('div', { class: 'cmp' }, cells))); }
       if (j.lineups.length) kids.push(h('div', { class: 'pane' }, h('h2', { text: W.lineups, style: 'margin-top:0' }), j.lineups.map((l) => h('p', { class: 'note', style: 'min-height:0', text: l.team + ': ' + l.starters.map((p) => (p.n ? p.n + ' ' : '') + p.name).join(', ') }))));
@@ -248,7 +270,7 @@
       for (const [id, t] of [['tScores', 'scores'], ['tTable', 'standings'], ['tMine', 'mine']]) $(id).setAttribute('aria-pressed', String(state.tab === t));
       const fl = mem.leagues.includes(state.league); $('favLeague').setAttribute('aria-pressed', String(fl)); $('favLeague').textContent = fl ? W.unfollowLeague : W.followLeague;
       $('days').hidden = state.tab === 'standings' || !!state.team;
-      $('date').value = state.date; if (!quiet) { say(W.loading + '…'); }
+      $('date').value = state.date; $('vDay').setAttribute('aria-pressed', String(state.span === 1)); $('vWeek').setAttribute('aria-pressed', String(state.span === 7)); $('prev').setAttribute('aria-label', state.span === 7 ? W.prevWeek : 'Previous day'); $('next').setAttribute('aria-label', state.span === 7 ? W.nextWeek : 'Next day'); if (!quiet) { say(W.loading + '…'); }
       let live = false;
       try { live = state.game ? await gameView(tk) : state.team ? await teamView(tk) : state.tab === 'standings' ? await tableView(tk) : state.tab === 'mine' ? await mineView(tk) : await scoresView(tk); } catch (_) { sorry(); }
       if (tk === token && live) { timer = setTimeout(() => { if (document.visibilityState === 'visible' && navigator.onLine) run(true); else timer = setTimeout(() => run(true), POLL); }, POLL); say(note.textContent + ' ' + W.refreshing); }
@@ -257,8 +279,10 @@
     for (const a of $('leagues').children) a.addEventListener('click', (e) => { e.preventDefault(); state.league = new URL(a.href).searchParams.get('league'); state.game = ''; state.team = ''; state.tn = ''; if (state.tab === 'mine') state.tab = 'scores'; run(); });
     const tab = (t) => () => { state.tab = t; state.game = ''; state.team = ''; state.tn = ''; run(); };
     $('tScores').addEventListener('click', tab('scores')); $('tTable').addEventListener('click', tab('standings')); $('tMine').addEventListener('click', tab('mine'));
+    const setSpan = (n) => () => { state.span = n; state.game = ''; state.team = ''; if (state.tab !== 'scores') state.tab = 'scores'; run(); };
+    $('vDay').addEventListener('click', setSpan(1)); $('vWeek').addEventListener('click', setSpan(7));
     const goDay = (d) => { if (S.dateOk(d)) { state.date = d; state.game = ''; state.team = ''; if (state.tab === 'standings') state.tab = 'scores'; run(); } };
-    $('prev').addEventListener('click', () => goDay(S.shiftDay(state.date, -1))); $('next').addEventListener('click', () => goDay(S.shiftDay(state.date, 1)));
+    $('prev').addEventListener('click', () => goDay(S.shiftDay(state.date, -state.span))); $('next').addEventListener('click', () => goDay(S.shiftDay(state.date, state.span)));
     $('dYes').addEventListener('click', () => goDay(S.shiftDay(today(), -1))); $('dToday').addEventListener('click', () => goDay(today())); $('dTom').addEventListener('click', () => goDay(S.shiftDay(today(), 1)));
     $('date').addEventListener('change', () => goDay($('date').value));
     $('favLeague').addEventListener('click', () => { const i = mem.leagues.indexOf(state.league); if (i >= 0) mem.leagues.splice(i, 1); else mem.leagues.push(state.league); save(KEY, mem); run(true); });

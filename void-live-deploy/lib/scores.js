@@ -93,10 +93,12 @@ export function readStandings(j, grp) {
       const t = (e && e.team) || {}, stats = new Map(arr(e && e.stats).map((s) => [s.name, s]));
       const pick = (names) => { for (const n of names) { const s = stats.get(n); if (s && (s.displayValue != null || s.value != null)) return str(s.displayValue != null ? s.displayValue : s.value, 8); } return ''; };
       const rk = num((stats.get('rank') || stats.get('playoffSeed') || {}).value);
-      return { rank: rk != null ? rk : i + 1, id: str(t.id, 12), name: str(t.displayName || t.name), abbr: str(t.abbreviation, 6), cells: defs.map((d) => pick(d.slice(1))) };
+      const nt = (e && e.note) || null; // ESPN marks a cut-line row (Champions League, relegation, playoffs) with a note: its words and colour
+      return { rank: rk != null ? rk : i + 1, id: str(t.id, 12), name: str(t.displayName || t.name), abbr: str(t.abbreviation, 6), cells: defs.map((d) => pick(d.slice(1))), note: nt && nt.description ? { text: str(nt.description, 40), color: hex(String(nt.color || '').replace('#', '')) } : null };
     }).filter((r) => r.name);
     rows.sort((a, b) => a.rank - b.rank);
-    return { name: str(name, 40), cols: defs.map((d) => d[0]), rows: rows.slice(0, 40) };
+    const legend = [...new Map(rows.filter((r) => r.note).map((r) => [r.note.text, r.note])).values()];
+    return { name: str(name, 40), cols: defs.map((d) => d[0]), rows: rows.slice(0, 40), legend };
   };
   const kids = arr(j && j.children), groups = kids.length ? kids.map((c) => mk(c.name, c.standings && c.standings.entries)) : [mk('', j && j.standings && j.standings.entries)];
   return { groups: groups.filter((g) => g.rows.length).slice(0, 8) };
@@ -115,7 +117,12 @@ export function readSummary(j) {
   const players = arr(((j && j.boxscore) || {}).players).map((t) => ({ team: str(t.team && (t.team.abbreviation || t.team.displayName), 12),
     groups: arr(t.statistics).slice(0, 4).map((g) => ({ name: str(g.name || g.type, 20), labels: arr(g.labels).slice(0, 10).map((l) => str(l, 6)),
       rows: arr(g.athletes).slice(0, 14).map((a) => ({ name: str(a.athlete && (a.athlete.shortName || a.athlete.displayName), 30), stats: arr(a.stats).slice(0, 10).map((s) => str(s, 10)) })) })) }));
-  return { game, events, stats, lineups, players };
+  const plays = arr(j && j.plays).slice(-80).reverse().map((p2) => ({ clock: str(p2.clock && p2.clock.displayValue, 10), period: str(p2.period && p2.period.number, 2), text: str(p2.text || p2.shortText, 140), home: scoreOf(p2.homeScore), away: scoreOf(p2.awayScore), scoring: !!p2.scoringPlay })).filter((p2) => p2.text).slice(0, 60)
+    .concat(arr(j && j.commentary).slice(-60).reverse().map((c) => ({ clock: str(c.time && c.time.displayValue, 10), period: '', text: str(c.text, 160), home: '', away: '', scoring: false })).filter((c) => c.text)).slice(0, 60);
+  // the same pairing's earlier games, and each side's last five (ESPN's summary carries these for most leagues; absent ones are simply not shown)
+  const h2h = arr(j && (j.seasonseries || j.headToHeadGames)).flatMap((ss) => arr(ss.events || ss.games)).slice(0, 8).map((x) => ({ date: str(x.date || x.gameDate, 24), text: str(x.score || x.summary || ((x.homeTeamScore != null ? x.homeTeamScore + '-' + x.awayTeamScore : '')), 24), who: str(x.homeTeamName || (x.homeTeam && x.homeTeam.displayName) || '', 30) + ' ' + str(x.awayTeamName || (x.awayTeam && x.awayTeam.displayName) || '', 30) })).filter((x) => x.text);
+  const last5 = arr(j && j.lastFiveGames).map((t) => ({ team: str(t.team && (t.team.abbreviation || t.team.displayName), 12), games: arr(t.events).slice(0, 5).map((x) => ({ r: str(x.gameResult, 1), opp: str(x.opponent && (x.opponent.abbreviation || x.opponent.displayName), 12), score: str(x.score, 12) })).filter((x) => /^[WDL]$/.test(x.r)) })).filter((t) => t.games.length);
+  return { game, events, stats, lineups, players, plays, h2h, last5 };
 }
 
 /** the rows of a standings group whose numbers do not add up, as [{ name, why }] (soccer: played = won + drawn + lost and points = 3 x won + drawn;
@@ -140,8 +147,9 @@ export function icsOf(game, league) {
 }
 
 /** OpenLigaDB matches (getmatchdata/bl1/<season>) played on `day` ('YYYY-MM-DD', UTC) as games. Pure; `now` decides live. */
-export function readOpenLiga(list, day, now = Date.now()) {
-  return (Array.isArray(list) ? list : []).filter((m) => m && String(m.matchDateTimeUTC || '').slice(0, 10) === day).map((m) => {
+export function readOpenLiga(list, day, now = Date.now(), span = 1) {
+  const last = shiftDay(day, span - 1);
+  return (Array.isArray(list) ? list : []).filter((m) => m && String(m.matchDateTimeUTC || '').slice(0, 10) >= day && String(m.matchDateTimeUTC || '').slice(0, 10) <= last).map((m) => {
     const start = Date.parse(m.matchDateTimeUTC), fin = m.matchIsFinished === true;
     const goals = Array.isArray(m.goals) ? m.goals : [], last = goals[goals.length - 1];
     const res = arr(m.matchResults).find((r) => r.resultTypeID === 2) || null;
@@ -159,9 +167,10 @@ export function readOpenLiga(list, day, now = Date.now()) {
 export const seasonOf = (day) => { const y = +day.slice(0, 4), m = +day.slice(5, 7); return m >= 7 ? y : y - 1; };
 
 /** Jolpica races in a season (races.json) that run on `day`, as F1 "games" (a race has no two sides: results hold the order). Pure. */
-export function readF1Races(j, day, now = Date.now()) {
+export function readF1Races(j, day, now = Date.now(), span = 1) {
+  const last = shiftDay(day, span - 1);
   const races = (((j || {}).MRData || {}).RaceTable || {}).Races || [];
-  return races.filter((r) => r && r.date === day).map((r) => {
+  return races.filter((r) => r && r.date >= day && r.date <= last).map((r) => {
     const start = Date.parse(r.date + 'T' + (r.time || '13:00:00Z')); const state = now < start ? 'pre' : now - start < 3 * 3600000 ? 'live' : 'final';
     const c = r.Circuit || {}, l = c.Location || {};
     return { id: 'f1-' + str(r.season, 4) + '-' + str(r.round, 3), kind: 'race', state, status: state === 'final' ? 'FIN' : state === 'live' ? 'LIVE' : '', start: new Date(start).toISOString(), name: str(r.raceName), round: str(r.round, 3), season: str(r.season, 4),
@@ -182,10 +191,26 @@ export function readF1Standings(drivers, cons) {
   return { groups: [d, c].filter((g) => g.rows.length) };
 }
 
+/** each team's last five results from a run of scoreboard games, newest first: { teamId: [{ r: W|D|L, opp, score }] }. Pure. */
+export function formOf(games) {
+  const fin = (games || []).filter((g) => g.state === 'final' && g.home.score !== '' && g.away.score !== '').sort((a, b) => String(b.start).localeCompare(String(a.start))), out = {};
+  for (const g of fin) for (const [me, you] of [[g.home, g.away], [g.away, g.home]]) {
+    if (!me.id) continue; const a = out[me.id] = out[me.id] || []; if (a.length >= 5) continue;
+    const m = +me.score, y = +you.score; a.push({ r: m > y ? 'W' : m < y ? 'L' : 'D', opp: you.abbr || you.short || you.name, score: me.score + '-' + you.score });
+  }
+  return out;
+}
+/** the first day of the week a day is in (Tuesday for the NFL, whose week runs Thursday to Monday; Monday for the rest). Pure. */
+export function weekStart(day, leagueId) {
+  const dow = new Date(day + 'T00:00:00Z').getUTCDay(), first = leagueId === 'nfl' ? 2 : 1;
+  return shiftDay(day, -((dow - first + 7) % 7));
+}
+
 /** how long (seconds) an answer may be kept: a live day is short, a settled final is long, standings are an hour. Pure. */
 export function ttlFor(view, data, day, now = Date.now()) {
   if (view === 'standings') return 3600;
   if (view === 'team') return 600;
+  if (view === 'form') return 1800;
   const games = view === 'game' ? (data && data.game ? [data.game] : []) : (data && data.games) || [];
   if (games.some((g) => g.state === 'live')) return 20;
   if (view === 'game') return games.length && games.every((g) => g.state === 'final') ? 6 * 3600 : 60;
@@ -198,9 +223,9 @@ export function ttlFor(view, data, day, now = Date.now()) {
 const EN = { scores: 'Scores', standings: 'Standings', mine: 'My teams', today: 'Today', yesterday: 'Yesterday', tomorrow: 'Tomorrow', live: 'LIVE', ft: 'FT', details: 'Details', back: 'Back', share: 'Share link', copied: 'Link copied',
   follow: 'Follow', unfollow: 'Unfollow', followLeague: 'Follow league', unfollowLeague: 'Following league', none: 'No games on this day.', loading: 'Loading', failed: 'The score feed did not answer just now.', saved: 'Showing the last saved result from',
   stale: 'The feed is not answering, so this is the last good copy from', delayed: 'Data may be delayed by a minute or more.', noMine: 'Follow a team with its star, or a league above, and its games show here.', noMineDay: 'None of your teams play on this day.',
-  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', cal: 'Add to calendar', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', badTable: 'Some numbers in this table do not add up:' };
+  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', cal: 'Add to calendar', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', week: 'Week', dayView: 'Day', prevWeek: 'Previous week', nextWeek: 'Next week', thisWeek: 'This week', form: 'Form', plays: 'Play by play', h2h: 'Earlier meetings', last5: 'Last five', cut: 'Table key', badTable: 'Some numbers in this table do not add up:' };
 const DE = { scores: 'Ergebnisse', standings: 'Tabelle', mine: 'Meine Teams', today: 'Heute', yesterday: 'Gestern', tomorrow: 'Morgen', live: 'LIVE', ft: 'Ende', details: 'Details', back: 'Zurück', share: 'Link teilen', copied: 'Link kopiert',
   follow: 'Folgen', unfollow: 'Entfolgen', followLeague: 'Liga folgen', unfollowLeague: 'Liga gefolgt', none: 'Keine Spiele an diesem Tag.', loading: 'Lädt', failed: 'Die Ergebnisquelle hat gerade nicht geantwortet.', saved: 'Zuletzt gespeichertes Ergebnis von',
   stale: 'Die Quelle antwortet nicht, das ist die letzte gute Kopie von', delayed: 'Die Daten können eine Minute oder länger verzögert sein.', noMine: 'Folge einem Team mit dem Stern oder oben einer Liga, dann erscheinen ihre Spiele hier.', noMineDay: 'Keines deiner Teams spielt an diesem Tag.',
-  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', cal: 'In den Kalender', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
+  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', cal: 'In den Kalender', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', week: 'Woche', dayView: 'Tag', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', thisWeek: 'Diese Woche', form: 'Form', plays: 'Spielverlauf', h2h: 'Frühere Spiele', last5: 'Letzte fünf', cut: 'Legende', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
 export const wordsFor = (lang) => (/^de\b/i.test(lang || '') ? DE : EN);

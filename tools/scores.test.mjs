@@ -2,7 +2,7 @@
 // checked against allowlists, each feed read into one shape, the Bundesliga fallback, F1, cache lifetimes, the endpoint's bounds, the routes
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk } from '../void-live-deploy/lib/scores.js';
+import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart } from '../void-live-deploy/lib/scores.js';
 import { askIn, lookScores, onRequestGet } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
@@ -58,7 +58,7 @@ test('the endpoint asks only what is allowed', () => {
 });
 test('lookScores calls only the three feeds, with fixed paths, and falls back to OpenLigaDB for the Bundesliga', async () => {
   const log = []; const ok = fakeFeeds(log);
-  const a = await lookScores(askIn('https://x.test/api/scores?league=epl&date=2025-05-25', NOW), ok, NOW); assert.equal(a.ok, true); assert.equal(a.games.length, 3); assert.equal(a.source, 'espn'); assert.equal(log[0], 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=20250525');
+  const a = await lookScores(askIn('https://x.test/api/scores?league=epl&date=2025-05-25', NOW), ok, NOW); assert.equal(a.ok, true); assert.equal(a.games.length, 3); assert.equal(a.source, 'espn'); assert.equal(log[0], 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?limit=400&dates=20250525');
   const t = await lookScores(askIn('https://x.test/api/scores?league=nba&view=standings', NOW), ok, NOW); assert.equal(t.groups[0].rows.length, 2); assert.ok(log.some((l) => l === 'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings'));
   const g = await lookScores(askIn('https://x.test/api/scores?league=nfl&view=game&id=401', NOW), ok, NOW); assert.equal(g.game.home.name, 'Arsenal');
   const f = await lookScores(askIn('https://x.test/api/scores?league=f1&date=2025-06-01', NOW), ok, Date.parse('2025-06-02T00:00:00Z')); assert.equal(f.games[0].results.length, 2); assert.equal(f.source, 'jolpica');
@@ -85,4 +85,26 @@ test('the table checks its own sums, and a game becomes a calendar file', async 
   g.rows[0].cells[5] = '85'; assert.equal(rowIssues(g, 'soccer')[0].name, 'Liverpool'); g.rows[0].cells[0] = '37'; assert.equal(rowIssues(g, 'soccer').length, 2);
   assert.deepEqual(rowIssues({ cols: ['W', 'L', 'Pct'], rows: [{ name: 'A', cells: ['40', '40', '0.500'] }, { name: 'B', cells: ['60', '20', '0.700'] }] }, 'nba').map((x) => x.name), ['B']);
   const ics = icsOf(readScoreboard(SCOREBOARD)[2], leagueOf('epl')); assert.match(ics, /^BEGIN:VCALENDAR\r\n/); assert.match(ics, /DTSTART:20250525T183000Z/); assert.match(ics, /DTEND:20250525T203000Z/); assert.match(ics, /SUMMARY:Chelsea vs Nottingham Forest/); assert.equal(icsOf({ start: 'x' }), '');
+});
+
+test('weeks, form, cut-lines, play by play, earlier meetings', async () => {
+  assert.equal(weekStart('2025-05-25', 'epl'), '2025-05-19'); assert.equal(weekStart('2025-05-19', 'epl'), '2025-05-19'); assert.equal(weekStart('2025-10-26', 'nfl'), '2025-10-21'); assert.equal(weekStart('2025-10-21', 'nfl'), '2025-10-21'); assert.equal(weekStart('2025-10-20', 'nfl'), '2025-10-14');
+  const a = askIn('https://x.test/api/scores?league=nfl&date=2025-10-21&span=7', NOW); assert.equal(a.span, 7); assert.equal(askIn('https://x.test/api/scores?league=nfl&date=2025-10-21&span=30', NOW).span, 1); assert.equal(askIn('https://x.test/api/scores?league=f1&view=form&date=2025-10-21', NOW), null);
+  const log = []; const w = await lookScores(a, fakeFeeds(log), NOW); assert.ok(log[0].endsWith('dates=20251021-20251027'), log[0]); assert.equal(w.games.length, 3);
+  const f = formOf(readScoreboard(SCOREBOARD)); assert.deepEqual(f['359'], [{ r: 'W', opp: 'SOU', score: '2-1' }]); assert.equal(f['364'], undefined, 'a live game is not a result');
+  const fo = await lookScores(askIn('https://x.test/api/scores?league=epl&view=form&date=2025-05-25', NOW), fakeFeeds(log), NOW); assert.ok(log.at(-1).includes('dates=20250413-20250525'), log.at(-1)); assert.equal(fo.form['359'][0].r, 'W');
+  const st = readStandings(STANDINGS, 'soccer').groups[0]; assert.equal(st.rows[0].note.text, 'Champions League'); assert.equal(st.rows[0].note.color, '81d6ac'); assert.equal(st.legend.length, 1); assert.equal(st.rows[1].note, null);
+  const su = readSummary(SUMMARY); assert.equal(su.plays[0].text, 'Foul by Test Back'); assert.ok(su.plays.some((x) => x.text === 'Full time.')); assert.ok(su.plays.some((x) => x.scoring && x.home === '1')); assert.equal(su.h2h[0].text, '1-1'); assert.deepEqual(su.last5[0].games.map((x) => x.r), ['W', 'D']);
+  const ol = readOpenLiga(OPENLIGA, '2025-05-17', NOW, 2); assert.equal(ol.length, 2, 'a week reads both days');
+});
+test('the stale copy answers at once while the feed is asked again behind it', async () => {
+  const store = new Map(); globalThis.caches = { default: { match: async (r) => { const v = store.get(r.url); return v ? new Response(v, { headers: { 'content-type': 'application/json' } }) : undefined; }, put: async (r, res) => { store.set(r.url, await res.text()); } } };
+  try {
+    const pend = []; const req = () => ({ request: new Request('https://a-to-mind.com/api/scores?league=epl&date=2025-05-17'), env: {}, fetchFn: fakeFeeds(), waitUntil: (p) => pend.push(p) });
+    const first = await (await onRequestGet(req())).json(); assert.equal(first.ok, true);
+    for (const k of [...store.keys()].filter((k) => !k.endsWith('/keep'))) store.delete(k); // the fresh copy has expired, the kept one has not
+    for (const [k, v] of [...store]) store.set(k, v.replace('"state":"live"', '"state":"final"')); // a live score that old would be wrong, so only settled copies answer at once
+    const slow = { ...req(), fetchFn: (u) => new Promise((r) => setTimeout(() => r(fakeFeeds()(u)), 150)) }, t0 = Date.now(); const second = await (await onRequestGet(slow)).json();
+    assert.equal(second.stale, true); assert.equal(second.revalidating, true); assert.ok(Date.now() - t0 < 500, 'answered without waiting on the feed'); assert.equal(second.games.length, 3); await Promise.all(slow.pend || pend);
+  } finally { delete globalThis.caches; }
 });

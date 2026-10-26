@@ -21,17 +21,25 @@ const keepWhole = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().
 // 3D files (vendored three.js, models, textures) never change under the same name: a new version gets a new path.
 // They are cache first, in their own cache that survives shell updates, so a chess set downloads once.
 const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vendor path (below), so it is dropped on activate
+// the scores page's own answers (owner, 2026-10-26: the offline reload must show the last scoreboard from the worker, not only from localStorage): network first,
+// the last good JSON kept per address and served when the network is cut or answers an error; nothing else under /api/ is ever touched
+const CACHE_SCORES = 'void-scores-v1';
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(TOOLS.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D).map((k) => caches.delete(k)))).then(() => self.clients.claim())
+  e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())
     .then(() => self.clients.matchAll({ type: 'window' })).then((cs) => caches.open(CACHE).then((c) => Promise.all(cs.map((x) => new URL(x.url).pathname).filter(isTool).map((t) => keepWhole(c, t))))).catch(() => {}));
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request, url = new URL(req.url);
+  if (req.method === 'GET' && url.origin === location.origin && url.pathname === '/api/scores') {
+    e.respondWith(fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE_SCORES).then((c) => c.put(req, copy)).catch(() => {}); return res; } return caches.open(CACHE_SCORES).then((c) => c.match(req)).then((r) => r || res); })
+      .catch(() => caches.open(CACHE_SCORES).then((c) => c.match(req)).then((r) => r || Response.error())));
+    return;
+  }
   if (req.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
   if (is3d(url.pathname)) {
     // a missing file comes back as the page's HTML with a 200 (the site's fallback), and a cache first copy of that would break

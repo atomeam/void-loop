@@ -13,7 +13,7 @@
 //     "stale" instead, and the page says so).
 // Nothing is bet on, nothing is bought, and no key is used: all three sources are free without one.
 import { rateLimited } from './answer.js';
-import { leagueOf, dateOk, idOk, ymd, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor } from '../../lib/scores.js';
+import { leagueOf, dateOk, idOk, ymd, shiftDay, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, formOf } from '../../lib/scores.js';
 
 export const RL_MAX = 30, KEEP = 3 * 86400;
 export const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/', ESPN_V2 = 'https://site.api.espn.com/apis/v2/sports/', OPENLIGA = 'https://api.openligadb.de/getmatchdata/bl1/', JOLPICA = 'https://api.jolpi.ca/ergast/f1/';
@@ -21,14 +21,15 @@ const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers
 /** what a request asks: { league, view, day, id } or null when it is not a plain, allowed question. Pure. */
 export function askIn(url, now = Date.now()) {
   const p = new URL(url).searchParams, league = leagueOf(String(p.get('league') || '')), view = String(p.get('view') || 'scores');
-  if (!league || !['scores', 'standings', 'game', 'team'].includes(view)) return null;
+  if (!league || !['scores', 'standings', 'game', 'team', 'form'].includes(view)) return null;
   if (view === 'standings') return { league, view };
   if (view === 'game' || view === 'team') {
     const id = String(p.get(view === 'game' ? 'id' : 'team') || '');
     return idOk(id) && league.kind === 'espn' ? { league, view, id } : null;
   }
-  const day = String(p.get('date') || ymd(new Date(now)));
-  return dateOk(day, now) ? { league, view, day } : null;
+  const day = String(p.get('date') || ymd(new Date(now))), span = p.get('span') === '7' && view === 'scores' ? 7 : 1;
+  if (view === 'form' && league.kind !== 'espn') return null;
+  return dateOk(day, now) && dateOk(shiftDay(day, span - 1), now) ? { league, view, day, span } : null;
 }
 async function get(fetchFn, url) {
   const r = await fetchFn(url, { headers: { accept: 'application/json' }, signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined });
@@ -42,7 +43,7 @@ export async function lookScores(ask, fetchFn = fetch, now = Date.now()) {
   try {
     if (league.kind === 'f1') {
       if (view === 'standings') { const y = new Date(now).getUTCFullYear(); const [d, c] = await Promise.all([get(fetchFn, JOLPICA + y + '/driverStandings.json'), get(fetchFn, JOLPICA + y + '/constructorStandings.json')]); return { ok: true, ...readF1Standings(d, c), source: 'jolpica' }; }
-      const season = ask.day.slice(0, 4), games = readF1Races(await get(fetchFn, JOLPICA + season + '.json?limit=100'), ask.day, now);
+      const season = ask.day.slice(0, 4), games = readF1Races(await get(fetchFn, JOLPICA + season + '.json?limit=100'), ask.day, now, ask.span);
       for (const g of games) if (g.state === 'final') g.results = readF1Results(await get(fetchFn, JOLPICA + g.season + '/' + g.round + '/results.json').catch(() => null));
       return { ok: true, games, source: 'jolpica' };
     }
@@ -50,29 +51,37 @@ export async function lookScores(ask, fetchFn = fetch, now = Date.now()) {
     if (view === 'standings') return { ok: true, ...readStandings(await get(fetchFn, ESPN_V2 + league.path + '/standings'), league.grp), source: 'espn' };
     if (view === 'game') return { ok: true, ...readSummary(await get(fetchFn, base + '/summary?event=' + ask.id)), source: 'espn' };
     if (view === 'team') return { ok: true, games: readScoreboard(await get(fetchFn, base + '/teams/' + ask.id + '/schedule')), source: 'espn' };
-    try { return { ok: true, games: readScoreboard(await get(fetchFn, base + '/scoreboard?dates=' + ask.day.replace(/-/g, ''))), source: 'espn' }; }
+    if (view === 'form') return { ok: true, form: formOf(readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + shiftDay(ask.day, -42).replace(/-/g, '') + '-' + ask.day.replace(/-/g, '')))), source: 'espn' };
+    const dates = ask.span > 1 ? ask.day.replace(/-/g, '') + '-' + shiftDay(ask.day, ask.span - 1).replace(/-/g, '') : ask.day.replace(/-/g, '');
+    try { return { ok: true, games: readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + dates)), source: 'espn' }; }
     catch (e) {
       if (league.alt !== 'openliga') throw e;
       // the Bundesliga's community database answers when ESPN does not (its games on that UTC day; the season is the year it started in)
-      return { ok: true, games: readOpenLiga(await get(fetchFn, OPENLIGA + seasonOf(ask.day)), ask.day, now), source: 'openligadb' };
+      return { ok: true, games: readOpenLiga(await get(fetchFn, OPENLIGA + seasonOf(ask.day)), ask.day, now, ask.span), source: 'openligadb' };
     }
   } catch (_) { return { ok: false }; }
 }
-const keyOf = (u, ask) => new Request(u.origin + '/__void-scores/' + ask.league.id + '/' + ask.view + '/' + (ask.day || ask.id || ''));
-export async function onRequestGet({ request, env, fetchFn = fetch }) {
+const keyOf = (u, ask) => new Request(u.origin + '/__void-scores/' + ask.league.id + '/' + ask.view + '/' + (ask.day || ask.id || '') + (ask.span > 1 ? '/w' : ''));
+export async function onRequestGet({ request, env, fetchFn = fetch, waitUntil }) {
   const u = new URL(request.url), ask = askIn(request.url);
   if (!ask) return json({ ok: false, kind: 'missing', say: 'Ask for a league (?league=epl|laliga|bundesliga|seriea|ligue1|mls|ucl|nba|nfl|mlb|nhl|f1) and a day (&date=2025-05-25), or &view=standings.' }, 400);
   const cache = typeof caches !== 'undefined' ? caches.default : null, key = keyOf(u, ask), keep = new Request(key.url + '/keep');
   if (cache) { try { const hit = await cache.match(key); if (hit) return json({ ...(await hit.json()), cached: true }, 200, { 'cache-control': 'public, max-age=15' }); } catch (_) {} }
   if (await rateLimited(request, env || {}, 'scores', RL_MAX)) return json({ ok: false, kind: 'limited', say: 'That is a lot of score checks in a minute. Give it a moment.' }, 429);
-  const now = Date.now(), out = await lookScores(ask, fetchFn, now);
+  const now = Date.now();
+  // stale while revalidate: a copy under 15 minutes old answers at once (a first load never waits on a slow feed) and the feed is asked again behind it;
+  // an older one is only the fallback below, because a live score that old is wrong
+  if (cache && waitUntil) { try { const old = await cache.match(keep); if (old) { const o = await old.json(); if (now - Date.parse(o.at) < 900000 && !(o.games || []).some((g) => g.state === 'live')) {
+    waitUntil(lookScores(ask, fetchFn, now).then(async (fresh) => { if (fresh.ok) { const b = { ...fresh, league: ask.league.id, view: ask.view, ...(ask.day ? { date: ask.day, span: ask.span } : {}), at: new Date().toISOString() }; await cache.put(key, new Response(JSON.stringify(b), { headers: { 'cache-control': 'max-age=' + ttlFor(ask.view, b, ask.day ? shiftDay(ask.day, (ask.span || 1) - 1) : ymd(new Date()), Date.now()) } })); await cache.put(keep, new Response(JSON.stringify(b), { headers: { 'cache-control': 'max-age=' + KEEP } })); } }).catch(() => {}));
+    return json({ ...o, stale: true, revalidating: true }, 200, { 'cache-control': 'no-store' }); } } } catch (_) {} }
+  const out = await lookScores(ask, fetchFn, now);
   if (!out.ok) {
     if (cache) { try { const old = await cache.match(keep); if (old) { const o = await old.json(); return json({ ...o, stale: true }, 200, { 'cache-control': 'no-store' }); } } catch (_) {} }
     return json({ ok: false, kind: 'away', say: 'The score feed did not answer just now.' }, 502, { 'cache-control': 'no-store' });
   }
-  const body = { ...out, league: ask.league.id, view: ask.view, ...(ask.day ? { date: ask.day } : {}), at: new Date(now).toISOString() };
+  const body = { ...out, league: ask.league.id, view: ask.view, ...(ask.day ? { date: ask.day, span: ask.span } : {}), at: new Date(now).toISOString() };
   if (cache) {
-    const ttl = ttlFor(ask.view, body, ask.day || ymd(new Date(now)), now);
+    const ttl = ttlFor(ask.view, body, ask.day ? shiftDay(ask.day, (ask.span || 1) - 1) : ymd(new Date(now)), now);
     try { await cache.put(key, new Response(JSON.stringify(body), { headers: { 'cache-control': 'max-age=' + ttl } })); await cache.put(keep, new Response(JSON.stringify(body), { headers: { 'cache-control': 'max-age=' + KEEP } })); } catch (_) {}
   }
   return json(body, 200, { 'cache-control': 'public, max-age=15' });
