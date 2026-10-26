@@ -104,6 +104,8 @@ for (const [name, file] of [
   ['story', 'story.test.mjs'],
   ['comments', 'comments.test.mjs'],
   ['gen-data', 'gen-data.test.mjs'],
+  ['daily-art', 'daily-art.test.mjs'],
+  ['daily-photo', 'daily-photo.test.mjs'],
   ['notes', 'notes.test.mjs'],
   ['chat-notes', 'chat-notes.test.mjs'],
   ['note-extras', 'note-extras.test.mjs'],
