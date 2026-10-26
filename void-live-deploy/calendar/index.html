@@ -12,7 +12,8 @@
 <meta property="og:url" content="https://a-to-mind.com/calendar/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<script>if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.classList.add('pre'); // the link carries a view or an event: hold the paint until it is drawn (html.pre)</script>
+<script>try { if (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').weekNumbers) document.documentElement.classList.add('wk'); } catch (e) {} // week numbers on: the first paint already has their column (nothing moves when the page lands)
+if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.classList.add('pre'); // the link carries a view or an event: hold the paint until it is drawn (html.pre)</script>
 <style>
   /* a-to-mind.com/calendar/ (Versus' Google Calendar floor): one file and one module; nothing stored but your events, in this browser */
   :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --today: #efe9ff; }
@@ -44,6 +45,8 @@
   #alert { border: 2px solid var(--accent); border-radius: 14px; background: var(--today); padding: 10px 14px; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
   #alert b { font-weight: 600; }
   /* month: 7 columns, 6 rows; each day a button; the events as chips inside it */
+  .w0 { display: none; } html.wk .w0 { display: block; } html.wk .dow, html.wk .month { grid-template-columns: 26px repeat(7, minmax(0, 1fr)); }
+  .wn { align-self: center; text-align: center; font-size: 11px; color: var(--soft); }
   .dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; font-size: 12px; color: var(--soft); text-align: center; margin: 4px 0 2px; }
   .month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
   .month .cell { box-sizing: border-box; border: 1px solid var(--line); background: var(--box); border-radius: 8px; padding: 4px 3px 3px; height: 72px; /* fixed: an event or a holiday that arrives after load never makes a week taller */ text-align: left; display: flex; flex-direction: column; align-items: stretch; gap: 2px; font-size: 12px; overflow: hidden; }
@@ -136,6 +139,7 @@
   <section class="pane" id="cals" hidden aria-labelledby="calsH" style="margin-top:8px">
     <h2 id="calsH" style="margin:0 0 4px">Calendars</h2>
     <ul class="list" id="calList"></ul>
+    <div class="row" id="weekOpts"><label for="weekStart" id="weekStartL" style="font-size:14px;color:var(--soft)">Week starts on</label><select id="weekStart"><option value="1">Monday</option><option value="0">Sunday</option><option value="6">Saturday</option></select><div class="checks" style="margin:0"><label><input type="checkbox" id="weekNums"><span id="weekNumsL">Week numbers</span></label></div></div>
     <form id="calAdd" class="row" autocomplete="off"><label class="vh" for="calName" id="calNameL">Name of the new calendar</label><input id="calName" maxlength="60" placeholder="Name of the new calendar" style="flex:1 1 160px"><input type="color" id="calColor" aria-label="Colour" value="#1c7ed6"><button type="submit" id="calAddBtn">Add calendar</button></form>
     <form id="feedAdd" class="row" autocomplete="off"><label class="vh" for="feedUrl" id="feedL">A calendar's address (https:// or webcal://)</label><input id="feedUrl" type="url" inputmode="url" maxlength="1000" placeholder="A calendar's address (https:// or webcal://)" style="flex:1 1 200px"><button type="submit" id="feedBtn">Subscribe</button></form>
     <p class="note" id="calNote"></p>
@@ -184,7 +188,7 @@
   </section>
 
   <!-- the month as it will be drawn (the weekday row and 6 weeks of 7 cells, the same boxes), so nothing below it moves when the module lands after load: layout shift 0.35 before -->
-  <div class="pane" id="view" style="margin-top:8px"><div class="dow" aria-hidden="true"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div><div class="month" aria-hidden="true"><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span></div></div>
+  <div class="pane" id="view" style="margin-top:8px"><div class="dow" aria-hidden="true"><span class="w0">&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div><div class="month" aria-hidden="true"><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="w0"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span></div></div>
 
   <div class="row">
     <label for="icsFile" class="vh" id="icsL">Import .ics</label>
@@ -245,7 +249,7 @@
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', detDup: 'duplicate', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
       $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
@@ -273,6 +277,8 @@
       if (!r.j.ok) return r.j.error || W.feedFail; store.feeds = store.feeds || {}; store.feeds[c.id] = { events: (r.j.events || []).map(C.normalize).filter(Boolean), at: Date.now(), name: r.j.name }; keep(); return '';
     }
     // tasks (lib/calendar.js tasksOf): a day's tasks are listed under its events, and show in the month as "☐ title"
+    const ws = () => (store.weekStart === 0 || store.weekStart === 1 || store.weekStart === 6 ? store.weekStart : C.defaultWeekStart(lang));
+    const wkLabel = (d) => W.weekAbbr + ' ' + C.weekNumber(d, ws());
     const tasks = () => C.tasksOf(store);
     const setTasks = (list) => { store.tasks = list; keep(); };
     const dueText = (t) => (t.due ? C.fmtDay(C.parseLocal(t.due), lang, { weekday: false, year: C.parseLocal(t.due).getFullYear() !== now().getFullYear() }) : '');
@@ -334,11 +340,11 @@
       for (const [id, name] of [['vMonth', 'month'], ['vWeek', 'week'], ['vDay', 'day'], ['vList', 'list']]) $(id).setAttribute('aria-pressed', String(state.view === name));
       if (state.view === 'month') {
         $('period').textContent = C.fmtMonth(c, lang);
-        const dow = el('div', 'dow'); for (const n of C.dayNames(lang)) dow.append(el('span', '', n)); v.append(dow);
-        const g = el('div', 'month'), days = C.monthGrid(c.getFullYear(), c.getMonth()), occs = C.agenda(shown(), C.dayKey(days[0]), C.dayKey(days[41])), byDay = {};
+        const dow = el('div', 'dow'); dow.append(el('span', 'w0', ' ')); for (const n of C.dayNames(lang, ws())) dow.append(el('span', '', n)); v.append(dow);
+        const g = el('div', 'month'), days = C.monthGrid(c.getFullYear(), c.getMonth(), ws()), occs = C.agenda(shown(), C.dayKey(days[0]), C.dayKey(days[41])), byDay = {};
         for (const o of occs) { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); for (let d = C.startOfDay(s); d <= e && d <= days[41]; d = C.addDays(d, 1)) (byDay[C.dayKey(d)] = byDay[C.dayKey(d)] || []).push(o); }
         for (const t of tasks()) if (t.due && t.due >= C.dayKey(days[0]) && t.due <= C.dayKey(days[41])) (byDay[t.due] = byDay[t.due] || []).push({ id: 'task:' + t.id, title: (t.done ? '☑ ' : '☐ ') + t.title, start: t.due, end: t.due, allDay: true, task: true });
-        for (const d of days) { const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
+        for (const [i, d] of days.entries()) { if (i % 7 === 0) { const wn = el('span', 'w0 wn', String(C.weekNumber(d, ws()))); wn.setAttribute('aria-label', wkLabel(d)); g.append(wn); } const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
           if (sameDay(d, c)) b.setAttribute('aria-current', 'true'); b.append(el('span', 'd', String(d.getDate()))); const list = byDay[k] || [];
           // as many as the cell holds (its height is fixed): one on a phone, two wider; the rest as "+n more" (the day shows them all)
           const slots = narrow.matches ? 1 : 2, fit = list.length > slots ? slots - 1 : list.length;
@@ -347,9 +353,9 @@
           b.addEventListener('click', () => { state.cursor = d; state.view = 'day'; render(); }); g.append(b); }
         v.append(g);
       } else if (state.view === 'week') {
-        const a = C.startOfWeek(c), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
+        const a = C.startOfWeek(c, ws()), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false }) + (store.weekNumbers ? ' · ' + wkLabel(a) : '');
         const g = el('div', 'week');
-        for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang)[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); const tl = taskList(C.dayKey(d)); if (tl) sec.append(tl); g.append(sec); }
+        for (let i = 0; i < 7; i++) { const d = C.addDays(a, i), sec = el('section'), h = el('div', 'dayhead' + (sameDay(d, td) ? ' today' : '')); h.append(el('span', 'd', C.dayNames(lang, ws())[i]), el('span', '', String(d.getDate()))); sec.append(h, listOf(C.onDay(shown(), C.dayKey(d)))); const tl = taskList(C.dayKey(d)); if (tl) sec.append(tl); g.append(sec); }
         v.append(g);
       } else if (state.view === 'list') { // the schedule: the next 60 days from the day shown, day by day, only the days with something on them
         const z = C.addDays(c, 59); $('period').textContent = C.fmtDay(c, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false });
@@ -498,6 +504,9 @@
       $('calNote').textContent = W.shareHint + (holCal() && holCal().on ? ' ' + W.fromNet + '.' : '');
     }
     const setCal = (id, patch) => { store.calendars = cals().map((c) => (c.id === id ? { ...c, ...patch } : c)); keep(); drawCals(); render(); };
+    $('weekStart').value = String(ws()); $('weekNums').checked = !!store.weekNumbers;
+    $('weekStart').addEventListener('change', () => { store.weekStart = +$('weekStart').value; keep(); render(); });
+    $('weekNums').addEventListener('change', () => { store.weekNumbers = $('weekNums').checked; document.documentElement.classList.toggle('wk', store.weekNumbers); keep(); render(); });
     $('calsBtn').addEventListener('click', () => { const open = $('cals').hidden; $('cals').hidden = !open; $('calsBtn').setAttribute('aria-expanded', String(open)); if (open) drawCals(); });
     $('feedAdd').addEventListener('submit', async (e) => {
       e.preventDefault(); const url = $('feedUrl').value.trim(); if (!url) { $('feedUrl').focus(); return; } if (!navigator.onLine) return say(W.needNet, true);

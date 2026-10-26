@@ -199,8 +199,8 @@
      "name": "Week start and week numbers setting",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "lib/calendar.js:34 weekStart parameter exists; page fixes Monday, no setting"
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Calendars pane: Week starts on (Monday, Sunday, Saturday; by default the browser's country) and Week numbers (ISO for Monday weeks), kept in the store and applied from first paint (lib/calendar.js defaultWeekStart, weekNumber; tools/calendar.test.mjs)"
     },
     {
      "name": "All-day events and notes",
@@ -891,7 +891,6 @@
   "Weather on the calendar: outlook.live.com",
   "Events detected in email: outlook.live.com",
   "Video meeting links: calendar.google.com, outlook.live.com",
-  "Week start setting and week numbers: calendar.google.com",
   "Undo / duplicate / trash: calendar.google.com"
  ],
  "verse_extra": [

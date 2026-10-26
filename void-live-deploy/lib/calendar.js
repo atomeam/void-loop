@@ -300,7 +300,7 @@ export function wordsFor(lang) {
     shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
     subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
     replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
-    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
+    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', weekStarts: 'Woche beginnt am', mon: 'Montag', sun: 'Sonntag', sat: 'Samstag', weekNums: 'Wochennummern', weekAbbr: 'KW', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -316,7 +316,7 @@ export function wordsFor(lang) {
     shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
     subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
     replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
-    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
+    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', weekStarts: 'Week starts on', mon: 'Monday', sun: 'Sunday', sat: 'Saturday', weekNums: 'Week numbers', weekAbbr: 'Wk', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
   };
 }
 
@@ -389,4 +389,21 @@ export function taskFromText(text, now = new Date()) {
   if (!e) return { title: rest.slice(0, 200), due: '' };
   const dated = e.title.toLowerCase() !== rest.toLowerCase();
   return { title: e.title, due: dated ? e.start.slice(0, 10) : '' };
+}
+
+// week start and week numbers (Outlook, Google, iCloud, Zoho): the first day of the week is a choice (0 Sunday, 1 Monday, 6 Saturday), by default what
+// the browser's country uses; week numbers are ISO 8601 for a Monday start and the "week with 1 January is week 1" count for the others. Pure.
+/** the first day of the week a country uses: Sunday for the US, Canada, Mexico, Brazil, Japan, India, Israel, Korea, the Philippines, South Africa; Saturday for Egypt and much of the Gulf; else Monday. Pure. */
+export function defaultWeekStart(lang) {
+  const m = /[-_]([A-Za-z]{2})\b/.exec(String(lang || '')); const c = m ? m[1].toUpperCase() : /^de\b/i.test(String(lang || '')) ? 'DE' : '';
+  if (['US', 'CA', 'MX', 'BR', 'JP', 'IN', 'IL', 'KR', 'PH', 'ZA', 'TW', 'HK'].includes(c)) return 0;
+  if (['EG', 'SA', 'AE', 'QA', 'KW', 'BH', 'DZ', 'IQ', 'JO', 'LY', 'OM', 'SD', 'SY', 'YE'].includes(c)) return 6;
+  return 1;
+}
+/** the week number of a day for a week that starts on `ws`: ISO 8601 when it starts on Monday, otherwise the week holding 1 January is week 1. Pure. */
+export function weekNumber(d, ws = 1) {
+  const day = startOfDay(d);
+  if (ws === 1) { const t = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())), dow = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - dow); const y0 = Date.UTC(t.getUTCFullYear(), 0, 1); return Math.ceil(((t - y0) / 864e5 + 1) / 7); }
+  const start = startOfWeek(day, ws), jan1 = new Date(start.getFullYear() + (start.getMonth() === 11 && addDays(start, 6).getFullYear() > start.getFullYear() ? 1 : 0), 0, 1);
+  return Math.floor((startOfWeek(jan1, ws).getTime() === start.getTime() ? 0 : Math.round((start - startOfWeek(jan1, ws)) / 864e5 / 7)) ) + 1;
 }

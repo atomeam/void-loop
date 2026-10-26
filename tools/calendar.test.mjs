@@ -137,3 +137,11 @@ test('tasks: well formed or nothing; a day or none; open first by day; "task: bu
   assert.deepEqual(C.taskFromText('Aufgabe Steuer 3 nov', now), { title: 'Steuer', due: '2026-11-03' }); assert.equal(C.taskFromText('dentist friday', now), null);
   assert.deepEqual(C.tasksOf({ tasks: [{ title: 'ok' }, { title: '' }, 5] }).map((x) => x.title), ['ok']);
 });
+
+test('week start by country, and week numbers: ISO for Monday weeks, "the week with 1 January is week 1" for Sunday weeks', () => {
+  assert.equal(C.defaultWeekStart('en-US'), 0); assert.equal(C.defaultWeekStart('en-GB'), 1); assert.equal(C.defaultWeekStart('de-DE'), 1); assert.equal(C.defaultWeekStart('ar-EG'), 6); assert.equal(C.defaultWeekStart('en'), 1);
+  const d = (y, m, dd) => new Date(y, m, dd);
+  assert.deepEqual([d(2026, 0, 1), d(2026, 9, 26), d(2026, 11, 28), d(2027, 0, 1), d(2021, 0, 3)].map((x) => C.weekNumber(x, 1)), [1, 44, 53, 53, 53], 'ISO 8601');
+  assert.deepEqual([d(2026, 0, 1), d(2026, 0, 4), d(2026, 9, 25), d(2026, 11, 31), d(2027, 0, 2)].map((x) => C.weekNumber(x, 0)), [1, 2, 44, 1, 1], 'the week holding 1 January is week 1, also at the year end');
+  assert.equal(C.monthGrid(2026, 9, 0)[0].getDay(), 0); assert.equal(C.monthGrid(2026, 9, 6)[0].getDay(), 6); assert.equal(C.dayNames('en', 0)[0], 'Sun');
+});
