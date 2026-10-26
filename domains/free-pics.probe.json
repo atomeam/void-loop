@@ -1,5 +1,5 @@
 {
- "at": "2026-10-26T04:40:40.682Z",
+ "at": "2026-10-26T04:42:44.031Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 526,
+   "ms": 759,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -61,7 +61,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 245,
+   "ms": 5970,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -149,7 +149,7 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 424,
+   "ms": 463,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -203,56 +203,11 @@
   },
   "loc": {
    "name": "Library of Congress",
-   "state": "answered, no candidates (parser or query?)",
+   "state": "blocked or failed",
    "why": "",
-   "query": "baseball",
-   "status": 200,
-   "ms": 91,
-   "via": "primary",
+   "status": 403,
    "rate": {},
-   "topKeys": [
-    "breadcrumbs",
-    "content",
-    "context",
-    "description",
-    "expert_resources",
-    "facet_trail",
-    "facet_views",
-    "facets",
-    "featured_items",
-    "form_facets",
-    "image_url",
-    "manifest",
-    "next",
-    "next_sibling",
-    "options",
-    "pages",
-    "pagination",
-    "portal",
-    "portal_label",
-    "previous",
-    "previous_sibling",
-    "results",
-    "search",
-    "shards",
-    "site_type",
-    "timestamp",
-    "title",
-    "type",
-    "views"
-   ],
-   "resultShape": {
-    "path": "$.breadcrumbs",
-    "n": 3,
-    "keys": [
-     "Library of Congress"
-    ],
-    "rights": {}
-   },
-   "found": 0,
-   "accepted": 0,
-   "refused": {},
-   "licenceShapes": []
+   "error": "loc answered 403"
   },
   "met": {
    "name": "The Met Collection",
@@ -260,7 +215,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 380,
+   "ms": 402,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -310,7 +265,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 185,
+   "ms": 366,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -381,7 +336,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 571,
+   "ms": 364,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -522,7 +477,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 489,
+   "ms": 839,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -651,111 +606,25 @@
  },
  "explore": {
   "photos": {
-   "status": 200,
-   "json": true,
-   "topKeys": [
-    "breadcrumbs",
-    "content",
-    "context",
-    "description",
-    "expert_resources",
-    "facet_trail",
-    "facet_views",
-    "facets",
-    "featured_items",
-    "form_facets",
-    "image_url",
-    "manifest",
-    "next",
-    "next_sibling",
-    "options",
-    "pages",
-    "pagination",
-    "portal",
-    "portal_label",
-    "previous",
-    "previous_sibling",
-    "results",
-    "search",
-    "shards",
-    "site_type",
-    "timestamp",
-    "title",
-    "type",
-    "views"
-   ],
-   "shape": {
-    "path": "$.breadcrumbs",
-    "n": 3,
-    "keys": [
-     "Library of Congress"
-    ],
-    "rights": {}
-   },
-   "contentKeys": [
-    "active",
-    "link",
-    "pagination",
-    "partof",
-    "results",
-    "slug",
-    "title",
-    "url"
-   ],
-   "firstResult": "{\"access_restricted\":false,\"aka\":[\"http://www.loc.gov/pictures/collection/ggbain/item/2014690243/\",\"http://www.loc.gov/item/2014690243/\",\"http://www.loc.gov/pictures/item/2014690243/\",\"https://hdl.loc.gov/loc.pnp/ggbain.10259\",\"http://www.loc.gov/resource/ggbain.10259/\",\"http://lccn.loc.gov/2014690243\"],\"campaigns\":[],\"contributor\":[\"bain news service\"],\"date\":\"1911-01-01\",\"dates\":[\"1911\"],\"description\":[\"1 negative : glass ; 5 x 7 in. or smaller. | Photograph shows American League baseball executives including American League president Byron Bancroft \\\"Ban\\\" Johnson (1864-1931), who is seated third from the left. (Source: Flickr Commons project, 2012)\"],\"digitized\":true,\"extract_timestamp\":\"2021-09-01T22:08:42.412Z\",\"group\":[\"ggbain\",\"catalog-split-15\",\"catalog\",\"bain\",\"main-catalog-split-15\",\"main-catalog\"],\"hassegments\":false,\"id\":\"http://www.loc.gov/item/2014690243/\",\"image_url\":[\"https://tile.loc.gov/storage-services/service/pnp/ggbain/10200/10259_150px.jpg#h=110&w=150\",\"https://tile.loc.gov/storage-services/service/pnp/ggbain/10200/10259t.gif#h=110&w=150\",\"https://tile.loc.gov/storage-services/service/pnp/ggbain/10200/10259r.jpg#h=468&w=640\",\"https://tile.loc.gov/storage-services/service/pnp/ggbain/10200/10259v.jpg#h=749&w=1024\"],\"index\":1,\"item\":{\"call_number\":\"LC-B2- 2379-15 [P&P]\",\"contributors\":[\"Bain News Service, publisher.\"],\"control_number\":\"2014690243\",\"created\":\"2018-01-30T03:50:49Z\",\"created_published\":\"[1911 Dec. 15]\",\"created_published_date\":\"[1911 Dec. 15]"
+   "status": 403,
+   "json": false,
+   "topKeys": [],
+   "shape": null,
+   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
   },
   "search": {
-   "status": 200,
-   "json": true,
-   "topKeys": [
-    "breadcrumbs",
-    "expert_resources",
-    "facet_trail",
-    "facet_views",
-    "facets",
-    "form_facets",
-    "options",
-    "pagination",
-    "results",
-    "search",
-    "timestamp",
-    "views"
-   ],
-   "shape": {
-    "path": "$.breadcrumbs",
-    "n": 2,
-    "keys": [
-     "Library of Congress"
-    ],
-    "rights": {}
-   },
-   "firstResult": "{\"access_restricted\":false,\"aka\":[\"http://www.loc.gov/exhibitions/baseball-americana/about-this-exhibition/\"],\"campaigns\":[],\"description\":[\"Americans had been playing baseball long before they agreed on the rules or even settled on how to spell it.\"],\"digitized\":true,\"extract_timestamp\":\"2026-10-25T06:53:24.078Z\",\"group\":[\"cms\",\"managed-content\"],\"hassegments\":false,\"id\":\"http://www.loc.gov/exhibitions/baseball-americana/about-this-exhibition/\",\"image_url\":[\"https://www.loc.gov/static/exhibitions/baseball-americana/500_500.jpg\"],\"index\":1,\"language\":[\"english\"],\"mime_type\":[\"image/jpg\"],\"online_format\":[\"image\"],\"original_format\":[\"exhibition\"],\"partof\":[\"baseball americana\"],\"shelf_id\":\"~/exhibitions/baseball-americana/about-this-exhibition/\",\"site\":[\"cms\"],\"subject\":[\"baseball\",\"american history\",\"sports, recreation & leisure\",\"sports & recreation\"],\"timestamp\":\"2026-10-25T08:13:13.925Z\",\"title\":\"Explore | Baseball Americana | Exhibitions at the Library of Congress\",\"type\":[\"exhibition\"],\"url\":\"https://www.loc.gov/exhibitions/baseball-americana/about-this-exhibition/\"}"
+   "status": 403,
+   "json": false,
+   "topKeys": [],
+   "shape": null,
+   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
   },
   "pictures": {
-   "status": 200,
-   "json": true,
-   "topKeys": [
-    "search",
-    "focus",
-    "views",
-    "facets",
-    "links",
-    "suggestions",
-    "pages",
-    "collection",
-    "results"
-   ],
-   "shape": {
-    "path": "$.facets",
-    "n": 1,
-    "keys": [
-     "type",
-     "filters",
-     "title"
-    ],
-    "rights": {}
-   },
-   "firstResult": "{\"source_created\":\"2016-12-07T00:00:00Z\",\"index\":1,\"medium\":\"1 negative : glass ; 5 x 7 in.\",\"reproduction_number\":\"LC-DIG-anrc-09925 (digital file from original)\",\"links\":{\"item\":\"https://www.loc.gov/pictures/item/2017675689/\",\"resource\":\"https://www.loc.gov/pictures/item/2017675689/resource/\"},\"title\":\"Red Cross Baseball Somewhere-in-England. Every big American hospital in England has its baseball diamond or even diamonds, and every afternoon when the weather permits, there is either a scrub game or a real contest with a team from some other hospital or military unit, nearby. The baseball player has one advantage in England, too, the season lasts pretty well into the winter, save for occasional damp days. The photograph shows a part of the baseball grounds at the new Portsmouth base hospital. It is said to be the finest baseball diamond in England\",\"image\":{\"alt\":\"digitized item thumbnail\",\"full\":\"https://tile.loc.gov/storage-services/service/pnp/anrc/09900/09925r.jpg\",\"square\":\"https://tile.loc.gov/storage-services/service/pnp/anrc/09900/09925_75x75px.jpg\",\"thumb\":\"https://tile.loc.gov/storage-services/service/pnp/anrc/09900/09925_150px.jpg\"},\"created\":\"2017-02-28T00:00:00Z\",\"modified\":\"2017-02-28T00:00:00Z\",\"collection\":[\"anrc\",\"diof\",\"minload\",\"pp\"],\"creator\":null,\"call_number\":\"LC-A6196- 55503 [P&P]\",\"medium_brief\":\"1 negative :\",\"source_modified\":\"2017-02-23T00:00:00Z\",\"pk\":\"2017675689\",\"created_published_date\":\"1918.\",\"subjects\":[\"American Red Cross.\",\"England.\",\"Glas"
+   "status": 403,
+   "json": false,
+   "topKeys": [],
+   "shape": null,
+   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm"
   },
   "freeToUse": {
    "status": 200,
