@@ -5,7 +5,7 @@
  * providers. Nothing is made here. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { flightAskOf } from '../lib/flight-sites.js';
-const TOOLS = [['/flights/', 'Flights', 'search on six providers, route facts, a price log, itineraries'], ['/flights/time/', 'Flight time', 'duration, local arrival, time difference'], ['/flights/distance/', 'Distance', 'km, miles, nautical miles'], ['/flights/airports/', 'Airport codes', 'IATA and ICAO, nearby airports'], ['/flights/trip/', 'Itinerary and layovers', 'from a pasted confirmation'], ['/flights/co2/', 'CO2', 'per seat, with the method'], ['/flights/map/', 'Great circle map', 'chained airports'], ['/flights/routes/', 'Where can I fly', 'airports within a flight time']];
+const TOOLS = [['/flights/', 'Flights', 'search on five providers, route facts, a price log, itineraries'], ['/flights/time/', 'Flight time', 'duration, local arrival, time difference'], ['/flights/distance/', 'Distance', 'km, miles, nautical miles'], ['/flights/airports/', 'Airport codes', 'IATA and ICAO, nearby airports'], ['/flights/trip/', 'Itinerary and layovers', 'from a pasted confirmation'], ['/flights/co2/', 'CO2', 'per seat, with the method'], ['/flights/map/', 'Great circle map', 'chained airports'], ['/flights/routes/', 'Where can I fly', 'airports within a flight time']];
 function run(text, api) {
   const { showPage, esc } = api, to = flightAskOf(String(text || '').trim().replace(/[?!.]+$/, '')) || '/flights/';
   showPage((el) => {
