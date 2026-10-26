@@ -44,7 +44,7 @@ const CLEAN = {
     const type = /^[\w.+-]+\/[\w.+-]+$/.test(line(d.type || blob.type, 100)) ? line(d.type || blob.type, 100).toLowerCase() : 'application/octet-stream';
     const name = line(d.name, LIMITS.title).replace(/[\\/:*?"<>|]+/g, '_') || 'file'; return { name, type, size: blob.size, blob }; },
   job: (d) => { if (!d || typeof d !== 'object') return null; const title = line(d.title, LIMITS.title); if (!title) return null;
-    return drop({ title, company: line(d.company, LIMITS.title), when: when(d.when), tz: tzOk(d.tz), where: line(d.where, 300), url: httpsUrl(d.url), notes: str(d.notes, LIMITS.notes) }); },
+    return drop({ title, company: line(d.company, LIMITS.title), when: when(d.when), tz: tzOk(d.tz), where: line(d.where, 300), url: httpsUrl(d.url), notes: str(d.notes, LIMITS.notes), step: line(d.step, 40) }); },
   parcel: (d) => { if (!d || typeof d !== 'object') return null; const name = line(d.name, LIMITS.title), expected = when(d.expected).slice(0, 10); if (!name || !DAY.test(expected)) return null;
     return drop({ name, expected, carrier: line(d.carrier, 60), tracking: line(d.tracking, 60), url: httpsUrl(d.url) }); },
 };
@@ -76,7 +76,7 @@ export function localOf(ms, tz) { const d = new Date(ms + offsetOf(tz, ms) * 600
 export function asEvents(p) {
   if (!p) return []; const d = p.data;
   if (p.kind === 'event') return d.events;
-  if (p.kind === 'job' && d.when) return [drop({ title: 'Interview: ' + d.title + (d.company ? ' at ' + d.company : ''), start: d.when, allDay: d.when.length === 10, tz: d.tz, location: d.where, notes: [d.url, d.notes].filter(Boolean).join('\n') })];
+  if (p.kind === 'job' && d.when) return [drop({ title: (d.step || 'Interview') + ': ' + d.title + (d.company ? ' at ' + d.company : ''), start: d.when, allDay: d.when.length === 10, tz: d.tz, location: d.where, notes: [d.url, d.notes].filter(Boolean).join('\n') })];
   if (p.kind === 'parcel') return [drop({ title: 'Parcel arrives: ' + d.name, start: d.expected, allDay: true, notes: [d.carrier, d.tracking && 'Tracking ' + d.tracking, d.url].filter(Boolean).join(' · ') })];
   return [];
 }

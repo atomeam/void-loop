@@ -491,6 +491,54 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T07:34:55Z",
+   "subject": "A check that pages stay linked, and the playbook for wiring yours (docs/playbooks/link-pages.md)"
+  },
+  {
+   "at": "2026-10-26T07:34:55Z",
+   "subject": "Versus by itself: unit converter: convertunits.com, the sites read recorded"
+  },
+  {
+   "at": "2026-10-26T07:34:32Z",
+   "subject": "Everything Verse does: /tools/ is the index of every page and every skill, searchable as you type"
+  },
+  {
+   "at": "2026-10-26T07:34:15Z",
+   "subject": "Every sitemap page has its related row: the store, the services, the tower, the fixes and the days"
+  },
+  {
+   "at": "2026-10-26T07:33:59Z",
+   "subject": "Send to, wired: a trip to the calendar, clocks and map; a note to the board; a PDF page to the photo tools and back"
+  },
+  {
+   "at": "2026-10-26T07:33:27Z",
+   "subject": "Send to: one way for a page to hand what it made to the next page, on the device (lib/handoff.js)"
+  },
+  {
+   "at": "2026-10-26T07:33:04Z",
+   "subject": "Versus by itself: a row's words end at a sentence, and an ask meets its family by the stem of its words (the first page's own words were…"
+  },
+  {
+   "at": "2026-10-26T07:29:37Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten…"
+  },
+  {
+   "at": "2026-10-26T07:27:09Z",
+   "subject": "Tower gate: shopping,jobs: arbeitnow.com,jobs: himalayas.app measured against their live sites"
+  },
+  {
+   "at": "2026-10-26T07:26:41Z",
+   "subject": "Versus by itself: unit converter: convertlive.com, the sites read recorded"
+  },
+  {
+   "at": "2026-10-26T07:23:58Z",
+   "subject": "Feature scan: shopping researched by Verse"
+  },
+  {
+   "at": "2026-10-26T07:23:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-26T07:22:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -521,54 +569,6 @@
   {
    "at": "2026-10-26T07:19:02Z",
    "subject": "Versus by itself: the model's answer found however it is wrapped, and what it said logged when it is not"
-  },
-  {
-   "at": "2026-10-26T07:18:05Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com"
-  },
-  {
-   "at": "2026-10-26T07:18:01Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-26T07:15:46Z",
-   "subject": "Tower gate: shopping measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T07:15:15Z",
-   "subject": "Versus by itself: a site the model never judged is read again next run"
-  },
-  {
-   "at": "2026-10-26T07:12:59Z",
-   "subject": "Versus by itself: ask Verse's own model on the site's binding (/api/tower-self, owner only)"
-  },
-  {
-   "at": "2026-10-26T07:11:24Z",
-   "subject": "Tower gate: shopping,jobs measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T07:10:56Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com"
-  },
-  {
-   "at": "2026-10-26T07:10:54Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-26T07:09:36Z",
-   "subject": "Versus by itself: the tower cycle with no builder and no Claude (tower-self)"
-  },
-  {
-   "at": "2026-10-26T07:07:58Z",
-   "subject": "Beacon: the new /jobs/ pages carry it from the tool-site template"
-  },
-  {
-   "at": "2026-10-26T07:07:26Z",
-   "subject": "Beacon: modulepreload blocks back in place after the tag, /api/visit marked Verse's own in the OpenAPI check"
-  },
-  {
-   "at": "2026-10-26T07:07:25Z",
-   "subject": "Every page counts its visits: /visit.js on every sitemap page, and a check that fails without it"
   }
  ],
  "builders": {

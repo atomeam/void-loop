@@ -117,7 +117,7 @@ export const RECEIVES = Object.freeze({
 export const MAKES = Object.freeze({
   '/flights/trip/': ['event', 'route'], '/flights/map/': ['route'], '/flights/airports/': ['place'],
   '/calendar/': ['event'], '/notes/': ['text'], '/kanban/': ['list'], '/word-count/': ['text'], '/markets/': ['text'],
-  '/pdf/': ['file'], '/photos/': ['file'], '/translate/': ['text'], '/recipes/': ['list'],
+  '/pdf/': ['file'], '/photos/': ['file'], '/translate/': ['text'], '/recipes/': ['list'], '/jobs/': ['job'],
 });
 // the types of the files a maker makes, so its targets are only the pages that take them
 export const MAKES_FILES = Object.freeze({ '/pdf/': ['image/*'], '/photos/': ['image/*'] });
@@ -131,7 +131,7 @@ export function targetsFor(kind, from = '', mime = null) {
 export const PAGES = Object.freeze({ '/conquered/': 'Versus: sites surpassed', '/compare/': 'Side by side', '/cheat-codes/': 'Cheat codes', '/store/': 'Store', '/code-review/': 'Code review',
   '/one-time-fix/': 'One-time fix', '/keep-it-running/': 'Keep it running', '/full-stack-audit/': 'Full-stack audit', '/first-automation-setup/': 'First automation setup', '/fix/': 'Fix an automation error', '/is-it/christmas': 'Is it…?' });
 // the hubs, each leading to the others where natural
-export const HUBS = Object.freeze(['/tools/', '/flights/', '/pdf/', '/kanban/', '/photos/', '/music/', '/sports/', '/generators/']);
+export const HUBS = Object.freeze(['/tools/', '/flights/', '/jobs/', '/pdf/', '/kanban/', '/photos/', '/music/', '/sports/', '/generators/']);
 /** the pages a page works with by kind of data (lib/handoff.js): where what it makes can be sent, and the pages that send it what it takes. Pure. */
 export function partnersOf(path) {
   const to = (from) => (MAKES[from] || []).flatMap((k) => targetsFor(k, from, k === 'file' ? MAKES_FILES[from] || null : null).map((t) => t.path));

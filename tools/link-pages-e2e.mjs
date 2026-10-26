@@ -22,7 +22,7 @@ await ctx.route('**/api/markets?**', (r) => { const q = new URL(r.request().url(
 const p = await ctx.newPage(); p.on('pageerror', (e) => errors.push(e.message));
 const shot = (n) => p.screenshot({ path: path.join(out, n + '.png'), fullPage: false });
 const send = async (to, kind) => { const sel = '.tk-send[data-to="' + to + '"]' + (kind ? '[data-kind="' + kind + '"]' : ''); await p.waitForSelector(sel, { timeout: 10000 }); await p.locator(sel).scrollIntoViewIfNeeded(); await Promise.all([p.waitForURL((u) => u.pathname.startsWith(to), { timeout: 15000 }), p.click(sel)]); await p.waitForLoadState('load'); };
-const got = async () => (await p.waitForSelector('.tk-got', { timeout: 15000 }).catch(() => null)) ? p.innerText('.tk-got') : '';
+const got = async () => (await p.waitForSelector('.tk-got', { timeout: 15000 }).catch(() => null)) ? (await p.innerText('.tk-got')).replace(/\s*✕\s*$/, '') : '';
 const wide = async (name) => ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), name + ': no sideways overflow at 390 px');
 
 // 1. a pasted trip -> the calendar
@@ -86,6 +86,14 @@ await p.goto(base + '/calendar/', { waitUntil: 'load' }); await p.waitForTimeout
 const evil = await p.evaluate(async () => { const H = await import('/lib/handoff.js'); return H.toHash(H.clean({ kind: 'text', from: '/x/', data: { title: '<img src=x onerror=window.__pwned=1>', text: '<script>window.__pwned=1</script>' } })); });
 await p.goto(base + '/notes/' + evil, { waitUntil: 'load' }); await got(); await p.waitForTimeout(300);
 ok(await p.evaluate(() => !window.__pwned && !document.querySelector('#body img, #body script')), 'notes: markup sent as text stays text'); await shot('notes-hostile');
+
+// 7b. a job application's next step -> the calendar (the tracker on /jobs/)
+await p.goto(base + '/jobs/', { waitUntil: 'load' }); await p.waitForSelector('#jb-addapp', { timeout: 15000 });
+await p.evaluate(() => { const d = document.querySelector('#tracker details'); if (d) d.open = true; });
+await p.fill('#ja-title', 'Designer'); await p.fill('#ja-company', 'Acme'); await p.selectOption('#ja-stage', 'interview'); await p.click('#jb-addapp button[type=submit]');
+await p.waitForSelector('#jb-apps .app .nx', { timeout: 8000 }); await p.fill('#jb-apps .app .nx', '2026-11-04'); await p.dispatchEvent('#jb-apps .app .nx', 'change');
+await send('/calendar/', 'job'); note = await got(); ok(/added 1 event/.test(note), 'calendar: the next step arrives (' + note + ')');
+ok((await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events)).some((e) => e.title === 'Interview: Designer at Acme' && e.start === '2026-11-04' && e.allDay), 'calendar: "Interview: Designer at Acme" on 4 November, all day'); await shot('calendar-from-jobs');
 
 // 8. the index of everything (/tools/): fast, still, searchable as you type, every page in it, and every page leads to it
 { const q = await ctx.newPage(); q.on('pageerror', (e) => errors.push(e.message));

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 900,
+ "counted": 901,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -160,7 +160,7 @@
    "file": "lib/self-sites.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 22,
    "tests": 1
   },
   {
@@ -244,7 +244,7 @@
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -290,25 +290,25 @@
    "tests": 1
   },
   {
-   "file": "lib/art-source.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/job-sites.js",
    "skills": 7,
    "direct": 0,
-   "dependants": 12,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/tool-sites.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 11,
+   "dependants": 16,
    "tests": 3
+  },
+  {
+   "file": "lib/art-source.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
   },
   {
    "file": "lib/card-image.js",
@@ -983,6 +983,20 @@
    "tests": 3
   },
   {
+   "file": "lib/handoff.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/toolkit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 13
+  },
+  {
    "file": "lib/noise.js",
    "skills": 1,
    "direct": 0,
@@ -1529,13 +1543,6 @@
    "tests": 1
   },
   {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 12
-  },
-  {
    "file": "lib/tower-rank.js",
    "skills": 1,
    "direct": 1,
@@ -1995,7 +2002,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/flights-de.js",
@@ -3292,7 +3299,8 @@
   },
   "functions/is-it/[what].js": {
    "imports": [
-    "skills/is-it.js"
+    "skills/is-it.js",
+    "lib/toolkit.js"
    ],
    "importedBy": []
   },
@@ -5104,8 +5112,13 @@
     "skills/flights.js"
    ],
    "reachedBy": [
+    "functions/is-it/[what].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
+    "lib/flights-ui.js",
+    "lib/handoff.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
     "lib/seo.js",
     "skills/about-skill.js",
     "skills/duel.js",
@@ -5139,6 +5152,7 @@
   "lib/flights-ui.js": {
    "imports": [
     "lib/flights-core.js",
+    "lib/handoff.js",
     "lib/flights-de.js",
     "lib/flights-coast.js"
    ],
@@ -5422,6 +5436,22 @@
     "lib/products.js"
    ]
   },
+  "lib/handoff.js": {
+   "imports": [
+    "lib/toolkit.js"
+   ],
+   "importedBy": [
+    "lib/flights-ui.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
+    "lib/toolkit.js"
+   ],
+   "reachedBy": [
+    "functions/is-it/[what].js",
+    "lib/handoff.js",
+    "skills/toolkit.js"
+   ]
+  },
   "lib/health-habits.js": {
    "imports": [],
    "importedBy": [
@@ -5558,8 +5588,13 @@
     "lib/toolkit.js"
    ],
    "reachedBy": [
+    "functions/is-it/[what].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
+    "lib/flights-ui.js",
+    "lib/handoff.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
     "lib/seo.js",
     "skills/about-skill.js",
     "skills/duel.js",
@@ -5596,7 +5631,8 @@
   },
   "lib/kanban-ui.js": {
    "imports": [
-    "lib/kanban.js"
+    "lib/kanban.js",
+    "lib/handoff.js"
    ],
    "external": [
     ", share: "
@@ -6687,7 +6723,8 @@
   },
   "lib/pdf-ui.js": {
    "imports": [
-    "lib/pdf-tools.js"
+    "lib/pdf-tools.js",
+    "lib/handoff.js"
    ],
    "importedBy": []
   },
@@ -7580,8 +7617,13 @@
    ],
    "reachedBy": [
     "functions/api/will.js",
+    "functions/is-it/[what].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
+    "lib/flights-ui.js",
+    "lib/handoff.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
     "lib/seo.js",
     "lib/toolkit.js",
     "skills/about-skill.js",
@@ -8617,7 +8659,12 @@
     "skills/pdf-tools.js"
    ],
    "reachedBy": [
+    "functions/is-it/[what].js",
     "lib/duel-rules.js",
+    "lib/flights-ui.js",
+    "lib/handoff.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -8629,10 +8676,19 @@
    "imports": [
     "lib/tool-sites.js",
     "lib/flight-sites.js",
-    "lib/job-sites.js"
+    "lib/job-sites.js",
+    "lib/handoff.js"
    ],
    "importedBy": [
+    "functions/is-it/[what].js",
+    "lib/handoff.js",
     "skills/toolkit.js"
+   ],
+   "reachedBy": [
+    "lib/flights-ui.js",
+    "lib/kanban-ui.js",
+    "lib/pdf-ui.js",
+    "lib/toolkit.js"
    ]
   },
   "lib/tower-rank.js": {

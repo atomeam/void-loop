@@ -59,6 +59,7 @@ test('send goes by a page\'s own link where it has one, else by the address part
 test('one kind as another: a job interview and a parcel on the calendar, anything as lines or a note', () => {
   const job = clean({ kind: 'job', data: { title: 'Designer', company: 'Acme', when: '2026-11-03T14:00', tz: 'Europe/Berlin', url: 'https://acme.example/jobs/1' } });
   assert.deepEqual(asEvents(job), [{ title: 'Interview: Designer at Acme', start: '2026-11-03T14:00', tz: 'Europe/Berlin', notes: 'https://acme.example/jobs/1' }]);
+  assert.equal(asEvents(clean({ kind: 'job', data: { title: 'Designer', when: '2026-11-04', step: 'Next step' } }))[0].title, 'Next step: Designer'); // the tracker says what the step is
   const parcel = clean({ kind: 'parcel', data: { name: 'Boots', expected: '2026-11-05', tracking: '1Z999' } });
   assert.deepEqual(asEvents(parcel), [{ title: 'Parcel arrives: Boots', start: '2026-11-05', allDay: true, notes: 'Tracking 1Z999' }]);
   assert.deepEqual(asList(clean({ kind: 'text', data: { text: 'a\n\n b \nc' } })), ['a', 'b', 'c']);

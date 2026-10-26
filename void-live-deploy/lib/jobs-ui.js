@@ -143,6 +143,11 @@ const PANELS = {
         ul.append(li); }
     };
     $(el, '#jb-addapp').addEventListener('submit', (e) => { e.preventDefault(); const v = (id) => $(el, '#' + id).value.trim(); if (!v('ja-title')) return; addApp({ title: v('ja-title'), company: v('ja-company'), url: v('ja-url'), stage: $(el, '#ja-stage').value, applied: $(el, '#ja-stage').value === 'saved' ? '' : today() }); e.target.reset(); });
+    // "Send to" (lib/handoff.js): the next step on the list (the soonest still to come, an interview first on the same day) to the calendar, a board or a note
+    import('/lib/handoff.js').then(({ offer }) => offer('job', () => {
+      const apps = (mem().apps || []).map(C.cleanApp).filter((a) => a && a.next), now = today(), soon = apps.filter((a) => a.next >= now), pick = (soon.length ? soon : apps).sort((a, b) => a.next.localeCompare(b.next) || (b.stage === 'interview') - (a.stage === 'interview'))[0];
+      return pick ? { title: pick.title, company: pick.company, when: pick.next, url: pick.url, notes: pick.notes, step: pick.stage === 'interview' ? 'Interview' : pick.stage === 'offer' ? 'Offer' : 'Next step' } : null;
+    }, { label: 'the next step' })).catch(() => {});
     $(el, '#jb-csv').addEventListener('click', () => download('applications.csv', 'text/csv', C.appsToCsv((mem().apps || []).map(C.cleanApp).filter(Boolean))));
     $(el, '#jb-ics').addEventListener('click', () => { const apps = (mem().apps || []).map(C.cleanApp).filter(Boolean); if (!apps.some((a) => a.next)) { $(el, '#jb-amsg').textContent = t('Give an application a next step date first.'); return; } download('next-steps.ics', 'text/calendar', C.appsToIcs(apps)); });
     $(el, '#jb-imp').addEventListener('change', async (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const rows = C.appsFromCsv(await file.text()), have = (mem().apps || []).map(C.cleanApp).filter(Boolean), key = (a) => (a.title + '|' + a.company + '|' + a.applied).toLowerCase(); const add = rows.filter((r) => !have.some((h) => key(h) === key(r))); keep({ apps: add.concat(have).slice(0, 500) }); $(el, '#jb-amsg').textContent = t('Imported') + ' ' + add.length; e.target.value = ''; draw(); });

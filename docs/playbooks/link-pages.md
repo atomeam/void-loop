@@ -20,7 +20,7 @@ A payload is `{ kind, data, from }`. `clean()` checks every field and cuts it to
 | `place` | `{ name, code? (IATA), lat?, lon?, tz? }` | |
 | `route` | `{ stops: ['LHR', 'JFK'] }` | 2 to 20 IATA codes |
 | `file` | `{ name, type, blob }` | 50 MB; the type must match the receiver's `files` patterns |
-| `job` | `{ title, company?, when?, tz?, where?, url? (http/https), notes? }` | |
+| `job` | `{ title, company?, when?, tz?, where?, url? (http/https), notes?, step? ('Interview', 'Next step') }` | |
 | `parcel` | `{ name, expected (YYYY-MM-DD), carrier?, tracking?, url? }` | |
 
 Converters let a page take more than its own kind: `asEvents(p)` (a job's interview, a parcel's day, events), `asList(p)` (a line per item, event, place), `asText(p)` (a note or a word count of anything but a file).
@@ -59,11 +59,11 @@ The index: `node tools/everything.mjs` writes `/tools/` from the sitemap, the sk
 
 ## Pairs wired (2026-10-26)
 
-/flights/trip/ → /calendar/, /time/, /notes/, /kanban/ (the flights as events on the departure clock) and → /flights/map/ (the route); /flights/airports/ → /weather/, /time/, /flights/map/, /notes/ (a place); /flights/map/ → /notes/ (the route); /calendar/ → /time/, /notes/, /kanban/ (the open event or the next ones) and ← an .ics file, a job, a parcel; /notes/ → /kanban/ (a card), /word-count/, /translate/; /kanban/ → /notes/, /word-count/ (the cards as a list); /markets/ → /notes/, /kanban/, /word-count/ (the quote); /recipes/ → /notes/, /kanban/ (the shopping list); /translate/ → /notes/, /kanban/, /word-count/; /word-count/ → /notes/, /kanban/, /translate/; /pdf/ → /photos/ (a page as a picture); /photos/ → /pdf/ (the picture into Images to PDF).
+/flights/trip/ → /calendar/, /time/, /notes/, /kanban/ (the flights as events on the departure clock) and → /flights/map/ (the route); /flights/airports/ → /weather/, /time/, /flights/map/, /notes/ (a place); /flights/map/ → /notes/ (the route); /calendar/ → /time/, /notes/, /kanban/ (the open event or the next ones) and ← an .ics file, a job, a parcel; /notes/ → /kanban/ (a card), /word-count/, /translate/; /kanban/ → /notes/, /word-count/ (the cards as a list); /markets/ → /notes/, /kanban/, /word-count/ (the quote); /recipes/ → /notes/, /kanban/ (the shopping list); /translate/ → /notes/, /kanban/, /word-count/; /word-count/ → /notes/, /kanban/, /translate/; /pdf/ → /photos/ (a page as a picture); /photos/ → /pdf/ (the picture into Images to PDF); /jobs/ (and its lane pages with the tracker) → /calendar/, /time/, /notes/, /kanban/ (the next step on the application list: "Interview: Designer at Acme" on its day).
 
 ## For the lane builders (wire yours the same way)
 
-- /jobs/: an interview → `offer('job', ...)` with `when` and `tz`: it lands on /calendar/ as "Interview: ..." and on /kanban/ as a card with its due day.
+- /jobs/ (wired): the tracker's next step → `offer('job', ...)` with `when` (and `tz` when it has a time) and `step`: it lands on /calendar/ as "Interview: ..." and on /kanban/ as a card with its due day. Next: a saved job or search as `text` to a note.
 - /shop/: a parcel's expected day → `offer('parcel', ...)`: an all-day "Parcel arrives" on /calendar/, a card on /kanban/.
 - /maps/: a place → `offer('place', ...)`: /weather/, /time/, /flights/map/, /notes/.
 - /search/, /chat/, /email/, /social/: a result, a message or a post → `offer('text', ...)` (title + text): /notes/, /kanban/, /word-count/, /translate/.
