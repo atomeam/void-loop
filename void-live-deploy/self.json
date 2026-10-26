@@ -491,6 +491,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T04:03:03Z",
+   "subject": "Site reverse engineering: every tower site's client code read once for hidden features (URL parameters, shortcuts, API paths, flags…"
+  },
+  {
+   "at": "2026-10-26T04:02:47Z",
+   "subject": "Tower gate: sports: thesportsdb.com,finance: companiesmarketcap.com,finance: finviz.com,finance: investing.com,finance measured against…"
+  },
+  {
+   "at": "2026-10-26T04:02:30Z",
+   "subject": "photos e2e: give the WebP re-encode longer on a busy machine"
+  },
+  {
+   "at": "2026-10-26T04:02:23Z",
+   "subject": "Verse fixes its vector-field-mind skill: learn to handle \"give me a svg of a star\""
+  },
+  {
+   "at": "2026-10-26T04:02:15Z",
+   "subject": "Tower gate: photos: exifeditor.io,finance: companiesmarketcap.com,finance: stockq.org,finance: stooq.com,finance: macrotrends.net,finance…"
+  },
+  {
+   "at": "2026-10-26T04:01:46Z",
+   "subject": "Photos: the compress and convert result (formats, quality, size before and after, resize, compare) stays under every tab of every page, a…"
+  },
+  {
+   "at": "2026-10-26T04:00:33Z",
+   "subject": "Tower gate: photos: squoosh.app,photos: photopea.com,photos: iloveimg.com measured against their live sites"
+  },
+  {
    "at": "2026-10-26T03:57:07Z",
    "subject": "Sports page: what it has said in plain text before its code runs (browse, search across Teams, Events, Venues and Players, on this device…"
   },
@@ -541,34 +569,6 @@
   {
    "at": "2026-10-26T03:38:28Z",
    "subject": "Tower gate: finance: companiesmarketcap.com,photos: exifeditor.io,photos: exif.tools measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:38:22Z",
-   "subject": "Feature scan: finance,news researched by Verse"
-  },
-  {
-   "at": "2026-10-26T03:35:38Z",
-   "subject": "Gate: withFeatureFacts reads its features file again (a comment had swallowed the line)"
-  },
-  {
-   "at": "2026-10-26T03:34:58Z",
-   "subject": "Tower gate: sports: thesportsdb.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T03:33:37Z",
-   "subject": "Gate: a lane site with a page of its own can ask its own question (LANE_PROBES, LANE_EXTRAS); sports: thesportsdb.com is gated against…"
-  },
-  {
-   "at": "2026-10-26T03:31:35Z",
-   "subject": "Tower rank: every Versus site ranked by the Tranco top million"
-  },
-  {
-   "at": "2026-10-26T03:31:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-26T03:30:50Z",
-   "subject": "Incident: the browser suite failed on 92b0983f (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

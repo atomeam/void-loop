@@ -504,7 +504,8 @@ export default {
      "vector field mind",
      "evolving vector field",
      "flow field mind",
-     "create a vector of a leaf"
+     "create a vector of a leaf",
+     "give me a svg of a star"
     ]
    },
    {
