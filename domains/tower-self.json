@@ -68,11 +68,13 @@
   },
   "convertlive.com": {
    "at": "2026-10-26T07:26:26Z",
-   "outcome": "built",
+   "outcome": "surpassed",
    "family": "unit converter",
    "id": "unit converter: convertlive.com",
    "page": "/convert/unit-converter/",
-   "words": "the family page's own (the model's were refused: no ask is about its job)"
+   "words": "the family page's own (the model's were refused: no ask is about its job)",
+   "rows": "11/11",
+   "gated": "2026-10-26T07:29:33Z"
   },
   "online-calculator.com": {
    "at": "2026-10-26T07:26:38Z",
@@ -105,6 +107,14 @@
    "queued": 0,
    "fixed": [],
    "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-26T07:29:37Z",
+   "line": "Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com",
+   "built": 1,
+   "queued": 3,
+   "fixed": [],
+   "pages_per_day": 1
   }
  ]
 }
