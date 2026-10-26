@@ -491,6 +491,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-26T05:46:11Z",
+   "subject": "Flights skill in the Sky and earth family; generated files"
+  },
+  {
    "at": "2026-10-26T05:45:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -565,10 +569,6 @@
   {
    "at": "2026-10-26T05:23:52Z",
    "subject": "Live eval fixes: title-matching page first, plural place words, The_X first, adaptive wait, candidate list pages probed"
-  },
-  {
-   "at": "2026-10-26T05:23:07Z",
-   "subject": "Tower gate: finance: companiesmarketcap.com measured against their live sites"
   }
  ],
  "builders": {

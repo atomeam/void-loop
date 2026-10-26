@@ -153,3 +153,10 @@ test('nonstop routes: read from routes.dat, packed, and read back; the file cred
   const real = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/flights/routes.json', import.meta.url), 'utf8')); assert.equal(real.asOf, '2014-06'); assert.match(real.licence, /ODbL/); assert.match(real.licence, /OpenFlights/);
   const lis = C.routesFrom(real, 'LIS').map((r) => r.to); assert.ok(lis.includes('MAD') && lis.includes('OPO')); for (const r of C.routesFrom(real, 'LHR')) assert.ok(idx.byIata.has(r.to), r.to);
 });
+test('the stage card: takes flight asks, leaves distance asks to the distance skill, and links the page with the places in it', async () => {
+  const skill = (await import('../void-live-deploy/skills/flights.js')).default;
+  for (const a of ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes']) assert.ok(skill.match(a), a);
+  for (const a of ['distance from london to new york', 'fly to tokyo', 'my flight is delayed']) assert.ok(!skill.match(a), a);
+  let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
+  assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/');
+});

@@ -42,8 +42,8 @@
    "for": "weather, the sky tonight, places and time zones",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 3,
+    "experiment": 0,
+    "tested": 4,
     "checked": 1,
     "proven": 15
    },
@@ -1922,14 +1922,14 @@
    "chapter": "sky",
    "name": "flights",
    "title": "Flights",
-   "line": "\"flights to lisbon\", \"cheap flights\", \"flight time london new york\", \"distance london to new york\", \"airport codes\", \"layover calculator\" answer with a card that opens the flights page that does it, with the places in the link",
+   "line": "\"flights to lisbon\", \"cheap flights\", \"flight time london new york\", \"airport codes\", \"layover calculator\" answer with a card that opens the flights page that does it, with the places in the link",
    "examples": [
     "flights to lisbon",
     "cheap flights",
     "flight time london new york"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 93
   },
   {

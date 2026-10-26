@@ -1,6 +1,6 @@
 /**
  * flights skill - made with tools/new-skill.mjs (docs/UPGRADING.md); owner, 2026-10-26: "need a flights page". "flights to lisbon", "cheap flights", "flight time london new
- * york", "distance london to new york", "airport codes", "layover calculator" answer with a card that opens the flights page that does it, with the places in the link
+ * york", "airport codes", "layover calculator" answer with a card that opens the flights page that does it, with the places in the link
  * (lib/flight-sites.js flightAskOf, the same ask the tool pages' ask bar routes). Verse has no live fares and the card says so: the page opens the search on the
  * providers. Nothing is made here. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
@@ -18,8 +18,8 @@ function run(text, api) {
 }
 export default {
   name: 'flights',
-  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'distance from london to new york', 'airport codes', 'layover calculator'],
-  nearMisses: ['fly to tokyo', 'my flight is delayed', 'how do planes fly'],
-  match(lower) { return !!flightAskOf(String(lower || '').trim()); },
+  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator'],
+  nearMisses: ['fly to tokyo', 'my flight is delayed', 'how do planes fly', 'distance from london to new york'],
+  match(lower) { const to = flightAskOf(String(lower || '').trim()); return !!to && !to.startsWith('/flights/distance/'); }, // a distance ask stays with the distance skill
   run,
 };
