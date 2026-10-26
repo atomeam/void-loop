@@ -7,6 +7,7 @@
  *      time into a countdown): each page passes its own as { label, href: () => url }, worked out when pressed, so they carry what is there now.
  * Nothing leaves the device. Pure except accent(), setAccent() and mountRelated(). Tests: tools/toolkit.test.mjs.
  */
+import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -14,9 +15,16 @@ export const TOOLS = Object.freeze({
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/time/': 'Time zones', '/base64/': 'Base64',
   '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
+  ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
+// each PDF page leads to its sisters; each Kanban page to the others; the leaders reach the tools that go with them
+const sisters = (list, p) => list.map((x) => x.path).filter((x) => x !== p);
+const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path === '/pdf/' ? [...sisters(PDF_SITES, p.path).slice(0, 2), '/resize-image/', '/word-count/'] : ['/pdf/', ...sisters(PDF_SITES, p.path).filter((x) => x !== '/pdf/').slice(0, 2), '/resize-image/']]),
+  ...KANBAN_SITES.map((p) => [p.path, p.path === '/kanban/' ? [...sisters(KANBAN_SITES, p.path).slice(0, 2), '/calendar/', '/notes/', '/stopwatch/'] : ['/kanban/', ...sisters(KANBAN_SITES, p.path).filter((x) => x !== '/kanban/').slice(0, 2), '/calendar/']])]);
 export const RELATED = Object.freeze({
+  ...SITE_RELATED,
   '/color/': ['/gradient/', '/wheel/', '/base-converter/'],
   '/gradient/': ['/color/', '/wheel/'],
   '/wheel/': ['/random/', '/random-user/', '/flip/', '/gradient/', '/color/'],
@@ -55,7 +63,7 @@ export const CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/image/': 'draw a cartoon cat',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
@@ -123,6 +131,9 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
+  [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
+  [KANBAN_ASK, () => '/kanban/'],
   // podcasts: 'search podcasts', 'podcasts about history', 'top podcasts', 'podcast charts', 'podcast player' (the plain 'podcast' and 'play the podcast' stay with Verse's own show on the stage)
   [/^(?:search |find |browse )?podcasts? (?:about|on|for) (.+)$|^(?:search|find) (?:for )?(?:a )?podcasts?(?: (?:about|on|for) )?(.*)$/i, (m) => '/podcasts/' + (m[1] || m[2] ? '?q=' + encodeURIComponent((m[1] || m[2]).trim()) : '')],
   [/^(?:top |best |popular )?podcasts$|^podcast (?:charts?|player|directory|app)$/i, () => '/podcasts/'],

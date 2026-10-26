@@ -5841,5 +5841,6 @@
   {"at": "2026-10-25T17:50:22Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"print this as stl\"", "try": "print this as stl"},
   {"at": "2026-10-25T21:59:31Z", "by": "verse", "kind": "fix", "what": "Verse fixes its cartoon skill: learn to handle \"funny cartoon dog\"", "try": "funny cartoon dog"},
   {"at": "2026-10-25T22:09:39Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"create a vector of a leaf\"", "try": "create a vector of a leaf"},
-  {"at": "2026-10-25T23:10:20Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gears skill: learn to handle \"make a gear assembly\"", "try": "make a gear assembly"}
+  {"at": "2026-10-25T23:10:20Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gears skill: learn to handle \"make a gear assembly\"", "try": "make a gear assembly"},
+  {"at": "2026-10-26T03:39:57Z", "by": "claude", "kind": "build", "what": "PDF tools and Kanban pages: /pdf/ works on PDFs and /kanban/ keeps boards, both on the device with nothing sent, plus a page for each site of their lanes", "show": "PDF tools and a kanban board that stay on your device", "try": "merge pdf"}
 ]
