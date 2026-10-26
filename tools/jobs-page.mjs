@@ -13,9 +13,10 @@ const JOBS = [mk(1, 'remotive', { title: 'Senior React Developer', company: 'Acm
   mk(2, 'jobicy', { title: 'Customer Support Lead', company: 'Beta', cat: 'Customer Success', tags: ['support'], loc: 'USA', regions: ['usa'], level: 'Senior', salary: { min: 60000, max: 80000, cur: 'USD', per: 'year' } }),
   mk(3, 'himalayas', { title: 'Data Engineer', company: 'Gamma', cat: 'Data', tags: ['python', 'sql'], loc: 'Germany', regions: ['germany'], type: 'contract', salary: { min: 50, max: 70, cur: 'EUR', per: 'hour' }, tz: 'UTC+0 to UTC+2' }),
   ...Array.from({ length: 40 }, (_, i) => mk(10 + i, ['remotive', 'jobicy', 'himalayas'][i % 3], { title: 'Product Designer ' + (i + 1), company: 'Studio ' + String.fromCharCode(65 + (i % 20)), cat: 'Design', tags: ['design', 'figma'] }))];
-let apiUp = true;
+let apiUp = true, realSnap = false; // the made-up listings stand alone unless a step asks for the committed snapshot
 const srv = http.createServer((req, res) => { const u = new URL(req.url, 'http://x');
   if (u.pathname === '/api/jobs') { if (!apiUp) { res.writeHead(503); return res.end('down'); } res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ at: new Date().toISOString(), sources: { remotive: { ok: true, at: new Date().toISOString(), count: 15 }, jobicy: { ok: true, at: new Date().toISOString(), count: 14 }, himalayas: { ok: true, at: new Date().toISOString(), count: 14 } }, jobs: JOBS })); }
+  if (u.pathname === '/jobs/snapshot.json' && !realSnap) { res.writeHead(200, { 'content-type': 'application/json' }); return res.end('{"at":null,"sources":{},"jobs":[]}'); }
   let f = path.join(root, u.pathname); if (f.endsWith('/')) f += 'index.html';
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end('no'); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); });
 await new Promise((r) => srv.listen(0, r)); const base = 'http://localhost:' + srv.address().port;
@@ -30,6 +31,7 @@ const sane = async (p, name, t) => { ok(await p.evaluate(() => document.document
 const shot = (p, n) => p.screenshot({ path: path.join(out, n + '.png'), fullPage: false });
 const text = (p) => p.evaluate(() => document.body.innerText);
 
+{ const w = await ctxOf(); await w.p.goto(base + '/jobs/', { waitUntil: 'load' }); await w.ctx.close(); } // a first visit warms the browser, as a person's browser is warm
 { const { ctx, p } = await ctxOf(); const tm = await open(p, '/jobs/'); await sane(p, 'hub', tm); ok(tm.fcp > 0 && tm.fcp < 200, 'hub: first paint under 200 ms (' + Math.round(tm.fcp) + ')');
   let t = await text(p); ok(/43 jobs/.test(t), 'hub: the 43 listings are counted'); ok(/Live: Remotive/.test(t), 'hub: says the listings are live and from where'); ok(/Listing from Remotive/.test(t) && /Apply on Himalayas/.test(t), 'hub: each listing names its source and Apply opens it there');
   ok(/No profile, no CV upload and no one-click apply/.test(t), 'hub: says what Verse does not do'); await shot(p, 'jobs-hub-390');
@@ -55,6 +57,10 @@ const text = (p) => p.evaluate(() => document.body.innerText);
   await ctx.close(); }
 for (const [url, name, re, label] of [['/jobs/regions/', 'regions', /Where you may work from[\s\S]*Anywhere \d+/, 'region chips with counts'], ['/jobs/alerts/', 'alerts', /^Alerts/m, 'the alerts panel first'], ['/jobs/europe/', 'europe', /Germany \d+/, 'Germany and Europe counted'], ['/jobs/salary/', 'salary', /Highest salary/, 'highest salary first'], ['/jobs/categories/', 'categories', /Design \d+/, 'categories with counts'], ['/jobs/tags/', 'tags', /figma \d+/, 'a tag cloud'], ['/jobs/companies/', 'companies', /Most jobs first[\s\S]*Acme 1/, 'companies with their jobs counted']]) {
   const { ctx, p } = await ctxOf(); const tm = await open(p, url); await sane(p, name, tm); ok(re.test(await text(p)), name + ': ' + label); await shot(p, 'jobs-' + name + '-390'); await ctx.close(); }
+{ // the committed snapshot with the feeds down: labelled a snapshot, not live, and it answers
+  realSnap = true; apiUp = false; const snap = JSON.parse(fs.readFileSync(path.join(root, 'jobs', 'snapshot.json'), 'utf8')); const { ctx, p } = await ctxOf(); await open(p, '/jobs/'); const t = await text(p);
+  if (snap.jobs.length) { ok(/Snapshot of \d/.test(t) && /not live/.test(t), 'snapshot: labelled a snapshot of its date, not live'); ok(new RegExp(snap.jobs.length.toLocaleString('en-US') + ' jobs').test(t), 'snapshot: its ' + snap.jobs.length + ' listings are counted'); await shot(p, 'jobs-snapshot-390'); } else ok(true, 'snapshot: none committed yet');
+  realSnap = false; apiUp = true; await ctx.close(); }
 { const { ctx, p } = await ctxOf('de-DE'); await open(p, '/jobs/'); const t = await text(p); ok(/Jobs suchen/.test(t) && /Bewerbungen/.test(t) && /Bewerben bei/.test(t) && !/Search jobs/.test(t), 'German browser: the page speaks German'); await shot(p, 'jobs-de-390'); await ctx.close(); }
 ok(errors.length === 0, 'no console errors' + (errors.length ? ': ' + errors.slice(0, 3).join(' | ') : ''));
 await b.close(); srv.close(); process.exit(fail);

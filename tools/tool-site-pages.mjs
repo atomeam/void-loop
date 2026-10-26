@@ -124,7 +124,7 @@ export function pageOf(row, kind) {
   <footer>${foot}</footer>
 </main>
 <script type="module" src="${row.path}app.js"></script>
-${jb ? '<script src="/visit.js" defer></script>\n' : ''}<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
 `;
