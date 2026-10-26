@@ -12,9 +12,10 @@
    "why": "robots.txt asks robots not to read it"
   },
   "colorcanon.com": {
-   "at": "2026-10-26T07:20:06Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON (empty)"
+   "at": "2026-10-26T07:26:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "The Color Canon — Official Registry of Hex Color Names"
   },
   "heycolor.com": {
    "at": "2026-10-26T07:16:04Z",
@@ -60,19 +61,24 @@
    "title": "MagicChecker.com: Protect your digital campaigns"
   },
   "colornames.org": {
-   "at": "2026-10-26T07:20:32Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON (empty)"
+   "at": "2026-10-26T07:26:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a collaborative project to name colors in the RGB space through community voting and proposals. While Verse has 'colour' and )",
+   "title": "Name all the colors @ colornames.org"
   },
   "convertlive.com": {
-   "at": "2026-10-26T07:21:00Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON (empty)"
+   "at": "2026-10-26T07:26:26Z",
+   "outcome": "built",
+   "family": "unit converter",
+   "id": "unit converter: convertlive.com",
+   "page": "/convert/unit-converter/",
+   "words": "the family page's own (the model's were refused: no ask is about its job)"
   },
   "online-calculator.com": {
-   "at": "2026-10-26T07:21:36Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON (empty)"
+   "at": "2026-10-26T07:26:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a multi-purpose collection of calculators (scientific, BMI, darts) and unit converters. While Verse has specific pages for 'c)",
+   "title": "Online Calculator"
   }
  },
  "runs": [
