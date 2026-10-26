@@ -300,7 +300,7 @@ export function wordsFor(lang) {
     shareCal: 'Teilen', copyView: 'Link zum Ansehen kopieren', copyEdit: 'Link zum Bearbeiten kopieren', newLinks: 'Neue Links', stopShare: 'Nicht mehr teilen', canEdit: 'darf bearbeiten', viewOnly: 'nur ansehen', yours: 'von dir geteilt', needNet: 'Ein geteilter Kalender ändert sich nur mit Netz', shareFail: 'Der geteilte Kalender hat die Änderung nicht angenommen; versuch es noch einmal', sharedAdded: 'Geteilter Kalender hinzugefügt', sharedGone: 'Dieser Link öffnet nichts mehr (neu erstellt oder nicht mehr geteilt)', shareHint: 'Einen eigenen Kalender teilen: Wer den Link zum Ansehen hat, sieht ihn; wer den Link zum Bearbeiten hat, kann ihn ändern. Kein Konto nötig.', linksNew: 'Neue Links; die alten öffnen nichts mehr',
     subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)', subscribed: 'Abonniert', feedFail: 'Diese Adresse gab keinen Kalender', feedNote: 'abonniert, nur lesen',
     replies: 'Antworten', going: 'Kommst du?', yourName: 'Dein Name', yes: 'Ja', maybe: 'Vielleicht', no: 'Nein', replied: 'Danke, deine Antwort ist da', noReplies: 'Noch keine Antworten', nameFirst: 'Erst deinen Namen',
-    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', year: 'Jahr', weekStarts: 'Woche beginnt am', mon: 'Montag', sun: 'Sonntag', sat: 'Samstag', weekNums: 'Wochennummern', weekAbbr: 'KW', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
+    tasks: 'Aufgaben', taskPh: 'Neue Aufgabe', addTask: 'Aufgabe hinzufügen', dueL: 'Fällig', overdue: 'überfällig', noTasks: 'Keine Aufgaben: oben „Aufgabe: Milch kaufen Freitag“ tippen', taskAdded: 'Aufgabe', clearDone: 'Erledigte entfernen', taskOpen: 'offen', moveTo: 'Verschieben auf', moved: 'Verschoben', movedOne: 'Nur dieser Termin verschoben, die Serie bleibt', year: 'Jahr', weekStarts: 'Woche beginnt am', mon: 'Montag', sun: 'Sonntag', sat: 'Samstag', weekNums: 'Wochennummern', weekAbbr: 'KW', location: 'Ort', map: 'Karte', duplicate: 'Duplizieren', copyOf: 'Kopie', list: 'Liste', noneAhead: 'Nichts in den nächsten 60 Tagen',
   } : {
     title: 'Calendar', sub: 'Month, week and day; events that repeat, remind and invite; everything stays on this device and works offline.',
     placeholder: 'Quick add: "dentist tomorrow 3pm, remind me 30 minutes before, every month"', add: 'Add', search: 'Search', searchPh: 'Search events',
@@ -316,7 +316,7 @@ export function wordsFor(lang) {
     shareCal: 'Share', copyView: 'Copy view link', copyEdit: 'Copy edit link', newLinks: 'New links', stopShare: 'Stop sharing', canEdit: 'can edit', viewOnly: 'view only', yours: 'shared by you', needNet: 'A shared calendar changes only with the network', shareFail: 'The shared calendar did not take the change; try again', sharedAdded: 'Shared calendar added', sharedGone: 'This link no longer opens anything (new links were made, or sharing stopped)', shareHint: 'Share a calendar you added: whoever has the view link sees it, whoever has the edit link can change it. No account needed.', linksNew: 'New links; the old ones open nothing now',
     subscribe: 'Subscribe', feedPh: 'A calendar\'s address (https:// or webcal://)', subscribed: 'Subscribed', feedFail: 'That address did not give a calendar', feedNote: 'subscribed, read only',
     replies: 'Replies', going: 'Going?', yourName: 'Your name', yes: 'Yes', maybe: 'Maybe', no: 'No', replied: 'Thanks, your answer is in', noReplies: 'No replies yet', nameFirst: 'Your name first',
-    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', year: 'Year', weekStarts: 'Week starts on', mon: 'Monday', sun: 'Sunday', sat: 'Saturday', weekNums: 'Week numbers', weekAbbr: 'Wk', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
+    tasks: 'Tasks', taskPh: 'New task', addTask: 'Add task', dueL: 'Due', overdue: 'overdue', noTasks: 'No tasks: type "task: buy milk friday" above', taskAdded: 'Task', clearDone: 'Clear done', taskOpen: 'open', moveTo: 'Move to', moved: 'Moved', movedOne: 'Moved only this one; the series stays', year: 'Year', weekStarts: 'Week starts on', mon: 'Monday', sun: 'Sunday', sat: 'Saturday', weekNums: 'Week numbers', weekAbbr: 'Wk', location: 'Location', map: 'Map', duplicate: 'Duplicate', copyOf: 'Copy', list: 'Schedule', noneAhead: 'Nothing in the next 60 days',
   };
 }
 
@@ -414,4 +414,22 @@ export function busyDays(events, tasks, year) {
   for (const o of agenda(events || [], from, to)) for (let d = startOfDay(parseLocal(o.start)), e = parseLocal(o.end); d <= e && d.getFullYear() <= year; d = addDays(d, 1)) if (d.getFullYear() === year) out.add(dayKey(d));
   for (const t of tasks || []) if (t.due && t.due.slice(0, 4) === String(year) && !t.done) out.add(t.due);
   return out;
+}
+
+// moving an event to another day (drag in the month, or "Move to" on the event): the whole event shifts by whole days, its times and length kept;
+// one occurrence of a repeat is split off as an event of its own and the series gets an exception for that day. Pure.
+/** whole days from key b to key a ('YYYY-MM-DD'). Pure. */
+export function dayDiff(a, b) { const f = (k) => { const [y, m, d] = String(k).slice(0, 10).split('-').map(Number); return Date.UTC(y, m - 1, d); }; return Math.round((f(a) - f(b)) / 864e5); }
+/** the event moved by n whole days. Pure. */
+export function shiftEvent(e, n) {
+  const mv = (k) => (e.allDay ? dayKey(addDays(parseLocal(k), n)) : fmtLocal(addDays(parseLocal(k), n)));
+  return { ...e, start: mv(e.start), end: mv(e.end) };
+}
+/** what moving one day of an event by n days leaves: the events to put in the store ([] when nothing moves). A plain event moves itself; a repeat's
+ *  day `occDay` becomes a one-off copy (no repeat, no replies, a new id) and the series skips that day. Pure. */
+export function moveOccurrence(base, occDay, n) {
+  if (!n || !base) return [];
+  if (!base.rrule) return [shiftEvent(base, n)];
+  const k = dayDiff(occDay, base.start.slice(0, 10)), copy = shiftEvent({ ...base, rrule: null, exdates: [], rsvp: undefined, id: newId() }, k + n);
+  return [{ ...base, exdates: [...new Set([...(base.exdates || []), occDay])] }, copy];
 }

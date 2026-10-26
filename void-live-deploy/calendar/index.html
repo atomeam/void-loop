@@ -61,6 +61,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   .month .cell.today .d { background: var(--accent); color: var(--on-accent, #fff); }
   .month .cell[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
   .chip { display: block; border-left: 3px solid var(--c, var(--accent)); font-size: 11px; line-height: 1.3; padding: 1px 4px; border-radius: 4px; background: var(--today); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mvl { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--soft); } .mvl input { min-height: 40px; padding: 4px 8px; }
+  .chip.mv { cursor: grab; user-select: none; -webkit-user-select: none; } .month .cell.over { outline: 2px dashed var(--accent); outline-offset: -2px; } .ghost { position: fixed; z-index: 30; pointer-events: none; padding: 2px 8px; border-radius: 6px; background: var(--accent); color: var(--on-accent, #fff); font-size: 12px; max-width: 70vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chip.more { background: none; color: var(--soft); border-left: 0; }
   @media (max-width: 640px) { .month .cell { height: 58px; } .chip { font-size: 10px; } }
   /* week: seven day sections (columns when there is room), day: one list */
@@ -186,6 +188,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     <div class="row">
       <button type="button" id="detEdit">Edit</button>
       <button type="button" id="detDup">Duplicate</button>
+      <label class="mvl" id="detMoveBox"><span id="detMoveL">Move to</span> <input type="date" id="detMove"></label>
       <button type="button" id="detShare" title="A link that carries this event">Share link</button>
       <button type="button" id="detMail" title="An email to the invitees with the .ics">Invite by email</button>
       <button type="button" id="detIcs">Download .ics</button>
@@ -256,7 +259,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     if (de) {
       document.documentElement.lang = 'de'; document.title = 'Kalender: Monat, Woche und Tag mit Erinnerungen, Einladungen und Wiederholungen · Verse';
       const map = { title: 'title', sub: 'sub', add: 'add', newBtn: 'newEvent', searchBtn: 'search', allow: 'allow', remL: 'nextRem', alertL: 'inPage', alertClose: 'close', invH: 'invitedTo', invAdd: 'addToMine', invIcs: 'ics', today: 'today', vMonth: 'month', vWeek: 'week', vDay: 'day',
-        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
+        rsvpQ: 'going', rsvpNameL: 'yourName', rsvpYes: 'yes', rsvpMaybe: 'maybe', rsvpNo: 'no', vList: 'list', vYear: 'year', detDup: 'duplicate', detMoveL: 'moveTo', lLoc: 'location', weekStartL: 'weekStarts', weekNumsL: 'weekNums', tasksBtn: 'tasks', tasksH: 'tasks', taskBtn: 'addTask', taskTL: 'taskPh', taskDL: 'dueL', taskClear: 'clearDone', calsBtn: 'calendars', calsH: 'calendars', feedBtn: 'subscribe', feedL: 'feedPh', calAddBtn: 'addCal', calNameL: 'calName', lCal: 'calendar', detEdit: 'edit', detShare: 'share', detMail: 'mail', detIcs: 'ics', detDel: 'del', detClose: 'close', importBtn: 'importIcs', icsL: 'importIcs', exportBtn: 'exportIcs', keys: 'keyHelp', srcs: 'note', edH: 'newEvent', lTitle: 'titleL', lAll: 'allDay', lStart: 'start', lEnd: 'end', lRep: 'repeat', lEvery: 'every', lUntil: 'until', lTimes: 'times', lRem: 'reminder', lNotes: 'notes', lInv: 'invitees', eSave: 'save', eCancel: 'cancel', sqL: 'searchPh' };
       for (const [id, k] of Object.entries(map)) $(id).textContent = W[k];
       $('q').placeholder = W.placeholder; $('calName').placeholder = W.calName; $('taskT').placeholder = W.taskPh; $('feedUrl').placeholder = W.feedPh; $('rsvpName').placeholder = W.yourName; $('qL').textContent = W.add; $('sq').placeholder = W.searchPh; $('prev').setAttribute('aria-label', W.prev); $('next').setAttribute('aria-label', W.next);
       [...$('eFreq').options].forEach((o, i) => { o.textContent = [W.none, W.daily, W.weekly, W.monthly, W.yearly][i]; });
@@ -351,13 +354,14 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
         const g = el('div', 'month'), days = C.monthGrid(c.getFullYear(), c.getMonth(), ws()), occs = C.agenda(shown(), C.dayKey(days[0]), C.dayKey(days[41])), byDay = {};
         for (const o of occs) { const s = C.parseLocal(o.start), e = C.parseLocal(o.end); for (let d = C.startOfDay(s); d <= e && d <= days[41]; d = C.addDays(d, 1)) (byDay[C.dayKey(d)] = byDay[C.dayKey(d)] || []).push(o); }
         for (const t of tasks()) if (t.due && t.due >= C.dayKey(days[0]) && t.due <= C.dayKey(days[41])) (byDay[t.due] = byDay[t.due] || []).push({ id: 'task:' + t.id, title: (t.done ? '☑ ' : '☐ ') + t.title, start: t.due, end: t.due, allDay: true, task: true });
-        for (const [i, d] of days.entries()) { if (i % 7 === 0) { const wn = el('span', 'w0 wn', String(C.weekNumber(d, ws()))); wn.setAttribute('aria-label', wkLabel(d)); g.append(wn); } const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
+        for (const [i, d] of days.entries()) { if (i % 7 === 0) { const wn = el('span', 'w0 wn', String(C.weekNumber(d, ws()))); wn.setAttribute('aria-label', wkLabel(d)); g.append(wn); } const k = C.dayKey(d), b = el('button', 'cell' + (d.getMonth() !== c.getMonth() ? ' other' : '') + (sameDay(d, td) ? ' today' : '')); b.type = 'button'; b.dataset.k = k; b.setAttribute('aria-label', C.fmtDay(d, lang) + (byDay[k] ? ', ' + byDay[k].length + ' ' + W.events : ''));
           if (sameDay(d, c)) b.setAttribute('aria-current', 'true'); b.append(el('span', 'd', String(d.getDate()))); const list = byDay[k] || [];
           // as many as the cell holds (its height is fixed): one on a phone, two wider; the rest as "+n more" (the day shows them all)
           const slots = narrow.matches ? 1 : 2, fit = list.length > slots ? slots - 1 : list.length;
-          for (const o of list.slice(0, fit)) { const ch = el('span', 'chip', (o.allDay ? '' : C.fmtTime(C.parseLocal(o.start), lang).replace(/:00/, '').replace(/ ([AP])M/, '$1').toLowerCase() + ' ') + o.title); ch.style.setProperty('--c', C.calendarOf(cals(), o).color); b.append(ch); }
+          for (const o of list.slice(0, fit)) { const ch = el('span', 'chip', (o.allDay ? '' : C.fmtTime(C.parseLocal(o.start), lang).replace(/:00/, '').replace(/ ([AP])M/, '$1').toLowerCase() + ' ') + o.title); ch.style.setProperty('--c', C.calendarOf(cals(), o).color); if (!o.ro) { ch._o = o; ch._k = k; ch.classList.add('mv'); } b.append(ch); }
           if (list.length > fit) b.append(el('span', 'chip more', (fit ? '+' + (list.length - fit) + ' ' + W.more : '+' + list.length)));
-          b.addEventListener('click', () => { state.cursor = d; state.view = 'day'; render(); }); g.append(b); }
+          b.addEventListener('click', () => { if (dragged) { dragged = false; return; } state.cursor = d; state.view = 'day'; render(); }); g.append(b); }
+        g.addEventListener('pointerdown', (e) => { const ch = e.target.closest && e.target.closest('.chip.mv'); if (ch && e.pointerType !== 'touch' && e.button === 0) startDrag(e, ch); });
         v.append(g);
       } else if (state.view === 'week') {
         const a = C.startOfWeek(c, ws()), z = C.addDays(a, 6); $('period').textContent = C.fmtDay(a, lang, { weekday: false, year: false }) + ' – ' + C.fmtDay(z, lang, { weekday: false }) + (store.weekNumbers ? ' · ' + wkLabel(a) : '');
@@ -390,7 +394,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       if (o.location) { const dd = el('dd', '', o.location + ' · '), a = el('a', '', W.map); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(o.location); a.target = '_blank'; a.rel = 'noopener'; dd.append(a); dl.append(el('dt', '', W.location), dd); }
       add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
       const b0 = baseOf(o); if (b0.rsvp) { const dt = el('dt', '', W.replies), dd = el('dd', '', '…'); dl.append(dt, dd); rsvpCall('GET', { id: b0.rsvp.id, key: b0.rsvp.owner }).then((r) => { dd.textContent = r.j.ok ? (r.j.replies.length ? R.tally(r.j.replies, RW) + ': ' + r.j.replies.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies) : '—'; }); }
-      $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDup').hidden = !!o.ro; $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
+      $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDup').hidden = !!o.ro; $('detMoveBox').hidden = !!o.ro || !!o.task; $('detMove').value = o.start.slice(0, 10); $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
     }
     const baseOf = (o) => store.events.find((e) => e.id === o.id) || (sharedOf(o.cal) && SH.eventsOf(o.cal, sharedOf(o.cal).share.role, copyOf(sharedOf(o.cal)).events).find((e) => e.id === o.id)) || o;
     function remBar() {
@@ -430,6 +434,27 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     $('eCancel').addEventListener('click', () => $('ed').close());
     $('newBtn').addEventListener('click', () => openEditor(null));
     $('detEdit').addEventListener('click', () => state.sel && openEditor(baseOf(state.sel)));
+    // moving: to another day (dragged in the month, or the date on an event), times and length kept; one day of a repeat is split off
+    let dragged = false;
+    async function moveTo(o, fromKey, toKey) {
+      if (toKey === fromKey || !/^\d{4}-\d{2}-\d{2}$/.test(toKey)) return false;
+      const n = C.dayDiff(toKey, fromKey);
+      if (o.task) { const t = tasks().find((x) => 'task:' + x.id === o.id); if (!t) return false; setTasks(C.withTask(tasks(), { ...t, due: toKey })); render(); if (!$('tasks').hidden) drawTasks(); say(W.moved + ': ' + t.title + ', ' + dueText({ due: toKey })); return true; }
+      const base = baseOf(o), sh = sharedOf(base.cal), put = C.moveOccurrence(base, o.start.slice(0, 10), n); if (!put.length) return false;
+      const clean = (e) => ({ ...e, cal: undefined, ro: undefined }), apply = (evs) => put.reduce((a, e) => C.withEvent(a, sh ? clean(e) : e), evs);
+      if (sh) { if (!(await pushShared(sh, apply))) return false; } else { store.events = apply(store.events); keep(); }
+      state.sel = null; $('detail').hidden = true; render(); say((base.rrule ? W.movedOne : W.moved) + ': ' + base.title + ', ' + C.fmtDay(C.addDays(C.parseLocal(base.start.slice(0, 10)), C.dayDiff(o.start.slice(0, 10), base.start.slice(0, 10)) + n), lang, { year: false })); return true;
+    }
+    $('detMove').addEventListener('change', () => { if (state.sel) moveTo(state.sel, state.sel.start.slice(0, 10), $('detMove').value); });
+    function startDrag(e0, ch) {
+      const o = ch._o, from = ch._k; let ghost = null, over = null; const x0 = e0.clientX, y0 = e0.clientY;
+      const cellAt = (x, y) => { if (ghost) ghost.hidden = true; const t = document.elementFromPoint(x, y); if (ghost) ghost.hidden = false; return t && t.closest ? t.closest('.cell') : null; };
+      const move = (e) => { if (!ghost) { if (Math.hypot(e.clientX - x0, e.clientY - y0) < 6) return; ghost = el('div', 'ghost', o.title); document.body.append(ghost); }
+        ghost.style.left = e.clientX + 10 + 'px'; ghost.style.top = e.clientY + 10 + 'px'; const c = cellAt(e.clientX, e.clientY); if (c !== over) { if (over) over.classList.remove('over'); over = c; if (over) over.classList.add('over'); } };
+      const end = (e) => { removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', cancel); if (over) over.classList.remove('over'); if (ghost) { ghost.remove(); dragged = true; setTimeout(() => { dragged = false; }, 0); const c = cellAt(e.clientX, e.clientY); if (c && c.dataset.k) moveTo(o, from, c.dataset.k); } };
+      const cancel = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', cancel); if (over) over.classList.remove('over'); if (ghost) ghost.remove(); };
+      addEventListener('pointermove', move); addEventListener('pointerup', end); addEventListener('pointercancel', cancel);
+    }
     $('detDup').addEventListener('click', () => { if (!state.sel) return; const o = state.sel, b = baseOf(o); const copy = { ...b, id: undefined, rsvp: undefined, exdates: [], title: b.title + ' (' + W.copyOf.toLowerCase() + ')', start: o.start, end: o.end }; openEditor(copy); state.editing = null; $('edH').textContent = W.duplicate; });
     $('detClose').addEventListener('click', () => { $('detail').hidden = true; state.sel = null; });
     $('detDel').addEventListener('click', async () => {

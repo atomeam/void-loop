@@ -171,8 +171,8 @@
      "name": "Drag to move and resize events",
      "detail": "",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no control on void-live-deploy/calendar/index.html"
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: drag an event or task chip to another day in the month (mouse and pen), and a Move to date on every event (the touch way); a repeat's day is split off, times and length kept (lib/calendar.js moveOccurrence; tools/calendar.test.mjs); no resize and no drag between times"
     },
     {
      "name": "Share a calendar with people (see / edit permissions), public link, embed",
@@ -880,7 +880,7 @@
   "Tasks with priority, sub-tasks and shared to-dos (tasks with a due day are built, 2026-10-25): calendar.google.com, any.do, calendar.yahoo.com, cozi.com, timetreeapp.com",
   "Travel time to an event (location with a map link is built, 2026-10-25): calendar.google.com, icloud.com",
   "Time zones per event and a secondary zone: calendar.google.com, calendar.zoho.com, proton.me, outlook.live.com",
-  "Drag to move and resize events: calendar.google.com, outlook.live.com",
+  "Resize events and drag between times (drag to another day is built, 2026-10-25): calendar.google.com, outlook.live.com",
   "Agenda/list, year, timeline and N-day views: calendar.google.com, calendar.yahoo.com, teamup.com, outlook.live.com",
   "Booking pages / find a time: calendar.google.com, outlook.live.com, calendar.online, calendar.zoho.com (paid)",
   "Sync across devices: every site in the floor",

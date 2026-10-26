@@ -152,3 +152,15 @@ test('busyDays: the days of a year with something on them (a multi-day event mar
   assert.deepEqual([...b].sort(), ['2026-10-26', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-02', '2026-11-09', '2026-12-24'].filter((x, i, a) => a.indexOf(x) === i).sort());
   assert.ok(!b.has('2027-01-05') && !b.has('2026-12-25'));
 });
+
+test('moving: whole days, times and length kept; a multi-day event keeps its length; one day of a repeat is split off and the series skips it', () => {
+  assert.equal(C.dayDiff('2026-11-01', '2026-10-26'), 6); assert.equal(C.dayDiff('2026-03-30', '2026-03-28'), 2, 'across a clock change');
+  const one = C.normalize({ id: 'x', title: 'Dentist', start: '2026-10-28T15:00', end: '2026-10-28T16:30' });
+  const m = C.moveOccurrence(one, '2026-10-28', 3); assert.equal(m.length, 1); assert.equal(m[0].id, 'x'); assert.equal(m[0].start, '2026-10-31T15:00'); assert.equal(m[0].end, '2026-10-31T16:30');
+  assert.deepEqual(C.moveOccurrence(one, '2026-10-28', 0), []);
+  const trip = C.normalize({ id: 't', title: 'Trip', start: '2026-12-20', end: '2026-12-22', allDay: true }); assert.deepEqual(C.moveOccurrence(trip, '2026-12-20', -2).map((e) => [e.start, e.end]), [['2026-12-18', '2026-12-20']]);
+  const yoga = C.normalize({ id: 'y', title: 'Yoga', start: '2026-10-26T18:00', end: '2026-10-26T19:00', rrule: { freq: 'WEEKLY', interval: 1 }, rsvp: { id: 'AAAAAAAAAAA', owner: 'o'.repeat(22), reply: 'r'.repeat(22) } });
+  const r = C.moveOccurrence(yoga, '2026-11-09', 1); assert.equal(r.length, 2); assert.equal(r[0].id, 'y'); assert.deepEqual(r[0].exdates, ['2026-11-09']); assert.ok(r[0].rrule);
+  assert.equal(r[1].start, '2026-11-10T18:00'); assert.equal(r[1].end, '2026-11-10T19:00'); assert.ok(!r[1].rrule && !r[1].rsvp && r[1].id !== 'y' && !r[1].exdates.length);
+  assert.ok(!C.occurrences(r[0], '2026-11-09', '2026-11-09').length, 'the series skips the day it gave up');
+});
