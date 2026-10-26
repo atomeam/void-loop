@@ -15334,52 +15334,52 @@
   "music: metronomeonline.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 149,
-    "best": 127,
-    "evidence": "Verse (/metronome/) 149 ms to the load event (median of 3, phone width) vs metronomeonline.com 127 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-26T13:20:46.833Z"
+    "verse": 156,
+    "best": 173,
+    "evidence": "Verse (/metronome/) 156 ms to the load event (median of 3, phone width) vs metronomeonline.com 173 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 loads answered vs metronomeonline.com 3 of 3 loads answered",
-    "at": "2026-10-26T13:20:46.833Z"
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/metronome/) 0 px sideways overflow at 390 px vs metronomeonline.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:20:46.833Z"
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 5,
     "evidence": "Verse (/metronome/) 0 unnamed controls or images vs metronomeonline.com 5 unnamed controls or images",
-    "at": "2026-10-26T13:20:46.833Z"
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/metronome/) 0 (1: the page shows itself again with the network cut) vs metronomeonline.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:20:46.833Z"
+    "evidence": "Verse (/metronome/) 1 (1: the page shows itself again with the network cut) vs metronomeonline.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/metronome/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs metronomeonline.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:20:46.833Z"
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/metronome/) 4 of 4 right against the worked-out answer; judged against the standard, not metronomeonline.com (the site is not asked)",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 4
    },
    "design polish": {
@@ -15387,14 +15387,14 @@
     "verse": 3,
     "best": 19,
     "evidence": "Verse (/metronome/) 3 design defects vs metronomeonline.com 19 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.00), metronomeonline.com (17 low-contrast texts, 1 small tap targets, layout shift 0.19)",
-    "at": "2026-10-26T13:20:46.833Z"
+    "at": "2026-10-26T18:46:15.298Z"
    },
    "tap tempo": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 2,
     "part": true
    },
@@ -15403,7 +15403,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 3,
     "part": true
    },
@@ -15412,7 +15412,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/metronome/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 3,
     "part": true
    },
@@ -15421,7 +15421,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/metronome/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 2,
     "part": true
    },
@@ -15430,7 +15430,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/metronome/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 1,
     "part": true
    },
@@ -15439,7 +15439,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/metronome/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 4,
     "part": true
    },
@@ -15448,7 +15448,7 @@
     "verse": 21,
     "best": 5,
     "evidence": "Verse (/metronome/) 21 of 21 things a full answer shows vs metronomeonline.com 5 of 21 things a full answer shows (Verse lacks: none; site lacks: tap tempo, accents, a visual beat, a practice timer, a speed trainer, silent bars, tempo presets, setlists, volume, nothing leaves your device, works offline, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
-    "at": "2026-10-26T13:20:46.833Z",
+    "at": "2026-10-26T18:46:15.298Z",
     "of": 21
    }
   },
