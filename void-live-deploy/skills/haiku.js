@@ -1,39 +1,37 @@
 /**
- * haiku skill — a short Japanese-style poem.
+ * haiku skill — a random haiku (local, no network)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "write a haiku", "haiku about the moon", "make a haiku".
- * Empty surface stays empty.
+ * "haiku", "random haiku", "give me a haiku".
  */
-export function haikuOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:write|make|compose|give me)?\s*(?:a\s+)?haiku(?:\s+(?:about|on|for)\s+(.+))?$/i);
-  return m ? (m[1] || 'the void') : null;
-}
-
-const TEMPLATES = [
-  (s) => `silent ${s}\ndrifts across the empty stage\na new card appears`,
-  (s) => `${s} waits\nin the quiet of the page\nthen the words arrive`,
-  (s) => `one breath of ${s}\nthe blank becomes a poem\nand nothing more`
+const HAIKU = [
+  ['An old silent pond', 'A frog jumps into the pond—', 'Splash! Silence again.'],
+  ['Autumn moonlight—', 'a worm digs silently', 'into the chestnut.'],
+  ['In the twilight rain', 'these brilliant-hued hibiscus—', 'A lovely sunset.'],
+  ['The light of a candle', 'is transferred to another candle—', 'spring twilight.'],
+  ['I write, erase, rewrite', 'Erase again, and then', 'A poppy blooms.']
 ];
+
+export function isHaiku(text) {
+  return /^(?:please\s+)?(?:(?:give|tell|show)\s+(?:me\s+)?(?:a\s+|another\s+|random\s+)?haiku|haiku(?:\s+please)?|random\s+haiku)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const topic = haikuOf(text);
-  if (!topic) return 'none';
-  const haiku = TEMPLATES[Math.floor(Math.random() * TEMPLATES.length)](topic);
+  const [a, b, c] = HAIKU[Math.floor(Math.random() * HAIKU.length)];
   showPage((p) => {
-    p.innerHTML = '<h2>Haiku</h2><pre style="font-family:serif;font-size:18px;line-height:1.6;white-space:pre-wrap">' + esc(haiku) + '</pre><div class="sub">say “haiku about …” for another</div>';
+    p.innerHTML = '<h2>A haiku</h2><p style="font-size:20px;line-height:1.6;font-weight:300;font-style:italic">' + esc(a) + '<br>' + esc(b) + '<br>' + esc(c) + '</p><div class="sub">say “another haiku” for one more</div>';
   });
   return 'haiku';
 }
 
 export default {
   name: 'haiku',
-  examples: ['write a haiku', 'haiku about the moon', 'make a haiku'],
-  nearMisses: ['what is a haiku', 'haiku history', 'poem'],
-  match(lower, text) { return !!haikuOf(text); },
+  examples: ['haiku', 'random haiku', 'give me a haiku', 'another haiku'],
+  nearMisses: ['what is a haiku', 'write a poem', 'japanese poetry'],
+  match(lower, text) { return isHaiku(text); },
   run,
   suite() {
-    return { ok: haikuOf('write a haiku') === 'the void' && haikuOf('haiku about the moon') === 'the moon' && haikuOf('hello') === null };
+    const ok = isHaiku('haiku') && isHaiku('random haiku') && !isHaiku('what is a haiku');
+    return { ok, got: 'match works' };
   }
 };
