@@ -5872,5 +5872,6 @@
   {"at": "2026-10-27T08:22:31Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"},
   {"at": "2026-10-27T12:41:47Z", "by": "reefwatch", "kind": "finding", "what": "Coral heat: Florida Keys went from Watch to no stress (13.96 degree heating weeks, NOAA Coral Reef Watch reading of 2026-10-25)", "ref": "https://coralreefwatch.noaa.gov/product/vs/gauges/florida_keys.php"},
   {"at": "2026-10-27T16:00:06Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com"},
-  {"at": "2026-10-27T16:53:10Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do i use the magnets?\"", "try": "how do i use the magnets?"}
+  {"at": "2026-10-27T16:53:10Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do i use the magnets?\"", "try": "how do i use the magnets?"},
+  {"at": "2026-10-27T17:07:17Z", "by": "verse", "kind": "fix", "what": "Verse fixes its tilt-mode skill: learn to handle \"show me a 45deg tilt\"", "try": "show me a 45deg tilt"}
 ]

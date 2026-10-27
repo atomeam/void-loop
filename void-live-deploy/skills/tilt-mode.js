@@ -11,8 +11,8 @@ import { arenaIdea } from '../lib/tilt-arena-idea.js';
 
 export default fieldSkill({
   name: 'tilt-mode',
-  words: '(?:tilt arena|tilt ?arena game|tilt game|tilt (?:to steer|and chase)|genome arena|orientation (?:genome )?arena|agent arena)',
-  examples: ['tilt arena', 'genome arena', 'tilt game', 'agent arena'],
+  words: '(?:tilt arena|tilt ?arena game|tilt game|tilt (?:to steer|and chase)|genome arena|orientation (?:genome )?arena|agent arena|show me a .*deg tilt|tilt to .*deg)',
+  examples: ['tilt arena', 'genome arena', 'tilt game', 'agent arena', 'show me a 45deg tilt'],
   nearMisses: ['what is the tilt of the earth', 'arena football scores', 'tilt shift photo', 'tilt my head'],
   idea: arenaIdea('tilt-mode'), say: 'Tilt Arena: tilt your phone or move the pointer, and twelve little learning agents chase it; Mode for Gaze Chase, GPU Swarm and Hand Arena'
 });
