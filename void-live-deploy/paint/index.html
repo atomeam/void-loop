@@ -459,5 +459,6 @@
 
   boot().catch((err) => { $('count').textContent = 'The paintings did not load.'; say.textContent = String(err.message || err); });
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
