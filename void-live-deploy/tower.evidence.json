@@ -18516,6 +18516,73 @@
     "at": "2026-10-27T12:18:24.948Z",
     "of": 16
    }
+  },
+  "emojis": {
+   "speed": {
+    "verdict": "better",
+    "verse": 233,
+    "best": 583,
+    "evidence": "Verse (/emojis/) 233 ms to the load event (median of 3, phone width) vs emojitracker.com 583 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 0 unnamed controls or images",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/emojis/) 0 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 1,
+    "evidence": "Verse (/emojis/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/emojis/) 5 of 5 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
+    "at": "2026-10-27T15:39:02.901Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), emojitracker.com (0 low-contrast texts, 0 small tap targets, layout shift 0.51)",
+    "at": "2026-10-27T15:39:02.901Z"
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 13,
+    "best": 0,
+    "evidence": "Verse (/emojis/) 13 of 13 things a full answer shows vs emojitracker.com 0 of 13 things a full answer shows (Verse lacks: none; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse)",
+    "at": "2026-10-27T15:39:02.901Z",
+    "of": 13
+   }
   }
  },
  "icons": {
@@ -18696,6 +18763,7 @@
   "convertlive.com": "tower.icons/convertlive.com.png",
   "convertunits.com": "tower.icons/convertunits.com.ico",
   "remotive.com": "tower.icons/remotive.com.png",
-  "heycolor.com": "tower.icons/heycolor.com.png"
+  "heycolor.com": "tower.icons/heycolor.com.png",
+  "emojitracker.com": "tower.icons/emojitracker.com.png"
  }
 }
