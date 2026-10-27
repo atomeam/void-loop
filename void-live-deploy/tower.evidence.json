@@ -18453,134 +18453,134 @@
   "paint": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 126,
-    "best": 199,
-    "evidence": "Verse (/paint/) 126 ms to the load event (median of 3, phone width) vs heycolor.com 199 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:18:24.948Z"
+    "verse": 150,
+    "best": 240,
+    "evidence": "Verse (/paint/) 150 ms to the load event (median of 3, phone width) vs heycolor.com 240 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/paint/) 3 of 3 loads answered vs heycolor.com 3 of 3 loads answered",
-    "at": "2026-10-27T12:18:24.948Z"
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/paint/) 0 px sideways overflow at 390 px vs heycolor.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:18:24.948Z"
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/paint/) 0 unnamed controls or images vs heycolor.com 4 unnamed controls or images",
-    "at": "2026-10-27T12:18:24.948Z"
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "offline": {
-    "verdict": "better",
-    "verse": 1,
+    "verdict": "equal",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/paint/) 1 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:18:24.948Z"
+    "evidence": "Verse (/paint/) 0 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/paint/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs heycolor.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:18:24.948Z"
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
-    "verse": 6,
-    "best": 6,
-    "evidence": "Verse (/paint/) 6 of 6 right against the worked-out answer; judged against the standard, not heycolor.com (the site is not asked)",
-    "at": "2026-10-27T12:18:24.948Z",
-    "of": 6
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/paint/) 7 of 7 right against the worked-out answer; judged against the standard, not heycolor.com (the site is not asked)",
+    "at": "2026-10-27T15:44:31.228Z",
+    "of": 7
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 0,
     "best": 11,
-    "evidence": "Verse (/paint/) 1 design defects vs heycolor.com 11 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.46), heycolor.com (0 low-contrast texts, 11 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:18:24.948Z"
+    "evidence": "Verse (/paint/) 0 design defects vs heycolor.com 11 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), heycolor.com (0 low-contrast texts, 11 small tap targets, layout shift 0.00)",
+    "at": "2026-10-27T15:44:31.228Z"
    },
    "completeness": {
     "verdict": "better",
-    "verse": 16,
+    "verse": 18,
     "best": 1,
-    "evidence": "Verse (/paint/) 16 of 16 things a full answer shows vs heycolor.com 1 of 16 things a full answer shows (Verse lacks: none; site lacks: numbered cells, a numbered palette, the progress count, next cell, start over, download a PNG, a share link, save to a gallery, your gallery, upload your own image, kept on this device, works offline, no account, no ads, four colours)",
-    "at": "2026-10-27T12:18:24.948Z",
-    "of": 16
+    "evidence": "Verse (/paint/) 18 of 18 things a full answer shows vs heycolor.com 1 of 18 things a full answer shows (Verse lacks: none; site lacks: real paintings, numbered, numbered areas, a numbered palette, the progress count, tap an area to fill it, find an area, start over, download a PNG, a share link, save to a gallery, upload your own image, the artwork is public domain, kept on this device, works offline, no account, no ads, a second painting)",
+    "at": "2026-10-27T15:44:31.228Z",
+    "of": 18
    }
   },
   "emojis": {
    "speed": {
     "verdict": "better",
-    "verse": 233,
-    "best": 583,
-    "evidence": "Verse (/emojis/) 233 ms to the load event (median of 3, phone width) vs emojitracker.com 583 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T15:39:02.901Z"
+    "verse": 213,
+    "best": 528,
+    "evidence": "Verse (/emojis/) 213 ms to the load event (median of 3, phone width) vs emojitracker.com 528 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-    "at": "2026-10-27T15:39:02.901Z"
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T15:39:02.901Z"
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 0 unnamed controls or images",
-    "at": "2026-10-27T15:39:02.901Z"
+    "best": 1,
+    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T15:39:02.901Z"
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/emojis/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T15:39:02.901Z"
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/emojis/) 5 of 5 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-27T15:39:02.901Z",
+    "at": "2026-10-27T15:43:32.431Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), emojitracker.com (0 low-contrast texts, 0 small tap targets, layout shift 0.51)",
-    "at": "2026-10-27T15:39:02.901Z"
+    "best": 3,
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
+    "at": "2026-10-27T15:43:32.431Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 13,
     "best": 0,
     "evidence": "Verse (/emojis/) 13 of 13 things a full answer shows vs emojitracker.com 0 of 13 things a full answer shows (Verse lacks: none; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse)",
-    "at": "2026-10-27T15:39:02.901Z",
+    "at": "2026-10-27T15:43:32.431Z",
     "of": 13
    }
   }
