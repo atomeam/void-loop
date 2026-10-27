@@ -2435,49 +2435,49 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse 3 of 3 loads answered vs Google Maps 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "speed": {
     "verdict": "worse",
-    "verse": 338,
+    "verse": 463,
     "best": 200,
-    "evidence": "Verse 338 ms to the load event (median of 3, phone width) vs the bar (Google Maps unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:27:07.344Z"
+    "evidence": "Verse 463 ms to the load event (median of 3, phone width) vs the bar (Google Maps unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs the bar (Google Maps unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs the bar (Google Maps unreachable) 0 unnamed controls or images",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "offline": {
     "verdict": "worse",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs the bar (Google Maps unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (Google Maps unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs the bar (Google Maps unreachable) 0 design defects",
-    "at": "2026-10-27T12:27:07.344Z"
+    "at": "2026-10-27T16:01:14.553Z"
    }
   },
   "news": {
@@ -2723,52 +2723,52 @@
   "learning": {
    "speed": {
     "verdict": "better",
-    "verse": 285,
-    "best": 847,
-    "evidence": "Verse 285 ms to the load event (median of 3, phone width) vs Khan Academy 847 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:33:01.516Z"
+    "verse": 295,
+    "best": 836,
+    "evidence": "Verse 295 ms to the load event (median of 3, phone width) vs Khan Academy 836 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Khan Academy 3 of 3 loads answered",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Khan Academy 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse 0 unnamed controls or images vs Khan Academy 2 unnamed controls or images",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Khan Academy 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "sharing": {
     "verdict": "worse",
     "verse": 3,
     "best": 4,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs Khan Academy 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 3,
     "best": 27,
     "evidence": "Verse 3 design defects vs Khan Academy 27 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.01), Khan Academy (0 low-contrast texts, 27 small tap targets, layout shift 0.08)",
-    "at": "2026-10-27T12:33:01.516Z"
+    "at": "2026-10-27T16:03:34.007Z"
    }
   },
   "music": {
@@ -3245,10 +3245,10 @@
   "chat": {
    "speed": {
     "verdict": "worse",
-    "verse": 277,
-    "best": 266,
-    "evidence": "Verse 277 ms to the load event (median of 3, phone width) vs WhatsApp Web 266 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:36:22.994Z",
+    "verse": 344,
+    "best": 258,
+    "evidence": "Verse 344 ms to the load event (median of 3, phone width) vs WhatsApp Web 258 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:04:11.077Z",
     "was": "equal-and-better"
    },
    "reliability": {
@@ -3256,93 +3256,93 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs WhatsApp Web 3 of 3 loads answered",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs WhatsApp Web 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs WhatsApp Web 0 unnamed controls or images",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs WhatsApp Web 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs WhatsApp Web 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs WhatsApp Web 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), WhatsApp Web (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:36:22.994Z"
+    "at": "2026-10-27T16:04:11.077Z"
    }
   },
   "video": {
    "speed": {
     "verdict": "better",
-    "verse": 268,
-    "best": 526,
-    "evidence": "Verse 268 ms to the load event (median of 3, phone width) vs YouTube 526 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:34:42.527Z"
+    "verse": 324,
+    "best": 538,
+    "evidence": "Verse 324 ms to the load event (median of 3, phone width) vs YouTube 538 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs YouTube 3 of 3 loads answered",
-    "at": "2026-10-27T12:34:42.527Z"
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs YouTube 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:34:42.527Z"
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs YouTube 0 unnamed controls or images",
-    "at": "2026-10-27T12:34:42.527Z"
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs YouTube 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:34:42.527Z"
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs YouTube 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:34:42.527Z"
+    "at": "2026-10-27T15:59:03.555Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
-    "evidence": "Verse 0 design defects vs YouTube 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), YouTube (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:34:42.527Z"
+    "evidence": "Verse 0 design defects vs YouTube 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), YouTube (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-27T15:59:03.555Z"
    }
   },
   "social": {
@@ -3351,14 +3351,14 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse 3 of 3 loads answered vs Reddit 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    },
    "speed": {
     "verdict": "worse",
-    "verse": 316,
+    "verse": 301,
     "best": 200,
-    "evidence": "Verse 316 ms to the load event (median of 3, phone width) vs the bar (Reddit unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:32:36.704Z",
+    "evidence": "Verse 301 ms to the load event (median of 3, phone width) vs the bar (Reddit unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:04:49.780Z",
     "was": "equal-and-better"
    },
    "mobile": {
@@ -3366,137 +3366,137 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs the bar (Reddit unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs the bar (Reddit unreachable) 0 unnamed controls or images",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    },
    "offline": {
     "verdict": "worse",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs the bar (Reddit unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (Reddit unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 design defects vs the bar (Reddit unreachable) 0 design defects",
-    "at": "2026-10-27T12:32:36.704Z"
+    "at": "2026-10-27T16:04:49.780Z"
    }
   },
   "email": {
    "speed": {
     "verdict": "better",
-    "verse": 309,
-    "best": 897,
-    "evidence": "Verse 309 ms to the load event (median of 3, phone width) vs Gmail 897 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:32:40.339Z"
+    "verse": 319,
+    "best": 1010,
+    "evidence": "Verse 319 ms to the load event (median of 3, phone width) vs Gmail 1010 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Gmail 3 of 3 loads answered",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Gmail 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs Gmail 0 unnamed controls or images",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Gmail 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Gmail 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 design defects vs Gmail 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Gmail (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:32:40.339Z"
+    "at": "2026-10-27T15:59:30.789Z"
    }
   },
   "search": {
    "speed": {
     "verdict": "better",
-    "verse": 304,
+    "verse": 326,
     "best": 419,
-    "evidence": "Verse 304 ms to the load event (median of 3, phone width) vs Google Search 419 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:35:36.764Z"
+    "evidence": "Verse 326 ms to the load event (median of 3, phone width) vs Google Search 419 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs Google Search 3 of 3 loads answered",
-    "at": "2026-10-27T12:35:36.764Z"
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs Google Search 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:35:36.764Z"
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 8,
-    "evidence": "Verse 0 unnamed controls or images vs Google Search 8 unnamed controls or images",
-    "at": "2026-10-27T12:35:36.764Z"
+    "best": 1,
+    "evidence": "Verse 0 unnamed controls or images vs Google Search 1 unnamed controls or images",
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Search 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:35:36.764Z"
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Search 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:35:36.764Z"
+    "at": "2026-10-27T16:00:09.260Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse 0 design defects vs Google Search 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Search (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:35:36.764Z"
+    "at": "2026-10-27T16:00:09.260Z"
    }
   },
   "random generators": {
@@ -3716,52 +3716,52 @@
   "code hosting": {
    "speed": {
     "verdict": "better",
-    "verse": 308,
-    "best": 863,
-    "evidence": "Verse 308 ms to the load event (median of 3, phone width) vs GitHub 863 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:35:09.149Z"
+    "verse": 314,
+    "best": 933,
+    "evidence": "Verse 314 ms to the load event (median of 3, phone width) vs GitHub 933 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse 3 of 3 loads answered vs GitHub 3 of 3 loads answered",
-    "at": "2026-10-27T12:35:09.149Z"
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 px sideways overflow at 390 px vs GitHub 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:35:09.149Z"
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 unnamed controls or images vs GitHub 0 unnamed controls or images",
-    "at": "2026-10-27T12:35:09.149Z"
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs GitHub 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:35:09.149Z"
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs GitHub 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:35:09.149Z"
+    "at": "2026-10-27T16:00:48.295Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 45,
-    "evidence": "Verse 0 design defects vs GitHub 45 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), GitHub (0 low-contrast texts, 44 small tap targets, layout shift 0.23)",
-    "at": "2026-10-27T12:35:09.149Z"
+    "evidence": "Verse 0 design defects vs GitHub 45 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), GitHub (0 low-contrast texts, 44 small tap targets, layout shift 0.26)",
+    "at": "2026-10-27T16:00:48.295Z"
    }
   },
   "translate: tradukka.com": {
@@ -18453,52 +18453,52 @@
   "paint": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 181,
-    "best": 225,
-    "evidence": "Verse (/paint/) 181 ms to the load event (median of 3, phone width) vs heycolor.com 225 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T15:52:28.968Z"
+    "verse": 121,
+    "best": 202,
+    "evidence": "Verse (/paint/) 121 ms to the load event (median of 3, phone width) vs heycolor.com 202 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/paint/) 3 of 3 loads answered vs heycolor.com 3 of 3 loads answered",
-    "at": "2026-10-27T15:52:28.968Z"
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/paint/) 0 px sideways overflow at 390 px vs heycolor.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T15:52:28.968Z"
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/paint/) 0 unnamed controls or images vs heycolor.com 4 unnamed controls or images",
-    "at": "2026-10-27T15:52:28.968Z"
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/paint/) 0 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T15:52:28.968Z"
+    "evidence": "Verse (/paint/) 1 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/paint/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs heycolor.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T15:52:28.968Z"
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/paint/) 7 of 7 right against the worked-out answer; judged against the standard, not heycolor.com (the site is not asked)",
-    "at": "2026-10-27T15:52:28.968Z",
+    "at": "2026-10-27T15:57:25.165Z",
     "of": 7
    },
    "design polish": {
@@ -18506,81 +18506,81 @@
     "verse": 0,
     "best": 11,
     "evidence": "Verse (/paint/) 0 design defects vs heycolor.com 11 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), heycolor.com (0 low-contrast texts, 11 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T15:52:28.968Z"
+    "at": "2026-10-27T15:57:25.165Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 18,
     "best": 1,
     "evidence": "Verse (/paint/) 18 of 18 things a full answer shows vs heycolor.com 1 of 18 things a full answer shows (Verse lacks: none; site lacks: real paintings, numbered, numbered areas, a numbered palette, the progress count, tap an area to fill it, find an area, start over, download a PNG, a share link, save to a gallery, upload your own image, the artwork is public domain, kept on this device, works offline, no account, no ads, a second painting)",
-    "at": "2026-10-27T15:52:28.968Z",
+    "at": "2026-10-27T15:57:25.165Z",
     "of": 18
    }
   },
   "emojis": {
    "speed": {
-    "verdict": "better",
-    "verse": 219,
-    "best": 881,
-    "evidence": "Verse (/emojis/) 219 ms to the load event (median of 3, phone width) vs emojitracker.com 881 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T15:53:03.433Z"
+    "verdict": "equal-and-better",
+    "verse": 168,
+    "best": 627,
+    "evidence": "Verse (/emojis/) 168 ms to the load event (median of 3, phone width) vs emojitracker.com 627 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 3,
-    "best": 2,
-    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 2 of 3 loads answered",
-    "at": "2026-10-27T15:53:03.433Z"
+    "best": 3,
+    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T15:53:03.433Z"
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
-    "at": "2026-10-27T15:53:03.433Z"
+    "best": 2,
+    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 2 unnamed controls or images",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/emojis/) 0 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T15:53:03.433Z"
+    "evidence": "Verse (/emojis/) 1 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/emojis/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T15:53:03.433Z"
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/emojis/) 5 of 5 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-27T15:53:03.433Z",
+    "at": "2026-10-27T15:57:49.074Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
-    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 1 small tap targets, layout shift 0.64)",
-    "at": "2026-10-27T15:53:03.433Z"
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 1 small tap targets, layout shift 0.65)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 13,
     "best": 0,
     "evidence": "Verse (/emojis/) 13 of 13 things a full answer shows vs emojitracker.com 0 of 13 things a full answer shows (Verse lacks: none; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse)",
-    "at": "2026-10-27T15:53:03.433Z",
+    "at": "2026-10-27T15:57:49.074Z",
     "of": 13
    }
   }
@@ -18653,18 +18653,18 @@
   "finance.yahoo.com": "tower.icons/finance.yahoo.com.png",
   "bbc.com": "tower.icons/bbc.com.png",
   "photos.google.com": "tower.icons/photos.google.com.ico",
-  "khanacademy.org": "tower.icons/khanacademy.org.ico",
+  "khanacademy.org": "tower.icons/khanacademy.org.png",
   "lichess.org": "tower.icons/lichess.org.svg",
   "timetreeapp.com": "tower.icons/timetreeapp.com.ico",
   "open.spotify.com": "tower.icons/open.spotify.com.png",
   "podcasts.apple.com": "tower.icons/podcasts.apple.com.png",
   "amazon.com": "tower.icons/amazon.com.ico",
-  "web.whatsapp.com": "tower.icons/web.whatsapp.com.ico",
-  "reddit.com": "tower.icons/reddit.com.png",
-  "youtube.com": "tower.icons/youtube.com.png",
+  "web.whatsapp.com": "tower.icons/web.whatsapp.com.webp",
+  "reddit.com": "tower.icons/reddit.com.ico",
+  "youtube.com": "tower.icons/youtube.com.ico",
   "linkedin.com": "tower.icons/linkedin.com.ico",
   "mail.google.com": "tower.icons/mail.google.com.ico",
-  "github.com": "tower.icons/github.com.svg",
+  "github.com": "tower.icons/github.com.png",
   "perchance.org": "tower.icons/perchance.org.png",
   "huggingface.co": "tower.icons/huggingface.co.png",
   "claude.ai": "tower.icons/claude.ai.svg",
