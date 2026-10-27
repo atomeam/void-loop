@@ -761,6 +761,40 @@ try {
     check('paint: the upload, the ten colours, the PNG export, the brush toggle and the share control are all there', inputs >= 14, JSON.stringify({ inputs }));
     await P.ctx.close();
   }
+  // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
+  // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
+  // that says what it is not. The count is real: the tap copies the character and adds one.
+  if (want("emoji counts: a ranked wall of a closed list, a tap copies the emoji and its count rises, a search, today and all time, and every item the emojis probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'emojis/' });
+    await P.p.waitForSelector('#wall button', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.emojis;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const rows = await P.p.evaluate(() => document.querySelectorAll('#wall button').length);
+    check('emoji: the wall lists the whole closed list, ranked, and every item the emojis probe reads is on the page', rows === 134 && /rocket/.test(t) && /red heart/.test(t) && !miss.length, JSON.stringify({ rows, miss }));
+    // tap the first row: it should be copied and the count should rise by one, today and all time together
+    const firstBefore = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const firstName = await P.p.$eval('#wall button', (e) => e.getAttribute('aria-label'));
+    await P.p.click('#wall button'); await P.p.waitForTimeout(400);
+    const firstAfter = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const said = await P.p.$eval('#say', (e) => e.textContent);
+    check('emoji: a tap copies the emoji and its own count goes up by one, said plainly', /\b1\b/.test(firstAfter) && firstAfter !== firstBefore && /Copied/.test(said) && /copies today/.test(firstName), JSON.stringify({ firstBefore, firstAfter, said, firstName }));
+    await P.p.fill('#q', 'rocket'); await P.p.waitForTimeout(250);
+    // the rows are all on the page; the search hides the ones that do not match, so count what is shown
+    const filtered = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: the search narrows the wall by name', filtered.length === 1 && /rocket/.test(filtered[0]), JSON.stringify({ filtered }));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(200);
+    await P.p.click('#all'); await P.p.waitForTimeout(250);
+    const allOn = await P.p.$eval('#all', (e) => e.getAttribute('aria-pressed'));
+    const todayOff = await P.p.$eval('#today', (e) => e.getAttribute('aria-pressed'));
+    const allText = await text();
+    check('emoji: all time is a mode of its own and the line says what the number counts', allOn === 'true' && todayOff === 'false' && /in all/.test(allText), JSON.stringify({ allOn, todayOff }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length);
+    check('emoji: every control on the wall is named', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
   // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
   // code — a task list, a timer and notes on this device — and every item the gate reads is on it (the probe's own lists, run here)
   if (want("gist: the work beside the code — tasks, a timer, notes and sizes on the device, and every item the codebase probe reads")) {

@@ -428,6 +428,24 @@ export const PROBES = Object.freeze({
       ['a second painting', /The Starry Night/],
     ],
   },
+  // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com ranks the emoji
+  // copied from Emojipedia; the Twitter stream its old page was built on is, by its own account, inactive. Verse's /emojis/ counts copies
+  // of a closed list of emoji made on the page itself and says so, so the "realtime" is real and local and no global feed is pretended.
+  // Judged on Verse alone (their page is a paragraph of history and a link to the source, not a tool).
+  emojis: {
+    site: 'https://emojitracker.com/', verse: '/emojis/',
+    ask: { verse: '/emojis/' },
+    truth: [['a known emoji on the wall', /rocket/], ['another (a heart)', /red heart/], ['the ranking it shows', /ranked today or all time/i],
+      ['the search, said on the page', /searched by name/i], ['the honest line: not a feed', /not a feed of anyone's messages/i]],
+    facts: [
+      ['emoji counts', /emoji counts/i], ['a ranked wall', /ranked wall/i], ['tap to copy', /tap one to copy/i], ['today', /\bToday\b/], ['all time', /All time/],
+      ['a search', /searched by name/i], ['refreshed while open', /refresh/i], ['a closed list', /closed list/i], ['no text to send', /no text to send/i],
+      ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i], ['back to Verse', /Back to Verse/],
+    ],
+  },
+  // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management
+  // beside it; Verse's /g/ is a gist page that keeps the work beside the code — a task list, a timer and notes on this device, with the
+  // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are
   codebase: {
     site: 'https://www.codebasehq.com/', verse: '/g/',
     ask: { verse: '/g/?text=hello%20world&name=notes.txt' },

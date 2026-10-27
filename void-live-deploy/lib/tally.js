@@ -3,11 +3,15 @@
 // skills/coin.js (the line under the coin). The request carries ONLY a tally name and a value from a closed list, and a small count; the
 // server returns integers. No free text exists anywhere in this feature. Playbook: docs/playbooks/open-endpoint-closed-list.md.
 import { dayOf, secondsToMidnight, clientKey } from './reactions.js';
+import { EMOJI_CHARS } from './emoji.js';
 export { dayOf, secondsToMidnight, clientKey };
 
 /** the closed list: tally name -> its values. Adding one is a code change and a review, never a request. */
 export const TALLIES = Object.freeze({
   coin: Object.freeze(['heads', 'tails']),
+  // the emoji wall (owner, 2026-10-26): a copy is counted only if the emoji is on lib/emoji.js's list, so the endpoint
+  // still takes nothing but a name from a closed list and a count — no text exists in this feature
+  emoji: EMOJI_CHARS,
 });
 export const TALLY_IDS = Object.freeze(Object.keys(TALLIES));
 export const isTally = (of) => typeof of === 'string' && Object.prototype.hasOwnProperty.call(TALLIES, of);

@@ -39,6 +39,10 @@ const HAND_FLOORS = [
   // colorzilla.com (Tranco 101,274), its gradient editor behind Carbon ads, a Twitter widget, Facebook styles, Google Analytics and a tag manager
   // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
   { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [] },
+  // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
+  // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
+  // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked
+  { id: 'emojis', site: 'emojitracker.com', url: 'https://emojitracker.com/', ask: 'realtime emoji counts', page: '/emojis/', label: 'Emoji counts', glyph: '☻', extra: [] },
   // the wheel picker (owner, 2026-10-24: "find the site to conquer and get to work now"): the frontier's wheelofgold.com is a login-walled
   // spin-to-win, not a tool, so the floor fights the category's best, wheelofnames.com
   { id: 'wheel', learned: "a fair wheel draws the winner first with crypto and plans the spin to land on it; and the gate learned to spin a wheel and read who won", site: 'wheelofnames.com', url: 'https://wheelofnames.com/', ask: 'spin the wheel', page: '/wheel/', label: 'Wheel picker', glyph: '◔', fatality: 'the winner drawn fairly with cryptographic random numbers before the wheel turns, weights like Pizza*3 typed inline, and an answer straight from the ask', extra: ['entries list', 'remove the winner', 'weights'] },
