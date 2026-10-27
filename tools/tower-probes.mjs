@@ -417,19 +417,17 @@ export const PROBES = Object.freeze({
   // 10 + 26 + 28 + 12. Judged on Verse alone (their side is an app store listing, not a page).
   paint: {
     site: 'https://heycolor.com/', verse: '/paint/',
-    ask: { verse: '/paint/?t=heart' },
-    truth: [['the cells to paint, counted (76)', /\b76 cells/], ['colour 1 has 10 cells', /1 \u00b7 0\/10/], ['colour 2 has 26', /2 \u00b7 0\/26/], ['colour 3 has 28', /3 \u00b7 0\/28/], ['colour 4 has 12', /4 \u00b7 0\/12/], ['the grid is 12 by 12', /12 \u00d7 12/]],
+    ask: { verse: '/paint/?p=wave' },
+    truth: [['the areas, counted (104)', /\b104 areas/], ['the pixels, counted (48,400)', /48,400 pixels/], ['ten numbered colours', /\b10 colours/],
+      ['colour 1 has 10 areas', /1 \u00b7 10 left/], ['colour 8 has 16', /8 \u00b7 16 left/], ['colour 9 has 18', /9 \u00b7 18 left/], ['the painting it opened', /The Great Wave/]],
     facts: [
-      ['paint by number', /paint by number/i], ['numbered cells', /\bnumbered cells\b/i], ['a numbered palette', /palette/i], ['the progress count', /cells painted/],
-      ['next cell', /Next cell/], ['start over', /Start over/], ['download a PNG', /Download PNG/], ['a share link', /Share link/],
-      ['save to a gallery', /Save to gallery/], ['your gallery', /Your gallery/], ['upload your own image', /Upload your own image/],
-      ['kept on this device', /on this device/i], ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i], ['four colours', /4 colours/],
+      ['paint by number', /paint by number/i], ['real paintings, numbered', /real paintings/i], ['numbered areas', /numbered areas/i], ['a numbered palette', /palette/i],
+      ['the progress count', /pixels painted/], ['tap an area to fill it', /tap an area/i], ['find an area', /Find a 1/], ['start over', /Start over/],
+      ['download a PNG', /Download PNG/], ['a share link', /Share link/], ['save to a gallery', /Save to gallery/], ['upload your own image', /Upload your own image/],
+      ['the artwork is public domain', /public domain/i], ['kept on this device', /on this device/i], ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i],
+      ['a second painting', /The Starry Night/],
     ],
   },
-  // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management
-  // beside it; Verse's /g/ is a gist page that keeps the work beside the code — a task list, a timer and notes on this device, with the
-  // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are
-  // checkable: hello world is 11 characters on 1 line. Judged on Verse alone (Codebase's page is a sign-up wall, not a tool).
   codebase: {
     site: 'https://www.codebasehq.com/', verse: '/g/',
     ask: { verse: '/g/?text=hello%20world&name=notes.txt' },

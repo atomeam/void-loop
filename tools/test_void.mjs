@@ -719,39 +719,46 @@ try {
       facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
     await F.ctx.close();
   }
-  // the paint floor (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint by number, fought from /paint/ — the counts the probe
-  // checks are the page's own formula (155 cells, 15 + 36 + 64 + 40 in four colours on a 16 by 16 grid), and the engine really paints
-  if (want("paint: the numbered cells painted by number, the palette counting down, next cell, a gallery on this device, and every item the paint probe reads")) {
+  // the paint floor (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint by number, fought from /paint/. The page paints a
+  // real painting cut into numbered areas, so the counts come from the template file the page loads (wave.json), not from a formula: the
+  // labels are unpacked here the same way the page unpacks them, and a test tap lands on a pixel known to belong to a known colour.
+  if (want("paint: a real painting cut into numbered areas, a tap fills the area the chosen colour owns, the wrong colour says which number it is, undo, a gallery on this device, and every item the paint probe reads")) {
     const { PROBES } = await import('./tower-probes.mjs');
-    const P = await fresh({ base: base + 'paint/?t=heart' });
-    await P.p.waitForSelector('#grid button', { timeout: 10000 });
+    const fsx = await import('node:fs');
+    const tpl = JSON.parse(fsx.readFileSync(new URL('../void-live-deploy/paint/templates/wave.json', import.meta.url), 'utf8'));
+    const labels = new Uint8Array(tpl.w * tpl.h); let at = 0;
+    for (const [v, len] of tpl.rle) { labels.fill(v, at, at + len); at += len; }
+    const P = await fresh({ base: base + 'paint/?p=wave' });
+    await P.p.waitForSelector('#palette button', { timeout: 15000 });
     const text = () => P.p.evaluate(() => document.body.innerText);
     const t = await text();
     const probe = PROBES.paint;
     const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
-    check('paint: the template is drawn and counted — 76 cells, four numbered colours, a 12 by 12 grid — and every item the paint probe reads is on the page', /76 cells/.test(t) && /12 × 12/.test(t) && !miss.length, JSON.stringify({ miss }));
-    await P.p.click('#grid button[data-code="1"]'); await P.p.waitForTimeout(150);
+    check('paint: the painting is cut into 104 numbered areas in ten colours, and every item the paint probe reads is on the page', /\b104 areas/.test(t) && /\b10 colours/.test(t) && /The Great Wave/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const pick = (colour) => { for (let p = 0; p < labels.length; p++) if (labels[p] === colour) return { x: p % tpl.w, y: (p / tpl.w) | 0 }; return null; };
+    const tapAt = async (pt) => { const box = await P.p.$eval('#c', (e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; }); await P.p.mouse.click(box.x + (pt.x + 0.5) * box.w / tpl.w, box.y + (pt.y + 0.5) * box.h / tpl.h); };
+    await tapAt(pick(0)); await P.p.waitForTimeout(300);
     const afterOne = await text();
-    await P.p.click('#grid button[data-code="2"]'); await P.p.waitForTimeout(150);
-    const wrong = await P.p.$eval('#note', (e) => e.textContent);
-    check('paint: a tap fills a cell of the chosen colour and the count follows; the wrong colour says so instead of filling', /1 of 76 cells painted/.test(afterOne) && /1 · 1\/10/.test(afterOne) && /colour 2/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ cells painted/) || []), wrong }));
-    await P.p.click('#next'); await P.p.waitForTimeout(150);
-    const hints = await P.p.evaluate(() => document.querySelectorAll('#grid button.hint').length);
-    await P.p.click('#save'); await P.p.waitForTimeout(200);
-    const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
-    check('paint: next cell marks one to paint, and saving puts the painting in the gallery on this device', hints === 1 && gallery.length === 1 && /heart/.test(gallery[0]) && /1 painted/.test(gallery[0]), JSON.stringify({ hints, gallery }));
-    const lit = await P.p.evaluate(() => document.querySelectorAll('#grid button.same').length);
+    await tapAt(pick(1)); await P.p.waitForTimeout(300);
+    const wrong = await P.p.$eval('#say', (e) => e.textContent);
+    check('paint: a tap fills the area the chosen colour owns and the count follows; the wrong colour says which number the area is instead of filling it', /\b1 of 104 areas/.test(afterOne) && /number 2\b/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ areas/) || []), wrong }));
     const pct = await P.p.evaluate(() => document.getElementById('bar').getAttribute('aria-valuenow'));
-    await P.p.click('#undo'); await P.p.waitForTimeout(150);
-    const afterUndo = await text();
-    check('paint: the active colour lights every one of its cells, the bar shows the share painted, and undo takes the last cell back', lit === 10 && +pct > 0 && /0 of 76 cells painted/.test(afterUndo), JSON.stringify({ lit, pct, afterUndo: (afterUndo.match(/\d+ of \d+ cells painted/) || []) }));
-    await P.p.click('#grid button[data-code="1"]'); await P.p.waitForTimeout(120);
-    await P.p.click('#save'); await P.p.waitForTimeout(150);
-    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 10000 });
+    await P.p.click('#next'); await P.p.waitForTimeout(200);
+    const ringed = await P.p.$eval('#say', (e) => e.textContent);
+    await P.p.click('#save'); await P.p.waitForTimeout(250);
+    const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
+    check('paint: the bar shows the share painted, find an area rings one, and saving puts the painting in the gallery on this device', +pct > 0 && /ringed/.test(ringed) && gallery.length === 1 && /The Great Wave/.test(gallery[0]) && /1 areas/.test(gallery[0]), JSON.stringify({ pct, ringed, gallery }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const shared = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 15000 });
     const kept = await P.p.evaluate(() => document.querySelectorAll('#gallery li').length);
-    check('paint: the gallery survives a reload (it is on this device, nothing uploaded)', kept >= 1, JSON.stringify({ kept }));
-    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #bar').length);
-    check('paint: the upload, the palette, the PNG export and the share control are all there', inputs >= 9, JSON.stringify({ inputs }));
+    const restored = await text();
+    check('paint: the link carries the areas finished (they come back on a reload) and the gallery survives a reload, nothing uploaded', /p=wave/.test(shared) && /done=\d/.test(shared) && kept >= 1 && /\b1 of 104 areas/.test(restored), JSON.stringify({ shared, kept, restored: (restored.match(/\d+ of \d+ areas/) || []) }));
+    await P.p.click('#undo'); await P.p.waitForTimeout(250);
+    const afterUndo = await text();
+    check('paint: undo takes the last area back', /\b0 of 104 areas/.test(afterUndo), JSON.stringify({ afterUndo: (afterUndo.match(/\d+ of \d+ areas/) || []) }));
+    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #mode, #bar').length);
+    check('paint: the upload, the ten colours, the PNG export, the brush toggle and the share control are all there', inputs >= 14, JSON.stringify({ inputs }));
     await P.ctx.close();
   }
   // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
