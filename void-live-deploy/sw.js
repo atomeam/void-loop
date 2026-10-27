@@ -26,7 +26,7 @@ const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|pho
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
 // the files a kept page fetches that are neither its HTML nor a modulepreload: /paint/ asks for its paintings by fetch and /emojis/
 // imports the closed list directly, so neither arrives through keepWhole — and a page that shows itself but cannot draw is offline 0
-(the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
+// (the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
 const EXTRA = ['/paint/templates/wave.json', '/paint/templates/starry.json', '/lib/emoji.js'];
 
 // a tool page and the modules it preloads: kept for the pages open when the worker takes over, so the page that installed it works offline

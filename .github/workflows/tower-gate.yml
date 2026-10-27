@@ -137,6 +137,8 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
+      - name: The service worker parses (a worker that does not parse takes every page offline)
+        run: node --check void-live-deploy/sw.js
       - name: Every page names what its checklist credits it with
         env:
           CHROME_PATH: /usr/bin/google-chrome
