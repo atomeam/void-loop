@@ -24,6 +24,11 @@ const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|pho
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
+// the files a kept page fetches that are neither its HTML nor a modulepreload: /paint/ asks for its paintings by fetch and /emojis/
+// imports the closed list directly, so neither arrives through keepWhole — and a page that shows itself but cannot draw is offline 0
+(the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
+const EXTRA = ['/paint/templates/wave.json', '/paint/templates/starry.json', '/lib/emoji.js'];
+
 // a tool page and the modules it preloads: kept for the pages open when the worker takes over, so the page that installed it works offline
 // on its very next load (2026-10-25: /color/ reloaded offline showed its shell with no colour, its modules never kept)
 const keepWhole = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
@@ -36,7 +41,7 @@ const CACHE_SCORES = 'void-scores-v1';
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(KEPT.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(KEPT.map((t) => keepTool(c, t)))).then(() => Promise.all(EXTRA.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())
