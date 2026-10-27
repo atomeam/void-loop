@@ -1,44 +1,59 @@
 /**
- * dice skill — roll some dice
+ * dice skill — roll a die or several, with totals. No network.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a die", "roll 2d6", "dice".
+ * "roll a die", "roll 2d6", "roll three dice", "d20".
  */
 export function isDice(text) {
-  return /^(?:please\s+)?(?:roll\s+(?:a\s+|some\s+|the\s+)?(?:dice|die|d\d+)|(?:\d+)?d\d+(?:\s*\+\s*\d+)?|dice(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:please\s+)?(?:roll\s+(?:a\s+)?(?:die|dice)|roll\s+\d{1,2}d\d{1,3}|\d{1,2}d\d{1,3}|roll\s+(?:one|two|three|four|five|six|\d{1,2})\s+(?:die|dice)|d\d{1,3})$/.test(t);
 }
 
-function roll(sides, count = 1) {
-  let sum = 0, rolls = [];
-  for (let i = 0; i < count; i++) {
-    const r = Math.floor(Math.random() * sides) + 1;
-    rolls.push(r);
-    sum += r;
+function roll(sides = 6) {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return 1 + (a[0] % sides);
+}
+
+function parse(text) {
+  const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+  const nd = t.match(/(\d{1,2})d(\d{1,3})/);
+  if (nd) return { n: Math.min(20, +nd[1] || 1), sides: Math.min(100, +nd[2] || 6) };
+  const word = t.match(/roll\s+(one|two|three|four|five|six|\d{1,2})\s+(?:die|dice)/);
+  if (word) {
+    const N = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+    return { n: Math.min(20, N[word[1]] || +word[1] || 1), sides: 6 };
   }
-  return { rolls, sum };
+  if (/d\d/.test(t)) {
+    const s = +t.match(/d(\d+)/)[1];
+    return { n: 1, sides: Math.min(100, s || 6) };
+  }
+  return { n: 1, sides: 6 };
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const t = String(text || '').toLowerCase();
-  let sides = 6, count = 1;
-  const m = t.match(/(\d+)d(\d+)/);
-  if (m) { count = Math.min(100, parseInt(m[1], 10) || 1); sides = parseInt(m[2], 10) || 6; }
-  else if (/d\d+/.test(t)) { sides = parseInt(t.match(/d(\d+)/)[1], 10); }
-  const { rolls, sum } = roll(sides, count);
-  showPage((p) => {
-    p.innerHTML = '<h2>Dice</h2><p style="font-size:28px;font-weight:300">' + esc(rolls.join(' + ') + ' = ' + sum) + '</p><div class="sub">' + count + 'd' + sides + ' · say another roll for more</div>';
+  const { n, sides } = parse(text);
+  const rolls = Array.from({ length: n }, () => roll(sides));
+  const total = rolls.reduce((a, b) => a + b, 0);
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Dice</h2><div class="sub">rolling…</div>';
   });
+  if (!api._pageStill(el)) return 'dice';
+  el.innerHTML = '<h2>Dice</h2>'
+    + '<p style="font-size:28px;font-weight:300;letter-spacing:0.05em">' + rolls.map(esc).join(' + ') + (n > 1 ? ' = ' + total : '') + '</p>'
+    + '<div class="sub">' + n + 'd' + sides + (n > 1 ? ' · total ' + total : '') + '</div>'
+    + '<div class="src">Fair rolls from this device’s secure random numbers.</div>';
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll 2d6', 'dice', 'd20'],
-  nearMisses: ['what is a die', 'dice game', 'roll the ball'],
+  examples: ['roll a die', 'roll 2d6', 'roll three dice', 'd20', 'roll a d12'],
+  nearMisses: ['what is a die', 'dice games', 'roll the film'],
   match(lower, text) { return isDice(text); },
   run,
   suite() {
-    const ok = isDice('roll a die') && isDice('2d6') && !isDice('what is a die');
+    const ok = isDice('roll a die') && isDice('roll 2d6') && isDice('d20') && !isDice('what is a die');
     return { ok, got: 'match works' };
   }
 };
