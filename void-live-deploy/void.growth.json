@@ -5875,5 +5875,6 @@
   {"at": "2026-10-27T16:53:10Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do i use the magnets?\"", "try": "how do i use the magnets?"},
   {"at": "2026-10-27T17:07:17Z", "by": "verse", "kind": "fix", "what": "Verse fixes its tilt-mode skill: learn to handle \"show me a 45deg tilt\"", "try": "show me a 45deg tilt"},
   {"at": "2026-10-27T18:48:58Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"how do i print this part\"", "try": "how do i print this part"},
-  {"at": "2026-10-27T19:25:09Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"make a 2d sunset with blue and orange\"", "try": "make a 2d sunset with blue and orange"}
+  {"at": "2026-10-27T19:25:09Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"make a 2d sunset with blue and orange\"", "try": "make a 2d sunset with blue and orange"},
+  {"at": "2026-10-27T19:25:35Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 13: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 897 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-27T1925.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-27T1925.json"}
 ]
