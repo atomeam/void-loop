@@ -18453,52 +18453,52 @@
   "paint": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 150,
-    "best": 240,
-    "evidence": "Verse (/paint/) 150 ms to the load event (median of 3, phone width) vs heycolor.com 240 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T15:44:31.228Z"
+    "verse": 181,
+    "best": 225,
+    "evidence": "Verse (/paint/) 181 ms to the load event (median of 3, phone width) vs heycolor.com 225 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/paint/) 3 of 3 loads answered vs heycolor.com 3 of 3 loads answered",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/paint/) 0 px sideways overflow at 390 px vs heycolor.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 4,
     "evidence": "Verse (/paint/) 0 unnamed controls or images vs heycolor.com 4 unnamed controls or images",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/paint/) 0 (1: the page shows itself again with the network cut) vs heycolor.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/paint/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs heycolor.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/paint/) 7 of 7 right against the worked-out answer; judged against the standard, not heycolor.com (the site is not asked)",
-    "at": "2026-10-27T15:44:31.228Z",
+    "at": "2026-10-27T15:52:28.968Z",
     "of": 7
    },
    "design polish": {
@@ -18506,81 +18506,81 @@
     "verse": 0,
     "best": 11,
     "evidence": "Verse (/paint/) 0 design defects vs heycolor.com 11 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), heycolor.com (0 low-contrast texts, 11 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T15:44:31.228Z"
+    "at": "2026-10-27T15:52:28.968Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 18,
     "best": 1,
     "evidence": "Verse (/paint/) 18 of 18 things a full answer shows vs heycolor.com 1 of 18 things a full answer shows (Verse lacks: none; site lacks: real paintings, numbered, numbered areas, a numbered palette, the progress count, tap an area to fill it, find an area, start over, download a PNG, a share link, save to a gallery, upload your own image, the artwork is public domain, kept on this device, works offline, no account, no ads, a second painting)",
-    "at": "2026-10-27T15:44:31.228Z",
+    "at": "2026-10-27T15:52:28.968Z",
     "of": 18
    }
   },
   "emojis": {
    "speed": {
     "verdict": "better",
-    "verse": 213,
-    "best": 528,
-    "evidence": "Verse (/emojis/) 213 ms to the load event (median of 3, phone width) vs emojitracker.com 528 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T15:43:32.431Z"
+    "verse": 219,
+    "best": 881,
+    "evidence": "Verse (/emojis/) 219 ms to the load event (median of 3, phone width) vs emojitracker.com 881 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-    "at": "2026-10-27T15:43:32.431Z"
+    "best": 2,
+    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 2 of 3 loads answered",
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T15:43:32.431Z"
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
-    "at": "2026-10-27T15:43:32.431Z"
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "offline": {
     "verdict": "equal",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T15:43:32.431Z"
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/emojis/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T15:43:32.431Z"
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/emojis/) 5 of 5 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-27T15:43:32.431Z",
+    "at": "2026-10-27T15:53:03.433Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 3,
-    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
-    "at": "2026-10-27T15:43:32.431Z"
+    "best": 2,
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 1 small tap targets, layout shift 0.64)",
+    "at": "2026-10-27T15:53:03.433Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 13,
     "best": 0,
     "evidence": "Verse (/emojis/) 13 of 13 things a full answer shows vs emojitracker.com 0 of 13 things a full answer shows (Verse lacks: none; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse)",
-    "at": "2026-10-27T15:43:32.431Z",
+    "at": "2026-10-27T15:53:03.433Z",
     "of": 13
    }
   }
