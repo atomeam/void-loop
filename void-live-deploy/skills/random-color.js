@@ -1,38 +1,42 @@
 /**
- * random-color skill — give a random hex color
+ * random-color skill — a random color with hex, RGB and a preview swatch
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "random color", "give me a color", "pick a color".
- * Empty stage stays empty; the card shows the color swatch and hex.
+ * "random color", "give me a color", "another color".
  */
-export function isColor(text) {
-  return /^(?:please\s+)?(?:(?:give\s+me\s+)?(?:a\s+)?random\s+color|pick\s+(?:me\s+)?(?:a\s+)?color|random\s+hex)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
-}
-
-export function suite() {
-  const ok = isColor('random color') && isColor('give me a color') && !isColor('what color is the sky');
-  if (!ok) throw new Error('color match failed');
-  return true;
+export function isRandomColor(text) {
+  return /^(?:please\s+)?(?:(?:give|show)\s+(?:me\s+)?(?:a|another|one\s+more)\s+color|(?:another|a|random)\s+color|color(?:\s+please)?|what\s+color)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function randomHex() {
   return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
 }
 
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
 async function run(text, api) {
   const { showPage, esc } = api;
-  if (!isColor(text)) return 'none';
   const hex = randomHex();
+  const rgb = hexToRgb(hex);
   showPage((p) => {
-    p.innerHTML = '<h2>Random color</h2><div style="width:120px;height:120px;background:' + hex + ';border-radius:8px;margin:16px auto;border:1px solid #333"></div><p style="font-size:24px;text-align:center;font-family:monospace">' + esc(hex) + '</p><div class="sub">say “random color” for another</div>';
+    p.innerHTML = '<h2>A color</h2><div style="width:120px;height:120px;background:' + hex + ';border-radius:8px;margin:12px 0"></div>'
+      + '<p style="font-size:22px;font-weight:300">' + esc(hex.toUpperCase()) + '</p>'
+      + '<p>rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')</p>'
+      + '<div class="sub">say “another color” for one more</div>';
   });
   return 'random-color';
 }
 
 export default {
   name: 'random-color',
-  examples: ['random color', 'give me a color', 'pick a color'],
-  nearMisses: ['what color is blue', 'color theory', 'hex to rgb'],
-  match(lower, text) { return isColor(text); },
+  examples: ['random color', 'give me a color', 'another color'],
+  nearMisses: ['what color is the sky', 'color theory', 'red color'],
+  match(lower, text) { return isRandomColor(text); },
   run,
-  suite,
+  suite() {
+    const ok = isRandomColor('random color') && isRandomColor('give me a color') && !isRandomColor('what color is the sky');
+    return { ok, got: 'match works' };
+  }
 };
