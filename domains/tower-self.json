@@ -199,7 +199,7 @@
    "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
   },
   "randomarea.com": {
-   "at": "2026-10-27T08:19:35Z",
+   "at": "2026-10-27T15:59:09Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -220,6 +220,47 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is a professional service business offering web development, hosting, and database management. Verse provides individual utility)",
    "title": "Wheelock Web Works: Web Development, Design, and Hosting"
+  },
+  "diffuse.tools": {
+   "at": "2026-10-27T15:59:13Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a collection of web widgets and code snippets for developers to enhance their own sites, such as cookie notices, store )",
+   "title": "Diffuse Tools - Widgets & Code Snippets to Enhance Your Website"
+  },
+  "localconditions.com": {
+   "at": "2026-10-27T16:00:00Z",
+   "outcome": "discarded",
+   "family": "weather",
+   "why": "failed tests"
+  },
+  "sketchersunited.org": {
+   "at": "2026-10-27T15:59:34Z",
+   "outcome": "walled",
+   "why": "a sign-in wall"
+  },
+  "drawspace.com": {
+   "at": "2026-10-27T15:59:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an online drawing school/platform providing lessons and curriculum. Verse has a 'paint' tool, but it is a coloring game (pain)",
+   "title": "Everyone Can Draw | Drawspace"
+  },
+  "hexo.io": {
+   "at": "2026-10-27T15:59:46Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a static site generator and blog framework. Verse offers a 'docs and notes' tool, but that is for personal note-taking and do)",
+   "title": "Hexo"
+  },
+  "ajsonline.org": {
+   "at": "2026-10-27T15:59:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a scientific journal providing peer-reviewed research articles and author guidelines, which is a publishing service and not a)",
+   "title": "American Journal of Science"
+  },
+  "facemojikeyboard.com": {
+   "at": "2026-10-27T15:59:58Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a suite of text styling tools (fonts, text art, emojis) and AI social media generators. While Verse has an 'emojis' pag)",
+   "title": "Facemoji – Free Font & Emoji Generator, Hashtags, Captions & Bio Tools | Facemoj"
   }
  },
  "runs": [
