@@ -151,9 +151,10 @@
    "title": "C-United株式会社"
   },
   "hexdb.io": {
-   "at": "2026-10-26T22:52:14Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-27T08:19:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides an API for aircraft ADS-B data lookup (ICAO hex and registration to aircraft details). Verse does not have a page for a)",
+   "title": "hexdb.io | Mode-S Hex ADS-B API"
   },
   "notepad-plus-plus.org": {
    "at": "2026-10-26T22:52:20Z",
@@ -178,6 +179,47 @@
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "Uptimer.dev"
+  },
+  "communitydragon.org": {
+   "at": "2026-10-27T08:19:15Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "CommunityDragon"
+  },
+  "speedtest.org": {
+   "at": "2026-10-27T08:19:24Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a speed test tool for measuring internet connection performance, and Verse does not have a page that performs network diagnos)",
+   "title": "SpeedTest.org - Internet Speed Test"
+  },
+  "unitedworx.com": {
+   "at": "2026-10-27T08:19:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional web development and SEO agency offering custom services. Verse provides individual utility tools (calculators,)",
+   "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
+  },
+  "randomarea.com": {
+   "at": "2026-10-27T08:19:35Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401"
+  },
+  "urdufonts.net": {
+   "at": "2026-10-27T08:19:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a library of Urdu fonts for download, which is a specific service for font files. Verse has tools for photo editing, co)",
+   "title": "Urdu Fonts: Download Free Urdu Fonts : Urdu Fonts"
+  },
+  "wheelockweb.net": {
+   "at": "2026-10-27T08:19:45Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service offering web development, design, hosting, and database management. Verse does not have a page for hiring professio)",
+   "title": "Wheelock Web Works: Web Development, Design, and Hosting"
+  },
+  "wheelockweb.com": {
+   "at": "2026-10-27T08:19:49Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional service business offering web development, hosting, and database management. Verse provides individual utility)",
+   "title": "Wheelock Web Works: Web Development, Design, and Hosting"
   }
  },
  "runs": [
