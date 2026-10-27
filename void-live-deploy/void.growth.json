@@ -5874,5 +5874,6 @@
   {"at": "2026-10-27T16:00:06Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com"},
   {"at": "2026-10-27T16:53:10Z", "by": "verse", "kind": "fix", "what": "Verse fixes its magnetize skill: learn to handle \"how do i use the magnets?\"", "try": "how do i use the magnets?"},
   {"at": "2026-10-27T17:07:17Z", "by": "verse", "kind": "fix", "what": "Verse fixes its tilt-mode skill: learn to handle \"show me a 45deg tilt\"", "try": "show me a 45deg tilt"},
-  {"at": "2026-10-27T18:48:58Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"how do i print this part\"", "try": "how do i print this part"}
+  {"at": "2026-10-27T18:48:58Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"how do i print this part\"", "try": "how do i print this part"},
+  {"at": "2026-10-27T19:25:09Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"make a 2d sunset with blue and orange\"", "try": "make a 2d sunset with blue and orange"}
 ]
