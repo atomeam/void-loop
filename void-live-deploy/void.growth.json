@@ -5879,5 +5879,6 @@
   {"at": "2026-10-27T19:25:35Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 13: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 897 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-27T1925.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-27T1925.json"},
   {"at": "2026-10-27T20:59:25Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-file skill: learn to handle \"print the motor file\"", "try": "print the motor file"},
   {"at": "2026-10-27T22:19:59Z", "by": "verse", "kind": "fix", "what": "Verse fixes its cartoon skill: learn to handle \"generate a toon style dog\"", "try": "generate a toon style dog"},
-  {"at": "2026-10-27T22:34:36Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com"}
+  {"at": "2026-10-27T22:34:36Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com"},
+  {"at": "2026-10-27T22:37:12Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"}
 ]

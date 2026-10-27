@@ -1087,3 +1087,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-27T08:22:31Z | verse | build | Versus: took on no site; next randomarea.com
 2026-10-27T16:00:06Z | verse | build | Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com
 2026-10-27T22:34:36Z | verse | build | Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com
+2026-10-27T22:37:12Z | verse | build | Versus: took on no site; next randomarea.com
