@@ -199,7 +199,7 @@
    "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
   },
   "randomarea.com": {
-   "at": "2026-10-27T15:59:09Z",
+   "at": "2026-10-27T22:33:31Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -261,6 +261,47 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website provides a suite of text styling tools (fonts, text art, emojis) and AI social media generators. While Verse has an 'emojis' pag)",
    "title": "Facemoji – Free Font & Emoji Generator, Hashtags, Captions & Bio Tools | Facemoj"
+  },
+  "greenwichcommunitydirectory.org.uk": {
+   "at": "2026-10-27T22:33:35Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a local community directory providing services and support information for residents of a specific borough. Verse does not ha)",
+   "title": "Home | Greenwich Community Directory"
+  },
+  "sycophanthex.com": {
+   "at": "2026-10-27T22:33:36Z",
+   "outcome": "gone",
+   "why": "answered 403"
+  },
+  "unitedbrands.wine": {
+   "at": "2026-10-27T22:33:43Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a corporate business site for a wine and spirits distributor. Verse does not have a page for corporate business directories o)",
+   "title": "UNITED BRANDS"
+  },
+  "vtuner.com": {
+   "at": "2026-10-27T22:33:51Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service for internet radio station aggregation and a B2B technology provider for radio integration. While Verse has a 'podc)",
+   "title": "vTuner Internet Radio"
+  },
+  "racetimer.se": {
+   "at": "2026-10-27T22:34:06Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides professional event timing services, race registration, and logistics for sports organizers, which is a specialized B2B )",
+   "title": "Racetimer – Ditt lopp din tid"
+  },
+  "bouldercolorado.gov": {
+   "at": "2026-10-27T22:34:21Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a municipal government portal providing news, services, and local information for a specific city; Verse does not have a page)",
+   "title": "Home | City of Boulder"
+  },
+  "hyperunit.xyz": {
+   "at": "2026-10-27T22:34:26Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a specialized asset tokenization layer for a specific blockchain ecosystem (Hyperliquid), which involves complex liquidity, b)",
+   "title": "Unit | Asset tokenization layer on Hyperliquid"
   }
  },
  "runs": [
