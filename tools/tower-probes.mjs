@@ -586,6 +586,31 @@ export const PROBES = Object.freeze({
       ['eyedropper', /Pick a colour from the screen/i], ['copy CSS', /Copy CSS/],
     ],
   },
+  books: {
+    site: 'https://www.sudowrite.com/', verse: '/books/',
+    ask: { verse: '/books/' },
+    truth: [
+      ['chapters from capability families', /Chapters/],
+      ['export markdown', /Export Markdown/],
+      ['export text', /Export text/],
+      ['no credits', /no credits/i],
+      ['no subscriptions', /no subscriptions/i],
+      ['no API keys', /no API keys/i],
+      ['works offline', /works offline/i],
+    ],
+    askParts: {
+      'book studio': [['chapters heading', /Chapters/], ['export controls', /Export Markdown/]],
+      'chapters': [['chapter titles', /Chapter \d/], ['surpassed count', /Surpassed \d+/]],
+      'export': [['export markdown', /Export Markdown/], ['export text', /Export text/]],
+      'offline': [['works offline', /works offline/i], ['no credits', /no credits/i]],
+      'sharing': [['stage link', /See it as a card/], ['back to Verse', /Back to Verse/]],
+    },
+    facts: [
+      ['book studio', /Verse Bookshelf/], ['chapters', /Chapters/], ['export markdown', /Export Markdown/],
+      ['export text', /Export text/], ['no credits', /no credits/i], ['no subscriptions', /no subscriptions/i],
+      ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
     ask: { verse: '/emojis/?pick=🔥' },
@@ -1010,7 +1035,7 @@ const LANE_PROBES = Object.freeze({
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 // a second floor standing on the same page reads it the same way (owner, 2026-10-26: tildegit is /g/ like codebase): the questions and the
 // lists come from the page, and only the site it is compared with changes — said once here, never copied into a second probe that can drift
-const SAME_PAGE = { tildegit: 'codebase' };
+const SAME_PAGE = { tildegit: 'codebase', sudowrite: 'books', squibler: 'books', inkfluence: 'books', novelcrafter: 'books' };
 
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site

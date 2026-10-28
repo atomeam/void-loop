@@ -906,6 +906,21 @@ try {
     check('colorzilla: the page threw nothing', !P.errors.length, JSON.stringify({ errors: P.errors.join(' | ').slice(0, 160) }));
     await P.ctx.close();
   }
+  // the books floor: Verse Bookshelf, compiling chapters from the ledger.
+  if (want("books: the bookshelf compiles chapters and exports")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'books/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    await P.p.waitForTimeout(1500);
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.books;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('books: the bookshelf compiles chapters and exports', /Verse Bookshelf/.test(t) && /Chapters/.test(t) && /Export Markdown/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('books: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.
