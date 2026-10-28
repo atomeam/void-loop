@@ -1,0 +1,40 @@
+{
+ "floor": "colorzilla",
+ "verse_page": "/gradient/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "colorzilla.com": {
+   "url": "https://www.colorzilla.com/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://www.colorzilla.com/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "ColorZilla for Chrome and Firefox",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/gradient/ shows \"chrome\"; not \"colorzilla\", \"firefox\""
+    },
+    {
+     "name": "Ultimate Gradient Generator",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/gradient/ shows \"gradient\", \"generator\"; not \"ultimate\""
+    }
+   ]
+  }
+ },
+ "gaps": [],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}
