@@ -461,6 +461,7 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
+  ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
@@ -537,6 +538,10 @@ for (const [name, file] of [
   ['calculators', 'calculators.test.mjs'],
   ['formula engine', 'formula-engine.test.mjs'],
   ['formula library', 'formulas.test.mjs'],
+  ['shape skill', 'shape-skill.test.mjs'],
+  ['battleship skill', 'battleship-skill.test.mjs'],
+  ['parody data', 'parody-data.test.mjs'],
+  ['music-de', 'music-de.test.mjs'],
 ]) {
   addScript(name, file);
 }
