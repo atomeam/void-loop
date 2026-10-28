@@ -169,10 +169,10 @@
 
   const renderHistory = () => {
     const body = $('historybody');
-    body.innerHTML = '';
+    while (body.firstChild) body.removeChild(body.firstChild);
     for (const h of state.history) {
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + h.when + '</td><td>' + h.field + '</td><td>' + h.value + '</td>';
+      for (const v of [h.when, h.field, h.value]) { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
       body.appendChild(tr);
     }
   };
