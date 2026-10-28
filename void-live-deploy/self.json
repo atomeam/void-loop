@@ -497,8 +497,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:03:14Z",
+   "subject": "Photo resizer: a plain title and lead line, with presets grouped for passports, online forms, social and print"
+  },
+  {
+   "at": "2026-10-28T20:01:09Z",
+   "subject": "Builder: five red browser checks on main back to green (folder, figures together, three tool-page budgets) (#1343)"
+  },
+  {
+   "at": "2026-10-28T19:54:57Z",
+   "subject": "Tower gate: coin flip,nameunit,hosting measured against their live sites"
+  },
+  {
+   "at": "2026-10-28T19:54:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T19:54:00Z",
    "subject": "Boards: a plain lead line, general starter boards, and plain labels with the board terms kept"
+  },
+  {
+   "at": "2026-10-28T19:53:28Z",
+   "subject": "Tournaments: optional per-match columns, a gap-to-lead or gap-to-cutoff hint, and a match-point rule"
   },
   {
    "at": "2026-10-28T19:50:53Z",
@@ -555,26 +575,6 @@
   {
    "at": "2026-10-28T17:33:19Z",
    "subject": "Verse fixes its photo-tools skill: learn to handle \"edit lighting on this photo\""
-  },
-  {
-   "at": "2026-10-28T17:23:45Z",
-   "subject": "Verse fixes its gradient skill: learn to handle \"fix the gradient on this\""
-  },
-  {
-   "at": "2026-10-28T17:23:25Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-28T17:15:20Z",
-   "subject": "Incident: the browser suite failed on b60840bd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-28T16:50:11Z",
-   "subject": "Tower gate: coin flip measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T16:48:47Z",
-   "subject": "Tower gate: music,weather measured against their live sites"
   }
  ],
  "builders": {
