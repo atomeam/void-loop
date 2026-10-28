@@ -503,6 +503,7 @@ for (const [name, file] of [
   ['wiki-look', 'wiki-look.test.mjs'],
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],
+  ['tower-norival', 'tower-norival.test.mjs'],
   ['tower-merge', 'tower-merge.test.mjs'],
   ['site-icons', 'site-icons.test.mjs'],
   ['gradient', 'gradient.test.mjs'],
