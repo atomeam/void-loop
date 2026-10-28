@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Verse works on itself from a terminal, on a timer (owner, 2026-10-28: "build a version of verse we can drop in the terminal and work
 // on itself constantly on timers"). A thin wrapper over what the repo already runs on GitHub (docs/VERSE-LOOP.md lists reused vs new):
-//   the brain      default "verse": tools/propose-fix.mjs, Verse's own free model (Workers AI via /api/propose-fix, VOID_OWNER_TOKEN),
-//                  which already applies, tests (collisions, unit test, Verse's review, benchmark) and writes a patch; or a coding-agent
-//                  CLI (opencode, aider, any command) for work the free brain cannot do: a red check, the top of docs/NEXT.md
+//   the brain      default "verse", Verse's own: tools/verse-coder.mjs, a coding agent on the free model stack (Workers AI, then
+//                  OpenRouter, Groq, Gemini, Cerebras) for a red check or the top of docs/NEXT.md anywhere in the repo; and
+//                  tools/propose-fix.mjs (/api/propose-fix, VOID_OWNER_TOKEN) for skill probe jobs, which applies, tests (collisions,
+//                  unit test, Verse's review, benchmark) and writes a patch. Or a coding-agent CLI: opencode, aider, any command
 //   the merge      the automerge label: tools/automerge.mjs merges on Verse's review (automerge.yml)
 //   the safety net verify.yml runs the suite on every head of main and reverts a commit that breaks it (tools/revert-target.mjs);
 //                  watchdog.yml opens the issue when main is red
@@ -15,6 +16,8 @@ import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSyn
 import { resolve, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+
+const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 
 export const AGENTS = ['verse', 'opencode', 'aider', 'cmd'];
 // the fast part of .github/actions/void-test (the browser suite is verify.yml's, on every head of main)
@@ -82,15 +85,13 @@ export function scanDiff(diff) {
   return found;
 }
 
-/** What this lap does. Red: fix the first red check (a coding agent only; the free brain fixes skills, not checks). Green: the free
- *  brain takes the oldest probe job; a coding agent takes --task or the top of docs/NEXT.md. Pure. */
-export function pickTask({ before, agent, next, task }) {
+/** What this lap does. Red: fix the first red check (every brain; Verse's through tools/verse-coder.mjs). Green: Verse takes the
+ *  oldest probe job when it can reach the site (probe: VOID_OWNER_TOKEN is set) and no --task is given; otherwise --task or the
+ *  top of docs/NEXT.md. Pure. */
+export function pickTask({ before, agent, next, task, probe = true }) {
   const red = before.find((r) => !r.ok);
-  if (red) {
-    if (agent === 'verse') return { kind: 'blocked', why: 'main is red (' + red.name + '); the free brain only fixes skills: run a lap with --agent opencode|aider|cmd, or a builder fixes it (watchdog.yml has the issue)' };
-    return { kind: 'fix', check: red.name, cmd: red.cmd, output: red.output || '' };
-  }
-  if (agent === 'verse') return { kind: 'probe' };
+  if (red) return { kind: 'fix', check: red.name, cmd: red.cmd, output: red.output || '' };
+  if (agent === 'verse' && probe && !task) return { kind: 'probe' };
   if (task) return { kind: 'next', n: null, text: task };
   const it = topItem(next);
   return it ? { kind: 'next', ...it } : { kind: 'idle', why: 'all green and docs/NEXT.md has no open item' };
@@ -118,10 +119,12 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
   ].join('\n');
 }
 
-/** How to call each brain: { cmd, args, shell? }. Keys reach the CLI only through the environment it inherits. */
-export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false } = {}) {
+/** How to call each brain: { cmd, args, shell? }. Verse's: propose-fix for a probe job, its coder for anything else.
+ *  Keys reach the CLI only through the environment it inherits. */
+export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false, kind = 'probe', target = '', checksFile = '', repo = '.' } = {}) {
   const model = env.VERSE_LOOP_MODEL;
-  if (agent === 'verse') return { cmd: process.execPath, args: ['tools/propose-fix.mjs', '--out', outDir, ...(dryRun ? ['--dry'] : [])] };
+  if (agent === 'verse' && kind === 'probe') return { cmd: process.execPath, args: ['tools/propose-fix.mjs', '--out', outDir, ...(dryRun ? ['--dry'] : [])] };
+  if (agent === 'verse') return { cmd: process.execPath, args: [CODER, '--repo', repo, '--prompt-file', promptFile, ...(checksFile ? ['--checks', checksFile] : []), ...(target ? ['--target', target] : [])] };
   if (agent === 'opencode') return { cmd: 'opencode', args: ['run', ...(model ? ['--model', model] : []), readFileSync(promptFile, 'utf8')] };
   if (agent === 'aider') return { cmd: 'aider', args: ['--yes-always', '--no-auto-commits', '--no-gitignore', ...(model ? ['--model', model] : []), '--message-file', promptFile] };
   if (!env.VERSE_LOOP_AGENT_CMD) throw new Error('--agent cmd needs VERSE_LOOP_AGENT_CMD (the prompt is on stdin and its path in VERSE_LOOP_PROMPT_FILE)');
@@ -194,23 +197,42 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const before = run('before');
     report.before = before.map(({ name, ok }) => ({ name, ok }));
     const readDoc = (p) => (existsSync(resolve(cwd, p)) ? readFileSync(resolve(cwd, p), 'utf8') : '');
-    const task = pickTask({ before, agent: opts.agent, next: readDoc('docs/NEXT.md'), task: opts.task });
-    if (task.kind === 'blocked' || task.kind === 'idle') return done(task.kind, task.why);
-    report.task = task.kind === 'fix' ? { kind: 'fix', check: task.check } : task.kind === 'next' ? { kind: 'next', n: task.n, text: task.text.slice(0, 200) } : { kind: 'probe' };
-    step(task.kind === 'fix' ? 'task: fix the first red check, ' + task.check : task.kind === 'next' ? 'task: docs/NEXT.md item ' + task.n : 'task: the oldest open probe job (tools/propose-fix.mjs)');
-
+    const next = readDoc('docs/NEXT.md');
+    let task = pickTask({ before, agent: opts.agent, next, task: opts.task, probe: !!env.VOID_OWNER_TOKEN });
+    if (task.kind === 'idle') return done(task.kind, task.why);
     const work = mkdtempSync(join(tmpdir(), 'verse-loop-'));
-    const promptFile = join(work, 'prompt.md');
-    const prompt = buildPrompt({ task: task.kind === 'probe' ? { kind: 'next', n: 0, text: 'probe job', n: null } : task, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
-    writeFileSync(promptFile, prompt);
-    const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun });
-    if (opts.agent === 'verse' && !env.VOID_OWNER_TOKEN) return done('idle', 'the free brain needs VOID_OWNER_TOKEN (the Pages READ_TOKEN) in the environment; without it a lap is a quiet no-op, as in propose-fix.yml');
-    step('brain: ' + opts.agent);
-    const ar = sh(a.cmd, a.args, { cwd, env: { ...env, VERSE_LOOP_PROMPT_FILE: promptFile }, input: prompt, shell: !!a.shell, timeout: Number(env.VERSE_LOOP_AGENT_TIMEOUT_MIN || 45) * 60e3 });
+    const promptFile = join(work, 'prompt.md'), checksCopy = join(work, 'checks.json');
+    writeFileSync(checksCopy, JSON.stringify(checks));
+    const brain = (t) => {
+      report.task = t.kind === 'fix' ? { kind: 'fix', check: t.check } : t.kind === 'next' ? { kind: 'next', n: t.n, text: t.text.slice(0, 200) } : { kind: 'probe' };
+      step(t.kind === 'fix' ? 'task: fix the first red check, ' + t.check : t.kind === 'next' ? 'task: ' + (t.n != null ? 'docs/NEXT.md item ' + t.n : 'the given task') : 'task: the oldest open probe job (tools/propose-fix.mjs)');
+      const prompt = buildPrompt({ task: t.kind === 'probe' ? { kind: 'next', text: 'probe job', n: null } : t, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
+      writeFileSync(promptFile, prompt);
+      const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun, kind: t.kind, target: t.kind === 'fix' ? t.check : '', checksFile: checksCopy, repo: cwd });
+      step('brain: ' + opts.agent + (opts.agent === 'verse' ? (t.kind === 'probe' ? ' (propose-fix)' : ' (verse-coder)') : ''));
+      return sh(a.cmd, a.args, { cwd, env: { ...env, VERSE_LOOP_PROMPT_FILE: promptFile }, input: prompt, shell: !!a.shell, timeout: Number(env.VERSE_LOOP_AGENT_TIMEOUT_MIN || 45) * 60e3 });
+    };
+    let ar = brain(task);
     if (ar.error && ar.error.code === 'ENOENT') return done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)');
+    if (opts.agent === 'verse' && task.kind === 'probe' && ar.code === 3) {
+      // no probe job (or the site is unreachable): the lap goes on to the top of docs/NEXT.md with Verse's coder
+      step('no probe job (tools/propose-fix.mjs exit 3): on to docs/NEXT.md');
+      task = pickTask({ before, agent: opts.agent, next, probe: false });
+      if (task.kind === 'idle') return done('idle', 'no open probe job, and ' + task.why);
+      ar = brain(task);
+    }
+    const coderSaid = () => { try { return JSON.parse(ar.out.trim().split('\n').filter((l) => l.startsWith('{')).pop()); } catch (_) { return { why: ar.out.trim().split('\n').slice(-2).join(' | ') }; } };
 
     let probe = null;
-    if (opts.agent === 'verse') {
+    if (opts.agent === 'verse' && task.kind !== 'probe') {
+      // verse-coder leaves its change in the tree on exit 0; any other exit has put the tree back (4: no model key, 6: none answered)
+      if (ar.code) {
+        const c = coderSaid(), why = 'Verse\'s coder: ' + (c.why || 'exited ' + ar.code);
+        if (git('status', '--porcelain').out.trim()) return done('refused', why + '; it left changes in the tree, which stay for a look');
+        return done(ar.code === 4 || ar.code === 6 ? 'idle' : 'no-change', why);
+      }
+      step('Verse\'s coder finished in ' + (coderSaid().turns || '?') + ' turns');
+    } else if (opts.agent === 'verse') {
       // propose-fix leaves the tree as it was and writes the passing change as a patch (exit 3: nothing to do or the site unreachable)
       if (ar.code === 3) return done('idle', 'no open probe job, the site could not be reached, or Verse proposed nothing (tools/propose-fix.mjs exit 3)');
       if (ar.code) return done('error', 'tools/propose-fix.mjs exited ' + ar.code + ': ' + ar.out.trim().split('\n').slice(-3).join(' | '));
@@ -275,9 +297,10 @@ const HELP = `verse-loop: Verse works on itself, one item per lap (docs/VERSE-LO
   --once             one lap, then exit (the default)
   --every <minutes>  a lap now, then one every N minutes
   --dry-run          checks and the brain run; nothing is committed, pushed or opened
-  --agent <name>     verse (default: free Workers AI through tools/propose-fix.mjs), opencode, aider, or cmd (VERSE_LOOP_AGENT_CMD)
+  --agent <name>     verse (default: tools/verse-coder.mjs on the free model stack for red checks and NEXT items, and
+                     tools/propose-fix.mjs for probe jobs), opencode, aider, or cmd (VERSE_LOOP_AGENT_CMD)
   --checks <file>    JSON list of {name, cmd, timeoutMin}; default tools/verse-loop.checks.json
-  --task <text>      for a coding agent on green: this instead of the top of docs/NEXT.md
+  --task <text>      on green: this instead of a probe job or the top of docs/NEXT.md
   --strict           ship only when every check is green
   --base <branch>    default main
 Keys come from the environment only.`;

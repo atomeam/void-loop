@@ -5,9 +5,9 @@
 1. It takes a lock (`.git/verse-loop.lock`), skips if the tree has local changes, fetches and detaches at `origin/main`.
 2. It runs the fast checks (`tools/verse-loop.checks.json`: `guard-source.mjs`, `growth-suites.mjs`; add lines to add checks).
 3. It picks **one** item:
-   - something is red: a coding agent fixes the **first red check**, never by weakening a test. The free brain fixes skills, not checks, so with it the lap reports `blocked` (watchdog.yml already has the issue open).
-   - all green, free brain: the oldest open `probe:` job, through `tools/propose-fix.mjs` and its four gates.
-   - all green, coding agent: `--task`, or the top open item of `docs/NEXT.md`, with a prompt built from `docs/TAGTEAM.md`, `docs/GATE-STANDARDS.md` and the task.
+   - something is red: the brain fixes the **first red check**, never by weakening a test. With the default `verse` brain that is Verse's own coding agent, `tools/verse-coder.mjs` (below).
+   - all green, `verse`, and `VOID_OWNER_TOKEN` set with no `--task`: the oldest open `probe:` job, through `tools/propose-fix.mjs` and its four gates. When there is none (exit 3), the same lap goes on to `docs/NEXT.md` with `verse-coder`.
+   - all green otherwise: `--task`, or the top open item of `docs/NEXT.md`, with a prompt built from `docs/TAGTEAM.md`, `docs/GATE-STANDARDS.md` and the task.
 4. It scans the diff's added lines for keys (and refuses any `.env`), then runs the checks again. Only **no new red** (and, on a fix lap, the target green; `--strict` wants all green) goes on.
 5. It commits to `loop/<time>` with one line appended to `docs/TAGTEAM.md`, pushes with a plain `git push` (never forced), and opens a PR with `gh` labelled `automerge` (a free-brain patch under 0.8 confidence is labelled `waits for owner`, the same gate as propose-fix.yml).
 
@@ -49,7 +49,7 @@ node tools/verse-loop.mjs --once [--dry-run] [--agent verse|opencode|aider|cmd] 
 
 `.github/workflows/verse-loop.yml` runs `--once` every hour at :41 and on demand. It is off until you turn it on.
 
-1. Repo secrets (by name; values never go in a file): `VOID_OWNER_TOKEN` (already set for propose-fix), `VERSE_LOOP_TOKEN` (a fine-grained token with contents and pull-requests write: the workflow token cannot open PRs, and its pushes start no checks; without it a lap runs dry), and for the coding agents one of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` plus the variable `VERSE_LOOP_MODEL`.
+1. Repo secrets (by name; values never go in a file): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (Workers AI, Verse's coder), `VOID_OWNER_TOKEN` (already set for propose-fix: probe jobs), optionally `VERSE_LOOP_TOKEN` (the workflow token is used without it, now that Actions may open PRs), and as fallbacks any of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` (and `VERSE_LOOP_MODEL` for opencode or aider).
 2. Repo variable `VERSE_LOOP_ENABLED` = `true` (`gh variable set VERSE_LOOP_ENABLED --body true`).
 3. First lap by hand: `gh workflow run verse-loop.yml -f dry=true`, then `gh workflow run verse-loop.yml`.
 
@@ -57,12 +57,25 @@ node tools/verse-loop.mjs --once [--dry-run] [--agent verse|opencode|aider|cmd] 
 
 | `--agent` | What runs | Keys |
 | --- | --- | --- |
-| `verse` (default) | `tools/propose-fix.mjs`: Verse's own model on Workers AI through `/api/propose-fix`, free | `VOID_OWNER_TOKEN` |
+| `verse` (default) | red checks and NEXT items: `tools/verse-coder.mjs`, Verse's own coding agent on the free stack below; probe jobs: `tools/propose-fix.mjs` through `/api/propose-fix` | coder: `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`, or any one fallback key; probes: `VOID_OWNER_TOKEN` |
 | `opencode` | `opencode run [--model $VERSE_LOOP_MODEL] <prompt>` | the provider's key from the env |
 | `aider` | `aider --yes-always --no-auto-commits --message-file <prompt>` | the provider's key from the env |
 | `cmd` | `$VERSE_LOOP_AGENT_CMD` in a shell, prompt on stdin, its path in `$VERSE_LOOP_PROMPT_FILE` | whatever it reads from the env |
 
 The fallback order when one runs out: **1.** Verse's own Workers AI (free, no key beyond `VOID_OWNER_TOKEN`) → **2.** OpenRouter's free models (`OPENROUTER_API_KEY`, a `:free` model) → **3.** Groq's free tier (`GROQ_API_KEY`) → **4.** Gemini's free tier (`GEMINI_API_KEY`) → **5.** Cerebras' free tier (`CEREBRAS_API_KEY`) → **6.** a local model through Ollama (no key). Set `VERSE_LOOP_MODEL` to the provider's model name as opencode or aider expect it. A key is never written to a file in the repo, never passed on a command line, and the diff scan refuses one that slips in.
+
+## Verse's coder (`tools/verse-coder.mjs`)
+
+A plain agent loop, no CLI to install. Each turn the model answers with one JSON tool call: `list`, `read`, `search` (ripgrep), `edit` (a unified diff, applied with `git apply`), `check` (one check from the checks file by name, or `node --test` on one test file) and `finish`. It walks the free stack in order, Workers AI (`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`, model `FREE_MODEL` from `lib/models.js`) → OpenRouter → Groq → Gemini → Cerebras, moving on at a 429 or an error; with no key it exits 4 and the lap is `idle`. Model names can be changed with `VERSE_CODER_CF_MODEL`, `VERSE_CODER_OPENROUTER_MODEL`, `VERSE_CODER_GROQ_MODEL`, `VERSE_CODER_GEMINI_MODEL`, `VERSE_CODER_CEREBRAS_MODEL` (never a gpt-oss model).
+
+Limits it enforces itself, whatever the model says:
+- **Caps:** 30 turns and 250,000 tokens by default (`--max-turns`, `--max-tokens`).
+- **Where it writes:** only inside the repo. Never `.env*`, `.dev.vars`, `.github/workflows` or `.github/actions`, anything that looks like a secret (`secrets.*`, `*.pem`, `*.key`), `.git`, `node_modules`, or the loop's own guards (`verse-coder.mjs`, `verse-loop.mjs`, `verse-loop.checks.json`, `lib/patch-guard.js`). No renames and no binary patches.
+- **Tests:** `lib/patch-guard.js` runs on every edited JS, HTML and JSON file (stubs, a large shrink, broken syntax, lost functions). A test-weakening guard covers test files and the scripts the checks run: fewer assertions or test cases, a skip, `.only` or `todo`, a dead branch, an early clean exit, or an assertion that cannot fail is refused and undone. A test is never deleted.
+- **Finishing:** on a fix lap the target check must be green, then Verse's review (`tools/review-pr.mjs --gate` on a throwaway commit of the change) and the key scan run on its own diff. A bug or risk finding goes back to the model; after three refused finishes it gives up.
+- **Keys:** checks and the review run with every `*_KEY`, `*_TOKEN` and secret variable removed from their environment.
+
+Exit 0 leaves the change in the tree for the loop's checks, commit and PR. Any other exit (3 nothing, 4 no key, 5 a cap, 6 no model answered) has put back every file it touched. The last line it prints is JSON. It runs on its own too: `node tools/verse-coder.mjs --task "make the calc check green" --target <check>`. Its tests (`tools/verse-coder.test.mjs`) drive it with a fake model that scripts its tool calls (`VERSE_CODER_SCRIPT`).
 
 Other knobs: `VERSE_LOOP_CHECKS` (a checks file), `VERSE_LOOP_AGENT_TIMEOUT_MIN` (default 45), `VERSE_LOOP_GH` (a stand-in for gh, for tests), `VERSE_LOOP_FETCH_IN_DRY_RUN=1`.
 
@@ -70,4 +83,4 @@ Other knobs: `VERSE_LOOP_CHECKS` (a checks file), `VERSE_LOOP_AGENT_TIMEOUT_MIN`
 
 Reused as they are: `tools/propose-fix.mjs` and its gates (the free brain), `automerge.yml` / `tools/automerge.mjs` (merges the labelled PR on Verse's review), `verify.yml` with `tools/revert-target.mjs` and `live-revert.yml` (revert a red main or a bad deploy), `watchdog.yml` (the issue when main is red), `deploy.yml`, `loop-critic.yml` (reads the PR), `guard-source.mjs` and `growth-suites.mjs` (the checks), and `docs/NEXT.md`, `docs/TAGTEAM.md`, `docs/GATE-STANDARDS.md` (the work and the rules). `dispatcher.yml`, `grow-self.yml`, `void-tick.yml`, `upkeep.yml`, `tools/cron-gate.mjs` and `tools/lap-items.mjs` keep their own jobs; the loop does not duplicate them (`--task` or a line in the checks file can point a lap at any of them).
 
-New: the terminal lap itself (`tools/verse-loop.mjs`: lock, before/after verdict, key scan, coding-agent adapters, one TAGTEAM line, a PR from a terminal), `tools/verse-loop.checks.json`, the gated hourly workflow `verse-loop.yml`, this page, and `tools/verse-loop.test.mjs` (dry-run laps in a throwaway repo with a fake brain, a fake gh and positive and negative controls).
+New: Verse's coder (`tools/verse-coder.mjs`, test `tools/verse-coder.test.mjs`), the terminal lap itself (`tools/verse-loop.mjs`: lock, before/after verdict, key scan, coding-agent adapters, one TAGTEAM line, a PR from a terminal), `tools/verse-loop.checks.json`, the gated hourly workflow `verse-loop.yml`, this page, and `tools/verse-loop.test.mjs` (dry-run laps in a throwaway repo with a fake brain, a fake gh and positive and negative controls).
