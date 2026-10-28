@@ -509,6 +509,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:09:17Z",
+   "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
+  },
+  {
+   "at": "2026-10-28T23:06:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T23:06:46Z",
+   "subject": "wip paint"
+  },
+  {
+   "at": "2026-10-28T23:05:53Z",
+   "subject": "Regenerated the generated files after merging main again"
+  },
+  {
+   "at": "2026-10-28T23:05:22Z",
+   "subject": "Calculators: the 16 Maths gaps from calculator.net's sitemap, with known-answer tests"
+  },
+  {
    "at": "2026-10-28T23:02:30Z",
    "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
   },
@@ -567,26 +587,6 @@
   {
    "at": "2026-10-28T22:43:04Z",
    "subject": "TAGTEAM: Grok Bot handoff"
-  },
-  {
-   "at": "2026-10-28T22:38:21Z",
-   "subject": "Regenerated the generated files after merging main"
-  },
-  {
-   "at": "2026-10-28T22:34:56Z",
-   "subject": "CSP hashes: a directory shares one rule with the union of its pages' inline scripts, so the rules fit Cloudflare's 100 again (88 to 69…"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "Regenerate the generated files"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "seo-audit: no orphans past the baseline (the pages no tool row reaches are listed under More tools), identity's dead /jwt/ link removed"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
   }
  ],
  "builders": {
