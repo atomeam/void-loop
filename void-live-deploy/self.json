@@ -509,32 +509,68 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:55Z",
+   "subject": "Translate handwriting pad's pointer helper renamed so it no longer clashes with the new practice cards"
+  },
+  {
+   "at": "2026-10-28T21:48:55Z",
+   "subject": "Regenerated page data after rebase"
+  },
+  {
+   "at": "2026-10-28T21:48:55Z",
    "subject": "Memorials stay up while the gate's new wider-use aspect is unmeasured; they read in progress until it is"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:55Z",
    "subject": "Regenerated page data"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:50Z",
    "subject": "Browser checks for the catch-up pages; parity inventory joins the lap loop docs"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:50Z",
    "subject": "Calendar events can carry a video call, and the view prints"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:50Z",
    "subject": "Notes keep pictures, take comments with replies, and type by voice"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:50Z",
    "subject": "Translate page catches up: recent and searchable languages, keyboard, handwriting, your own fixes, conversation, bookmarklet"
   },
   {
-   "at": "2026-10-28T20:56:31Z",
+   "at": "2026-10-28T21:48:50Z",
    "subject": "Obituaries now earn the word beaten: per-site feature inventories, cited histories, and an honest in-progress state"
+  },
+  {
+   "at": "2026-10-28T21:46:08Z",
+   "subject": "handoff: /ledger/ done (PR #1370)"
+  },
+  {
+   "at": "2026-10-28T21:42:10Z",
+   "subject": "ledger: page code in /ledger/app.js (no inline-script CSP rule: _headers stays at 88 of 90), kept offline by sw.js"
+  },
+  {
+   "at": "2026-10-28T21:00:09Z",
+   "subject": "ledger: /ledger/ repo activity ledger (issues and PRs of any public GitHub repo, CSV/JSON, share-by-link, offline, ETag 304) to take over…"
+  },
+  {
+   "at": "2026-10-28T20:58:23Z",
+   "subject": "Tournaments test: the Discord check reads the round-wins column as whatever the scorer counts"
+  },
+  {
+   "at": "2026-10-28T20:57:04Z",
+   "subject": "Tournaments test: the claim-form check opens its own link, since the results box now sits folded away"
+  },
+  {
+   "at": "2026-10-28T20:56:32Z",
+   "subject": "Airport codes page used more widely: a plain first line, examples to try, keys, the codes to copy, the list to download, and the search…"
+  },
+  {
+   "at": "2026-10-28T20:55:45Z",
+   "subject": "calculators: mark two words the review read as code (CSV, CODATA) as right"
   },
   {
    "at": "2026-10-28T20:52:22Z",
@@ -549,44 +585,8 @@
    "subject": "Handoff: the tower-self family test is red on main and holds lane PRs; wider-use decisions written down"
   },
   {
-   "at": "2026-10-28T20:50:40Z",
-   "subject": "Gradient no longer takes every \"make a ... with\" ask: plans, the meals checklist and lists reach the list skill again"
-  },
-  {
-   "at": "2026-10-28T20:47:55Z",
-   "subject": "Receipt page: mark the file-kind label for the review"
-  },
-  {
-   "at": "2026-10-28T20:47:43Z",
-   "subject": "Receipt page: same as the store again (old copy showed carts empty), plain receipt line, labelled lookup, copy and save, code-only link…"
-  },
-  {
-   "at": "2026-10-28T20:44:43Z",
-   "subject": "Identity, CPAN and films: plain job first, everyday examples (shareable profiles, sample reports)"
-  },
-  {
-   "at": "2026-10-28T20:42:45Z",
-   "subject": "Markets: plain job first and four everyday one-tap examples (shareable links)"
-  },
-  {
-   "at": "2026-10-28T20:40:16Z",
-   "subject": "Photo details checker: plain title and lead in both languages, three everyday before-you-share uses, and the short address redirects to it…"
-  },
-  {
-   "at": "2026-10-28T20:38:46Z",
-   "subject": "Base converter: examples spelled in words"
-  },
-  {
-   "at": "2026-10-28T20:38:36Z",
-   "subject": "Base converter: plain job first and four everyday one-tap examples (links that restore the number)"
-  },
-  {
-   "at": "2026-10-28T20:38:01Z",
-   "subject": "BPM counter: heading spelled out in words"
-  },
-  {
-   "at": "2026-10-28T20:37:43Z",
-   "subject": "Metronome and BPM counter: plain job first, everyday ready tempos as shareable links, everyday presets beside the Italian ones"
+   "at": "2026-10-28T20:51:00Z",
+   "subject": "handoff: /calculators/ just finished (PR #1365)"
   }
  ],
  "builders": {
