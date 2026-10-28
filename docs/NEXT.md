@@ -2,6 +2,24 @@
 
 For Claude and the daily routines. Each line: status · open PRs · exact next step. Nothing is ever finished; each track keeps upgrading in the lap loop.
 
+<!-- tower-plan: tools/tower-plan.mjs reads this block and writes void-live-deploy/tower.plan.json, which the Versus card shows (now, next, far). Edit the ids here, never the JSON. -->
+**Tower queue, easiest first (owner, 2026-10-28: "meanwhile we can move backwards to easier sites").** Tiny single-purpose sites whose robots.txt lets us read them (checked 2026-10-28), worked in this order. Each one: a full feature inventory of the rival, parity plus more, the floor's journeys scripted in `tools/tower-journeys.mjs` with negative controls, then `tools/tower-gate.mjs` for wider use; a floor is marked beaten only on that evidence (blocked or unscripted is INCOMPLETE).
+- now: `paint` — heycolor.com, colour by number (/paint/ rebuilt: library in categories, zoom and pan, highlight, hints, saved progress, reveal, photo import)
+- next: `is it` — isitchristmas.com, one answer a day (robots: allowed)
+- next: `coin flip` — justflipacoin.com (robots: allowed except /flips)
+- next: `password strength` — howsecureismypassword.net (no robots.txt: allowed)
+- next: `word count` — wordcounter.net (robots: allowed)
+- next: `stopwatch` — online-stopwatch.com (robots: allowed)
+- next: `colour codes` — hexcolor16.com (robots: allowed)
+- next: `wheel` — wheelofnames.com (robots: allowed)
+- next: `gradient` — colorzilla.com gradient editor (robots: empty, allowed)
+- next: `encoder` — base64encode.org (robots: allowed)
+- next: `random number` — random.org (robots: home page allowed; /integers/?* disallowed, so only the home page is read)
+- far: `shopping` — Amazon, far future
+- far: `video` — YouTube, far future
+- skipped: hextobinary.com — its robots.txt disallows every path for every agent
+<!-- /tower-plan -->
+
 
 **Gate badges and stages (owner direction, 2026-10-28; `void-live-deploy/lib/gate-badge.js`, test `tools/gate-badge.test.mjs`).** Every tower floor shows one badge on the card: **[Gate: Code]** (software Verse can build now), **[Gate: Partner]** (the real thing needs a licensed partner or a partner's API: live fares, payments, licensed market or sports data, other people's videos, job boards) or **[Gate: License]** (a licence of Verse's own, such as a music streaming catalogue). A regulated floor (banking, lending, insurance, tax, government, health, food delivery, travel tickets, betting) also shows its stage: **Stage 1** on-device prep and the maths, then a hand-off to the official service; **Stage 2** a partner bridge; **Stage 3** a direct licence. No partner or licence exists today, so every regulated floor is at Stage 1. **The build queue picks only Code work, or Stage 1 on a regulated floor**: `tower()` puts every other floor behind all buildable work, and `tools/tower-self.mjs` never picks a site that is not buildable. A page whose real version needs a partner or a licence says so on the page and never fakes it (`tools/real-pages.mjs`).
 
