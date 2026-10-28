@@ -280,7 +280,8 @@
       if (note) parts.push(note);
       say(parts.join(' · '));
       for (const id of ['listen', 'copy', 'share', 'save', 'backB', 'fbB']) $(id).disabled = !out;
-      $('fb').hidden = true; $('fbB').setAttribute('aria-expanded', 'false');
+      const own = via === 'yours' && !!out; // your own correction on screen: its panel stays open, so "Back to the machine's" is one tap away
+      $('fb').hidden = !own; $('fbB').setAttribute('aria-expanded', String(own)); if (own) $('fbT').value = out;
       $('dictB').disabled = !wordy($('in').value);
     }
     const wordy = (t) => { const s = String(t || '').trim(); return !!s && s.length <= 60 && s.split(/\s+/).length <= 3 && !/[.!?。]\s/.test(s); };
