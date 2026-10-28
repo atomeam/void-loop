@@ -6,6 +6,7 @@
 // completeness unverified (never counted as beaten); a probe with truth null leaves accuracy unverified (only a site whose own address carries the
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { LANE_PAGES, FLOORS } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 // a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
@@ -459,6 +460,15 @@ export const PROBES = Object.freeze({
       ['stays on this device', /on this device/i], ['the worked example, marked as one', /worked example/i],
       ['back to Verse', /Back to Verse/], ['the stage bridge', /See it as a card on the stage/],
     ],
+    // the five rows this floor is fought on (its extra aspects): each is read off the same seeded answer, so a page that shows all of
+    // them is the most any page can show - judged on Verse alone, like the codebase rows (commit f108005d)
+    askParts: {
+      'point system presets': [['FNCS finals', /FNCS finals/], ['a cash cup preset', /Cash cup/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
+      'multi-match standings': [['one match per line', /one match per line/i], ['standings after every match', /standings after every match entered/i], ['average placement named', /average placement/i], ['the counts for the set', /\d+ teams? · \d+ match/]],
+      'heat split': [['snake order', /snake order/i], ['the heats numbered', /Heat 1/], ['a second heat', /Heat 2/], ['seeded by standing rank', /seeded by standing rank/i]],
+      'drop spots': [['drop spots', /drop spots/i], ['contested flagged', /contested/i], ['a claimed place', /Tilted Towers/], ['clear ones too', /\bclear\b/]],
+      'CSV in and out': [['import', /Import CSV/], ['export', /Export CSV/], ['the columns named', /team, place, eliminations/i], ['the heading', /CSV in and out/]],
+    },
   },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
@@ -941,7 +951,7 @@ export function factsFromFile(file, n = 6) {
 const FEATURE_DIR = new URL('../domains/features/', import.meta.url), featureFiles = new Map();
 /** a floor's features file, read once, or null (none, or not JSON) */
 export function featuresOf(id, dir = FEATURE_DIR) {
-  const file = new URL(featureSlug(id) + '.json', dir).pathname; if (featureFiles.has(file)) return featureFiles.get(file);
+  const file = fileURLToPath(new URL(featureSlug(id) + '.json', dir)); if (featureFiles.has(file)) return featureFiles.get(file);
   let v = null; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (_) { v = null; } featureFiles.set(file, v); return v;
 }
 /** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */

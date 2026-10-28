@@ -18520,135 +18520,180 @@
   "emojis": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 133,
-    "best": 443,
-    "evidence": "Verse (/emojis/) 133 ms to the load event (median of 3, phone width) vs emojitracker.com 443 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T02:44:14.877Z"
+    "verse": 168,
+    "best": 627,
+    "evidence": "Verse (/emojis/) 168 ms to the load event (median of 3, phone width) vs emojitracker.com 627 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-    "at": "2026-10-28T02:44:14.877Z"
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T02:44:14.877Z"
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
-    "at": "2026-10-28T02:44:14.877Z"
+    "best": 2,
+    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 2 unnamed controls or images",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/emojis/) 1 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T02:44:14.877Z"
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "sharing": {
     "verdict": "better",
-    "verse": 4,
+    "verse": 3,
     "best": 1,
-    "evidence": "Verse (/emojis/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T02:44:14.877Z"
+    "evidence": "Verse (/emojis/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
-    "verse": 9,
-    "best": 9,
-    "evidence": "Verse (/emojis/) 9 of 9 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-28T02:44:14.877Z",
-    "of": 9
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/emojis/) 5 of 5 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
+    "at": "2026-10-27T15:57:49.074Z",
+    "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 3,
-    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
-    "at": "2026-10-28T02:44:14.877Z"
+    "best": 2,
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), emojitracker.com (0 low-contrast texts, 1 small tap targets, layout shift 0.65)",
+    "at": "2026-10-27T15:57:49.074Z"
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
+    "verse": 13,
     "best": 0,
-    "evidence": "Verse (/emojis/) 17 of 22 things a full answer shows vs emojitracker.com 0 of 22 things a full answer shows (Verse lacks: its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, a share link for it; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse, the picked emoji, named, its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, everyone today, a share link for it, the stage bridge, the copy format picker)",
-    "at": "2026-10-28T02:44:14.877Z",
-    "of": 22
+    "evidence": "Verse (/emojis/) 13 of 13 things a full answer shows vs emojitracker.com 0 of 13 things a full answer shows (Verse lacks: none; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse)",
+    "at": "2026-10-27T15:57:49.074Z",
+    "of": 13
    }
   },
   "tournaments": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 113,
-    "best": 317,
-    "evidence": "Verse (/tournaments/) 113 ms to the load event (median of 3, phone width) vs yunite.xyz 317 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T02:43:48.719Z"
+    "verse": 121,
+    "best": 292,
+    "evidence": "Verse (/tournaments/) 121 ms to the load event (median of 3, phone width) vs yunite.xyz 292 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tournaments/) 3 of 3 loads answered vs yunite.xyz 3 of 3 loads answered",
-    "at": "2026-10-28T02:43:48.719Z"
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tournaments/) 0 px sideways overflow at 390 px vs yunite.xyz 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T02:43:48.719Z"
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/tournaments/) 0 unnamed controls or images vs yunite.xyz 2 unnamed controls or images",
-    "at": "2026-10-28T02:43:48.719Z"
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/tournaments/) 1 (1: the page shows itself again with the network cut) vs yunite.xyz 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T02:43:48.719Z"
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/tournaments/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs yunite.xyz 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T02:43:48.719Z"
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 14,
     "best": 14,
     "evidence": "Verse (/tournaments/) 14 of 14 right against the worked-out answer; judged against the standard, not yunite.xyz (the site is not asked)",
-    "at": "2026-10-28T02:43:48.719Z",
+    "at": "2026-10-28T02:46:53.715Z",
     "of": 14
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/tournaments/) 0 design defects vs yunite.xyz 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), yunite.xyz (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
-    "at": "2026-10-28T02:43:48.719Z"
+    "evidence": "Verse (/tournaments/) 0 design defects vs yunite.xyz 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), yunite.xyz (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T02:46:53.715Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 26,
     "best": 0,
     "evidence": "Verse (/tournaments/) 26 of 26 things a full answer shows vs yunite.xyz 0 of 26 things a full answer shows (Verse lacks: none; site lacks: tournament standings, a point system, preset systems, team sizes, points per elimination, the threshold rule, said, the standings table, the tiebreakers, in order, wins counted, average placement, one match per line, snake heats, drop spots, contested spots flagged, CSV in, CSV out, a share link, the share link carries the state, nothing sent, no account, works offline, stays on this device, the worked example, marked as one, back to Verse, the stage bridge, Tournaments)",
-    "at": "2026-10-28T02:43:48.719Z",
+    "at": "2026-10-28T02:46:53.715Z",
     "of": 26
+   },
+   "point system presets": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T02:46:53.715Z",
+    "of": 4,
+    "part": true
+   },
+   "multi-match standings": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T02:46:53.715Z",
+    "of": 4,
+    "part": true
+   },
+   "heat split": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T02:46:53.715Z",
+    "of": 4,
+    "part": true
+   },
+   "drop spots": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T02:46:53.715Z",
+    "of": 4,
+    "part": true
+   },
+   "CSV in and out": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T02:46:53.715Z",
+    "of": 4,
+    "part": true
    }
   }
  },
