@@ -164,16 +164,18 @@
     const rows = w ? state.reports.filter((r) => r.module.toLowerCase().includes(w)) : state.reports;
     $('searchout').textContent = rows.length + ' matching reports for "' + w + '".';
   };
-  $('connectlive').onclick = async () => {
-    $('livestatus').textContent = 'Connecting to live CPAN Testers feed…';
+  const syncLive = async () => {
+    if (!navigator.onLine) { $('livestatus').textContent = 'Offline: using local reports.'; return; }
+    $('livestatus').textContent = 'Auto-syncing live CPAN Testers feed…';
     try {
       const r = await fetch('https://www.cpantesters.org/', { mode: 'cors', credentials: 'omit' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      $('livestatus').textContent = 'Live CPAN Testers reachable. Offline reports remain available.';
+      $('livestatus').textContent = 'Live CPAN Testers auto-synced ' + new Date().toLocaleTimeString() + '. Offline reports remain available.';
     } catch (e) {
-      $('livestatus').textContent = 'Live connect unavailable (offline or blocked); staying on local reports.';
+      $('livestatus').textContent = 'Offline or blocked: using local reports.';
     }
   };
+  $('connectlive').onclick = syncLive;
   $('exportjson').onclick = () => {
     const cfg = JSON.stringify({ reports: state.reports, pass: state.reports.filter((r) => r.status === 'PASS').length, fail: state.reports.filter((r) => r.status === 'FAIL').length }, null, 2);
     $('exportbox').textContent = cfg;
@@ -187,12 +189,8 @@
 
   if (state.last) $('reports').value = state.last;
   render();
-  (async () => {
-    try {
-      const r = await fetch('https://www.cpantesters.org/', { mode: 'cors', credentials: 'omit' });
-      if (r.ok) $('livestatus').textContent = 'Live CPAN Testers reachable: auto-synced on load. Offline reports remain available.';
-    } catch (e) { /* stay offline-first */ }
-  })();
+  if (navigator.onLine) syncLive();
+  window.addEventListener('online', syncLive);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
