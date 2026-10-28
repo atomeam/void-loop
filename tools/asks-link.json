@@ -139,7 +139,7 @@
     {
       "match": "stickies",
       "ledgerAt": "2026-10-14T02:46:52Z",
-      "why": "stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft \u00b7 not sent'"
+      "why": "stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft · not sent'"
     },
     {
       "match": "plan history",
@@ -345,6 +345,31 @@
       "match": "replaced with 'Verse'",
       "ledgerAt": "2026-10-22T01:23:43Z",
       "why": "checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose"
+    },
+    {
+      "match": "weather page.*aria-busy|aria-busy.*weather page",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2"
+    },
+    {
+      "match": "edge cach.*KV writes|caches\\.default.*KV",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1"
+    },
+    {
+      "match": "words and the world.*(unproven|proven)",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs)"
+    },
+    {
+      "match": "churn cap",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "duplicate: tools/churn.mjs lists files changed more than 12 times in 7 days and the will's guard skips wants on them (2026-10-18)"
+    },
+    {
+      "match": "non-V01D workers off the shared namespace",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers"
     }
   ],
   "extra": [

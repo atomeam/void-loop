@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 10,
+  "experiment": 11,
   "tested": 27,
-  "checked": 18,
+  "checked": 17,
   "proven": 297
  },
  "families": [
@@ -768,9 +768,9 @@
    "name": "Sky and earth",
    "for": "weather, the sky tonight, places and time zones",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 3,
-    "checked": 2,
+    "checked": 1,
     "proven": 15
    },
    "skills": [
@@ -896,12 +896,13 @@
      "streak": 10
     },
     {
-     "name": "night-sky",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "name": "nightsky",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "streak": 10,
+     "since": "2026-10-28"
     },
     {
      "name": "place",
