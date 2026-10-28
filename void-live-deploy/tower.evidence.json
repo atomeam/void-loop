@@ -1775,60 +1775,60 @@
   },
   "weather": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 144,
-    "best": 428,
-    "evidence": "Verse (/weather/?q=Boston) 144 ms to the load event (median of 3, phone width) vs weather.gov 428 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:04:32.711Z"
+    "verdict": "better",
+    "verse": 233,
+    "best": 442,
+    "evidence": "Verse (/weather/?q=Boston) 233 ms to the load event (median of 3, phone width) vs weather.gov 442 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/weather/?q=Boston) 3 of 3 loads answered vs weather.gov 3 of 3 loads answered",
-    "at": "2026-10-28T13:04:32.711Z"
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 600,
     "evidence": "Verse (/weather/?q=Boston) 0 px sideways overflow at 390 px vs weather.gov 600 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:04:32.711Z"
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 7,
     "evidence": "Verse (/weather/?q=Boston) 0 unnamed controls or images vs weather.gov 7 unnamed controls or images",
-    "at": "2026-10-28T13:04:32.711Z"
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/weather/?q=Boston) 1 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:04:32.711Z"
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/weather/?q=Boston) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:04:32.711Z"
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
-    "best": 66,
-    "evidence": "Verse (/weather/?q=Boston) 1 design defects vs weather.gov 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.56), weather.gov (0 low-contrast texts, 65 small tap targets, layout shift 0.11)",
-    "at": "2026-10-28T13:04:32.711Z"
+    "best": 63,
+    "evidence": "Verse (/weather/?q=Boston) 1 design defects vs weather.gov 63 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.56), weather.gov (0 low-contrast texts, 63 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T16:48:18.019Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/weather/?q=Boston) 5 of 5 right against the worked-out answer; judged against the standard, not weather.gov (the site is not asked)",
-    "at": "2026-10-28T13:04:32.711Z",
+    "at": "2026-10-28T16:48:18.019Z",
     "of": 5
    },
    "hourly and daily forecast": {
@@ -1836,7 +1836,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/weather/?q=Boston) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:04:32.711Z",
+    "at": "2026-10-28T16:48:18.019Z",
     "of": 2,
     "part": true
    },
@@ -1845,7 +1845,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:04:32.711Z",
+    "at": "2026-10-28T16:48:18.019Z",
     "of": 1,
     "part": true
    },
@@ -1854,7 +1854,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:04:32.711Z",
+    "at": "2026-10-28T16:48:18.019Z",
     "of": 1,
     "part": true
    },
@@ -1863,7 +1863,7 @@
     "verse": 14,
     "best": 5,
     "evidence": "Verse (/weather/?q=Boston) 14 of 16 things a full answer shows vs weather.gov 5 of 16 things a full answer shows (Verse lacks: Forecast by city or ZIP, Hazard alerts (watches, warnings); site lacks: conditions now, °F, °C, feels like, humidity, the chance of rain, sunrise and sunset, an hourly forecast, a daily forecast, a share link, 7-day forecast)",
-    "at": "2026-10-28T13:04:32.711Z",
+    "at": "2026-10-28T16:48:18.019Z",
     "of": 16
    }
   },
@@ -2774,60 +2774,60 @@
   },
   "music": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 130,
-    "best": 480,
-    "evidence": "Verse (/music/) 130 ms to the load event (median of 3, phone width) vs Spotify 480 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:15:12.112Z"
+    "verdict": "better",
+    "verse": 362,
+    "best": 693,
+    "evidence": "Verse (/music/) 362 ms to the load event (median of 3, phone width) vs Spotify 693 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 loads answered vs Spotify 3 of 3 loads answered",
-    "at": "2026-10-28T13:15:12.112Z"
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/music/) 0 px sideways overflow at 390 px vs Spotify 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:15:12.112Z"
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/music/) 0 unnamed controls or images vs Spotify 0 unnamed controls or images",
-    "at": "2026-10-28T13:15:12.112Z"
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/music/) 0 (1: the page shows itself again with the network cut) vs Spotify 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:15:12.112Z"
+    "evidence": "Verse (/music/) 1 (1: the page shows itself again with the network cut) vs Spotify 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/music/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Spotify 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:15:12.112Z"
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
-    "best": 94,
-    "evidence": "Verse (/music/) 1 design defects vs Spotify 94 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Spotify (0 low-contrast texts, 93 small tap targets, layout shift 0.30)",
-    "at": "2026-10-28T13:15:12.112Z"
+    "best": 95,
+    "evidence": "Verse (/music/) 1 design defects vs Spotify 95 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), Spotify (0 low-contrast texts, 94 small tap targets, layout shift 0.30)",
+    "at": "2026-10-28T16:47:38.379Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 right against the worked-out answer; judged against the standard, not Spotify (the site is not asked)",
-    "at": "2026-10-28T13:15:12.112Z",
+    "at": "2026-10-28T16:47:38.379Z",
     "of": 3
    },
    "catalogue": {
@@ -2835,7 +2835,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/music/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:15:12.112Z",
+    "at": "2026-10-28T16:47:38.379Z",
     "of": 4,
     "part": true
    },
@@ -2844,7 +2844,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:15:12.112Z",
+    "at": "2026-10-28T16:47:38.379Z",
     "of": 3,
     "part": true
    },
@@ -2853,7 +2853,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:15:12.112Z",
+    "at": "2026-10-28T16:47:38.379Z",
     "of": 3,
     "part": true
    },
@@ -2862,7 +2862,7 @@
     "verse": 16,
     "best": 1,
     "evidence": "Verse (/music/) 16 of 16 things a full answer shows vs Spotify 1 of 16 things a full answer shows (Verse lacks: none; site lacks: a metronome, a piano, a tuner, a BPM counter, chords and scales, setlists, a catalogue, recommendations, no account, on your device, songs in the public domain, Playlists, Original music creation, Share links, cards and codes, Downloads)",
-    "at": "2026-10-28T13:15:12.112Z",
+    "at": "2026-10-28T16:47:38.379Z",
     "of": 16
    }
   },
