@@ -221,6 +221,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     <label for="icsFile" class="vh" id="icsL">Import .ics</label>
     <button type="button" id="importBtn">Import .ics</button><input type="file" id="icsFile" accept=".ics,text/calendar" hidden>
     <button type="button" id="exportBtn">Export all as .ics</button>
+    <button type="button" id="printBtn" title="Print what is on screen: the month, week, day, schedule or year">Print</button>
     <span class="note" id="count" style="margin:0"></span>
   </div>
   <p class="note" id="keys" style="margin-top:2px">Arrow keys move, T is today, M W D L Y switch the view, N is a new event, / searches</p>
@@ -242,6 +243,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     <label class="f"><span id="lTz">Time zone</span><input id="eTz" list="tzList" autocomplete="off" placeholder="Same as my calendar" maxlength="60"></label>
     <datalist id="tzList"></datalist>
     <label class="f"><span id="lLoc">Location</span><input id="eLoc" maxlength="300" autocomplete="off"></label>
+    <div class="f"><label for="eVideo" id="lVideo">Video call</label><div class="row" style="margin:0"><input id="eVideo" type="url" inputmode="url" maxlength="300" autocomplete="off" placeholder="https://… or add one" style="flex:1 1 180px"><button type="button" id="eVideoB" title="A free video call room (Jitsi Meet), no account; its address goes into the event and its invites">Add a video call</button></div></div>
     <label class="f"><span id="lCal">Calendar</span><select id="eCal"></select></label>
     <div class="checks" style="margin:0 0 10px"><label><input type="checkbox" id="eAll"><span id="lAll">All day</span></label></div>
     <div class="two">
@@ -424,6 +426,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       state.sel = o; $('detail').hidden = false; $('detTitle').textContent = o.title; const dl = $('detList'); dl.replaceChildren();
       const add = (k, v) => { if (!v) return; dl.append(el('dt', '', k), el('dd', '', v)); };
       add(de ? 'Wann' : 'When', whenOf(o)); add(W.repeat, o.rrule ? C.repeatText(o.rrule, lang) : ''); add(W.reminder, o.reminders.length ? o.reminders.map((m) => C.reminderText(m, lang)).join(', ') : ''); add(W.notes, o.notes);
+      if (o.video) { const dd = el('dd'), a = el('a', 'go', de ? 'Videoanruf beitreten' : 'Join video call'); a.href = o.video; a.target = '_blank'; a.rel = 'noopener'; a.id = 'detVideo'; dd.append(a, ' ', el('small', '', o.video.replace(/^https:\/\//, ''))); dl.append(el('dt', '', de ? 'Videoanruf' : 'Video call'), dd); }
       if (o.location) { const dd = el('dd', '', o.location + ' · '), a = el('a', '', W.map), dr = el('a', '', W.directions); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(o.location); dr.href = 'https://www.openstreetmap.org/directions?to=' + encodeURIComponent(o.location); for (const x of [a, dr]) { x.target = '_blank'; x.rel = 'noopener'; } dd.append(a, ' · ', dr); dl.append(el('dt', '', W.location), dd); }
       { const tv = baseOf(o).travel; if (tv && !o.allDay) add(W.travel.replace(/ \(.*\)$/, ''), tv + ' min · ' + W.leaveBy + ' ' + C.fmtTime(new Date(C.parseLocal(o.start).getTime() - tv * 60000), lang)); }
       if (o.wallStart) add(W.tz, C.tzCity(baseOf(o).tz) + ': ' + C.fmtTime(C.parseLocal(o.wallStart), lang) + ' – ' + C.fmtTime(C.parseLocal(o.wallEnd), lang) + ' ' + W.tzThere);
@@ -448,7 +451,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       const days = $('eDays'); days.replaceChildren(); C.dayNames(lang).forEach((n, i) => { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = C.DAYS[(i + 1) % 7]; cb.checked = !!(e.rrule && e.rrule.byday && e.rrule.byday.includes(cb.value)); lb.append(cb, el('span', '', n)); days.append(lb); });
       const rem = $('eRem'); rem.replaceChildren(); for (const [m, label] of REM_CHOICES) { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.value = String(m); cb.checked = e.reminders.includes(m); lb.append(cb, el('span', '', label)); rem.append(lb); }
       const cs = $('eCal'); cs.replaceChildren(...cals().filter((c) => c.kind !== 'holidays' && !c.url && !c.gone && !(c.share && c.share.role === 'view')).map((c) => { const o = el('option', '', c.name); o.value = c.id; return o; })); cs.value = e.cal || 'main'; if (!cs.value) cs.value = 'main';
-      zones(); $('eTravel').value = e.travel || ''; $('eTz').value = e.tz || ''; $('eLoc').value = e.location || ''; $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
+      zones(); $('eTravel').value = e.travel || ''; $('eTz').value = e.tz || ''; $('eLoc').value = e.location || ''; $('eVideo').value = e.video || ''; $('eNotes').value = e.notes; $('eInv').value = e.invitees.join(', '); syncEditor(); $('ed').showModal(); $('eTitle').focus();
     }
     const syncEditor = () => { const all = $('eAll').checked, f = $('eFreq').value; $('eTz').disabled = all; $('eTravel').disabled = all; $('eSt').disabled = all; $('eEt').disabled = all; $('eDays').hidden = f !== 'WEEKLY'; $('eEnds').hidden = !f; $('eInt').disabled = !f; };
     $('eAll').addEventListener('change', syncEditor); $('eFreq').addEventListener('change', syncEditor);
@@ -457,7 +460,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       e.preventDefault(); const all = $('eAll').checked, freq = $('eFreq').value;
       const ev = { id: state.editing ? state.editing.id : undefined, title: $('eTitle').value, allDay: all, start: all ? $('eSd').value : $('eSd').value + 'T' + ($('eSt').value || '09:00'), end: all ? $('eEd').value : $('eEd').value + 'T' + ($('eEt').value || '10:00'),
         rrule: freq ? { freq, interval: +$('eInt').value || 1, until: $('eUntil').value || undefined, count: +$('eCount').value || undefined, byday: freq === 'WEEKLY' ? [...$('eDays').querySelectorAll('input:checked')].map((c) => c.value) : undefined } : null,
-        reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, location: $('eLoc').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [], cal: $('eCal').value };
+        reminders: [...$('eRem').querySelectorAll('input:checked')].map((c) => +c.value), notes: $('eNotes').value, location: $('eLoc').value, video: $('eVideo').value, invitees: $('eInv').value, exdates: state.editing ? state.editing.exdates : [], cal: $('eCal').value };
       if (!all && +$('eTravel').value > 0) ev.travel = +$('eTravel').value;
       const zone = $('eTz').value.trim(); if (zone && !all && !C.isTz(zone)) { $('eTz').focus(); return say(W.tzBad, true); } if (zone && !all) ev.tz = zone;
       const n = C.normalize(ev); if (!n) return say(W.titleL + '?', true);
@@ -515,6 +518,9 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     $('detShare').addEventListener('click', async () => { const i = await inv(); if (!i) return; if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.sel.title, text: whenOf(state.sel), url: i.url }); return; } catch (_) {} } copy($('detShare'), i.url); });
     $('detMail').addEventListener('click', async () => { const i = await inv(); if (i) location.href = i.mailto; });
     $('detIcs').addEventListener('click', async () => { const i = await inv(); if (i) download(state.sel.title.replace(/[^\w.-]+/g, '_') + '.ics', i.ics); });
+    // catching up with Google Calendar (docs/PARITY/google-calendar.md): a video call on an event, and printing the view on screen
+    $('eVideoB').addEventListener('click', () => { if (!$('eVideo').value.trim()) $('eVideo').value = C.videoLink($('eTitle').value); $('eVideo').select(); });
+    $('printBtn').addEventListener('click', () => { $('detail').hidden = true; print(); });
     $('exportBtn').addEventListener('click', () => { download('verse-calendar.ics', C.icsOf(store.events)); toast($('exportBtn'), store.events.length + ' ' + W.exportDone); });
     $('importBtn').addEventListener('click', () => $('icsFile').click());
     $('icsFile').addEventListener('change', async () => { const f = $('icsFile').files[0]; if (!f) return; const got = C.parseIcs(await f.text()); for (const e of got) store.events = C.withEvent(store.events, e); keep(); render(); say(got.length + ' ' + W.imported); $('icsFile').value = ''; });

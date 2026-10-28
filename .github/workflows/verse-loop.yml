@@ -4,7 +4,7 @@
 # docs/NEXT.md. Only a change with no new red after the checks is committed to loop/<time>, pushed (never forced) and opened as a PR
 # labelled automerge (or "waits for owner" under propose-fix's confidence gate); verify.yml reverts it if main's suite goes red.
 # Off until the repo variable VERSE_LOOP_ENABLED is 'true'. Keys come from repo secrets by name, never from a file:
-# VOID_OWNER_TOKEN (the free brain), VERSE_LOOP_TOKEN (a token that may open PRs: the workflow token cannot, and its pushes start no
+# VOID_OWNER_TOKEN (the free brain), optional VERSE_LOOP_TOKEN (falls back to the workflow token now that Actions may open PRs; automerge.yml hourly picks them up) (a token that may open PRs: the workflow token cannot, and its pushes start no
 # checks), and for a coding agent OPENROUTER_API_KEY / GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY with vars.VERSE_LOOP_MODEL.
 name: Verse loop
 
@@ -70,7 +70,9 @@ jobs:
           VERSE_LOOP_AGENT: ${{ inputs.agent || 'verse' }}
           DRY: ${{ inputs.dry && '--dry-run' || '' }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN }}
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -78,7 +80,7 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
         run: |
           if [ -z "$GH_TOKEN" ] && [ -z "$DRY" ]; then
-            echo "::warning title=Verse loop runs dry::Repo secret VERSE_LOOP_TOKEN is not set, and the workflow token cannot open pull requests."
+            echo "::warning title=Verse loop runs dry::No token to open pull requests."
             DRY=--dry-run
           fi
           node tools/verse-loop.mjs --once $DRY | tee lap.txt

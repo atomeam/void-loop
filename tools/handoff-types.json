@@ -51,7 +51,6 @@
   "/markets/screener/": "in: text; out: numbers, table",
   "/news/": "in: text; out: url, text",
   "/notes/": "in: text, items; out: text, items",
-  "/paint/": "in: image, color, palette; out: image",
   "/password-strength/": "in: text; out: text",
   "/password/": "in: number; out: text",
   "/pdf/": "in: image, text; out: image, text",

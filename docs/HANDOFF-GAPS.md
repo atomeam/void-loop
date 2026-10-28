@@ -18,7 +18,6 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /calendar/ | /time/ | date | 6 |
 | /calendar/ | /weather/ | date | 6 |
 | /chords/ | /piano/ | music | 6 |
-| /color/ | /paint/ | color, palette | 6 |
 | /fantasy/ | /generators/ | names | 6 |
 | /fantasy/ | /prizes/ | names | 6 |
 | /fantasy/ | /random/ | names | 6 |
@@ -28,12 +27,10 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /flights/ | /time/ | location | 6 |
 | /flights/ | /weather/ | location | 6 |
 | /gradient/ | /boards/ | image | 6 |
-| /gradient/ | /paint/ | palette, image | 6 |
 | /gradient/ | /resize-image/ | image | 6 |
 | /gradient/ | /translate/ | image | 6 |
 | /image/ | /boards/ | image | 6 |
 | /image/ | /gradient/ | image | 6 |
-| /image/ | /paint/ | image | 6 |
 | /image/ | /resize-image/ | image | 6 |
 | /image/ | /translate/ | image | 6 |
 | /paint/ | /boards/ | image | 6 |
@@ -42,18 +39,21 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /paint/ | /translate/ | image | 6 |
 | /pdf/ | /boards/ | image, text | 6 |
 | /pdf/ | /gradient/ | image | 6 |
-| /pdf/ | /paint/ | image | 6 |
 | /pdf/ | /resize-image/ | image | 6 |
 | /pdf/ | /translate/ | image, text | 6 |
 | /photos/ | /boards/ | image | 6 |
 | /photos/ | /color/ | color | 6 |
 | /photos/ | /gradient/ | image, color | 6 |
-| /photos/ | /paint/ | image, color | 6 |
 | /photos/ | /resize-image/ | image | 6 |
 | /photos/ | /translate/ | image | 6 |
 | /piano/ | /chords/ | music | 6 |
 | /random-user/ | /generators/ | names | 6 |
 | /random-user/ | /prizes/ | names | 6 |
+| /random-user/ | /random/ | names | 6 |
+| /resize-image/ | /boards/ | image | 6 |
+| /resize-image/ | /gradient/ | image | 6 |
+| /resize-image/ | /translate/ | image | 6 |
+| /scores/ | /calendar/ | event, date | 6 |
 
 ## Every page's types
 
@@ -112,7 +112,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /metronome/ | number | number | yes | its tag |
 | /news/ | text | url, text | yes | handoff-types.json |
 | /notes/ | text, items | text, items | yes | handoff-types.json |
-| /paint/ | image, color, palette | image | yes | handoff-types.json |
+| /paint/ | image, color, palette | image | no | its tag |
 | /password-strength/ | text | text | yes | handoff-types.json |
 | /password/ | number | text | yes | handoff-types.json |
 | /pdf/ | image, text | image, text | no | handoff-types.json |
