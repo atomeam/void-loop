@@ -19,7 +19,7 @@ const LATER = ['/store/', '/jobs/', '/jobs/regions/', '/jobs/alerts/', '/jobs/eu
 // makes this cheap (the 2026-10-25 install slowdown was MODULES); a page's modules are still kept the first time it loads under the worker.
 const KEPT = TOOLS.concat(LATER);
 const isTool = (p) => KEPT.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|(?:sports|fantasy)\/(?:app|boot)|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban|flights|jobs)(?:\/[a-z]+)?\/app)\.js$/.test(p) || p === '/flights/airports.json' || p === '/jobs/snapshot.json' || p === '/flights/routes.json';
+const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|(?:sports|fantasy)\/(?:app|boot)|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban|flights|jobs|ledger)(?:\/[a-z]+)?\/app)\.js$/.test(p) || p === '/flights/airports.json' || p === '/jobs/snapshot.json' || p === '/flights/routes.json';
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
