@@ -154,7 +154,7 @@ export function takeLock(path, now = Date.now()) {
         stale = !alive || now - l.at > 3 * 3600e3;
       } catch { stale = now - statSync(path).mtimeMs > 3 * 3600e3; }
       if (!stale) return false;
-      try { unlinkSync(path); } catch {}
+      try { unlinkSync(path); } catch (u) { if (u.code !== 'ENOENT') throw u; } // another lap may have just removed it
     }
   }
   return false;
@@ -267,7 +267,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     step('PR ' + report.pr);
     return done('shipped', v.why);
   } finally {
-    try { unlinkSync(lockPath); } catch {}
+    try { unlinkSync(lockPath); } catch (u) { if (u.code !== 'ENOENT') log('the lock was not removed: ' + u.message); }
   }
 }
 
