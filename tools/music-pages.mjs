@@ -162,7 +162,7 @@ const PAGES = {
     <p class="note">The usual reference is A4 = 440 Hz; change it above for other pitch standards. Press a string to hear its note and tune to it by ear. The tuner picks the nearest string by itself and shows how far off you are; within 5 cents is in tune.</p>
   </section>` },
 
-  bpm: { path: '/bpm/', title: 'BPM counter: tap the beat to find the tempo · Verse', h1: 'Find how fast a song is: beats per minute (BPM counter)', desc: 'A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.',
+  bpm: { path: '/bpm/', title: 'BPM counter: tap the beat to find the tempo · Verse', h1: 'Find how fast a song is: a beats-per-minute counter', desc: 'A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.',
     lead: '<strong>Tap along for a workout, a dance class, a DJ set or a rehearsal.</strong> <a href="#tap">Tap a song</a>, or see a ready tempo:', tries: [['A running pace 170', '?bpm=170'], ['A resting heartbeat 70', '?bpm=70'], ['A dance class 128', '?bpm=128'], ['A walk 90', '?bpm=90']],
     sub: 'A free BPM counter: tap along with a song to find its tempo, fix half or double time, see the length of every note value, or find the BPM of an audio file on your device. Nothing is uploaded.',
     body: `
