@@ -891,6 +891,19 @@ try {
     check('obituaries: the footer links to at least two sibling Verse tools', sib >= 2, JSON.stringify({ siblings: sib }));
     await P.ctx.close();
   }
+  // the colorzilla floor: ColorZilla's eyedropper and gradient editor, fought from /gradient/.
+  if (want("colorzilla: the gradient editor, eyedropper and css output")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'gradient/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.colorzilla;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('colorzilla: the gradient page shows linear, radial, conic, an eyedropper and copy CSS', /linear/i.test(t) && /radial/i.test(t) && /conic/i.test(t) && /Pick a colour from the screen/i.test(t) && /Copy CSS/.test(t) && !miss.length, JSON.stringify({ miss }));
+    check('colorzilla: the page threw nothing', !P.errors.length, JSON.stringify({ errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.

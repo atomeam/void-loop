@@ -564,6 +564,28 @@ export const PROBES = Object.freeze({
       ['back to Verse', /Back to Verse/], ['on this device', /on this device/],
     ],
   },
+  colorzilla: {
+    site: 'https://www.colorzilla.com/', verse: '/gradient/',
+    ask: { verse: '/gradient/' },
+    truth: [
+      ['linear gradients', /linear/i],
+      ['radial gradients', /radial/i],
+      ['conic gradients', /conic/i],
+      ['an eyedropper', /Pick a colour from the screen/i],
+      ['copy CSS', /Copy CSS/],
+    ],
+    askParts: {
+      'gradient editor': [['linear type', /linear/i], ['radial type', /radial/i], ['conic type', /conic/i]],
+      'eyedropper': [['an eyedropper control', /Pick a colour from the screen/i], ['pick from the screen', /screen/i]],
+      'color picker': [['colour stops', /colour stops/i], ['presets', /presets/i]],
+      'css output': [['copy CSS', /Copy CSS/], ['copy link', /Copy link/]],
+      'sharing': [['a share link', /Copy link/]],
+    },
+    facts: [
+      ['gradient', /gradient/i], ['linear', /linear/i], ['radial', /radial/i], ['conic', /conic/i],
+      ['eyedropper', /Pick a colour from the screen/i], ['copy CSS', /Copy CSS/],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
     ask: { verse: '/emojis/?pick=🔥' },
