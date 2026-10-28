@@ -42,7 +42,8 @@ export function parseAsk(text) {
   const t = CLEAN(text);
   let m;
   if (FORGET_RE.test(t)) return { act: 'forget' };
-  if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
+  // the animals are the low poly ones only ("low poly dog"): a plain "bring a dog" or "summon a fox" is a living figure (skills/figures.js)
+  if ((m = t.match(OBJECT_RE)) && (!/^(?:wolf|fox|dog)$/.test(m[1]) || /\blow poly\b/.test(t))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
   if (SIT_RE.test(t)) return { act: 'sit' };
   if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };
