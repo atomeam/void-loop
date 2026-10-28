@@ -404,9 +404,9 @@
     const pad = $('pad'), pen = pad.getContext('2d'); let drawing = false, inked = false;
     const blank = () => { pen.fillStyle = '#fff'; pen.fillRect(0, 0, pad.width, pad.height); pen.lineWidth = 5; pen.lineCap = 'round'; pen.lineJoin = 'round'; pen.strokeStyle = '#111'; inked = false; };
     blank();
-    const at = (e) => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
-    pad.addEventListener('pointerdown', (e) => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); const [x, y] = at(e); pen.beginPath(); pen.moveTo(x, y); pen.lineTo(x + 0.1, y + 0.1); pen.stroke(); });
-    pad.addEventListener('pointermove', (e) => { if (!drawing) return; const [x, y] = at(e); pen.lineTo(x, y); pen.stroke(); });
+    const padAt = (e) => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
+    pad.addEventListener('pointerdown', (e) => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); const [x, y] = padAt(e); pen.beginPath(); pen.moveTo(x, y); pen.lineTo(x + 0.1, y + 0.1); pen.stroke(); });
+    pad.addEventListener('pointermove', (e) => { if (!drawing) return; const [x, y] = padAt(e); pen.lineTo(x, y); pen.stroke(); });
     addEventListener('pointerup', () => { drawing = false; });
     $('handB').addEventListener('click', () => { const open = $('hand').hidden; $('hand').hidden = !open; $('handB').setAttribute('aria-expanded', String(open)); $('handB').setAttribute('aria-pressed', String(open)); });
     $('handClear').addEventListener('click', blank);
