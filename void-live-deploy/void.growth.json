@@ -5882,5 +5882,6 @@
   {"at": "2026-10-27T22:34:36Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com"},
   {"at": "2026-10-27T22:37:12Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"},
   {"at": "2026-10-27T22:39:47Z", "by": "verse", "kind": "fix", "what": "Verse fixes its print-download skill: learn to handle \"get me the 3mf for the rotor\"", "try": "get me the 3mf for the rotor"},
-  {"at": "2026-10-27T22:40:58Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"vector for a logo\"", "try": "vector for a logo"}
+  {"at": "2026-10-27T22:40:58Z", "by": "verse", "kind": "fix", "what": "Verse fixes its vector-field-mind skill: learn to handle \"vector for a logo\"", "try": "vector for a logo"},
+  {"at": "2026-10-28T03:00:34Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"generate a gradient background\"", "try": "generate a gradient background"}
 ]
