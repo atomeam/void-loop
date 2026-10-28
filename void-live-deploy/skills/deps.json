@@ -756,7 +756,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/practice.js",
@@ -1057,7 +1057,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/fincalc.js",
@@ -2121,7 +2121,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/pdf-tools.js",

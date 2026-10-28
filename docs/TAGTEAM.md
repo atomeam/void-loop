@@ -17,3 +17,10 @@ Open work:
 6. Audit of the 600 frontier runs: each one live and working, or honestly marked as not working yet.
 7. atomeam/hold PR #4 (bridge fail-open fix) is a draft. Mark it ready and merge it, then redeploy aether-bridge.
 8. Once main is green, resume the frontier and quick-build routines.
+
+## Grok Bot green-main-4 (2026-10-28 ~7:30 PM ET): edits made under "any agent can do anything"
+- tools/tower-self.mjs (was reserved for Claude): `PARTIAL` lists floors that are in the tower but not a family yet (`codebase`); `familiesOf()` skips PINNED, PARTIAL and `defer` floors, so tower-self.test is 11/11 again. Regenerated skills/deps.json, families.json, guide.json and self.json with `node tools/refresh.mjs`.
+- tools/real-pages.mjs: a spec for `/ledger/` (fixture repo through a routed api.github.com: rows, tab counts, filter, PR tab, CSV download, copy CSV, shared link). `--list` is 127 of 127.
+- Podcasts (functions/api/podcasts.js, lib/podcasts.js, podcasts/index.html; the function was reserved for Claude): live /api/podcasts answered 502 because Apple's directory did not answer the Worker, and Cloudflare covers a Function's 502 with its own HTML page. Now every Apple ask sends a `VerseBot/1.0` user agent; when Apple fails, search and charts fall back to fyyd.de (free, keyless), and the answer carries `source: 'fyyd'` and a `note` that the page shows above the list (`srcNote`). A real failure is a 503 with the JSON reason, and the page falls back to asking Apple from the browser whenever the server says `kind: 'away'`. Test: the last test in tools/podcasts.test.mjs.
+- music-de: music-de.test passes 3/3 on main; the extra period is already gone, so nothing changed.
+- claude-brain: the SDK is in devDependencies and the lockfile, and the test runs 4/4 with nothing skipped. Nothing changed.
