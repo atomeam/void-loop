@@ -509,20 +509,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T20:27:58Z",
+   "at": "2026-10-28T20:27:50Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:27:15Z",
+   "subject": "Snippet / Note: the gist page with a plain name, a lead and templates"
   },
   {
    "at": "2026-10-28T20:19:25Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:19:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:17:59Z",
-   "subject": "Colour: three everyday jobs above the picker"
   },
   {
    "at": "2026-10-28T20:17:35Z",
@@ -587,6 +583,10 @@
   {
    "at": "2026-10-28T20:01:09Z",
    "subject": "Builder: five red browser checks on main back to green (folder, figures together, three tool-page budgets) (#1343)"
+  },
+  {
+   "at": "2026-10-28T19:54:57Z",
+   "subject": "Tower gate: coin flip,nameunit,hosting measured against their live sites"
   }
  ],
  "builders": {

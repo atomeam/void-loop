@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gist · Verse</title>
+<title>Snippet / Note: a locked note, code snippet or checklist in a link (gist) · Verse</title>
 <meta name="description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
 <link rel="canonical" href="https://a-to-mind.com/g/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Gists · Verse">
+<meta property="og:title" content="Snippet / Note · Verse">
 <meta property="og:description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
 <meta property="og:url" content="https://a-to-mind.com/g/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -22,6 +22,7 @@
   main { max-width: 860px; margin: 0 auto; padding: 14px 12px 40px; }
   header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   h1 { font-size: 16px; margin: 0; color: var(--soft); font-weight: 600; } h1 b { color: var(--ink); }
+  .lead { margin: 0 0 8px; font-size: 14px; } .alias { font-weight: 400; font-size: 12px; } .tpl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; } .tpl[hidden] { display: none; }
   .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; } .tab { border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; padding: 4px 10px; font-size: 13px; cursor: pointer; background: transparent; color: var(--soft); }
   .tab[aria-selected=true] { background: var(--code); color: var(--ink); font-weight: 600; }
   .box { border: 1px solid var(--line); border-radius: 0 8px 8px 8px; background: var(--code); overflow: auto; }
@@ -57,12 +58,14 @@
 </head>
 <body>
 <main>
-  <header><h1><b>Gist</b> · no account, nothing stored</h1><a class="btn" href="/g/" id="new" hidden>New gist</a></header>
+  <header><h1><b>Snippet / Note</b> · no account, nothing stored <small class="alias">(a gist)</small></h1><a class="btn" href="/g/" id="new" hidden>New snippet</a></header>
+  <p class="lead" id="lead">Save a locked note, code snippet, timed checklist, or offline scratchpad on your device.</p>
+  <div class="tpl" id="tpl" role="group" aria-label="Start from a template"><span class="note">Templates:</span> <button type="button" data-t="meeting">Meeting &amp; task timer</button> <button type="button" data-t="locked">Locked note</button> <button type="button" data-t="code">Code snippet</button></div>
   <div class="tabs" id="tabs" role="tablist"></div>
   <div class="box" id="box"></div>
   <div class="bar" id="bar"></div>
   <div id="note" aria-live="polite"></div>
-  <section id="work" hidden aria-label="Work beside this gist"></section>
+  <section id="work" hidden aria-label="Tasks, timer and notes beside this snippet"></section>
   <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. It works offline after one visit, and a GitHub file opens here too: <a href="/g/?gh=atomeam/void-loop/blob/main/README.md">GitHub file as a gist</a>. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=gist">See it on the stage</a> · <a href="/">Ask Verse anything</a></p></footer>
 </main>
 <script type="module">
@@ -96,7 +99,7 @@
     $('tabs').textContent = ''; $('bar').textContent = ''; const box = $('box'); box.textContent = '';
     const f = el('form', 'lock'), pw = el('input', 'name'); pw.type = 'password'; pw.id = 'pw'; pw.placeholder = 'Passphrase'; pw.autocomplete = 'off'; pw.setAttribute('aria-label', 'Passphrase');
     const go = el('button', 'go', 'Open'); go.type = 'submit';
-    f.append(el('span', null, 'This gist is locked.'), pw, go); box.appendChild(f); pw.focus();
+    f.append(el('span', null, 'This note is locked.'), pw, go); box.appendChild(f); pw.focus();
     f.onsubmit = async (e) => {
       e.preventDefault(); go.disabled = true; note('Opening…');
       const g = await open(location.hash, pw.value); go.disabled = false;
@@ -127,11 +130,12 @@
       const lines = text.split('\n').length;
       box.appendChild(el('div', 'meta', text.length.toLocaleString() + ' characters \u00b7 ' + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ' \u00b7 ' + MAX_TEXT.toLocaleString() + ' characters is the limit \u00b7 the whole gist in the link'));
     } else {
-      const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here…';
+      const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here: a note, a list, or code…';
       ta.addEventListener('input', meter); ta.addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); meter(); } });
       box.appendChild(ta);
     }
     bar();
+    $('tpl').hidden = !!(view || gh || locked || files.some((f) => f[1].trim()));
   }
   function keep() { const ta = $('ta'); if (ta && !view) files[at][1] = ta.value; const nm = $('nm'); if (nm && !view) files[at][0] = cleanName(nm.value); }
   const total = () => { keep(); return files.reduce((n, f) => n + f[1].length, 0); };
@@ -230,6 +234,13 @@
   }
   draw();
   initWork();
+  // templates for an empty page (wider use): a meeting checklist with the timer, a locked note, a code snippet; the page itself is unchanged
+  const TPL = {
+    meeting: () => { files = [['meeting.md', '# Meeting\n\nAgenda\n- \n\nDecisions\n- \n\nActions (who, what, by when)\n- \n']]; if (!work.tasks.length) { work.tasks = ['Agree the agenda', 'Write down the decisions', 'Send the actions'].map((text) => ({ text, done: false })); saveWork(); initWork(); } draw(); note('A meeting checklist: the task list and the timer are below. Press Start when it begins.'); const w = $('work'); if (w) w.scrollIntoView({ block: 'start' }); },
+    locked: () => { files = [['note.txt', '']]; draw(); note('Type the note, choose a passphrase, then Get link: only the passphrase opens it.'); const p = $('lockpw'); if (p) p.focus(); },
+    code: () => { files = [['snippet.js', '// paste or type code here\n']]; draw(); note('Name the file with its ending (.py, .js, .css…) so it is coloured. Tab indents.'); const t = $('ta'); if (t) t.focus(); },
+  };
+  for (const b of $('tpl').querySelectorAll('button')) b.addEventListener('click', () => { at = 0; TPL[b.dataset.t](); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
