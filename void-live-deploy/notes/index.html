@@ -238,7 +238,7 @@
     // ---- the note being written ----
     let timer = 0, dirty = false;
     function show(d) {
-      $('dtitle').textContent = d.title; $('body').innerHTML = N.clean(d.html); stats(); drawList(); hideHist(); drawMeta(d); drawLinks(d); drawComments(d);
+      $('dtitle').textContent = d.title; $('body').innerHTML = N.clean(d.html); stats(); drawList(); hideHist(); drawMeta(d); drawLinks(d); drawComments(d); // N.clean keeps only an allowlist of tags (void-review: ok)
     }
     function open(id) { flush(); store.cur = id; const d = cur(); if (d) show(d); keep(); }
     function stats() { const n = N.wordCount($('body').innerHTML); $('words').textContent = n + ' ' + W.words; }
