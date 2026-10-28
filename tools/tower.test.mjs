@@ -128,7 +128,7 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
   const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
-  const lane = FLOORS.find((f) => f.lane === 'translate'), aspects = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'].concat(lane.extra);
+  const lane = FLOORS.find((f) => f.lane === 'translate'), aspects = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'].concat(lane.extra);
   ev[lane.id] = Object.fromEntries(aspects.map((a) => [a, good(a)]));
   ev[lane.id].speed = { verdict: 'equal-and-better', verse: 101, best: 712, evidence: 'Verse 101 ms vs 712 ms' };
   ev[lane.id].completeness = { verdict: 'better', verse: 10, best: 3, of: 10, evidence: 'Verse 10 of 10 things a full answer shows vs 3 of 10 (Verse lacks: none; site lacks: listen, speak, camera)' };

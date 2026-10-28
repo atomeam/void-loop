@@ -74,7 +74,7 @@ export function verdict(verse, best, higherBetter = false, ideal) {
 /** what each measured aspect is: whether higher is better and its ideal score (none for speed: faster is always possible) */
 export const MEASURES = Object.freeze({ speed: { hi: false }, reliability: { hi: true, ideal: 3 }, mobile: { hi: false, ideal: 0 }, accessibility: { hi: false, ideal: 0 },
   offline: { hi: true, ideal: 1 }, sharing: { hi: true, ideal: 4 }, 'local language': { hi: true, ideal: 1 }, 'big answer': { hi: true }, accuracy: { hi: true }, completeness: { hi: true },
-  'design polish': { hi: false, ideal: 0 } });
+  'design polish': { hi: false, ideal: 0 }, 'wider use': { hi: true, ideal: 11 } });
 // a floor's own named aspects scored from a list (tools/tower-probes.mjs PARTS): more of the list is better, the whole list is the best there is
 const PART = Object.freeze({ hi: true });
 export const SPEED_BAR = 200; // ms to the load event at phone width: Verse's own bar for speed (owner, 2026-10-25)
@@ -405,6 +405,10 @@ async function measureFloor(f, data) {
     if (pp.img) v.parts = { ...(v.parts || {}), [a]: await pictureOf(b, url, pp.within || 60000, pp.sel || 'img') };
     else { const got = await answer(b, url, null); if (got !== null) v.parts = { ...(v.parts || {}), [a]: score(got, pp.items) }; }
   }
+  // wider use (owner, 2026-10-28: a Verse version of a page should be usable by more people than the original): the 11 points of
+  // docs/WIDER-USE.md, scored by tools/wider-use.mjs on both pages; a site the gate cannot read is held to the full 11
+  if (want.has('wider use')) { const { look, scoreOf } = await import('./wider-use.mjs'), wide = (u) => look(b, u).then((m) => scoreOf(m).total).catch(() => null);
+    v.wide = await wide(versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask)); s.wide = s.reliability ? await wide(siteUrl) : null; }
   await b.close(); await (await import('./screen-read.mjs')).closeEyes(); // the OCR worker holds the process open until it is closed
   const ev = (data.floors[f.id] = data.floors[f.id] || {});
   const where = 'Verse' + (versePage ? ' (' + versePage + ')' : '');
@@ -428,6 +432,7 @@ async function measureFloor(f, data) {
     put('sharing', v.sharing, bar.sharing, ' of 4 (link-preview title, image, description; a share or copy-link control)');
     put('local language', v.german, bar.german, ' (1: a German browser gets German)');
     if (v.design) put('design polish', defects(v.design), 0, ' design defects');
+    if (Number.isFinite(v.wide)) put('wider use', v.wide, 11, ' of 11 wider-use points (docs/WIDER-USE.md)');
     if (want.has('accuracy') && v.truth) ev.accuracy = { ...record(ev.accuracy, v.truth.n === v.truth.of ? 'equal-and-better' : 'worse', v.truth.n, v.truth.of, where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right against the worked-out answer; judged against the standard', at), of: v.truth.of };
     if (v.facts) put('completeness', v.facts.n, v.facts.of, ' of ' + v.facts.of + ' things a full answer shows', { of: v.facts.of, note: ' (Verse lacks: ' + (v.facts.missing.join(', ') || 'none') + ')' });
     for (const [a, sv] of Object.entries(v.parts || {})) put(a, sv.n, sv.of, ' of ' + sv.of + ' shown', { of: sv.of, note: ' (Verse lacks: ' + (sv.missing.join(', ') || 'none') + ')' });
@@ -440,6 +445,7 @@ async function measureFloor(f, data) {
     put('sharing', v.sharing, s.sharing, ' of 4 (link-preview title, image, description; a share or copy-link control)');
     put('local language', v.german, s.german, ' (1: a German browser gets German)');
     put('big answer', v.big, s.big, ' px, the largest text on the first screen');
+    if (Number.isFinite(v.wide)) put('wider use', v.wide, Number.isFinite(s.wide) ? s.wide : 11, ' of 11 wider-use points (docs/WIDER-USE.md)', Number.isFinite(s.wide) ? {} : { note: ' (the site could not be read: held to the full 11)' });
     // every case right against the truth is the most any page can score: equal-and-better; a case missed is worse
     if (want.has('accuracy') && v.truth) ev.accuracy = { ...record(ev.accuracy, v.truth.n === v.truth.of ? 'equal-and-better' : 'worse', v.truth.n, v.truth.of, where + ' ' + v.truth.n + ' of ' + v.truth.of + ' right against the worked-out answer' + (v.truth.missing.length ? ' (missed: ' + v.truth.missing.join(', ') + ')' : '') + '; judged against the standard, not ' + f.site + ' (the site is not asked)' + (v.truth.n < v.truth.of ? '. The page showed: "' + shown + '"' : ''), at), of: v.truth.of };
     const dd = (l) => (l ? ' (' + l.contrast + ' low-contrast texts, ' + l.targets + ' small tap targets, layout shift ' + l.cls.toFixed(2) + ')' : '');
