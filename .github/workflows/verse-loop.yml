@@ -1,11 +1,13 @@
-# The Verse loop in Actions (docs/VERSE-LOOP.md): once an hour, one lap of tools/verse-loop.mjs --once. A lap pulls main, runs the
-# fast checks (tools/verse-loop.checks.json), and with the default brain lets Verse's own free model (Workers AI, through
-# tools/propose-fix.mjs) fix one probe miss; a coding agent (opencode or aider, by hand) fixes the first red check or takes the top of
-# docs/NEXT.md. Only a change with no new red after the checks is committed to loop/<time>, pushed (never forced) and opened as a PR
-# labelled automerge (or "waits for owner" under propose-fix's confidence gate); verify.yml reverts it if main's suite goes red.
+# The Verse loop in Actions (docs/VERSE-LOOP.md): once an hour, one lap of tools/verse-loop.mjs --once. No human in the loop.
+# A lap first heals an open loop/* PR whose check failed (fix on that branch, plain push, nothing else that lap). Otherwise it pulls
+# main, runs the fast checks (tools/verse-loop.checks.json), re-ranks Verse's queue in docs/NEXT.md when it changed, and Verse's own
+# brain on the free model stack (Workers AI first) fixes the first red check or takes the top of the queue; a probe miss goes to
+# tools/propose-fix.mjs, retried twice under the confidence bar, then dropped and logged. Only a change with no new red after the
+# checks is committed to loop/<time>, pushed (never forced), opened as a PR labelled automerge, and verify.yml is started on it.
+# Three laps in a row that fail or do not merge pause the loop for 6 hours (issue 'Verse loop paused'); it resumes by itself.
 # Off until the repo variable VERSE_LOOP_ENABLED is 'true'. Keys come from repo secrets by name, never from a file:
-# VOID_OWNER_TOKEN (the free brain), optional VERSE_LOOP_TOKEN (falls back to the workflow token now that Actions may open PRs; automerge.yml hourly picks them up) (a token that may open PRs: the workflow token cannot, and its pushes start no
-# checks), and for a coding agent OPENROUTER_API_KEY / GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY with vars.VERSE_LOOP_MODEL.
+# CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID (Verse's brain, first), VOID_OWNER_TOKEN (probes), optional VERSE_LOOP_TOKEN (else the
+# workflow token), and the optional fallbacks OPENROUTER_API_KEY / GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY.
 name: Verse loop
 
 on:
@@ -30,6 +32,10 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  issues: write # the 'Verse loop paused' issue, opened and closed by the loop itself
+  actions: write # gh workflow run verify.yml, and the failure log for self-heal
+  checks: read
+  statuses: read
 
 jobs:
   lap:
@@ -65,8 +71,15 @@ jobs:
       - name: Install aider
         if: inputs.agent == 'aider'
         run: python3 -m pip install --quiet aider-chat
+      - name: The loop's memory (failure streak, open PRs, heal tries)
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}
+          restore-keys: verse-loop-state-
       - name: One lap
         env:
+          VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json
           VERSE_LOOP_AGENT: ${{ inputs.agent || 'verse' }}
           DRY: ${{ inputs.dry && '--dry-run' || '' }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -85,3 +98,9 @@ jobs:
           fi
           node tools/verse-loop.mjs --once $DRY | tee lap.txt
           { echo '### Verse loop'; echo; echo '```'; tail -n 20 lap.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the loop's memory
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}

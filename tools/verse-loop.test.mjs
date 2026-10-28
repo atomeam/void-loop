@@ -6,20 +6,21 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, PAUSE_TITLE, GROOM_TITLE } from './verse-loop.mjs';
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
 
 /** A repo with a bare origin, docs, a checks file whose checks read flag files, a fake brain and a fake gh. */
-function sandbox({ red = [] } = {}) {
+const HAND_NEXT = '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site\n3. **Later**\n';
+function sandbox({ red = [], groomed = true, gh: fixtures = {} } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'vl-test-'));
   const origin = join(dir, 'origin.git'), work = join(dir, 'work');
   sh(dir, 'init', '-q', '--bare', '-b', 'main', origin);
   sh(dir, 'clone', '-q', origin, work);
   sh(work, 'config', 'user.email', 'loop@example.invalid'); sh(work, 'config', 'user.name', 'loop test');
   mkdirSync(join(work, 'docs')); mkdirSync(join(work, 'tools'));
-  writeFileSync(join(work, 'docs/NEXT.md'), '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site\n3. **Later**\n');
+  writeFileSync(join(work, 'docs/NEXT.md'), groomed ? groomNext(HAND_NEXT) : HAND_NEXT);
   writeFileSync(join(work, 'docs/TAGTEAM.md'), '# TAGTEAM\n');
   writeFileSync(join(work, 'docs/GATE-STANDARDS.md'), '# Gate\nblocked is INCOMPLETE\n');
   writeFileSync(join(work, '.gitignore'), 'red-*\n');
@@ -28,10 +29,23 @@ function sandbox({ red = [] } = {}) {
   const check = (n) => ({ name: n, cmd: `test ! -e red-${n} && test ! -e broke-${n}.txt` });
   writeFileSync(join(work, 'tools/verse-loop.checks.json'), JSON.stringify([check('alpha'), check('beta')]));
   sh(work, 'add', '-A'); sh(work, 'commit', '-q', '-m', 'start'); sh(work, 'push', '-q', 'origin', 'main');
-  const gh = join(dir, 'gh.sh');
-  writeFileSync(gh, `#!/bin/sh\necho "$@" > "${join(dir, 'gh-args.txt')}"\necho https://github.com/example/repo/pull/7\n`, { mode: 0o755 });
+  // a fake gh: every call is logged to gh-calls.jsonl; answers come from gh.json by the first two words ("pr list", "issue list" ...)
+  const gh = join(dir, 'gh.cjs');
+  writeFileSync(join(dir, 'gh.json'), JSON.stringify(fixtures));
+  writeFileSync(gh, `#!${process.execPath}
+const fs = require('fs'), d = ${JSON.stringify(dir)}, a = process.argv.slice(2), k = a.slice(0, 2).join(' ');
+fs.appendFileSync(d + '/gh-calls.jsonl', JSON.stringify(a) + '\\n');
+const fx = JSON.parse(fs.readFileSync(d + '/gh.json', 'utf8'));
+if (k === 'pr create') { fs.writeFileSync(d + '/gh-args.txt', a.join(' ') + '\\n'); console.log('https://github.com/example/repo/pull/7'); }
+else if (k in fx) console.log(typeof fx[k] === 'string' ? fx[k] : JSON.stringify(fx[k]));
+else if (k === 'issue create') console.log('https://github.com/example/repo/issues/8');
+else if (k === 'pr view') console.log('{"state":"OPEN"}');
+else if (k !== 'workflow run' && k !== 'issue close' && k !== 'run view') console.log('[]');
+`, { mode: 0o755 });
   return { dir, origin, work, gh };
 }
+const ghCalls = (s) => (existsSync(join(s.dir, 'gh-calls.jsonl')) ? readFileSync(join(s.dir, 'gh-calls.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
+const setGh = (s, fixtures) => writeFileSync(join(s.dir, 'gh.json'), JSON.stringify(fixtures));
 const NO_KEYS = { CLOUDFLARE_API_TOKEN: '', OPENROUTER_API_KEY: '', GROQ_API_KEY: '', GEMINI_API_KEY: '', CEREBRAS_API_KEY: '', VERSE_CODER_SCRIPT: '' };
 const env = (s, agentCmd) => ({ ...process.env, VERSE_LOOP_GH: s.gh, VERSE_LOOP_AGENT_CMD: agentCmd, GIT_TERMINAL_PROMPT: '0' });
 
@@ -115,11 +129,11 @@ test('brains: Verse\'s is propose-fix for a probe and verse-coder for the rest; 
 test('dry run, green: the fake brain takes NEXT item 2 and the lap would ship, with nothing committed or pushed', async () => {
   const s = sandbox();
   const head = sh(s.work, 'rev-parse', 'HEAD');
-  const r = await lap(parseArgs(['--once', '--dry-run', '--agent', 'cmd']), { cwd: s.work, env: env(s, 'grep -q "item 2" "$VERSE_LOOP_PROMPT_FILE" && echo built > built.txt'), log: quiet });
+  const r = await lap(parseArgs(['--once', '--dry-run', '--agent', 'cmd']), { cwd: s.work, env: env(s, 'grep -q "NEXT 2" "$VERSE_LOOP_PROMPT_FILE" && echo built > built.txt'), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 2, text: '**Calculator sitemap** easiest small site' });
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' }, 'the top of Verse\'s groomed queue');
   assert.match(r.branch, /^loop\/\d{8}-\d{6}$/);
-  assert.match(r.tagteamLine, /verse-loop \(cmd\): NEXT 2/);
+  assert.match(r.tagteamLine, /verse-loop \(cmd\): NEXT 1, \[NEXT 2\] Calculator/);
   assert.equal(sh(s.work, 'rev-parse', 'HEAD'), head, 'no commit');
   assert.equal(readFileSync(join(s.work, 'docs/TAGTEAM.md'), 'utf8'), '# TAGTEAM\n', 'no TAGTEAM line in a dry run');
   assert.equal(sh(s.origin, 'branch', '--list', 'loop/*'), '', 'nothing pushed');
@@ -179,6 +193,8 @@ test('a real lap: branch loop/<time>, one TAGTEAM line, a plain push, a PR with 
   assert.equal(tag.split('\n').filter((l) => l.includes('verse-loop (cmd)')).length, 1);
   const args = readFileSync(join(s.dir, 'gh-args.txt'), 'utf8');
   assert.match(args, /pr create --base main --head loop\/\S+ .*--label automerge\n$/s);
+  assert.ok(ghCalls(s).some((c) => c.join(' ') === 'workflow run verify.yml --ref ' + r.branch), 'verify.yml started on the branch');
+  assert.equal(r.verify, 'started');
   assert.ok(!existsSync(join(s.work, '.git', 'verse-loop.lock')), 'lock released');
   assert.equal(sh(s.work, 'status', '--porcelain'), '', 'clean for the next lap');
 });
@@ -186,18 +202,23 @@ test('a real lap: branch loop/<time>, one TAGTEAM line, a plain push, a PR with 
 test('the script never force-pushes and holds no key', () => {
   const src = readFileSync(new URL('./verse-loop.mjs', import.meta.url), 'utf8');
   assert.ok(!/--force|push', '-f'|\+refs/.test(src.replace(/never --force|never forced/g, '')), 'no force push');
+  assert.ok(!/waits for owner/.test(src), 'no human in the loop: nothing is labelled to wait for a person');
   assert.deepEqual(scanDiff('+++ b/tools/verse-loop.mjs\n' + src.split('\n').map((l) => '+' + l).join('\n')).filter((f) => f.kind !== 'assigned secret'), []);
 });
 
 /** The free brain, faked: a tools/propose-fix.mjs in the sandbox that writes a result and a patch to --out, or exits 3. */
-function fakeVerse(s, { exit = 0, file = 'void-live-deploy/skills/calc.js', confidence = 0.9 } = {}) {
+function fakeVerse(s, { exit = 0, file = 'void-live-deploy/skills/calc.js', confidence = 0.9, confidences = null } = {}) {
   mkdirSync(join(s.work, 'void-live-deploy/skills'), { recursive: true });
   writeFileSync(join(s.work, 'void-live-deploy/skills/calc.js'), 'export const match = /calc/;\n');
-  writeFileSync(join(s.work, 'tools/propose-fix.mjs'), `import { writeFileSync, mkdirSync } from 'node:fs';
+  writeFileSync(join(s.work, 'tools/propose-fix.mjs'), `import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 const out = process.argv[process.argv.indexOf('--out') + 1];
 if (${exit}) process.exit(${exit});
 mkdirSync(out, { recursive: true });
-writeFileSync(out + '/propose-fix.json', JSON.stringify({ passed: true, skill: 'calc', ask: 'add two and two', title: 'Verse fixes calc', confidence: ${confidence} }));
+const seq = ${JSON.stringify(confidences)}, tf = ${JSON.stringify(join(s.dir, 'tries.txt'))};
+let n = 0; try { n = Number(readFileSync(tf, 'utf8')); } catch {}
+writeFileSync(tf, String(n + 1));
+const confidence = seq ? seq[Math.min(n, seq.length - 1)] : ${confidence};
+writeFileSync(out + '/propose-fix.json', JSON.stringify({ passed: true, skill: 'calc', ask: 'add two and two', title: 'Verse fixes calc', confidence }));
 writeFileSync(out + '/propose-fix.patch', 'diff --git a/${file} b/${file}\\n--- a/${file}\\n+++ b/${file}\\n@@ -1 +1 @@\\n-export const match = /calc/;\\n+export const match = /calc|add/;\\n');
 `);
   if (file !== 'void-live-deploy/skills/calc.js') { mkdirSync(join(s.work, file, '..'), { recursive: true }); writeFileSync(join(s.work, file), 'export const match = /calc/;\n'); }
@@ -205,7 +226,7 @@ writeFileSync(out + '/propose-fix.patch', 'diff --git a/${file} b/${file}\\n--- 
 }
 const verseEnv = (s) => ({ ...env(s, ''), ...NO_KEYS, VOID_OWNER_TOKEN: 'test-token-not-real' });
 
-test('the free brain: its passing patch ships labelled by its confidence; exit 3 moves on to NEXT; a patch outside the skill is refused', async () => {
+test('the free brain: a confident patch ships with automerge; under the bar it is retried, then dropped and logged, never waiting for a person; exit 3 moves on to NEXT; a patch outside the skill is refused', async () => {
   let s = sandbox(); fakeVerse(s);
   let r = await lap(parseArgs([]), { cwd: s.work, env: verseEnv(s), log: quiet });
   assert.equal(r.outcome, 'shipped', r.why); assert.equal(r.label, 'automerge'); assert.equal(r.title, 'Verse fixes calc');
@@ -213,7 +234,18 @@ test('the free brain: its passing patch ships labelled by its confidence; exit 3
 
   s = sandbox(); fakeVerse(s, { confidence: 0.5 });
   r = await lap(parseArgs([]), { cwd: s.work, env: verseEnv(s), log: quiet });
-  assert.equal(r.outcome, 'shipped'); assert.equal(r.label, 'waits for owner');
+  assert.equal(r.outcome, 'dropped', r.why); assert.match(r.why, /after 3 tries \(0\.5, 0\.5, 0\.5\); dropped and logged/);
+  assert.equal(readFileSync(join(s.dir, 'tries.txt'), 'utf8'), '3', 'the first try and 2 more');
+  assert.ok(!existsSync(join(s.dir, 'gh-args.txt')), 'no PR, and nothing labelled for a person');
+  assert.equal(sh(s.work, 'status', '--porcelain'), '', 'nothing applied');
+  const dropped = readFileSync(join(s.work, '.git', 'verse-loop.dropped.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.deepEqual([dropped.length, dropped[0].skill, dropped[0].confidences], [1, 'calc', [0.5, 0.5, 0.5]]);
+  assert.equal(loadState(join(s.work, '.git', 'verse-loop.state.json')).fails, 1, 'a dropped patch counts against the streak');
+
+  s = sandbox(); fakeVerse(s, { confidences: [0.4, 0.85] });
+  r = await lap(parseArgs([]), { cwd: s.work, env: verseEnv(s), log: quiet });
+  assert.equal(r.outcome, 'shipped', r.why); assert.equal(r.label, 'automerge', 'the second try cleared the bar');
+  assert.ok(r.steps.some((x) => /under 0\.8: trying again \(2 of 3\)/.test(x)));
 
   s = sandbox(); fakeVerse(s, { exit: 3 });
   r = await lap(parseArgs([]), { cwd: s.work, env: verseEnv(s), log: quiet });
@@ -266,6 +298,126 @@ test('Verse\'s coder on green takes the top of docs/NEXT.md (no probe without VO
   const add = '--- /dev/null\n+++ b/calc-sitemap.txt\n@@ -0,0 +1 @@\n+calculator sitemap\n';
   const r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: scripted(s, [{ tool: 'edit', diff: add }, { tool: 'finish', summary: 'step one' }]), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 2, text: '**Calculator sitemap** easiest small site' });
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' });
   assert.equal(readFileSync(join(s.work, 'calc-sitemap.txt'), 'utf8'), 'calculator sitemap\n');
+});
+
+// ---- no human in the loop: grooming, back-off that resumes by itself, self-heal ----
+const PARITY = '# Parity\n\n## site A → /a/ (2026-10-28)\n\n**Still missing from A:** the weather tools.\n\n## site B → /b/\n\n**Gaps.** None on the home page.\n';
+
+test('grooming: open items, assimilation gaps and red checks ranked easiest first, the hand list kept, the same input the same text', () => {
+  assert.deepEqual(assimilationGaps(PARITY), [{ title: 'site A → /a/ (2026-10-28)', text: 'the weather tools.' }], '"None" is not a gap');
+  const hand = '# NEXT\n\nIntro.\n\n1. **Big thing** ' + 'words '.repeat(120) + '\n2. **Blocked** blocked on a partner\n3. **Game Box** open PR #12 · next: rebase, green, merge\n4. **Gone** status: done\n5. **Small**\n';
+  const g = groomNext(hand, { gaps: PARITY, red: ['beta'] });
+  const q = g.slice(g.indexOf('<!-- verse-groom:'), g.indexOf('<!-- /verse-groom -->')).split('\n').filter((l) => /^\d+\. /.test(l)).map((l) => l.replace(/\] .*/, ']'));
+  assert.deepEqual(q, ['1. [red check]', '2. [NEXT 3]', '3. [assimilation gap]', '4. [NEXT 5]', '5. [NEXT 1]', '6. [NEXT 2]']);
+  assert.ok(g.includes(hand.slice(hand.indexOf('1. **Big'))), 'the hand-written items stay as they were');
+  assert.ok(g.indexOf('<!-- /verse-groom -->') < g.indexOf('1. **Big'), 'the queue sits before the hand list');
+  assert.equal(groomNext(g, { gaps: PARITY, red: ['beta'] }), g, 'grooming twice changes nothing');
+  assert.equal(topItem(g).text.startsWith('[red check] Make the red check `beta` green'), true, 'the loop takes the top of the queue');
+  const green = groomNext(g, { gaps: PARITY });
+  assert.match(topItem(green).text, /^\[NEXT 3\] \*\*Game Box\*\*/, 'on green the easiest item leads');
+  assert.equal(groomNext(green, { gaps: PARITY }), green);
+  assert.equal(ease({ src: 'next', text: 'far future: video' }), 9);
+  assert.match(groomNext('# empty\n'), /<!-- verse-groom:.*\n\*\*Verse's queue/s, 'no items: an empty queue');
+});
+
+test('the back-off: three failures pause for 6 hours, a merged PR resets the streak, a closed one counts, and the pause ends by itself', () => {
+  let st = { fails: 0, prs: [] };
+  for (const o of ['rejected', 'idle', 'no-change']) st = recordOutcome(st, o, { why: o });
+  assert.equal(st.fails, 2, 'idle is neutral');
+  st = recordOutcome(st, 'shipped', { pr: 'u1' });
+  assert.deepEqual([st.fails, st.prs], [2, ['u1']], 'a shipped PR waits to be merged');
+  assert.equal(settlePrs(st, () => 'MERGED').fails, 0, 'merged resets');
+  assert.equal(settlePrs(st, () => 'CLOSED').fails, 3, 'closed without merging counts');
+  assert.deepEqual(settlePrs(st, () => 'OPEN').prs, ['u1']);
+  const t0 = Date.parse('2026-10-28T10:00:00Z');
+  assert.deepEqual(pauseState({ state: {}, now: t0 }), { paused: false, resume: false });
+  assert.equal(pauseState({ state: { pausedAt: t0 }, now: t0 + 5.9 * 3600e3 }).paused, true);
+  assert.equal(pauseState({ state: { pausedAt: t0 }, now: t0 + 6 * 3600e3 }).resume, true, 'resumes by itself at 6 hours');
+  assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3 }).paused, true, 'a fresh runner reads the open issue');
+  assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 7 * 3600e3 }).resume, true, 'and an open issue does not hold it past 6 hours');
+});
+
+test('a lap: the third failure in a row pauses and opens the issue; laps skip while paused; after 6 hours it resumes and closes the issue itself', async () => {
+  const s = sandbox();
+  const statePath = join(s.work, '.git', 'verse-loop.state.json');
+  writeFileSync(statePath, JSON.stringify({ fails: 2, prs: [], last: [{ outcome: 'rejected', why: 'x' }, { outcome: 'no-change', why: 'y' }] }));
+  const t0 = Date.now();
+  let r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'true'), log: quiet, now: t0 });
+  assert.equal(r.outcome, 'no-change'); assert.ok(r.paused, 'paused on the third failure');
+  const create = ghCalls(s).find((c) => c[0] === 'issue' && c[1] === 'create');
+  assert.deepEqual(create.slice(0, 4), ['issue', 'create', '--title', PAUSE_TITLE]);
+  assert.match(create[5], /resumes by itself and closes this issue; nobody needs to do anything/);
+  assert.equal(loadState(statePath).pausedAt, t0, 'the pause flag');
+
+  setGh(s, { 'issue list': [{ number: 8, title: PAUSE_TITLE, createdAt: new Date(t0).toISOString() }] });
+  r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet, now: t0 + 3600e3 });
+  assert.equal(r.outcome, 'paused'); assert.ok(!existsSync(join(s.work, 'ran.txt')), 'no brain while paused');
+
+  r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo built > built.txt'), log: quiet, now: t0 + 6 * 3600e3 + 1 });
+  assert.equal(r.outcome, 'shipped', r.why);
+  assert.ok(ghCalls(s).some((c) => c.slice(0, 3).join(' ') === 'issue close 8'), 'the loop closes its own issue');
+  const st = loadState(statePath);
+  assert.deepEqual([st.fails, st.pausedAt, st.prs], [0, null, ['https://github.com/example/repo/pull/7']]);
+
+  // a fresh runner with no state: the open issue alone holds laps for 6 hours, not longer
+  const f = sandbox({ gh: { 'issue list': [{ number: 9, title: PAUSE_TITLE, createdAt: new Date(t0 - 3600e3).toISOString() }] } });
+  r = await lap(parseArgs(['--agent', 'cmd']), { cwd: f.work, env: env(f, 'true'), log: quiet, now: t0 });
+  assert.equal(r.outcome, 'paused');
+  r = await lap(parseArgs(['--dry-run', '--agent', 'cmd']), { cwd: f.work, env: env(f, 'echo b > b.txt'), log: quiet, now: t0 + 6 * 3600e3 });
+  assert.equal(r.outcome, 'would-ship', 'resumed'); assert.ok(!ghCalls(f).some((c) => c[1] === 'close'), 'a dry run closes nothing');
+
+  // a PR an earlier lap opened was closed without merging: the third failure
+  const c = sandbox({ gh: { 'pr view': { state: 'CLOSED' } } });
+  writeFileSync(join(c.work, '.git', 'verse-loop.state.json'), JSON.stringify({ fails: 2, prs: ['https://github.com/example/repo/pull/5'] }));
+  r = await lap(parseArgs(['--agent', 'cmd']), { cwd: c.work, env: env(c, 'echo b > b.txt'), log: quiet, now: t0 });
+  assert.equal(r.outcome, 'paused'); assert.match(r.why, /closed without merging/);
+  assert.ok(!existsSync(join(c.work, 'b.txt')));
+});
+
+test('self-heal: an open loop/* PR with a failed check is fixed and pushed on its own branch, verify.yml is started, and nothing else happens that lap', async () => {
+  const s = sandbox();
+  sh(s.work, 'checkout', '-q', '-b', 'loop/20261028-100000');
+  writeFileSync(join(s.work, 'status.txt'), 'broken\n');
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'a loop PR'); sh(s.work, 'push', '-q', 'origin', 'loop/20261028-100000');
+  const tip = sh(s.work, 'rev-parse', 'HEAD');
+  sh(s.work, 'checkout', '-q', 'main');
+  const pr = { number: 11, url: 'https://github.com/example/repo/pull/11', title: 'Verse loop: NEXT 1', headRefName: 'loop/20261028-100000', statusCheckRollup: [{ name: 'suite', conclusion: 'FAILURE' }, { name: 'lint', conclusion: 'SUCCESS' }] };
+  setGh(s, { 'pr list': [{ number: 3, headRefName: 'feature/x', statusCheckRollup: [{ name: 'a', conclusion: 'FAILURE' }] }, pr], 'run list': [{ databaseId: 77, workflowName: 'Verse verify' }], 'run view': 'suite: status.txt says broken' });
+  const brainCmd = 'grep -q "loop/20261028-100000" "$VERSE_LOOP_PROMPT_FILE" && grep -q "status.txt says broken" "$VERSE_LOOP_PROMPT_FILE" && echo fixed > status.txt';
+  const r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, brainCmd), log: quiet });
+  assert.equal(r.outcome, 'healed', r.why);
+  assert.deepEqual(r.task, { kind: 'heal', branch: 'loop/20261028-100000', pr: pr.url, failed: 'suite' });
+  assert.equal(sh(s.origin, 'show', 'loop/20261028-100000:status.txt'), 'fixed');
+  assert.equal(sh(s.origin, 'rev-parse', 'loop/20261028-100000~1'), tip, 'a fast-forward on the same branch');
+  assert.deepEqual(sh(s.origin, 'branch', '--list', 'loop/*').split('\n').map((b) => b.replace(/^[*\s]+/, '')), ['loop/20261028-100000'], 'no new branch');
+  assert.ok(!existsSync(join(s.dir, 'gh-args.txt')), 'no new PR that lap');
+  const calls = ghCalls(s).map((c) => c.join(' '));
+  assert.ok(calls.includes('run view 77 --log-failed'), 'the failure log was read');
+  assert.ok(calls.includes('workflow run verify.yml --ref loop/20261028-100000'));
+  assert.equal(loadState(join(s.work, '.git', 'verse-loop.state.json')).heals['loop/20261028-100000'], 1);
+  assert.equal(sh(s.work, 'status', '--porcelain'), '', 'clean for the next lap');
+  // a branch that used up its heal tries is left to the back-off; the lap goes on as usual
+  assert.equal(failedLoopPr([pr], { 'loop/20261028-100000': 3 }), null);
+  assert.equal(failedLoopPr([{ ...pr, statusCheckRollup: [{ context: 'ci', state: 'ERROR' }] }]).failed[0], 'ci');
+});
+
+test('a groom lap: when Verse\'s queue changed it ships docs/NEXT.md alone, no brain; with a groom PR open the lap takes the groomed top instead', async () => {
+  const s = sandbox({ groomed: false });
+  writeFileSync(join(s.work, 'docs/PARITY.md'), PARITY);
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'gaps'); sh(s.work, 'push', '-q', 'origin', 'main');
+  let r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet });
+  assert.equal(r.outcome, 'shipped', r.why); assert.equal(r.title, GROOM_TITLE); assert.deepEqual(r.task, { kind: 'groom' });
+  assert.ok(!existsSync(join(s.work, 'ran.txt')), 'grooming is the whole lap');
+  assert.deepEqual(sh(s.work, 'show', '--name-only', '--format=', r.branch).split('\n').sort(), ['docs/NEXT.md', 'docs/TAGTEAM.md']);
+  const groomed = sh(s.work, 'show', r.branch + ':docs/NEXT.md');
+  assert.match(groomed, /1\. \[assimilation gap\] site A/); assert.match(groomed, /2\. \[NEXT 2\] \*\*Calculator sitemap\*\*/);
+
+  const t = sandbox({ groomed: false, gh: { 'pr list': [{ number: 4, title: GROOM_TITLE, headRefName: 'loop/x', statusCheckRollup: [] }] } });
+  writeFileSync(join(t.work, 'docs/PARITY.md'), PARITY);
+  sh(t.work, 'add', '-A'); sh(t.work, 'commit', '-q', '-m', 'gaps'); sh(t.work, 'push', '-q', 'origin', 'main');
+  r = await lap(parseArgs(['--dry-run', '--agent', 'cmd']), { cwd: t.work, env: env(t, 'echo b > b.txt'), log: quiet });
+  assert.equal(r.outcome, 'would-ship'); assert.match(r.task.text, /^\[assimilation gap\] site A/, 'the groomed top, from memory');
+  assert.equal(readFileSync(join(t.work, 'docs/NEXT.md'), 'utf8'), HAND_NEXT, 'no second groom while one is open');
 });
