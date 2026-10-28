@@ -1,5 +1,5 @@
 /**
- * tower skill — Versus, the only-site-you-need ladder where Verse fights real sites: "versus", "verse versus", "which sites have you beaten"
+ * tower skill — Versus, the only-site-you-need ladder where Verse assimilates real sites: "versus", "verse versus", "which sites have you beaten"
  * open it, and "the tower", "verse tower" still do. The ladder is lib/tower.js. The site Verse is
  * on now at the top with each of its aspects, every conquered site under it, nothing above (the queue has no end). Each site is named in
  * plain text as a comparison (no logos or brand styling, no affiliation implied). A site is conquered only when every aspect is verified
