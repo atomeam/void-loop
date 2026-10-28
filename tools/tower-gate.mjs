@@ -18,6 +18,7 @@
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl } from '../void-live-deploy/lib/tower.js';
+import { wallOf } from '../void-live-deploy/lib/tower-controls.js';
 import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 // a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
 const probeFor = (id) => withFeatureFacts(probeOf(id), id);
@@ -384,6 +385,11 @@ async function measureFloor(f, data) {
   const noRival = noRivalOf(f);
   const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = noRival ? { reliability: 0, notOpened: true } : await measure(b, siteUrl, slug + '-site', null, probe, { noShot: noShotOf(f) });
   // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
+  // a rival page that is a bot wall or a sign-in wall (owner's standards, 2026-10-28: Amazon read as "0 of 23" behind one) was never read: the
+  // gate treats it as unreachable, so nothing is won against what was behind it
+  const walled = !!(s && s.reliability && wallOf(s.text));
+  if (walled) s.reliability = 0;
+  const siteRead = !!(s && s.reliability);
   if (s && s.icon) { try { const host = hostOf(f.url) || hostOf(f.site), dir = path.join(root, 'void-live-deploy', 'tower.icons'), name = host + '.' + s.icon.ext; fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, name), s.icon.bytes); data.icons = { ...(data.icons || {}), [host]: 'tower.icons/' + name }; } catch (_) {} }
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is
   // scored on those answers instead of the pages above; an answer written into a box (a converter's output field) counts as shown
@@ -420,7 +426,8 @@ async function measureFloor(f, data) {
   // fast as a page needs to be, so it passes whatever the site's time; above the bar the two are compared as before
   const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of;
     const v = aspect === 'speed' && Number.isFinite(a) && a <= SPEED_BAR ? 'equal-and-better' : verdict(a, c, m.hi, ideal), note = aspect === 'speed' && v === 'equal-and-better' && a > c ? ' (under the ' + SPEED_BAR + ' ms bar: as fast as a page needs to be; the site\'s time is context)' : '';
-    ev[aspect] = { ...record(ev[aspect], v, a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || '') + note, at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
+    ev[aspect] = { ...record(ev[aspect], v, a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || '') + note, at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }), ...(siteRead ? { siteRead: true } : {}) };
+    if (!siteRead && ev[aspect]) delete ev[aspect].siteRead; };
   // a site that answered none of the loads turned the gate away. That no longer holds a floor (owner, 2026-10-25: "we shouldnt be stopped by our
   // own standards"; "no need to test the competition"): Verse is judged against the best score there is for each aspect (MEASURES ideal) and a
   // 200 ms bar for speed (the owner's own bar, 2026-10-25), the evidence saying so; the site's reliability row keeps what the gate saw
@@ -428,7 +435,8 @@ async function measureFloor(f, data) {
     // a site that answers none of its loads is behind on reliability, by the numbers (3 of 3 against 0 of 3): the row is a verdict, not a blank
     // a site never opened (noRival) is not called down: Verse's own loads are held to all 3 of 3, the bar, and the evidence says the site was not opened and why
     if (noRival) ev.reliability = { ...record(ev.reliability, verdict(v.reliability, 3, true, 3), v.reliability, 3, where + ' ' + v.reliability + ' of 3 loads answered vs the bar 3 of 3 (' + f.site + ' not opened: ' + noRival + '; judged on internal metrics)', at) };
-    else ev.reliability = { ...record(ev.reliability, verdict(v.reliability, 0, true, 3), v.reliability, 0, where + ' ' + v.reliability + ' of 3 loads answered vs ' + f.site + ' 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is', at) };
+    // the standards (owner, 2026-10-28): a blocked check is INCOMPLETE, never a pass, so the site's reliability is not "won" against a wall
+    else ev.reliability = { verdict: 'incomplete', incomplete: true, verse: v.reliability, best: null, evidence: where + ' ' + v.reliability + ' of 3 loads answered; ' + f.site + (walled ? ' showed a bot or sign-in wall' : ' turned the gate away or did not answer') + ', so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is', at };
     const bar = { speed: 200, mobile: 0, a11y: 0, offline: 1, sharing: 4, german: 1 }, site = f.site;
     f = { ...f, site: 'the bar (' + site + (noRival ? ' not opened: ' + noRival : ' unreachable') + ')' };
     put('speed', v.speed, bar.speed, ' ms to the load event (median of 3, phone width)');

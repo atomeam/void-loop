@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { measure, answer, pictureOf } from './tower-gate.mjs';
 import { PROBES, score, libraryCount } from './tower-probes.mjs';
-import { FLOORS, aspectsOf, noRivalOf, noRivalUrl, gate } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, aspectsOf, noRivalOf, noRivalUrl, gate, passingRows } from '../void-live-deploy/lib/tower.js';
 import { CALCULATORS } from '../void-live-deploy/lib/calculators.js';
 
 const F = FLOORS.find((f) => f.id === 'formula calculators');
@@ -34,7 +34,8 @@ test('library size: an aspect of the floor, held to the count vcalc.com publishe
 });
 
 test('not beaten while short: every other aspect passing still leaves library size open', () => {
-  const ev = {}; for (const a of aspectsOf(F)) ev[a] = { verdict: a === 'library size' ? 'worse' : 'equal-and-better', evidence: 'x' };
+  // every other aspect passing, the floor's journeys included (passingRows: scripted steps and negative controls, docs/GATE-STANDARDS.md)
+  const ev = passingRows(F, { evidence: 'x' }); ev['library size'] = { verdict: 'worse', evidence: 'x' };
   const g = gate(F, ev);
   assert.equal(g.beaten, false); assert.deepEqual(g.left, ['library size']);
 });

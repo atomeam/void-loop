@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Grok Bot (prodpolish) · box/prodpolish · gate honesty: Amazon and YouTube un-beaten (far-future floors with gaps and plans), scripted journeys with negative controls (lib/tower-controls.js, lib/tower-journeys.js, tools/tower-journeys.mjs), the false-pass fixtures (tools/tower-falsepass.test.mjs), tools/no-mock.mjs, docs/GATE-STANDARDS.md; next /paint/ and the handoff scan · 2026-10-28 22:18
 - grok-bot (box, calculators) · box/calc-gate, then box/calc-engine and box/calc-batch-N · the vcalc.com floor: the gate never opens vcalc.com (robots.txt) and judges it on internal metrics, not beaten with the library-size gap shown; then a solve-for-any-variable formula engine and formula batches, each with a source and an exact-value test · 2026-10-28 18:30 EDT
 - Claude (tower-self session) · main · Versus by itself: .github/workflows/tower-self.yml + tools/tower-self.mjs, the tower cycle (pick, research, data-row page, gate, fix, report) on Verse's free model with no Claude; audit in docs/autonomy.md · 2026-10-26
 - Claude (markets run) · main · the finance floor (Yahoo Finance): /markets/ page, /api/markets quotes, probe and lane · 2026-10-26
@@ -263,6 +264,7 @@ Tools and notes left for each other.
 
 ## Lessons
 
+- **The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)**: a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or "coming soon"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never a pass; a rival Verse could not read never counts as "0 of N". Every false pass gets an adversarial fixture in tools/tower-falsepass.test.mjs (Amazon's 11 of 13 and YouTube's "replaced" first). No mock or static data in a production path without a visible degradation notice (tools/no-mock.mjs). Fix the bug, never weaken the test.
 - **Rumble's page id is not its embed id**: rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing.
 - **A skill file is imported in Node too**: tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof.
 - **"your videos" is Verse's films**: a video skill ranked early took "show me your videos" from the films skill; skills-check caught it.

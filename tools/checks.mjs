@@ -460,6 +460,7 @@ for (const [name, file] of [
   ['tower-self', 'tower-self.test.mjs'],
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
+  ['tower-falsepass', 'tower-falsepass.test.mjs'],
   ['avatar', 'avatar.test.mjs'],
   ['tower-verdict', 'tower-verdict.test.mjs'],
   ['site-scout', 'site-scout.test.mjs'],
