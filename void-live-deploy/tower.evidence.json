@@ -18802,45 +18802,45 @@
   "identity": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 103,
-    "best": 198,
-    "evidence": "Verse (/identity/) 103 ms to the load event (median of 3, phone width) vs anycolorid.com 198 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T04:19:18.627Z"
+    "verse": 117,
+    "best": 233,
+    "evidence": "Verse (/identity/) 117 ms to the load event (median of 3, phone width) vs anycolorid.com 233 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 loads answered vs anycolorid.com 3 of 3 loads answered",
-    "at": "2026-10-28T04:19:18.627Z"
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/identity/) 0 px sideways overflow at 390 px vs anycolorid.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T04:19:18.627Z"
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/identity/) 0 unnamed controls or images vs anycolorid.com 1 unnamed controls or images",
-    "at": "2026-10-28T04:19:18.627Z"
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/identity/) 1 (1: the page shows itself again with the network cut) vs anycolorid.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T04:19:18.627Z"
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:19:18.627Z",
+    "at": "2026-10-28T04:57:00.578Z",
     "of": 3,
     "part": true
    },
@@ -18849,7 +18849,7 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/identity/) 8 of 8 right against the worked-out answer; judged against the standard, not anycolorid.com (the site is not asked)",
-    "at": "2026-10-28T04:19:18.627Z",
+    "at": "2026-10-28T04:57:00.578Z",
     "of": 8
    },
    "design polish": {
@@ -18857,14 +18857,14 @@
     "verse": 0,
     "best": 9,
     "evidence": "Verse (/identity/) 0 design defects vs anycolorid.com 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), anycolorid.com (4 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-28T04:19:18.627Z"
+    "at": "2026-10-28T04:57:00.578Z"
    },
    "change history": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:19:18.627Z",
+    "at": "2026-10-28T04:57:00.578Z",
     "of": 3,
     "part": true
    },
@@ -18873,7 +18873,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:19:18.627Z",
+    "at": "2026-10-28T04:57:00.578Z",
     "of": 4,
     "part": true
    },
@@ -18882,7 +18882,7 @@
     "verse": 22,
     "best": 0,
     "evidence": "Verse (/identity/) 22 of 22 things a full answer shows vs anycolorid.com 0 of 22 things a full answer shows (Verse lacks: none; site lacks: profile, name, email, account ID, region, change history, on this device, JWT, claims, SSO, service portal, Official Website, Fan Club, Official Store, Community Hub, share link, export JSON, copy card, no account, works offline, no ads, back to Verse)",
-    "at": "2026-10-28T04:19:18.627Z",
+    "at": "2026-10-28T04:57:00.578Z",
     "of": 22
    },
    "profile editing": {
@@ -18902,6 +18902,136 @@
     "at": "2026-10-28T04:19:18.627Z",
     "of": 3,
     "part": true
+   },
+   "profile metadata": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:57:00.578Z",
+    "of": 4,
+    "part": true
+   },
+   "SSO claims": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/identity/) 2 of 3 shown for the question (Verse lacks: a bearer token input); judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:57:00.578Z",
+    "of": 3,
+    "part": true
+   }
+  },
+  "cpan": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 94,
+    "best": 95,
+    "evidence": "Verse (/cpan/) 94 ms to the load event (median of 3, phone width) vs cpantesters.org 95 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/cpan/) 3 of 3 loads answered vs cpantesters.org 3 of 3 loads answered",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/cpan/) 0 px sideways overflow at 390 px vs cpantesters.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/cpan/) 0 unnamed controls or images vs cpantesters.org 1 unnamed controls or images",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/cpan/) 1 (1: the page shows itself again with the network cut) vs cpantesters.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 0,
+    "evidence": "Verse (/cpan/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs cpantesters.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 8,
+    "best": 8,
+    "evidence": "Verse (/cpan/) 8 of 8 right against the worked-out answer; judged against the standard, not cpantesters.org (the site is not asked)",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 8
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/cpan/) 0 design defects vs cpantesters.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), cpantesters.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T04:56:38.313Z"
+   },
+   "test reports": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: reports textarea); judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 3,
+    "part": true
+   },
+   "distribution health": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 3,
+    "part": true
+   },
+   "module search": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: matching count); judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 3,
+    "part": true
+   },
+   "live feed": {
+    "verdict": "worse",
+    "verse": 1,
+    "best": 2,
+    "evidence": "Verse (/cpan/) 1 of 2 shown for the question (Verse lacks: offline fallback); judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 2,
+    "part": true
+   },
+   "export": {
+    "verdict": "worse",
+    "verse": 2,
+    "best": 3,
+    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: export box); judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 3,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 16,
+    "best": 1,
+    "evidence": "Verse (/cpan/) 16 of 16 things a full answer shows vs cpantesters.org 1 of 16 things a full answer shows (Verse lacks: none; site lacks: test reports, distribution health, module search, live feed, export, ingest reports, clear, CPAN test matrix, export JSON, export CSV, no account, works offline, no ads, back to Verse, on this device)",
+    "at": "2026-10-28T04:56:38.313Z",
+    "of": 16
    }
   }
  },
@@ -19086,6 +19216,7 @@
   "heycolor.com": "tower.icons/heycolor.com.png",
   "emojitracker.com": "tower.icons/emojitracker.com.png",
   "yunite.xyz": "tower.icons/yunite.xyz.ico",
-  "anycolorid.com": "tower.icons/anycolorid.com.png"
+  "anycolorid.com": "tower.icons/anycolorid.com.png",
+  "cpantesters.org": "tower.icons/cpantesters.org.ico"
  }
 }
