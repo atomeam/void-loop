@@ -52,6 +52,9 @@ export function inventory() {
   for (const d of ls('domains').filter((f) => /\.md$/.test(f))) { const t = rd('domains/' + d); items.push({ id: 'plan:' + d, group: 'plan', facts: { lines: lines(t), steps: (t.match(/^\s*[-*\d]+[.)]?\s/gm) || []).length } }); }
   for (const f of walk('domains/forethinkers').filter((f) => /\.md$/.test(f))) { const t = rd(f); items.push({ id: 'research:' + f.replace('domains/forethinkers/', ''), group: 'research', facts: { lines: lines(t), steps: (t.match(/^\s*[-*\d]+[.)]?\s/gm) || []).length } }); }
   for (const r of onlySite(skills, tests)) items.push({ id: 'site:' + r.category, group: 'site', facts: { skills: r.skills.length, tested: r.tested, covered: r.status === 'missing' ? 0 : r.status === 'partial' ? 1 : 2 } });
+  // every page does its own job (tools/real-pages.mjs; owner, 2026-10-28: pages are real, never pretend): the pages it covers, the
+  // pages that say honestly on the page what needs a partner ([data-honest]), and the size of its specs. A lap raises the specs' depth.
+  { const pages = walk('void-live-deploy').filter((f) => /(^|\/)index\.html$/.test(f) && !/node_modules/.test(f)); items.push({ id: 'loop:real-pages', group: 'loop', facts: { pages: pages.length, honestLabels: pages.filter((f) => /data-honest/.test(rd(f))).length, specLines: lines(rd('tools/real-pages.mjs')), inChecks: /real-pages\.mjs/.test(rd('tools/checks.mjs')) ? 1 : 0 } }); }
   items.push({ id: 'loop:meta', group: 'loop', facts: { lapTests: tests.includes('lap.test.mjs') ? 1 : 0, checks: (rd('tools/checks.mjs').match(/name:/g) || []).length } });
   return items;
 }

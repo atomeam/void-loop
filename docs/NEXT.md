@@ -2,6 +2,9 @@
 
 For Claude and the daily routines. Each line: status · open PRs · exact next step. Nothing is ever finished; each track keeps upgrading in the lap loop.
 
+
+**Gate badges and stages (owner direction, 2026-10-28; `void-live-deploy/lib/gate-badge.js`, test `tools/gate-badge.test.mjs`).** Every tower floor shows one badge on the card: **[Gate: Code]** (software Verse can build now), **[Gate: Partner]** (the real thing needs a licensed partner or a partner's API: live fares, payments, licensed market or sports data, other people's videos, job boards) or **[Gate: License]** (a licence of Verse's own, such as a music streaming catalogue). A regulated floor (banking, lending, insurance, tax, government, health, food delivery, travel tickets, betting) also shows its stage: **Stage 1** on-device prep and the maths, then a hand-off to the official service; **Stage 2** a partner bridge; **Stage 3** a direct licence. No partner or licence exists today, so every regulated floor is at Stage 1. **The build queue picks only Code work, or Stage 1 on a regulated floor**: `tower()` puts every other floor behind all buildable work, and `tools/tower-self.mjs` never picks a site that is not buildable. A page whose real version needs a partner or a licence says so on the page and never fakes it (`tools/real-pages.mjs`).
+
 0. **TOP: Verse does everything Grok Bot and Claude do, and better (a tower floor)** — status: not passed. This floor passes only with evidence for every item: the same task, run head to head, with Verse at least equal. Honest checklist (estimates until a head-to-head run proves them):
    - Answering: **partial**. Skills answer many asks, but free-form ones fall back. Next: log asks that fall back (topics only) and turn the most common into skills each lap.
    - Research: **partial**. Wikipedia/Wikidata lookups and passive REA studies. Next: a cited multi-source research card.

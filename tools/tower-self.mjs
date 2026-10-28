@@ -23,6 +23,7 @@
 //   node tools/tower-self.mjs judge ids.txt [--queue]                         read the gate's rows, apply mechanical fixes, queue the rest, report
 //   node tools/tower-self.mjs guard                                           exit 1 when a frontier site at the front of the queue has no page
 //   node tools/tower-self.mjs status                                          what the loop has done and how many pages a day
+import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
@@ -78,7 +79,8 @@ export const sharesWords = (fam, text) => { const t = norm(text); return familyW
 export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS } = {}) {
   const tried = (state && state.sites) || {}, out = [];
   for (const x of frontierOf(frontier, floors)) {
-    if (x.blocked) continue; const t = tried[x.host];
+    if (x.blocked) continue; if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
+    const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
     out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness }); if (out.length >= max) break;
   }

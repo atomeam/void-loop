@@ -386,7 +386,7 @@
     for (const t of TEMPLATES) {
       const b = document.createElement('button');
       b.type = 'button'; b.dataset.id = t.id; b.textContent = t.name;
-      b.onclick = () => loadTemplate({ ...t, ...(state.cache?.[t.id] || {}) }).then((x) => fetchOne(t).then(() => x));
+      b.onclick = () => fetchOne(t).then((tpl) => loadTemplate({ ...t, ...tpl })).catch(() => { $('credit').textContent = t.name + ' could not be loaded just now; try again in a moment.'; });
       list.appendChild(b);
     }
     const params = new URLSearchParams(location.search);

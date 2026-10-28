@@ -110,6 +110,7 @@
   <section aria-labelledby="ah"><h2 id="ah">Event announcer</h2>
     <div class="dates"><label for="evt" class="note">An event at</label><input type="datetime-local" id="evt"><span class="note">in</span><select id="evfrom" aria-label="City of the event"></select></div>
     <div class="row"><button type="button" id="evgo">Show it in every city</button><button type="button" id="evlink">Copy event link</button></div>
+    <p class="note" id="evnote" aria-live="polite"></p>
     <p class="note">One link that holds one moment (?at=2026-11-02T15:00:00Z&amp;cities=Tokyo,London): whoever opens it sees the event in each of your cities at once, in their own time too. The meeting planner finds a time; this shares it.</p>
   </section>
 
@@ -253,7 +254,7 @@
   $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + '?c=' + places.map((p) => encodeURIComponent(p.name)).join(',') + (h24 ? '&h=24' : ''); try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
   if (missing.length) $('addnote').textContent = 'Not found: ' + missing.join(', ') + '.';
   const evAt = Date.parse(q.get('at') || ''); let evShown = Number.isFinite(evAt) ? evAt : null;
-  $('evgo').addEventListener('click', () => { const ms = eventMs(); if (ms !== null) { evShown = ms; drawEvent(ms); $('event').scrollIntoView({ behavior: 'smooth' }); } });
+  $('evgo').addEventListener('click', () => { const ms = eventMs(); if (ms === null) { $('evnote').textContent = 'Pick the day and time of the event first, then its city.'; $('evt').focus(); return; } $('evnote').textContent = ''; evShown = ms; drawEvent(ms); $('event').scrollIntoView({ behavior: 'smooth' }); });
   $('evlink').addEventListener('click', async () => { const ms = eventMs() ?? evShown; if (ms === null) return; try { await navigator.clipboard.writeText(eventLink(ms)); const w = $('evlink').textContent; $('evlink').textContent = 'Copied'; setTimeout(() => { $('evlink').textContent = w; }, 1200); } catch (_) {} });
   $('d1').value = todayIso(); { const t = new Date(Date.parse(todayIso() + 'T00:00:00Z') + 30 * 86400000); $('d2').value = t.toISOString().slice(0, 10); }
   for (const id of ['d1', 'd2', 'bn']) $(id).addEventListener('input', drawDates);

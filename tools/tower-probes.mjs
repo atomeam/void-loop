@@ -646,14 +646,14 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['availability result', /available for sovereign registration/]],
+      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
       'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/]],
     },
     facts: [
-      ['domain search', /Domain search/], ['tiered plans', /Tiered hosting packages/], ['Small', /Small/],
+      ['domain search', /Domain search/], ['tiered plans, labelled as the rival\'s', /Name Unit's hosting plans/], ['Small', /Small/],
       ['Medium', /Medium/], ['Large', /Large/], ['Norwegian servers', /Servere i Norge/],
       ['bandwidth', /bandwidth/i], ['monthly transfer', /GB\/month/], ['vCPUs', /\bvCPUs?\b/],
       ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],

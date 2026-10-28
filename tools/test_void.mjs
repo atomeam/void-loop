@@ -1037,7 +1037,7 @@ try {
     await P.ctx.close();
   }
   // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
-  // with editable profile metadata, a local change history ledger, a JWT claims inspector, a mock service portal and a shareable profile link.
+  // with editable profile metadata, a local change history ledger, a JWT claims inspector, a portal of your own service links and a shareable profile link.
   if (want("identity: the profile edits, the change history, the token inspector, the service portal and the share link")) {
     const { PROBES } = await import('./tower-probes.mjs');
     const P = await fresh({ base: base + 'identity/' });

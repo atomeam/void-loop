@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 910,
+ "counted": 911,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -633,6 +633,13 @@
    "tests": 1
   },
   {
+   "file": "lib/gate-badge.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -686,7 +693,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 18
+   "tests": 19
   },
   {
    "file": "lib/chat-calendar.js",
@@ -5317,6 +5324,18 @@
     "skills/oracle.js"
    ]
   },
+  "lib/gate-badge.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tower.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
@@ -8780,7 +8799,8 @@
   },
   "lib/tower.js": {
    "imports": [
-    "lib/self-sites.js"
+    "lib/self-sites.js",
+    "lib/gate-badge.js"
    ],
    "external": [
     ", "
@@ -12542,6 +12562,7 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower.js",
+    "lib/gate-badge.js",
     "lib/avatar.js",
     "lib/tower-rank.js"
    ],

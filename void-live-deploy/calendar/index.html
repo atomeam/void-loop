@@ -541,7 +541,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       const dup = store.events.find((x) => x.title.toLowerCase() === e.title.toLowerCase() && x.start === e.start); const n = dup || e; if (!dup) { store.events = C.withEvent(store.events, e); keep(); }
       state.cursor = C.startOfDay(C.parseLocal(n.start)); state.view = 'day'; render(); showDetail(C.occurrences(n, n.start, n.start)[0] || n); say((dup ? W.alreadyIn : W.added) + ': ' + n.title + ', ' + whenOf(n)); $('q').value = ''; checkReminders();
     }
-    $('qa').addEventListener('submit', (e) => { e.preventDefault(); const t = $('q').value.trim(); if (t) quick(t); });
+    $('qa').addEventListener('submit', (e) => { e.preventDefault(); const t = $('q').value.trim(); if (t) return quick(t); $('q').focus(); say(de ? 'Schreib zuerst, was und wann, etwa „Zahnarzt morgen 15 Uhr“.' : 'Type what and when first, like "dentist tomorrow 3pm".', true); });
     if (q.get('q')) { quick(q.get('q')); history.replaceState(null, '', '/calendar/?d=' + C.dayKey(state.cursor) + '&view=day'); }
     // search
     $('searchBtn').addEventListener('click', () => { const open = $('sf').hidden; $('sf').hidden = !open; $('searchBtn').setAttribute('aria-expanded', String(open)); if (open) $('sq').focus(); else { $('results').hidden = true; } });
