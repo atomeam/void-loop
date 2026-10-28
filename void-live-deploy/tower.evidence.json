@@ -18925,52 +18925,52 @@
   "cpan": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 94,
-    "best": 95,
-    "evidence": "Verse (/cpan/) 94 ms to the load event (median of 3, phone width) vs cpantesters.org 95 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T04:56:38.313Z"
+    "verse": 82,
+    "best": 94,
+    "evidence": "Verse (/cpan/) 82 ms to the load event (median of 3, phone width) vs cpantesters.org 94 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 loads answered vs cpantesters.org 3 of 3 loads answered",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/cpan/) 0 px sideways overflow at 390 px vs cpantesters.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/cpan/) 0 unnamed controls or images vs cpantesters.org 1 unnamed controls or images",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/cpan/) 1 (1: the page shows itself again with the network cut) vs cpantesters.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/cpan/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs cpantesters.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/cpan/) 8 of 8 right against the worked-out answer; judged against the standard, not cpantesters.org (the site is not asked)",
-    "at": "2026-10-28T04:56:38.313Z",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 8
    },
    "design polish": {
@@ -18978,14 +18978,14 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/cpan/) 0 design defects vs cpantesters.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), cpantesters.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T04:56:38.313Z"
+    "at": "2026-10-28T05:17:31.710Z"
    },
    "test reports": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: reports textarea); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:56:38.313Z",
+    "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 3,
     "part": true
    },
@@ -18994,16 +18994,16 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:56:38.313Z",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 3,
     "part": true
    },
    "module search": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: matching count); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:56:38.313Z",
+    "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 3,
     "part": true
    },
@@ -19012,16 +19012,16 @@
     "verse": 1,
     "best": 2,
     "evidence": "Verse (/cpan/) 1 of 2 shown for the question (Verse lacks: offline fallback); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:56:38.313Z",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 2,
     "part": true
    },
    "export": {
-    "verdict": "worse",
-    "verse": 2,
+    "verdict": "equal-and-better",
+    "verse": 3,
     "best": 3,
-    "evidence": "Verse (/cpan/) 2 of 3 shown for the question (Verse lacks: export box); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T04:56:38.313Z",
+    "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 3,
     "part": true
    },
@@ -19030,7 +19030,7 @@
     "verse": 16,
     "best": 1,
     "evidence": "Verse (/cpan/) 16 of 16 things a full answer shows vs cpantesters.org 1 of 16 things a full answer shows (Verse lacks: none; site lacks: test reports, distribution health, module search, live feed, export, ingest reports, clear, CPAN test matrix, export JSON, export CSV, no account, works offline, no ads, back to Verse, on this device)",
-    "at": "2026-10-28T04:56:38.313Z",
+    "at": "2026-10-28T05:17:31.710Z",
     "of": 16
    }
   }
