@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-28T17:15:20.489Z",
+   "at": "2026-10-28T17:45:14.601Z",
    "sha": "b60840bd01211e0b9ff4462f9e84870b243010fc",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40729055222",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40729081313",
    "suite": "browser suite on main",
    "checks": [
     "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
