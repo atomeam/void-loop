@@ -70,9 +70,9 @@
    "run": 2,
    "closed": 5,
    "touched": 5,
-   "pct_blocked": 0.0,
+   "pct_blocked": 0,
    "top_block": "none this run",
-   "dup_rate": 0.0,
+   "dup_rate": 0,
    "median_days": 0.9,
    "asks_open_start": 23,
    "asks_open_end": 23,
@@ -120,7 +120,7 @@
    "run": 3,
    "closed": 6,
    "touched": 6,
-   "pct_blocked": 0.0,
+   "pct_blocked": 0,
    "top_block": "none this run",
    "dup_rate": 0.52,
    "median_days": 0.3,
@@ -167,7 +167,7 @@
    "run": 4,
    "closed": 6,
    "touched": 6,
-   "pct_blocked": 0.0,
+   "pct_blocked": 0,
    "top_block": "none this run",
    "dup_rate": 0.17,
    "median_days": 3.7,
@@ -216,7 +216,7 @@
    "pct_blocked": 11.1,
    "top_block": "the answer path's model is in lib/models.js, which is Claude's (router and limits): handed to Claude, nothing waits on Adam",
    "dup_rate": 0.17,
-   "median_days": 4.0,
+   "median_days": 4,
    "asks_open_start": 6,
    "asks_open_end": 3,
    "items": [
@@ -285,7 +285,7 @@
    "run": 6,
    "closed": 6,
    "touched": 8,
-   "pct_blocked": 25.0,
+   "pct_blocked": 25,
    "top_block": "value-drift tracker: visitor appraisals are never stored by design, so tracking their drift needs the owner's go-ahead on a privacy rule; workaround proposed: track drift of Verse's own published store prices, which are already public",
    "dup_rate": 0.88,
    "dup_basis": "15 of 17 closed asks were rewordings of an item already built or decided",
@@ -408,6 +408,39 @@
      "list": "handoff (seo run note)",
      "status": "duplicate",
      "link": "commit 1831ef1b9 (Claude, 2026-10-26)"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-28T22:20:00Z",
+   "run": 8,
+   "closed": 2,
+   "touched": 2,
+   "pct_blocked": 0,
+   "top_block": "none this run; the one open V01D ask (community milestone) is still blocked on Claude's growth files, as in run 7",
+   "dup_rate": 0,
+   "dup_basis": "0 of 2 closed items were already built",
+   "median_days": 0,
+   "median_basis": "both closed items were red checks on main from today (queued and fixed the same day)",
+   "asks_open_start": 1,
+   "asks_open_end": 1,
+   "note": "green foundation first (Adam, 2026-10-28 6:20 PM ET): no new features while main has failing checks, so this run only fixed red checks; feature items and the overlapping-skill merge are deferred until main is green. Store queue has 0 open (site-tester and remix kit done).",
+   "items": [
+    {
+     "what": "connected: /books/ now links four sibling tools (adds /notes/ and /translate/), so the sudowrite, squibler, inkfluence and novelcrafter floors pass; all 190 floor pages checked, 0 dead links",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "\"incident autopsy\" check counted the card's own art seal (on every card) as a picture in the autopsy; it now checks only the autopsy body for pictures, which still must have none",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "one overlapping skill pair merged per run",
+     "list": "convergence (overlap pairs)",
+     "status": "deferred",
+     "reason": "green foundation first: a skill merge changes behavior while main is red"
     }
    ]
   }
