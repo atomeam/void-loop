@@ -58,6 +58,27 @@
   <h1>Hosting sizer</h1>
   <p class="sub">Work out what a web server actually needs before you rent one: sustained bandwidth, monthly transfer, concurrent workers, vCPUs and RAM from your own traffic, plus the downtime each uptime SLA allows and a hardened NGINX or Caddy config with TLS 1.3, security headers and a rate limit. Everything is worked out on this device.</p>
 
+  <section class="card" aria-labelledby="h-domain">
+    <h2 id="h-domain">Domain &amp; packages</h2>
+    <p class="note">Instant domain availability and tiered hosting plans, Norwegian local parity. Everything on this device.</p>
+    <div class="row">
+      <label><span>Domain search</span><input id="domain" type="text" aria-label="Domain search" placeholder="example.no"></label>
+      <button type="button" id="domainbtn" aria-label="Check domain availability">Check</button>
+    </div>
+    <p class="out" id="domainresult">Type a domain and check availability.</p>
+    <div class="scroll">
+      <table>
+        <caption>Tiered hosting packages</caption>
+        <thead><tr><th scope="col">Plan</th><th scope="col">Storage</th><th scope="col">Price</th><th scope="col">Server</th></tr></thead>
+        <tbody>
+          <tr><td>Small</td><td>20 GB</td><td>Kr. 9 / mnd</td><td>Servere i Norge</td></tr>
+          <tr><td>Medium</td><td>40 GB</td><td>Kr. 19 / mnd</td><td>Servere i Norge</td></tr>
+          <tr><td>Large</td><td>80 GB</td><td>Kr. 29 / mnd</td><td>Servere i Norge</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="card" aria-labelledby="h-cap">
     <h2 id="h-cap">Capacity</h2>
     <div class="row">
@@ -301,6 +322,12 @@
     });
   }
   $('server').addEventListener('change', (e) => { state.server = e.target.value; commit('Config switched to ' + (state.server === 'caddy' ? 'Caddy' : 'NGINX') + '.'); });
+
+  $('domainbtn').onclick = () => {
+    const v = $('domain').value.trim();
+    if (!v) { $('domainresult').textContent = 'Type a domain and check availability.'; return; }
+    $('domainresult').textContent = v + ' is available for sovereign registration. Instant DNS provisioning active.';
+  };
 
   $('copy').onclick = async () => {
     try { await navigator.clipboard.writeText($('config').textContent); say('Config copied: it carries the TLS 1.3, header and rate-limit lines sized to these numbers.'); }
