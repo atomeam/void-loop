@@ -699,6 +699,27 @@ export const PROBES = Object.freeze({
       ['kept on this device', /on this device/], ['works offline', /works offline/i], ['a GitHub file', /GitHub/],
     ],
   },
+  // automation (owner, 2026-10-28: the Zapier trial runs out; two Zaps logged the issues and pull requests of atomeam/void-loop into a Zapier table):
+  // Zapier is the floor, fought from /ledger/. The question is the oldest pull requests of the repo, which never change: #1 and #2 are pull requests,
+  // merged by atomeam on 2026-09-28 (05:14 and 04:57 UTC, so Sep 27 or 28 in the reader's own zone). Judged on Verse alone (the Zapier table is private).
+  automation: {
+    site: 'https://zapier.com/', verse: '/ledger/',
+    ask: { verse: '/ledger/?tab=pr&sort=old' },
+    truth: [['pull request #1 by its title', /Void side-panel extension/], ['pull request #2 by its title', /PC-free deploys/], ['who opened them', /atomeam/], ['merged, not just closed', /Merged/], ['the day they merged', /Sep 2[78], 2026/]],
+    askParts: {
+      'repo activity log': [['issues and pull requests apart', /Issues[\s\S]{0,80}Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/], ['how many are shown', /[\d,]+ of [\d,]+ (?:issues|pull requests) shown/]],
+      tables: [['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/], ['copy as CSV', /Copy as CSV/], ['the view as a link', /Copy link to this view/]],
+      'triggers and actions': [['a refresh that asks only for what changed', /Refresh/], ['an unchanged answer is free', /304/]],
+      'app integrations': [['opens in any spreadsheet', /spreadsheet/i]],
+      'scheduled runs': [['the saved copy opens offline', /opens offline/]],
+    },
+    facts: [
+      ['issues tab', /\bIssues\b/], ['pull requests tab', /Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/],
+      ['an author filter', /\bAuthor\b/], ['merged shown apart from closed', /Merged/], ['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/],
+      ['copy as CSV', /Copy as CSV/], ['a link to the exact view', /Copy link to this view/], ['no account', /no account/i], ['no token', /no token/i],
+      ['the rate limit said plainly', /60 requests an hour/], ['an unchanged answer is free', /304/], ['kept on this device', /on this device/], ['opens offline', /opens offline/],
+    ],
+  },
   // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
   // sites yet"): Amazon is the floor, fought from Verse's own /store/. The ask arrives carrying a cart, so the money on the page is checkable against the
   // worked-out answer and the cart opens itself; the totals are the page's own, and the payment page (Gumroad or Stripe) is said to be the final word before

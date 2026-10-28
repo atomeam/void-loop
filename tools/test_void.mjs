@@ -870,6 +870,69 @@ try {
         && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
     await P.ctx.close();
   }
+  // the repo activity ledger (owner, 2026-10-28: "just build Verse to be able to take over by then", the Zapier trial running out): /ledger/ reads
+  // GitHub's issues list from the browser - issues and pull requests on their own tabs, merged told apart from closed, filters in the link, a CSV
+  // download, a refresh that sends the saved ETag (a 304 is free), and GitHub's rate limit said plainly while the saved copy stays on screen.
+  // GitHub is a fixture here: #1 and #2 are the repo's real first pull requests (the tower probe asks for them), #3 an issue.
+  if (want("ledger: issues and pull requests apart, merged vs closed, filters in the link, CSV, an ETag refresh that comes back 304, and the rate limit said plainly")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'ledger/' });
+    const gh = { mode: 'ok', seen: [] }, H = { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset', 'content-type': 'application/json' };
+    const item = (n, title, extra) => ({ number: n, title, html_url: 'https://github.com/atomeam/void-loop/' + (extra.pull_request ? 'pull/' : 'issues/') + n, user: { login: extra.login || 'atomeam', type: 'User' }, labels: extra.labels || [], comments: 0, ...extra });
+    const items = [
+      item(4, 'Draft: tidy the docs', { state: 'closed', created_at: '2026-10-02T09:00:00Z', updated_at: '2026-10-03T09:00:00Z', closed_at: '2026-10-03T09:00:00Z', pull_request: { merged_at: null }, login: 'kim' }),
+      item(3, 'Login bug on phones', { state: 'open', created_at: '2026-10-01T09:00:00Z', updated_at: '2026-10-04T09:00:00Z', closed_at: null, labels: [{ name: 'bug' }], login: 'ann' }),
+      item(2, 'CI: PC-free deploys (tests + Cloudflare Pages) and helper/* auto-ship', { state: 'closed', created_at: '2026-09-28T04:40:00Z', updated_at: '2026-09-28T04:57:59Z', closed_at: '2026-09-28T04:57:59Z', pull_request: { merged_at: '2026-09-28T04:57:59Z' } }),
+      item(1, 'Void side-panel extension + frame permission, and free-model shortfall evidence', { state: 'closed', created_at: '2026-09-28T04:30:00Z', updated_at: '2026-09-28T05:14:17Z', closed_at: '2026-09-28T05:14:17Z', pull_request: { merged_at: '2026-09-28T05:14:17Z' } }),
+    ];
+    await P.ctx.route(/^https:\/\/api\.github\.com\//, (r) => {
+      const req = r.request(), u = req.url(), tag = req.headers()['if-none-match'] || '';
+      if (req.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: { ...H, 'access-control-allow-headers': 'accept, if-none-match', 'access-control-allow-methods': 'GET' } });
+      gh.seen.push({ u, tag });
+      const rate = (left) => ({ 'x-ratelimit-limit': '60', 'x-ratelimit-remaining': String(left), 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 1800) });
+      if (gh.mode === 'limit') return r.fulfill({ status: 403, headers: { ...H, ...rate(0) }, body: JSON.stringify({ message: 'API rate limit exceeded' }) });
+      const since = /[?&]since=/.test(u), etag = since ? '"since-1"' : '"all-1"';
+      if (tag === etag) return r.fulfill({ status: 304, headers: { ...H, ...rate(50), etag } });
+      const body = since ? [items[1]] : items;
+      return r.fulfill({ status: 200, headers: { ...H, ...rate(55), etag }, body: JSON.stringify(body) });
+    });
+    await P.p.evaluate(() => localStorage.clear());
+    await P.p.goto(base + 'ledger/?tab=pr&sort=old'); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(150);
+    const t = await P.p.evaluate(() => document.body.innerText);
+    const probe = PROBES.automation;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([, re]) => !re.test(t)).map(([n]) => n);
+    const prRows = await P.p.$$eval('#rows tr', (trs) => trs.map((tr) => tr.innerText.replace(/\s+/g, ' ')));
+    check('ledger: the pull requests tab lists #1, #2 and #4 oldest first, #1 and #2 merged and #4 closed, and the tower probe finds every truth and fact',
+      prRows.length === 3 && /Void side-panel/.test(prRows[0]) && /PC-free/.test(prRows[1]) && /tidy the docs/.test(prRows[2]) && /Merged/.test(prRows[0]) && /Closed/.test(prRows[2]) && !/Merged/.test(prRows[2]) && !miss.length, JSON.stringify({ prRows, miss }));
+    await P.p.click('#tab-issue'); await P.p.waitForTimeout(100);
+    const iss = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#rows tr')].map((tr) => tr.innerText.replace(/\s+/g, ' ')), sel: document.getElementById('tab-issue').getAttribute('aria-selected'), url: location.search }));
+    check('ledger: the issues tab holds only the issue (#3 by ann, open) and the tab change is in the link', iss.rows.length === 1 && /Login bug/.test(iss.rows[0]) && /ann/.test(iss.rows[0]) && iss.sel === 'true' && !/tab=/.test(iss.url), JSON.stringify(iss));
+    await P.p.click('#tab-pr'); await P.p.selectOption('#state', 'merged'); await P.p.waitForTimeout(100);
+    const merged = await P.p.evaluate(() => ({ n: document.querySelectorAll('#rows tr').length, url: location.search, count: document.getElementById('count').textContent }));
+    check('ledger: Merged on the pull requests tab keeps #1 and #2, says "2 of 3 pull requests shown", and puts state=merged in the link', merged.n === 2 && /state=merged/.test(merged.url) && /tab=pr/.test(merged.url) && /^2 of 3 pull requests shown/.test(merged.count), JSON.stringify(merged));
+    const [dl] = await Promise.all([P.p.waitForEvent('download', { timeout: 10000 }), P.p.click('#csv')]);
+    const { readFileSync } = await import('node:fs'); const csv = readFileSync(await dl.path(), 'utf8').replace(/^\uFEFF/, ''), lines = csv.split('\r\n').filter(Boolean);
+    check('ledger: Download CSV gives the view on screen with a header and CRLF lines (2 merged pull requests, oldest first, a BOM for spreadsheets)', lines[0].startsWith('kind,number,title,url,author,state,created_at') && lines.length === 3 && lines[1].startsWith('pr,1,') && lines[2].startsWith('pr,2,') && /,merged,/.test(lines[2]) && /\.csv$/.test(dl.suggestedFilename()), JSON.stringify({ name: dl.suggestedFilename(), lines: lines.slice(0, 3) }));
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(300);
+    const back = await P.p.evaluate(() => ({ state: document.getElementById('state').value, tab: document.getElementById('tab-pr').getAttribute('aria-selected'), n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: a reload restores the view from the link (pull requests, merged)', back.state === 'merged' && back.tab === 'true' && back.n === 2, JSON.stringify(back));
+    await P.p.waitForTimeout(100); gh.seen.length = 0;
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 });
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 }); await P.p.waitForTimeout(100);
+    const st = await P.p.$eval('#status', (e) => e.textContent);
+    check('ledger: Refresh asks only for what changed (since=), and the second sends the saved ETag, gets a 304 and says nothing changed', gh.seen.length === 2 && gh.seen.every((s) => /since=/.test(s.u)) && gh.seen[1].tag === '"since-1"' && /nothing changed/.test(st), JSON.stringify({ seen: gh.seen, st }));
+    gh.mode = 'limit';
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForFunction(() => /limit/.test(document.getElementById('status').textContent), null, { timeout: 10000 });
+    const lim = await P.p.evaluate(() => ({ st: document.getElementById('status').textContent, n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: when GitHub says the limit is used up (403, 0 left) the page says when it resets and keeps the saved copy on screen', /60 requests an hour/.test(lim.st) && /resets at/.test(lim.st) && /saved copy/.test(lim.st) && lim.n === 2, JSON.stringify(lim));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('ledger: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    check('ledger: the page links to at least four sibling Verse tools and to its card on the stage', (await siblingCount(P.p)) >= 4 && !!(await P.p.$('a[href="/?q=look%20at%20atomeam%2Fvoid-loop"]')), JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('ledger: at phone width (360 px) the table turns into cards and the page never scrolls sideways', cut <= 0, JSON.stringify({ cut }));
+    await P.ctx.close();
+  }
   // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,
   // the top prize in N spins, a seeded 1,000-spin check, the drip to a cashout, and the list carried between /wheel/, /prizes/ and /tournaments/
   if (want("prizes: the faucet audit's odds and drip, a seeded 1,000-spin check, never-reaches at EV 0, and the wheel, prizes and tournaments handoff")) {
