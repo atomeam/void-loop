@@ -509,6 +509,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:31:23Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:30:57Z",
+   "subject": "Resize image: mark the preset labels as page text for the review"
+  },
+  {
+   "at": "2026-10-28T20:30:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:30:33Z",
+   "subject": "Colour: the readable-pairs job jumps to the contrast block itself"
+  },
+  {
+   "at": "2026-10-28T20:29:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:29:05Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:27:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:27:50Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -517,11 +545,31 @@
    "subject": "Snippet / Note: the gist page with a plain name, a lead and templates"
   },
   {
+   "at": "2026-10-28T20:21:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:19:39Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:19:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-28T20:19:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:17:59Z",
+   "subject": "Colour: three everyday jobs above the picker"
+  },
+  {
    "at": "2026-10-28T20:17:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:17:05Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -539,54 +587,6 @@
   {
    "at": "2026-10-28T20:16:14Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:15:24Z",
-   "subject": "Random user: mock profiles, sample rosters and character placeholders"
-  },
-  {
-   "at": "2026-10-28T20:14:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:14:04Z",
-   "subject": "Random number: everyday draws first, proof kept"
-  },
-  {
-   "at": "2026-10-28T20:13:09Z",
-   "subject": "Photos lane: plain titles and plain-name URLs for four brand-slug pages"
-  },
-  {
-   "at": "2026-10-28T20:11:33Z",
-   "subject": "Wider use: Verse versions must serve more people than the original"
-  },
-  {
-   "at": "2026-10-28T20:05:03Z",
-   "subject": "Tower gate: coin flip measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T20:04:29Z",
-   "subject": "Prizes: mark the export button's text as reviewed"
-  },
-  {
-   "at": "2026-10-28T20:02:55Z",
-   "subject": "Lists run 7: handoff lines, metrics, MAP entry for value drift"
-  },
-  {
-   "at": "2026-10-28T20:02:55Z",
-   "subject": "Lists run 7: shop family (store + services), a mail card for email asks, friendly openers, value drift, common asks on calculator and random"
-  },
-  {
-   "at": "2026-10-28T20:01:49Z",
-   "subject": "Prizes: a weighted prize wheel with real odds, EV, a seedable 1,000-spin check and a reward drip calculator; a list handoff between wheel…"
-  },
-  {
-   "at": "2026-10-28T20:01:09Z",
-   "subject": "Builder: five red browser checks on main back to green (folder, figures together, three tool-page budgets) (#1343)"
-  },
-  {
-   "at": "2026-10-28T19:54:57Z",
-   "subject": "Tower gate: coin flip,nameunit,hosting measured against their live sites"
   }
  ],
  "builders": {
