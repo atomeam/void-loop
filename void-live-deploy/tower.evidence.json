@@ -18802,45 +18802,45 @@
   "identity": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 118,
-    "best": 192,
-    "evidence": "Verse (/identity/) 118 ms to the load event (median of 3, phone width) vs anycolorid.com 192 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T05:18:30.214Z"
+    "verse": 87,
+    "best": 154,
+    "evidence": "Verse (/identity/) 87 ms to the load event (median of 3, phone width) vs anycolorid.com 154 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 loads answered vs anycolorid.com 3 of 3 loads answered",
-    "at": "2026-10-28T05:18:30.214Z"
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/identity/) 0 px sideways overflow at 390 px vs anycolorid.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T05:18:30.214Z"
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/identity/) 0 unnamed controls or images vs anycolorid.com 1 unnamed controls or images",
-    "at": "2026-10-28T05:18:30.214Z"
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/identity/) 1 (1: the page shows itself again with the network cut) vs anycolorid.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T05:18:30.214Z"
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 3,
     "part": true
    },
@@ -18849,7 +18849,7 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/identity/) 8 of 8 right against the worked-out answer; judged against the standard, not anycolorid.com (the site is not asked)",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 8
    },
    "design polish": {
@@ -18857,14 +18857,14 @@
     "verse": 0,
     "best": 9,
     "evidence": "Verse (/identity/) 0 design defects vs anycolorid.com 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), anycolorid.com (4 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-28T05:18:30.214Z"
+    "at": "2026-10-28T06:08:22.725Z"
    },
    "change history": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 3,
     "part": true
    },
@@ -18873,7 +18873,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 4,
     "part": true
    },
@@ -18882,7 +18882,7 @@
     "verse": 22,
     "best": 0,
     "evidence": "Verse (/identity/) 22 of 22 things a full answer shows vs anycolorid.com 0 of 22 things a full answer shows (Verse lacks: none; site lacks: profile, name, email, account ID, region, change history, on this device, JWT, claims, SSO, service portal, Official Website, Fan Club, Official Store, Community Hub, share link, export JSON, copy card, no account, works offline, no ads, back to Verse)",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 22
    },
    "profile editing": {
@@ -18908,7 +18908,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 4,
     "part": true
    },
@@ -18917,7 +18917,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:18:30.214Z",
+    "at": "2026-10-28T06:08:22.725Z",
     "of": 3,
     "part": true
    }
@@ -18925,52 +18925,52 @@
   "cpan": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 82,
-    "best": 94,
-    "evidence": "Verse (/cpan/) 82 ms to the load event (median of 3, phone width) vs cpantesters.org 94 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T05:17:31.710Z"
+    "verse": 79,
+    "best": 102,
+    "evidence": "Verse (/cpan/) 79 ms to the load event (median of 3, phone width) vs cpantesters.org 102 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 loads answered vs cpantesters.org 3 of 3 loads answered",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/cpan/) 0 px sideways overflow at 390 px vs cpantesters.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/cpan/) 0 unnamed controls or images vs cpantesters.org 1 unnamed controls or images",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/cpan/) 1 (1: the page shows itself again with the network cut) vs cpantesters.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/cpan/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs cpantesters.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/cpan/) 8 of 8 right against the worked-out answer; judged against the standard, not cpantesters.org (the site is not asked)",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 8
    },
    "design polish": {
@@ -18978,14 +18978,14 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/cpan/) 0 design defects vs cpantesters.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), cpantesters.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T05:17:31.710Z"
+    "at": "2026-10-28T05:57:02.380Z"
    },
    "test reports": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 3,
     "part": true
    },
@@ -18994,7 +18994,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 3,
     "part": true
    },
@@ -19003,7 +19003,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 3,
     "part": true
    },
@@ -19012,7 +19012,7 @@
     "verse": 1,
     "best": 2,
     "evidence": "Verse (/cpan/) 1 of 2 shown for the question (Verse lacks: offline fallback); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 2,
     "part": true
    },
@@ -19021,7 +19021,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/cpan/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 3,
     "part": true
    },
@@ -19030,7 +19030,7 @@
     "verse": 16,
     "best": 1,
     "evidence": "Verse (/cpan/) 16 of 16 things a full answer shows vs cpantesters.org 1 of 16 things a full answer shows (Verse lacks: none; site lacks: test reports, distribution health, module search, live feed, export, ingest reports, clear, CPAN test matrix, export JSON, export CSV, no account, works offline, no ads, back to Verse, on this device)",
-    "at": "2026-10-28T05:17:31.710Z",
+    "at": "2026-10-28T05:57:02.380Z",
     "of": 16
    }
   },
@@ -19137,6 +19137,300 @@
     "evidence": "Verse (/gradient/) 7 of 7 things a full answer shows vs colorzilla.com 2 of 7 things a full answer shows (Verse lacks: none; site lacks: linear, radial, conic, eyedropper, copy CSS)",
     "at": "2026-10-28T05:31:41.881Z",
     "of": 7
+   }
+  },
+  "sudowrite": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 100,
+    "best": 678,
+    "evidence": "Verse (/books/) 100 ms to the load event (median of 3, phone width) vs sudowrite.com 678 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T06:00:07.044Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/books/) 3 of 3 loads answered vs sudowrite.com 3 of 3 loads answered",
+    "at": "2026-10-28T06:00:07.044Z"
+   },
+   "mobile": {
+    "verdict": "worse",
+    "verse": 516,
+    "best": 0,
+    "evidence": "Verse (/books/) 516 px sideways overflow at 390 px vs sudowrite.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T06:00:07.044Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3,
+    "evidence": "Verse (/books/) 0 unnamed controls or images vs sudowrite.com 3 unnamed controls or images",
+    "at": "2026-10-28T06:00:07.044Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 2,
+    "part": true
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 2,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not sudowrite.com (the site is not asked)",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 7
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 97,
+    "evidence": "Verse (/books/) 3 design defects vs sudowrite.com 97 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.42), sudowrite.com (54 low-contrast texts, 43 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T06:00:07.044Z"
+   },
+   "book studio": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 2,
+    "part": true
+   },
+   "chapters": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 2,
+    "part": true
+   },
+   "export": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 0,
+    "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs sudowrite.com 0 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, chapters, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
+    "at": "2026-10-28T06:00:07.044Z",
+    "of": 8
+   }
+  },
+  "squibler": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 108,
+    "best": 580,
+    "evidence": "Verse (/books/) 108 ms to the load event (median of 3, phone width) vs squibler.io 580 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T06:00:36.963Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/books/) 3 of 3 loads answered vs squibler.io 3 of 3 loads answered",
+    "at": "2026-10-28T06:00:36.963Z"
+   },
+   "mobile": {
+    "verdict": "worse",
+    "verse": 516,
+    "best": 0,
+    "evidence": "Verse (/books/) 516 px sideways overflow at 390 px vs squibler.io 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T06:00:36.963Z"
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/books/) 0 unnamed controls or images vs squibler.io 0 unnamed controls or images",
+    "at": "2026-10-28T06:00:36.963Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 2,
+    "part": true
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 2,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not squibler.io (the site is not asked)",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 7
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 36,
+    "evidence": "Verse (/books/) 3 design defects vs squibler.io 36 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.42), squibler.io (3 low-contrast texts, 33 small tap targets, layout shift 0.08)",
+    "at": "2026-10-28T06:00:36.963Z"
+   },
+   "book studio": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 2,
+    "part": true
+   },
+   "chapters": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 2,
+    "part": true
+   },
+   "export": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 0,
+    "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs squibler.io 0 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, chapters, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
+    "at": "2026-10-28T06:00:36.963Z",
+    "of": 8
+   }
+  },
+  "inkfluence": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 96,
+    "best": 287,
+    "evidence": "Verse (/books/) 96 ms to the load event (median of 3, phone width) vs inkfluenceai.com 287 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T06:01:03.367Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/books/) 3 of 3 loads answered vs inkfluenceai.com 3 of 3 loads answered",
+    "at": "2026-10-28T06:01:03.367Z"
+   },
+   "mobile": {
+    "verdict": "worse",
+    "verse": 516,
+    "best": 0,
+    "evidence": "Verse (/books/) 516 px sideways overflow at 390 px vs inkfluenceai.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T06:01:03.367Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/books/) 0 unnamed controls or images vs inkfluenceai.com 1 unnamed controls or images",
+    "at": "2026-10-28T06:01:03.367Z"
+   },
+   "offline": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 2,
+    "part": true
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 2,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 7,
+    "best": 7,
+    "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not inkfluenceai.com (the site is not asked)",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 7
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 111,
+    "evidence": "Verse (/books/) 3 design defects vs inkfluenceai.com 111 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.42), inkfluenceai.com (87 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T06:01:03.367Z"
+   },
+   "book studio": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 2,
+    "part": true
+   },
+   "chapters": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 2,
+    "part": true
+   },
+   "export": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 1,
+    "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs inkfluenceai.com 1 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
+    "at": "2026-10-28T06:01:03.367Z",
+    "of": 8
    }
   }
  },
@@ -19322,6 +19616,8 @@
   "emojitracker.com": "tower.icons/emojitracker.com.png",
   "yunite.xyz": "tower.icons/yunite.xyz.ico",
   "anycolorid.com": "tower.icons/anycolorid.com.png",
-  "cpantesters.org": "tower.icons/cpantesters.org.ico"
+  "cpantesters.org": "tower.icons/cpantesters.org.ico",
+  "sudowrite.com": "tower.icons/sudowrite.com.png",
+  "inkfluenceai.com": "tower.icons/inkfluenceai.com.png"
  }
 }
