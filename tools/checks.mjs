@@ -461,6 +461,7 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
+  ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],

@@ -111,9 +111,32 @@ export function sizeListHtml(t, esc, lang = 'en') {
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
     + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
 }
+/** the plan block (tower.plan.json, made by tools/tower-plan.mjs from the tower-plan block in docs/NEXT.md; owner, 2026-10-28: "move backwards
+ *  to easier sites"): what is worked on now, the next easiest floors and the far-future ones, each joined with the gate's own numbers from
+ *  tower() so the card never says more than the evidence. A floor the plan names that the tower does not know is left out. Pure. */
+export function planOf(t, plan) {
+  if (!plan || !t || !t.floors) return null;
+  const by = new Map(t.floors.map((f) => [f.id, f]));
+  const pickRows = (list) => (Array.isArray(list) ? list : []).map((x) => (x && by.get(x.id) ? { f: by.get(x.id), why: String(x.why || '') } : null)).filter(Boolean);
+  const out = { now: pickRows(plan.now), next: pickRows(plan.next), far: pickRows(plan.far), skipped: (Array.isArray(plan.skipped) ? plan.skipped : []).filter((x) => x && x.site) };
+  return out.now.length || out.next.length || out.far.length ? out : null;
+}
+const planCount = (f) => (f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead · not beaten yet');
+export function planHtml(p, esc) {
+  if (!p) return '';
+  const li = (r, i) => '<li data-id="' + esc(r.f.id) + '" data-state="' + esc(r.f.state) + '" style="margin:1px 0">' + (i != null ? '<b>' + (i + 1) + '.</b> ' : '') + '<span class="tw-name">' + esc(r.f.site) + '</span> <span class="tw-plan-id" style="opacity:.75">(' + esc(r.f.id) + ')</span> · <span class="tw-count">' + esc(planCount(r.f)) + '</span>' + (r.f.page ? ' · <a href="' + esc(r.f.page) + '">Verse\'s page</a>' : '') + '</li>';
+  const block = (cls, head, rows, numbered) => rows.length ? '<div class="' + cls + '"><p style="margin:8px 0 2px;font-size:13px"><b>' + esc(head) + '</b></p><ul style="margin:0;padding-left:18px;font-size:13px;list-style:' + (numbered ? 'none' : 'disc') + '">' + rows.map((r, i) => li(r, numbered ? i : null)).join('') + '</ul></div>' : '';
+  return '<div class="tw-plan" style="margin:6px 0 8px">'
+    + block('tw-plan-now', 'Working on now', p.now, false)
+    + block('tw-plan-next', 'Next easiest (' + p.next.length + ')', p.next, true)
+    + block('tw-plan-far', 'Far future, not beaten', p.far, false)
+    + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
+    + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></div>';
+}
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
   const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
+  const plan = planOf(t, t.plan);
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
   // the current site's row is the matchup: one line per aspect with the verdict in a word and the measured numbers, then when and what is next
   // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
@@ -132,7 +155,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
-  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · working on: ' + cur.site : '')) + '</div>'
+  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
     + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
@@ -190,7 +213,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr, rk] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; return t; };
+const load = async () => { const [inv, ev, fr, rk, pl] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -241,5 +264,5 @@ export default {
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { return towerOf(text || lower); },
-  run, towerOf, towerHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
+  run, towerOf, towerHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };
