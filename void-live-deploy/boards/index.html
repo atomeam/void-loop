@@ -108,11 +108,13 @@
 <main>
   <nav class="crumbs" id="crumbs" aria-label="Where you are"><a href="/boards/">All boards</a><a href="/boards/rules/">Rules</a></nav>
   <h1 id="title">Boards</h1>
-  <p class="sub" id="sub">Anonymous image and text boards anyone can start, each marked work-safe or 18+ by the person who makes it. Every board has a catalog of its threads, index pages in bump order, threads that open with a picture, replies with &gt;&gt;quotes and greentext, an archive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on your device. Pictures lose their hidden data (camera, time, GPS place) before they are kept.</p>
+  <p class="sub" id="sub">Post to topic boards, start a discussion thread, or create your own board, no account required.</p>
   <div class="row" id="topRow" style="margin:0 0 8px"><button type="button" id="shareTop" title="Share a link to this page: a board, a thread or the list">Share this page</button></div>
 
   <!-- the list of boards, the search across all of them, and making a board -->
   <section id="home">
+    <p class="note" id="subMore">Each board is marked work-safe or 18+ by the person who makes it. Every board has a catalog of its threads, index pages in bump order, threads that open with a picture, replies with &gt;&gt;quotes and greentext, an archive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on your device. Pictures lose their hidden data (camera, time, GPS place) before they are kept.</p>
+    <div class="row" id="starters" role="group" aria-labelledby="startersH"><span class="tk-label" id="startersH">Start with a general board:</span><a class="btn" data-code="qa" data-title="Questions and answers" data-about="Ask anything, answer what you know" href="/boards/?new=1&amp;code=qa">Q&amp;A</a><a class="btn" data-code="projects" data-title="Projects" data-about="Show what you are making and get help finishing it" href="/boards/?new=1&amp;code=projects">Projects</a><a class="btn" data-code="music" data-title="Music" data-about="Songs, gear, gigs and recommendations" href="/boards/?new=1&amp;code=music">Music</a><a class="btn" data-code="tech" data-title="Technology" data-about="Computers, phones and the people who fix them" href="/boards/?new=1&amp;code=tech">Tech</a></div>
     <form id="sf" role="search" class="row" autocomplete="off">
       <label class="vh" for="sq">Search every board</label>
       <input type="search" id="sq" placeholder="Search every board" maxlength="200" enterkeyhint="search">
@@ -161,6 +163,7 @@
     <details class="panel" id="previewP">
       <summary>Try the formatting</summary>
       <p class="note">How a post will look, here on your device, posted nowhere: a line that starts with &gt; is greentext, &gt;&gt;123 quotes post 123, &gt;&gt;&gt;/code/ links a board, [spoiler]words[/spoiler] hides words until tapped, [code]text[/code] keeps code as typed, and name#password signs a post with a tripcode.</p>
+      <ul class="note" id="pvKey"><li><b>Quote line (&gt;)</b>: start a line with &gt; to show it as a quote.</li><li><b>Reply to a post (&gt;&gt;123)</b>: links post 123.</li><li><b>Hide words ([spoiler]…[/spoiler])</b>: shown only when tapped.</li><li><b>Author code (#name#pass)</b>: sign as name#password so people know later posts are yours.</li></ul>
       <label class="vh" for="pvText">Text to preview</label>
       <textarea id="pvText" maxlength="4000">&gt;be me
 &gt;make a board
@@ -176,7 +179,7 @@
     <div id="threadForm"></div>
     <div class="row" id="catTools">
       <label class="vh" for="cq">Search this board</label><input type="search" id="cq" placeholder="Search this board" maxlength="200">
-      <label class="vh" for="csort">Sort the catalog</label><select id="csort"><option value="bump">Bump order</option><option value="new">Newest threads</option><option value="replies">Most replies</option></select>
+      <label class="vh" for="csort">Sort the catalog</label><select id="csort"><option value="bump">Recently replied (bump order)</option><option value="new">Newest threads</option><option value="replies">Most replies</option></select>
     </div>
     <div class="note" id="bNote" role="status"></div>
     <div class="cat" id="cat"></div>
@@ -220,8 +223,9 @@
 
 <template id="formT">
   <form class="panel pf" autocomplete="off" novalidate>
-    <label class="field"><span>Name (or name#password for a tripcode: the password is never kept)</span><input name="name" maxlength="80" placeholder="Anonymous" autocapitalize="none"></label>
-    <label class="field"><span>Options (sage: reply without bumping the thread)</span><input name="options" maxlength="20" placeholder="sage" autocapitalize="none" spellcheck="false"></label>
+    <label class="field"><span>Author code (#name#pass): leave blank to post as Anonymous, or type name#password to sign your posts (a tripcode; the password is never kept)</span><input name="name" maxlength="80" placeholder="Anonymous" autocapitalize="none"></label>
+    <label class="ck"><input type="checkbox" name="sage"> Don't bump thread (sage): your reply will not move the thread to the top</label>
+    <label class="field"><span>Options, typed (sage, watch; the box above sets sage for you)</span><input name="options" maxlength="20" placeholder="sage" autocapitalize="none" spellcheck="false"></label>
     <label class="field sub-f"><span>Subject</span><input name="sub" maxlength="100"></label>
     <label class="field"><span>Comment</span><textarea name="body" maxlength="4000"></textarea></label>
     <div class="field file-f"><span>Picture (JPEG, PNG, GIF or WebP, up to 4 MB; its hidden data is removed on your device and again on ours)</span><input type="file" name="file" accept="image/jpeg,image/png,image/gif,image/webp"></div>

@@ -195,8 +195,10 @@ export default {
     ]
    },
    {
-    "name": "nightsky",
-    "examples": []
+    "name": "night-sky",
+    "examples": [
+     "hide the sky"
+    ]
    },
    {
     "name": "moontonight",
