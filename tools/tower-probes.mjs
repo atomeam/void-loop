@@ -12,6 +12,7 @@ import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 // a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
 const SELF_ASK = new Map(SELF_SITES.filter((r) => r && r.lane && r.ask).map((r) => [r.lane, r.ask]));
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { CALCULATORS } from '../void-live-deploy/lib/calculators.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -83,6 +84,11 @@ export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('
 export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 // the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
 const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
+// the formula library floor's rival size (lib/tower.js rivalCount: vcalc.com's published count) and the gap to Verse's library, for the label
+const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).rivalCount || {}).n || 15000;
+/** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
+export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
+const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -919,6 +925,9 @@ export const PROBES = Object.freeze({
       'unit-aware inputs': [['each input takes a unit of its kind', /Diameter of pipe\s*\n\s*m \(metres\)[\s\S]*?in \(inches\)[\s\S]*?ft \(feet\)/], ['the answer in any unit', /\bShow in\b/], ['every other unit', /\bIn other units\b/], ['the formula in its symbols, with the working', /A = π × d × l[\s\S]*\bWorking\b/], ['square metres beside square feet', /\bm²[\s\S]*\bft²|\bft²[\s\S]*\bm²/]],
       // a formula of your own: guided rows or the raw text, with units, kept on the device and shared by a link
       'custom formulas': [['build your own formula', /\bBuild your own formula\b/i], ['a guided mode', /\bGuided\b/], ['a raw mode', /\bRaw\b/], ['saved on the device', /\bSave on this device\b/i], ['shared by a link', /\bShare formula link\b/i]],
+      // the library's size against what vcalc.com publishes (owner, 2026-10-28: not beaten while the count is short, the gap shown): the page's own
+      // "All calculators (N)" read off the answer, held to the floor's rivalCount, so this fails, honestly, until Verse has as many
+      'library size': [[LIBRARY_GAP, (t) => libraryCount(t) >= RIVAL_N]],
     },
     // what a full formula library offers: the everyday sums, the sciences, units, the working, and a way out (share, export) and in (your own)
     facts: [['percent', /\bpercent/i], ['tip', /\btip\b/i], ['loan', /\bloan\b/i], ['BMI', /\bBMI\b/], ['date maths', /\bdays between\b|\bdate\b/i], ['unit conversion', /\bconver/i], ['area', /\barea\b/i],

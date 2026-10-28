@@ -83,10 +83,10 @@ test('the stage card: a calculator asked by name, the library by "formula calcul
   });
 });
 
-test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its three extras', async () => {
+test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its four extras (library size held to vcalc.com\'s published count)', async () => {
   const { FLOORS } = await import('../void-live-deploy/lib/tower.js'); const { probeFor } = await import('./tower-probes.mjs');
   const f = FLOORS.find((x) => x.id === 'formula calculators'); assert.ok(f); assert.equal(f.page, '/calculators/'); assert.equal(f.site, 'vcalc.com');
-  assert.deepEqual(f.extra, ['formula library', 'unit-aware inputs', 'custom formulas']);
+  assert.deepEqual(f.extra, ['formula library', 'unit-aware inputs', 'custom formulas', 'library size']);
   const p = probeFor('formula calculators'); assert.ok(p); assert.match(p.ask.verse, /calc=pipe-surface-area&d=2&d\.u=in&l=10&l\.u=ft/);
-  assert.deepEqual(Object.keys(p.askParts || {}).sort(), ['custom formulas', 'formula library', 'unit-aware inputs']);
+  assert.deepEqual(Object.keys(p.askParts || {}).sort(), ['custom formulas', 'formula library', 'library size', 'unit-aware inputs']);
 });
