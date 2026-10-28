@@ -6,8 +6,8 @@
  * one out, fmt() writes a number for people, and the query helpers make every answer a link. Pure. Tests: tools/calculators.test.mjs.
  */
 import { KINDS, unitOf, findUnit, toSI, fromSI } from './calc-units.js';
-import { payment } from './fincalc.js';
-import { daysBetween, addDays, businessDaysBetween, ageParts, isDay, DAY_NAMES } from './date-math.js';
+import { payment, amortize, compound } from './fincalc.js';
+import { daysBetween, addDays, businessDaysBetween, ageParts, isDay, DAY_NAMES, parseClock } from './date-math.js';
 import { compileAll, compile } from './formula-engine.js';
 import { FORMULA_BATCHES } from './formulas.js';
 
@@ -284,6 +284,167 @@ CALCULATORS.push(
 
 /** id -> calculator */
 // the formula library: every batch's definitions compiled (each is checked for its units, source and worked example as it loads)
+// ---------------- calculator.net's home page, one for one (docs/PARITY.md has the table): the ones Verse did not have yet
+/** random numbers for the generators: crypto in the browser and in Node; tests swap `next` for a fixed sequence. */
+export const RNG = { next: () => { const a = new Uint32Array(2); globalThis.crypto.getRandomValues(a); return (a[0] * 2 ** 21 + (a[1] >>> 11)) / 2 ** 53; } };
+const YEAR = 31557600, MONTH = 2629800;
+const months = (t, what) => { const n = Math.round(t / MONTH); pos(n, what); return n; };
+const yesNo = (k, label, v = 'y') => ({ k, label, kind: 'choice', opts: [['y', 'yes'], ['n', 'no']], v });
+const money2 = (v) => Math.round(v * 100) / 100;
+const schedule = (rows) => ({ head: ['Month', 'Payment', 'Principal', 'Interest', 'Balance'], rows: rows.map((m) => [m.n, money2(m.pay), money2(m.principal), money2(m.interest), money2(m.balance)]), money: [1, 2, 3, 4] });
+/** the yearly rate (as a fraction) that makes `pay` a month repay `amount` in `n` months, by bisection; null when no rate does. Pure. */
+export function rateFor(amount, pay, n) {
+  if (!(amount > 0 && pay > 0 && n > 0) || pay * n < amount - 1e-9) return null;
+  if (Math.abs(pay * n - amount) < 1e-9) return 0;
+  let lo = 0, hi = 1; while (payment(amount, hi * 1200, n) < pay && hi < 1e6) hi *= 2;
+  for (let i = 0; i < 200; i++) { const mid = (lo + hi) / 2; if (payment(amount, mid * 1200, n) < pay) lo = mid; else hi = mid; }
+  return (lo + hi) / 2 * 12;
+}
+/** time value of money, payments at the end of each period: fv = −(pv·(1+i)ⁿ + pmt·((1+i)ⁿ − 1)/i), the usual sign rule (money in is minus,
+ *  money out is plus). Returns the value of `want` from the others. Pure. */
+export function tvm(want, { n, i, pv, pmt, fv }) {
+  const grow = (r) => Math.pow(1 + r, n), ann = (r) => (r === 0 ? n : (grow(r) - 1) / r);
+  const F = (r, N = n) => { const g = Math.pow(1 + r, N); return pv * g + pmt * (r === 0 ? N : (g - 1) / r) + fv; };
+  if (want === 'fv') return -(pv * grow(i) + pmt * ann(i));
+  if (want === 'pv') return -(fv + pmt * ann(i)) / grow(i);
+  if (want === 'pmt') return -(fv + pv * grow(i)) / ann(i);
+  if (want === 'n') {
+    if (i === 0) { need(pmt !== 0, 'with no interest the payment cannot be zero'); return -(pv + fv) / pmt; }
+    const top = pmt - fv * i, bot = pmt + pv * i; need(top / bot > 0, 'these values never meet'); return Math.log(top / bot) / Math.log(1 + i);
+  }
+  // the rate: bisection on F over (−99%, 1000%) a period, after finding a sign change on a grid
+  let a = -0.99, fa = F(a), found = null;
+  for (let k = 1; k <= 4000 && found === null; k++) { const b = -0.99 + (k * 10.99) / 4000, fb = F(b); if (fa === 0) found = [a, a]; else if (fa * fb <= 0) found = [a, b]; a = b; fa = fb; }
+  need(found, 'no interest rate gives these values');
+  let [lo, hi] = found; for (let k = 0; k < 200; k++) { const mid = (lo + hi) / 2; if (F(lo) * F(mid) <= 0) hi = mid; else lo = mid; }
+  return (lo + hi) / 2;
+}
+// US federal income tax brackets (IRS Rev. Proc. 2024-40 for 2025 as amended by Pub. L. 119-21, and Rev. Proc. 2025-32 for 2026): [top of bracket, rate]
+export const US_TAX = {
+  2026: { std: { single: 16100, mfj: 32200, mfs: 16100, hoh: 24150 }, br: {
+    single: [[12400, 0.10], [50400, 0.12], [105700, 0.22], [201775, 0.24], [256225, 0.32], [640600, 0.35], [Infinity, 0.37]],
+    mfj: [[24800, 0.10], [100800, 0.12], [211400, 0.22], [403550, 0.24], [512450, 0.32], [768700, 0.35], [Infinity, 0.37]],
+    mfs: [[12400, 0.10], [50400, 0.12], [105700, 0.22], [201775, 0.24], [256225, 0.32], [384350, 0.35], [Infinity, 0.37]],
+    hoh: [[17700, 0.10], [67450, 0.12], [105700, 0.22], [201750, 0.24], [256200, 0.32], [640600, 0.35], [Infinity, 0.37]] } },
+  2025: { std: { single: 15750, mfj: 31500, mfs: 15750, hoh: 23625 }, br: {
+    single: [[11925, 0.10], [48475, 0.12], [103350, 0.22], [197300, 0.24], [250525, 0.32], [626350, 0.35], [Infinity, 0.37]],
+    mfj: [[23850, 0.10], [96950, 0.12], [206700, 0.22], [394600, 0.24], [501050, 0.32], [751600, 0.35], [Infinity, 0.37]],
+    mfs: [[11925, 0.10], [48475, 0.12], [103350, 0.22], [197300, 0.24], [250525, 0.32], [375800, 0.35], [Infinity, 0.37]],
+    hoh: [[17000, 0.10], [64850, 0.12], [103350, 0.22], [197300, 0.24], [250500, 0.32], [626350, 0.35], [Infinity, 0.37]] } },
+};
+/** tax on a taxable income: { tax, marginal, parts: [[from, to, rate, tax]] }. Pure. */
+export function bracketTax(taxable, brackets) {
+  let tax = 0, from = 0, marginal = brackets[0][1]; const parts = [];
+  for (const [top, rate] of brackets) { if (taxable <= from) break; const upto = Math.min(taxable, top), t = (upto - from) * rate; tax += t; parts.push([from, upto, rate, t]); marginal = rate; from = top; }
+  return { tax, marginal, parts };
+}
+const GRADES = { 'A+': 4, A: 4, 'A-': 3.7, 'B+': 3.3, B: 3, 'B-': 2.7, 'C+': 2.3, C: 2, 'C-': 1.7, 'D+': 1.3, D: 1, 'D-': 0.7, F: 0 };
+/** an IPv4 address with a prefix ("192.168.1.10/24", or a mask after a space) worked out. Pure. */
+export function subnet(text) {
+  const m = /^\s*(\d{1,3}(?:\.\d{1,3}){3})\s*(?:\/\s*(\d{1,2})|\s+(\d{1,3}(?:\.\d{1,3}){3}))?\s*$/.exec(String(text ?? ''));
+  need(m, 'write an address like 192.168.1.10/24');
+  const toN = (s) => { const p = s.split('.').map(Number); need(p.every((x) => x >= 0 && x <= 255), s + ' is not an IPv4 address'); return ((p[0] << 24) >>> 0) + (p[1] << 16) + (p[2] << 8) + p[3]; };
+  const ip = toN(m[1]); let bits;
+  if (m[3]) { const mk = toN(m[3]), inv = (~mk) >>> 0; need(((inv + 1) & inv) === 0, m[3] + ' is not a subnet mask'); bits = 32 - Math.log2(inv + 1); } else bits = m[2] === undefined ? 24 : Number(m[2]);
+  need(bits >= 0 && bits <= 32, 'the prefix is 0 to 32');
+  const mask = bits === 0 ? 0 : (0xffffffff << (32 - bits)) >>> 0, net = (ip & mask) >>> 0, bc = (net | (~mask >>> 0)) >>> 0, total = 2 ** (32 - bits);
+  const s = (n) => [n >>> 24, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+  const first = bits >= 31 ? net : net + 1, last = bits >= 31 ? bc : bc - 1, a = ip >>> 24;
+  const cls = a < 128 ? 'A' : a < 192 ? 'B' : a < 224 ? 'C' : a < 240 ? 'D (multicast)' : 'E (reserved)';
+  const priv = a === 10 || (a === 172 && ((ip >>> 16) & 255) >= 16 && ((ip >>> 16) & 255) <= 31) || (a === 192 && ((ip >>> 16) & 255) === 168);
+  return { network: s(net) + '/' + bits, broadcast: s(bc), first: s(first), last: s(last), mask: s(mask), wildcard: s(~mask >>> 0), hosts: bits === 32 ? 1 : bits === 31 ? 2 : total - 2, total, cls, kind: priv ? 'private (RFC 1918)' : a === 127 ? 'loopback' : 'public' };
+}
+const fracGcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
+const triAngle = (a, b, c) => Math.acos(Math.max(-1, Math.min(1, (b * b + c * c - a * a) / (2 * b * c))));
+const clockOf = (s, what) => { const v = parseClock(s); need(v !== null, what + ': write a time like 9:00 am or 17:30'); return v; };
+const hm = (min) => Math.floor(min / 60) + ':' + String(Math.round(min % 60)).padStart(2, '0');
+const durText = (s) => { const neg = s < 0; s = Math.abs(Math.round(s)); const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return (neg ? '−' : '') + d + ' days ' + h + ' h ' + m + ' min ' + x + ' s'; };
+
+CALCULATORS.push(
+  make('mortgage', 'Mortgage', 'Money', 'monthly = P × r ÷ (1 − (1 + r)^−n) + tax ÷ 12 + insurance ÷ 12 + PMI + HOA, P = price − down payment', ['price|Home price|money|$|400000', 'down|Down payment|ratio|%|20', 'rate|Interest rate (a year)|ratio|%|6.5', 'term|Loan term|time|yr|30', 'tax|Property tax a year|money|$|4800', 'ins|Home insurance a year|money|$|1500', 'pmi|PMI a year, when the down payment is under 20%|ratio|%|0.5', 'hoa|HOA fee a month|money|$|0'],
+    ['monthly|Monthly payment, all in|money|$', 'pi|Principal and interest|money|$', 'loan|Loan amount|money|$', 'downamt|Down payment|money|$', 'pmimo|PMI a month|money|$', 'interest|Total interest|money|$', 'total|Total of all mortgage payments|money|$'],
+    (x) => { pos(x.price, 'Home price'); const n = months(x.term, 'Loan term'), downamt = x.price * x.down, loan = x.price - downamt; pos(loan, 'Loan amount'); const a = amortize(loan, x.rate * 100, n); need(a, 'check the rate'); const pmimo = x.down < 0.2 ? (loan * x.pmi) / 12 : 0;
+      return { monthly: a.pay + x.tax / 12 + x.ins / 12 + pmimo + x.hoa, pi: a.pay, loan, downamt, pmimo, interest: a.totalInterest, total: a.totalPaid, table: schedule(a.months) }; }, { everyday: true }),
+  make('auto-loan', 'Auto loan', 'Money', 'loan = price + sales tax + fees − down payment − trade-in; payment = loan × r ÷ (1 − (1 + r)^−n)', ['price|Vehicle price|money|$|35000', 'down|Down payment|money|$|5000', 'trade|Trade-in value|money|$|3000', 'owed|Still owed on the trade-in|money|$|0', 'tax|Sales tax|ratio|%|7', 'fees|Title, registration and other fees|money|$|500', 'rate|Interest rate (a year)|ratio|%|5', 'term|Loan term|time|month|60'],
+    ['pay|Monthly payment|money|$', 'loan|Loan amount|money|$', 'stax|Sales tax (on the price less the trade-in)|money|$', 'interest|Total interest|money|$', 'cost|Total cost (price, tax, fees and interest)|money|$'],
+    (x) => { const n = months(x.term, 'Loan term'), stax = Math.max(0, x.price - x.trade) * x.tax, loan = x.price + stax + x.fees - x.down - x.trade + x.owed; pos(loan, 'Loan amount'); const a = amortize(loan, x.rate * 100, n); need(a, 'check the rate');
+      return { pay: a.pay, loan, stax, interest: a.totalInterest, cost: x.price + stax + x.fees + x.owed + a.totalInterest, table: schedule(a.months) }; }),
+  make('amortization', 'Amortization schedule', 'Money', 'each month: interest = balance × r; principal = payment − interest', ['P|Loan amount|money|$|200000', 'rate|Interest rate (a year)|ratio|%|6', 'term|Loan term|time|yr|30', 'extra|Extra paid each month|money|$|0'],
+    ['pay|Monthly payment|money|$', 'interest|Total interest|money|$', 'total|Total paid|money|$', 'n|Paid off after|number|months'],
+    (x) => { pos(x.P, 'Loan amount'); const a = amortize(x.P, x.rate * 100, months(x.term, 'Loan term'), x.extra); need(a, 'check the rate'); return { pay: a.pay, interest: a.totalInterest, total: a.totalPaid, n: a.payoffMonths, table: schedule(a.months) }; }),
+  make('payoff-time', 'Payment: months to pay off a loan', 'Money', 'n = −ln(1 − r × P ÷ payment) ÷ ln(1 + r), r = rate ÷ 12', ['P|Loan amount|money|$|20000', 'rate|Interest rate (a year)|ratio|%|7', 'pay|Monthly payment|money|$|500'],
+    ['n|Months to pay off|number|months', 'years|Years and months|text', 'interest|Total interest|money|$'],
+    (x) => { pos(x.P, 'Loan amount'); pos(x.pay, 'Monthly payment'); const r = x.rate / 12; need(x.pay > x.P * r, 'the payment does not cover the interest, so the loan never ends'); const n = r === 0 ? x.P / x.pay : -Math.log(1 - (r * x.P) / x.pay) / Math.log(1 + r), m = Math.ceil(n - 1e-9);
+      let bal = x.P, interest = 0; for (let k = 0; k < m && bal > 1e-9; k++) { const i = bal * r; interest += i; bal = bal + i - Math.min(x.pay, bal + i); } return { n, years: Math.floor(m / 12) + ' years ' + (m % 12) + ' months', interest }; }),
+  make('interest-rate', 'Interest rate of a loan', 'Money', 'the rate r where P × r ÷ (1 − (1 + r)^−n) = payment (found by bisection)', ['P|Loan amount|money|$|20000', 'pay|Monthly payment|money|$|386.66', 'term|Loan term|time|month|60'],
+    ['rate|Interest rate (a year)|ratio|%', 'interest|Total interest|money|$'], (x) => { const n = months(x.term, 'Loan term'), r = rateFor(x.P, x.pay, n); need(r !== null, 'the payments add up to less than the loan'); return { rate: r, interest: x.pay * n - x.P }; }),
+  make('retirement', 'Retirement savings', 'Money', 'at retirement = savings × (1 + r)^n + monthly × ((1 + r)^n − 1) ÷ r; income = that × q ÷ (1 − (1 + q)^−m)', ['age|Age now|number||35', 'at|Retirement age|number||67', 'have|Saved so far|money|$|50000', 'monthly|Saved each month|money|$|1000', 'ret|Return before retirement (a year)|ratio|%|6', 'years|Years the money must last|number||25', 'after|Return in retirement (a year)|ratio|%|4'],
+    ['nest|Savings at retirement|money|$', 'income|Monthly income it pays|money|$', 'put|Total you put in|money|$'],
+    (x) => { need(x.at > x.age, 'the retirement age must be after your age now'); pos(x.years, 'Years the money must last'); const n = Math.round((x.at - x.age) * 12), r = x.ret / 12, g = Math.pow(1 + r, n), nest = x.have * g + x.monthly * (r === 0 ? n : (g - 1) / r);
+      return { nest, income: payment(nest, x.after * 100, Math.round(x.years * 12)), put: x.have + x.monthly * n }; }),
+  make('investment', 'Investment growth', 'Money', 'each month: balance × (1 + r)^(1/12) + contribution', ['P|Starting amount|money|$|20000', 'monthly|Added each month|money|$|500', 'r|Return (a year)|ratio|%|7', 't|Years|number||20', { k: 'per', label: 'Compounded', kind: 'choice', opts: [['12', 'monthly'], ['1', 'yearly'], ['4', 'quarterly'], ['365', 'daily']], v: '12' }],
+    ['end|End balance|money|$', 'put|Total put in|money|$', 'gain|Growth|money|$'],
+    (x) => { const c = compound({ principal: x.P, monthly: x.monthly, ratePct: x.r * 100, years: x.t, per: Number(x.per) }); return { end: c.final, put: c.contributed, gain: c.interest, table: { head: ['Year', 'Balance', 'Put in', 'Growth'], rows: c.years.map((y) => [y.year, money2(y.balance), money2(y.contributed), money2(y.interest)]), money: [1, 2, 3] } }; }),
+  make('finance-tvm', 'Finance (time value of money)', 'Money', 'PV × (1 + i)ⁿ + PMT × ((1 + i)ⁿ − 1) ÷ i + FV = 0 (money paid out is negative)', [{ k: 'want', label: 'Work out', kind: 'choice', opts: [['fv', 'future value (FV)'], ['pv', 'present value (PV)'], ['pmt', 'payment (PMT)'], ['n', 'number of periods (N)'], ['i', 'interest rate (I/Y)']], v: 'fv' }, 'n|Periods (N)|number||120', 'iy|Interest rate a year (I/Y)|ratio|%|6', 'py|Periods a year|number||12', 'pv|Present value (PV)|number||-10000', 'pmt|Payment each period (PMT)|number||-100', 'fv|Future value (FV)|number||0'],
+    ['ans|Answer|number', 'what|Worked out|text'],
+    (x) => { pos(x.py, 'Periods a year'); const v = { n: x.n, i: x.iy / x.py, pv: x.pv, pmt: x.pmt, fv: x.fv }, r = tvm(x.want, v); return x.want === 'i' ? { ans: r * x.py * 100, what: 'interest rate a year, in %' } : { ans: r, what: { fv: 'future value', pv: 'present value', pmt: 'payment each period', n: 'number of periods' }[x.want] }; }),
+  make('income-tax-us', 'US federal income tax', 'Money', 'tax = Σ (income in each bracket × its rate), taxable = income − pre-tax deductions − (standard or itemized deduction)', [{ k: 'year', label: 'Tax year', kind: 'choice', opts: [['2026', '2026'], ['2025', '2025']], v: '2026' }, { k: 'st', label: 'Filing status', kind: 'choice', opts: [['single', 'single'], ['mfj', 'married filing jointly'], ['mfs', 'married filing separately'], ['hoh', 'head of household']], v: 'single' }, 'inc|Gross income a year|money|$|100000', 'pre|Pre-tax deductions (401(k), HSA)|money|$|0', 'item|Itemized deductions (0 takes the standard)|money|$|0', 'cred|Tax credits|money|$|0'],
+    ['tax|Federal income tax|money|$', 'taxable|Taxable income|money|$', 'ded|Deduction used|money|$', 'eff|Effective rate (of gross income)|ratio|%', 'marg|Marginal rate|ratio|%', 'net|Income after federal income tax|money|$', 'note|What this leaves out|text'],
+    (x) => { const T = US_TAX[x.year], std = T.std[x.st], ded = Math.max(std, x.item), taxable = Math.max(0, x.inc - x.pre - ded), b = bracketTax(taxable, T.br[x.st]), tax = Math.max(0, b.tax - x.cred);
+      return { tax, taxable, ded, eff: x.inc > 0 ? tax / x.inc : 0, marg: b.marginal, net: x.inc - tax, note: 'IRS brackets for ' + x.year + ' (Rev. Proc. 2025-32 for 2026). Not counted: state and local tax, Social Security and Medicare, AMT, capital gains rates, credits you leave out.',
+        table: { head: ['From', 'To', 'Rate', 'Tax'], rows: b.parts.map(([f, t, r, v]) => [money2(f), money2(t), Math.round(r * 100) + '%', money2(v)]), money: [0, 1, 3] } }; }, { src: 'https://www.irs.gov/pub/irs-drop/rp-25-32.pdf' }),
+  make('pregnancy', 'Pregnancy (how far along)', 'Health', 'due date = first day of last period + 280 days + (cycle − 28); weeks = (date − last period) ÷ 7', ['lmp|First day of the last period|date||2026-06-01', 'on|On|date||2026-10-28', 'cycle|Cycle length (days)|number||28'],
+    ['weeks|How far along|text', 'due|Due date (estimate)|text', 'tri|Trimester|text', 'conc|Likely conception|text', 'left|Days to the due date|number|days'],
+    (x) => { const l = isoDay(x.lmp), on = isoDay(x.on), shift = Math.round(x.cycle - 28), d = daysBetween(l, on) - shift; need(d >= 0, 'the date is before the last period'); const due = addDays(l, 280 + shift);
+      return { weeks: Math.floor(d / 7) + ' weeks ' + daysText(d % 7), due: due + ' (' + weekday(due) + ')', tri: d < 98 ? 'first (to week 13)' : d < 196 ? 'second (weeks 14 to 27)' : 'third (week 28 on)', conc: addDays(l, 14 + shift), left: daysBetween(on, due) }; }),
+  make('due-date', 'Due date', 'Health', 'due = last period + 280 days (+ cycle − 28), conception + 266, 3-day embryo transfer + 263, 5-day transfer + 261', [{ k: 'by', label: 'From', kind: 'choice', opts: [['lmp', 'the first day of the last period'], ['conc', 'the conception date'], ['ivf3', 'an IVF 3-day embryo transfer'], ['ivf5', 'an IVF 5-day embryo transfer']], v: 'lmp' }, 'd|Date|date||2026-06-01', 'cycle|Cycle length (days, last period only)|number||28'],
+    ['due|Due date (estimate)|text', 'day|Day of the week|text'], (x) => { const add = { lmp: 280 + Math.round(x.cycle - 28), conc: 266, ivf3: 263, ivf5: 261 }[x.by], due = addDays(isoDay(x.d), add); return { due, day: weekday(due) }; }),
+  make('conception', 'Conception date', 'Health', 'conception ≈ due date − 266 days; fertile days = the 5 days before ovulation and the day of it', ['due|Due date|date||2027-03-08'],
+    ['conc|Likely conception date|text', 'from|Fertile window from|text', 'to|Fertile window to|text', 'lmp|Matching last period|text'],
+    (x) => { const due = isoDay(x.due), c = addDays(due, -266); return { conc: c, from: addDays(c, -5), to: addDays(c, 1), lmp: addDays(due, -280) }; }),
+  make('fraction-math', 'Fraction arithmetic', 'Maths', 'a/b ± c/d = (ad ± bc) ÷ bd; a/b × c/d = ac ÷ bd; a/b ÷ c/d = ad ÷ bc', ['a|First numerator|number||1', 'b|First denominator|number||2', { k: 'op', label: 'Do', kind: 'choice', opts: [['+', 'add (+)'], ['-', 'subtract (−)'], ['*', 'multiply (×)'], ['/', 'divide (÷)']], v: '+' }, 'c|Second numerator|number||1', 'd|Second denominator|number||3'],
+    ['frac|Answer|text', 'mixed|Mixed number|text', 'dec|Decimal|number'],
+    (x) => { for (const k of ['a', 'b', 'c', 'd']) need(Number.isInteger(x[k]), 'use whole numbers in a fraction'); need(x.b !== 0 && x.d !== 0, 'a denominator cannot be zero');
+      let n, m; if (x.op === '+') { n = x.a * x.d + x.c * x.b; m = x.b * x.d; } else if (x.op === '-') { n = x.a * x.d - x.c * x.b; m = x.b * x.d; } else if (x.op === '*') { n = x.a * x.c; m = x.b * x.d; } else { need(x.c !== 0, 'cannot divide by zero'); n = x.a * x.d; m = x.b * x.c; }
+      const g = fracGcd(n, m), s = m < 0 ? -1 : 1; n = (s * n) / g; m = (s * m) / g; const w = Math.trunc(n / m), r = Math.abs(n % m);
+      return { frac: m === 1 ? String(n) : n + '/' + m, mixed: m === 1 ? String(n) : w === 0 ? n + '/' + m : w + ' ' + r + '/' + m, dec: n / m }; }),
+  make('triangle-solve', 'Triangle solver (any three parts)', 'Geometry', 'law of cosines c² = a² + b² − 2ab cos C; law of sines a ÷ sin A = b ÷ sin B = c ÷ sin C', [{ k: 'case', label: 'You know', kind: 'choice', opts: [['sss', 'three sides (a, b, c)'], ['sas', 'two sides and the angle between (b, c, A)'], ['asa', 'two angles and the side between (A, B, c)'], ['aas', 'two angles and another side (A, B, a)']], v: 'sss' }, 'a|Side a|length|cm|3', 'b|Side b|length|cm|4', 'c|Side c|length|cm|5', 'A|Angle A (opposite a)|angle|°|36.8699', 'B|Angle B (opposite b)|angle|°|53.1301'],
+    ['a|Side a|length|cm', 'b|Side b|length|cm', 'c|Side c|length|cm', 'A|Angle A|angle|°', 'B|Angle B|angle|°', 'C|Angle C|angle|°', 'area|Area|area|cm²', 'per|Perimeter|length|cm'],
+    (x) => { let { a, b, c, A, B } = x, C;
+      if (x.case === 'sss') { pos(a, 'Side a'); pos(b, 'Side b'); pos(c, 'Side c'); need(a + b > c && a + c > b && b + c > a, 'those sides do not make a triangle'); A = triAngle(a, b, c); B = triAngle(b, a, c); C = PI - A - B; }
+      else if (x.case === 'sas') { pos(b, 'Side b'); pos(c, 'Side c'); need(A > 0 && A < PI, 'angle A must be between 0° and 180°'); a = Math.sqrt(b * b + c * c - 2 * b * c * Math.cos(A)); B = triAngle(b, a, c); C = PI - A - B; }
+      else { need(A > 0 && B > 0 && A + B < PI, 'the two angles must add to less than 180°'); C = PI - A - B; const k = x.case === 'asa' ? (pos(c, 'Side c'), c / Math.sin(C)) : (pos(a, 'Side a'), a / Math.sin(A)); a = k * Math.sin(A); b = k * Math.sin(B); c = k * Math.sin(C); }
+      return { a, b, c, A, B, C, area: 0.5 * b * c * Math.sin(A), per: a + b + c }; }),
+  make('random-number', 'Random number generator', 'Maths', 'a whole number from min to max, each as likely (crypto.getRandomValues)', ['lo|Smallest|number||1', 'hi|Largest|number||100', 'n|How many|number||1', yesNo('whole', 'Whole numbers'), yesNo('uniq', 'No repeats', 'n')],
+    ['first|Number|number', 'all|All of them|text'],
+    (x) => { need(x.hi >= x.lo, 'the largest must be at least the smallest'); const n = Math.round(x.n); need(n >= 1 && n <= 1000, 'make 1 to 1000 at a time'); const out = [];
+      if (x.whole === 'y') { const lo = Math.ceil(x.lo), hi = Math.floor(x.hi); need(hi >= lo, 'no whole number lies between them'); need(x.uniq !== 'y' || hi - lo + 1 >= n, 'there are not that many different numbers'); const seen = new Set();
+        while (out.length < n) { const v = lo + Math.floor(RNG.next() * (hi - lo + 1)); if (x.uniq === 'y') { if (seen.has(v)) continue; seen.add(v); } out.push(v); } }
+      else for (let i = 0; i < n; i++) out.push(x.lo + RNG.next() * (x.hi - x.lo));
+      return { first: out[0], all: out.map((v) => fmt(v, 12)).join(', ') }; }, { random: true }),
+  make('password-generator', 'Password generator', 'Everyday', 'strength = length × log₂(characters to choose from) bits', ['len|Length|number||16', yesNo('lower', 'Lowercase a–z'), yesNo('upper', 'Uppercase A–Z'), yesNo('digits', 'Digits 0–9'), yesNo('sym', 'Symbols !@#…'), yesNo('amb', 'Leave out look-alikes (0 O 1 l I)', 'n')],
+    ['pw|Password|text', 'bits|Strength|number|bits', 'pool|Characters to choose from|number'],
+    (x) => { const n = Math.round(x.len); need(n >= 4 && n <= 256, 'a length of 4 to 256'); let sets = [x.lower === 'y' && 'abcdefghijklmnopqrstuvwxyz', x.upper === 'y' && 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', x.digits === 'y' && '0123456789', x.sym === 'y' && '!@#$%^&*()-_=+[]{};:,.?/~'].filter(Boolean);
+      if (x.amb === 'y') sets = sets.map((s) => s.replace(/[0O1lI]/g, '')); need(sets.length, 'pick at least one kind of character'); need(n >= sets.length, 'too short to hold one of each kind');
+      const pool = sets.join(''), pick = (s) => s[Math.floor(RNG.next() * s.length)];
+      for (;;) { const pw = Array.from({ length: n }, () => pick(pool)).join(''); if (sets.every((s) => [...pw].some((ch) => s.includes(ch)))) return { pw, bits: n * Math.log2(pool.length), pool: pool.length }; } }, { random: true }),
+  make('time-add', 'Time (add or subtract durations)', 'Everyday', 'total = d₁ days h₁ h m₁ min s₁ s ± d₂ days h₂ h m₂ min s₂ s', ['d1|Days|number||1', 'h1|Hours|number||10', 'm1|Minutes|number||45', 's1|Seconds|number||0', { k: 'op', label: 'Do', kind: 'choice', opts: [['+', 'add'], ['-', 'subtract']], v: '+' }, 'd2|Days|number||0', 'h2|Hours|number||20', 'm2|Minutes|number||30', 's2|Seconds|number||15'],
+    ['t|Result|text', 'h|In hours|number|h', 'min|In minutes|number|min', 's|In seconds|number|s'],
+    (x) => { const a = x.d1 * 86400 + x.h1 * 3600 + x.m1 * 60 + x.s1, b = x.d2 * 86400 + x.h2 * 3600 + x.m2 * 60 + x.s2, t = x.op === '-' ? a - b : a + b; return { t: durText(t), h: t / 3600, min: t / 60, s: t }; }),
+  make('hours-worked', 'Hours between two times (hours worked)', 'Everyday', 'hours = end − start − break (an end before the start is the next day)', ['start|Start|text||9:00 am', 'end|End|text||5:30 pm', 'brk|Unpaid break|time|min|30', 'wage|Hourly pay (optional)|money|$|0'],
+    ['h|Hours|number|h', 'hm|Hours and minutes|text', 'pay|Pay|money|$'],
+    (x) => { const a = clockOf(x.start, 'Start'), b = clockOf(x.end, 'End'), span = (b - a + 1440) % 1440, m = span - x.brk / 60; need(m >= 0, 'the break is longer than the time'); return { h: m / 60, hm: hm(m), pay: (m / 60) * x.wage }; }),
+  make('gpa', 'GPA', 'Statistics', 'GPA = Σ (grade points × credits) ÷ Σ credits (A = 4.0, A− = 3.7, B+ = 3.3, … F = 0)', ['g|Grades (letters or points), in order|text||A, B+, A-, B, C', 'cr|Credits for each|list:number||4, 3, 3, 3, 2'],
+    ['gpa|GPA|number', 'credits|Credits|number', 'points|Grade points|number'],
+    (x) => { const gs = String(x.g).split(/[,;\s]+/).filter(Boolean); need(gs.length, 'type the grades'); need(gs.length === x.cr.length, 'give one credit number for each grade (' + gs.length + ' grades, ' + x.cr.length + ' credits)');
+      const pts = gs.map((g) => { const u = g.toUpperCase().replace('−', '-'); if (GRADES[u] !== undefined) return GRADES[u]; const v = Number(g); need(Number.isFinite(v) && v >= 0 && v <= 5, 'no grade "' + g + '"'); return v; });
+      const credits = sum(x.cr); pos(credits, 'Credits'); const points = sum(pts.map((p, i) => p * x.cr[i])); return { gpa: points / credits, credits, points }; }),
+  make('final-grade', 'Grade needed on the final', 'Statistics', 'needed = (wanted − current × (1 − weight)) ÷ weight', ['cur|Grade so far|ratio|%|85', 'want|Grade you want|ratio|%|88', 'w|The final counts for|ratio|%|30'],
+    ['need|Needed on the final|ratio|%', 'say|In words|text'], (x) => { need(x.w > 0 && x.w <= 1, 'the final counts for more than 0% and up to 100%'); const n = (x.want - x.cur * (1 - x.w)) / x.w; return { need: n, say: n > 1 ? 'more than 100%: out of reach without extra credit' : n <= 0 ? 'already there, even with 0 on the final' : 'reachable' }; }),
+  make('ip-subnet', 'IP subnet', 'Electrical', 'network = address AND mask; broadcast = network OR NOT mask; hosts = 2^(32 − prefix) − 2', ['ip|Address and prefix (or mask)|text||192.168.1.10/24'],
+    ['network|Network|text', 'first|First usable host|text', 'last|Last usable host|text', 'broadcast|Broadcast|text', 'mask|Subnet mask|text', 'wildcard|Wildcard mask|text', 'hosts|Usable hosts|number', 'total|Addresses in the block|number', 'cls|Class|text', 'kind|Kind|text'], (x) => subnet(x.ip)),
+);
+
 export const FORMULA_COUNT = { before: CALCULATORS.length };
 {
   const have = new Set(CALCULATORS.map((c) => c.id));
@@ -386,7 +547,7 @@ export function run(calcOrId, given = {}, outUnits = {}, opts = {}) {
     const u = unitOf(o.kind, outUnits[o.k]) || unitOf(o.kind, o.unit) || KINDS[o.kind].units[0], value = fromSI(si, u);
     return { ...o, unit: u.id, si, value, text: fmt(value, sig) + (u.id ? (/^[%‰°]$/.test(u.id) ? '' : ' ') + u.id : '') };
   });
-  return { calc, inputs, outputs, error };
+  return { calc, inputs, outputs, error, table: error ? null : res.table || null };
 }
 /** one SI value in every unit of its kind: [{ unit, name, value, text }]. Pure. */
 export function allUnits(kind, si, sig = 6) {
