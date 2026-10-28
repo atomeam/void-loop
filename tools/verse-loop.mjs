@@ -91,7 +91,7 @@ export function pickTask({ before, agent, next, task }) {
     return { kind: 'fix', check: red.name, cmd: red.cmd, output: red.output || '' };
   }
   if (agent === 'verse') return { kind: 'probe' };
-  if (task) return { kind: 'next', n: 0, text: task };
+  if (task) return { kind: 'next', n: null, text: task };
   const it = topItem(next);
   return it ? { kind: 'next', ...it } : { kind: 'idle', why: 'all green and docs/NEXT.md has no open item' };
 }
@@ -108,7 +108,7 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
     '## Task',
     task.kind === 'fix'
       ? `A check is red. Make it green by fixing what it tests (never by weakening the test).\nCheck: ${task.check}\nCommand: ${task.cmd}\nLast output:\n${tail(task.output || '', 4000)}`
-      : `Top open item of docs/NEXT.md${task.n ? ' (item ' + task.n + ')' : ''}:\n${task.text}\nTake the smallest next step on it that the checks can prove.`,
+      : `${task.n != null ? 'Top open item of docs/NEXT.md (item ' + task.n + ')' : 'The task'}:\n${task.text}\nTake the smallest next step on it that the checks can prove.`,
     '',
     '## docs/GATE-STANDARDS.md',
     tail(gates, 6000),
@@ -201,7 +201,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
 
     const work = mkdtempSync(join(tmpdir(), 'verse-loop-'));
     const promptFile = join(work, 'prompt.md');
-    const prompt = buildPrompt({ task: task.kind === 'probe' ? { kind: 'next', n: 0, text: 'probe job' } : task, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
+    const prompt = buildPrompt({ task: task.kind === 'probe' ? { kind: 'next', n: 0, text: 'probe job', n: null } : task, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
     writeFileSync(promptFile, prompt);
     const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun });
     if (opts.agent === 'verse' && !env.VOID_OWNER_TOKEN) return done('idle', 'the free brain needs VOID_OWNER_TOKEN (the Pages READ_TOKEN) in the environment; without it a lap is a quiet no-op, as in propose-fix.yml');
@@ -241,7 +241,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const branch = 'loop/' + stamp();
     const title = task.kind === 'fix' ? `Verse loop: fix ${task.check}`
       : task.kind === 'probe' ? String(probe.title || 'Verse fixes ' + probe.skill).slice(0, 90)
-      : `Verse loop: NEXT ${task.n}, ${task.text.replace(/\*\*/g, '').slice(0, 60)}`;
+      : `Verse loop: ${task.n != null ? 'NEXT ' + task.n : 'task'}, ${task.text.replace(/\*\*/g, '').slice(0, 60)}`;
     const line = `- ${new Date().toISOString().slice(0, 16)}Z verse-loop (${opts.agent}): ${title.replace(/^Verse loop: /, '')}; ${v.why}; branch ${branch}`;
     Object.assign(report, { branch, title, tagteamLine: line });
     if (opts.dryRun) return done('would-ship', v.why + ' (dry run: no commit, push or PR; the changes are left in the tree)');
@@ -256,7 +256,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const p = git('push', '-u', 'origin', branch); // never --force
     if (p.code) return done('error', 'push failed: ' + p.out.trim());
     step('pushed ' + branch);
-    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ')' : 'docs/NEXT.md item ' + task.n}\n\nChecks after: ${v.why}. Merges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
+    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ')' : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task')}\n\nChecks after: ${v.why}. Merges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
     // propose-fix.yml's confidence gate: Verse's own patch merges by itself at 0.8 or more, otherwise it waits for the owner
     const label = task.kind === 'probe' && !(Number(probe.confidence) >= 0.8) ? 'waits for owner' : 'automerge';
     report.label = label;
