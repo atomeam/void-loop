@@ -70,18 +70,20 @@
   <h1>Colour codes, shades and schemes</h1>
   <p class="lede" style="margin:0 0 10px;font-size:13px;opacity:.75">Every colour model, the nearest name, WCAG contrast, tints, shades and schemes, worked out on this device and kept for offline use.</p>
   <div class="pick"><input id="in" type="text" autocomplete="off" spellcheck="false" aria-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></div>
+  <nav id="jobs" class="tk-row" aria-label="What is the colour for?"><span class="tk-label">For:</span> <a href="?c=1a5fb4&amp;for=read#readh" data-for="read">Readable text pairs</a> <a href="?c=e4572e&amp;for=brand#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for="print">Print vs screen</a></nav>
+  <p id="forhint" class="hint" hidden></p>
   <div id="note" role="status" aria-live="polite"></div>
   <div id="big"><b id="hex">#6D4AFF</b><span id="name"></span></div>
   <!-- filled by the module below and shown whole, so nothing already on screen moves when it arrives (no layout shift on a slow first visit) -->
   <div id="rest" hidden>
-  <table><tbody id="models"></tbody></table>
-  <h2>Can text on it be read? (WCAG contrast)</h2>
+  <table id="modt"><tbody id="models"></tbody></table>
+  <h2 id="readh">Can text on it be read? (WCAG contrast)</h2>
   <div class="ratio" id="ratio"></div>
   <h2>Monochromatic tints, to white</h2><div class="row" id="tints"></div>
   <h2>Shades, to black</h2><div class="row" id="shades"></div>
   <h2>Tones, to grey</h2><div class="row" id="tones"></div>
   <h2>Schemes</h2><div id="schemes"></div>
-  <h2>Palettes made from it</h2>
+  <h2 id="palh">Palettes made from it</h2>
   <p class="hint">Eight palettes of five built around this colour by the usual rules (each starts with it); tap a colour to open it, or keep a palette.</p>
   <div id="pals"></div>
   <h2>Your palette</h2>
@@ -162,7 +164,7 @@
   function set(text, fromSwatch) {
     const rgb = parse(text); $('in').classList.toggle('bad', !rgb && !!String(text).trim()); $('note').textContent = rgb || !String(text).trim() ? '' : 'Not a colour I can read: try #ff5733, rgb(255 87 51), hsl(11 100% 60%) or a name like tomato.';
     if (!rgb) return; if (fromSwatch) $('in').value = toHex(rgb); show(describe(rgb));
-    try { history.replaceState(null, '', '?c=' + toHex(rgb).slice(1)); } catch (_) {}
+    try { { const f = new URLSearchParams(location.search).get('for'); history.replaceState(null, '', '?c=' + toHex(rgb).slice(1) + (f ? '&for=' + encodeURIComponent(f) : '')); } } catch (_) {}
   }
   const save = (name, type, text) => { const a = el('a', { href: URL.createObjectURL(new Blob([text], { type })), download: name }); document.body.append(a); a.click(); a.remove(); };
   $('in').addEventListener('input', () => set($('in').value));
@@ -175,6 +177,13 @@
   fill('vga', VGA); drawWork(); drawMine();
   $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });
   const start = new URLSearchParams(location.search).get('c') || '6d4aff'; $('in').value = parse(start) ? (/^[0-9a-f]{3,8}$/i.test(start) ? '#' + start : start) : ''; set($('in').value || '#6d4aff');
+  // the three everyday jobs (docs/WIDER-USE.md): a plain line on what to look at, the colour in the link, the section in view; the link restores it
+  const FOR = { read: 'Text on a colour: the contrast below says whether white or black text passes WCAG AA (4.5:1 for body text, 3:1 for large) and AAA (7:1). Try your own background colour above.',
+    brand: 'A brand palette: pick your main colour above, choose one of the eight palettes below (each starts with it), add or remove colours, name it and save it, then download JSON or CSV.',
+    print: 'Print vs screen: screens mix light (RGB, hex), printers mix ink (CMYK). The CMYK row is a plain conversion with no ink profile, so ask your printer for theirs; very bright screen colours often print duller.' };
+  const job = (k, jump) => { const h = $('forhint'); if (!FOR[k]) { h.hidden = true; return; } h.textContent = FOR[k]; h.hidden = false; for (const a of document.querySelectorAll('#jobs a')) a.setAttribute('aria-current', String(a.dataset.for === k)); const t = { read: 'readh', brand: 'palh', print: 'modt' }[k]; if (jump) requestAnimationFrame(() => $(t).scrollIntoView({ block: 'start' })); };
+  for (const a of document.querySelectorAll('#jobs a')) a.addEventListener('click', (e) => { e.preventDefault(); const u = new URL(a.href); $('in').value = '#' + u.searchParams.get('c'); set($('in').value); try { history.replaceState(null, '', '?c=' + u.searchParams.get('c') + '&for=' + a.dataset.for); } catch (_) {} job(a.dataset.for, true); });
+  { const k = new URLSearchParams(location.search).get('for'); if (k) job(k, true); }
   const curHex = () => new URLSearchParams(location.search).get('c') || '6d4aff';
   const lighter = (h) => '#' + [0, 2, 4].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) + (255 - parseInt(h.slice(i, i + 2), 16)) * 0.6).toString(16).padStart(2, '0')).join('');
   mountRelated($('related'), '/color/', [
