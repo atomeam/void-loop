@@ -2,6 +2,33 @@
 
 One page per thing Verse replaced, with what the old tool did, what Verse does instead, and the gaps, said plainly. Newest first.
 
+## calculator.net's sitemap, Maths → /calculators/ (2026-10-28)
+
+**Before.** tools/rival-inventory.mjs read calculator.net/sitemap.html and found 16 Maths calculators that Verse did not have.
+
+**Now.** All 16 work on https://a-to-mind.com/calculators/ and have known-answer tests in tools/calc-math.test.mjs. The answers were worked by hand or taken from the NIST t and chi-square tables. This change only adds to the page.
+
+| calculator.net tool | On Verse | Where |
+| --- | --- | --- |
+| Volume | added | `?calc=solid-shapes` (cube, box, sphere, hemisphere, cylinder, cone, square pyramid, capsule) |
+| Surface area | added | `?calc=solid-shapes` (the same calculator gives both answers) |
+| Number sequence | added | `?calc=number-sequence` (arithmetic, geometric, Fibonacci) |
+| Binary | added | `?calc=binary-math` (any size, plus AND, OR, XOR) and `?calc=base-convert` |
+| Hex | added | `?calc=hex-math` and `?calc=base-convert` |
+| Probability | added | `?calc=probability-two` (two independent events) |
+| Ratio | added | `?calc=ratio` |
+| Factor | added | `?calc=factors` |
+| Rounding | added | `?calc=rounding` (on exact decimals: 1.005 → 1.01; five rules) |
+| Matrix | added | `?calc=matrix` (determinant, inverse, transpose, A × B, A ± B, k × A) |
+| Scientific notation | added | `?calc=scientific-notation` (and E and engineering notation) |
+| Big number | added | `?calc=big-number` (exact whole numbers: + − × ÷, powers, gcd) |
+| Prime factorization | added | `?calc=prime-factorization` |
+| Common factor | added | `?calc=common-factors` (a list's GCF, common factors and LCM) |
+| Long division | added | `?calc=long-division` (steps, and repeating decimals in brackets) |
+| P-value | added | `?calc=p-value` (z, t, chi-square; one or two tails) |
+
+**Still missing from calculator.net's sitemap:** the Health nutrition and cycle calculators and the Other weather and everyday ones (the list is in tools/rival-inventory.mjs's output). The Financial section has not been read yet. Skipped on purpose: a trademarked points calculator, and a "love" calculator, which has nothing real to calculate.
+
 ## calculator.net's home page → /calculators/ (2026-10-28)
 
 **Before.** calculator.net's home page lists four groups of calculators (financial, fitness and health, math, other) and a keypad scientific

@@ -1232,7 +1232,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/chat-generators.js",
