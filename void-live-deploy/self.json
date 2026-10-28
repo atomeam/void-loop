@@ -509,6 +509,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T22:47:49Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-10-28T22:43:04Z",
+   "subject": "TAGTEAM: Grok Bot handoff"
+  },
+  {
    "at": "2026-10-28T22:34:56Z",
    "subject": "CSP hashes: a directory shares one rule with the union of its pages' inline scripts, so the rules fit Cloudflare's 100 again (88 to 69…"
   },
@@ -537,56 +545,48 @@
    "subject": "Lists run 8: green first: /books/ links four sibling tools (connected), the autopsy check ignores the card's own art seal; metrics and board"
   },
   {
-   "at": "2026-10-28T22:32:54Z",
-   "subject": "Preloads for the gate modules the tower library now imports, on the obituaries, compare and conquered pages; page data regenerated"
+   "at": "2026-10-28T22:29:18Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Catch-up browser checks wait for the reload to settle and stub the unprefixed speech recognition newer Chrome has"
+   "at": "2026-10-28T22:26:39Z",
+   "subject": "Handoff scan: every page's inputs and outputs, unbuilt connections ranked (docs/HANDOFF-GAPS.md), BPM counter <-> metronome, lap item…"
   },
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "The way back from your own translation sits beside it, not inside the edit panel"
+   "at": "2026-10-28T22:18:29Z",
+   "subject": "Formula engine: one definition solved for any variable, with its source; batch 1 of the formula library (172 formulas: money, health…"
   },
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Your own translation correction keeps its panel open, with the way back to the machine's one tap away"
+   "at": "2026-10-28T22:18:28Z",
+   "subject": "Gate honesty: un-beat Amazon and YouTube, scripted journeys with negative controls, false-pass fixtures, no-mock check…"
   },
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Keyboard and handwriting pad take turns, one input tool open at a time"
+   "at": "2026-10-28T22:18:18Z",
+   "subject": "Verse cards test: the ocean gets its own article, so its card is typed by its kind again"
   },
   {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "On-screen keyboard gains a one-letter shift, so capitals can be typed"
+   "at": "2026-10-28T22:02:20Z",
+   "subject": "Tip and savings: the 3D piece is the card's picture, so the art plate steps aside and the piece draws in view"
   },
   {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Parity inventories and page data refreshed for the newest floors"
+   "at": "2026-10-28T22:00:54Z",
+   "subject": "tower gate: never open vcalc.com (robots.txt); judge the formula calculators floor on internal metrics, not beaten with the library-size…"
   },
   {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Translate handwriting pad's pointer helper renamed so it no longer clashes with the new practice cards"
+   "at": "2026-10-28T21:59:47Z",
+   "subject": "Watchdog runs the full suite in three shards, like verify, so it fits the suite budget and can close its issue"
   },
   {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Regenerated page data after rebase"
+   "at": "2026-10-28T21:53:58Z",
+   "subject": "Incident: the browser suite failed on fa0caa75 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Memorials stay up while the gate's new wider-use aspect is unmeasured; they read in progress until it is"
+   "at": "2026-10-28T21:52:30Z",
+   "subject": "Dead-button fixes: Claim and spot pills answer on the tournaments page, gist Raw opens a real tab and empty task adds explain themselves…"
   },
   {
-   "at": "2026-10-28T22:30:59Z",
-   "subject": "Regenerated page data"
-  },
-  {
-   "at": "2026-10-28T22:30:59Z",
-   "subject": "Browser checks for the catch-up pages; parity inventory joins the lap loop docs"
-  },
-  {
-   "at": "2026-10-28T22:30:53Z",
-   "subject": "Calendar events can carry a video call, and the view prints"
+   "at": "2026-10-28T21:51:03Z",
+   "subject": "Mark the spec-written pattern in the test harness as reviewed"
   }
  ],
  "builders": {

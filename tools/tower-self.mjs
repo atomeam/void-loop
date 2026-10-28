@@ -54,10 +54,14 @@ export const textOf = (html) => String(html || '').replace(/<script[\s\S]*?<\/sc
 // tools/flights.test.mjs: seven travel sites; tools/generators.test.mjs: ten generator sites): a site of theirs waits as a queued job until those
 // tests read lib/self-sites.js too
 export const PINNED = Object.freeze(['pdf', 'kanban', 'travel', 'random generators']);
+// floors whose page does only part of their site's job, so a new site must never be beaten by copying that page under its name: the codebase floor
+// stands on /g/ (a gist with a task list and a timer), and a code host's job (repositories, tickets, accounts) is wider; tildegit, a second code
+// host on /g/, waits as a deferred floor for that reason (lib/tower.js). A site like them is added by hand as a deferred floor, never by a data row
+export const PARTIAL = Object.freeze(['codebase']);
 export function familiesOf(floors = FLOORS, probe = probeFor, read = baseHtmlOf) {
   const out = [];
   for (const f of floors) {
-    if (f.lane || !f.page || noShotOf(f) || PINNED.includes(f.id)) continue;
+    if (f.lane || !f.page || noShotOf(f) || PINNED.includes(f.id) || PARTIAL.includes(f.id) || f.defer) continue;
     const base = pathOnly(f.page); if (!/^\/[a-z0-9-]+\/$/.test(base)) continue;
     const p = probe(f.id); if (!p || !p.truth || !(p.truth.length) || !(p.facts || []).length) continue;
     if (pathOnly(p.verse) !== base || (p.ask && pathOnly(p.ask.verse) !== base)) continue;
