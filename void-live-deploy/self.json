@@ -509,6 +509,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:17:11Z",
+   "subject": "Tower: paint (heycolor.com) surpassed on evidence; the queue moves on to is it"
+  },
+  {
+   "at": "2026-10-28T23:14:12Z",
+   "subject": "Regenerated the generated files after merging main"
+  },
+  {
    "at": "2026-10-28T23:11:10Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-28T22:53:37Z",
    "subject": "Tools: rival-inventory reads each rival's robots.txt and sitemap and writes the gaps to PARITY.md and the build feed"
-  },
-  {
-   "at": "2026-10-28T22:52:23Z",
-   "subject": "Green main: tower-self PARTIAL floors, /ledger/ real-pages spec, podcasts fyyd fallback with a visible note and 503 not 502, regenerated…"
-  },
-  {
-   "at": "2026-10-28T22:52:09Z",
-   "subject": "Calculators: every calculator on calculator.net's home page (21 added) plus a scientific keypad"
   }
  ],
  "builders": {

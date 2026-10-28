@@ -3,15 +3,11 @@
  "source": "docs/NEXT.md",
  "now": [
   {
-   "id": "paint",
-   "why": "heycolor.com, colour by number (/paint/ rebuilt: library in categories, zoom and pan, highlight, hints, saved progress, reveal, photo import)"
+   "id": "is it",
+   "why": "isitchristmas.com, one answer a day (robots: allowed). Before it, `paint` (heycolor.com) was surpassed on 2026-10-28: all 16 aspects, its six journeys scripted with negative controls (tower.evidence.json)"
   }
  ],
  "next": [
-  {
-   "id": "is it",
-   "why": "isitchristmas.com, one answer a day (robots: allowed)"
-  },
   {
    "id": "coin flip",
    "why": "justflipacoin.com (robots: allowed except /flips)"
