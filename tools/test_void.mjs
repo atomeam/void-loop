@@ -824,7 +824,7 @@ try {
       chips === '1st: 10|2nd-5th: 5|6th-10th: 3|11th-30th: 1' && tierUrl === '1:10,2-5:5,6-10:3,11-30:1', JSON.stringify({ chips, tierUrl }));
     // the claim form (owner, 2026-10-28): a typed team and a half-typed spot snap to the roster and the spot already claimed, the pill says
     // how many hold it, and the note names a team with no spot yet
-    await P.p.fill('#results', 'Alpha:1:6,Bravo:2:7,Charlie:6:3'); await P.p.fill('#drops', 'Alpha:Old Mill\nBravo:Harbor'); await P.p.waitForTimeout(100);
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor&elim=2&win=10&top5=5'); await P.p.waitForSelector('#droptable tbody tr', { timeout: 15000 });
     const note0 = await P.p.$eval('#spotnote', (e) => e.textContent);
     await P.p.fill('#spteam', 'charlie'); await P.p.fill('#spspot', 'harb'); await P.p.click('#spadd'); await P.p.waitForTimeout(150);
     const sp = await P.p.evaluate(() => ({ drops: document.getElementById('drops').value, rows: [...document.querySelectorAll('#droptable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pills: [...document.querySelectorAll('#pills .chip')].map((b) => b.textContent), note: document.getElementById('spotnote').textContent, q: new URLSearchParams(location.search).get('drops') }));
